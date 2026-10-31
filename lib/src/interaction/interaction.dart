@@ -8,6 +8,7 @@ import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
+import '../foundation/token_resolvers.dart';
 import '../foundation/primitives.dart';
 
 /// A tappable row for settings, menus and action lists.
@@ -58,7 +59,7 @@ class ActionTile extends StatelessWidget {
     // Icon and chevron center on the title's first line, not on the whole
     // block, so multi-line rows at large text keep them beside the title.
     final scaler = MediaQuery.textScalerOf(context);
-    final line = scaler.scale(15) * 20 / 15;
+    final line = PaymentType.firstLineHeight(context);
     final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     return Semantics(
       button: true,
@@ -331,12 +332,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showPaymentSnackBar(
   VoidCallback? onAction,
 }) {
   final theme = PaymentTheme.of(context);
-  final icon = switch (tone) {
-    StatusTone.success => Icons.check_circle_outline,
-    StatusTone.warning => Icons.warning_amber_rounded,
-    StatusTone.danger => Icons.error_outline,
-    StatusTone.info || StatusTone.neutral => Icons.info_outline,
-  };
+  final icon = toneIcon(tone);
   final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
   return messenger.showSnackBar(
     SnackBar(
@@ -596,7 +592,7 @@ class StateMessage extends StatelessWidget {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     final scaler = MediaQuery.textScalerOf(context);
-    final line = scaler.scale(15) * 20 / 15;
+    final line = PaymentType.firstLineHeight(context);
     final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     return Semantics(
       container: true,

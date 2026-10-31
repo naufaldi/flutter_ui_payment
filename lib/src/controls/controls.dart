@@ -259,7 +259,7 @@ class _ControlRow extends StatelessWidget {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     // The mark centers on the label's first line, as ActionTile's icon does.
-    final line = MediaQuery.textScalerOf(context).scale(15) * 20 / 15;
+    final line = PaymentType.firstLineHeight(context);
     // The row takes taps, focus and semantics; the painted mark takes none.
     final painted = ExcludeFocus(
       child: IgnorePointer(child: ExcludeSemantics(child: mark)),

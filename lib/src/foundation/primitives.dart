@@ -10,6 +10,7 @@ import 'payment_localizations.dart';
 import 'payment_motion.dart';
 import 'payment_theme.dart';
 import 'payment_type.dart';
+import 'token_resolvers.dart';
 
 /// Renders [Money] with the active locale's formatter and a spoken label.
 class AmountText extends StatelessWidget {
@@ -572,7 +573,7 @@ class NoticeBanner extends StatelessWidget {
     final type = PaymentType.of(context);
     final scaler = MediaQuery.textScalerOf(context);
     // One line of the 15/20 heading title.
-    final line = scaler.scale(15) * 20 / 15;
+    final line = PaymentType.firstLineHeight(context);
     final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     return Semantics(
       container: true,
@@ -597,7 +598,7 @@ class NoticeBanner extends StatelessWidget {
                   height: line,
                   child: Center(
                     child: Icon(
-                      icon ?? _defaultIcon,
+                      icon ?? toneIcon(tone),
                       color: colors.foreground,
                       size: iconSize,
                     ),
@@ -634,14 +635,6 @@ class NoticeBanner extends StatelessWidget {
       ),
     );
   }
-
-  IconData get _defaultIcon => switch (tone) {
-    StatusTone.success => Icons.check_circle_outline,
-    StatusTone.warning => Icons.warning_amber_rounded,
-    StatusTone.danger => Icons.error_outline,
-    StatusTone.info => Icons.info_outline,
-    StatusTone.neutral => Icons.info_outline,
-  };
 }
 
 /// A titled group of content. Sections are flat: they sit on the page
@@ -719,7 +712,7 @@ class StatusHeader extends StatelessWidget {
     final colors = theme.tone(tone);
     final scaler = MediaQuery.textScalerOf(context);
     // One line of a 15/20 title, so the icon box matches its first line.
-    final line = scaler.scale(15) * 20 / 15;
+    final line = PaymentType.firstLineHeight(context);
     final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

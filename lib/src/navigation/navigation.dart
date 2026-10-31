@@ -136,7 +136,7 @@ class _NavTile extends StatelessWidget {
     // The icon and badge center on the label's first line, so a wrapped
     // label at large text keeps them beside its start.
     final scaler = MediaQuery.textScalerOf(context);
-    final line = scaler.scale(15) * 20 / 15;
+    final line = PaymentType.firstLineHeight(context);
     final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     // Selection is instant: navigation is used constantly and keyboard users
     // move through it fast, so it should never wait on an animation. It is

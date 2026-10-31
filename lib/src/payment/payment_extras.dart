@@ -175,7 +175,7 @@ class MerchantHeader extends StatelessWidget {
     // taller than the mark; zero at normal text sizes.
     final markInset = math.max(
       0.0,
-      (MediaQuery.textScalerOf(context).scale(15) * 20 / 15 - 32) / 2,
+      (PaymentType.firstLineHeight(context) - 32) / 2,
     );
     return MergeSemantics(
       // Top-aligned: when the name wraps at large text, the mark stays beside
