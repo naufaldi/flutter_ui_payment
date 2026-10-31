@@ -165,6 +165,80 @@ void main() {
       );
       return;
     }
+    if (const bool.fromEnvironment('CAPTURE_PHASE4_ONLY')) {
+      for (final (look, settings) in [
+        ('', const DemoSettings(locale: Locale('en'))),
+        (
+          '_dark',
+          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+        ),
+        ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
+      ]) {
+        const onlyLook = String.fromEnvironment('CAPTURE_PHASE4_LOOK');
+        if (onlyLook.isNotEmpty && onlyLook != look) continue;
+        app.updateSettings(settings);
+        await settle(tester);
+        await open('Layout');
+        for (final (entry, name) in [
+          if (look != '_200') ('PaymentBox', 'box'),
+          ('PaymentInline', 'inline'),
+          if (look != '_200') ('PaymentIcon', 'icon'),
+          if (look != '_200') ('PaymentImage', 'image'),
+          ('PaymentCode', 'code'),
+          if (look != '_200') ('PaymentDivider', 'divider'),
+        ]) {
+          await top('$entry · variants');
+          await shot('${name}_variants$look');
+        }
+        await open('Forms');
+        for (final (entry, name) in [
+          ('PaymentTextArea', 'text_area'),
+          ('PaymentSelect', 'select'),
+          ('PaymentDateField', 'date_field'),
+          ('PaymentFormFieldGroup', 'form_field_group'),
+          ('PaymentDateRangePicker', 'date_range_picker'),
+          ('PaymentChip', 'chip'),
+        ]) {
+          await top('$entry · variants');
+          await shot('${name}_variants$look');
+        }
+        await top('PaymentSearchField · variants');
+        await tester.tap(
+          find.descendant(
+            of: find.byKey(const Key('search-province')),
+            matching: find.byType(EditableText),
+          ),
+        );
+        await tester.enterText(
+          find.descendant(
+            of: find.byKey(const Key('search-province')),
+            matching: find.byType(EditableText),
+          ),
+          'jawa',
+        );
+        await top('PaymentSearchField · variants');
+        await shot('search_field_variants$look');
+        FocusManager.instance.primaryFocus?.unfocus();
+        await settle(tester);
+        await open('Controls');
+        for (final (entry, name) in [
+          ('PaymentCurrencyField', 'currency_field'),
+          ('PaymentTextField', 'text_field'),
+        ]) {
+          await top('$entry · variants');
+          await shot('${name}_variants$look');
+        }
+        await open('Interaction');
+        await top('PaymentAccordion · variants');
+        await shot('accordion_variants$look');
+        await top('PaymentList · variants');
+        await shot('list_variants$look');
+        await open('Charts');
+        await top('PaymentMeterChart · variants');
+        await shot('meter_chart_variants$look');
+      }
+      return;
+    }
     if (!const bool.fromEnvironment('CAPTURE_TAIL_ONLY')) {
       const buttons = 'PaymentButton · variants';
       for (final (look, settings) in [

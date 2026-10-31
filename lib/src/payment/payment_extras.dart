@@ -1,6 +1,6 @@
+import '../forms/chip.dart';
 import '../foundation/payment_icons.dart';
 import '../foundation/payment_tokens.dart';
-import '../controls/actions.dart';
 import '../controls/text_field.dart';
 import 'dart:math' as math;
 
@@ -477,52 +477,16 @@ class _PromoCodeInputState extends State<PromoCodeInput> {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final l10n = PaymentLocalizations.of(context);
-    final type = PaymentType.of(context);
     final stacked = MediaQuery.textScalerOf(context).scale(10) > 10 * _stackAt;
     if (widget.status == PromoCodeStatus.applied &&
         widget.appliedCode != null) {
-      final tag = Semantics(
-        label: l10n.promoApplied(widget.appliedCode!),
-        excludeSemantics: true,
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: theme.spacing,
-            vertical: theme.spacing * 0.5,
-          ),
-          decoration: BoxDecoration(
-            color: theme.surfaceMuted,
-            borderRadius: theme.tagBorderRadius,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const PaymentIcon(
-                Icons.local_offer_outlined,
-                size: PaymentIconSize.xsmall,
-                color: PaymentTextColor.secondary,
-              ),
-              SizedBox(width: theme.spacing),
-              Flexible(
-                child: Text(
-                  widget.appliedCode!,
-                  style: type.label.reference(theme),
-                ),
-              ),
-            ],
-          ),
+      final code = Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: PaymentChip(
+          label: l10n.promoCodeLabel,
+          value: widget.appliedCode,
+          onClose: widget.onRemove,
         ),
-      );
-      // The code and its remove control stay together at the start.
-      final code = Row(
-        children: [
-          Flexible(child: tag),
-          if (widget.onRemove != null)
-            PaymentIconButton(
-              icon: PaymentIcons.close,
-              tooltip: l10n.remove,
-              onPressed: widget.onRemove,
-            ),
-        ],
       );
       final discount = widget.discount == null
           ? null
@@ -533,6 +497,7 @@ class _PromoCodeInputState extends State<PromoCodeInput> {
       // the remove control beside it keeps a full 48 dp target. Large text
       // moves the discount under the code instead of squeezing both.
       return Semantics(
+        label: l10n.promoApplied(widget.appliedCode!),
         liveRegion: true,
         container: true,
         child: ConstrainedBox(

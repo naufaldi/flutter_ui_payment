@@ -95,6 +95,10 @@ export default defineConfig({
             {
               label: 'Forms',
               items: [
+                { label: 'Chip', slug: 'components/chip' },
+                { label: 'Search field', slug: 'components/search-field' },
+                { label: 'Date range picker', slug: 'components/date-range-picker' },
+
                 { label: 'Text area', slug: 'components/text-area' },
                 { label: 'Select', slug: 'components/select' },
                 { label: 'Date field', slug: 'components/date-field' },

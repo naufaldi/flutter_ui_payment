@@ -1,4 +1,179 @@
 {
+  "ios_catalog_box_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "box specimen, English"
+  },
+  "ios_catalog_box_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "box specimen_dark, English"
+  },
+  "ios_catalog_icon_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "icon specimen, English"
+  },
+  "ios_catalog_icon_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "icon specimen_dark, English"
+  },
+  "ios_catalog_image_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "image specimen, English"
+  },
+  "ios_catalog_image_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "image specimen_dark, English"
+  },
+  "ios_catalog_divider_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "divider specimen, English"
+  },
+  "ios_catalog_divider_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "divider specimen_dark, English"
+  },
+  "ios_catalog_inline_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "inline specimen, English"
+  },
+  "ios_catalog_inline_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "inline specimen_dark, English"
+  },
+  "ios_catalog_inline_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "inline specimen_200, English"
+  },
+  "ios_catalog_code_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "code specimen, English"
+  },
+  "ios_catalog_code_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "code specimen_dark, English"
+  },
+  "ios_catalog_code_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "code specimen_200, English"
+  },
+  "ios_catalog_text_area_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "text area specimen, English"
+  },
+  "ios_catalog_text_area_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "text area specimen_dark, English"
+  },
+  "ios_catalog_text_area_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "text area specimen_200, English"
+  },
+  "ios_catalog_select_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "select specimen, English"
+  },
+  "ios_catalog_select_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "select specimen_dark, English"
+  },
+  "ios_catalog_select_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "select specimen_200, English"
+  },
+  "ios_catalog_date_field_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "date field specimen, English"
+  },
+  "ios_catalog_date_field_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "date field specimen_dark, English"
+  },
+  "ios_catalog_date_field_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "date field specimen_200, English"
+  },
+  "ios_catalog_form_field_group_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "form field group specimen, English"
+  },
+  "ios_catalog_form_field_group_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "form field group specimen_dark, English"
+  },
+  "ios_catalog_form_field_group_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "form field group specimen_200, English"
+  },
+  "ios_catalog_date_range_picker_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "date range picker specimen, English"
+  },
+  "ios_catalog_date_range_picker_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "date range picker specimen_dark, English"
+  },
+  "ios_catalog_date_range_picker_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "date range picker specimen_200, English"
+  },
+  "ios_catalog_search_field_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "search field specimen, English"
+  },
+  "ios_catalog_search_field_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "search field specimen_dark, English"
+  },
+  "ios_catalog_search_field_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "search field specimen_200, English"
+  },
+  "ios_catalog_chip_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "chip specimen, English"
+  },
+  "ios_catalog_chip_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "chip specimen_dark, English"
+  },
+  "ios_catalog_chip_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "chip specimen_200, English"
+  },
   "ios_catalog_line_chart_variants": {
     "width": 640,
     "height": 1387,

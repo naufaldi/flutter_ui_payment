@@ -1,0 +1,60 @@
+---
+title: Chip
+description: Compact payment filters and applied promo codes.
+---
+
+import Props from '../../../components/Props.astro';
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+
+Compact payment filters and applied promo codes.
+
+<Screens>
+  <Screen name="ios_catalog_chip_variants" dark="ios_catalog_chip_variants_dark" alt="chip payment component specimens" caption="Light and dark variants" />
+  <Screen name="ios_catalog_chip_variants_200" alt="chip at 200 percent text" caption="200% text" />
+</Screens>
+
+## Usage and Stripe → kit
+
+```dart
+PaymentChip(label: 'Date', value: '1–31 Oct', onClose: clearRange);
+```
+
+| Stripe | Kit |
+| --- | --- |
+| onClose | separate remove target |
+| onDropdown | editable body |
+| onAddSuggestion | suggested body |
+| direction | ChipList.reverse |
+
+
+Callbacks select static, removable, dropdown or suggested kinds. Nothing else exists. Removal uses a separate 48 dp action; suggested chips have a dashed edge. Multiple values summarize the first two labels plus a count. Arrow keys move between chip targets.
+
+## Which variant when
+
+Choose controls by the data being collected. Use a host callback for actions and keep the selected value controlled.
+
+## States
+
+Empty, selected, disabled and error states use semantic tokens. Search additionally supports loading and no matches.
+
+## Do and don't
+
+Keep labels visible. Use complete date ranges and meaningful option names. Avoid duplicating filters with several equally prominent controls.
+
+## Content guidelines
+
+Use short labels and compact localized values.
+
+## Accessibility
+
+Targets are at least 48 dp. Pickers restore focus; result counts announce without platform calls. Keyboard navigation preserves Tab traversal.
+
+## API
+
+<Props names={ ['PaymentChip', 'PaymentChipList'] } />
+
+## See also
+
+- [Select](/components/select/)
+- [Date field](/components/date-field/)

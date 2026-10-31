@@ -5,6 +5,13 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Design system Phase 4B-2 (1 Nov 2026)
+
+- Add Chip, ChipList, SearchField and DateRangePicker, with value/preset/granularity models.
+- Add PaymentLocalizations.formatDateRange.
+- Applied promo codes use a removable chip; pressable meter rows use list anatomy.
+- Improve text and currency specimen spacing. Delivers the 4A–4B specimen captures.
+
 ## Design system Phase 4B-1 (1 Nov 2026)
 
 - Add TextArea, Select (single/multiple), DateField and FormFieldGroup.

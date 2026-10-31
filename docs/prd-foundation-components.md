@@ -1974,21 +1974,21 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] PaymentBanner.onDismiss and PaymentMenu.trigger on PaymentIconButton
 
 **Phase 4A: layout primitives**
-- [ ] PaymentBox (D33)
-- [ ] PaymentInline + PaymentSpan (D33, D35)
-- [ ] PaymentIcon (+ .tone); migrate literal-size Icon sites
-- [ ] PaymentImage (D42); KycCaptureGuide photo, promo media; PaymentListItem.image, PaymentAccordionItem.media
-- [ ] PaymentCode (+ copy); VA number block
-- [ ] Divider docs page (no Stripe props)
+- [x] PaymentBox (D33)
+- [x] PaymentInline + PaymentSpan (D33, D35)
+- [x] PaymentIcon (+ .tone); migrate literal-size Icon sites
+- [x] PaymentImage (D42); KycCaptureGuide photo, promo media; PaymentListItem.image, PaymentAccordionItem.media
+- [x] PaymentCode (+ copy); VA number block
+- [x] Divider docs page (no Stripe props)
 
 **Phase 4B: forms**
-- [ ] PaymentTextArea
-- [ ] PaymentSelect (+ .multiple); IdentityFieldSpec.kind (D36); PaymentCurrencyField.currencies
-- [ ] PaymentDateField (D36)
-- [ ] PaymentDateRangePicker (presets, granularity) (D36)
-- [ ] PaymentFormFieldGroup
-- [ ] PaymentSearchField (+ .multiple) (D37)
-- [ ] PaymentChip + PaymentChipList; migrate the applied-promo tag
+- [x] PaymentTextArea
+- [x] PaymentSelect (+ .multiple); IdentityFieldSpec.kind (D36); PaymentCurrencyField.currencies
+- [x] PaymentDateField (D36)
+- [x] PaymentDateRangePicker (presets, granularity) (D36)
+- [x] PaymentFormFieldGroup
+- [x] PaymentSearchField (+ .multiple) (D37)
+- [x] PaymentChip + PaymentChipList; migrate the applied-promo tag
 
 **Phase 4C: content**
 - [ ] PaymentPropertyList + PaymentPropertyListItem
@@ -2047,3 +2047,7 @@ Layout primitives use semantic enums and internal resolvers. PaymentIcon.tone ac
 ### Phase 4B-1 implementation notes
 
 Fields share labels, disabled scope and errors. Select supports Form validation and focus nodes; date patterns are app-wide. Identity date values are ISO calendar dates. Fields fill their parent; css width is not mirrored. Multiple values use the .multiple factory. Currency changes report reparsed values after a frame.
+
+### Phase 4B implementation notes
+
+Multiple selections use .multiple factories, date ranges use fromPreset, and presets open in a kit sheet. Fields fill rather than mirror css width. Select integrates Form validators and focus nodes. Phase 5 retains history filter integration, identity grouping and province search in the real flow.

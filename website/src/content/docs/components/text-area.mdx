@@ -4,10 +4,28 @@ description: Several lines of payment support context.
 ---
 
 import Props from '../../../components/Props.astro';
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 
 Several lines of payment support context.
 
+<Screens>
+  <Screen name="ios_catalog_text_area_variants" dark="ios_catalog_text_area_variants_dark" alt="text area payment component specimens" caption="Light and dark variants" />
+  <Screen name="ios_catalog_text_area_variants_200" alt="text area at 200 percent text" caption="200% text" />
+</Screens>
+
 ## Usage and Stripe → kit
+
+```dart
+const PaymentTextArea(label: 'Describe the problem', maxLength: 300);
+```
+
+| Stripe | Kit |
+| --- | --- |
+| rows | minLines / maxLines |
+| resizeable | maxLines: null |
+| onChange | onChanged |
+
 
 minLines and maxLines replace rows. maxLines null allows growth. Enter inserts a newline; Command or Control plus Enter submits. A character counter announces remaining space near the limit. cols, wrap, spellCheck, autoComplete and css width are not mirrored.
 

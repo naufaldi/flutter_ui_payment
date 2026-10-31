@@ -1,3 +1,4 @@
+import '../forms/date_range_picker.dart';
 import '../payment/payment_models.dart';
 import '../verification/capture_models.dart';
 import 'payment_localizations.dart';
@@ -131,6 +132,30 @@ extension KitStrings on PaymentLocalizations {
 
   /// Currency switch label.
   String get currencyLabel => _k('Currency', 'Mata uang');
+
+  /// Calendar range action.
+  String get chooseDates => _k('Choose dates', 'Pilih tanggal');
+
+  /// Custom range action.
+  String get customRange => _k('Custom range', 'Rentang lain');
+
+  /// Clear range action.
+  String get clearDates => _k('Clear dates', 'Hapus tanggal');
+
+  /// Chip remove action.
+  String removeItem(String label) => _k('Remove $label', 'Hapus $label');
+
+  /// Search result count.
+  String resultsCount(int n) =>
+      _k(n == 1 ? '1 result' : '$n results', '$n hasil');
+
+  /// Calendar grouping label.
+  String dateGranularity(PaymentDateGranularity g) => switch (g) {
+    PaymentDateGranularity.day => _k('Day', 'Hari'),
+    PaymentDateGranularity.week => _k('Week', 'Minggu'),
+    PaymentDateGranularity.month => _k('Month', 'Bulan'),
+    PaymentDateGranularity.year => _k('Year', 'Tahun'),
+  };
 
   // Interaction
   String get close => _k('Close', 'Tutup');

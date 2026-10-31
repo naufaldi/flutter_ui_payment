@@ -185,17 +185,16 @@ class _CurrencyFieldSpecimen extends StatelessWidget {
   Widget build(BuildContext context) => _Entry(
     name: 'PaymentCurrencyField · variants',
     child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: PaymentTheme.of(context).space(PaymentSpace.group),
       children: [
         const _CurrencySwitch(),
         for (final size in PaymentSize.values)
-          Padding(
-            padding: EdgeInsets.only(bottom: PaymentTheme.of(context).spacing),
-            child: PaymentCurrencyField(
-              currency: 'IDR',
-              size: size,
-              label: size.name,
-              onChanged: (_) {},
-            ),
+          PaymentCurrencyField(
+            currency: 'IDR',
+            size: size,
+            label: size.name,
+            onChanged: (_) {},
           ),
         PaymentCurrencyField(
           currency: 'IDR',
@@ -226,6 +225,8 @@ class _TextFieldSpecimenState extends State<_TextFieldSpecimen> {
   Widget build(BuildContext context) => _Entry(
     name: 'PaymentTextField · variants',
     child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: PaymentTheme.of(context).space(PaymentSpace.group),
       children: [
         for (final size in PaymentSize.values)
           PaymentTextField(label: 'Full name', size: size),

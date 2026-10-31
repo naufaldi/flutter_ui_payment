@@ -17,7 +17,92 @@ class PendingImage extends ImageProvider<PendingImage> {
   ) => OneFrameImageStreamCompleter(Completer<ImageInfo>().future);
 }
 
+class AsyncPendingImage extends PendingImage {
+  const AsyncPendingImage();
+  @override
+  Future<PendingImage> obtainKey(ImageConfiguration configuration) async =>
+      this;
+}
+
 void main() {
+  testWidgets('pending tile in a wrap does not turn into an error', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        const Column(
+          children: [
+            Wrap(
+              children: [
+                PaymentImage(
+                  image: AsyncPendingImage(),
+                  alt: 'Loading bank logo',
+                  width: 96,
+                  height: 64,
+                ),
+              ],
+            ),
+          ],
+        ),
+        1,
+      ),
+    );
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 100)),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.broken_image_outlined), findsNothing);
+  });
+
+  testWidgets('asynchronous pending provider stays loading after settlement', (
+    tester,
+  ) async {
+    Object? failure;
+    await tester.pumpWidget(
+      host(
+        Image(
+          image: const AsyncPendingImage(),
+          errorBuilder: (_, error, stack) {
+            failure = error;
+            return const SizedBox();
+          },
+        ),
+        1,
+      ),
+    );
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 100)),
+    );
+    await tester.pump();
+    expect(failure, isNull);
+  });
+
+  testWidgets(
+    'small error tile fits large text while retaining alt semantics',
+    (tester) async {
+      await tester.pumpWidget(
+        host(
+          PaymentImage(
+            image: MemoryImage(Uint8List.fromList([0, 1, 2])),
+            alt: 'Bank Contoh logo',
+            width: 96,
+            height: 64,
+          ),
+          2,
+        ),
+      );
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)),
+      );
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+      expect(
+        find.bySemanticsLabel('Bank Contoh logo, Image unavailable'),
+        findsOneWidget,
+      );
+    },
+  );
+
   testWidgets('Pending image retains alt and host placeholder', (tester) async {
     await tester.pumpWidget(
       host(
