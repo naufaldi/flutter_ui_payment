@@ -1,3 +1,6 @@
+import '../forms/select.dart';
+import '../forms/date_field.dart';
+import '../foundation/date_input.dart';
 import '../foundation/payment_icons.dart';
 import '../foundation/payment_tokens.dart';
 import '../controls/actions.dart';
@@ -153,6 +156,29 @@ class _IdentityFormState extends State<IdentityForm> {
   late final Map<String, FocusNode> _focus = {
     for (final f in widget.fields) f.key: FocusNode(),
   };
+  late final Map<String, DateTime?> _dates = {
+    for (final f in widget.fields)
+      f.key: parseIsoDate(widget.initialValues[f.key] ?? ''),
+  };
+  late final Map<String, String?> _choices = {
+    for (final f in widget.fields)
+      f.key: widget.initialValues[f.key]?.isEmpty == true
+          ? null
+          : widget.initialValues[f.key],
+  };
+  String _valueOf(IdentityFieldSpec f) => switch (f.kind) {
+    IdentityFieldKind.text => _controllers[f.key]!.text.trim(),
+    IdentityFieldKind.date =>
+      _dates[f.key] == null ? '' : isoDate(_dates[f.key]!),
+    IdentityFieldKind.choice => _choices[f.key] ?? '',
+  };
+  void _markEdited(String key) {
+    if (widget.serverErrors.containsKey(key) &&
+        _editedSinceServerErrors.add(key)) {
+      setState(() {});
+    }
+  }
+
   bool _submitted = false;
 
   /// Fields edited since the host last reported server errors.
@@ -181,7 +207,7 @@ class _IdentityFormState extends State<IdentityForm> {
     setState(() => _submitted = true);
     if (!_formKey.currentState!.validate()) {
       for (final f in widget.fields) {
-        final error = f.validator?.call(_controllers[f.key]!.text.trim());
+        final error = f.validator?.call(_valueOf(f));
         if (error != null) {
           _focus[f.key]!.requestFocus();
           break;
@@ -189,9 +215,7 @@ class _IdentityFormState extends State<IdentityForm> {
       }
       return;
     }
-    await widget.onSubmit({
-      for (final f in widget.fields) f.key: _controllers[f.key]!.text.trim(),
-    });
+    await widget.onSubmit({for (final f in widget.fields) f.key: _valueOf(f)});
   }
 
   @override
@@ -208,36 +232,77 @@ class _IdentityFormState extends State<IdentityForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             for (final (i, f) in widget.fields.indexed) ...[
-              PaymentTextField(
-                label: f.label,
-                hint: f.hint,
-                description: widget.highlightFields.contains(f.key)
-                    ? l10n.fieldNeedsUpdate
-                    : null,
-                descriptionTone: StatusTone.warning,
-                controller: _controllers[f.key],
-                focusNode: _focus[f.key],
-                keyboardType: f.keyboardType,
-                inputFormatters: f.inputFormatters,
-                textCapitalization: f.textCapitalization,
-                autofillHints: f.autofillHints,
-                textInputAction: i == widget.fields.length - 1
-                    ? TextInputAction.done
-                    : TextInputAction.next,
-                onSubmitted: (_) {
-                  if (i == widget.fields.length - 1) _submit();
-                },
-                onChanged: (_) {
-                  if (widget.serverErrors.containsKey(f.key) &&
-                      _editedSinceServerErrors.add(f.key)) {
-                    setState(() {});
-                  }
-                },
-                validator: (value) => f.validator?.call((value ?? '').trim()),
-                errorText: _editedSinceServerErrors.contains(f.key)
-                    ? null
-                    : widget.serverErrors[f.key],
-              ),
+              switch (f.kind) {
+                IdentityFieldKind.date => PaymentDateField(
+                  label: f.label,
+                  value: _dates[f.key],
+                  onChanged: (v) {
+                    setState(() => _dates[f.key] = v);
+                    _markEdited(f.key);
+                  },
+                  firstDate: f.firstDate ?? DateTime(1900),
+                  lastDate: f.lastDate ?? DateUtils.dateOnly(DateTime.now()),
+                  focusNode: _focus[f.key],
+                  textInputAction: i == widget.fields.length - 1
+                      ? TextInputAction.done
+                      : TextInputAction.next,
+                  description: widget.highlightFields.contains(f.key)
+                      ? l10n.fieldNeedsUpdate
+                      : null,
+                  validator: (v) =>
+                      f.validator?.call(v == null ? '' : isoDate(v)),
+                  errorText: _editedSinceServerErrors.contains(f.key)
+                      ? null
+                      : widget.serverErrors[f.key],
+                ),
+                IdentityFieldKind.choice => PaymentSelect<String>(
+                  label: f.label,
+                  options: f.options,
+                  value: _choices[f.key],
+                  onChanged: (v) {
+                    setState(() => _choices[f.key] = v);
+                    _markEdited(f.key);
+                  },
+                  focusNode: _focus[f.key],
+                  description: widget.highlightFields.contains(f.key)
+                      ? l10n.fieldNeedsUpdate
+                      : null,
+                  validator: (v) => f.validator?.call(v ?? ''),
+                  errorText: _editedSinceServerErrors.contains(f.key)
+                      ? null
+                      : widget.serverErrors[f.key],
+                ),
+                IdentityFieldKind.text => PaymentTextField(
+                  label: f.label,
+                  hint: f.hint,
+                  description: widget.highlightFields.contains(f.key)
+                      ? l10n.fieldNeedsUpdate
+                      : null,
+                  descriptionTone: StatusTone.warning,
+                  controller: _controllers[f.key],
+                  focusNode: _focus[f.key],
+                  keyboardType: f.keyboardType,
+                  inputFormatters: f.inputFormatters,
+                  textCapitalization: f.textCapitalization,
+                  autofillHints: f.autofillHints,
+                  textInputAction: i == widget.fields.length - 1
+                      ? TextInputAction.done
+                      : TextInputAction.next,
+                  onSubmitted: (_) {
+                    if (i == widget.fields.length - 1) _submit();
+                  },
+                  onChanged: (_) {
+                    if (widget.serverErrors.containsKey(f.key) &&
+                        _editedSinceServerErrors.add(f.key)) {
+                      setState(() {});
+                    }
+                  },
+                  validator: (value) => f.validator?.call((value ?? '').trim()),
+                  errorText: _editedSinceServerErrors.contains(f.key)
+                      ? null
+                      : widget.serverErrors[f.key],
+                ),
+              },
               SizedBox(height: theme.spacing * 2),
             ],
             PaymentButton(
@@ -311,7 +376,7 @@ class DocumentUploadTile extends StatelessWidget {
       DocumentSlotPhase.empty => (
         l10n.documentEmpty,
         StatusTone.neutral,
-        Icons.upload_file,
+        Icons.upload_file_outlined,
       ),
       DocumentSlotPhase.uploading => (
         l10n.documentUploading,
@@ -505,7 +570,22 @@ class VerificationReview extends StatelessWidget {
                   label: f.label,
                   valueText: f.maskInReview
                       ? mask(values[f.key] ?? '')
-                      : (values[f.key] ?? ''),
+                      : switch (f.kind) {
+                          IdentityFieldKind.text => values[f.key] ?? '',
+                          IdentityFieldKind.date =>
+                            parseIsoDate(values[f.key] ?? '') == null
+                                ? values[f.key] ?? ''
+                                : l10n.formatDate(
+                                    parseIsoDate(values[f.key]!)!,
+                                  ),
+                          IdentityFieldKind.choice =>
+                            f.options
+                                    .where((o) => o.value == values[f.key])
+                                    .firstOrNull
+                                    ?.label ??
+                                values[f.key] ??
+                                '',
+                        },
                 ),
             ],
           ),

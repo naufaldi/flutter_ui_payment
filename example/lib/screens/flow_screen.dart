@@ -403,22 +403,34 @@ List<IdentityFieldSpec> identityFields(DemoStrings s) => [
   IdentityFieldSpec(
     key: 'dob',
     label: s.birthDate,
-    hint: s.birthDateHint,
-    keyboardType: TextInputType.datetime,
+    kind: IdentityFieldKind.date,
+    firstDate: DateTime(1900),
+    lastDate: DateUtils.dateOnly(DateTime.now()),
     validator: (v) {
       if (v.isEmpty) return s.dobRequired;
-      final m = RegExp(r'^(\d{2})-(\d{2})-(\d{4})$').firstMatch(v);
-      if (m == null) return s.dobFormat;
-      final day = int.parse(m[1]!);
-      final month = int.parse(m[2]!);
-      final year = int.parse(m[3]!);
-      final date = DateTime(year, month, day);
-      if (date.day != day || date.month != month) return s.dobFormat;
+      final date = DateTime.parse(v);
       final now = DateTime.now();
-      final adult = DateTime(now.year - 17, now.month, now.day);
-      if (date.isAfter(adult)) return s.dobAge;
+      if (date.isAfter(DateTime(now.year - 17, now.month, now.day))) {
+        return s.dobAge;
+      }
       return null;
     },
+  ),
+  IdentityFieldSpec(
+    key: 'occupation',
+    label: s.occupation,
+    kind: IdentityFieldKind.choice,
+    options: [
+      PaymentSelectOption(value: 'employee', label: s.employee),
+      PaymentSelectOption(value: 'entrepreneur', label: s.entrepreneur),
+      PaymentSelectOption(value: 'student', label: s.student),
+      PaymentSelectOption(value: 'civilServant', label: s.civilServant),
+      PaymentSelectOption(value: 'homemaker', label: s.homemaker),
+      PaymentSelectOption(value: 'freelancer', label: s.freelancer),
+      PaymentSelectOption(value: 'retired', label: s.retired),
+      PaymentSelectOption(value: 'other', label: s.other),
+    ],
+    validator: (v) => v.isEmpty ? s.occupationRequired : null,
   ),
 ];
 

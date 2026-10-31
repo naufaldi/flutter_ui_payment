@@ -59,7 +59,8 @@ class PaymentCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
-    final enabled = onChanged != null;
+    final enabled =
+        onChanged != null && !(FieldGroupScope.of(context)?.disabled ?? false);
     return MergeSemantics(
       child: Semantics(
         checked: indeterminate ? false : value,
@@ -159,7 +160,8 @@ class PaymentRadio<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final enabled = onChanged != null;
+    final enabled =
+        onChanged != null && !(FieldGroupScope.of(context)?.disabled ?? false);
     final selected = value == groupValue;
     return MergeSemantics(
       child: Semantics(
@@ -236,7 +238,8 @@ class PaymentSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
-    final enabled = onChanged != null;
+    final enabled =
+        onChanged != null && !(FieldGroupScope.of(context)?.disabled ?? false);
     return MergeSemantics(
       child: Semantics(
         toggled: value,

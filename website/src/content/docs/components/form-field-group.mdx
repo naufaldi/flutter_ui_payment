@@ -1,0 +1,41 @@
+---
+title: Form field group
+description: Related payment or identity fields under one legend.
+---
+
+import Props from '../../../components/Props.astro';
+
+Related payment or identity fields under one legend.
+
+## Usage and Stripe → kit
+
+Vertical or horizontal. Nothing else exists. Horizontal falls back below 360 dp or at large text. Disabled scope prevents re-enabling individual fields. Mixed required and optional fields add an optional mark. Group errors belong in a PaymentBanner above the group.
+
+## Which variant when
+
+Use these fields for a bounded task. Use the host validator for business rules and persistent descriptions for instructions.
+
+## States
+
+Default, focused, disabled and error. Errors include an icon, text and an edge. Selection controls support hardware keyboards.
+
+## Do and don't
+
+Keep labels visible. Avoid placing the only instruction in a hint.
+
+## Content guidelines
+
+Use short, specific labels and explain how to correct an error.
+
+## Accessibility
+
+Input text is 16 dp. Legends precede fields in reading order. Labels and errors stay in semantics when visually hidden. Pickers restore focus.
+
+## API
+
+<Props names={ ['PaymentFormFieldGroup'] } />
+
+## See also
+
+- [Text field](/components/text-field/)
+- [Localization](/foundations/localization/)

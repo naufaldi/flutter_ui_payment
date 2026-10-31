@@ -20,8 +20,16 @@ class PaymentLocalizations {
   /// DD, MM and YYYY each occur once with one repeated /, . or - separator.
   /// Override app-wide with a host `LocalizationsDelegate<PaymentLocalizations>`
   /// returning `PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY')`.
-  /// Per-field overrides arrive with date fields in Phase 4B.
+  /// Applies app-wide; there is no per-field override.
   final String dateInputPattern;
+
+  /// Persistent localized pattern; parsing uses dateInputPattern.
+  String get dateInputHint => languageCode == 'id'
+      ? dateInputPattern
+            .replaceAll('DD', 'HH')
+            .replaceAll('MM', 'BB')
+            .replaceAll('YYYY', 'TTTT')
+      : dateInputPattern;
 
   static bool _validDatePattern(String pattern) {
     final match = RegExp(

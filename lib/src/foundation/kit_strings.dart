@@ -113,6 +113,25 @@ extension KitStrings on PaymentLocalizations {
   /// Banner dismiss action.
   String get hideBanner => _k('Hide banner', 'Sembunyikan banner');
 
+  /// Invalid calendar date.
+  String get enterValidDate =>
+      _k('Enter a valid date', 'Masukkan tanggal yang valid');
+
+  /// Calendar action.
+  String get chooseDate => _k('Choose date', 'Pilih tanggal');
+
+  /// Optional field marker.
+  String get optional => _k('optional', 'opsional');
+
+  /// Remaining character count.
+  String charactersLeft(int n) => _k(
+    n == 1 ? '1 character left' : '$n characters left',
+    'Sisa $n karakter',
+  );
+
+  /// Currency switch label.
+  String get currencyLabel => _k('Currency', 'Mata uang');
+
   // Interaction
   String get close => _k('Close', 'Tutup');
   String get cancel => _k('Cancel', 'Batal');

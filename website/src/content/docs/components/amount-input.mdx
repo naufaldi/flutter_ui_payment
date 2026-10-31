@@ -89,3 +89,7 @@ Migration: AmountInput remains a deprecated typedef until 0.2.0. Rename the cons
 The tested fixture with description and minimum helper measures small 92, medium 100 and large 108 dp at 1×; helper content contributes to these totals.
 
 Host errorText overrides parse issues; hiddenElements keeps hidden subtext spoken. Errors use an icon and danger edge through the shared field treatment.
+
+## Field foundation
+
+PaymentCurrencyField.currencies is a host allowlist. Two or more currencies show a select above the amount. onCurrencyChanged reports the choice; the host passes the currency back and receives a reparsed amount after the frame.

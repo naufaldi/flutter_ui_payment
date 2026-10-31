@@ -118,3 +118,7 @@ PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY');
 Per-field date controls are **New**, planned for Phase 4B. The kit owns formatting and form validation; the host owns valid ranges, business-day rules and zones.
 
 <Props names={['PaymentLocalizations']} members />
+
+## Field foundation
+
+PaymentLocalizations.dateInputHint localizes pattern letters; dateInputPattern controls parsing app-wide. Identity date values use ISO calendar dates.

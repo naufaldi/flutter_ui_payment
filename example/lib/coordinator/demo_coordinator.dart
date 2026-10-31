@@ -30,7 +30,8 @@ const selfieSlot = 'selfie';
 const demoIdentity = {
   'name': 'Sari Wulandari (Demo)',
   'nik': '3100000000001234',
-  'dob': '17-08-1995',
+  'dob': '1995-08-17',
+  'occupation': 'employee',
 };
 
 /// The one owner of demo state. Widgets render its fields and call its

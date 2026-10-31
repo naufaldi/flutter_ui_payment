@@ -62,7 +62,45 @@ class PaymentTextField extends StatefulWidget {
     this.prefixText,
     this.prefixIcon,
     this.suffix,
-  }) : query = null,
+  }) : _multiline = false,
+       _minLines = 1,
+       _maxLines = 1,
+       _maxLength = null,
+       query = null,
+       assert(controller == null || initialValue == null);
+
+  const PaymentTextField._area({
+    required this.label,
+    this.controller,
+    this.initialValue,
+    this.focusNode,
+    this.hint,
+    this.description,
+    this.errorText,
+    this.validator,
+    this.required = false,
+    this.hiddenElements = const {},
+    this.size = PaymentSize.medium,
+    this.onChanged,
+    this.onSubmitted,
+    this.enabled = true,
+    this.readOnly = false,
+    required this._minLines,
+    required this._maxLines,
+    this._maxLength,
+  }) : descriptionTone = StatusTone.neutral,
+       type = PaymentTextFieldType.text,
+       textInputAction = null,
+       inputFormatters = const [],
+       textCapitalization = TextCapitalization.none,
+       keyboardType = null,
+       autofillHints = null,
+       reference = false,
+       prefixText = null,
+       prefixIcon = null,
+       suffix = null,
+       _multiline = true,
+       query = null,
        assert(controller == null || initialValue == null);
 
   /// Controlled local list filter, with clear and refocus.
@@ -82,7 +120,11 @@ class PaymentTextField extends StatefulWidget {
     required this.query,
     required this.onChanged,
     required this.label,
-  }) : controller = null,
+  }) : _multiline = false,
+       _minLines = 1,
+       _maxLines = 1,
+       _maxLength = null,
+       controller = null,
        initialValue = null,
        focusNode = null,
        hint = null,
@@ -106,6 +148,11 @@ class PaymentTextField extends StatefulWidget {
        prefixText = null,
        prefixIcon = null,
        suffix = null;
+
+  final bool _multiline;
+  final int _minLines;
+  final int? _maxLines;
+  final int? _maxLength;
 
   /// Always visible; floats above the value.
   final String label;
@@ -231,7 +278,13 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     final l10n = PaymentLocalizations.of(context);
-    final label = widget.label.isEmpty ? l10n.search : widget.label;
+    final enabled =
+        widget.enabled && !(FieldGroupScope.of(context)?.disabled ?? false);
+    final label = fieldLabel(
+      context,
+      widget.label.isEmpty ? l10n.search : widget.label,
+      required: widget.required,
+    );
     final correct =
         widget.type == PaymentTextFieldType.text && !widget.reference;
     final tabular =
@@ -256,7 +309,7 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
     };
     final hidden = widget.hiddenElements;
     final error = _hideHostError ? null : widget.errorText;
-    return Semantics(
+    final field = Semantics(
       label: hidden.contains(PaymentFieldPart.label) ? label : null,
       isRequired: widget.required ? true : null,
       validationResult: error != null
@@ -266,9 +319,31 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
         controller: widget.query == null ? widget.controller : _search,
         initialValue: widget.query == null ? widget.initialValue : null,
         focusNode: _focus,
-        enabled: widget.enabled,
+        enabled: enabled,
         readOnly: widget.readOnly,
-        keyboardType: widget.keyboardType ?? keyboard,
+        minLines: widget._minLines,
+        maxLines: widget._maxLines,
+        maxLength: widget._maxLength,
+        buildCounter: widget._maxLength == null
+            ? null
+            : (
+                context, {
+                required currentLength,
+                required isFocused,
+                maxLength,
+              }) => Semantics(
+                liveRegion: currentLength >= (maxLength! * .9).floor(),
+                label: l10n.charactersLeft(maxLength - currentLength),
+                child: ExcludeSemantics(
+                  child: Text(
+                    '$currentLength/$maxLength',
+                    style: type.caption.tabular,
+                  ),
+                ),
+              ),
+        keyboardType: widget._multiline
+            ? TextInputType.multiline
+            : widget.keyboardType ?? keyboard,
         autofillHints: widget.autofillHints ?? hints,
         autocorrect: correct,
         enableSuggestions: correct,
@@ -278,10 +353,14 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
         smartQuotesType: correct
             ? SmartQuotesType.enabled
             : SmartQuotesType.disabled,
-        textCapitalization: widget.textCapitalization,
+        textCapitalization: widget._multiline
+            ? TextCapitalization.sentences
+            : widget.textCapitalization,
         inputFormatters: widget.inputFormatters,
         textInputAction:
-            widget.textInputAction ??
+            (widget._multiline
+                ? TextInputAction.newline
+                : widget.textInputAction) ??
             (widget.type == PaymentTextFieldType.search
                 ? TextInputAction.search
                 : null),
@@ -291,9 +370,7 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
                     : tabular
                     ? type.input.tabular
                     : type.input)
-                .copyWith(
-                  color: widget.enabled ? theme.textPrimary : theme.disabled,
-                ),
+                .copyWith(color: enabled ? theme.textPrimary : theme.disabled),
         onChanged: (value) {
           if (widget.errorText != null && !_hideHostError) {
             setState(() => _hideHostError = true);
@@ -313,7 +390,7 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
           label: label,
           hideLabel: hidden.contains(PaymentFieldPart.label),
           hint: widget.hint,
-          enabled: widget.enabled,
+          enabled: enabled,
           contentPadding: fieldContentPadding(theme, widget.size),
           helper: widget.description == null
               ? null
@@ -343,8 +420,130 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
                     _focus.requestFocus();
                   },
                 ),
-        ),
+        ).copyWith(alignLabelWithHint: widget._multiline),
       ),
     );
+    if (!widget._multiline || widget.onSubmitted == null) return field;
+    void submit() => widget.onSubmitted!(widget.controller?.text ?? '');
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.enter, meta: true): submit,
+        const SingleActivator(LogicalKeyboardKey.enter, control: true): submit,
+      },
+      child: field,
+    );
   }
+}
+
+/// Several lines of free text. Enter inserts a newline; modified Enter submits.
+class PaymentTextArea extends StatefulWidget {
+  const PaymentTextArea({
+    super.key,
+    required this.label,
+    this.controller,
+    this.initialValue,
+    this.focusNode,
+    this.hint,
+    this.description,
+    this.errorText,
+    this.validator,
+    this.required = false,
+    this.hiddenElements = const {},
+    this.minLines = 3,
+    this.maxLines = 8,
+    this.maxLength,
+    this.size = PaymentSize.medium,
+    this.onChanged,
+    this.onSubmitted,
+    this.enabled = true,
+    this.readOnly = false,
+  }) : assert(minLines > 0),
+       assert(maxLines == null || maxLines >= minLines),
+       assert(controller == null || initialValue == null);
+
+  /// label for this field.
+  final String label;
+
+  /// controller for this field.
+  final TextEditingController? controller;
+
+  /// initialValue for this field.
+  final String? initialValue;
+
+  /// focusNode for this field.
+  final FocusNode? focusNode;
+
+  /// hint for this field.
+  final String? hint;
+
+  /// description for this field.
+  final String? description;
+
+  /// errorText for this field.
+  final String? errorText;
+
+  /// validator for this field.
+  final FormFieldValidator<String>? validator;
+
+  /// required for this field.
+  final bool required;
+
+  /// hiddenElements for this field.
+  final Set<PaymentFieldPart> hiddenElements;
+
+  /// minLines for this field.
+  final int minLines;
+
+  /// maxLines for this field.
+  final int? maxLines;
+
+  /// maxLength for this field.
+  final int? maxLength;
+
+  /// size for this field.
+  final PaymentSize size;
+
+  /// onChanged for this field.
+  final ValueChanged<String>? onChanged;
+
+  /// onSubmitted for this field.
+  final ValueChanged<String>? onSubmitted;
+
+  /// enabled for this field.
+  final bool enabled;
+
+  /// readOnly for this field.
+  final bool readOnly;
+  @override
+  State<PaymentTextArea> createState() => _PaymentTextAreaState();
+}
+
+class _PaymentTextAreaState extends State<PaymentTextArea> {
+  late final _owned = TextEditingController(text: widget.initialValue);
+  @override
+  void dispose() {
+    _owned.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => PaymentTextField._area(
+    label: widget.label,
+    controller: widget.controller ?? _owned,
+    focusNode: widget.focusNode,
+    hint: widget.hint,
+    description: widget.description,
+    errorText: widget.errorText,
+    validator: widget.validator,
+    required: widget.required,
+    hiddenElements: widget.hiddenElements,
+    minLines: widget.minLines,
+    maxLines: widget.maxLines,
+    maxLength: widget.maxLength,
+    size: widget.size,
+    onChanged: widget.onChanged,
+    onSubmitted: widget.onSubmitted,
+    enabled: widget.enabled,
+    readOnly: widget.readOnly,
+  );
 }
