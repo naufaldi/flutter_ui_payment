@@ -1,0 +1,58 @@
+---
+title: Tabs
+description: PaymentTabs are text tabs on a hairline for switching between views of the same content, such as filters of a list.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`PaymentTabs` switches between views of the same content: filters of a list, or "Card" and "Bank transfer" details. `TransactionHistory` uses it for its filters.
+
+<HostOwns>the selected index and the content shown for it.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_controls_tabs" dark="ios_catalog_controls_tabs_dark" alt="Two tabs, Card selected with an underline and Bank transfer muted, above a sentence about paying by card; below them a divider, a Paid 2 days ago row with an info icon, and a spinner beside Checking payment status." caption="PaymentTabs above its content (follows the site theme)" />
+  <Screen name="ios_kit_history" dark="ios_kit_history_dark" alt="Transaction history in Indonesian: a search field, filter tabs with Semua selected and underlined, and a list of transactions." caption="The same tabs as history filters (Indonesian)" />
+</Screens>
+
+## Usage
+
+```dart
+PaymentTabs(
+  labels: const ['Card', 'Bank transfer'],
+  selectedIndex: tab,
+  onSelected: (i) => setState(() => tab = i),
+);
+```
+
+Tabs are controlled. Keep `selectedIndex` in your state, rebuild with the new index in `onSelected`, and show the matching content under the tabs.
+
+## Selected
+
+The selected tab changes to the accent color and gains a 2 px underline. The weight stays the same so labels do not shift when chosen, and screen readers hear it as selected.
+
+## Many or long labels
+
+The row scrolls sideways instead of wrapping, so long or enlarged labels never stack into a block. The row sits on a 1 px `outline` hairline.
+
+## Content guidelines
+
+- Use short nouns, one or two words each: "All", "Pending", "Refunds".
+- Use sentence case and no end punctuation.
+- Use tabs for views of the same content. To move between screens use the [navigation shell](/components/navigation/); to make a choice that is saved, use [radios](/components/radio/).
+
+## Accessibility
+
+- Each tab is a button at least 48 × 48 dp, marked selected or not.
+- Tabs press to 0.96 like other compact controls, and keyboard focus draws the kit's [focus ring](/foundations/focus/); the row clips only at its sides so the ring stays visible.
+
+## API
+
+<Props names={['PaymentTabs']} />
+
+## See also
+
+- [Transaction history](/components/history/), which uses these tabs for its filters.
+- [Radio](/components/radio/) for a choice that is submitted with a form.

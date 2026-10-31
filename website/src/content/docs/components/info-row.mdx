@@ -1,0 +1,97 @@
+---
+title: Info row
+description: InfoRow shows a label and a value on one line, moving the value under the label only when large text needs it. MiddleEllipsisText shortens long names in the middle.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+
+`InfoRow` is a label and value pair: a fee and its amount, a reference and its number, a deadline and its countdown. Rows stack into the property lists of summaries, receipts and transaction details.
+
+<Screens>
+  <Screen name="ios_catalog_foundation" alt="Three label and amount rows under a large total: Biaya layanan Rp2,500, Nominal besar Rp1,250,000,000 and USD (2 decimals) $19.99, labels muted on the left and amounts on the right." caption="InfoRow with AmountText values; labels are hard-coded Indonesian" />
+  <Screen name="ios_refined_status_unknown_light" alt="A Payment reference row with a muted label on the left and a monospace reference att-mvv8hwwp-1 on the right." caption="A reference value in the monospace reference font" />
+</Screens>
+
+## Usage
+
+```dart
+Column(
+  children: [
+    const InfoRow(label: 'Amount', value: AmountText(Money.idr(102500))),
+    InfoRow(label: 'Merchant', valueText: record.merchant),
+    InfoRow(
+      label: 'Pay before',
+      caption: 'Your bank may close earlier',
+      value: CountdownText(expiresAt: va.expiresAt, clock: host.clock),
+    ),
+  ],
+);
+```
+
+Pass `valueText` for plain text or `value` for any widget; one of the two is required.
+
+## Emphasis
+
+`emphasis: true` sets the label in the heading style, for a "Total" row.
+
+```dart
+InfoRow(
+  label: 'Total',
+  value: AmountText(quote.total),
+  emphasis: true,
+);
+```
+
+## With a trailing action
+
+`trailing` puts an action after the value, such as a 48 dp copy button. Label and value keep the top line, and the action centers against them.
+
+```dart
+InfoRow(
+  label: 'Reference',
+  valueText: attempt.attemptId,
+  trailing: IconButton(
+    tooltip: 'Copy',
+    icon: const Icon(Icons.copy_rounded),
+    onPressed: () => copy(attempt.attemptId),
+  ),
+);
+```
+
+## Long values
+
+At normal text size the value keeps its natural width up to 60% of the row, and the label wraps in the rest. A short label never squeezes a file name or reference into breaking mid-word. `AmountText` values always keep their natural width.
+
+For names and references whose start and end both matter, use `MiddleEllipsisText` as the value. It keeps the extension plus a few characters before it, and elides the middle: `ktp_demo_ret…ake.png`.
+
+```dart
+InfoRow(
+  label: 'File',
+  value: MiddleEllipsisText(document.fileName),
+);
+```
+
+## Large text
+
+Above 1.5× text, label and value still share a line when they fit. When they do not, the value starts the next line at the left edge. Short rows stay one line, and nothing overflows.
+
+## Content guidelines
+
+- Labels are short nouns in sentence case: "Service fee", "Payment reference".
+- Keep values as the host gave them. Do not shorten references yourself; let `MiddleEllipsisText` do it, so screen readers still get the whole value.
+
+## Accessibility
+
+- Label, caption and value are merged into one screen-reader node, read in order.
+- `MiddleEllipsisText` gives screen readers the full text, not the elided one.
+
+## API
+
+<Props names={['InfoRow', 'MiddleEllipsisText']} />
+
+## See also
+
+- [Amount text](/components/amount-text/)
+- [Section](/components/section/) to group rows under a title.

@@ -61,6 +61,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
             icon: Icons.touch_app_outlined,
           ),
           PaymentNavItem(
+            id: 'controls',
+            label: t('Controls', 'Kontrol'),
+            icon: Icons.toggle_on_outlined,
+          ),
+          PaymentNavItem(
             id: 'navigation',
             label: t('Navigation', 'Navigasi'),
             icon: Icons.menu_open,
@@ -126,6 +131,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _ExpandableDemo(),
         _StatesDemo(),
       ],
+      'controls' => const [_ButtonsDemo(), _ChoicesDemo(), _TabsDemo()],
       'navigation' => const [_NavigationDemo()],
       'sheets' => const [_SheetsDemo()],
       'media' => const [_VideoDemo()],

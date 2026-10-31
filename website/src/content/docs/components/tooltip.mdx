@@ -1,0 +1,54 @@
+---
+title: Tooltip
+description: PaymentTooltip shows a short hint on long press or mouse hover, in ink with the caption type. It may only repeat or name something.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+
+`PaymentTooltip` adds a short hint to a control or a short value: the full date behind "2 days ago", the name of an icon button. It is the theme's ink color with the surface color for text, the strongest contrast the theme has.
+
+<Screens>
+  <Screen name="ios_catalog_controls_tooltip" alt="A row Paid 2 days ago with an info icon button; below it a dark tooltip reads Paid on 29 Oct 2026, 14:05." caption="Shown on hover; a long press on a touch screen shows the same" />
+</Screens>
+
+## Usage
+
+```dart
+PaymentTooltip(
+  message: 'Paid on 29 Oct 2026, 14:05',
+  child: IconButton(
+    icon: const Icon(Icons.info_outline),
+    onPressed: showPaymentDetails,
+  ),
+);
+```
+
+On touch screens the tooltip appears on long press. With a mouse it appears after hovering for 500 ms.
+
+## When not to use one
+
+A tooltip is easy to miss on a phone: nothing shows that it is there. It may only repeat or name something already on screen.
+
+- Never put a fee, a requirement, a deadline or an error only in a tooltip. Show it on the page, in an [info row](/components/info-row/) or a [notice banner](/components/notice-banner/).
+- Do not put a tooltip on something people tap for another reason and expect them to discover it.
+
+## Content guidelines
+
+- One short sentence or a label, in sentence case, without end punctuation for labels.
+- Do not repeat the visible text word for word. Add the detail it leaves out, such as the exact time.
+
+## Accessibility
+
+- The message is also the control's tooltip in the semantics tree, so screen readers read it with the control.
+- Keyboard focus does not open it. Do not rely on a tooltip for anything a keyboard user needs.
+
+## API
+
+<Props names={['PaymentTooltip']} />
+
+## See also
+
+- [Info row](/components/info-row/)
+- [Action menu](/components/action-menu/)

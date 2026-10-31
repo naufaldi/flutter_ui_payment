@@ -1,5 +1,5 @@
 ---
-title: Navigation
+title: Navigation shell
 description: A grouped sidebar on wide windows and a modal drawer below the breakpoint, with disabled-with-reason items, badges and focus return.
 ---
 
@@ -54,6 +54,18 @@ Use `NavSidebar` alone if you already have a shell.
 - Disabled items are visible with their reason but not focusable.
 - Opening the drawer moves focus into it. The scrim, Back and Escape close it, and focus returns to the menu button. Closed items are not in the focus order.
 
+## Content guidelines
+
+- Label destinations with short nouns: "Home", "History", "Limits". Use sentence case.
+- Group items under a section title only when there are enough of them to need it.
+- Keep a disabled item visible only when people can do something about it, and say what in `disabledReason`: "Verify first".
+- Use `badge` for a count that needs attention, such as unread or pending items, not for marketing.
+
 ## API
 
 <Props names={['AdaptiveNavShell', 'NavSidebar', 'PaymentNavSection', 'PaymentNavItem']} />
+
+## See also
+
+- [Tabs](/components/tabs/) to switch between views inside one page.
+- [Sheet](/components/sheets/) for a side panel over the current page.

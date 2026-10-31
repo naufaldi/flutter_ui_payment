@@ -1,6 +1,6 @@
 ---
 title: Checkout
-description: Amount input, order summary, method picker, confirmation with re-approval, host authorization, pinned action bar, merchant header, steps, balance and promo code.
+description: Order summary, method picker, confirmation with re-approval, host authorization, pinned action bar, merchant header, steps, balance and promo code.
 ---
 
 import Screen from '../../../components/Screen.astro';
@@ -92,9 +92,9 @@ AuthorizationPrompt(
 - `PaymentConfirmation` keeps `onConfirm` unreachable until the customer accepts a changed total.
 - `AuthorizationPrompt` never receives a PIN, OTP or biometric result. Your SDK runs the challenge; you set the `AuthorizationPhase`. Canceled and failed have different copy, and neither is shown as a payment.
 - `PaymentActionBar` pins the total and the main action. While `updating` is true it says "Updating total…"; disable the action yourself.
-- `AmountInput` parses strictly per locale (see [Localization](/concepts/localization/)) and reports an `AmountParseResult` on every change. Enable confirmation only for valid results.
+- For free-form amounts, such as a top-up, use [`AmountInput`](/components/amount-input/).
 - `BalanceCard` never compares the balance with the total, and `PromoCodeInput` never computes a discount. A discount reaches the price only as a new host quote with a `QuoteLineKind.discount` line.
 
 ## API
 
-<Props names={['PaymentSummary', 'PaymentMethodPicker', 'PaymentConfirmation', 'AuthorizationPrompt', 'AuthorizationPhase', 'PaymentActionBar', 'AmountInput', 'MerchantHeader', 'PaymentStepIndicator', 'BalanceCard', 'BalanceState', 'PromoCodeInput', 'PromoCodeStatus', 'PaymentQuote', 'QuoteLine', 'QuoteLineKind', 'PaymentMethod', 'PaymentMethodKind']} />
+<Props names={['PaymentSummary', 'PaymentMethodPicker', 'PaymentConfirmation', 'AuthorizationPrompt', 'AuthorizationPhase', 'PaymentActionBar', 'MerchantHeader', 'PaymentStepIndicator', 'BalanceCard', 'BalanceState', 'PromoCodeInput', 'PromoCodeStatus', 'PaymentQuote', 'QuoteLine', 'QuoteLineKind', 'PaymentMethod', 'PaymentMethodKind']} />

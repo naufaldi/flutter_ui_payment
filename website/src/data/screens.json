@@ -148,5 +148,85 @@
     "width": 640,
     "height": 1387,
     "caption": "Gallery: video player"
+  },
+  "ios_catalog_controls_buttons": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: button variants, busy and disabled, English"
+  },
+  "ios_catalog_controls_buttons_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: button variants, dark, English"
+  },
+  "ios_catalog_controls_choices": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: checkbox, radio and switch, English"
+  },
+  "ios_catalog_controls_choices_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: checkbox, radio and switch, dark, English"
+  },
+  "ios_catalog_controls_tabs": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: tabs, divider, tooltip trigger and spinner, English"
+  },
+  "ios_catalog_controls_tabs_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: tabs, divider, tooltip trigger and spinner, dark, English"
+  },
+  "ios_catalog_controls_tooltip": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: tooltip shown, English"
+  },
+  "ios_catalog_foundation": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: foundation specimen (English formatting, Indonesian row labels)"
+  },
+  "ios_catalog_actions": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: action tiles and the menu button, English"
+  },
+  "ios_catalog_menu_open": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: action menu open, English"
+  },
+  "ios_catalog_confirm_dialog": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: destructive confirmation, English"
+  },
+  "ios_catalog_snackbar": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: neutral toast, English"
+  },
+  "ios_catalog_expandable": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: expandable sections, English"
+  },
+  "ios_catalog_states": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: loading skeleton, English"
+  },
+  "ios_catalog_states_empty": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: empty state message, English"
+  },
+  "ios_catalog_states_error": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: error state message with retry, English"
   }
 }

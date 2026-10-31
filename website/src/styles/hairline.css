@@ -337,3 +337,42 @@ starlight-theme-select select {
     flex-basis: calc(50% - 0.5rem);
   }
 }
+
+/* Color token tables: a square swatch beside its hex value. The wrapper
+   scrolls sideways on narrow screens so the page itself never does. */
+.fup-swatches {
+  overflow-x: auto;
+  margin-block: 1.5rem;
+}
+.fup-swatches table {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: var(--sl-text-sm);
+}
+.fup-swatches :is(th, td) {
+  text-align: start;
+  vertical-align: top;
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--fup-rule);
+}
+.fup-swatches th {
+  font-weight: 600;
+  color: var(--fup-muted);
+}
+.fup-swatches code {
+  font-family: var(--__sl-font-mono);
+  font-size: var(--sl-text-xs);
+}
+.fup-swatch-cell {
+  white-space: nowrap;
+}
+.fup-swatch {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-inline-end: 0.5rem;
+  vertical-align: middle;
+  border: 1px solid var(--fup-rule);
+  border-radius: 4px;
+}

@@ -1,0 +1,88 @@
+---
+title: Notice banner
+description: NoticeBanner is an inline message for errors, warnings and explanations, with a toned icon, an optional message, actions and a screen-reader announcement.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`NoticeBanner` explains something on the page where it applies: a total that changed, a method that is unavailable, a status that is not confirmed yet. It stays until the situation changes.
+
+<HostOwns>when the banner appears, its words, and what its actions do.</HostOwns>
+
+<Screens>
+  <Screen name="ios_requote_light" alt="Payment review in Indonesian with a warning banner under the total: a warning icon and the title Total pembayaran berubah in amber, and a message that the total went from Rp102.500 to Rp103.500, on a light amber fill." caption="Warning banner after a re-quote (Indonesian)" />
+</Screens>
+
+## Usage
+
+```dart
+const NoticeBanner(
+  tone: StatusTone.warning,
+  title: 'Total changed',
+  message: 'Review the new total before you pay.',
+  announce: true,
+);
+```
+
+The banner fills the width it is given. The title is in the tone's foreground color; the message is body text.
+
+## Tones
+
+`tone` sets the fill, the title color and the default icon. Pass `icon` to replace the default.
+
+| Tone | Default icon | Use it for |
+| --- | --- | --- |
+| `info`, `neutral` | `Icons.info_outline` | An explanation, such as how long a transfer takes. |
+| `success` | `Icons.check_circle_outline` | A confirmed result worth calling out on the page. |
+| `warning` | `Icons.warning_amber_rounded` | Something to review before going on, such as a changed total. |
+| `danger` | `Icons.error_outline` | A failure that blocks the next step. |
+
+## With actions
+
+`actions` takes widgets shown under the text, in a row that wraps. Use one or two buttons that resolve the notice.
+
+```dart
+NoticeBanner(
+  tone: StatusTone.danger,
+  title: 'Couldn’t load your balance',
+  message: 'You can still pay with another method.',
+  actions: [
+    PaymentButton(
+      label: 'Try again',
+      variant: PaymentButtonVariant.secondary,
+      onPressed: host.reloadBalance,
+    ),
+  ],
+);
+```
+
+A `PaymentButton` fills its width, so give it a narrower parent if it should not span the banner.
+
+## Announcing
+
+`announce: true` makes the banner a live region, so screen readers read it when it appears. Use it for a banner that appears in response to something, such as a re-quote or a failed request. Leave it off for a banner that is part of the page from the start.
+
+## Content guidelines
+
+- The title says what happened in a few words: "Total changed", "Method unavailable".
+- The message says what it means for the person and what to do next, in one or two sentences.
+- Do not stack banners. Show the one that matters most.
+- Use a [toast](/components/toast/) for passing feedback that does not need to stay on screen.
+
+## Accessibility
+
+- The tone always comes with an icon and a title, so color is not the only signal.
+- The icon grows with text size up to 1.6× and stays centered on the title's first line however far the title wraps.
+- The banner is one semantics container, so its title and message are read together.
+
+## API
+
+<Props names={['NoticeBanner']} />
+
+## See also
+
+- [Status badge](/components/status-badge/) for a one-word status.
+- [State message](/components/state-message/) for a list that is empty or failed to load.

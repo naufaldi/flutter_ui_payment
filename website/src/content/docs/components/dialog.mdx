@@ -1,0 +1,63 @@
+---
+title: Dialog
+description: showPaymentConfirmDialog asks before an action that cannot be undone and resolves to true only when the person confirms.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`showPaymentConfirmDialog` asks a yes-or-no question before an action that cannot be undone, and returns a `Future<bool>`.
+
+<HostOwns>the action itself, which you run only after the dialog resolves to true.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_confirm_dialog" alt="A dialog titled Sign out of all devices? with a muted explanation, a text Cancel button and a red filled Sign out button." caption="Destructive confirmation" />
+  <Screen name="ios_kit_sheet_confirm" alt="A destructive confirmation in Indonesian, Minta pembatalan?, over a pending-payment sheet: the safe choice Tetap bayar and a red Kirim permintaan action." caption="Over a sheet, with a custom cancel label (Indonesian)" />
+</Screens>
+
+## Usage
+
+```dart
+final ok = await showPaymentConfirmDialog(
+  context,
+  title: 'Sign out of all devices?',
+  message: 'Payments already sent are not affected.',
+  confirmLabel: 'Sign out',
+  destructive: true,
+);
+if (ok) await host.signOutEverywhere();
+```
+
+## Result
+
+The future resolves to `true` only when the person presses the confirm button. Cancel, tapping the scrim, Back and Escape all resolve to `false`.
+
+## Default
+
+The confirm button is filled with the accent and the cancel button is a quiet text button. The confirm button receives focus first.
+
+## Destructive
+
+`destructive: true` fills the confirm button in the danger tone, the same colors as a [destructive button](/components/button/#destructive), and moves first focus to the cancel button, so Enter never confirms by accident.
+
+## Custom cancel label
+
+The cancel button says "Cancel" by default. Pass `cancelLabel` when the safe choice reads better as an action of its own, such as "Keep paying".
+
+## Content guidelines
+
+- Ask the question in the title: "Remove this card?", "Sign out of all devices?".
+- Use the message for the consequence, and for what is not affected: "Payments already sent are not affected."
+- Make `confirmLabel` repeat the action: "Sign out", "Remove card". Never "Yes" or "OK".
+- Do not use a dialog to cancel a payment by itself. A cancel request goes to your host, and the payment stays pending until your host decides; see [Sheet](/components/sheets/).
+
+## API
+
+<Props names={['showPaymentConfirmDialog']} />
+
+## See also
+
+- [Button](/components/button/#destructive) for the destructive variant that usually opens this dialog.
+- [Toast](/components/toast/) for feedback after the action ran.

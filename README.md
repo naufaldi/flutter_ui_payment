@@ -145,6 +145,7 @@ KYC is optional and composes the same way: `VerificationIntro`, `IdentityForm`, 
 | Module | Components |
 | --- | --- |
 | Foundation | `PaymentTheme`, `PaymentLocalizations` (+ `KitStrings`), `PaymentMotion`, `Money`, `MoneyFormat`, `AmountText`, `InfoRow`, `MiddleEllipsisText`, `PaymentButton`, `StatusBadge`, `NoticeBanner`, `PaymentSection`, `PrivacyMask`, `CountdownText`, `HostError` |
+| Controls | `PaymentCheckbox`, `PaymentRadio`, `PaymentSwitch`, `PaymentTabs`, `PaymentTooltip`, `PaymentSpinner`, `PaymentDivider` |
 | Interaction | `ActionTile`, `ActionMenu`, `showPaymentConfirmDialog`, `showPaymentSnackBar`, `ExpandableSection`, `LoadingSkeleton`, `StateMessage` |
 | Navigation | `AdaptiveNavShell`, `NavSidebar`, `PaymentNavItem`, `PaymentNavSection` |
 | Sheets | `PaymentSheet`, `PaymentSheetHeader`, `showPaymentSheet`, `showPaymentSideSheet` |

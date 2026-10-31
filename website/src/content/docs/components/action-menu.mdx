@@ -1,0 +1,75 @@
+---
+title: Action menu
+description: ActionMenu is an overflow menu behind an icon button, built on MenuAnchor, with disabled and destructive entries.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`ActionMenu` keeps secondary actions behind one icon button, usually in a [section](/components/section/) header or an app bar.
+
+<HostOwns>the entries and what each one does.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_menu_open" alt="An open overflow menu over the Account section with three entries: Copy account ID, a greyed-out Export history, and Sign out everywhere in red." caption="Open menu with a disabled and a destructive entry" />
+</Screens>
+
+## Usage
+
+```dart
+PaymentSection(
+  title: 'Account',
+  trailing: ActionMenu(entries: [
+    ActionMenuEntry(
+      label: 'Copy account ID',
+      icon: Icons.copy_rounded,
+      onSelected: copyId,
+    ),
+    const ActionMenuEntry(
+      label: 'Export history',
+      icon: Icons.download_outlined,
+      onSelected: null, // shown disabled
+    ),
+    ActionMenuEntry(
+      label: 'Sign out everywhere',
+      icon: Icons.logout,
+      destructive: true,
+      onSelected: confirmSignOut,
+    ),
+  ]),
+  child: accountRows,
+);
+```
+
+The button shows `Icons.more_vert` by default; pass `icon` for another glyph. Its tooltip, which screen readers also hear, defaults to "More actions"; pass `tooltip` to name the menu.
+
+## Disabled entries
+
+An entry with `onSelected: null` is shown disabled. Keep it in the menu when people would otherwise look for it; leave it out when it never applies to them.
+
+## Destructive entries
+
+`destructive: true` draws the entry's icon and label in the danger tone. Put destructive entries last and confirm them with a [dialog](/components/dialog/).
+
+## Behavior
+
+- Built on `MenuAnchor`: arrow keys move between entries, Escape closes the menu and focus returns to the button.
+- The menu opens instantly. A menu used many times a day should not make people wait for it.
+- Entries are at least 48 dp tall.
+
+## Content guidelines
+
+- Start each label with a verb: "Copy account ID", "Export history".
+- Use sentence case and no end punctuation.
+- Keep a menu to a handful of entries. Actions people need on every visit belong on the screen, not in a menu.
+
+## API
+
+<Props names={['ActionMenu', 'ActionMenuEntry']} />
+
+## See also
+
+- [Action tile](/components/action-tile/) for actions that deserve their own row.
+- [Dialog](/components/dialog/) to confirm a destructive entry.

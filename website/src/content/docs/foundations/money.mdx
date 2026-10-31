@@ -1,0 +1,76 @@
+---
+title: Money
+description: Money is an integer number of minor units plus a currency code. MoneyFormat formats per locale, speaks amounts for screen readers and parses strictly.
+---
+
+import Props from '../../../components/Props.astro';
+
+Every amount in the kit is a `Money`: an integer number of minor units and a currency code. There is no floating point anywhere between your API and the screen, so `0.1 + 0.2` problems cannot reach a total.
+
+## Money
+
+```dart
+const price = Money.idr(100000); // Rp100.000 (IDR has no minor digits)
+const fee = Money(250, 'USD'); // $2.50
+final total = price + const Money.idr(2500);
+```
+
+- `Money(minorUnits, currency)` takes minor units: cents for USD, whole rupiah for IDR. `Money.idr` is a shortcut, and `Money.zero(currency)` an empty amount.
+- `+`, `-`, unary `-` and the comparisons `<`, `>`, `<=`, `>=` work between amounts of one currency. Mixing currencies throws instead of producing a wrong number.
+- `isZero` and `isNegative` answer the two questions the kit asks most.
+
+## Formatting
+
+`MoneyFormat` formats and parses for one language. Only the separators differ: `id` groups with `.` and uses `,` for decimals, `en` does the opposite. Get the active one from `PaymentLocalizations.of(context).moneyFormat`.
+
+```dart
+final format = PaymentLocalizations.of(context).moneyFormat;
+format.format(const Money.idr(102500)); // "Rp102.500" in id, "Rp102,500" in en
+format.format(const Money(1999, 'USD'), withSymbol: false); // "19.99" in en
+format.spoken(const Money.idr(102500)); // "102500 IDR", for screen readers
+```
+
+Negative amounts start with a minus sign (−), not a hyphen. In widgets, use [`AmountText`](/components/amount-text/), which formats, uses tabular figures, gives screen readers the spoken form and scales down instead of clipping a digit.
+
+## Currencies
+
+`CurrencySpec` holds a currency's symbol and number of minor digits. The kit knows IDR (`Rp`, 0 digits), USD (`$`, 2) and SGD (`S$`, 2). Register others before you format them; an unknown code falls back to the code as its symbol and two minor digits.
+
+```dart
+CurrencySpec.register(
+  const CurrencySpec(code: 'MYR', symbol: 'RM', minorDigits: 2),
+);
+```
+
+## Strict parsing
+
+`MoneyFormat.parse(text, currency)` accepts a currency symbol or code, spaces and correctly placed group separators. Input that could be read two ways is rejected as `AmountIssue.ambiguous` instead of being guessed. For example, `100,000` for IDR under `id` is rejected: it could be one hundred thousand or one hundred with a decimal part.
+
+```dart
+final result = format.parse(input, 'IDR').withinLimits(
+  minimum: const Money.idr(10000),
+  maximum: const Money.idr(5000000),
+);
+if (result.isValid) {
+  submit(result.money!);
+} else {
+  showError(result.issue!); // empty, invalidFormat, ambiguous, negative, zero, …
+}
+```
+
+An `AmountParseResult` has exactly one of `money` or `issue`. [`AmountInput`](/components/amount-input/) does all of this for you and shows localized errors after the field loses focus or on submit.
+
+## Content guidelines
+
+- Store and send minor units. Convert to `Money` once, where your API response is parsed.
+- Show the currency symbol on every amount a person compares or pays. Drop it only in a column where the heading already names the currency.
+- Never round a total for display. If a fee makes the number long, let `AmountText` scale it down.
+
+## API
+
+<Props names={['Money', 'MoneyFormat', 'CurrencySpec', 'AmountParseResult', 'AmountIssue']} />
+
+## See also
+
+- [Amount text](/components/amount-text/) and [Amount input](/components/amount-input/).
+- [Localization](/foundations/localization/) for separators, dates and strings.

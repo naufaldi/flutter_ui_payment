@@ -1,0 +1,62 @@
+---
+title: Typography
+description: The kit's text roles (seven sizes, two weights), tabular figures for money, monospace for references, and how text behaves at large sizes.
+---
+
+Kit widgets set text through a small set of roles: seven sizes, two weights, with explicit line height and no extra letter spacing. The font is always yours. The package bundles no fonts, and every role copies the family from your `textTheme.bodyMedium`.
+
+## Roles
+
+| Role | Size / line | Weight | Used for |
+| --- | --- | --- | --- |
+| `display` | 32 / 36 | `amountWeight` (600) | The one display amount on a screen, such as the total. Tracking −0.32. |
+| `amountLarge` | 20 / 28 | `amountWeight` (600) | Action-bar total, balance, a virtual account number, an entered amount. |
+| `title` | 17 / 24 | 600 | Sheet, dialog and app-bar titles. |
+| `heading` | 15 / 20 | 600 | Section and status titles, the Total row, button labels. |
+| `body` | 15 / 22 | 400 | Paragraphs. |
+| `label` | 15 / 20 | 400 | Single-line row text: labels, values, list titles. |
+| `caption` | 13 / 18 | 400 | Supporting lines under a title, in `textSecondary`. |
+| `tag` | 12 / 16 | 600 | Badges and tags. The tone sets the color. |
+| `input` | 16 / 24 | 400 | Text fields. |
+
+The roles are internal (`PaymentType` is not exported), so your own screens use your text theme. To match the kit, use the same sizes for the same jobs.
+
+## What you can change
+
+You brand text through your font and three `PaymentTheme` tokens:
+
+- Your app font, from `ThemeData.textTheme`. Every role uses it.
+- `amountWeight` sets the weight of the display and large amounts. The example's Lumen brand uses `FontWeight.w700`.
+- `amountFontFamily` sets a separate family for amounts.
+- `referenceFontFamily` is the font for things people copy or compare digit by digit, such as virtual account numbers, transaction IDs and promo codes. It defaults to the platform monospace (Menlo, then `monospace` and Courier).
+
+```dart
+PaymentTheme.fromColorScheme(scheme).copyWith(
+  amountWeight: FontWeight.w700,
+  referenceFontFamily: 'JetBrains Mono',
+);
+```
+
+## Numbers
+
+- Amounts use tabular figures, so digits line up in columns and do not shift as a countdown or a total changes.
+- References use `referenceFontFamily` with tabular figures, so `0` and `O`, or `1` and `l`, are easy to tell apart when someone types them into a banking app.
+- Only totals are heavy. Row amounts use the regular `label` weight.
+
+## Large text
+
+- Above 1.5× text scale, rows let the value wrap under the label when the two do not fit on one line, and paragraphs tighten from a line height of 22/15 to 1.3.
+- Amounts of 20 px and up stop growing at 1.6×, as platform large titles do. An amount that still does not fit scales down instead of being clipped: a hidden digit is worse than a smaller one.
+- Icons beside text grow with it, up to 1.6×.
+
+## Content guidelines
+
+- Use sentence case for titles, labels and buttons.
+- Keep one display amount per screen. If two numbers compete, the screen has two jobs.
+- Put the most important words first. At large text, the end of a line is what wraps.
+
+## See also
+
+- [Amount text](/components/amount-text/) for formatted money.
+- [Color](/foundations/color/) for text colors.
+- [Accessibility](/concepts/accessibility/) for large-text checks.

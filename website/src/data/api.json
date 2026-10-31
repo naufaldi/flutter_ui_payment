@@ -1,4 +1,325 @@
 {
+  "PaymentCheckbox": {
+    "kind": "class",
+    "file": "lib/src/controls/controls.dart",
+    "doc": "A checkbox with its label, for consent and opt-in choices.\n\nThe whole row is one 48 dp target and one screen-reader node (\"Save this\ncard, checkbox, checked\"). Controlled: the host owns `value` and gets\n`onChanged`. A null `onChanged` disables the row; pass `disabledReason`\nso people know why.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentCheckbox",
+        "factory": false,
+        "params": [
+          {
+            "name": "value",
+            "type": "bool",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": ""
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<bool>?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onChanged",
+            "doc": ""
+          },
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "What checking the box agrees to, as a full phrase: \"Save this card for\nnext time\", not \"Save\"."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "A muted line under the label."
+          },
+          {
+            "name": "disabledReason",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "disabledReason",
+            "doc": "Replaces `description` while the row is disabled."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "PaymentRadio": {
+    "kind": "class",
+    "file": "lib/src/controls/controls.dart",
+    "doc": "One option of a single choice. Give every option in the group the same\n`groupValue` and `onChanged`; the option whose `value` equals\n`groupValue` is selected.\n\nSelection shows as a filled ring, not only a color: the selected mark is\na thick accent ring, the others a thin muted one. Use radios for two to\nabout five options that all fit on screen.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentRadio",
+        "factory": false,
+        "params": [
+          {
+            "name": "value",
+            "type": "T",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": ""
+          },
+          {
+            "name": "groupValue",
+            "type": "T?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "groupValue",
+            "doc": ""
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<T>?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onChanged",
+            "doc": "Called with `value` when this option is chosen. Null disables it."
+          },
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": ""
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": ""
+          },
+          {
+            "name": "disabledReason",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "disabledReason",
+            "doc": "Replaces `description` while the option is disabled."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "PaymentSwitch": {
+    "kind": "class",
+    "file": "lib/src/controls/controls.dart",
+    "doc": "An on/off setting that takes effect at once, such as \"Notify me about\nrefunds\". For a choice that is only applied after a button press, use a\n`PaymentCheckbox` instead.\n\nThe switch sits at the end of the row; the whole row is the target. The\nthumb moves and shows a check when on, so the state is never carried by\ncolor alone.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentSwitch",
+        "factory": false,
+        "params": [
+          {
+            "name": "value",
+            "type": "bool",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": ""
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<bool>?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onChanged",
+            "doc": ""
+          },
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": ""
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": ""
+          },
+          {
+            "name": "disabledReason",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "disabledReason",
+            "doc": "Replaces `description` while the row is disabled."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "PaymentTabs": {
+    "kind": "class",
+    "file": "lib/src/controls/controls.dart",
+    "doc": "Text tabs on a hairline, for switching between views of the same\ncontent: filters of a list, or \"Card\" and \"Bank transfer\" details.\n\nControlled: the host owns `selectedIndex` and shows the matching content.\nThe selected tab changes color and gains an underline; the weight stays\nthe same so labels do not shift. The row scrolls sideways rather than\nwrapping, so long or enlarged labels never stack.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentTabs",
+        "factory": false,
+        "params": [
+          {
+            "name": "labels",
+            "type": "List<String>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "labels",
+            "doc": "Short nouns, one or two words each."
+          },
+          {
+            "name": "selectedIndex",
+            "type": "int",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "selectedIndex",
+            "doc": ""
+          },
+          {
+            "name": "onSelected",
+            "type": "ValueChanged<int>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onSelected",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "PaymentTooltip": {
+    "kind": "class",
+    "file": "lib/src/controls/controls.dart",
+    "doc": "A short hint shown on long press or hover, in ink on the page with the\ncaption type. Keyboard focus does not open it; screen readers read\n`message` as the child's tooltip.\n\nA tooltip is easy to miss on touch screens, so it may only repeat or name\nsomething: an icon button's label, a full date behind \"2d ago\". Never put\na fee, a requirement or an error only in a tooltip.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentTooltip",
+        "factory": false,
+        "params": [
+          {
+            "name": "message",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "message",
+            "doc": "One short sentence or a label. Also what screen readers hear."
+          },
+          {
+            "name": "child",
+            "type": "Widget",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "child",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
   "HostErrorCategory": {
     "kind": "enum",
     "file": "lib/src/foundation/host_error.dart",
@@ -1670,19 +1991,23 @@
   "PaymentButtonVariant": {
     "kind": "enum",
     "file": "lib/src/foundation/primitives.dart",
-    "doc": "",
+    "doc": "How much weight a `PaymentButton` carries. Use one `primary` per screen.",
     "values": [
       {
         "name": "primary",
-        "doc": ""
+        "doc": "The one main action: filled with the accent."
       },
       {
         "name": "secondary",
-        "doc": ""
+        "doc": "An alternative to the main action: outlined."
       },
       {
         "name": "quiet",
-        "doc": ""
+        "doc": "A low-emphasis action such as \"Cancel\" or \"Not now\": text only."
+      },
+      {
+        "name": "destructive",
+        "doc": "An action that cannot be undone, such as removing a saved card: filled\nin the danger tone. The label must say what happens, so color is never\nthe only signal. Usually the confirm step after a\n`showPaymentConfirmDialog`, never the pay button."
       }
     ]
   },
@@ -1761,6 +2086,86 @@
             "isSuper": false,
             "fieldName": "icon",
             "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "PaymentSpinner": {
+    "kind": "class",
+    "file": "lib/src/foundation/primitives.dart",
+    "doc": "Indeterminate progress for a wait with no known length: a thin ring, or a\nstill hourglass when the platform or host asks for reduced motion.\n\nPrefer a `LoadingSkeleton` where content is loading into a known shape,\nand `PaymentButton`'s `busy` state for an action that is running; both\nalready show progress. Screen readers hear `semanticLabel`, \"Loading\" by\ndefault.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentSpinner",
+        "factory": false,
+        "params": [
+          {
+            "name": "size",
+            "type": "double",
+            "required": false,
+            "default": "20",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": "Width and height. The ring's stroke is 12% of it."
+          },
+          {
+            "name": "color",
+            "type": "Color?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "color",
+            "doc": "Defaults to `PaymentTheme.textSecondary`: waiting is not a brand moment."
+          },
+          {
+            "name": "semanticLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "semanticLabel",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "PaymentDivider": {
+    "kind": "class",
+    "file": "lib/src/foundation/primitives.dart",
+    "doc": "A 1 px hairline in `PaymentTheme.outline` that separates rows or groups.\nDecorative: screen readers skip it.\n\nBetween rows of a list use the default `height` of 1, as\n`ActionTileGroup` does. Between sections use `spacing * 3` so the rule\nsits in the middle of a section gap.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentDivider",
+        "factory": false,
+        "params": [
+          {
+            "name": "height",
+            "type": "double",
+            "required": false,
+            "default": "1",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "height",
+            "doc": "Total height, with the rule centered in it."
           }
         ],
         "doc": ""
@@ -5713,7 +6118,7 @@
   "TransactionDetail": {
     "kind": "class",
     "file": "lib/src/payment/transactions.dart",
-    "doc": "Details of one transaction. The original payment and any refund are\nshown as separate sections; host actions go in `actions`.",
+    "doc": "Clips horizontally to the box but leaves 4 px above and below, the room a\nfocus ring needs.\nDetails of one transaction. The original payment and any refund are\nshown as separate sections; host actions go in `actions`.",
     "extends": "StatelessWidget",
     "constructors": [
       {

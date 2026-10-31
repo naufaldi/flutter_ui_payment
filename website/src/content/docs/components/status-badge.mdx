@@ -1,0 +1,64 @@
+---
+title: Status badge
+description: StatusBadge is a small tag that names a status with an icon and a word. Color only supports the label.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`StatusBadge` names the state of one thing, such as a pending payment or a refund, with an icon, a short label and a tone. The label carries the meaning; the tone only supports it.
+
+<HostOwns>the status itself and the words for it. The badge renders what you pass and decides nothing.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_foundation" alt="Gallery foundation specimen: a large amount Rp102,500, three label and amount rows, five status badges labelled neutral, info, success, warning and danger, each with a ring icon in its tone, and two buttons." caption="One badge per tone; row labels are hard-coded Indonesian" />
+</Screens>
+
+## Usage
+
+```dart
+const StatusBadge(
+  tone: StatusTone.warning,
+  icon: Icons.schedule,
+  label: 'Pending',
+);
+```
+
+The badge sizes to its content. Put badges in a `Wrap` when there can be more than one, as `TransactionListItem` does for an unsettled payment and its refund.
+
+## Tones
+
+`StatusTone` has five values. Each one picks a foreground and container pair from [`PaymentTheme`](/foundations/color/).
+
+| Tone | Use it for |
+| --- | --- |
+| `neutral` | A state with no judgement: draft, canceled by the customer, unavailable. |
+| `info` | Something to know that needs no action. |
+| `success` | A settled, confirmed result your host reported. |
+| `warning` | Waiting, or a result not known yet. |
+| `danger` | Failed, rejected or expired. |
+
+Never pick `success` from what the UI saw (an upload finished, a button was pressed). Use it only when your host's snapshot says so.
+
+## Content guidelines
+
+- One or two words in sentence case: "Pending", "Refunded", "Not confirmed".
+- Pick an icon that agrees with the word. The icon and the label are what make the status readable without color.
+- Do not put amounts or dates in a badge. Use an [info row](/components/info-row/).
+
+## Accessibility
+
+- Icon, label and tone are three signals, so the status never depends on color alone.
+- Tone foregrounds are contrast-checked: at least 5.8:1 on white in light mode and 7.6:1 on `#131417` in dark mode.
+- The badge is text: screen readers read its label.
+
+## API
+
+<Props names={['StatusBadge', 'StatusTone']} />
+
+## See also
+
+- [Status header](/components/status-header/) for the status at the top of a screen.
+- [Notice banner](/components/notice-banner/) when the status needs an explanation.

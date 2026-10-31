@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../controls/controls.dart';
 import '../foundation/focus_ring.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/money.dart';
@@ -217,63 +218,6 @@ class TransactionListItem extends StatelessWidget {
   }
 }
 
-/// One filter in the history's tab row. Selection changes the color and the
-/// underline only, never the weight, so labels do not shift when chosen.
-class _FilterTab extends StatelessWidget {
-  const _FilterTab({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = PaymentTheme.of(context);
-    return MergeSemantics(
-      child: Semantics(
-        selected: selected,
-        button: true,
-        child: PaymentFocusRing(
-          radius: BorderRadius.zero,
-          child: PaymentPressScale(
-            child: InkWell(
-              focusColor: Colors.transparent,
-              onTap: onTap,
-              child: Container(
-                constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
-                padding: EdgeInsets.symmetric(horizontal: theme.spacing * 1.5),
-                alignment: Alignment.center,
-                // The unselected underline is transparent, not absent, so the
-                // tab keeps its height when selected.
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: selected
-                          ? theme.accent
-                          : theme.accent.withValues(alpha: 0),
-                      width: 2,
-                    ),
-                  ),
-                ),
-                child: Text(
-                  label,
-                  style: PaymentType.of(context).label.copyWith(
-                    color: selected ? theme.accent : theme.textSecondary,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 /// Search, filters and a list of transactions with loading, empty, "no
 /// matches" and error states.
 ///
@@ -414,33 +358,12 @@ class _TransactionHistoryState extends State<TransactionHistory> {
           ),
         ),
         SizedBox(height: theme.spacing),
-        // Text tabs on a hairline; the row scrolls sideways rather than
-        // wrapping, so long or enlarged labels never stack into a block.
-        DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: theme.outline)),
-          ),
-          // The row clips at its sides only, so a focused tab's ring, which
-          // sits 4 px outside it, shows above and below; the 4 px inset keeps
-          // the first and last rings inside the sides.
-          child: ClipRect(
-            clipper: const _SidesClipper(),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              clipBehavior: Clip.none,
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Row(
-                children: [
-                  for (final f in widget.filters)
-                    _FilterTab(
-                      label: l10n.transactionFilterLabel(f),
-                      selected: widget.filter == f,
-                      onTap: () => widget.onFilterChanged(f),
-                    ),
-                ],
-              ),
-            ),
-          ),
+        PaymentTabs(
+          labels: [
+            for (final f in widget.filters) l10n.transactionFilterLabel(f),
+          ],
+          selectedIndex: widget.filters.indexOf(widget.filter),
+          onSelected: (i) => widget.onFilterChanged(widget.filters[i]),
         ),
         Semantics(liveRegion: true, container: true, child: content),
       ],
@@ -450,16 +373,6 @@ class _TransactionHistoryState extends State<TransactionHistory> {
 
 /// Clips horizontally to the box but leaves 4 px above and below, the room a
 /// focus ring needs.
-class _SidesClipper extends CustomClipper<Rect> {
-  const _SidesClipper();
-
-  @override
-  Rect getClip(Size size) => Rect.fromLTRB(0, -4, size.width, size.height + 4);
-
-  @override
-  bool shouldReclip(_SidesClipper oldClipper) => false;
-}
-
 /// Details of one transaction. The original payment and any refund are
 /// shown as separate sections; host actions go in [actions].
 class TransactionDetail extends StatelessWidget {

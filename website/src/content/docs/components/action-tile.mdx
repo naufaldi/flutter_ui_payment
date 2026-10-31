@@ -1,0 +1,81 @@
+---
+title: Action tile
+description: ActionTile is a flat row that opens something or runs an action. ActionTileGroup separates rows with hairlines.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`ActionTile` is a tappable row for settings, menus and action lists: an outlined icon, a title and a muted detail line, with no box around it.
+
+<HostOwns>what each tap does, and the reason a row is disabled.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_actions" alt="An Account section with a more-actions button in its header and three rows separated by hairlines: Transaction history with Last 90 days and a chevron, a disabled Change PIN with the reason Managed by your bank app, and a red Sign out of all devices." caption="ActionTileGroup with normal, disabled and destructive rows" />
+</Screens>
+
+## Usage
+
+```dart
+ActionTileGroup(children: [
+  ActionTile(
+    icon: Icons.receipt_long_outlined,
+    title: 'Transaction history',
+    subtitle: 'Last 90 days',
+    onTap: openHistory,
+  ),
+  const ActionTile(
+    icon: Icons.pin_outlined,
+    title: 'Change PIN',
+    disabledReason: 'Managed by your bank app',
+  ),
+]);
+```
+
+Put consecutive tiles in an `ActionTileGroup`. It draws a 1 px `outline` hairline between rows and no box around them, so the group sits on the page like a [section](/components/section/) and nests inside your own cards without stacking borders.
+
+## Default
+
+With `onTap`, the row shows a chevron at the end (mirrored in right-to-left languages). Pass `trailing` to put your own widget there instead, such as a value or a 48 dp button; it keeps its own size.
+
+## Disabled
+
+A row without `onTap` is disabled. It stays visible with a muted title, but it is not focusable. Pass `disabledReason`; it replaces the subtitle so people know why they cannot use the row.
+
+## Destructive
+
+`destructive: true` draws the icon and title in the danger tone. Color is never the only signal: the title must already say what happens, such as "Sign out of all devices". Confirm the action with a [dialog](/components/dialog/) before you run it.
+
+```dart
+ActionTile(
+  icon: Icons.logout,
+  title: 'Sign out of all devices',
+  destructive: true,
+  onTap: confirmSignOut,
+);
+```
+
+## Content guidelines
+
+- Titles name the destination or the action: "Transaction history", "Change PIN". Use sentence case and no end punctuation.
+- Keep the subtitle to one short line of extra context, such as "Last 90 days".
+- Write disabled reasons as the cause or the way out: "Managed by your bank app", "Verify your identity first".
+- Use an icon on every row of a group or on none, so titles line up.
+
+## Accessibility
+
+- Rows are at least 48 dp tall and announce as buttons; disabled rows announce as disabled.
+- The icon and chevron center on the title's first line, so they stay beside the title when it wraps at large text. The icon grows with text up to 1.6×.
+- Keyboard focus draws the kit's [focus ring](/foundations/focus/).
+
+## API
+
+<Props names={['ActionTile', 'ActionTileGroup']} />
+
+## See also
+
+- [Action menu](/components/action-menu/) for actions that do not need a row each.
+- [Button](/components/button/) for the main action of a screen.
+- [Switch](/components/switch/) for settings rows that turn something on or off.

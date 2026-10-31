@@ -1,0 +1,129 @@
+---
+title: Button
+description: PaymentButton runs one action at a time. Primary, secondary, quiet and destructive variants, a busy state, and a disabled state.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`PaymentButton` starts an action. When `onPressed` returns a `Future`, the button shows a busy state and ignores more taps until it completes, so a double tap sends one callback.
+
+<HostOwns>what the action does, and deduplicating it on your server. The busy lock is interaction protection, not idempotency.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_controls_buttons" dark="ios_catalog_controls_buttons_dark" alt="Six full-width buttons: a filled primary Pay Rp102.500, an outlined Change method, a text-only Not now, a red filled Remove card with a delete icon, a primary button showing a spinner, and a disabled grey Pay button." caption="Variants, busy and disabled (follows the site theme)" />
+</Screens>
+
+## Usage
+
+```dart
+PaymentButton(
+  label: 'Pay Rp102.500',
+  busyLabel: 'Sending payment',
+  // Returning the Future keeps the button busy until it completes.
+  onPressed: () => host.submitPayment(attempt.attemptId),
+);
+```
+
+Buttons fill the width they are given and are at least 48 dp tall. Put one under another with 8 dp between them, or give one a narrower parent, as `StateMessage` does.
+
+## Primary
+
+The one main action on a screen: pay, continue, confirm. Filled with `accent`. Use one primary per screen.
+
+```dart
+PaymentButton(label: 'Continue', onPressed: next);
+```
+
+## Secondary
+
+An alternative to the main action, such as "Change method". Outlined with the 3:1 `border` color.
+
+```dart
+PaymentButton(
+  label: 'Change method',
+  variant: PaymentButtonVariant.secondary,
+  onPressed: openMethods,
+);
+```
+
+## Quiet
+
+A low-emphasis action such as "Not now" or "Cancel": text only.
+
+```dart
+PaymentButton(
+  label: 'Not now',
+  variant: PaymentButtonVariant.quiet,
+  onPressed: dismiss,
+);
+```
+
+## Destructive
+
+An action that cannot be undone, such as removing a saved card. Filled in the danger tone with the surface color for the label, the same colors as the confirm button of a destructive [dialog](/components/dialog/). The label must say what happens, so color is never the only signal. Ask first with `showPaymentConfirmDialog` where the action matters, and never use it for the pay button.
+
+```dart
+PaymentButton(
+  label: 'Remove card',
+  icon: Icons.delete_outline,
+  variant: PaymentButtonVariant.destructive,
+  onPressed: () async {
+    final ok = await showPaymentConfirmDialog(
+      context,
+      title: 'Remove this card?',
+      message: 'You can add it again later.',
+      confirmLabel: 'Remove card',
+      destructive: true,
+    );
+    if (ok) await host.removeCard(card.id);
+  },
+);
+```
+
+## Busy
+
+A button is busy while the `Future` from `onPressed` runs, or while you pass `busy: true` for an action you run elsewhere, such as a submit your coordinator owns. The label keeps its space so the layout does not jump, a [spinner](/components/spinner/) takes its place, and screen readers hear `busyLabel` (default "Working…"). Under reduced motion the spinner is a still hourglass.
+
+```dart
+PaymentButton(
+  label: 'Pay Rp102.500',
+  busy: coordinator.submitting,
+  busyLabel: 'Sending payment',
+  onPressed: coordinator.submit,
+);
+```
+
+## Disabled
+
+Pass `onPressed: null`. Every variant uses the `disabled` label color; the filled and outlined variants also turn `surfaceMuted`. Tell people why nearby, for example with a caption under the button, because a disabled button cannot explain itself.
+
+## With an icon
+
+`icon` puts a 20 px icon before the label. Use it when the icon adds meaning (delete, download), not as decoration on every button.
+
+## Content guidelines
+
+- Start with a verb and say what happens: "Pay Rp102.500", "Remove card", "Check status". Avoid "OK" and "Submit".
+- Put the amount in the pay button, formatted with `MoneyFormat`, so the button and the summary agree.
+- Use sentence case and no end punctuation.
+- Keep labels short enough for one line at normal text size. At large text they wrap rather than truncate.
+- A destructive label names the thing it destroys: "Remove card", not "Remove".
+
+## Accessibility
+
+- 48 dp minimum height. Keyboard focus draws the kit's [focus ring](/foundations/focus/), never the brand color.
+- Full-width buttons do not scale on press; Material's pressed layer is the feedback.
+- While busy, the button is a live region that announces `busyLabel`.
+
+## API
+
+<Props names={['PaymentButton', 'PaymentButtonVariant']} />
+
+## See also
+
+- [Dialog](/components/dialog/) to confirm before a destructive action.
+- [Action tile](/components/action-tile/) for rows that open something.
+- [Payment attempt and status](/concepts/payment-attempt/) for why the lock does not replace server-side deduplication.

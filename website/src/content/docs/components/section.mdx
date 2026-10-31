@@ -1,0 +1,57 @@
+---
+title: Section
+description: PaymentSection is a titled group of content. Sections are flat on the page, separated by space, with an optional action in the header.
+---
+
+import Props from '../../../components/Props.astro';
+
+`PaymentSection` groups related content under a title. Sections are flat: they sit on the page surface and are separated by space, never boxed, so they nest inside your own cards and sheets without stacking borders.
+
+## Usage
+
+```dart
+PaymentSection(
+  title: 'Payment details',
+  child: Column(
+    children: [
+      const InfoRow(label: 'Amount', value: AmountText(Money.idr(102500))),
+      InfoRow(label: 'Reference', valueText: attempt.attemptId),
+    ],
+  ),
+);
+```
+
+## With a header action
+
+`trailing` puts an action beside the title, such as "Edit". Keeping a section's action in its header saves a row and ties the action to the content.
+
+```dart
+PaymentSection(
+  title: 'Identity',
+  trailing: TextButton(onPressed: editIdentity, child: const Text('Edit')),
+  child: identityRows,
+);
+```
+
+## Without a title
+
+`title` is optional. Without it the section is only vertical padding around its child, which keeps spacing consistent with titled sections.
+
+## Content guidelines
+
+- Titles are short nouns in sentence case: "Order summary", "Pay with".
+- Use a section per topic. If a section needs a sub-section, consider an [expandable section](/components/expandable-section/) or a separate screen.
+- Use a [divider](/components/divider/) between sections only when space alone does not separate them.
+
+## Accessibility
+
+- The title is marked as a header, so screen-reader users can jump between sections.
+
+## API
+
+<Props names={['PaymentSection']} />
+
+## See also
+
+- [Info row](/components/info-row/)
+- [Spacing and radius](/foundations/spacing/)

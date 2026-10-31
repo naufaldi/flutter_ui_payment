@@ -1,0 +1,10 @@
+# Pages that moved when the docs became a per-component catalog (Oct 2026).
+# Forced (!) because Astro also writes a meta-refresh page at each old path.
+/components/foundation     /components/                301!
+/components/foundation/    /components/                301!
+/components/interaction    /components/                301!
+/components/interaction/   /components/                301!
+/concepts/motion           /foundations/motion/        301!
+/concepts/motion/          /foundations/motion/        301!
+/concepts/localization     /foundations/localization/  301!
+/concepts/localization/    /foundations/localization/  301!

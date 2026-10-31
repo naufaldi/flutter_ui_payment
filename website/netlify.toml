@@ -28,3 +28,29 @@
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Moved pages. Mirrors public/_redirects, which is what applies to zip
+# deploys (the toml file is not read from an uploaded dist).
+[[redirects]]
+  from = "/components/foundation/*"
+  to = "/components/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/interaction/*"
+  to = "/components/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/concepts/motion/*"
+  to = "/foundations/motion/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/concepts/localization/*"
+  to = "/foundations/localization/"
+  status = 301
+  force = true

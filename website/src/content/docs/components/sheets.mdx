@@ -1,5 +1,5 @@
 ---
-title: Sheets
+title: Sheet
 description: Bottom sheets and end-edge side panels with a header, scrolling body and fixed footer. Close only closes; cancelling a payment is a separate host request.
 ---
 
@@ -49,6 +49,19 @@ await showPaymentSheet<void>(
 - Pass `isDismissible: false` / `barrierDismissible: false` while a host call that must finish is running.
 - Sheets open in 280 ms and close in 200 ms on the drawer curve; zero under reduced motion.
 
+## Content guidelines
+
+- Title the sheet with what it shows or asks: "Pending payment", "Filter transactions".
+- Use `subtitle` for one line of context, such as a reference or a date.
+- Put the actions in the footer, the main one last. Keep the footer to one or two buttons.
+- Never label the close button or any footer action in a way that suggests closing cancels a payment. Write the cancel request as its own action, such as "Request cancellation".
+
 ## API
 
 <Props names={['PaymentSheet', 'PaymentSheetHeader', 'showPaymentSheet', 'showPaymentSideSheet']} />
+
+## See also
+
+- [Dialog](/components/dialog/) to confirm a destructive footer action.
+- [Navigation shell](/components/navigation/) for the app's own sidebar and drawer.
+- [Transaction history](/components/history/), which opens transaction details in a sheet.
