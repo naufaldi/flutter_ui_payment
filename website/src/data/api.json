@@ -2379,6 +2379,7 @@
       "promoApplied",
       "merchantVerified",
       "orderRef",
+      "search",
       "transactionsTitle",
       "searchTransactions",
       "clearSearch",
@@ -9456,7 +9457,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "currency",
-            "doc": ""
+            "doc": "Currency code for parsing and formatting."
           },
           {
             "name": "onChanged",
@@ -9467,7 +9468,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onChanged",
-            "doc": ""
+            "doc": "Reports every parse result."
           },
           {
             "name": "minimum",
@@ -9478,7 +9479,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "minimum",
-            "doc": ""
+            "doc": "Optional lower bound."
           },
           {
             "name": "maximum",
@@ -9489,7 +9490,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "maximum",
-            "doc": ""
+            "doc": "Optional upper bound."
           },
           {
             "name": "initialText",
@@ -9500,7 +9501,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "initialText",
-            "doc": ""
+            "doc": "Initial formatted input."
           },
           {
             "name": "label",
@@ -9511,7 +9512,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": ""
+            "doc": "Persistent field label."
           },
           {
             "name": "showErrors",
@@ -9522,7 +9523,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "showErrors",
-            "doc": ""
+            "doc": "Whether parse errors are visible before interaction."
           },
           {
             "name": "description",
@@ -9556,6 +9557,28 @@
             "isSuper": false,
             "fieldName": "padFractionDigits",
             "doc": "Pads missing minor digits on blur/submit without reporting a new value."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "Host error shown instead of a parse issue."
+          },
+          {
+            "name": "hiddenElements",
+            "type": "Set<PaymentFieldPart>",
+            "required": false,
+            "default": "const {}",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hiddenElements",
+            "doc": "Hidden field parts remain spoken."
           }
         ],
         "doc": ""
@@ -9586,53 +9609,67 @@
         "doc": "Pads missing minor digits on blur/submit without reporting a new value."
       },
       {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Host error shown instead of a parse issue."
+      },
+      {
+        "name": "hiddenElements",
+        "kind": "field",
+        "static": false,
+        "type": "Set<PaymentFieldPart>",
+        "doc": "Hidden field parts remain spoken."
+      },
+      {
         "name": "currency",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "Currency code for parsing and formatting."
       },
       {
         "name": "onChanged",
         "kind": "field",
         "static": false,
         "type": "ValueChanged<AmountParseResult>",
-        "doc": ""
+        "doc": "Reports every parse result."
       },
       {
         "name": "minimum",
         "kind": "field",
         "static": false,
         "type": "Money?",
-        "doc": ""
+        "doc": "Optional lower bound."
       },
       {
         "name": "maximum",
         "kind": "field",
         "static": false,
         "type": "Money?",
-        "doc": ""
+        "doc": "Optional upper bound."
       },
       {
         "name": "initialText",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Initial formatted input."
       },
       {
         "name": "label",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Persistent field label."
       },
       {
         "name": "showErrors",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": ""
+        "doc": "Whether parse errors are visible before interaction."
       }
     ],
     "copyWith": null
@@ -12464,7 +12501,7 @@
     "kind": "class",
     "file": "lib/src/payment/transactions.dart",
     "doc": "Search, filters and a list of transactions with loading, empty, \"no\nmatches\" and error states.\n\nFully controlled: the host owns `query`, `filter` and `records` (local or\nfrom its API) and gets `onQueryChanged` and `onFilterChanged`. Records are\nlaid out in a column for pages of up to a few dozen; for longer lists,\nbuild `TransactionListItem`s in a `ListView.builder`.",
-    "extends": "StatefulWidget",
+    "extends": "StatelessWidget",
     "constructors": [
       {
         "name": "TransactionHistory",
@@ -15425,6 +15462,623 @@
         "static": false,
         "type": "VerificationAction?",
         "doc": ""
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentTextFieldType": {
+    "kind": "enum",
+    "file": "lib/src/controls/text_field.dart",
+    "doc": "Input traits; sensitive input belongs to the host.",
+    "values": [
+      {
+        "name": "text",
+        "doc": "Free text."
+      },
+      {
+        "name": "number",
+        "doc": "Numeric quantity."
+      },
+      {
+        "name": "tel",
+        "doc": "Telephone number."
+      },
+      {
+        "name": "url",
+        "doc": "Web address."
+      },
+      {
+        "name": "email",
+        "doc": "Email address."
+      },
+      {
+        "name": "search",
+        "doc": "Local list filter."
+      }
+    ]
+  },
+  "PaymentTextField": {
+    "kind": "class",
+    "file": "lib/src/controls/text_field.dart",
+    "doc": "Labeled single-line input integrated with Form validation.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentTextField",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Always visible; floats above the value."
+          },
+          {
+            "name": "controller",
+            "type": "TextEditingController?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "controller",
+            "doc": "Host-owned editing controller."
+          },
+          {
+            "name": "initialValue",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "initialValue",
+            "doc": "Starting value when no controller is supplied."
+          },
+          {
+            "name": "focusNode",
+            "type": "FocusNode?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "focusNode",
+            "doc": "Host focus node; otherwise owned internally."
+          },
+          {
+            "name": "hint",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hint",
+            "doc": "Supplemental hint; never the only instruction."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "Caption beneath the field."
+          },
+          {
+            "name": "descriptionTone",
+            "type": "StatusTone",
+            "required": false,
+            "default": "StatusTone.neutral",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "descriptionTone",
+            "doc": "Optional semantic tone for the description."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "Host error; hides on edit. Pass null between identical attempts."
+          },
+          {
+            "name": "validator",
+            "type": "FormFieldValidator<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "validator",
+            "doc": "Form validation; errors include an icon."
+          },
+          {
+            "name": "required",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "required",
+            "doc": "Spoken as required; enforced by the host validator."
+          },
+          {
+            "name": "hiddenElements",
+            "type": "Set<PaymentFieldPart>",
+            "required": false,
+            "default": "const {}",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hiddenElements",
+            "doc": "Hidden parts remain in semantics."
+          },
+          {
+            "name": "type",
+            "type": "PaymentTextFieldType",
+            "required": false,
+            "default": "PaymentTextFieldType.text",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "type",
+            "doc": "Keyboard, autofill and correction traits."
+          },
+          {
+            "name": "size",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": "Padding size; input text always remains 16 px."
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onChanged",
+            "doc": "Reports edits immediately; remote debounce belongs to the host."
+          },
+          {
+            "name": "onSubmitted",
+            "type": "ValueChanged<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onSubmitted",
+            "doc": "Reports keyboard submission."
+          },
+          {
+            "name": "textInputAction",
+            "type": "TextInputAction?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "textInputAction",
+            "doc": "Keyboard action override."
+          },
+          {
+            "name": "inputFormatters",
+            "type": "List<TextInputFormatter>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "inputFormatters",
+            "doc": "Host input constraints."
+          },
+          {
+            "name": "textCapitalization",
+            "type": "TextCapitalization",
+            "required": false,
+            "default": "TextCapitalization.none",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "textCapitalization",
+            "doc": "Capitalization trait."
+          },
+          {
+            "name": "keyboardType",
+            "type": "TextInputType?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "keyboardType",
+            "doc": "Overrides the keyboard chosen by type."
+          },
+          {
+            "name": "autofillHints",
+            "type": "Iterable<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "autofillHints",
+            "doc": "Overrides autofill traits."
+          },
+          {
+            "name": "enabled",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "enabled",
+            "doc": "False disables editing and changes the edge and text."
+          },
+          {
+            "name": "readOnly",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "readOnly",
+            "doc": "Prevents edits while retaining the default appearance."
+          },
+          {
+            "name": "reference",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "reference",
+            "doc": "Uses reference typography and disables correction."
+          },
+          {
+            "name": "prefixText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "prefixText",
+            "doc": "Text before the value."
+          },
+          {
+            "name": "prefixIcon",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "prefixIcon",
+            "doc": "Decorative leading content."
+          },
+          {
+            "name": "suffix",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "suffix",
+            "doc": "Trailing content."
+          }
+        ],
+        "doc": "Creates a field. The host owns validation timing."
+      },
+      {
+        "name": "PaymentTextField.search",
+        "factory": true,
+        "params": [
+          {
+            "name": "key",
+            "type": "Key?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "query",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<String>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "label",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          }
+        ],
+        "doc": "Controlled local list filter, with clear and refocus."
+      },
+      {
+        "name": "PaymentTextField._search",
+        "factory": false,
+        "params": [
+          {
+            "name": "query",
+            "type": "String?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "query",
+            "doc": "Controlled query used by the search constructor."
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<String>?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onChanged",
+            "doc": "Reports edits immediately; remote debounce belongs to the host."
+          },
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Always visible; floats above the value."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Always visible; floats above the value."
+      },
+      {
+        "name": "controller",
+        "kind": "field",
+        "static": false,
+        "type": "TextEditingController?",
+        "doc": "Host-owned editing controller."
+      },
+      {
+        "name": "initialValue",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Starting value when no controller is supplied."
+      },
+      {
+        "name": "focusNode",
+        "kind": "field",
+        "static": false,
+        "type": "FocusNode?",
+        "doc": "Host focus node; otherwise owned internally."
+      },
+      {
+        "name": "hint",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Supplemental hint; never the only instruction."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Caption beneath the field."
+      },
+      {
+        "name": "descriptionTone",
+        "kind": "field",
+        "static": false,
+        "type": "StatusTone",
+        "doc": "Optional semantic tone for the description."
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Host error; hides on edit. Pass null between identical attempts."
+      },
+      {
+        "name": "validator",
+        "kind": "field",
+        "static": false,
+        "type": "FormFieldValidator<String>?",
+        "doc": "Form validation; errors include an icon."
+      },
+      {
+        "name": "required",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Spoken as required; enforced by the host validator."
+      },
+      {
+        "name": "hiddenElements",
+        "kind": "field",
+        "static": false,
+        "type": "Set<PaymentFieldPart>",
+        "doc": "Hidden parts remain in semantics."
+      },
+      {
+        "name": "type",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentTextFieldType",
+        "doc": "Keyboard, autofill and correction traits."
+      },
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSize",
+        "doc": "Padding size; input text always remains 16 px."
+      },
+      {
+        "name": "onChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<String>?",
+        "doc": "Reports edits immediately; remote debounce belongs to the host."
+      },
+      {
+        "name": "onSubmitted",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<String>?",
+        "doc": "Reports keyboard submission."
+      },
+      {
+        "name": "textInputAction",
+        "kind": "field",
+        "static": false,
+        "type": "TextInputAction?",
+        "doc": "Keyboard action override."
+      },
+      {
+        "name": "inputFormatters",
+        "kind": "field",
+        "static": false,
+        "type": "List<TextInputFormatter>",
+        "doc": "Host input constraints."
+      },
+      {
+        "name": "textCapitalization",
+        "kind": "field",
+        "static": false,
+        "type": "TextCapitalization",
+        "doc": "Capitalization trait."
+      },
+      {
+        "name": "keyboardType",
+        "kind": "field",
+        "static": false,
+        "type": "TextInputType?",
+        "doc": "Overrides the keyboard chosen by type."
+      },
+      {
+        "name": "autofillHints",
+        "kind": "field",
+        "static": false,
+        "type": "Iterable<String>?",
+        "doc": "Overrides autofill traits."
+      },
+      {
+        "name": "enabled",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "False disables editing and changes the edge and text."
+      },
+      {
+        "name": "readOnly",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Prevents edits while retaining the default appearance."
+      },
+      {
+        "name": "reference",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Uses reference typography and disables correction."
+      },
+      {
+        "name": "prefixText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Text before the value."
+      },
+      {
+        "name": "prefixIcon",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Decorative leading content."
+      },
+      {
+        "name": "suffix",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Trailing content."
+      },
+      {
+        "name": "query",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Controlled query used by the search constructor."
       }
     ],
     "copyWith": null

@@ -163,6 +163,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _SelectionSpecimen('PaymentRadio'),
         _SelectionSpecimen('PaymentSwitch'),
         _CurrencyFieldSpecimen(),
+        _TextFieldSpecimen(),
       ],
       'navigation' => const [_NavigationDemo()],
       'sheets' => const [_SheetsDemo()],

@@ -2029,3 +2029,9 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 ### Phase 2E implementation notes
 
 Series use solid, long-dash (8/4), and dash-dot (8/3/2/3) encoding. MeterSegment.measure supports percentage and number readings. Inspectable sparklines use press-and-hold tooltips. The headline region derives from the amount line, caption line and section gap.
+
+### Phase 3A implementation notes
+
+Text fields retain 16 px input text. Width is deferred to field groups. keyboardType overrides type traits for custom host keyboards. Sizes use H−8 / H / H+8 padding rather than the earlier 40/48/56 sketch.
+
+Measured text-field heights: 48 / 56 / 64 dp (small / medium / large).

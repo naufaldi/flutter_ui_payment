@@ -94,7 +94,8 @@ export default defineConfig({
                 { label: 'Checkbox', slug: 'components/checkbox' },
                 { label: 'Radio', slug: 'components/radio' },
                 { label: 'Switch', slug: 'components/switch' },
-                { label: 'Currency field', slug: 'components/amount-input' },
+                { label: 'Text field', slug: 'components/text-field' },
+            { label: 'Currency field', slug: 'components/amount-input' },
               ],
             },
             {

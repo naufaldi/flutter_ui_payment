@@ -1,6 +1,6 @@
+import '../foundation/field_decoration.dart';
 import 'dart:ui' show SemanticsRole, SemanticsValidationResult;
 import '../foundation/payment_tokens.dart';
-import '../foundation/payment_icons.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import '../foundation/payment_motion.dart';
@@ -366,45 +366,14 @@ class _ControlRow extends StatelessWidget {
                   else
                     Text(detail!, style: type.caption),
                 if (errorText != null)
-                  if (hidden.contains(PaymentFieldPart.error))
-                    Semantics(label: errorText, child: const SizedBox.shrink())
-                  else
-                    Padding(
-                      padding: EdgeInsets.only(top: theme.spacing * 0.5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.textScalerOf(
-                              context,
-                            ).clamp(maxScaleFactor: 1.6).scale(14),
-                            height:
-                                MediaQuery.textScalerOf(
-                                  context,
-                                ).scale(type.caption.fontSize!) *
-                                type.caption.height!,
-                            child: Center(
-                              child: Icon(
-                                PaymentIcons.danger,
-                                size: MediaQuery.textScalerOf(
-                                  context,
-                                ).clamp(maxScaleFactor: 1.6).scale(14),
-                                color: theme.danger.foreground,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: theme.spacing * 0.5),
-                          Expanded(
-                            child: Text(
-                              errorText!,
-                              style: type.caption.copyWith(
-                                color: theme.danger.foreground,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                  Padding(
+                    padding: EdgeInsets.only(top: theme.spacing * .5),
+                    child: FieldMessage(
+                      errorText!,
+                      tone: StatusTone.danger,
+                      hidden: hidden.contains(PaymentFieldPart.error),
                     ),
+                  ),
               ],
             ),
           ),

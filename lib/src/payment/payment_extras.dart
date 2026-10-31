@@ -1,3 +1,4 @@
+import '../controls/text_field.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -563,35 +564,19 @@ class _PromoCodeInputState extends State<PromoCodeInput> {
         : widget.status == PromoCodeStatus.rejected
         ? widget.message
         : null;
-    final field = TextField(
+    final field = PaymentTextField(
+      label: l10n.promoCodeLabel,
       controller: _controller,
       enabled: !checking,
+      reference: true,
       textCapitalization: TextCapitalization.characters,
-      autocorrect: false,
-      enableSuggestions: false,
       textInputAction: TextInputAction.done,
       onSubmitted: (_) => _apply(),
-      // 16 px or larger so iOS never zooms the page on focus; mono so the
-      // code reads character by character.
-      style: type.input.reference(theme),
-      decoration: InputDecoration(
-        labelText: l10n.promoCodeLabel,
-        labelStyle: type.label.copyWith(color: theme.textSecondary),
-        errorText: error,
-        errorStyle: type.caption.copyWith(color: theme.danger.foreground),
-        errorMaxLines: 3,
-        helperText: checking ? l10n.checkingCode : null,
-        helperStyle: type.caption,
-        border: OutlineInputBorder(borderRadius: theme.controlBorderRadius),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: theme.controlBorderRadius,
-          borderSide: BorderSide(color: theme.border),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: theme.controlBorderRadius,
-          borderSide: BorderSide(color: theme.accent, width: 2),
-        ),
-      ),
+      onChanged: (_) {
+        if (_emptyTried) setState(() => _emptyTried = false);
+      },
+      errorText: error,
+      description: checking ? l10n.checkingCode : null,
     );
     final button = PaymentButton(
       label: l10n.apply,

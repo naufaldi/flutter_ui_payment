@@ -1,0 +1,61 @@
+---
+title: Text field
+description: Persistent labels, validation messages and controlled local search.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+
+`PaymentTextField` is a labeled single-line input. The host owns values, validation and submission.
+
+<Screens><Screen name="ios_kit_history" alt="Transaction history search" /></Screens>
+
+## Usage
+
+```dart
+PaymentTextField(label: 'Full name', onChanged: (value) {});
+PaymentTextField.search(query: 'kopi', onChanged: (query) {});
+Form(child: PaymentTextField(label: 'Email',
+  type: PaymentTextFieldType.email,
+  validator: (value) => value!.contains('@') ? null : 'Include @'));
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| label | label |
+| placeholder | hint |
+| description | description, descriptionTone |
+| error / invalid | errorText / derived from validation |
+| required / hiddenElements | required / hiddenElements |
+| size / type | size / type, with no sensitive input types |
+| defaultValue | initialValue |
+| value / onChange | controller / onChanged |
+| disabled / readOnly | enabled / readOnly |
+| spellCheck / autoComplete | type traits / autofillHints |
+
+Autofocus is omitted because touch keyboards should be requested deliberately through a focus node. Host forms own names, ordering and keyboard handlers. Use input formatters for length constraints and validators for meaning. Width is deferred until field groups define it. `keyboardType` preserves custom host keyboards, including dates.
+
+## Which variant
+
+Use a general field for names and addresses, reference typography for identifiers, a currency field for money parsing, and `.search` for immediate local filtering. Remote search debounce belongs to the host.
+
+Variants: `type` × `size`, `reference`, `.search`. Nothing else exists.
+
+## States
+
+Default uses a border edge; focus uses a 2 px accent edge. Errors show an icon, message and danger edge, 2 px when focused. Disabled fields use disabled text and edge. Read-only retains default styling. Host errors hide after edits and return when the host passes a new error; pass null between identical attempts. Form validation timing belongs to the enclosing Form.
+
+## Content and accessibility
+
+Keep a persistent label. Never put the only instruction in `hint`. Explain how to fix an error. Every size uses 16 px input text; padding varies without shrinking text. Hidden labels, descriptions and errors remain spoken. Required is semantic; the host must enforce it. Clearing search reports an empty query and refocuses the field.
+
+<Props names={['PaymentTextField', 'PaymentTextFieldType', 'PaymentSize', 'PaymentFieldPart']} />
+
+## See also
+
+- [Currency field](/components/amount-input/)
+- [Transaction history](/components/history/)
+- [Verification](/components/verification/)

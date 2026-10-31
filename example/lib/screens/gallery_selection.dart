@@ -212,3 +212,49 @@ class _CurrencyFieldSpecimen extends StatelessWidget {
     ),
   );
 }
+
+class _TextFieldSpecimen extends StatefulWidget {
+  const _TextFieldSpecimen();
+  @override
+  State<_TextFieldSpecimen> createState() => _TextFieldSpecimenState();
+}
+
+class _TextFieldSpecimenState extends State<_TextFieldSpecimen> {
+  String query = 'kopi';
+  @override
+  Widget build(BuildContext context) => _Entry(
+    name: 'PaymentTextField · variants',
+    child: Column(
+      children: [
+        for (final size in PaymentSize.values)
+          PaymentTextField(label: 'Full name', size: size),
+        const PaymentTextField(
+          label: 'Email for receipt',
+          type: PaymentTextFieldType.email,
+          description: 'We send the receipt here.',
+        ),
+        const PaymentTextField(
+          label: 'Phone number',
+          type: PaymentTextFieldType.tel,
+          required: true,
+          errorText: 'Enter a phone number',
+        ),
+        const PaymentTextField(
+          label: 'Promo code',
+          reference: true,
+          initialValue: 'HEMAT10',
+        ),
+        const PaymentTextField(
+          label: 'Order ID',
+          readOnly: true,
+          initialValue: 'ORD-2026-0042',
+        ),
+        const PaymentTextField(label: 'Company name', enabled: false),
+        PaymentTextField.search(
+          query: query,
+          onChanged: (v) => setState(() => query = v),
+        ),
+      ],
+    ),
+  );
+}

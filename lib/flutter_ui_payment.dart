@@ -37,3 +37,5 @@ export 'src/verification/capture_models.dart';
 export 'src/verification/capture_widgets.dart';
 export 'src/verification/verification_models.dart';
 export 'src/verification/verification_widgets.dart';
+
+export 'src/controls/text_field.dart';

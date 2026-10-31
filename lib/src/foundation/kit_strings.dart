@@ -188,6 +188,9 @@ extension KitStrings on PaymentLocalizations {
       _k('Verified merchant', 'Merchant terverifikasi');
   String orderRef(String ref) => _k('Order $ref', 'Pesanan $ref');
 
+  /// Default search field label.
+  String get search => _k('Search', 'Cari');
+
   // Transactions
   String get transactionsTitle => _k('Transactions', 'Transaksi');
   String get searchTransactions => _k('Search transactions', 'Cari transaksi');
