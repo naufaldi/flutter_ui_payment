@@ -7,6 +7,15 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
 
 ## 0.1.0 (unreleased)
 
+Design system Phase 2C (31 Oct 2026):
+
+* Add PaymentBadge with urgent and optional tone icons, PaymentBanner, showPaymentToast and PaymentToastController, and tooltip placement/type/delay.
+* StatusBadge, NoticeBanner and showPaymentSnackBar remain deprecated until 0.2.0.
+* Breaking: PaymentSpinner.size takes PaymentSize.small, medium or large instead of a number. Add a cancellable delay.
+* Warning and busy use outlined glyphs; banner gap is 12 dp; badge icons scale up to 1.6×. Toasts and tooltips use flat ink tokens.
+* Toasts with actions now time out after at least 6 seconds, scaled by reading length. Pending and accessible actions persist. Content disposal cancels the timer.
+* Tooltips open immediately on keyboard focus and dismiss on Escape. Banner actions assert hug secondary or quiet buttons in debug.
+
 Design system Phase 2B (31 Oct 2026):
 
 * PaymentButton adds size, width and autofocus. Small draws at 36 dp inside a 48 dp hit box; medium stays 48 and large draws at 56. Hug width has a 112 dp minimum; labels wrap. Desktop/web density changes medium from 40 to 48 dp.

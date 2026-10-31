@@ -75,7 +75,7 @@ class FlowScreen extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                     children: [
                       if (c.notice == 'support') ...[
-                        NoticeBanner(
+                        PaymentBanner(
                           tone: StatusTone.info,
                           title: s.supportOpened,
                           announce: true,
@@ -262,22 +262,24 @@ class _Overview extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        NoticeBanner(
+        PaymentBanner(
           tone: StatusTone.info,
           icon: Icons.science_outlined,
           title: s.simulated,
         ),
         const SizedBox(height: 16),
         if (c.hasUnresolvedAttempt || c.attempt != null) ...[
-          NoticeBanner(
+          PaymentBanner(
             tone: StatusTone.warning,
             icon: Icons.receipt_long_outlined,
             title: s.unresolvedTitle,
             message: s.unresolvedMessage,
             actions: [
-              FilledButton.tonal(
+              PaymentButton(
                 onPressed: c.resumeAttempt,
-                child: Text(s.openPayment),
+                label: s.openPayment,
+                variant: PaymentButtonVariant.secondary,
+                width: PaymentWidth.hug,
               ),
             ],
           ),
@@ -323,7 +325,7 @@ class _Overview extends StatelessWidget {
               InfoRow(
                 label: s.identityStatus,
                 value: c.config.kycRequired
-                    ? StatusBadge(
+                    ? PaymentBadge(
                         tone: c.kyc.status == VerificationStatus.verified
                             ? StatusTone.success
                             : StatusTone.neutral,
@@ -607,16 +609,18 @@ class _Checkout extends StatelessWidget {
           ),
         ],
         if (c.quoteError != null) ...[
-          NoticeBanner(
+          PaymentBanner(
             tone: StatusTone.danger,
             announce: true,
             title: s.quoteFailedTitle,
             message: c.quoteError!.safeMessage,
             actions: [
-              FilledButton.tonal(
+              PaymentButton(
                 key: const Key('retry-quote'),
                 onPressed: c.quoting ? null : c.loadQuote,
-                child: Text(s.retry),
+                label: s.retry,
+                variant: PaymentButtonVariant.secondary,
+                width: PaymentWidth.hug,
               ),
             ],
           ),
@@ -674,7 +678,7 @@ class _Confirm extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (error != null) ...[
-          NoticeBanner(
+          PaymentBanner(
             tone: StatusTone.warning,
             announce: true,
             icon: Icons.lock_clock_outlined,
@@ -765,7 +769,7 @@ class _Payment extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (c.cancelRequested && !(status?.isTerminal ?? false)) ...[
-          NoticeBanner(
+          PaymentBanner(
             tone: StatusTone.info,
             announce: true,
             title: s.cancelRequestedTitle,
@@ -840,16 +844,18 @@ class _Receipt extends StatelessWidget {
         ),
         if (c.receiptError != null) ...[
           const SizedBox(height: 8),
-          NoticeBanner(
+          PaymentBanner(
             tone: StatusTone.warning,
             announce: true,
             title: s.receiptLoadFailedTitle,
             message: s.receiptLoadFailedMessage,
             actions: [
-              FilledButton.tonal(
+              PaymentButton(
                 key: const Key('retry-receipt'),
                 onPressed: c.loadingReceipt ? null : c.loadReceipt,
-                child: Text(s.retry),
+                label: s.retry,
+                variant: PaymentButtonVariant.secondary,
+                width: PaymentWidth.hug,
               ),
             ],
           ),

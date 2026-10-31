@@ -106,13 +106,16 @@ void main() {
       final spinner = tester.widget<PaymentSpinner>(
         find.byType(PaymentSpinner),
       );
-      expect(spinner.size, 32);
+      expect(spinner.size, PaymentSize.large);
       expect(spinner.color, Colors.white);
       expect(find.bySemanticsLabel('Loading'), findsNothing);
       expect(find.text('Loading video'), findsOneWidget);
       if (reduced) {
         expect(find.byType(CircularProgressIndicator), findsNothing);
-        expect(tester.widget<Icon>(find.byIcon(Icons.hourglass_top)).size, 32);
+        expect(
+          tester.widget<Icon>(find.byIcon(Icons.hourglass_top_outlined)).size,
+          32,
+        );
       } else {
         expect(
           tester

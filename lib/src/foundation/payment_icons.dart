@@ -8,7 +8,7 @@ class PaymentIcons {
   static const IconData success = Icons.check_circle_outline;
 
   /// Warning requiring attention.
-  static const IconData warning = Icons.warning_amber_rounded;
+  static const IconData warning = Icons.warning_amber_outlined;
 
   /// Error requiring recovery.
   static const IconData danger = Icons.error_outline;
@@ -38,7 +38,7 @@ class PaymentIcons {
   static const IconData noMatches = Icons.search_off;
 
   /// Work in progress.
-  static const IconData busy = Icons.hourglass_top;
+  static const IconData busy = Icons.hourglass_top_outlined;
 
   /// Content hidden.
   static const IconData hidden = Icons.lock_outline;

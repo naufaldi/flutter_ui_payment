@@ -374,7 +374,7 @@ class BalanceCard extends StatelessWidget {
             ),
           if (state == BalanceState.insufficient) ...[
             SizedBox(height: theme.spacing),
-            NoticeBanner(
+            PaymentBanner(
               tone: StatusTone.warning,
               icon: Icons.account_balance_wallet_outlined,
               title: l10n.balanceInsufficient,

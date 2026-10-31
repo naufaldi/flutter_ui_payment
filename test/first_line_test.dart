@@ -4,7 +4,7 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 
 const oldIcons = {
   StatusTone.success: Icons.check_circle_outline,
-  StatusTone.warning: Icons.warning_amber_rounded,
+  StatusTone.warning: Icons.warning_amber_outlined,
   StatusTone.danger: Icons.error_outline,
   StatusTone.info: Icons.info_outline,
   StatusTone.neutral: Icons.info_outline,
@@ -36,8 +36,8 @@ void main() {
           Icons.search_off,
         ),
         (
-          const NoticeBanner(tone: StatusTone.warning, title: 'Title'),
-          Icons.warning_amber_rounded,
+          const PaymentBanner(tone: StatusTone.warning, title: 'Title'),
+          Icons.warning_amber_outlined,
         ),
         (
           const StatusHeader(
@@ -129,18 +129,15 @@ void main() {
   for (final entry in oldIcons.entries) {
     testWidgets('banner and toast preserve ${entry.key} glyph', (tester) async {
       await tester.pumpWidget(
-        host(NoticeBanner(tone: entry.key, title: 'Notice'), 1),
+        host(PaymentBanner(tone: entry.key, title: 'Notice'), 1),
       );
       expect(find.byIcon(entry.value), findsOneWidget);
       await tester.pumpWidget(
         host(
           Builder(
             builder: (context) => TextButton(
-              onPressed: () => showPaymentSnackBar(
-                context,
-                message: 'Saved',
-                tone: entry.key,
-              ),
+              onPressed: () =>
+                  showPaymentToast(context, message: 'Saved', tone: entry.key),
               child: const Text('Show'),
             ),
           ),

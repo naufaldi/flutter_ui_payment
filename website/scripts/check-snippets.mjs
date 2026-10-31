@@ -52,11 +52,12 @@ function topLevelNamedArgs(args) {
 
 function paramsFor(callee) {
   const [base, named] = callee.split('.');
-  const e = api[base];
+  const e = api[base]?.kind === 'typedef' ? api[api[base].aliasOf] : api[base];
   if (!e) return null;
   if (e.kind === 'function') return e.params;
   if (named === 'copyWith') return (e.copyWith ?? []).map((name) => ({ name }));
-  const ctorName = named ? `${base}.${named}` : base;
+  const target = api[base].aliasOf ?? base;
+  const ctorName = named ? `${target}.${named}` : target;
   const ctor = (e.constructors ?? []).find((c) => c.name === ctorName);
   if (!ctor) return undefined;
   return ctor.params;
@@ -86,7 +87,7 @@ for (const file of walk(join(root, 'src/content/docs'))) {
       // Static methods and getters (for example `PaymentLocalizations.of`) are not constructors.
       if (params === undefined) {
         const member = callee.split('.')[1];
-        const e = api[base];
+        const e = api[base]?.kind === 'typedef' ? api[api[base].aliasOf] : api[base];
         if (member && (e.statics?.includes(member) || e.getters?.some((g) => g.name === member))) continue;
         if (member === 'of' || member === 'where' || member === 'tryParse' || member === 'register' || member === 'validSelection' || member === 'fadeScale') continue;
         problems.push(`${relative(root, file)}: ${callee}(…) is not a constructor of ${base}`);
@@ -115,7 +116,7 @@ for (const file of walk(join(root, 'src/content/docs'))) {
   const text = readFileSync(file, 'utf8');
   for (const block of text.matchAll(/```dart[^\n]*\n([\s\S]*?)```/g)) {
     for (const m of block[1].matchAll(/\b([A-Z]\w+)\.([a-z]\w*)\b/g)) {
-      const e = api[m[1]];
+      const e = api[m[1]]?.kind === 'typedef' ? api[api[m[1]].aliasOf] : api[m[1]];
       if (!e) continue;
       calls++;
       const known = [

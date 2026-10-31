@@ -19,6 +19,8 @@ type Param = {
   doc: string;
 };
 type Entry = {
+  aliasOf?: string;
+  deprecated?: string;
   kind: string;
   file: string;
   doc: string;
@@ -49,6 +51,7 @@ const doc = (s: string) =>
 const H = level === 3 ? 'h3' : 'h4';
 
 function signature(e: Entry, name: string) {
+  if (e.kind === 'typedef') return `typedef ${name} = ${e.aliasOf}`;
   if (e.kind === 'enum') return `enum ${name}`;
   if (e.kind === 'function') return `${e.returns} ${name}${e.typeParams ?? ''}(…)`;
   if (e.kind === 'extension') return `extension ${name} on ${e.on}`;
@@ -69,6 +72,7 @@ function signature(e: Entry, name: string) {
           <p class="fup-source">
             {signature(e, name)} · {e.file}
           </p>
+          {e.deprecated && <p class="fup-deprecated"><strong>Deprecated.</strong> {e.deprecated}</p>}
           {e.doc && <p set:html={doc(e.doc)} />}
           {e.kind === 'enum' && (
             <table>

@@ -111,7 +111,10 @@ void main() {
       final spinner = tester.widget<PaymentSpinner>(
         find.byType(PaymentSpinner),
       );
-      expect(spinner.size, size == PaymentSize.small ? 16 : 20);
+      expect(
+        spinner.size,
+        size == PaymentSize.small ? PaymentSize.small : PaymentSize.medium,
+      );
       for (final e in find.byType(AnimatedOpacity).evaluate()) {
         expect((e.widget as AnimatedOpacity).duration, Duration.zero);
       }

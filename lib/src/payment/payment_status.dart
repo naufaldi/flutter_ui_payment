@@ -94,7 +94,7 @@ class PaymentInstructions extends StatelessWidget {
           ),
           if (elapsed) ...[
             SizedBox(height: theme.spacing),
-            NoticeBanner(
+            PaymentBanner(
               tone: StatusTone.warning,
               icon: Icons.timer_off_outlined,
               title: l10n.instructionsElapsedTitle,
@@ -375,7 +375,7 @@ class PaymentStatusView extends StatelessWidget {
           Text(look.message, style: body),
         if (attempt.observation == Observation.unavailable) ...[
           SizedBox(height: theme.spacing * 2),
-          NoticeBanner(
+          PaymentBanner(
             tone: StatusTone.neutral,
             icon: Icons.cloud_off_outlined,
             announce: true,
@@ -493,7 +493,7 @@ class RefundSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: theme.spacing * 0.5),
-          StatusBadge(
+          PaymentBadge(
             tone: tone,
             icon: icon,
             label: l10n.refundStatusLabel(refund.status),

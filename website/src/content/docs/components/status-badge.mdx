@@ -1,6 +1,6 @@
 ---
-title: Status badge
-description: StatusBadge is a small tag that names a status with an icon and a word. Color only supports the label.
+title: Badge
+description: PaymentBadge is a small tag that names a status with an icon and a word. Color only supports the label.
 ---
 
 import Screen from '../../../components/Screen.astro';
@@ -8,7 +8,7 @@ import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
-`StatusBadge` names the state of one thing, such as a pending payment or a refund, with an icon, a short label and a tone. The label carries the meaning; the tone only supports it.
+`PaymentBadge` names the state of one thing, such as a pending payment or a refund, with an icon, a short label and a tone. The label carries the meaning; the tone only supports it.
 
 <HostOwns>the status itself and the words for it. The badge renders what you pass and decides nothing.</HostOwns>
 
@@ -19,7 +19,7 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-const StatusBadge(
+const PaymentBadge(
   tone: StatusTone.warning,
   icon: Icons.schedule,
   label: 'Pending',
@@ -56,9 +56,19 @@ Never pick `success` from what the UI saw (an upload finished, a button was pres
 
 ## API
 
-<Props names={['StatusBadge', 'StatusTone']} />
+<Props names={['PaymentBadge', 'StatusTone']} />
 
 ## See also
 
 - [Status header](/components/status-header/) for the status at the top of a screen.
 - [Notice banner](/components/notice-banner/) when the status needs an explanation.
+
+## Migration
+
+`StatusBadge` remains a deprecated alias until 0.2.0. Replace the constructor name with `PaymentBadge`; existing arguments keep compiling.
+
+## Stripe mapping and variants
+
+Stripe neutral, info, positive, negative and warning map to neutral, info, success, danger and warning. Urgent maps to `PaymentBadge.urgent`. Variants: these five tones and urgent. Nothing else exists.
+
+Use urgent only when a person must act now to continue. Use schedule plus “Pending” for a bank wait, and help_outline plus “Not confirmed” when the result is unknown. Do not use a badge as the only failure explanation. Icons scale with text up to 1.6×.

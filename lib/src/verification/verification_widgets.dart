@@ -383,7 +383,7 @@ class DocumentUploadTile extends StatelessWidget {
               ),
               SizedBox(width: theme.spacing),
               Flexible(
-                child: StatusBadge(tone: tone, icon: icon, label: statusLabel),
+                child: PaymentBadge(tone: tone, icon: icon, label: statusLabel),
               ),
             ],
           ),
@@ -442,7 +442,7 @@ class DocumentUploadTile extends StatelessWidget {
           ],
           if (issue != null) ...[
             SizedBox(height: theme.spacing),
-            NoticeBanner(
+            PaymentBanner(
               tone: StatusTone.danger,
               announce: true,
               title: l10n.documentIssueTitle(issue.kind),
@@ -588,7 +588,7 @@ class VerificationReview extends StatelessWidget {
         if (!ready)
           Padding(
             padding: EdgeInsets.only(bottom: theme.spacing),
-            child: NoticeBanner(
+            child: PaymentBanner(
               tone: StatusTone.warning,
               title: l10n.documentsIncomplete,
             ),

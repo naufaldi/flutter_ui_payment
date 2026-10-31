@@ -298,7 +298,7 @@ void main() {
     testWidgets('stands still with reduced motion', (tester) async {
       await tester.pumpWidget(host(const PaymentSpinner(), reduceMotion: true));
       expect(find.byType(CircularProgressIndicator), findsNothing);
-      expect(find.byIcon(Icons.hourglass_top), findsOneWidget);
+      expect(find.byIcon(Icons.hourglass_top_outlined), findsOneWidget);
     });
   });
 

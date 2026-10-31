@@ -14,9 +14,10 @@ import 'flow_screen.dart' show documentRequirements, identityFields;
 part 'gallery_kit.dart';
 part 'gallery_charts.dart';
 part 'gallery_capture.dart';
+part 'gallery_feedback.dart';
 
 void _galleryFeedback(BuildContext context, String en, String id) {
-  showPaymentSnackBar(context, message: _t(context, en, id));
+  showPaymentToast(context, message: _t(context, en, id));
 }
 
 Future<bool> _copyGalleryValue(String value) async {
@@ -67,6 +68,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
             id: 'controls',
             label: t('Controls', 'Kontrol'),
             icon: Icons.toggle_on_outlined,
+          ),
+          PaymentNavItem(
+            id: 'feedback',
+            label: t('Feedback', 'Umpan balik'),
+            icon: Icons.notifications_none_outlined,
           ),
           PaymentNavItem(
             id: 'navigation',
@@ -133,11 +139,13 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ),
     ];
     final List<Widget> entries = switch (_section) {
-      'interaction' => const [
-        _ActionsDemo(),
-        _FeedbackDemo(),
-        _ExpandableDemo(),
-        _StatesDemo(),
+      'interaction' => const [_ActionsDemo(), _ExpandableDemo(), _StatesDemo()],
+      'feedback' => const [
+        _BadgeSpecimen(),
+        _BannerSpecimen(),
+        _ToastSpecimen(),
+        _SpinnerSpecimen(),
+        _TooltipSpecimen(),
       ],
       'controls' => const [_ButtonsDemo(), _ChoicesDemo(), _TabsDemo()],
       'navigation' => const [_NavigationDemo()],
@@ -370,7 +378,8 @@ class _Foundation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _Entry(
-      name: 'PaymentTheme · AmountText · InfoRow · StatusBadge · PaymentButton',
+      name:
+          'PaymentTheme · AmountText · InfoRow · PaymentBadge · PaymentButton',
       child: PaymentSection(
         title: 'Foundation',
         child: Column(
@@ -406,7 +415,7 @@ class _Foundation extends StatelessWidget {
               runSpacing: 8,
               children: [
                 for (final tone in StatusTone.values)
-                  StatusBadge(
+                  PaymentBadge(
                     tone: tone,
                     icon: Icons.circle_outlined,
                     label: tone.name,

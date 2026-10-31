@@ -173,7 +173,7 @@ void main() {
       ],
       [
         Icons.check_circle_outline,
-        Icons.warning_amber_rounded,
+        Icons.warning_amber_outlined,
         Icons.error_outline,
         Icons.info_outline,
         Icons.chevron_right,
@@ -183,7 +183,7 @@ void main() {
         Icons.check,
         Icons.cloud_off_outlined,
         Icons.search_off,
-        Icons.hourglass_top,
+        Icons.hourglass_top_outlined,
         Icons.lock_outline,
       ],
     );
@@ -193,7 +193,7 @@ void main() {
       StatusTone.values.map(
         (tone) => switch (tone) {
           StatusTone.success => Icons.check_circle_outline,
-          StatusTone.warning => Icons.warning_amber_rounded,
+          StatusTone.warning => Icons.warning_amber_outlined,
           StatusTone.danger => Icons.error_outline,
           StatusTone.info || StatusTone.neutral => Icons.info_outline,
         },

@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'package:flutter/services.dart';
+import '../foundation/payment_motion.dart';
+import '../foundation/tooltip_geometry.dart';
 import 'package:flutter/material.dart';
 
 import '../foundation/row_shell.dart';
@@ -410,37 +414,231 @@ class _SidesClipper extends CustomClipper<Rect> {
   bool shouldReclip(_SidesClipper oldClipper) => false;
 }
 
-/// A short hint shown on long press or hover, in ink on the page with the
-/// caption type. Keyboard focus does not open it; screen readers read
-/// [message] as the child's tooltip.
-///
-/// A tooltip is easy to miss on touch screens, so it may only repeat or name
-/// something: an icon button's label, a full date behind "2d ago". Never put
-/// a fee, a requirement or an error only in a tooltip.
-class PaymentTooltip extends StatelessWidget {
-  const PaymentTooltip({super.key, required this.message, required this.child});
+/// Twelve placements; start and end follow the text direction.
+enum PaymentTooltipPlacement {
+  /// Stripe top.
+  top,
 
-  /// One short sentence or a label. Also what screen readers hear.
+  /// Stripe top start.
+  topStart,
+
+  /// Stripe top end.
+  topEnd,
+
+  /// Stripe bottom.
+  bottom,
+
+  /// Stripe bottom start.
+  bottomStart,
+
+  /// Stripe bottom end.
+  bottomEnd,
+
+  /// Stripe left in LTR.
+  start,
+
+  /// Stripe left top in LTR.
+  startTop,
+
+  /// Stripe left bottom in LTR.
+  startBottom,
+
+  /// Stripe right in LTR.
+  end,
+
+  /// Stripe right top in LTR.
+  endTop,
+
+  /// Stripe right bottom in LTR.
+  endBottom,
+}
+
+/// Whether the message names the trigger or adds detail.
+enum PaymentTooltipType {
+  /// Becomes the trigger's semantic label.
+  label,
+
+  /// Becomes the trigger's semantic tooltip.
+  description,
+}
+
+/// A noninteractive hint shown on hover, long press or keyboard focus.
+/// Escape, blur, exit and an outside tap hide it. Requires an Overlay.
+/// Never put a fee, a requirement or an error only in a tooltip.
+class PaymentTooltip extends StatefulWidget {
+  const PaymentTooltip({
+    super.key,
+    required this.message,
+    required this.child,
+    this.placement = PaymentTooltipPlacement.bottom,
+    this.type = PaymentTooltipType.description,
+    this.delay = const Duration(milliseconds: 500),
+  });
   final String message;
   final Widget child;
+  final PaymentTooltipPlacement placement;
+  final PaymentTooltipType type;
+  final Duration delay;
+  @override
+  State<PaymentTooltip> createState() => _PaymentTooltipState();
+}
+
+class _PaymentTooltipState extends State<PaymentTooltip> {
+  final _portal = OverlayPortalController();
+  Timer? _showTimer;
+  Timer? _hideTimer;
+  static _PaymentTooltipState? _open;
+  void _show() {
+    _showTimer?.cancel();
+    _hideTimer?.cancel();
+    if (_open != this) _open?._hide();
+    _open = this;
+    _portal.show();
+  }
+
+  void _hide() {
+    _showTimer?.cancel();
+    _hideTimer?.cancel();
+    _portal.hide();
+    if (_open == this) _open = null;
+  }
 
   @override
-  Widget build(BuildContext context) {
-    final theme = PaymentTheme.of(context);
-    return Tooltip(
-      message: message,
-      // Ink on paper, inverted: the strongest contrast the theme has.
-      decoration: BoxDecoration(
-        color: theme.textPrimary,
-        borderRadius: theme.controlBorderRadius,
-      ),
-      textStyle: PaymentType.of(context).caption.copyWith(color: theme.surface),
-      padding: EdgeInsets.symmetric(
-        horizontal: theme.spacing,
-        vertical: theme.spacing * 0.5,
-      ),
-      waitDuration: const Duration(milliseconds: 500),
-      child: child,
-    );
+  void dispose() {
+    _showTimer?.cancel();
+    _hideTimer?.cancel();
+    if (_open == this) _open = null;
+    super.dispose();
   }
+
+  @override
+  Widget build(BuildContext context) => MergeSemantics(
+    child: Semantics(
+      label: widget.type == PaymentTooltipType.label ? widget.message : null,
+      tooltip: widget.type == PaymentTooltipType.description
+          ? widget.message
+          : null,
+      child: TapRegion(
+        onTapOutside: (_) => _hide(),
+        child: Focus(
+          canRequestFocus: false,
+          skipTraversal: true,
+          onFocusChange: (focused) =>
+              focused &&
+                  FocusManager.instance.highlightMode ==
+                      FocusHighlightMode.traditional
+              ? _show()
+              : _hide(),
+          onKeyEvent: (_, event) {
+            if (event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.escape &&
+                _portal.isShowing) {
+              _hide();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: MouseRegion(
+            onEnter: (_) {
+              _showTimer?.cancel();
+              if (_open != null) {
+                _show();
+              } else {
+                _showTimer = Timer(widget.delay, _show);
+              }
+            },
+            onExit: (_) => _hide(),
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              excludeFromSemantics: true,
+              onLongPress: _show,
+              onLongPressEnd: (_) =>
+                  _hideTimer = Timer(const Duration(milliseconds: 1500), _hide),
+              child: OverlayPortal.overlayChildLayoutBuilder(
+                controller: _portal,
+                overlayChildBuilder: (context, info) {
+                  final theme = PaymentTheme.of(context);
+                  return CustomSingleChildLayout(
+                    delegate: _TooltipDelegate(
+                      MatrixUtils.transformRect(
+                        info.childPaintTransform,
+                        Offset.zero & info.childSize,
+                      ),
+                      widget.placement,
+                      Directionality.of(context),
+                      theme.spacing,
+                    ),
+                    child: IgnorePointer(
+                      child: ExcludeSemantics(
+                        child: TweenAnimationBuilder<double>(
+                          tween: Tween(begin: 0, end: 1),
+                          duration: PaymentMotion.of(context).quick,
+                          builder: (_, opacity, child) =>
+                              Opacity(opacity: opacity, child: child),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 280),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: theme.textPrimary,
+                                borderRadius: theme.controlBorderRadius,
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: theme.spacing,
+                                  vertical: theme.spacing * 0.5,
+                                ),
+                                child: Text(
+                                  widget.message,
+                                  style: PaymentType.of(
+                                    context,
+                                  ).caption.copyWith(color: theme.surface),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                child: widget.child,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+class _TooltipDelegate extends SingleChildLayoutDelegate {
+  const _TooltipDelegate(
+    this.target,
+    this.placement,
+    this.direction,
+    this.spacing,
+  );
+  final Rect target;
+  final PaymentTooltipPlacement placement;
+  final TextDirection direction;
+  final double spacing;
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) =>
+      constraints.loosen();
+  @override
+  Offset getPositionForChild(Size size, Size childSize) => placeTooltip(
+    target: target,
+    size: childSize,
+    overlay: size,
+    placement: placement,
+    direction: direction,
+    gap: spacing,
+    margin: spacing,
+  ).offset;
+  @override
+  bool shouldRelayout(_TooltipDelegate old) =>
+      target != old.target ||
+      placement != old.placement ||
+      direction != old.direction ||
+      spacing != old.spacing;
 }

@@ -158,7 +158,7 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
         ],
         if (_feedback != null) ...[
           SizedBox(height: theme.spacing * 1.5),
-          NoticeBanner(tone: _feedbackTone, title: _feedback!, announce: true),
+          PaymentBanner(tone: _feedbackTone, title: _feedback!, announce: true),
         ],
         if (widget.onShare != null) ...[
           SizedBox(height: theme.spacing * 2),

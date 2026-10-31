@@ -109,11 +109,11 @@ void main() {
     );
 
     await tester.pumpWidget(prompt(AuthorizationPhase.ready));
-    expect(find.byType(NoticeBanner), findsNothing);
+    expect(find.byType(PaymentBanner), findsNothing);
     expect(find.text('Confirm payment'), findsOneWidget);
 
     await tester.pumpWidget(prompt(AuthorizationPhase.failed));
-    expect(find.byType(NoticeBanner), findsOneWidget);
+    expect(find.byType(PaymentBanner), findsOneWidget);
   });
 
   testWidgets('re-quote consent reads at summary row size', (tester) async {

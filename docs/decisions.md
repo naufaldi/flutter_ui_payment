@@ -265,3 +265,17 @@ Plan correction from dialog geometry: stock AlertDialog action padding and per-b
 Phase 2B element counts on the same workload: history: 862, confirmation: 410, intro: 347. MinTapTarget adds one centered render wrapper per button. It has no LayoutBuilder, speculative remeasurement or new timers; the literal no-added-layout-pass target is not claimed because the hit-area wrapper performs layout. Frame times were not benchmarked in this screenshot/flow task; no frame-time improvement is claimed. The existing bounded render-wrapper cost is unchanged.
 
 Analyzer correction: MinTapTarget.updateRenderObject accepts RenderObject and casts internally. Exposing the private render class in its public method produced library_private_types_in_public_api; the internal rendering behavior is unchanged.
+
+### Phase 2C implementation decisions
+
+Renames use deprecated typedefs, preserving constructors and Type identity. The snack bar wrapper retains its Material controller return. The API parser now records aliases and deprecations, and snippet checks resolve their targets. Existing documentation slugs stay until Phase 6.
+
+Toast duration scales by words: clamp 1000 + 300 × words to 4–10 seconds, or 6–10 with an action. Pending and accessible actions persist. SnackBar persist is explicitly true because the kit owns timeouts. The content owns timer cleanup: messenger disposal does not complete closed futures. A surface-colored TextButton and focus ring provide the inverted action until Phase 3B.
+
+Warning and reduced-motion busy use outlined icons. Checkout's bank-wait hourglass was never rendered outside exceptions and is now schedule. Tooltip placement is one twelve-value enum instead of side × alignment. Description uses Flutter's semantic tooltip property to preserve spoken trigger information; label names the trigger. Bubbles ignore pointers and semantics. Keyboard focus shows immediately, Escape dismisses.
+
+Owner scope revision: retain behavioral tests and zero-issue analysis; run native flow and docs captures once on final 2D-2. No regression pixel diffs or exhaustive visual inspection. Screenshots are delivered in 2D-2; earlier docs retain existing Screen names.
+
+Plan correction: button_sizes_test also asserts PaymentSpinner.size. Migrate its 16-dp expectation to PaymentSize.small; the rendered dimension stays 16 dp. This call site was omitted from the verified list.
+
+The existing row-family oracle also covers refund badges at 2×. Their text moves 8.4 dp because the planned badge icon cap grows from 14 to 22.4. Update only those expected positions by the intentional delta.
