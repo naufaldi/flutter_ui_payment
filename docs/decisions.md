@@ -263,3 +263,5 @@ Plan correction: the suggested literal English reapproval sentence did not match
 Plan correction from dialog geometry: stock AlertDialog action padding and per-button padding stacked 112 dp actions even at 393 dp. Use token-based 16 dp actions padding and 4 dp per-button horizontal padding to retain an 8 dp horizontal gap and fit the two actions on the normal iPhone width. The narrow/200% layout still stacks with an 8 dp vertical gap.
 
 Phase 2B element counts on the same workload: history: 862, confirmation: 410, intro: 347. MinTapTarget adds one centered render wrapper per button. It has no LayoutBuilder, speculative remeasurement or new timers; the literal no-added-layout-pass target is not claimed because the hit-area wrapper performs layout. Native frame-time proof is blocked.
+
+Analyzer correction: MinTapTarget.updateRenderObject accepts RenderObject and casts internally. Exposing the private render class in its public method produced library_private_types_in_public_api; the internal rendering behavior is unchanged.
