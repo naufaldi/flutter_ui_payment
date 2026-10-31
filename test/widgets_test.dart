@@ -338,7 +338,7 @@ void main() {
     final results = <AmountParseResult>[];
     await tester.pumpWidget(
       host(
-        AmountInput(
+        PaymentCurrencyField(
           currency: 'IDR',
           minimum: const Money.idr(10000),
           maximum: const Money.idr(2000000),

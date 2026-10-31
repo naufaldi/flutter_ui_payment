@@ -1,3 +1,6 @@
+import 'dart:ui' show SemanticsRole, SemanticsValidationResult;
+import '../foundation/payment_tokens.dart';
+import '../foundation/payment_icons.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import '../foundation/payment_motion.dart';
@@ -21,16 +24,30 @@ class PaymentCheckbox extends StatelessWidget {
     super.key,
     required this.value,
     required this.onChanged,
+    this.indeterminate = false,
     required this.label,
     this.description,
     this.disabledReason,
+    this.errorText,
+    this.required = false,
+    this.hiddenElements = const {},
   });
 
+  /// A select-all dash. Value is ignored while mixed; tapping reports true.
+  final bool indeterminate;
   final bool value;
   final ValueChanged<bool>? onChanged;
 
   /// What checking the box agrees to, as a full phrase: "Save this card for
   /// next time", not "Save".
+  /// Validation message, with a danger icon and edge.
+  final String? errorText;
+
+  /// Spoken as required; the host gates the next step.
+  final bool required;
+
+  /// Visually hidden parts remain in semantics.
+  final Set<PaymentFieldPart> hiddenElements;
   final String label;
 
   /// A muted line under the label.
@@ -45,19 +62,29 @@ class PaymentCheckbox extends StatelessWidget {
     final enabled = onChanged != null;
     return MergeSemantics(
       child: Semantics(
-        checked: value,
+        checked: indeterminate ? false : value,
+        mixed: indeterminate ? true : null,
         enabled: enabled,
+        isRequired: required ? true : null,
+        validationResult: errorText == null
+            ? SemanticsValidationResult.none
+            : SemanticsValidationResult.invalid,
         child: _ControlRow(
           label: label,
+          errorText: errorText,
+          hidden: hiddenElements,
           detail: !enabled && disabledReason != null
               ? disabledReason
               : description,
           enabled: enabled,
-          onTap: enabled ? () => onChanged!(!value) : null,
+          onTap: enabled
+              ? () => onChanged!(indeterminate ? true : !value)
+              : null,
           // Painted by Material, so it matches the kit's other checkboxes;
           // the row owns taps, focus and semantics.
           mark: Checkbox(
-            value: value,
+            value: indeterminate ? null : value,
+            tristate: indeterminate,
             onChanged: enabled ? (_) {} : null,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             visualDensity: VisualDensity.compact,
@@ -76,6 +103,8 @@ class PaymentCheckbox extends StatelessWidget {
                   : BorderSide(
                       color: states.contains(WidgetState.disabled)
                           ? theme.disabled
+                          : errorText != null
+                          ? theme.danger.foreground
                           : theme.border,
                       width: 2,
                     ),
@@ -103,6 +132,9 @@ class PaymentRadio<T> extends StatelessWidget {
     required this.label,
     this.description,
     this.disabledReason,
+    this.errorText,
+    this.required = false,
+    this.hiddenElements = const {},
   });
 
   final T value;
@@ -110,6 +142,15 @@ class PaymentRadio<T> extends StatelessWidget {
 
   /// Called with [value] when this option is chosen. Null disables it.
   final ValueChanged<T>? onChanged;
+
+  /// Validation message, with a danger icon and edge.
+  final String? errorText;
+
+  /// Spoken as required; the host gates the next step.
+  final bool required;
+
+  /// Visually hidden parts remain in semantics.
+  final Set<PaymentFieldPart> hiddenElements;
   final String label;
   final String? description;
 
@@ -125,8 +166,14 @@ class PaymentRadio<T> extends StatelessWidget {
         checked: selected,
         inMutuallyExclusiveGroup: true,
         enabled: enabled,
+        isRequired: required ? true : null,
+        validationResult: errorText == null
+            ? SemanticsValidationResult.none
+            : SemanticsValidationResult.invalid,
         child: _ControlRow(
           label: label,
+          errorText: errorText,
+          hidden: hiddenElements,
           detail: !enabled && disabledReason != null
               ? disabledReason
               : description,
@@ -138,7 +185,11 @@ class PaymentRadio<T> extends StatelessWidget {
                   if (!selected) onChanged!(value);
                 }
               : null,
-          mark: RadioMark(selected: selected, enabled: enabled),
+          mark: RadioMark(
+            selected: selected,
+            enabled: enabled,
+            error: errorText != null,
+          ),
         ),
       ),
     );
@@ -160,10 +211,22 @@ class PaymentSwitch extends StatelessWidget {
     required this.label,
     this.description,
     this.disabledReason,
+    this.errorText,
+    this.required = false,
+    this.hiddenElements = const {},
   });
 
   final bool value;
   final ValueChanged<bool>? onChanged;
+
+  /// Validation message, with a danger icon and edge.
+  final String? errorText;
+
+  /// Spoken as required; the host gates the next step.
+  final bool required;
+
+  /// Visually hidden parts remain in semantics.
+  final Set<PaymentFieldPart> hiddenElements;
   final String label;
   final String? description;
 
@@ -178,8 +241,14 @@ class PaymentSwitch extends StatelessWidget {
       child: Semantics(
         toggled: value,
         enabled: enabled,
+        isRequired: required ? true : null,
+        validationResult: errorText == null
+            ? SemanticsValidationResult.none
+            : SemanticsValidationResult.invalid,
         child: _ControlRow(
           label: label,
+          errorText: errorText,
+          hidden: hiddenElements,
           detail: !enabled && disabledReason != null
               ? disabledReason
               : description,
@@ -205,6 +274,8 @@ class PaymentSwitch extends StatelessWidget {
                   ? theme.onAccent
                   : states.contains(WidgetState.disabled)
                   ? theme.disabled
+                  : errorText != null
+                  ? theme.danger.foreground
                   : theme.border,
             ),
             trackColor: WidgetStateProperty.resolveWith(
@@ -219,6 +290,8 @@ class PaymentSwitch extends StatelessWidget {
                   ? Colors.transparent
                   : states.contains(WidgetState.disabled)
                   ? theme.disabled
+                  : errorText != null
+                  ? theme.danger.foreground
                   : theme.border,
             ),
           ),
@@ -238,8 +311,12 @@ class _ControlRow extends StatelessWidget {
     required this.enabled,
     required this.onTap,
     this.markAtEnd = false,
+    this.errorText,
+    this.hidden = const {},
   });
 
+  final String? errorText;
+  final Set<PaymentFieldPart> hidden;
   final Widget mark;
   final String label;
   final String? detail;
@@ -274,13 +351,60 @@ class _ControlRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  style: type.label.copyWith(
-                    color: enabled ? theme.textPrimary : theme.textSecondary,
+                if (hidden.contains(PaymentFieldPart.label))
+                  Semantics(label: label, child: const SizedBox.shrink())
+                else
+                  Text(
+                    label,
+                    style: type.label.copyWith(
+                      color: enabled ? theme.textPrimary : theme.textSecondary,
+                    ),
                   ),
-                ),
-                if (detail != null) Text(detail!, style: type.caption),
+                if (detail != null)
+                  if (hidden.contains(PaymentFieldPart.description))
+                    Semantics(label: detail, child: const SizedBox.shrink())
+                  else
+                    Text(detail!, style: type.caption),
+                if (errorText != null)
+                  if (hidden.contains(PaymentFieldPart.error))
+                    Semantics(label: errorText, child: const SizedBox.shrink())
+                  else
+                    Padding(
+                      padding: EdgeInsets.only(top: theme.spacing * 0.5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.textScalerOf(
+                              context,
+                            ).clamp(maxScaleFactor: 1.6).scale(14),
+                            height:
+                                MediaQuery.textScalerOf(
+                                  context,
+                                ).scale(type.caption.fontSize!) *
+                                type.caption.height!,
+                            child: Center(
+                              child: Icon(
+                                PaymentIcons.danger,
+                                size: MediaQuery.textScalerOf(
+                                  context,
+                                ).clamp(maxScaleFactor: 1.6).scale(14),
+                                color: theme.danger.foreground,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: theme.spacing * 0.5),
+                          Expanded(
+                            child: Text(
+                              errorText!,
+                              style: type.caption.copyWith(
+                                color: theme.danger.foreground,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
               ],
             ),
           ),
@@ -297,53 +421,131 @@ class _ControlRow extends StatelessWidget {
   }
 }
 
-/// Text tabs on a hairline, for switching between views of the same
-/// content: filters of a list, or "Card" and "Bank transfer" details.
-///
-/// Controlled: the host owns [selectedIndex] and shows the matching content.
-/// The selected tab changes color and gains an underline; the weight stays
-/// the same so labels do not shift. The row scrolls sideways rather than
-/// wrapping, so long or enlarged labels never stack.
-class PaymentTabs extends StatelessWidget {
+/// A tab label and optional unavailability reason (Stripe Tab).
+@immutable
+class PaymentTab {
+  const PaymentTab({required this.label, this.disabledReason});
+  final String label;
+  final String? disabledReason;
+}
+
+/// Controlled tabs. Arrows move focus, skipping disabled tabs; Enter or Space
+/// selects. Sizes change typography and padding, never the 48 dp target.
+class PaymentTabs extends StatefulWidget {
   const PaymentTabs({
     super.key,
-    required this.labels,
+    required this.tabs,
     required this.selectedIndex,
     required this.onSelected,
+    this.size = PaymentSize.medium,
+    this.fitted = false,
   });
-
-  /// Short nouns, one or two words each.
-  final List<String> labels;
+  final List<PaymentTab> tabs;
   final int selectedIndex;
   final ValueChanged<int> onSelected;
+  final PaymentSize size;
+  final bool fitted;
+  @override
+  State<PaymentTabs> createState() => _PaymentTabsState();
+}
+
+class _PaymentTabsState extends State<PaymentTabs> {
+  final List<FocusNode> _nodes = [];
+  void _syncNodes() {
+    while (_nodes.length < widget.tabs.length) {
+      _nodes.add(FocusNode());
+    }
+    while (_nodes.length > widget.tabs.length) {
+      _nodes.removeLast().dispose();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _syncNodes();
+  }
+
+  @override
+  void didUpdateWidget(PaymentTabs oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncNodes();
+  }
+
+  @override
+  void dispose() {
+    for (final node in _nodes) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  KeyEventResult _key(int index, KeyEvent event) {
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    final key = event.logicalKey;
+    if (key != LogicalKeyboardKey.arrowLeft &&
+        key != LogicalKeyboardKey.arrowRight) {
+      return KeyEventResult.ignored;
+    }
+    final forward =
+        (key == LogicalKeyboardKey.arrowRight) !=
+        (Directionality.of(context) == TextDirection.rtl);
+    for (var n = 1; n <= widget.tabs.length; n++) {
+      final next = (index + (forward ? n : -n)) % widget.tabs.length;
+      if (widget.tabs[next].disabledReason == null) {
+        _nodes[next].requestFocus();
+        break;
+      }
+    }
+    return KeyEventResult.handled;
+  }
 
   @override
   Widget build(BuildContext context) {
+    assert(
+      widget.selectedIndex >= 0 && widget.selectedIndex < widget.tabs.length,
+    );
     final theme = PaymentTheme.of(context);
+    final type = PaymentType.of(context);
+    final metrics = switch (widget.size) {
+      PaymentSize.small => (style: type.caption, pad: theme.spacing),
+      PaymentSize.medium => (style: type.label, pad: theme.spacing * 1.5),
+      PaymentSize.large => (style: type.heading, pad: theme.spacing * 2),
+    };
+    Widget tab(int i) => _Tab(
+      tab: widget.tabs[i],
+      selected: widget.selectedIndex == i,
+      onTap: () => widget.onSelected(i),
+      focusNode: _nodes[i],
+      onKey: (event) => _key(i, event),
+      style: metrics.style,
+      padding: metrics.pad,
+    );
+    final row = Semantics(
+      role: SemanticsRole.tabBar,
+      container: true,
+      explicitChildNodes: true,
+      child: Row(
+        children: [
+          for (var i = 0; i < widget.tabs.length; i++)
+            if (widget.fitted) Expanded(child: tab(i)) else tab(i),
+        ],
+      ),
+    );
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: theme.outline)),
       ),
-      // The row clips at its sides only, so a focused tab's ring, which sits
-      // 4 px outside it, shows above and below; the 4 px inset keeps the
-      // first and last rings inside the sides.
       child: ClipRect(
         clipper: const _SidesClipper(),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          clipBehavior: Clip.none,
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Row(
-            children: [
-              for (final (i, label) in labels.indexed)
-                _Tab(
-                  label: label,
-                  selected: i == selectedIndex,
-                  onTap: () => onSelected(i),
-                ),
-            ],
-          ),
-        ),
+        child: widget.fitted
+            ? row
+            : SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                clipBehavior: Clip.none,
+                padding: EdgeInsets.symmetric(horizontal: theme.spacing * 0.5),
+                child: row,
+              ),
       ),
     );
   }
@@ -351,55 +553,128 @@ class PaymentTabs extends StatelessWidget {
 
 class _Tab extends StatelessWidget {
   const _Tab({
-    required this.label,
+    required this.tab,
     required this.selected,
     required this.onTap,
+    required this.focusNode,
+    required this.onKey,
+    required this.style,
+    required this.padding,
   });
-
-  final String label;
+  final PaymentTab tab;
   final bool selected;
   final VoidCallback onTap;
-
+  final FocusNode focusNode;
+  final KeyEventResult Function(KeyEvent) onKey;
+  final TextStyle style;
+  final double padding;
   @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
-    return MergeSemantics(
-      child: Semantics(
-        selected: selected,
-        button: true,
-        child: PaymentFocusRing(
-          radius: BorderRadius.zero,
-          child: PaymentPressScale(
-            child: InkWell(
-              focusColor: Colors.transparent,
-              onTap: onTap,
-              child: Container(
-                constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
-                padding: EdgeInsets.symmetric(horizontal: theme.spacing * 1.5),
-                alignment: Alignment.center,
-                // The unselected underline is transparent, not absent, so the
-                // tab keeps its height when selected.
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: selected
-                          ? theme.accent
-                          : theme.accent.withValues(alpha: 0),
-                      width: 2,
-                    ),
+    final enabled = tab.disabledReason == null;
+    final content = Focus(
+      canRequestFocus: false,
+      skipTraversal: true,
+      onKeyEvent: (_, event) => onKey(event),
+      child: PaymentFocusRing(
+        radius: BorderRadius.zero,
+        child: PaymentPressScale(
+          child: InkWell(
+            focusNode: focusNode,
+            focusColor: Colors.transparent,
+            onTap: enabled ? onTap : null,
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+              padding: EdgeInsets.symmetric(horizontal: padding),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: selected
+                        ? theme.accent
+                        : theme.accent.withValues(alpha: 0),
+                    width: 2,
                   ),
                 ),
-                child: Text(
-                  label,
-                  style: PaymentType.of(context).label.copyWith(
-                    color: selected ? theme.accent : theme.textSecondary,
-                  ),
+              ),
+              child: Text(
+                tab.label,
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                  color: !enabled
+                      ? theme.disabled
+                      : selected
+                      ? theme.accent
+                      : theme.textSecondary,
                 ),
               ),
             ),
           ),
         ),
       ),
+    );
+    return MergeSemantics(
+      child: Semantics(
+        role: SemanticsRole.tab,
+        selected: selected,
+        enabled: enabled,
+        button: true,
+        hint: tab.disabledReason,
+        child: enabled
+            ? content
+            : PaymentTooltip(
+                message: tab.disabledReason!,
+                type: PaymentTooltipType.description,
+                child: content,
+              ),
+      ),
+    );
+  }
+}
+
+/// Lazily builds selected panels and preserves visited state. Hidden panels
+/// are offstage, excluded from focus and semantics, and have paused tickers.
+class PaymentTabPanels extends StatefulWidget {
+  const PaymentTabPanels({
+    super.key,
+    required this.selectedIndex,
+    required this.children,
+  });
+  final int selectedIndex;
+  final List<Widget> children;
+  @override
+  State<PaymentTabPanels> createState() => _PaymentTabPanelsState();
+}
+
+class _PaymentTabPanelsState extends State<PaymentTabPanels> {
+  final Set<int> _built = {};
+  @override
+  Widget build(BuildContext context) {
+    assert(
+      widget.selectedIndex >= 0 &&
+          widget.selectedIndex < widget.children.length,
+    );
+    _built.add(widget.selectedIndex);
+    return Stack(
+      children: [
+        for (final (i, child) in widget.children.indexed)
+          if (_built.contains(i))
+            Offstage(
+              key: ValueKey(i),
+              offstage: i != widget.selectedIndex,
+              child: TickerMode(
+                enabled: i == widget.selectedIndex,
+                child: ExcludeFocus(
+                  excluding: i != widget.selectedIndex,
+                  child: Semantics(
+                    role: SemanticsRole.tabPanel,
+                    container: true,
+                    child: KeyedSubtree(key: ValueKey(i), child: child),
+                  ),
+                ),
+              ),
+            ),
+      ],
     );
   }
 }

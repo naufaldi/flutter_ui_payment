@@ -13,7 +13,8 @@ import HostOwns from '../../../components/HostOwns.astro';
 <HostOwns>the value, applying the setting, and why the row is disabled.</HostOwns>
 
 <Screens>
-  <Screen name="ios_catalog_controls_choices" dark="ios_catalog_controls_choices_dark" alt="Below a checkbox and a radio group, an on Refund alerts switch with the description A notification when a refund settles, and a disabled off Weekly summary switch with the reason Turn on notifications in Settings." caption="On and disabled switches, below a checkbox and radios (follows the site theme)" />
+  <Screen name="ios_catalog_switch_variants" dark="ios_catalog_switch_variants_dark" alt="switch variants in the native gallery" caption="Switch variants" />
+  <Screen name="ios_catalog_switch_variants_200" alt="switch at 200 percent text" caption="200% text" />
 </Screens>
 
 ## Usage
@@ -61,9 +62,13 @@ const PaymentSwitch(
 
 ## API
 
-<Props names={['PaymentSwitch']} />
+<Props names={['PaymentSwitch', 'PaymentFieldPart']} />
 
 ## See also
 
 - [Checkbox](/components/checkbox/) for choices applied with a button.
 - [Action tile](/components/action-tile/) for settings rows that open another screen.
+
+## Behavior, states and migration
+
+Stripe error maps to errorText: icon, danger caption and off-track danger edge. Required is spoken, with gating owned by the host. HiddenElements retains hidden text in semantics. Use a switch for an immediate setting, not consent applied after a later submit.

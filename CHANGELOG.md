@@ -1,5 +1,13 @@
 ## 0.1.0 (unreleased)
 
+Design system Phase 2D-2 (1 Nov 2026):
+
+* Add PaymentTab, size/fitted tabs and lazy state-preserving PaymentTabPanels. Arrow keys move focus only; Enter/Space activate, skipping disabled tabs.
+* Breaking: PaymentTabs.labels becomes tabs of PaymentTab values.
+* Checkbox adds indeterminate. Checkbox, radio and switch add errorText, required and hiddenElements with icon/text/edge validation and retained semantics.
+* Add PaymentCurrencyField size, description and padFractionDigits. AmountInput remains a deprecated typedef until 0.2.0. Padding valid amounts on blur/submit emits no new value.
+* Replace combined controls captures with focused specimens and deliver all Phase 2C/2D screenshots here (D27, owner scope revision).
+
 Design system Phase 2D-1 (31 Oct 2026):
 
 * Add PaymentList/PaymentListItem with values, sizes and id dispatch; PaymentMenu with item groups; PaymentAccordion/PaymentAccordionItem with separate actions.

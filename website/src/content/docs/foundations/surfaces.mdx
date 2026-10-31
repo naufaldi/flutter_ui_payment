@@ -26,6 +26,7 @@ Sheet or dialog? → overlay
 | Bordered box | `outline` 1 px + `borderRadius` 8 | Method list, `PromoCard` card layout (`promo.dart:231-234`) | Use for non-selectable content |
 | Tinted | `tone.container` fill, no edge | `PaymentBanner`, `PaymentBadge` | Use for the normal path (decisions.md: "tinted boxes are for problems") |
 | Muted | `surfaceMuted` fill | Disabled fill, skeleton, selected nav item | — |
+| Ink | textPrimary fill, surface text, elevation 0, control radius | Toast and tooltip | Add a shadow |
 | Floating | `surface` + `outline` edge + elevation 2 | `PaymentMenu` only (`interaction.dart:211`) | Add a shadow anywhere else |
 | Overlay | `surface`, elevation 0, top radius 12, scrim | Bottom sheet (`sheets.dart:163`), side sheet with `Colors.black54` barrier (`:192`), dialog | Tint the surface (`surfaceTintColor` is transparent everywhere) |
 

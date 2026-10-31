@@ -1,4 +1,204 @@
 {
+  "ios_catalog_badge_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog badge variants, English"
+  },
+  "ios_catalog_badge_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog badge variants dark, English"
+  },
+  "ios_catalog_badge_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog badge variants 200, English"
+  },
+  "ios_catalog_banner_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog banner variants, English"
+  },
+  "ios_catalog_banner_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog banner variants dark, English"
+  },
+  "ios_catalog_banner_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog banner variants 200, English"
+  },
+  "ios_catalog_toast_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog toast variants, English"
+  },
+  "ios_catalog_toast_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog toast variants dark, English"
+  },
+  "ios_catalog_toast_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog toast variants 200, English"
+  },
+  "ios_catalog_tooltip_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog tooltip variants, English"
+  },
+  "ios_catalog_tooltip_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog tooltip variants dark, English"
+  },
+  "ios_catalog_tooltip_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog tooltip variants 200, English"
+  },
+  "ios_catalog_menu_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog menu variants, English"
+  },
+  "ios_catalog_menu_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog menu variants dark, English"
+  },
+  "ios_catalog_menu_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog menu variants 200, English"
+  },
+  "ios_catalog_accordion_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog accordion variants, English"
+  },
+  "ios_catalog_accordion_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog accordion variants dark, English"
+  },
+  "ios_catalog_accordion_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog accordion variants 200, English"
+  },
+  "ios_catalog_list_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog list variants, English"
+  },
+  "ios_catalog_list_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog list variants dark, English"
+  },
+  "ios_catalog_list_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog list variants 200, English"
+  },
+  "ios_catalog_tabs_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog tabs variants, English"
+  },
+  "ios_catalog_tabs_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog tabs variants dark, English"
+  },
+  "ios_catalog_tabs_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog tabs variants 200, English"
+  },
+  "ios_catalog_checkbox_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog checkbox variants, English"
+  },
+  "ios_catalog_checkbox_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog checkbox variants dark, English"
+  },
+  "ios_catalog_checkbox_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog checkbox variants 200, English"
+  },
+  "ios_catalog_radio_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog radio variants, English"
+  },
+  "ios_catalog_radio_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog radio variants dark, English"
+  },
+  "ios_catalog_radio_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog radio variants 200, English"
+  },
+  "ios_catalog_switch_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog switch variants, English"
+  },
+  "ios_catalog_switch_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog switch variants dark, English"
+  },
+  "ios_catalog_switch_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog switch variants 200, English"
+  },
+  "ios_catalog_currency_field_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog currency field variants, English"
+  },
+  "ios_catalog_currency_field_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog currency field variants dark, English"
+  },
+  "ios_catalog_currency_field_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog currency field variants 200, English"
+  },
+  "ios_catalog_spinner_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog spinner variants, English"
+  },
+  "ios_catalog_spinner_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog spinner variants dark, English"
+  },
+  "ios_catalog_toast_updated": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog toast updated, English"
+  },
+  "ios_catalog_tooltip_flip": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog tooltip flip, English"
+  },
   "ios_catalog_button_variants": {
     "width": 640,
     "height": 1387,
@@ -343,31 +543,6 @@
     "width": 640,
     "height": 1387,
     "caption": "Gallery: video player"
-  },
-  "ios_catalog_controls_choices": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: checkbox, radio and switch, English"
-  },
-  "ios_catalog_controls_choices_dark": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: checkbox, radio and switch, dark, English"
-  },
-  "ios_catalog_controls_tabs": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: tabs, divider, tooltip trigger and spinner, English"
-  },
-  "ios_catalog_controls_tabs_dark": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: tabs, divider, tooltip trigger and spinner, dark, English"
-  },
-  "ios_catalog_controls_tooltip": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: tooltip shown, English"
   },
   "ios_catalog_foundation": {
     "width": 640,

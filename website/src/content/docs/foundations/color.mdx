@@ -60,7 +60,7 @@ Do: `theme.border` on an input edge, as in the existing controls. Don't: `theme.
 
 Camera overlay: `capture_widgets.dart:116,158` uses black54 and white over a host preview. Video controls/scrim: `video.dart:282,296,301,312,315,326,365` uses white70, white, black54 and black over imagery. Side sheet: `sheets.dart:192` uses black54 as its barrier. Transparent focus/surface tint entries remove Material fill rather than define a new color. No other raw-color styling is admitted.
 
-The toast still uses Material SnackBar background defaults. D22 schedules its token restyle in 2C; this page does not claim that gap is fixed.
+D22 is implemented: toasts use textPrimary fill and surface text, with zero elevation.
 
 ## Stripe text color mapping
 

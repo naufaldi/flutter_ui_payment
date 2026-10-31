@@ -262,7 +262,11 @@ void main() {
       await tester.pumpWidget(
         host(
           PaymentTabs(
-            labels: const ['All', 'Pending', 'Refunds'],
+            tabs: const [
+              PaymentTab(label: 'All'),
+              PaymentTab(label: 'Pending'),
+              PaymentTab(label: 'Refunds'),
+            ],
             selectedIndex: 0,
             onSelected: (i) => picked = i,
           ),

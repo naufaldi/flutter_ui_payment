@@ -1,19 +1,27 @@
 ---
-title: Amount input
-description: AmountInput is free-form money entry with strict, locale-aware parsing. Every change reports an AmountParseResult.
+title: Currency field
+description: PaymentCurrencyField is free-form money entry with strict, locale-aware parsing. Every change reports an AmountParseResult.
 ---
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+
+<Screens>
+  <Screen name="ios_catalog_currency_field_variants" dark="ios_catalog_currency_field_variants_dark" alt="Currency field sizes and formatting" />
+  <Screen name="ios_catalog_currency_field_variants_200" alt="Currency fields at 200 percent text" />
+</Screens>
+
 
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
-`AmountInput` lets people type an amount, for a top-up or a transfer. It parses strictly for the current locale and reports the result on every change; it never guesses what an unclear amount means.
+`PaymentCurrencyField` lets people type an amount, for a top-up or a transfer. It parses strictly for the current locale and reports the result on every change; it never guesses what an unclear amount means.
 
 <HostOwns>the currency, the minimum and maximum, and whether a valid amount may be paid. Enable your confirm action only for a valid result.</HostOwns>
 
 ## Usage
 
 ```dart
-AmountInput(
+PaymentCurrencyField(
   currency: 'IDR',
   minimum: const Money.idr(10000),
   maximum: const Money.idr(5000000),
@@ -63,9 +71,19 @@ The currency symbol or code, spaces and correctly placed group separators are ac
 
 ## API
 
-<Props names={['AmountInput', 'AmountParseResult', 'AmountIssue']} />
+<Props names={['PaymentCurrencyField', 'AmountParseResult', 'AmountIssue', 'AmountInput']} />
 
 ## See also
 
 - [Money](/foundations/money/) for `Money`, `MoneyFormat` and strict parsing.
 - [Checkout](/components/checkout/) for where an entered amount becomes a quote.
+
+## Behavior, states and migration
+
+Stripe CurrencyField maps to PaymentCurrencyField; description appears above limits. Size keeps the amountLarge style: small subtracts 8 dp from today's default input padding, medium keeps it, large adds 8 dp; even small stays at least 48 dp. Helpers and errors can add height.
+
+PadAllFractionDigits maps to padFractionDigits: on blur or submit, valid USD 5 becomes 5.00 (5,00 in Indonesian); IDR and invalid entries stay unchanged. This is formatting only and emits no onChanged callback. FractionDigitOffset is refused (D28). Currency allowlists arrive in Phase 4B; parse issues and values remain AmountParseResult.
+
+Migration: AmountInput remains a deprecated typedef until 0.2.0. Rename the constructor to PaymentCurrencyField; existing arguments keep compiling.
+
+The tested fixture with description and minimum helper measures small 92, medium 100 and large 108 dp at 1×; helper content contributes to these totals.

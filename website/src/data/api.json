@@ -874,6 +874,17 @@
             "doc": ""
           },
           {
+            "name": "indeterminate",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "indeterminate",
+            "doc": "A select-all dash. Value is ignored while mixed; tapping reports true."
+          },
+          {
             "name": "label",
             "type": "String",
             "required": true,
@@ -882,7 +893,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": "What checking the box agrees to, as a full phrase: \"Save this card for\nnext time\", not \"Save\"."
+            "doc": ""
           },
           {
             "name": "description",
@@ -905,6 +916,39 @@
             "isSuper": false,
             "fieldName": "disabledReason",
             "doc": "Replaces `description` while the row is disabled."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "What checking the box agrees to, as a full phrase: \"Save this card for\nnext time\", not \"Save\".\nValidation message, with a danger icon and edge."
+          },
+          {
+            "name": "required",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "required",
+            "doc": "Spoken as required; the host gates the next step."
+          },
+          {
+            "name": "hiddenElements",
+            "type": "Set<PaymentFieldPart>",
+            "required": false,
+            "default": "const {}",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hiddenElements",
+            "doc": "Visually hidden parts remain in semantics."
           }
         ],
         "doc": ""
@@ -913,6 +957,13 @@
     "getters": [],
     "statics": [],
     "members": [
+      {
+        "name": "indeterminate",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "A select-all dash. Value is ignored while mixed; tapping reports true."
+      },
       {
         "name": "value",
         "kind": "field",
@@ -928,11 +979,32 @@
         "doc": ""
       },
       {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "What checking the box agrees to, as a full phrase: \"Save this card for\nnext time\", not \"Save\".\nValidation message, with a danger icon and edge."
+      },
+      {
+        "name": "required",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Spoken as required; the host gates the next step."
+      },
+      {
+        "name": "hiddenElements",
+        "kind": "field",
+        "static": false,
+        "type": "Set<PaymentFieldPart>",
+        "doc": "Visually hidden parts remain in semantics."
+      },
+      {
         "name": "label",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "What checking the box agrees to, as a full phrase: \"Save this card for\nnext time\", not \"Save\"."
+        "doc": ""
       },
       {
         "name": "description",
@@ -1026,6 +1098,39 @@
             "isSuper": false,
             "fieldName": "disabledReason",
             "doc": "Replaces `description` while the option is disabled."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "Validation message, with a danger icon and edge."
+          },
+          {
+            "name": "required",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "required",
+            "doc": "Spoken as required; the host gates the next step."
+          },
+          {
+            "name": "hiddenElements",
+            "type": "Set<PaymentFieldPart>",
+            "required": false,
+            "default": "const {}",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hiddenElements",
+            "doc": "Visually hidden parts remain in semantics."
           }
         ],
         "doc": ""
@@ -1054,6 +1159,27 @@
         "static": false,
         "type": "ValueChanged<T>?",
         "doc": "Called with `value` when this option is chosen. Null disables it."
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Validation message, with a danger icon and edge."
+      },
+      {
+        "name": "required",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Spoken as required; the host gates the next step."
+      },
+      {
+        "name": "hiddenElements",
+        "kind": "field",
+        "static": false,
+        "type": "Set<PaymentFieldPart>",
+        "doc": "Visually hidden parts remain in semantics."
       },
       {
         "name": "label",
@@ -1143,6 +1269,39 @@
             "isSuper": false,
             "fieldName": "disabledReason",
             "doc": "Replaces `description` while the row is disabled."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "Validation message, with a danger icon and edge."
+          },
+          {
+            "name": "required",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "required",
+            "doc": "Spoken as required; the host gates the next step."
+          },
+          {
+            "name": "hiddenElements",
+            "type": "Set<PaymentFieldPart>",
+            "required": false,
+            "default": "const {}",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hiddenElements",
+            "doc": "Visually hidden parts remain in semantics."
           }
         ],
         "doc": ""
@@ -1164,6 +1323,27 @@
         "static": false,
         "type": "ValueChanged<bool>?",
         "doc": ""
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Validation message, with a danger icon and edge."
+      },
+      {
+        "name": "required",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Spoken as required; the host gates the next step."
+      },
+      {
+        "name": "hiddenElements",
+        "kind": "field",
+        "static": false,
+        "type": "Set<PaymentFieldPart>",
+        "doc": "Visually hidden parts remain in semantics."
       },
       {
         "name": "label",
@@ -1189,26 +1369,82 @@
     ],
     "copyWith": null
   },
+  "PaymentTab": {
+    "kind": "class",
+    "file": "lib/src/controls/controls.dart",
+    "doc": "A tab label and optional unavailability reason (Stripe Tab).",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentTab",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": ""
+          },
+          {
+            "name": "disabledReason",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "disabledReason",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "disabledReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
+    "copyWith": null
+  },
   "PaymentTabs": {
     "kind": "class",
     "file": "lib/src/controls/controls.dart",
-    "doc": "Text tabs on a hairline, for switching between views of the same\ncontent: filters of a list, or \"Card\" and \"Bank transfer\" details.\n\nControlled: the host owns `selectedIndex` and shows the matching content.\nThe selected tab changes color and gains an underline; the weight stays\nthe same so labels do not shift. The row scrolls sideways rather than\nwrapping, so long or enlarged labels never stack.",
-    "extends": "StatelessWidget",
+    "doc": "Controlled tabs. Arrows move focus, skipping disabled tabs; Enter or Space\nselects. Sizes change typography and padding, never the 48 dp target.",
+    "extends": "StatefulWidget",
     "constructors": [
       {
         "name": "PaymentTabs",
         "factory": false,
         "params": [
           {
-            "name": "labels",
-            "type": "List<String>",
+            "name": "tabs",
+            "type": "List<PaymentTab>",
             "required": true,
             "default": null,
             "named": true,
             "viaThis": true,
             "isSuper": false,
-            "fieldName": "labels",
-            "doc": "Short nouns, one or two words each."
+            "fieldName": "tabs",
+            "doc": ""
           },
           {
             "name": "selectedIndex",
@@ -1231,6 +1467,28 @@
             "isSuper": false,
             "fieldName": "onSelected",
             "doc": ""
+          },
+          {
+            "name": "size",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": ""
+          },
+          {
+            "name": "fitted",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "fitted",
+            "doc": ""
           }
         ],
         "doc": ""
@@ -1240,11 +1498,11 @@
     "statics": [],
     "members": [
       {
-        "name": "labels",
+        "name": "tabs",
         "kind": "field",
         "static": false,
-        "type": "List<String>",
-        "doc": "Short nouns, one or two words each."
+        "type": "List<PaymentTab>",
+        "doc": ""
       },
       {
         "name": "selectedIndex",
@@ -1258,6 +1516,76 @@
         "kind": "field",
         "static": false,
         "type": "ValueChanged<int>",
+        "doc": ""
+      },
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSize",
+        "doc": ""
+      },
+      {
+        "name": "fitted",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentTabPanels": {
+    "kind": "class",
+    "file": "lib/src/controls/controls.dart",
+    "doc": "Lazily builds selected panels and preserves visited state. Hidden panels\nare offstage, excluded from focus and semantics, and have paused tickers.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentTabPanels",
+        "factory": false,
+        "params": [
+          {
+            "name": "selectedIndex",
+            "type": "int",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "selectedIndex",
+            "doc": ""
+          },
+          {
+            "name": "children",
+            "type": "List<Widget>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "children",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "selectedIndex",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": ""
+      },
+      {
+        "name": "children",
+        "kind": "field",
+        "static": false,
+        "type": "List<Widget>",
         "doc": ""
       }
     ],
@@ -8722,14 +9050,14 @@
       }
     ]
   },
-  "AmountInput": {
+  "PaymentCurrencyField": {
     "kind": "class",
     "file": "lib/src/payment/checkout.dart",
     "doc": "Free-form amount entry with strict, locale-aware parsing.\n\nEvery change reports an `AmountParseResult`; hosts enable confirmation\nonly for valid results. Errors appear after the field loses focus, after\nsubmit, or when `showErrors` is set.",
     "extends": "StatefulWidget",
     "constructors": [
       {
-        "name": "AmountInput",
+        "name": "PaymentCurrencyField",
         "factory": false,
         "params": [
           {
@@ -8808,6 +9136,39 @@
             "isSuper": false,
             "fieldName": "showErrors",
             "doc": ""
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "Helper text above the host's limits."
+          },
+          {
+            "name": "size",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": "Medium retains the default height; small is 8 dp shorter, large 8 taller."
+          },
+          {
+            "name": "padFractionDigits",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "padFractionDigits",
+            "doc": "Pads missing minor digits on blur/submit without reporting a new value."
           }
         ],
         "doc": ""
@@ -8816,6 +9177,27 @@
     "getters": [],
     "statics": [],
     "members": [
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Helper text above the host's limits."
+      },
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSize",
+        "doc": "Medium retains the default height; small is 8 dp shorter, large 8 taller."
+      },
+      {
+        "name": "padFractionDigits",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Pads missing minor digits on blur/submit without reporting a new value."
+      },
       {
         "name": "currency",
         "kind": "field",
@@ -8867,6 +9249,13 @@
       }
     ],
     "copyWith": null
+  },
+  "AmountInput": {
+    "kind": "typedef",
+    "file": "lib/src/payment/checkout.dart",
+    "doc": "Deprecated alias of `PaymentCurrencyField`.",
+    "aliasOf": "PaymentCurrencyField",
+    "deprecated": "Use PaymentCurrencyField. Removed in 0.2.0."
   },
   "PaymentSummary": {
     "kind": "class",

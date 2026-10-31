@@ -16,6 +16,7 @@ part 'gallery_charts.dart';
 part 'gallery_capture.dart';
 part 'gallery_feedback.dart';
 part 'gallery_nav_controls.dart';
+part 'gallery_selection.dart';
 
 void _galleryFeedback(BuildContext context, String en, String id) {
   showPaymentToast(context, message: _t(context, en, id));
@@ -155,7 +156,14 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _SpinnerSpecimen(),
         _TooltipSpecimen(),
       ],
-      'controls' => const [_ButtonsDemo(), _ChoicesDemo(), _TabsDemo()],
+      'controls' => const [
+        _ButtonsDemo(),
+        _TabsSpecimen(),
+        _SelectionSpecimen('PaymentCheckbox'),
+        _SelectionSpecimen('PaymentRadio'),
+        _SelectionSpecimen('PaymentSwitch'),
+        _CurrencyFieldSpecimen(),
+      ],
       'navigation' => const [_NavigationDemo()],
       'sheets' => const [_SheetsDemo()],
       'media' => const [_VideoDemo()],
@@ -460,11 +468,11 @@ class _AmountDemoState extends State<_AmountDemo> {
   @override
   Widget build(BuildContext context) {
     return _Entry(
-      name: 'AmountInput',
+      name: 'PaymentCurrencyField',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AmountInput(
+          PaymentCurrencyField(
             currency: 'IDR',
             minimum: const Money.idr(10000),
             maximum: const Money.idr(2000000),

@@ -13,7 +13,8 @@ import HostOwns from '../../../components/HostOwns.astro';
 <HostOwns>the message and what its action does, for example restoring something the person hid.</HostOwns>
 
 <Screens>
-  <Screen name="ios_catalog_snackbar" alt="The gallery interaction section with a dark floating toast at the bottom reading Nothing changed, with an info icon, shown after the sign-out confirmation was canceled." caption="Neutral toast after a canceled confirmation" />
+  <Screen name="ios_catalog_toast_variants" dark="ios_catalog_toast_variants_dark" alt="toast variants in the native gallery" caption="Toast variants" />
+  <Screen name="ios_catalog_toast_variants_200" alt="toast at 200 percent text" caption="200% text" />
 </Screens>
 
 ## Usage
@@ -26,11 +27,11 @@ showPaymentToast(
 );
 ```
 
-It needs a `ScaffoldMessenger` above `context`, which `MaterialApp` provides. Any toast already showing is hidden first, so a quick second action never queues behind the first. The function returns the `ScaffoldFeatureController` from `showSnackBar` if you need to know when it closed.
+It needs a `ScaffoldMessenger` above `context`, which `MaterialApp` provides. Any toast already showing is hidden first, so a quick second action never queues behind the first. The function returns a `PaymentToastController`; its closed future completes when it leaves the screen.
 
 ## Tones
 
-`tone` only adds an icon. The toast keeps Material's snack bar colors.
+`tone` selects the icon. Ink tokens provide textPrimary fill and surface text in both themes.
 
 | Tone | Icon |
 | --- | --- |

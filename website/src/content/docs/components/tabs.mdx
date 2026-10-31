@@ -13,15 +13,16 @@ import HostOwns from '../../../components/HostOwns.astro';
 <HostOwns>the selected index and the content shown for it.</HostOwns>
 
 <Screens>
-  <Screen name="ios_catalog_controls_tabs" dark="ios_catalog_controls_tabs_dark" alt="Two tabs, Card selected with an underline and Bank transfer muted, above a sentence about paying by card; below them a divider, a Paid 2 days ago row with an info icon, and a spinner beside Checking payment status." caption="PaymentTabs above its content (follows the site theme)" />
+  <Screen name="ios_catalog_tabs_variants" dark="ios_catalog_tabs_variants_dark" alt="tabs variants in the native gallery" caption="Tabs variants" />
   <Screen name="ios_kit_history" dark="ios_kit_history_dark" alt="Transaction history in Indonesian: a search field, filter tabs with Semua selected and underlined, and a list of transactions." caption="The same tabs as history filters (Indonesian)" />
+  <Screen name="ios_catalog_tabs_variants_200" alt="tabs at 200 percent text" caption="200% text" />
 </Screens>
 
 ## Usage
 
 ```dart
 PaymentTabs(
-  labels: const ['Card', 'Bank transfer'],
+  tabs: const [PaymentTab(label: 'Card'), PaymentTab(label: 'Bank transfer')],
   selectedIndex: tab,
   onSelected: (i) => setState(() => tab = i),
 );
@@ -50,9 +51,17 @@ The row scrolls sideways instead of wrapping, so long or enlarged labels never s
 
 ## API
 
-<Props names={['PaymentTabs']} />
+<Props names={['PaymentTabs', 'PaymentTab', 'PaymentTabPanels', 'PaymentSize']} />
 
 ## See also
 
 - [Transaction history](/components/history/), which uses these tabs for its filters.
 - [Radio](/components/radio/) for a choice that is submitted with a form.
+
+## Behavior, states and migration
+
+Stripe TabList is PaymentTabs, Tab is PaymentTab, and TabPanels/TabPanel are PaymentTabPanels. selectedKey maps to selectedIndex, and onSelectionChange to onSelected. Sizes are small (caption, 8 dp sides), medium (label, 12 dp), and large (heading, 16 dp); every target stays at least 48 dp. Fitted divides the available width equally. Arrow keys move focus without selection and skip disabled tabs; Enter or Space selects. A disabledReason is spoken as a hint and shown in a tooltip; explain unavailability in visible content too.
+
+Panels build on first selection and keep state. Offstage, TickerMode and ExcludeFocus hide inactive panels and pause their tickers. Do not put a requirement exclusively in a hidden panel.
+
+Breaking migration: replace labels with tabs, wrapping each string in PaymentTab(label: ...).
