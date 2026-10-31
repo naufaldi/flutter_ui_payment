@@ -129,6 +129,44 @@ class MoneyFormat {
     return buffer.toString();
   }
 
+  /// Short chart-axis notation. Never use for an amount a customer pays or confirms.
+  String compact(Money money) {
+    final spec = CurrencySpec.of(money.currency);
+    var divisor = 1;
+    for (var i = 0; i < spec.minorDigits; i++) {
+      divisor *= 10;
+    }
+    final major = money.minorUnits.abs() ~/ divisor;
+    if (major < 1000) return format(money);
+    const units = [1000, 1000000, 1000000000, 1000000000000];
+    var index = units.lastIndexWhere((u) => major >= u);
+    late int rounded;
+    late int scale;
+    while (true) {
+      final unit = units[index];
+      final whole = major ~/ unit;
+      scale = whole >= 100 ? 1 : (whole >= 10 ? 10 : 100);
+      rounded = (major * scale + unit ~/ 2) ~/ unit;
+      if (rounded >= 1000 * scale && index < units.length - 1) {
+        index++;
+      } else {
+        break;
+      }
+    }
+    var value = (rounded ~/ scale).toString();
+    if (scale > 1) {
+      final fraction = (rounded % scale)
+          .toString()
+          .padLeft(scale == 100 ? 2 : 1, '0')
+          .replaceFirst(RegExp(r'0+$'), '');
+      if (fraction.isNotEmpty) value += '$decimalSeparator$fraction';
+    }
+    final suffix = (_isId
+        ? ['rb', 'jt', 'M', 'T']
+        : ['K', 'M', 'B', 'T'])[index];
+    return '${money.isNegative ? '−' : ''}${spec.symbol}$value${_isId ? ' ' : ''}$suffix';
+  }
+
   /// Plain digits for screen readers, e.g. "100000 IDR".
   String spoken(Money money) {
     final text = format(
