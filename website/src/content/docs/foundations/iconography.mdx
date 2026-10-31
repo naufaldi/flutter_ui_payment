@@ -41,7 +41,7 @@ Privacy mask? → xlarge
 
 An icon always has adjacent words or an accessible label/tooltip. Status always combines color, icon and text. Keep the outlined family; audited exceptions are copy_rounded (3B), warning_amber_outlined and hourglass_top_outlined (2C), upload_file (4B). Media keeps play_arrow, pause and replay. No glyph is swapped in Phase 1.
 
-Do: `Icons.chevron_right`, relying on SDK matchTextDirection in RTL. Don't: manually swap to chevron_left. ActionTile currently double flips this way; Phase 2D owns the fix and RTL test.
+Do: `Icons.chevron_right`, relying on SDK matchTextDirection in RTL. Don't: manually swap to chevron_left. PaymentListItem currently double flips this way; Phase 2D owns the fix and RTL test.
 
 ## Payment pattern mappings
 

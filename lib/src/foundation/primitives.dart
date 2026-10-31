@@ -634,7 +634,7 @@ class _PaymentSpinnerState extends State<PaymentSpinner> {
 /// Decorative: screen readers skip it.
 ///
 /// Between rows of a list use the default [height] of 1, as
-/// [ActionTileGroup] does. Between sections use `spacing * 3` so the rule
+/// [PaymentList] does. Between sections use `spacing * 3` so the rule
 /// sits in the middle of a section gap.
 class PaymentDivider extends StatelessWidget {
   const PaymentDivider({super.key, this.height = 1});

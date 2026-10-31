@@ -255,22 +255,22 @@ void main() {
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
         final cases = <Widget>[
-          ActionTile(
+          PaymentListItem(
             title: 'Title',
-            subtitle: 'Detail',
+            secondaryTitle: 'Detail',
             icon: Icons.receipt_long_outlined,
-            onTap: () {},
+            onPressed: () {},
           ),
-          const ActionTile(
+          const PaymentListItem(
             title: 'Title',
             icon: Icons.receipt_long_outlined,
             disabledReason: 'Detail',
           ),
-          ActionTile(
+          PaymentListItem(
             title: 'Title',
-            subtitle: 'Detail',
+            secondaryTitle: 'Detail',
             trailing: Switch(value: true, onChanged: (_) {}),
-            onTap: () {},
+            onPressed: () {},
           ),
           PaymentCheckbox(
             value: false,

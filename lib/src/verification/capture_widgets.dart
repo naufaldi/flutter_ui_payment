@@ -37,7 +37,7 @@ Future<CaptureSource?> showCaptureSourceSheet({
         children: [
           for (final source in CaptureSource.values)
             if (sources.contains(source))
-              ActionTile(
+              PaymentListItem(
                 title: switch (source) {
                   CaptureSource.camera => l10n.captureSourceCamera,
                   CaptureSource.gallery => l10n.captureSourceGallery,
@@ -49,7 +49,7 @@ Future<CaptureSource?> showCaptureSourceSheet({
                   CaptureSource.file => Icons.folder_open_outlined,
                 },
                 disabledReason: unavailable[source],
-                onTap: unavailable.containsKey(source)
+                onPressed: unavailable.containsKey(source)
                     ? null
                     : () => Navigator.pop(context, source),
               ),

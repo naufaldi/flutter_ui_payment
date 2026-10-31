@@ -251,7 +251,7 @@ class _ControlRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
-    // The mark centers on the label's first line, as ActionTile's icon does.
+    // The mark centers on the label's first line, as PaymentListItem's icon does.
     final line = PaymentType.firstLineHeight(context);
     // The row takes taps, focus and semantics; the painted mark takes none.
     final painted = ExcludeFocus(

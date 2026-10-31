@@ -9,10 +9,12 @@ class RowShell extends StatelessWidget {
     required this.onTap,
     required this.child,
     this.centerShortRows = true,
+    this.minHeight = 48,
   });
   final VoidCallback? onTap;
   final Widget child;
   final bool centerShortRows;
+  final double minHeight;
   @override
   Widget build(BuildContext context) {
     final padded = Padding(
@@ -27,7 +29,7 @@ class RowShell extends StatelessWidget {
         focusColor: Colors.transparent,
         onTap: onTap,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 48),
+          constraints: BoxConstraints(minHeight: minHeight),
           child: centerShortRows
               ? Align(
                   alignment: AlignmentDirectional.centerStart,

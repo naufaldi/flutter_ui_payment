@@ -84,8 +84,8 @@ export default defineConfig({
               label: 'Actions',
               items: [
                 { label: 'Button', slug: 'components/button' },
-                { label: 'Action tile', slug: 'components/action-tile' },
-                { label: 'Action menu', slug: 'components/action-menu' },
+                { label: 'List', slug: 'components/action-tile' },
+                { label: 'Menu', slug: 'components/action-menu' },
               ],
             },
             {
@@ -115,7 +115,7 @@ export default defineConfig({
                 { label: 'Amount text', slug: 'components/amount-text' },
                 { label: 'Info row', slug: 'components/info-row' },
                 { label: 'Section', slug: 'components/section' },
-                { label: 'Expandable section', slug: 'components/expandable-section' },
+                { label: 'Accordion', slug: 'components/expandable-section' },
                 { label: 'Divider', slug: 'components/divider' },
                 { label: 'Tooltip', slug: 'components/tooltip' },
                 { label: 'Countdown', slug: 'components/countdown' },

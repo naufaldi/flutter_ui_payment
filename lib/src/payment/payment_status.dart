@@ -105,7 +105,7 @@ class PaymentInstructions extends StatelessWidget {
           // Collapsed so the status action stays on the first screen; the
           // account and amount above are what most people need.
           if (instructions.steps.isNotEmpty)
-            ExpandableSection(
+            PaymentAccordionItem(
               title: l10n.howToPay,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -22,11 +22,11 @@ Sheet or dialog? → overlay
 | Surface | Recipe | Where | Don't |
 | --- | --- | --- | --- |
 | Flat (default) | On `surface`, no box | `PaymentSection` (`primitives.dart:647-650`), rows, lists | Box a section; it nests inside host cards |
-| Ruled | `outline` 1 px top or bottom | `ExpandableSection`, `PaymentTabs`, action bar, sheet footer | Use `border` |
+| Ruled | `outline` 1 px top or bottom | `PaymentAccordionItem`, `PaymentTabs`, action bar, sheet footer | Use `border` |
 | Bordered box | `outline` 1 px + `borderRadius` 8 | Method list, `PromoCard` card layout (`promo.dart:231-234`) | Use for non-selectable content |
 | Tinted | `tone.container` fill, no edge | `PaymentBanner`, `PaymentBadge` | Use for the normal path (decisions.md: "tinted boxes are for problems") |
 | Muted | `surfaceMuted` fill | Disabled fill, skeleton, selected nav item | — |
-| Floating | `surface` + `outline` edge + elevation 2 | `ActionMenu` only (`interaction.dart:211`) | Add a shadow anywhere else |
+| Floating | `surface` + `outline` edge + elevation 2 | `PaymentMenu` only (`interaction.dart:211`) | Add a shadow anywhere else |
 | Overlay | `surface`, elevation 0, top radius 12, scrim | Bottom sheet (`sheets.dart:163`), side sheet with `Colors.black54` barrier (`:192`), dialog | Tint the surface (`surfaceTintColor` is transparent everywhere) |
 
 Do: a flat `PaymentSection` as in checkout. Don't: wrap every section in a Material Card. Nested boxes compete with the primary action and make host composition harder.

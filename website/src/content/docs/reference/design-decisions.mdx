@@ -49,7 +49,7 @@ This site follows the same rules: white surface, ink accent, rules instead of ca
 ## Engineering decisions
 
 - **Composition over configuration.** `PaymentSheet(header:, body:, footer:)` takes widgets, not a config object.
-- **Controlled where the host owns state.** `TransactionHistory` and navigation selection are fully controlled; `ExpandableSection` supports both modes.
+- **Controlled where the host owns state.** `TransactionHistory` and navigation selection are fully controlled; `PaymentAccordionItem` supports both modes.
 - **Host verdicts, not UI math.** `BalanceCard` takes `BalanceState`, `PromoCodeInput` takes `PromoCodeStatus`, and a discount reaches the total only as a new host quote.
 - **Media through an adapter.** `PaymentVideoController` keeps the package free of native plugins.
 - **One package.** New modules live in the same package; splitting pays off only once a consumer needs part of it without the rest.

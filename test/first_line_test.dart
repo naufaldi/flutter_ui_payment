@@ -23,11 +23,11 @@ void main() {
       final line = scale == 1 ? 20.0 : 40.0;
       final cases = <(Widget, IconData)>[
         (
-          ActionTile(
+          PaymentListItem(
             title: 'Title',
-            subtitle: 'Subtitle',
+            secondaryTitle: 'Subtitle',
             icon: Icons.receipt_long_outlined,
-            onTap: () {},
+            onPressed: () {},
           ),
           Icons.receipt_long_outlined,
         ),
@@ -85,7 +85,7 @@ void main() {
           line,
           reason: widget.runtimeType.toString(),
         );
-        if (widget is ActionTile) {
+        if (widget is PaymentListItem) {
           expect(
             tester
                 .getSize(

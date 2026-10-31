@@ -1,5 +1,12 @@
 ## 0.1.0 (unreleased)
 
+Design system Phase 2D-1 (31 Oct 2026):
+
+* Add PaymentList/PaymentListItem with values, sizes and id dispatch; PaymentMenu with item groups; PaymentAccordion/PaymentAccordionItem with separate actions.
+* ActionTileGroup, ActionMenu, ActionMenuEntry and ExpandableSection remain deprecated aliases until 0.2.0. ActionTile wraps PaymentListItem with subtitle/onTap mapped to secondaryTitle/onPressed.
+* Rows with neither handler nor disabledReason are now read-only, with an ink title and no button role. Disabled rows retain their reason.
+* Fix the RTL chevron's double mirror. Separate the example's destructive menu item into a trailing group.
+
 Design system Phase 2C (31 Oct 2026):
 
 * Add PaymentBadge with urgent and optional tone icons, PaymentBanner, showPaymentToast and PaymentToastController, and tooltip placement/type/delay.

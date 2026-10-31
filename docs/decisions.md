@@ -279,3 +279,11 @@ Owner scope revision: retain behavioral tests and zero-issue analysis; run nativ
 Plan correction: button_sizes_test also asserts PaymentSpinner.size. Migrate its 16-dp expectation to PaymentSize.small; the rendered dimension stays 16 dp. This call site was omitted from the verified list.
 
 The existing row-family oracle also covers refund badges at 2×. Their text moves 8.4 dp because the planned badge icon cap grows from 14 to 22.4. Update only those expected positions by the intentional delta.
+
+### Phase 2D implementation decisions
+
+Use typedefs for constructor supersets and a wrapper for ActionTile's renamed arguments. A row without a handler and without a reason is read-only; its value stays in merged semantics. A value precedes the navigation chevron. Menu entries use an abstract class with a private constructor for a closed, parser-compatible hierarchy. Destructive actions belong in a separate final group.
+
+Accordion actions are siblings of the header toggle. A LayoutBuilder exists only when actions exist; widths below 400 dp or large text stack actions. Leading-slot unification remains deferred to Phase 4A because painted marks and list icons have different established metrics.
+
+Plan correction: give PaymentMenu an owned trigger FocusNode and MenuAnchor.childFocusNode, so closing restores focus to the actual trigger. The previous stateless implementation had not supplied that return target. Behavioral tests exercise grouped actions and Escape from an active item. Geometry-only new guards are omitted under the owner's revised scope.
