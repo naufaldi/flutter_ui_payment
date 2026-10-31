@@ -1964,8 +1964,8 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Chart dartdoc (B1), token spacing (B2), remove MeterSegment.color (Q9)
 
 **Phase 3A: text fields**
-- [ ] PaymentTextField (size, type without password, description, required, hiddenElements) + .search; docs, tests, specimen
-- [ ] Migrate PaymentCurrencyField, PromoCodeInput, IdentityForm, TransactionHistory
+- [x] PaymentTextField (size, type without password, description, required, hiddenElements) + .search; docs, tests, specimen
+- [x] Migrate PaymentCurrencyField, PromoCodeInput, IdentityForm, TransactionHistory
 
 **Phase 3B: icon button, link and copy**
 - [ ] PaymentIconButton; migrate 10 sites (D18)
