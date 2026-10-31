@@ -11,7 +11,10 @@ Every public component of `flutter_ui_payment`, what it is for, what the host st
 | Foundation | `PaymentTheme`, `PaymentMotion`, `PaymentLocalizations`, `KitStrings` | Brand tokens, motion tokens, en/id strings and formatters | Brand values, locale | Fondasi |
 | Foundation | `Money`, `MoneyFormat`, `AmountText` | Integer money, strict parsing, amounts that scale down instead of clipping | Currency, amounts | Fondasi |
 | Foundation | `InfoRow`, `MiddleEllipsisText` | Label/value rows; values keep up to 60% of the row; long file names keep their extension (`ktp_demo_ret…ake.png`) | — | Fondasi, Verifikasi |
-| Foundation | `PaymentButton`, `StatusBadge`, `NoticeBanner`, `PaymentSection` (`trailing:` header action), `StatusBand`, `PrivacyMask`, `CountdownText` | Primitives with idle/busy/disabled states; `StatusBand` is hatched for an unknown outcome | Callbacks | Fondasi |
+| Foundation | `PaymentButton`, `StatusBadge`, `NoticeBanner`, `PaymentSection` (`trailing:` header action), `StatusBand`, `PrivacyMask`, `CountdownText` | Primitives with idle/busy/disabled states; buttons are primary, secondary, quiet or destructive; `StatusBand` is hatched for an unknown outcome | Callbacks | Fondasi |
+| Foundation | `PaymentSpinner`, `PaymentDivider` | Indeterminate wait (still hourglass under reduced motion); 1 px outline rule | — | Kontrol |
+| Controls | `PaymentCheckbox`, `PaymentRadio`, `PaymentSwitch` | Label rows, one 48 dp target and one screen-reader node each; disabled with a reason | The value | Kontrol |
+| Controls | `PaymentTabs`, `PaymentTooltip` | Text tabs on a hairline (also the history filters); long-press/hover hint in ink | Selected index and the content | Kontrol, Riwayat |
 | Interaction | `ActionTile`, `ActionTileGroup` | Row with icon, subtitle, disabled reason, destructive tone | What the tap does | Interaksi |
 | Interaction | `ActionMenu`, `ActionMenuEntry` | Overflow menu (keyboard arrows, Escape, focus return via `MenuAnchor`) | Entries and callbacks | Interaksi |
 | Interaction | `showPaymentConfirmDialog` | Yes/no before an irreversible action; destructive puts focus on Cancel | The action itself | Interaksi, Sheet & drawer |

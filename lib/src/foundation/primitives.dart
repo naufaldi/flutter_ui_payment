@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'focus_ring.dart';
+import 'kit_strings.dart';
 import 'money.dart';
 import 'payment_localizations.dart';
 import 'payment_motion.dart';
@@ -234,7 +235,23 @@ class InfoRow extends StatelessWidget {
   }
 }
 
-enum PaymentButtonVariant { primary, secondary, quiet }
+/// How much weight a [PaymentButton] carries. Use one [primary] per screen.
+enum PaymentButtonVariant {
+  /// The one main action: filled with the accent.
+  primary,
+
+  /// An alternative to the main action: outlined.
+  secondary,
+
+  /// A low-emphasis action such as "Cancel" or "Not now": text only.
+  quiet,
+
+  /// An action that cannot be undone, such as removing a saved card: filled
+  /// in the danger tone. The label must say what happens, so color is never
+  /// the only signal. Usually the confirm step after a
+  /// [showPaymentConfirmDialog], never the pay button.
+  destructive,
+}
 
 /// Button with consistent idle/busy/disabled feedback.
 ///
@@ -292,6 +309,7 @@ class _PaymentButtonState extends State<PaymentButton> {
     final motion = PaymentMotion.of(context);
     final foreground = switch (widget.variant) {
       PaymentButtonVariant.primary => theme.onAccent,
+      PaymentButtonVariant.destructive => theme.surface,
       _ => theme.accent,
     };
     final content = Row(
@@ -319,16 +337,9 @@ class _PaymentButtonState extends State<PaymentButton> {
           opacity: _busy ? 1 : 0,
           duration: motion.quick,
           curve: PaymentMotion.easeOut,
+          // The button announces busy through its own value.
           child: _busy
-              ? (motion.reduced
-                    ? Icon(Icons.hourglass_top, size: 20, color: foreground)
-                    : SizedBox.square(
-                        dimension: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.4,
-                          color: foreground,
-                        ),
-                      ))
+              ? ExcludeSemantics(child: PaymentSpinner(color: foreground))
               : const SizedBox.square(dimension: 20),
         ),
       ],
@@ -346,6 +357,23 @@ class _PaymentButtonState extends State<PaymentButton> {
           FilledButton.styleFrom(
             backgroundColor: theme.accent,
             foregroundColor: theme.onAccent,
+            disabledBackgroundColor: theme.surfaceMuted,
+            disabledForegroundColor: theme.disabled,
+            minimumSize: minimumSize,
+            shape: shape,
+            textStyle: label,
+          ),
+        ),
+        child: child,
+      ),
+      // Same colors as the confirm button of a destructive
+      // showPaymentConfirmDialog: surface on the danger foreground.
+      PaymentButtonVariant.destructive => FilledButton(
+        onPressed: onPressed,
+        style: PaymentFocusRing.withoutFocusFill(
+          FilledButton.styleFrom(
+            backgroundColor: theme.danger.foreground,
+            foregroundColor: theme.surface,
             disabledBackgroundColor: theme.surfaceMuted,
             disabledForegroundColor: theme.disabled,
             minimumSize: minimumSize,
@@ -404,6 +432,69 @@ class _PaymentButtonState extends State<PaymentButton> {
       ),
     );
   }
+}
+
+/// Indeterminate progress for a wait with no known length: a thin ring, or a
+/// still hourglass when the platform or host asks for reduced motion.
+///
+/// Prefer a [LoadingSkeleton] where content is loading into a known shape,
+/// and [PaymentButton]'s `busy` state for an action that is running; both
+/// already show progress. Screen readers hear [semanticLabel], "Loading" by
+/// default.
+class PaymentSpinner extends StatelessWidget {
+  const PaymentSpinner({
+    super.key,
+    this.size = 20,
+    this.color,
+    this.semanticLabel,
+  });
+
+  /// Width and height. The ring's stroke is 12% of it.
+  final double size;
+
+  /// Defaults to [PaymentTheme.textSecondary]: waiting is not a brand moment.
+  final Color? color;
+  final String? semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    final color = this.color ?? theme.textSecondary;
+    return Semantics(
+      label: semanticLabel ?? PaymentLocalizations.of(context).loading,
+      child: ExcludeSemantics(
+        child: PaymentMotion.of(context).reduced
+            ? Icon(Icons.hourglass_top, size: size, color: color)
+            : SizedBox.square(
+                dimension: size,
+                child: CircularProgressIndicator(
+                  strokeWidth: size * 0.12,
+                  color: color,
+                ),
+              ),
+      ),
+    );
+  }
+}
+
+/// A 1 px hairline in [PaymentTheme.outline] that separates rows or groups.
+/// Decorative: screen readers skip it.
+///
+/// Between rows of a list use the default [height] of 1, as
+/// [ActionTileGroup] does. Between sections use `spacing * 3` so the rule
+/// sits in the middle of a section gap.
+class PaymentDivider extends StatelessWidget {
+  const PaymentDivider({super.key, this.height = 1});
+
+  /// Total height, with the rule centered in it.
+  final double height;
+
+  @override
+  Widget build(BuildContext context) => Divider(
+    height: height,
+    thickness: 1,
+    color: PaymentTheme.of(context).outline,
+  );
 }
 
 /// Small tag showing a status with icon and text; color only supports the
