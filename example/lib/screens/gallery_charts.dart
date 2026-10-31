@@ -151,8 +151,36 @@ class _SpendingInContextDemo extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        const _HistoryDemo(),
+        const _ContextHistory(),
       ],
+    ),
+  );
+}
+
+class _ContextHistory extends StatefulWidget {
+  const _ContextHistory();
+  @override
+  State<_ContextHistory> createState() => _ContextHistoryState();
+}
+
+class _ContextHistoryState extends State<_ContextHistory> {
+  String query = '';
+  TransactionFilter filter = TransactionFilter.all;
+  @override
+  Widget build(BuildContext context) => TransactionHistory(
+    records: TransactionRecord.where(
+      _records.take(3),
+      query: query,
+      filter: filter,
+    ),
+    query: query,
+    filter: filter,
+    onQueryChanged: (value) => setState(() => query = value),
+    onFilterChanged: (value) => setState(() => filter = value),
+    onOpen: (record) => _galleryFeedback(
+      context,
+      'Host: open transaction',
+      'Host: buka transaksi',
     ),
   );
 }

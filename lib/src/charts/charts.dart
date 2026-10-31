@@ -312,13 +312,26 @@ class PaymentMeterChart extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Flexible(
-                          child: Text(
-                            '${s.label} · ${l10n.moneyFormat.format(s.value)}${s.status == ChartPointStatus.pending
-                                ? ' · ${l10n.chartPendingKey}'
-                                : s.status == ChartPointStatus.unknown
-                                ? ' · ${l10n.chartUnknownKey}'
-                                : ''}',
-                            style: PaymentType.of(context).caption,
+                          child: Wrap(
+                            spacing: 4,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              Text(
+                                s.label,
+                                style: PaymentType.of(context).caption,
+                              ),
+                              AmountText(
+                                s.value,
+                                style: PaymentType.of(context).caption,
+                              ),
+                              if (s.status != ChartPointStatus.settled)
+                                Text(
+                                  s.status == ChartPointStatus.pending
+                                      ? l10n.chartPendingKey
+                                      : l10n.chartUnknownKey,
+                                  style: PaymentType.of(context).caption,
+                                ),
+                            ],
                           ),
                         ),
                       ],

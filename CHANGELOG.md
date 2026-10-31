@@ -2,6 +2,14 @@
 
 First local version. Not published.
 
+Charts and KYC capture (31 Oct 2026):
+
+* New `PaymentLineChart`, `PaymentBarChart`, `PaymentMeterChart`, `PaymentSparkline` and `ChartModule`: money-only customer spending summaries with distinct pending, unknown and missing marks, host headlines, inspection and accessible summaries.
+* New `MoneyFormat.compact` for chart axes and an internal shared hatch painter; StatusBand keeps its stripe geometry.
+* New `showCaptureSourceSheet`, `CaptureFrameOverlay` and `KycCaptureGuide`: source intent, passive KTP/selfie framing, host photo review and upload states. No device access or image analysis.
+* Example: synthetic camera photos, host rejection/retake flow, charts and capture gallery specimens. Permission follows source selection.
+* Docs: chart layout pattern and component references with light/dark and large-text captures.
+
 Visual redesign, "Stripe-calm · Hairline" (owner-approved, 30 Oct 2026; research in `docs/design-research.md`):
 
 * Sections are flat (no card); the order summary leads with the total; methods are one bordered list with radios and a 2 px outline on the selected row.

@@ -1,0 +1,50 @@
+---
+title: Meter chart
+description: Shows a snapshot of category amounts without a computed headline or percentages.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`PaymentMeterChart` shows a snapshot of category amounts without a computed headline or percentages.
+
+<HostOwns>amounts, currency, period labels, settled/pending/unknown status, and every headline or delta.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_chart_meter" alt="Meter chart specimen with synthetic spending amounts in light mode" caption="Meter chart, English" />
+  <Screen name="ios_catalog_chart_meter_dark" alt="Meter chart specimen with synthetic spending amounts in dark mode" caption="Meter chart, dark" />
+</Screens>
+
+## Usage
+
+```dart
+PaymentMeterChart(segments: [
+  MeterSegment(label: 'QRIS', value: const Money.idr(350000)),
+  MeterSegment(label: 'Transfer', value: const Money.idr(450000)),
+]);
+```
+
+Use intrinsic height (`ChartModule(height: null)`) so the wrapping legend has room. Offer at most five categories; group the rest into “Other”. Segment widths use the supplied amounts, while the legend shows amounts, never percentages.
+
+## States and variants
+
+Settled marks are solid, pending marks are outlined or dashed, and unknown marks are hatched or dotted. A null point is a gap, never zero. Use one currency per chart. Bar and meter amounts must be non-negative; line charts accept negative amounts.
+
+## Content guidelines
+
+Use short period labels and a clear title. Explain what is settled in the headline caption. The host supplies the headline; the kit never adds plotted values to produce a customer total.
+
+## Accessibility
+
+A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. Pointer inspection on line/bar charts is supplemental; it has no keyboard focus target. Status is conveyed by shape and words as well as color.
+
+## API
+
+<Props names={['PaymentMeterChart']} />
+
+## See also
+
+- [Chart layout](/patterns/chart-layout/) for height, state and headline composition.
+- [Money](/foundations/money/) for precise and compact amounts.

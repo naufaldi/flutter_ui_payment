@@ -91,10 +91,16 @@ class CaptureFrameOverlay extends StatelessWidget {
 }
 
 class _CapturePainter extends CustomPainter {
-  _CapturePainter(this.kind, this.overPreview, this.theme);
+  _CapturePainter(
+    this.kind,
+    this.overPreview,
+    this.theme, {
+    this.illustration = true,
+  });
   final CaptureKind kind;
   final bool overPreview;
   final PaymentTheme theme;
+  final bool illustration;
   @override
   void paint(Canvas canvas, Size size) {
     final frames = captureFrameRects(kind, size);
@@ -108,7 +114,7 @@ class _CapturePainter extends CustomPainter {
         ..addRect(Offset.zero & size)
         ..addPath(cutouts, Offset.zero);
       canvas.drawPath(scrim, Paint()..color = Colors.black54);
-    } else {
+    } else if (illustration) {
       canvas.drawRect(Offset.zero & size, Paint()..color = theme.surfaceMuted);
       canvas.drawRRect(card, Paint()..color = theme.surface);
       if (frames.face != null) {
@@ -177,7 +183,8 @@ class _CapturePainter extends CustomPainter {
   bool shouldRepaint(_CapturePainter oldDelegate) =>
       kind != oldDelegate.kind ||
       overPreview != oldDelegate.overPreview ||
-      theme != oldDelegate.theme;
+      theme != oldDelegate.theme ||
+      illustration != oldDelegate.illustration;
 }
 
 /// Framing, host photo review and upload state. Host owns all verdicts.
@@ -258,7 +265,18 @@ class KycCaptureGuide extends StatelessWidget {
                 else
                   ?preview,
                 if (photo == null)
-                  CaptureFrameOverlay(kind: kind, overPreview: preview != null),
+                  CaptureFrameOverlay(kind: kind, overPreview: preview != null)
+                else
+                  IgnorePointer(
+                    child: CustomPaint(
+                      painter: _CapturePainter(
+                        kind,
+                        false,
+                        theme,
+                        illustration: false,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

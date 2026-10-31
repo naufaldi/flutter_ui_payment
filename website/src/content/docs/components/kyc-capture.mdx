@@ -1,0 +1,71 @@
+---
+title: KYC capture
+description: Passive KTP and selfie framing, review actions and host upload states.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`KycCaptureGuide` composes framing, tips, photo review, upload progress and host rejection messages. `CaptureFrameOverlay` can sit over a host camera preview. Neither widget reads or judges the image.
+
+<HostOwns>camera, permission, photo bytes, upload, safe rejection reasons and every verdict. No OCR, liveness, face matching or photo scoring is performed.</HostOwns>
+
+<Screens><Screen name="ios_catalog_capture_ktp" alt="Illustrated KTP frame and four framing tips" caption="ID-1 card framing" /><Screen name="ios_catalog_capture_selfie" alt="Face oval above the ID card frame with selfie tips" caption="Selfie with KTP" /><Screen name="ios_catalog_capture_ktp_dark" alt="KTP framing in dark mode" caption="Dark mode" /><Screen name="ios_catalog_capture_selfie_dark" alt="Selfie framing in dark mode" caption="Selfie, dark" /><Screen name="ios_catalog_capture_review" alt="Synthetic specimen photo with Use photo and Retake actions" caption="Host photo review" /><Screen name="ios_catalog_capture_rejected" alt="Host rejection reason for a synthetic blurred photo" caption="Host verdict" /><Screen name="ios_catalog_capture_permission" alt="Permission issue with an Open settings action" caption="Host permission state" /><Screen name="ios_catalog_capture_selfie_200" alt="Selfie capture at 200 percent text" caption="200% text" /></Screens>
+
+## Usage
+
+The flow is onPick → source sheet → host permission → guide or OS picker. The example keeps photo bytes in the capture screen’s local state, with synthetic fixtures only.
+
+```dart
+final source = await showCaptureSourceSheet(context: context);
+if (source == null || !context.mounted) return;
+if (source != CaptureSource.file) {
+  final allowed = await c.requestCapture(req.key);
+  if (!allowed || !context.mounted) return;
+}
+if (source == CaptureSource.camera) {
+  await Navigator.of(context).push(MaterialPageRoute<void>(
+    builder: (_) => KycCaptureScreen(
+      c: c, requirement: req,
+      kind: req.key == selfieSlot ? CaptureKind.selfieWithIdCard : CaptureKind.idCard,
+    ),
+  ));
+  return;
+}
+// Host opens its gallery or file picker here.
+```
+
+```dart
+KycCaptureGuide(
+  kind: CaptureKind.idCard,
+  state: slot,
+  photo: hostPhoto,
+  preview: hostPreview,
+  onCapture: capture,
+  onUsePhoto: upload,
+  onRetake: retake,
+);
+```
+
+## States and variants
+
+Framing offers Take photo. A local photo offers Use photo and Retake. Uploading and uploaded states offer Retake. An interrupted upload offers Try again. A host rejection shows its safe reason and Retake when permitted. Permanent permission denial offers Open settings. The host scrolls the guide.
+
+## Content guidelines
+
+Tips describe framing only. Uploaded means the host finished uploading, never that identity was checked. Pass only safe host messages. Do not use real KTP images in demos. Mask NIK using `PrivacyMask` or draw it masked. The card uses the ID-1 ratio of 85.6 × 54; the selfie keeps the card below the chin.
+
+## Accessibility
+
+The frame has a kind-specific label and ignores pointer events so the host preview receives gestures. Tips wrap at large text. Rejection notices announce their host message. The preview scrim uses black and a white outline to remain visible over arbitrary camera content.
+
+## API
+
+<Props names={['KycCaptureGuide','CaptureFrameOverlay','CaptureKind']} />
+
+## See also
+
+- [Capture source sheet](/components/capture-source-sheet/).
+- [Verification](/components/verification/) for document slots and host status.

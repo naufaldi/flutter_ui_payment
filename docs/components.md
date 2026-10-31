@@ -204,3 +204,13 @@ TransactionHistory(
 ```
 
 A record with `status: null` is "not confirmed yet". It falls under **In progress**, never **Unsuccessful**, and its detail should offer a status check, never paying again. Refunds appear as their own section next to the original payment. `TransactionHistory` lays records out in a column; for long lists, build `TransactionListItem`s in a `ListView.builder`.
+
+### Charts and capture
+
+| Public API | Purpose |
+| --- | --- |
+| `ChartPoint`, `ChartPointStatus`, `MeterSegment`, `ChartState` | Host-owned money and rendering states. |
+| `PaymentLineChart`, `PaymentBarChart` | Ordered trends and zero-baseline comparisons. |
+| `PaymentMeterChart`, `PaymentSparkline`, `ChartModule` | Category snapshot, compact trend and stable state container. |
+| `CaptureSource`, `CaptureKind`, `showCaptureSourceSheet` | Source intent before host permission. |
+| `CaptureFrameOverlay`, `KycCaptureGuide` | Passive framing, review and host upload state. |

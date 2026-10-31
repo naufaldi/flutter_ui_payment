@@ -1,9 +1,9 @@
-import 'hatch.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 
 import 'focus_ring.dart';
+import 'hatch.dart';
 import 'kit_strings.dart';
 import 'money.dart';
 import 'payment_localizations.dart';

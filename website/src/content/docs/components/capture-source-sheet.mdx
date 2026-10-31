@@ -1,0 +1,47 @@
+---
+title: Capture source sheet
+description: Ask where a photo should come from before host permission checks.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`showCaptureSourceSheet` reports the source the customer chose. It opens no device source itself.
+
+<HostOwns>available sources, permission, OS picker, camera, and opening settings.</HostOwns>
+
+<Screens><Screen name="ios_catalog_capture_source_sheet" alt="Add a photo sheet offering camera, gallery and file in order" caption="Source choice before permission" /><Screen name="ios_catalog_capture_source_sheet_dark" alt="Add a photo sheet in dark mode" caption="Dark mode" /></Screens>
+
+## Usage
+
+```dart
+final source = await showCaptureSourceSheet(
+  context: context,
+  sources: {CaptureSource.camera, CaptureSource.file},
+  unavailable: {CaptureSource.camera: 'Camera access is off'},
+  onOpenSettings: openHostSettings,
+);
+```
+
+## States and variants
+
+Rows always appear camera, gallery, file. Blocked rows show the host reason. Close, dismissal and Open settings return null. Skip the sheet when only one source is offered. The source set must be non-empty.
+
+## Content guidelines
+
+Describe permission availability in plain language. Offer only sources the host supports. Ask permission after the customer chooses a source.
+
+## Accessibility
+
+Action rows have full touch targets and disabled reasons. The sheet uses the existing close button, focus and dismissal behavior.
+
+## API
+
+<Props names={['showCaptureSourceSheet','CaptureSource']} />
+
+## See also
+
+- [KYC capture](/components/kyc-capture/) for framing, review and upload.
+- [Sheet](/components/sheets/) for the shared panel layout.

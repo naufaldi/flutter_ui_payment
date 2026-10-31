@@ -127,6 +127,7 @@ class _CaptureGuideDemoState extends State<_CaptureGuideDemo> {
         label: (value) => value,
       ),
       child: KycCaptureGuide(
+        aspectRatio: state == 'selfie' ? 1 : 1.6,
         kind: state == 'selfie'
             ? CaptureKind.selfieWithIdCard
             : CaptureKind.idCard,

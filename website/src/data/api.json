@@ -1,4 +1,571 @@
 {
+  "ChartPointStatus": {
+    "kind": "enum",
+    "file": "lib/src/charts/chart_models.dart",
+    "doc": "",
+    "values": [
+      {
+        "name": "settled",
+        "doc": ""
+      },
+      {
+        "name": "pending",
+        "doc": ""
+      },
+      {
+        "name": "unknown",
+        "doc": ""
+      }
+    ]
+  },
+  "ChartPoint": {
+    "kind": "class",
+    "file": "lib/src/charts/chart_models.dart",
+    "doc": "",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "ChartPoint",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": ""
+          },
+          {
+            "name": "value",
+            "type": "Money?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": "Null is missing data, never zero."
+          },
+          {
+            "name": "status",
+            "type": "ChartPointStatus",
+            "required": false,
+            "default": "ChartPointStatus.settled",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "status",
+            "doc": ""
+          },
+          {
+            "name": "spokenLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "spokenLabel",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "MeterSegment": {
+    "kind": "class",
+    "file": "lib/src/charts/chart_models.dart",
+    "doc": "",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "MeterSegment",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": ""
+          },
+          {
+            "name": "value",
+            "type": "Money",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": ""
+          },
+          {
+            "name": "status",
+            "type": "ChartPointStatus",
+            "required": false,
+            "default": "ChartPointStatus.settled",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "status",
+            "doc": ""
+          },
+          {
+            "name": "color",
+            "type": "Color?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "color",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "ChartState": {
+    "kind": "enum",
+    "file": "lib/src/charts/chart_models.dart",
+    "doc": "",
+    "values": [
+      {
+        "name": "loading",
+        "doc": ""
+      },
+      {
+        "name": "ready",
+        "doc": ""
+      },
+      {
+        "name": "empty",
+        "doc": ""
+      },
+      {
+        "name": "error",
+        "doc": ""
+      }
+    ]
+  },
+  "PaymentLineChart": {
+    "kind": "class",
+    "file": "lib/src/charts/charts.dart",
+    "doc": "",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentLineChart",
+        "factory": false,
+        "params": [
+          {
+            "name": "points",
+            "type": "List<ChartPoint>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "points",
+            "doc": ""
+          },
+          {
+            "name": "zeroBased",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "zeroBased",
+            "doc": ""
+          },
+          {
+            "name": "inspectable",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "inspectable",
+            "doc": ""
+          },
+          {
+            "name": "semanticLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "semanticLabel",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "PaymentBarChart": {
+    "kind": "class",
+    "file": "lib/src/charts/charts.dart",
+    "doc": "",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentBarChart",
+        "factory": false,
+        "params": [
+          {
+            "name": "points",
+            "type": "List<ChartPoint>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "points",
+            "doc": ""
+          },
+          {
+            "name": "inspectable",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "inspectable",
+            "doc": ""
+          },
+          {
+            "name": "semanticLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "semanticLabel",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "PaymentSparkline": {
+    "kind": "class",
+    "file": "lib/src/charts/charts.dart",
+    "doc": "",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentSparkline",
+        "factory": false,
+        "params": [
+          {
+            "name": "points",
+            "type": "List<ChartPoint>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "points",
+            "doc": ""
+          },
+          {
+            "name": "width",
+            "type": "double",
+            "required": false,
+            "default": "80",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "width",
+            "doc": ""
+          },
+          {
+            "name": "height",
+            "type": "double",
+            "required": false,
+            "default": "24",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "height",
+            "doc": ""
+          },
+          {
+            "name": "semanticLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "semanticLabel",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "PaymentMeterChart": {
+    "kind": "class",
+    "file": "lib/src/charts/charts.dart",
+    "doc": "",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentMeterChart",
+        "factory": false,
+        "params": [
+          {
+            "name": "segments",
+            "type": "List<MeterSegment>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "segments",
+            "doc": ""
+          },
+          {
+            "name": "showLegend",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "showLegend",
+            "doc": ""
+          },
+          {
+            "name": "semanticLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "semanticLabel",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "ChartModule": {
+    "kind": "class",
+    "file": "lib/src/charts/charts.dart",
+    "doc": "",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "ChartModule",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": ""
+          },
+          {
+            "name": "state",
+            "type": "ChartState",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "state",
+            "doc": ""
+          },
+          {
+            "name": "chart",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "chart",
+            "doc": ""
+          },
+          {
+            "name": "headline",
+            "type": "Money?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "headline",
+            "doc": "Host-provided amount. The kit never computes a headline total."
+          },
+          {
+            "name": "headlineCaption",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "headlineCaption",
+            "doc": ""
+          },
+          {
+            "name": "showHeadline",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "showHeadline",
+            "doc": ""
+          },
+          {
+            "name": "delta",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "delta",
+            "doc": ""
+          },
+          {
+            "name": "deltaTone",
+            "type": "StatusTone",
+            "required": false,
+            "default": "StatusTone.neutral",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "deltaTone",
+            "doc": ""
+          },
+          {
+            "name": "height",
+            "type": "double?",
+            "required": false,
+            "default": "compactHeight",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "height",
+            "doc": ""
+          },
+          {
+            "name": "emptyTitle",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "emptyTitle",
+            "doc": ""
+          },
+          {
+            "name": "emptyMessage",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "emptyMessage",
+            "doc": ""
+          },
+          {
+            "name": "errorMessage",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorMessage",
+            "doc": ""
+          },
+          {
+            "name": "onRetry",
+            "type": "FutureOr<void> Function()?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onRetry",
+            "doc": ""
+          },
+          {
+            "name": "trailing",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "trailing",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [
+      "compactHeight",
+      "featuredHeight"
+    ],
+    "copyWith": null
+  },
   "PaymentCheckbox": {
     "kind": "class",
     "file": "lib/src/controls/controls.dart",
@@ -431,6 +998,39 @@
     "on": "PaymentLocalizations",
     "doc": "English/Indonesian strings for the interaction, navigation, sheet, media,\npromotion and transaction components. Kept apart from the payment strings\nso each file stays readable; hosts use them through\n`PaymentLocalizations.of` like every other kit string.",
     "members": [
+      "chartLine",
+      "chartBar",
+      "chartMeter",
+      "chartSparkline",
+      "chartNoData",
+      "chartPendingKey",
+      "chartUnknownKey",
+      "chartLoadFailed",
+      "chartEmptyTitle",
+      "chartRange",
+      "chartLowest",
+      "chartHighest",
+      "chartLatest",
+      "chartPendingCount",
+      "chartUnknownCount",
+      "chartMissingCount",
+      "meterItem",
+      "captureSourceTitle",
+      "captureSourceCamera",
+      "captureSourceGallery",
+      "captureSourceFile",
+      "captureTipLight",
+      "captureTipGlare",
+      "captureTipCorners",
+      "captureTipFaceAndCard",
+      "captureTipNoCover",
+      "captureTake",
+      "captureRetake",
+      "captureUse",
+      "captureTitle",
+      "captureFramingHint",
+      "capturePhotoLabel",
+      "captureFrameLabel",
       "close",
       "cancel",
       "confirm",
@@ -6781,6 +7381,305 @@
         "doc": ""
       }
     ]
+  },
+  "CaptureSource": {
+    "kind": "enum",
+    "file": "lib/src/verification/capture_models.dart",
+    "doc": "The host opens the chosen source and requests permission after selection.",
+    "values": [
+      {
+        "name": "camera",
+        "doc": ""
+      },
+      {
+        "name": "gallery",
+        "doc": ""
+      },
+      {
+        "name": "file",
+        "doc": ""
+      }
+    ]
+  },
+  "CaptureKind": {
+    "kind": "enum",
+    "file": "lib/src/verification/capture_models.dart",
+    "doc": "Framing guidance only. No image analysis is performed.",
+    "values": [
+      {
+        "name": "idCard",
+        "doc": ""
+      },
+      {
+        "name": "selfieWithIdCard",
+        "doc": ""
+      }
+    ]
+  },
+  "showCaptureSourceSheet": {
+    "kind": "function",
+    "file": "lib/src/verification/capture_widgets.dart",
+    "doc": "Reports intent only. Host checks permission after source selection.\nRows always appear camera, gallery, file. Skip this sheet for one source.",
+    "returns": "Future<CaptureSource?>",
+    "typeParams": "",
+    "params": [
+      {
+        "name": "context",
+        "type": "BuildContext",
+        "required": true,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "sources",
+        "type": "Set<CaptureSource>",
+        "required": false,
+        "default": "const { CaptureSource.camera, CaptureSource.gallery, CaptureSource.file, }",
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "unavailable",
+        "type": "Map<CaptureSource, String>",
+        "required": false,
+        "default": "const {}",
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "type": "String?",
+        "required": false,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "onOpenSettings",
+        "type": "VoidCallback?",
+        "required": false,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      }
+    ]
+  },
+  "CaptureFrameOverlay": {
+    "kind": "class",
+    "file": "lib/src/verification/capture_widgets.dart",
+    "doc": "Passive framing over a host preview. Never responds to image content.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "CaptureFrameOverlay",
+        "factory": false,
+        "params": [
+          {
+            "name": "kind",
+            "type": "CaptureKind",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "kind",
+            "doc": ""
+          },
+          {
+            "name": "overPreview",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "overPreview",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
+  },
+  "KycCaptureGuide": {
+    "kind": "class",
+    "file": "lib/src/verification/capture_widgets.dart",
+    "doc": "Framing, host photo review and upload state. Host owns all verdicts.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "KycCaptureGuide",
+        "factory": false,
+        "params": [
+          {
+            "name": "kind",
+            "type": "CaptureKind",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "kind",
+            "doc": ""
+          },
+          {
+            "name": "state",
+            "type": "DocumentSlotState",
+            "required": false,
+            "default": "const DocumentSlotState.empty()",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "state",
+            "doc": ""
+          },
+          {
+            "name": "photo",
+            "type": "ImageProvider?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "photo",
+            "doc": ""
+          },
+          {
+            "name": "preview",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "preview",
+            "doc": ""
+          },
+          {
+            "name": "requirement",
+            "type": "DocumentRequirement?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "requirement",
+            "doc": ""
+          },
+          {
+            "name": "tips",
+            "type": "List<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "tips",
+            "doc": ""
+          },
+          {
+            "name": "needsUpdate",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "needsUpdate",
+            "doc": ""
+          },
+          {
+            "name": "updateReason",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "updateReason",
+            "doc": ""
+          },
+          {
+            "name": "onCapture",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onCapture",
+            "doc": ""
+          },
+          {
+            "name": "onRetake",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onRetake",
+            "doc": ""
+          },
+          {
+            "name": "onUsePhoto",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onUsePhoto",
+            "doc": ""
+          },
+          {
+            "name": "onOpenSettings",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onOpenSettings",
+            "doc": ""
+          },
+          {
+            "name": "aspectRatio",
+            "type": "double",
+            "required": false,
+            "default": "3 / 4",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "aspectRatio",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "copyWith": null
   },
   "VerificationStatus": {
     "kind": "enum",

@@ -25,15 +25,29 @@ void main() {
     Future<void> shot(String name) async {
       await settle(tester);
       await tester.pump(const Duration(milliseconds: 400));
+      debugPrint('Capture: $name');
       await binding.takeScreenshot('${platform}_catalog_$name');
     }
 
     Future<void> open(String label) async {
       await tester.tap(find.byTooltip('Open navigation'));
       await settle(tester);
-      await tester.tap(
-        find.descendant(of: find.byType(Drawer), matching: find.text(label)),
+      final item = find.descendant(
+        of: find.byType(Drawer),
+        matching: find.text(label),
       );
+      await tester.scrollUntilVisible(
+        item,
+        180,
+        scrollable: find
+            .descendant(
+              of: find.byType(Drawer),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.ensureVisible(item);
+      await tester.tap(item);
       await settle(tester);
     }
 
@@ -152,6 +166,14 @@ void main() {
     await top('KycCaptureGuide');
     await tapVisible(tester, find.text('selfie'));
     await top('KycCaptureGuide');
+    await Scrollable.ensureVisible(
+      tester.element(
+        find.text(
+          'Keep your face in the oval and hold the card below your chin.',
+        ),
+      ),
+      alignment: 0,
+    );
     await shot('capture_selfie_200');
     app.updateSettings(const DemoSettings(locale: Locale('en')));
     await settle(tester);

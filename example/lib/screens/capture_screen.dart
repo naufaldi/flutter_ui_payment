@@ -41,13 +41,12 @@ class _KycCaptureScreenState extends State<KycCaptureScreen> {
 
   Future<void> use() async {
     final operation = widget.c.uploadCapture(widget.requirement, widget.kind);
-    setState(
-      () => requestId = widget.c.documents[widget.requirement.key]?.requestId,
-    );
+    final uploadId = widget.c.documents[widget.requirement.key]?.requestId;
+    setState(() => requestId = uploadId);
     await operation;
-    if (!mounted || requestId == null) return;
+    if (!mounted || uploadId == null || requestId != uploadId) return;
     final slot = widget.c.documents[widget.requirement.key];
-    if (slot?.requestId == requestId &&
+    if (slot?.requestId == uploadId &&
         slot?.phase == DocumentSlotPhase.uploaded) {
       Navigator.pop(context);
     }

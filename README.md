@@ -234,3 +234,13 @@ Not done yet: an external developer integrating a checkout from this README (the
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+### Charts and capture
+
+| Public API | Purpose |
+| --- | --- |
+| `ChartPoint`, `ChartPointStatus`, `MeterSegment`, `ChartState` | Host-owned money and rendering states. |
+| `PaymentLineChart`, `PaymentBarChart` | Ordered trends and zero-baseline comparisons. |
+| `PaymentMeterChart`, `PaymentSparkline`, `ChartModule` | Category snapshot, compact trend and stable state container. |
+| `CaptureSource`, `CaptureKind`, `showCaptureSourceSheet` | Source intent before host permission. |
+| `CaptureFrameOverlay`, `KycCaptureGuide` | Passive framing, review and host upload state. |
