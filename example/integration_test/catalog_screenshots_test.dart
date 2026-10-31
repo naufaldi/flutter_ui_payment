@@ -51,20 +51,45 @@ void main() {
       await settle(tester);
     }
 
-    // Scrolls the gallery until the entry's caption is at the top.
+    // Move the outer gallery directly: specimen bodies own their own scrolls.
     Future<void> top(String entry) async {
+      final gallery = find
+          .descendant(
+            of: find.byType(ListView).first,
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      final position = tester.state<ScrollableState>(gallery).position;
+      position.jumpTo(position.minScrollExtent);
+      await tester.pump();
       final caption = find.text(entry);
-      await tester.scrollUntilVisible(
-        caption,
-        200,
-        scrollable: find
-            .descendant(
-              of: find.byType(ListView),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
+      for (
+        var attempt = 0;
+        caption.evaluate().isEmpty && attempt < 100;
+        attempt++
+      ) {
+        position.jumpTo(
+          (position.pixels + 200).clamp(
+            position.minScrollExtent,
+            position.maxScrollExtent,
+          ),
+        );
+        await tester.pump();
+      }
+      expect(caption, findsOneWidget);
       await Scrollable.ensureVisible(tester.element(caption));
+      final specimen = find
+          .ancestor(of: caption, matching: find.byType(Column))
+          .first;
+      for (final element
+          in find
+              .descendant(of: specimen, matching: find.byType(Scrollable))
+              .evaluate()) {
+        final state = tester.state<ScrollableState>(
+          find.byWidget(element.widget),
+        );
+        state.position.jumpTo(state.position.minScrollExtent);
+      }
       await settle(tester);
     }
 
@@ -163,6 +188,125 @@ void main() {
         'Flips to the start when there is no room',
         'tooltip_flip',
       );
+      return;
+    }
+    if (const bool.fromEnvironment('CAPTURE_PHASE4CD_ONLY')) {
+      const onlyEntry = String.fromEnvironment('CAPTURE_PHASE4CD_ENTRY');
+      for (final (look, settings) in [
+        ('', const DemoSettings(locale: Locale('en'))),
+        (
+          '_dark',
+          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+        ),
+        ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
+      ]) {
+        const onlyLook = String.fromEnvironment('CAPTURE_PHASE4CD_LOOK');
+        if (onlyLook.isNotEmpty &&
+            (onlyLook == '_light' ? look.isNotEmpty : onlyLook != look)) {
+          continue;
+        }
+        app.updateSettings(settings);
+        await settle(tester);
+        await open('Content');
+        if (onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('property_list')) {
+          await top('PaymentPropertyList · variants');
+          await shot('property_list_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty || onlyEntry.split(',').contains('table')) {
+          await top('PaymentTable · variants');
+          await shot('table_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty || onlyEntry.split(',').contains('data_table')) {
+          await top('PaymentDataTable · variants');
+          await shot('data_table_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty || onlyEntry.split(',').contains('task_list')) {
+          await top('PaymentTaskList · variants');
+          await shot('task_list_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('button_group')) {
+          await top('PaymentButtonGroup · variants');
+          await shot('button_group_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        await open('Views & pages');
+        if (onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('context_view')) {
+          await top('PaymentContextView · variants');
+          await shot('context_view_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('full_page_view')) {
+          await top('PaymentFullPageView · variants');
+          await shot('full_page_view_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty || onlyEntry.split(',').contains('focus_view')) {
+          await top('PaymentFocusView · variants');
+          await shot('focus_view_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('settings_view')) {
+          await top('PaymentSettingsView · variants');
+          await shot('settings_view_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('sign_in_view')) {
+          await top('PaymentSignInView · variants');
+          await shot('sign_in_view_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('onboarding_view')) {
+          await top('PaymentOnboardingView · variants');
+          await shot('onboarding_view_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty || onlyEntry.split(',').contains('detail_page')) {
+          await top('PaymentDetailPage · variants');
+          await shot('detail_page_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('overview_page')) {
+          await top('PaymentOverviewPage · variants');
+          await shot('overview_page_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('detail_page_property_list')) {
+          await top('PaymentDetailPagePropertyList · variants');
+          await shot('detail_page_property_list_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        if (onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('detail_page_table')) {
+          await top('PaymentDetailPageTable · variants');
+          await shot('detail_page_table_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        await open('Layout');
+        if (onlyEntry.isEmpty || onlyEntry.split(',').contains('code')) {
+          await top('PaymentCode · variants');
+          await shot('code_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        await open('Controls');
+        if (onlyEntry.isEmpty || onlyEntry.split(',').contains('tabs')) {
+          await top('PaymentTabs · variants');
+          await shot('tabs_variants$look');
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+      }
       return;
     }
     if (const bool.fromEnvironment('CAPTURE_PHASE4_ONLY')) {

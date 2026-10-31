@@ -3,6 +3,7 @@ title: Task list
 description: Add responsive ButtonGroup and host-owned TaskList; migrate status and dialog actions.
 ---
 
+import Screen from '../../../components/Screen.astro';
 import Props from '../../../components/Props.astro';
 
 Host-owned KYC setup tasks. Variants: notStarted, inProgress, blocked, complete. Nothing else exists. Distinct marks and spoken status distinguish progress without relying on color. Complete tasks hide their child tasks. The host decides every status.
@@ -36,3 +37,8 @@ Labels wrap at large text. Controls retain their keyboard and screen-reader beha
 ## See also
 
 - [Components](/components/)
+
+
+<Screen name="ios_catalog_task_list_variants" alt="task list specimen" />
+<Screen name="ios_catalog_task_list_variants_dark" alt="task list specimen_dark" />
+<Screen name="ios_catalog_task_list_variants_200" alt="task list specimen_200" />

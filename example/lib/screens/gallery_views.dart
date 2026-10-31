@@ -319,7 +319,10 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
           primary: [
             PaymentPageModule(
               title: 'This month',
-              child: PaymentBarChart(points: _chartFixture('typical')),
+              child: SizedBox(
+                height: 240,
+                child: PaymentBarChart(points: _chartFixture('typical')),
+              ),
             ),
             const PaymentPageModule(
               title: 'Recent transactions',

@@ -1319,7 +1319,7 @@ PaymentChipList({Key? key, required List<PaymentChip> children})
 
 **`PaymentButtonGroup`** (Stripe ButtonGroup; D6 superseded)
 
-- **Variants:** `direction: Axis` (Stripe row / column); `collapse: PaymentButtonGroupCollapse.auto / .none`. With `auto`, buttons that do not fit move into a `PaymentMenu`, from the end; the first button never collapses. With `none`, a row that does not fit stacks vertically. `menuTrigger` → `menuTrigger: PaymentIconButton?`.
+- **Variants:** `direction: Axis` (Stripe row / column); `collapse: PaymentButtonGroupCollapse.auto / .none`. With `auto`, buttons that do not fit move into a `PaymentMenu`, from the end; the first button never collapses. With `none`, a row that does not fit stacks vertically. `menuTrigger` → `menuTrigger: Widget Function(VoidCallback, FocusNode)?`.
 - **Rules (asserted in debug):** one `primary`; no `destructive` beside a `primary`; domain order with primary first.
 - **Payment use:** receipt actions (Share, Download, Report a problem); the status screen stack (`payment_status.dart:400`, column); dialog actions (D23); `PaymentDetailPage` actions.
 
@@ -1337,15 +1337,18 @@ PaymentTableCell(Widget child, {bool numeric = false})
 
 PaymentDataTable<T>({Key? key, required List<PaymentDataColumn<T>> columns,
   required List<T> rows, required String Function(T row) rowKey,
-  PaymentPagination pagination = const PaymentPagination.local(pageSize: 25),
+  PaymentPagination? pagination = const PaymentPagination.local(pageSize: 25),
   ValueChanged<T>? onRowPressed, List<PaymentRowActionEntry<T>> rowActions = const [],
   Set<String>? selection, ValueChanged<Set<String>>? onSelectionChanged,
   bool pending = false, PaymentEmptyMessage? emptyMessage, String? errorText, VoidCallback? onRetry,
   bool enableColumnReorder = false, bool enableColumnResize = false,
-  ValueChanged<List<String>>? onColumnOrderChanged})
-PaymentDataColumn<T>({required String key, required String label, required PaymentCellType cell,
+  ValueChanged<List<String>>? onColumnOrderChanged, List<PaymentButton> batchActions = const [],
+  PaymentDataSort? initialSort, ValueChanged<PaymentDataSort?>? onSortChanged,
+  bool Function(T row, String query)? filter, String? filterQuery, String? caption})
+PaymentDataColumn<T>({required String key, required String label, PaymentCellType cell = PaymentCellType.text,
   required Object? Function(T row) value, Map<String, StatusTone>? statusMap,
-  bool hideHeaderLabel = false, bool pinned = false})
+  bool hideHeaderLabel = false, bool pinned = false, void Function(T row)? onPressed,
+  bool sortable = false, int Function(T a, T b)? compare})
 
 PaymentTaskList({Key? key, required List<PaymentTaskListItem> items})
 PaymentTaskListItem({required String title, PaymentTaskStatus status = PaymentTaskStatus.notStarted,
@@ -1354,7 +1357,7 @@ PaymentTaskListItem({required String title, PaymentTaskStatus status = PaymentTa
 PaymentButtonGroup({Key? key, required List<PaymentButton> children,
   Axis direction = Axis.horizontal,
   PaymentButtonGroupCollapse collapse = PaymentButtonGroupCollapse.auto,
-  PaymentIconButton? menuTrigger})
+  Widget Function(VoidCallback toggle, FocusNode focusNode)? menuTrigger})
 ```
 
 ### 6.13 Views (Phase 4D)
@@ -1440,13 +1443,14 @@ PaymentContextView({Key? key, required String title, required Widget child,
 PaymentFullPageView({Key? key, required String title, required Widget child,
   PaymentButton? pageAction})
 
-Future<T?> showPaymentFocusView<T>(BuildContext context, {required WidgetBuilder builder})
+Future<T?> showPaymentFocusView<T>(BuildContext context, {required WidgetBuilder builder,
+  PaymentFocusViewSize size = PaymentFocusViewSize.small})
 PaymentFocusView({Key? key, required String title, required Widget child,
   PaymentButton? primaryAction, PaymentButton? secondaryAction, Widget? footer,
-  PaymentFocusViewSize size = PaymentFocusViewSize.small, PaymentConfirmClose? confirmClose})
+  PaymentConfirmClose? confirmClose})
 
 PaymentSettingsView({Key? key, required String title, required Widget child,
-  Future<void> Function()? onSave, String? statusMessage, StatusTone statusTone = StatusTone.neutral})
+  Future<void> Function()? onSave, String? saveLabel, String? statusMessage, StatusTone statusTone = StatusTone.neutral})
 
 PaymentSignInView({Key? key, required PaymentButton primaryAction, String? title,
   String? description, Widget? brand, PaymentSignInLearnMore? learnMore,
@@ -1460,7 +1464,7 @@ PaymentOnboardingView({Key? key, required String title, required List<PaymentTas
 
 ### 6.14 Pages (Phase 4D)
 
-Pages follow D31. Stripe uses them inside FullPageView or a tab, and so does the kit: a page goes in a `PaymentFullPageView`, a `PaymentTabPanels` panel or a host body.
+Pages follow D31. OverviewPage is non-scrolling and goes inside FullPageView or a host scroll region. DetailPage owns its scroll and must not be nested in FullPageView.
 
 **`PaymentPageModule`** (Stripe PageModule, the shared sub-component)
 
@@ -1486,7 +1490,7 @@ Pages follow D31. Stripe uses them inside FullPageView or a tab, and so does the
 **`PaymentDetailPagePropertyList`** (Stripe DetailPagePropertyList)
 
 - **Variants:**
-  - `items` (label, values[] each with text or action, description) → `items: List<PaymentDetailProperty>`, where each value is text or a `PaymentLink`.
+  - `items` (label, values[] each with text or action, description) → `items: List<PaymentDetailProperty>`, where each value is a `PaymentDetailValue` containing text or a `PaymentLink`, plus optional `subText`.
   - `orientation` → `orientation: Axis`.
   - `pending` (required in Stripe) → required `pending`.
   - `createAction` → `onCreate` (a `small` secondary button in the header).
@@ -2071,3 +2075,5 @@ Views own their body scroll with an unbounded non-scrolling fallback; hosts own 
 ### Phase 4D-2 implementation notes
 
 DetailPage owns its vertical scroll and must not be nested in FullPageView; OverviewPage and modules never scroll vertically. Primary/secondary columns use 2:1 at 840 dp and otherwise stack. Breadcrumbs collapse to the immediate parent. Pending uses skeleton blocks. Module errors use warning tone (D25). DetailValue adds subText, and extraActions use a menu. Code wraps by default and noWrap fades overflowing edges. Fitted tabs measure labels at the current text scale and fall back to horizontal scrolling. Material-owned exception: outlined floating labels are single-line; keep labels short (24 characters or fewer) and put detail in description. The attempted two-line 60-character label at 320 dp and 200% still exceeded max lines, so it was reverted. Test deviation: the synthetic Flutter test font makes Bank transfer too wide for three equal tabs at 393 dp; the fitting test uses 800 dp while the final captures inspect real simulator typography. Captures are refreshed only for the 4C–4D set plus Code/Tabs under the owner one-run rule.
+
+The Phase 4C–4D API sketches above are synchronized with the implemented optional sort/filter, focus size placement, menu trigger builder, detail values and scroll ownership.

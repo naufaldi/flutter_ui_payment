@@ -3,6 +3,7 @@ title: Data table
 description: Add responsive DataTable with typed cells, paging, selection, actions and local sort/filter. Closes #17.
 ---
 
+import Screen from '../../../components/Screen.astro';
 import Props from '../../../components/Props.astro';
 
 Settlement statements use host data. Variants: text, link, date, id, status, currency cells; local, offset, cursor pagination. Nothing else exists. Under local paging or no pagination, a host predicate filters rows and sortable columns reorder copies. Under offset/cursor paging, rows are displayed as supplied and sort/page changes call the host. Selection is controlled, and select-all covers the current page. Narrow and large-text layouts collapse to labeled rows. Column reorder/resize are deferred to Phase 6 and their flags must remain false. Stripe batchable maps to selection/onSelectionChanged; loading maps to pending; linkMap maps to column callbacks. No network or destination handling is performed.
@@ -42,3 +43,8 @@ Labels wrap at large text. Controls retain their keyboard and screen-reader beha
 ## See also
 
 - [Components](/components/)
+
+
+<Screen name="ios_catalog_data_table_variants" alt="data table specimen" />
+<Screen name="ios_catalog_data_table_variants_dark" alt="data table specimen_dark" />
+<Screen name="ios_catalog_data_table_variants_200" alt="data table specimen_200" />

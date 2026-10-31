@@ -3,6 +3,7 @@ title: Detail page
 description: Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
 ---
 
+import Screen from '../../../components/Screen.astro';
 import Props from '../../../components/Props.astro';
 
 Detail of a transaction, with header actions and host breadcrumbs. Do not nest in FullPageView: DetailPage owns its scroll. At 840 dp primary and secondary modules share space 2:1; narrower layouts stack primary before secondary. Narrow breadcrumbs show only the immediate parent, spoken as Back to that label. Pending preserves the structural header and replaces modules with skeletons.
@@ -36,3 +37,8 @@ Labels wrap at large text. Controls retain their keyboard and screen-reader beha
 ## See also
 
 - [Components](/components/)
+
+
+<Screen name="ios_catalog_detail_page_variants" alt="detail page specimen" />
+<Screen name="ios_catalog_detail_page_variants_dark" alt="detail page specimen_dark" />
+<Screen name="ios_catalog_detail_page_variants_200" alt="detail page specimen_200" />
