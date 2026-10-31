@@ -1,0 +1,32 @@
+---
+import tokens from '../data/tokens.json';
+interface Props {
+  group: 'color' | 'type' | 'space' | 'radius' | 'motion';
+  rows: { token: string; use: string; dont?: string }[];
+}
+const {group, rows} = Astro.props;
+const values = tokens[group] as Record<string, any>;
+for (const row of rows) {
+  if (!(row.token in values)) throw new Error(`Unknown ${group} token: ${row.token}`);
+}
+for (const token of Object.keys(values)) {
+  if (!rows.some((row) => row.token === token)) throw new Error(`Missing ${group} token row: ${token}`);
+}
+if (new Set(rows.map((row) => row.token)).size !== rows.length) throw new Error(`Duplicate ${group} token row`);
+const display = (value: any) => Array.isArray(value) ? `Cubic(${value.join(', ')})` : typeof value === 'object' ? `${value.size} / ${value.line} · weight ${value.weight} · tracking ${value.tracking}` : `${value}${group === 'motion' && typeof value === 'number' && value > 1 ? ' ms' : ''}`;
+---
+<div class:list={['fup-tokens', group === 'color' && 'fup-swatches', 'not-content']}>
+  <table>
+    <thead><tr><th>Token</th>{group === 'color' ? <><th>Light</th><th>Dark</th></> : <th>Value</th>}<th>Use</th><th>Don't</th></tr></thead>
+    <tbody>{rows.map((row) => <tr>
+      <td><code>{row.token}</code></td>
+      {group === 'color' ? ['light','dark'].map((mode) => <td class="fup-swatch-cell"><span class="fup-swatch" style={`background:${values[row.token][mode]}`} aria-hidden="true" /><code>{values[row.token][mode]}</code></td>) : <td><code>{display(values[row.token])}</code></td>}
+      <td>{row.use}</td><td>{row.dont ?? '—'}</td>
+    </tr>)}</tbody>
+  </table>
+</div>
+
+<style>
+  .fup-tokens { overflow-x: auto; margin-block: 1.5rem; }
+  .fup-tokens table { min-width: 34rem; width: 100%; }
+</style>

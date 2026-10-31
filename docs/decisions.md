@@ -224,3 +224,14 @@ have matchTextDirection: a double flip. Fix in 2D with an RTL test.
 
 None. Simulator comparison is optional and omitted; permanent geometry and
 old-glyph tests pass before and after the refactor.
+
+
+### Phase 1B foundation documentation
+
+Hairline token values are exported from the actual example theme and checked
+for drift by example/test/token_export_test.dart. API member tables retain
+existing constructor, static and getter metadata for snippet validation.
+TokenTable rejects unknown, missing and duplicate rows. At 320 px, generated
+tables scroll inside their own wrapper, matching the existing swatches and
+Starlight table pattern, so the document itself stays within the viewport.
+No plan deviation; no library rendering changes in 1B.

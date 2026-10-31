@@ -7,6 +7,7 @@ interface Props {
   names: string[];
   /** Heading level for each declaration. */
   level?: 3 | 4;
+  members?: boolean;
 }
 
 type Param = {
@@ -28,10 +29,10 @@ type Entry = {
   returns?: string;
   typeParams?: string;
   on?: string;
-  members?: string[];
+  members?: (string | { name: string; type: string; value?: string; doc: string })[];
 };
 
-const { names, level = 3 } = Astro.props;
+const { names, level = 3, members = false } = Astro.props;
 const all = api as Record<string, Entry>;
 for (const n of names) {
   if (!all[n]) throw new Error(`Props: "${n}" is not a public declaration of flutter_ui_payment`);
@@ -95,10 +96,18 @@ function signature(e: Entry, name: string) {
               {e.members.map((m, i) => (
                 <>
                   {i > 0 && ', '}
-                  <code>{m}</code>
+                  <code>{typeof m === 'string' ? m : m.name}</code>
                 </>
               ))}
             </p>
+          )}
+          {members && e.kind !== 'extension' && e.members && (
+            <table>
+              <thead><tr><th>Member</th><th>Type / value</th><th>Description</th></tr></thead>
+              <tbody>{e.members.filter((m) => typeof m !== 'string').map((m) => typeof m !== 'string' && (
+                <tr><td><code>{m.name}</code></td><td><code>{m.value ?? m.type}</code></td><td set:html={doc(m.doc)} /></tr>
+              ))}</tbody>
+            </table>
           )}
           {(e.kind === 'function' ? [{ name, params: e.params ?? [], doc: '' }] : ctors).map(
             (c) =>

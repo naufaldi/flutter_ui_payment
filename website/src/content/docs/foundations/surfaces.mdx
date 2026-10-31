@@ -1,0 +1,39 @@
+---
+title: Surfaces
+description: Flat surfaces, quiet rules and the existing overlay recipes.
+---
+
+import Props from '../../../components/Props.astro';
+import TokenTable from '../../../components/TokenTable.astro';
+import Screen from '../../../components/Screen.astro';
+
+Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
+
+```text
+Normal content? → flat surface
+Just separate content? → ruled outline
+Selectable grouped box? → bordered box
+Status requiring attention? → tinted tone
+Disabled, loading or selected nav? → muted
+Action menu? → floating
+Sheet or dialog? → overlay
+```
+
+| Surface | Recipe | Where | Don't |
+| --- | --- | --- | --- |
+| Flat (default) | On `surface`, no box | `PaymentSection` (`primitives.dart:647-650`), rows, lists | Box a section; it nests inside host cards |
+| Ruled | `outline` 1 px top or bottom | `ExpandableSection`, `PaymentTabs`, action bar, sheet footer | Use `border` |
+| Bordered box | `outline` 1 px + `borderRadius` 8 | Method list, `PromoCard` card layout (`promo.dart:231-234`) | Use for non-selectable content |
+| Tinted | `tone.container` fill, no edge | `NoticeBanner`, `StatusBadge` | Use for the normal path (decisions.md: "tinted boxes are for problems") |
+| Muted | `surfaceMuted` fill | Disabled fill, skeleton, selected nav item | — |
+| Floating | `surface` + `outline` edge + elevation 2 | `ActionMenu` only (`interaction.dart:211`) | Add a shadow anywhere else |
+| Overlay | `surface`, elevation 0, top radius 12, scrim | Bottom sheet (`sheets.dart:163`), side sheet with `Colors.black54` barrier (`:192`), dialog | Tint the surface (`surfaceTintColor` is transparent everywhere) |
+
+Do: a flat `PaymentSection` as in checkout. Don't: wrap every section in a Material Card. Nested boxes compete with the primary action and make host composition harder.
+
+## Stripe mapping
+
+Stripe Box backgroundColor maps to semantic surface or tone fills; keyline maps to the existing outline, border or danger foreground; boxShadow is refused (D28). **New** `PaymentBox` and **New** `PaymentKeyline` will expose these recipes. They do not exist yet. No new shadows or elevation tokens are added. The seven recipes above are closed. Nothing else exists.
+
+<Screen name="ios_refined_checkout_light" alt="Checkout with flat sections and ruled action area." />
+<Screen name="ios_catalog_menu_open" alt="Action menu as the existing floating surface exception." />

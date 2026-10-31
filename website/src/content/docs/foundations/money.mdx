@@ -1,5 +1,5 @@
 ---
-title: Money
+title: Money and dates
 description: Money is an integer number of minor units plus a currency code. MoneyFormat formats per locale, speaks amounts for screen readers and parses strictly.
 ---
 
@@ -83,3 +83,38 @@ Use `MoneyFormat.compact` for chart axes only, never an amount the customer pays
 const format = MoneyFormat('id');
 format.compact(const Money.idr(1250000000)); // Rp1,25 M
 ```
+
+## Which formatter
+
+Use semantic number and date APIs only.
+
+```text
+Customer pays or confirms? → format / AmountText
+Screen reader? → spoken
+Chart axis only? → compact
+Calendar date? → formatDate
+Timestamp? → formatDateTime
+```
+
+| Function | Output | Use for | Don't |
+| --- | --- | --- | --- |
+| `format(money, {withSymbol})` (`:109`) | `Rp102.500` / `$1,025.00` | Every displayed amount | Format by hand |
+| `spoken(money)` (`:171`) | Words for screen readers | `AmountText` semantics, chart summaries | Show it |
+| `compact(money)` (`:133`) | `1,2 jt` / `1.2M` (NBSP) | **Chart axes only** (decisions.md, charts) | Totals, buttons, confirmations |
+| `AmountParseResult` / `AmountIssue` (`:263-276`) | Strict parse | `AmountInput` | Accept floats |
+
+Do: `format.format` for checkout amounts, as in the existing AmountText. Don't: compact a confirmation total. The supported formatting choices are closed. Nothing else exists.
+
+## Dates
+
+`PaymentLocalizations.formatDate` returns “30 Oct 2026” or “30 Okt 2026” without converting zones or using the time. Calendar dates belong to the host. `formatDateTime` converts an instant to device-local time and adds “14:05” or “14.05”. Never use it to re-zone a date of birth.
+
+`dateInputPattern` is DD/MM/YYYY for both locales (Q12). A language change must not change the order in which an Indonesian user types their birth date. Grammar: DD, MM, YYYY exactly once, separated by the same /, . or - character. The pattern must stay visible as the hint; it does not replace a field label. The host supplies a delegate returning:
+
+```dart
+PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY');
+```
+
+Per-field date controls are **New**, planned for Phase 4B. The kit owns formatting and form validation; the host owns valid ranges, business-day rules and zones.
+
+<Props names={['PaymentLocalizations']} members />

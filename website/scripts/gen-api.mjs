@@ -249,9 +249,26 @@ for (const {rel, show} of files) {
       const fields = {};
       const constructors = [];
       const statics = [];
+      const members = [];
       let copyWith = null;
       for (let j = i + 1; j < end; j++) {
         const l = lines[j];
+        // Only direct class members, never locals or body statements.
+        if (/^  (?! )/.test(l) && !/^  @/.test(l) && !/^\s*@override/.test(lines[j - 1] ?? '')) {
+          const match = l.match(/^  (static )?(?:(?:late )?final |const )?([\w<>?,]+)\s+(get )?([a-z]\w*)\s*([(;=]|=>|\{)/);
+          if (match && !['copyWith', 'lerp'].includes(match[4])) {
+            const [, st, type, getter, memberName, tail] = match;
+            const method = tail === '(';
+            let value;
+            if (/^  static const /.test(l)) {
+              let declaration = l;
+              for (let k = j + 1; !declaration.includes(';') && k < end; k++) declaration += ' ' + lines[k].trim();
+              value = declaration.slice(declaration.indexOf('=') + 1, declaration.indexOf(';')).trim();
+            }
+            members.push({ name: memberName, kind: getter ? 'getter' : st ? 'static' : method ? 'method' : 'field', static: Boolean(st), type, ...(method ? {signature: (() => { const sig = collectSignature(lines, j); const open = sig.indexOf('('); return (sig.slice(0, open) + '(' + parenContent(sig, open) + ')').replace(/\s+/g, ' ').trim(); })()} : {}), ...(value ? {value} : {}), doc: docAbove(lines, j) });
+          }
+        }
+
         const field = l.match(/^  (?:final|late final)\s+(.+?)\s+(_?\w+)(?:\s*=.*)?;\s*$/);
         if (field) fields[field[2]] = { type: field[1], doc: docAbove(lines, j) };
         const getter = l.match(/^  ([\w<>?, ]+?)\s+get\s+(\w+)\s*(?:=>|\{)/);
@@ -297,6 +314,7 @@ for (const {rel, show} of files) {
         constructors,
         getters,
         statics,
+        members,
         copyWith,
       });
       i = end;
