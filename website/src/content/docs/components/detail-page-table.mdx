@@ -1,0 +1,44 @@
+---
+title: Detail page table
+description: Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Props from '../../../components/Props.astro';
+
+Payment attempts as a detail module. Variants: pending, ready, empty, error. Nothing else exists. Composes DataTable with pagination null and no selection. The host owns row actions, retry and Create. Module errors use warning tone. Stripe extraActions render as a dropdown; dashboard-only showOpenAppAction is not mirrored.
+
+## Usage
+
+```dart
+PaymentDetailPageTable<String>(title: 'Attempts', pending: false, columns: [PaymentDataColumn<String>(key: 'method', label: 'Method', value: (row) => row)], rows: const ['BCA virtual account'], rowKey: (row) => row);
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| DetailPageTable | `PaymentDetailPageTable` |
+| DataColumn | `PaymentDataColumn` |
+| EmptyMessage | `PaymentEmptyMessage` |
+
+## States and content
+
+The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Accessibility
+
+Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+
+## API
+
+<Props names={['PaymentDetailPageTable', 'PaymentDataColumn', 'PaymentEmptyMessage']} />
+
+## See also
+
+- [Components](/components/)
+
+
+<Screen name="ios_catalog_detail_page_table_variants" alt="detail page table specimen" />
+<Screen name="ios_catalog_detail_page_table_variants_dark" alt="detail page table specimen_dark" />
+<Screen name="ios_catalog_detail_page_table_variants_200" alt="detail page table specimen_200" />

@@ -1,3 +1,4 @@
+import '../foundation/edge_fade.dart';
 import 'package:flutter/material.dart';
 import '../controls/actions.dart';
 import '../foundation/kit_strings.dart';
@@ -196,7 +197,7 @@ class PaymentCode extends StatelessWidget {
   /// Allow multiple lines.
   final bool multiline;
 
-  /// Scroll long references horizontally.
+  /// Keep one line and scroll inside the block; an edge fade shows there is more.
   final bool noWrap;
 
   /// Text role size.
@@ -239,7 +240,7 @@ class PaymentCode extends StatelessWidget {
         : SelectableText(
             text,
             style: style,
-            maxLines: block ? null : 1,
+            maxLines: noWrap ? 1 : null,
             semanticsLabel: label,
           );
     if (kind != PaymentCodeKind.samp) {
@@ -258,10 +259,7 @@ class PaymentCode extends StatelessWidget {
       );
     }
     if (noWrap) {
-      body = SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: body,
-      );
+      body = EdgeFadeScroll(child: body);
     }
     body = Align(alignment: AlignmentDirectional.centerStart, child: body);
     if (block) body = SizedBox(width: double.infinity, child: body);

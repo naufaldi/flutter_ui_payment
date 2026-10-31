@@ -320,9 +320,10 @@ class PaymentButton extends StatefulWidget {
     this.icon,
   });
 
-  /// Specific outcome of pressing the button. Wraps rather than truncates.
   /// Host focus node, for example for menu focus return.
   final FocusNode? focusNode;
+
+  /// Specific outcome of pressing the button. Wraps rather than truncates.
   final String label;
 
   /// Called once per action; null disables the button. Futures lock repeat presses.

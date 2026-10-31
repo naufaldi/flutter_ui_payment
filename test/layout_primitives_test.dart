@@ -1,9 +1,37 @@
+import 'content_host.dart' as phase4;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
+  testWidgets(
+    'code wraps by default, noWrap scrolls with fade only on overflow',
+    (t) async {
+      await phase4.setSurface(t, const Size(320, 1000));
+      final text = 'DEMO-${'0123456789' * 6}';
+      await t.pumpWidget(phase4.contentHost(PaymentCode(text)));
+      await t.pumpAndSettle();
+      final wrapped = t.getSize(find.byType(SelectableText));
+      expect(wrapped.height, greaterThan(30));
+      expect(t.takeException(), isNull);
+      await t.pumpWidget(phase4.contentHost(PaymentCode(text, noWrap: true)));
+      await t.pumpAndSettle();
+      expect(find.byType(ShaderMask), findsOneWidget);
+      expect(
+        t
+            .widgetList<Scrollable>(find.byType(Scrollable))
+            .any((s) => s.axisDirection == AxisDirection.right),
+        isTrue,
+      );
+      await t.pumpWidget(
+        phase4.contentHost(const PaymentCode('DEMO-42', noWrap: true)),
+      );
+      await t.pumpAndSettle();
+      expect(find.byType(ShaderMask), findsNothing);
+    },
+  );
+
   testWidgets('Box token gap and rich inline emphasis', (tester) async {
     await tester.pumpWidget(
       host(

@@ -1,3 +1,8 @@
+## Design system Phase 4D-2 (2026-11-01)
+
+- Delivers the 4C–4D specimen captures: 45 new images and 6 refreshed Code/Tabs images.
+- Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
+
 ## Design system Phase 4D-1 (2026-11-01)
 
 - Add context, full-page, focus, settings, sign-in and onboarding view bodies.

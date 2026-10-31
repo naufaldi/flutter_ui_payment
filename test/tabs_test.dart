@@ -1,3 +1,4 @@
+import 'content_host.dart' as phase4;
 import 'dart:ui' show SemanticsRole, Tristate;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,39 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
+  testWidgets(
+    'fitted tabs retain equal widths when fitting and scroll at 200 percent',
+    (t) async {
+      await phase4.setSurface(t, const Size(800, 1000));
+      Widget tabs() => PaymentTabs(
+        tabs: const [
+          PaymentTab(label: 'Card'),
+          PaymentTab(label: 'Bank transfer'),
+          PaymentTab(label: 'Wallet'),
+        ],
+        selectedIndex: 0,
+        onSelected: (_) {},
+        fitted: true,
+      );
+      await t.pumpWidget(phase4.contentHost(tabs()));
+      expect(
+        t
+            .widgetList<Scrollable>(find.byType(Scrollable))
+            .any((s) => s.axisDirection == AxisDirection.right),
+        isFalse,
+      );
+      await phase4.setSurface(t, const Size(320, 1000));
+      await t.pumpWidget(phase4.contentHost(tabs(), scale: 2));
+      expect(
+        t
+            .widgetList<Scrollable>(find.byType(Scrollable))
+            .any((s) => s.axisDirection == AxisDirection.right),
+        isTrue,
+      );
+      expect(t.takeException(), isNull);
+    },
+  );
+
   const tabs = [
     PaymentTab(label: 'Card'),
     PaymentTab(label: 'Bank', disabledReason: 'Unavailable'),
@@ -37,7 +71,9 @@ void main() {
     await tester.pump();
     expect(selected, [2]);
   });
-  testWidgets('fitted tabs divide width and large text wraps', (tester) async {
+  testWidgets('fitted tabs fall back to scrolling at large text', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(320, 800);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -60,8 +96,14 @@ void main() {
       of: find.byType(PaymentTabs),
       matching: find.byType(InkWell),
     );
-    expect(tester.getSize(wells.at(0)).width, 160);
-    expect(tester.getSize(wells.at(1)).width, 160);
+    expect(tester.getSize(wells.at(1)).width, greaterThan(160));
+    expect(
+      find.descendant(
+        of: find.byType(PaymentTabs),
+        matching: find.byType(Scrollable),
+      ),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
   testWidgets(

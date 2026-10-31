@@ -65,3 +65,6 @@ Stripe TabList is PaymentTabs, Tab is PaymentTab, and TabPanels/TabPanel are Pay
 Panels build on first selection and keep state. Offstage, TickerMode and ExcludeFocus hide inactive panels and pause their tickers. Do not put a requirement exclusively in a hidden panel.
 
 Breaking migration: replace labels with tabs, wrapping each string in PaymentTab(label: ...).
+
+
+Fitted tabs use equal widths only when every label fits at the current text scale. Otherwise they scroll horizontally, preserving whole words.

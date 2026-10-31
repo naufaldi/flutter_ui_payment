@@ -397,7 +397,11 @@ class _ControlRow extends StatelessWidget {
 @immutable
 class PaymentTab {
   const PaymentTab({required this.label, this.disabledReason});
+
+  /// Visible tab label.
   final String label;
+
+  /// Explanation for an unavailable tab.
   final String? disabledReason;
 }
 
@@ -412,10 +416,20 @@ class PaymentTabs extends StatefulWidget {
     this.size = PaymentSize.medium,
     this.fitted = false,
   });
+
+  /// Tabs in reading order.
   final List<PaymentTab> tabs;
+
+  /// Host-owned active tab index.
   final int selectedIndex;
+
+  /// Reports manual tab activation.
   final ValueChanged<int> onSelected;
+
+  /// Typography and padding size.
   final PaymentSize size;
+
+  /// Divide available width equally when every label fits; otherwise scroll.
   final bool fitted;
   @override
   State<PaymentTabs> createState() => _PaymentTabsState();
@@ -493,32 +507,50 @@ class _PaymentTabsState extends State<PaymentTabs> {
       style: metrics.style,
       padding: metrics.pad,
     );
-    final row = Semantics(
-      role: SemanticsRole.tabBar,
-      container: true,
-      explicitChildNodes: true,
-      child: Row(
-        children: [
-          for (var i = 0; i < widget.tabs.length; i++)
-            if (widget.fitted) Expanded(child: tab(i)) else tab(i),
-        ],
-      ),
-    );
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: theme.outline)),
-      ),
-      child: ClipRect(
-        clipper: const _SidesClipper(),
-        child: widget.fitted
-            ? row
-            : SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                clipBehavior: Clip.none,
-                padding: EdgeInsets.symmetric(horizontal: theme.spacing * 0.5),
-                child: row,
-              ),
-      ),
+    return LayoutBuilder(
+      builder: (context, k) {
+        var need = 0.0;
+        for (final tab in widget.tabs) {
+          final painter = TextPainter(
+            text: TextSpan(text: tab.label, style: metrics.style),
+            textScaler: MediaQuery.textScalerOf(context),
+            textDirection: Directionality.of(context),
+          )..layout();
+          final width = painter.width + 2 * metrics.pad;
+          if (width > need) need = width;
+          painter.dispose();
+        }
+        final fitted = widget.fitted && need * widget.tabs.length <= k.maxWidth;
+        final row = Semantics(
+          role: SemanticsRole.tabBar,
+          container: true,
+          explicitChildNodes: true,
+          child: Row(
+            children: [
+              for (var i = 0; i < widget.tabs.length; i++)
+                if (fitted) Expanded(child: tab(i)) else tab(i),
+            ],
+          ),
+        );
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: theme.outline)),
+          ),
+          child: ClipRect(
+            clipper: const _SidesClipper(),
+            child: fitted
+                ? row
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    clipBehavior: Clip.none,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: theme.spacing * 0.5,
+                    ),
+                    child: row,
+                  ),
+          ),
+        );
+      },
     );
   }
 }

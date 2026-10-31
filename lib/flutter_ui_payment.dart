@@ -71,3 +71,13 @@ export 'src/views/settings_view.dart';
 export 'src/views/sign_in_view.dart';
 
 export 'src/views/onboarding_view.dart';
+
+export 'src/pages/page_module.dart';
+
+export 'src/pages/detail_page.dart';
+
+export 'src/pages/overview_page.dart';
+
+export 'src/pages/detail_page_property_list.dart';
+
+export 'src/pages/detail_page_table.dart';

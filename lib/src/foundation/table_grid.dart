@@ -89,16 +89,16 @@ class TableGrid extends StatelessWidget {
                             style: heading
                                 ? type.caption
                                 : row == rows.length
-                                ? type.heading
+                                ? (col.numeric
+                                      ? type.heading.tabular
+                                      : type.heading)
                                 : col.numeric
                                 ? type.label.tabular
                                 : type.label,
                             maxLines: 1,
                             softWrap: false,
                             child: heading
-                                ? (col.hideLabel
-                                      ? const SizedBox.shrink()
-                                      : header[i])
+                                ? header[i]
                                 : row == rows.length
                                 ? footer![i]
                                 : rows[row][i],

@@ -1,4 +1,229 @@
 {
+  "ios_catalog_property_list_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "property list specimen, English"
+  },
+  "ios_catalog_property_list_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "property list specimen_dark, English"
+  },
+  "ios_catalog_property_list_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "property list specimen_200, English"
+  },
+  "ios_catalog_table_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "table specimen, English"
+  },
+  "ios_catalog_table_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "table specimen_dark, English"
+  },
+  "ios_catalog_table_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "table specimen_200, English"
+  },
+  "ios_catalog_data_table_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "data table specimen, English"
+  },
+  "ios_catalog_data_table_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "data table specimen_dark, English"
+  },
+  "ios_catalog_data_table_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "data table specimen_200, English"
+  },
+  "ios_catalog_task_list_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "task list specimen, English"
+  },
+  "ios_catalog_task_list_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "task list specimen_dark, English"
+  },
+  "ios_catalog_task_list_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "task list specimen_200, English"
+  },
+  "ios_catalog_button_group_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "button group specimen, English"
+  },
+  "ios_catalog_button_group_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "button group specimen_dark, English"
+  },
+  "ios_catalog_button_group_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "button group specimen_200, English"
+  },
+  "ios_catalog_context_view_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "context view specimen, English"
+  },
+  "ios_catalog_context_view_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "context view specimen_dark, English"
+  },
+  "ios_catalog_context_view_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "context view specimen_200, English"
+  },
+  "ios_catalog_full_page_view_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "full page view specimen, English"
+  },
+  "ios_catalog_full_page_view_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "full page view specimen_dark, English"
+  },
+  "ios_catalog_full_page_view_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "full page view specimen_200, English"
+  },
+  "ios_catalog_focus_view_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "focus view specimen, English"
+  },
+  "ios_catalog_focus_view_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "focus view specimen_dark, English"
+  },
+  "ios_catalog_focus_view_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "focus view specimen_200, English"
+  },
+  "ios_catalog_settings_view_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "settings view specimen, English"
+  },
+  "ios_catalog_settings_view_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "settings view specimen_dark, English"
+  },
+  "ios_catalog_settings_view_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "settings view specimen_200, English"
+  },
+  "ios_catalog_sign_in_view_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "sign in view specimen, English"
+  },
+  "ios_catalog_sign_in_view_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "sign in view specimen_dark, English"
+  },
+  "ios_catalog_sign_in_view_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "sign in view specimen_200, English"
+  },
+  "ios_catalog_onboarding_view_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "onboarding view specimen, English"
+  },
+  "ios_catalog_onboarding_view_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "onboarding view specimen_dark, English"
+  },
+  "ios_catalog_onboarding_view_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "onboarding view specimen_200, English"
+  },
+  "ios_catalog_detail_page_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "detail page specimen, English"
+  },
+  "ios_catalog_detail_page_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "detail page specimen_dark, English"
+  },
+  "ios_catalog_detail_page_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "detail page specimen_200, English"
+  },
+  "ios_catalog_overview_page_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "overview page specimen, English"
+  },
+  "ios_catalog_overview_page_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "overview page specimen_dark, English"
+  },
+  "ios_catalog_overview_page_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "overview page specimen_200, English"
+  },
+  "ios_catalog_detail_page_property_list_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "detail page property list specimen, English"
+  },
+  "ios_catalog_detail_page_property_list_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "detail page property list specimen_dark, English"
+  },
+  "ios_catalog_detail_page_property_list_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "detail page property list specimen_200, English"
+  },
+  "ios_catalog_detail_page_table_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "detail page table specimen, English"
+  },
+  "ios_catalog_detail_page_table_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "detail page table specimen_dark, English"
+  },
+  "ios_catalog_detail_page_table_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "detail page table specimen_200, English"
+  },
   "ios_catalog_box_variants": {
     "width": 640,
     "height": 1387,

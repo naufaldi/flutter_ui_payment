@@ -3,6 +3,7 @@ title: Focus view
 description: Add context, full-page, focus, settings, sign-in and onboarding view bodies.
 ---
 
+import Screen from '../../../components/Screen.astro';
 import Props from '../../../components/Props.astro';
 
 A report or other focused task presented through existing sheets. Variants: small, large. Nothing else exists. Stripe size maps to showPaymentFocusView(size:), shown/setShown map to its Future and host dismissal, confirmCloseMessages maps to PaymentConfirmClose. Phone small hugs content, large fills; wide panels are 420/720 dp. Drag dismiss is disabled so it cannot bypass confirmation. Close, scrim, Escape and Back ask before discarding when confirmClose is supplied. Inline specimens do not block their host route.
@@ -37,3 +38,8 @@ Labels wrap at large text. Controls retain their keyboard and screen-reader beha
 ## See also
 
 - [Components](/components/)
+
+
+<Screen name="ios_catalog_focus_view_variants" alt="focus view specimen" />
+<Screen name="ios_catalog_focus_view_variants_dark" alt="focus view specimen_dark" />
+<Screen name="ios_catalog_focus_view_variants_200" alt="focus view specimen_200" />

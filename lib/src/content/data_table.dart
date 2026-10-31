@@ -615,6 +615,32 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
                                           ),
                                           child: c.cell == PaymentCellType.link
                                               ? cell(c, row)
+                                              : (PaymentType.isLarge(context) ||
+                                                    c.cell !=
+                                                        PaymentCellType
+                                                            .currency)
+                                              ? Wrap(
+                                                  spacing: theme.spacing * .5,
+                                                  runSpacing:
+                                                      theme.spacing * .5,
+                                                  crossAxisAlignment:
+                                                      WrapCrossAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      '${c.label}:',
+                                                      style: type.caption,
+                                                    ),
+                                                    DefaultTextStyle(
+                                                      style:
+                                                          c.cell ==
+                                                              PaymentCellType
+                                                                  .currency
+                                                          ? type.label.tabular
+                                                          : type.caption,
+                                                      child: cell(c, row),
+                                                    ),
+                                                  ],
+                                                )
                                               : Row(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
@@ -706,7 +732,7 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(c.label),
+                            if (!c.hideHeaderLabel) Text(c.label),
                             if (_sort?.columnKey == c.key)
                               Icon(
                                 _sort!.ascending

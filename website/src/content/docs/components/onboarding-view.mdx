@@ -3,6 +3,7 @@ title: Onboarding view
 description: Add context, full-page, focus, settings, sign-in and onboarding view bodies.
 ---
 
+import Screen from '../../../components/Screen.astro';
 import Props from '../../../components/Props.astro';
 
 KYC setup gets to current-step value first on phones, with all tasks in a collapsed accordion. At 840 dp a 280 dp task sidebar accompanies the current content. Variants: ready, pending, error, completed. Nothing else exists. The host owns every task status. onCompleted fires post-frame once when completed turns true, including an initially completed view; there is no timer or kit navigation.
@@ -34,3 +35,8 @@ Labels wrap at large text. Controls retain their keyboard and screen-reader beha
 ## See also
 
 - [Components](/components/)
+
+
+<Screen name="ios_catalog_onboarding_view_variants" alt="onboarding view specimen" />
+<Screen name="ios_catalog_onboarding_view_variants_dark" alt="onboarding view specimen_dark" />
+<Screen name="ios_catalog_onboarding_view_variants_200" alt="onboarding view specimen_200" />

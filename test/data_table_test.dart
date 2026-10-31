@@ -4,6 +4,32 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'content_host.dart';
 
 void main() {
+  testWidgets('hidden heading retains spoken label and sort action', (t) async {
+    await setSurface(t, const Size(800, 1000));
+    final semantics = t.ensureSemantics();
+    await t.pumpWidget(
+      contentHost(
+        PaymentDataTable<int>(
+          columns: [
+            PaymentDataColumn<int>(
+              key: 'reference',
+              label: 'Reference',
+              value: (r) => r,
+              hideHeaderLabel: true,
+              sortable: true,
+            ),
+          ],
+          rows: const [2, 1],
+          rowKey: (r) => '$r',
+        ),
+      ),
+    );
+    expect(find.text('Reference'), findsNothing);
+    expect(find.bySemanticsLabel('Reference'), findsWidgets);
+    expect(t.takeException(), isNull);
+    semantics.dispose();
+  });
+
   final columns = [
     PaymentDataColumn<int>(
       key: 'name',
