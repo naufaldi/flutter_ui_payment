@@ -94,6 +94,28 @@ class PaymentDetailPagePropertyList extends StatelessWidget {
 
     final type = PaymentType.of(context);
 
+    Widget facts(List<PaymentDetailProperty> properties) => PaymentPropertyList(
+      orientation: orientation,
+      items: [
+        for (final p in properties)
+          PaymentPropertyListItem(
+            label: p.label,
+            caption: p.description,
+            value: Column(
+              crossAxisAlignment: PaymentType.isLarge(context)
+                  ? CrossAxisAlignment.start
+                  : CrossAxisAlignment.end,
+              children: [
+                for (final v in p.values) ...[
+                  v.link ?? Text(v.text!, style: type.label),
+                  if (v.subText != null) Text(v.subText!, style: type.caption),
+                ],
+              ],
+            ),
+          ),
+      ],
+    );
+
     final body = pending
         ? const LoadingSkeleton(rows: 3, leading: false)
         : errorText != null
@@ -112,6 +134,8 @@ class PaymentDetailPagePropertyList extends StatelessWidget {
             actionLabel: emptyMessage?.actionLabel,
             onAction: emptyMessage?.onAction,
           )
+        : orientation == Axis.horizontal
+        ? facts(items)
         : Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -167,27 +191,7 @@ class PaymentDetailPagePropertyList extends StatelessWidget {
                     ),
                   )
                 else
-                  PaymentPropertyList(
-                    orientation: orientation,
-                    items: [
-                      PaymentPropertyListItem(
-                        label: p.label,
-                        caption: p.description,
-                        value: Column(
-                          crossAxisAlignment: PaymentType.isLarge(context)
-                              ? CrossAxisAlignment.start
-                              : CrossAxisAlignment.end,
-                          children: [
-                            for (final v in p.values) ...[
-                              v.link ?? Text(v.text!, style: type.label),
-                              if (v.subText != null)
-                                Text(v.subText!, style: type.caption),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  facts([p]),
             ],
           );
     return PageModuleFrame(

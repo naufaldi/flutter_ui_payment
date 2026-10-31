@@ -3,6 +3,8 @@ title: Forms
 description: Collect identity details with persistent labels, host validation and first-error focus.
 ---
 
+import Screen from '../../../components/Screen.astro';
+
 Labels identify a value after typing begins. Hints are examples, not labels. Show business validation on submit, then update it after edits. Focus the first invalid field in reading order. Use [Form field group](/components/form-field-group/) legends for related facts.
 
 The KYC form in H04/K01 groups name, masked-in-review NIK and birth date under Personal details. Work and address contains occupation (short Select) and province (long searchable list). The host supplies all options and validation; the kit formats dates and renders errors.
@@ -17,3 +19,5 @@ IdentityFieldSpec(
 ```
 
 D1a: do not collect PIN, OTP, passwords or card secrets with these fields. H04 sign-in delegates to the host with no credential inputs. Reports in A02 keep free text local and send only category and length; never log what a customer typed.
+
+<Screen name="ios_kyc_onboarding_light_200" alt="KYC grouped identity at 200 percent text" />

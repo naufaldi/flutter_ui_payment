@@ -4,6 +4,36 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'content_host.dart';
 
 void main() {
+  testWidgets(
+    'horizontal detail properties keep facts in one horizontal list',
+    (t) async {
+      await setSurface(t, const Size(800, 1000));
+      await t.pumpWidget(
+        contentHost(
+          const PaymentDetailPagePropertyList(
+            title: 'Facts',
+            pending: false,
+            orientation: Axis.horizontal,
+            items: [
+              PaymentDetailProperty(
+                label: 'Merchant name',
+                values: [PaymentDetailValue('Toko Contoh')],
+              ),
+              PaymentDetailProperty(
+                label: 'Order reference',
+                values: [PaymentDetailValue('DEMO-42')],
+              ),
+            ],
+          ),
+        ),
+      );
+      expect(
+        t.getTopLeft(find.text('Merchant name')).dy,
+        t.getTopLeft(find.text('Order reference')).dy,
+      );
+    },
+  );
+
   testWidgets('link-only detail value centers with its label', (t) async {
     await t.pumpWidget(
       contentHost(

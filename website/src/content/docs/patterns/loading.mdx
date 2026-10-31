@@ -3,6 +3,8 @@ title: Loading
 description: Keep the shape of payment content while the host works.
 ---
 
+import Screen from '../../../components/Screen.astro';
+
 | Situation | Component | Why |
 | --- | --- | --- |
 | Known list shape | LoadingSkeleton or LoadingSkeleton.table | Preserves reading position while records load. |
@@ -13,3 +15,5 @@ description: Keep the shape of payment content while the host works.
 Run A01 to see history loading and A05 to save settings. The host sets loading state before awaiting work and clears it after success or failure. A loading placeholder never means a payment is accepted.
 
 Use the primary action's busy state for saving; do not add a second primary button to cancel the spinner. Use a [status result](/patterns/status-receipt/) for a payment whose outcome is still unknown.
+
+<Screen name="ios_history_light" dark="ios_history_dark" alt="Example history with synthetic data" />

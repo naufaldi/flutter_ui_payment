@@ -12,9 +12,10 @@ import HostOwns from '../../../components/HostOwns.astro';
 
 <HostOwns>the status, from a snapshot your host produced. The header never infers it.</HostOwns>
 
+
+
 <Screens>
-  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="A payment status screen opening with an amber hatched band, a question-mark icon and the title Result not confirmed yet, then the amount Rp102,500 and the line Don't pay again." caption="Hatched: the outcome is not known yet (dark capture is Indonesian)" />
-  <Screen name="ios_status_va_pending_light" dark="ios_status_va_pending_dark" alt="A virtual account status screen in Indonesian opening with a solid amber band, a clock icon and the title Menunggu." caption="Solid: waiting for payment (Indonesian)" />
+  <Screen name="ios_catalog_status_header_variants" dark="ios_catalog_status_header_variants_dark" alt="StatusHeader specimens with synthetic payment data" caption="Light and dark variants" />
 </Screens>
 
 ## Usage
@@ -86,6 +87,8 @@ Use an explicit not-confirmed label and hatching when the host lacks an outcome.
 ## Used in
 
 PaymentStatusView; TransactionDetail A02; VerificationStatusView. Real composition: `lib/src/receipt/payment_receipt.dart`.
+
+<Screen name="ios_transaction_detail_light" dark="ios_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 
 ## API
 

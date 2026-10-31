@@ -435,3 +435,16 @@ Capture-glance corrections: the harness resets descendant scroll positions befor
 - Step indicator is admitted for checkout merchant steps and the reusable linear-progress specimen. Action bar is admitted for pinned checkout total/action and its updating/disabled specimen. Chart module is admitted for history spending and reusable pending/empty/error chart composition. None changes host-owned decisions.
 - Placeholder dartdoc is replaced with field meaning; garbled local-variable documentation is removed. No behavior or API delta.
 - No Phase 6-2 plan deviations; example screenshots remain reserved for the final 6-3 commit.
+
+### Phase 6-3 implementation decisions
+
+- Fourteen named kit specimens have one entry per component and synthetic data. The phase-6 catalog mode captures light/dark and the planned large-text subset; the existing mode structure stays intact. One sequential eight-drive session refreshes the catalog, kit and example screens.
+- Legacy component captures are replaced with named specimens. Foundation/iconography and surface-menu illustrations remain foundation examples. New example screenshots attach to the pages that use those compositions, with all capture code, mappings and image references confined to this last PR's final commit.
+- Plan correction: showPaymentConfirmDialog owns its Cancel control and exposes no button-key parameter. The English specimen harness closes it by its visible Cancel label; report sheets use the requested report-cancel key and close before the next scenario.
+- D34 deprecated names are removed in 0.2.0, outside this stack. No merge or deployment is part of this work.
+
+- Carry-over correction during final source review: the 5-1 link alignment branch had split horizontal detail properties into one list per item. Preserve the complete horizontal list and use the special centered link row only in vertical layout. A focused regression checks that horizontal facts remain aligned; this is a concrete functional correction, not a geometry baseline update.
+
+- Capture harness correction: Indonesian/large-text detail headers can collapse Report into More actions while the unpainted button remains in the widget tree. Test hit-testability before using the keyed button; otherwise open the localized overflow menu. The first screenshots drive failed waiting for report-cancel after tapping that hidden button; only that suite is rerun, retaining the same session freshness stamp.
+
+- Browser rendering correction: flowchart insertion had matched a subsection heading and emitted a malformed fence, hiding Which variant when on DataTable. Remove malformed duplicate fences, preserve subsection depth and check required headings outside fenced blocks in check:pages. Also replace the stale DataTable intro sentence with the approved D28 decision.

@@ -9,9 +9,11 @@ import Props from '../../../components/Props.astro';
 
 `InfoRow` is a label and value pair: a fee and its amount, a reference and its number, a deadline and its countdown. Rows stack into the property lists of summaries, receipts and transaction details.
 
+
+
 <Screens>
-  <Screen name="ios_catalog_foundation" alt="Foundation specimen with four InfoRows: service fee, large amount, compact-money axis notation Rp1.25B and USD amount." caption="InfoRow values include full and compact money; labels are Indonesian" />
-  <Screen name="ios_refined_status_unknown_light" alt="A Payment reference row with a muted label on the left and a monospace reference att-mvv8hwwp-1 on the right." caption="A reference value in the monospace reference font" />
+  <Screen name="ios_catalog_info_row_variants" dark="ios_catalog_info_row_variants_dark" alt="InfoRow specimens with synthetic payment data" caption="Light and dark variants" />
+  <Screen name="ios_catalog_info_row_variants_200" alt="InfoRow at 200 percent text" caption="200% text" />
 </Screens>
 
 ## Usage
@@ -107,6 +109,8 @@ Reserve emphasis for the total; captions explain a fact and trailing copy delega
 ## Used in
 
 CheckoutSummary; PaymentReceipt. Real composition: `example/lib/screens/gallery_kit.dart`.
+
+<Screen name="ios_transaction_detail_light" dark="ios_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 
 ## API
 

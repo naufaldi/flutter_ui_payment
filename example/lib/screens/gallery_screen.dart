@@ -11,6 +11,7 @@ import '../demo_strings.dart';
 import '../dev_chrome.dart';
 import 'flow_screen.dart' show documentRequirements, identityFields;
 
+part 'gallery_phase6.dart';
 part 'gallery_content.dart';
 part 'gallery_views.dart';
 part 'gallery_kit.dart';
@@ -60,6 +61,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
       PaymentNavSection(
         title: t('Building blocks', 'Dasar'),
         items: [
+          PaymentNavItem(
+            id: 'kit',
+            label: t('Kit components', 'Komponen kit'),
+            icon: Icons.widgets_outlined,
+          ),
           PaymentNavItem(
             id: 'foundation',
             label: t('Foundation', 'Fondasi'),
@@ -228,6 +234,22 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _SelectionSpecimen('PaymentSwitch'),
         _CurrencyFieldSpecimen(),
         _TextFieldSpecimen(),
+      ],
+      'kit' => const [
+        _KitSpecimen('dialog'),
+        _KitSpecimen('sheets'),
+        _KitSpecimen('section'),
+        _KitSpecimen('navigation'),
+        _KitSpecimen('step_indicator'),
+        _KitSpecimen('info_row'),
+        _KitSpecimen('countdown'),
+        _KitSpecimen('privacy_mask'),
+        _KitSpecimen('action_bar'),
+        _KitSpecimen('media'),
+        _KitSpecimen('status_header'),
+        _KitSpecimen('loading_skeleton'),
+        _KitSpecimen('state_message'),
+        _KitSpecimen('chart_module'),
       ],
       'navigation' => const [_NavigationDemo()],
       'sheets' => const [_SheetsDemo()],
