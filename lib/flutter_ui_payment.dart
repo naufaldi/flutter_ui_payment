@@ -30,5 +30,7 @@ export 'src/payment/transactions.dart';
 export 'src/promo/promo.dart';
 export 'src/receipt/payment_receipt.dart';
 export 'src/receipt/receipt_models.dart';
+export 'src/verification/capture_models.dart';
+export 'src/verification/capture_widgets.dart';
 export 'src/verification/verification_models.dart';
 export 'src/verification/verification_widgets.dart';

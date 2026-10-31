@@ -1,4 +1,5 @@
 import '../payment/payment_models.dart';
+import '../verification/capture_models.dart';
 import 'payment_localizations.dart';
 
 /// English/Indonesian strings for the interaction, navigation, sheet, media,
@@ -46,6 +47,61 @@ extension KitStrings on PaymentLocalizations {
     '$n periode tanpa data.',
   );
   String meterItem(String label, String amount) => '$label $amount';
+
+  // Capture
+  String get captureSourceTitle => _k('Add a photo', 'Tambah foto');
+  String get captureSourceCamera => _k('Take a photo', 'Ambil foto');
+  String get captureSourceGallery =>
+      _k('Choose from gallery', 'Pilih dari galeri');
+  String get captureSourceFile => _k('Choose a file', 'Pilih file');
+  String get captureTipLight =>
+      _k('Use even light', 'Gunakan cahaya yang merata');
+  String get captureTipGlare =>
+      _k('Avoid glare on the card', 'Hindari pantulan cahaya di kartu');
+  String get captureTipCorners =>
+      _k('Show all four corners', 'Tampilkan keempat sudut kartu');
+  String get captureTipFaceAndCard => _k(
+    'Make sure your face and the card are both visible',
+    'Pastikan wajah dan KTP sama-sama terlihat',
+  );
+  String get captureTipNoCover => _k(
+    'Don’t cover any text with your fingers',
+    'Jangan menutupi tulisan dengan jari',
+  );
+  String get captureTake => _k('Take photo', 'Ambil foto');
+  String get captureRetake => _k('Retake', 'Ulangi');
+  String get captureUse => _k('Use photo', 'Pakai foto');
+  String captureTitle(CaptureKind kind) => switch (kind) {
+    CaptureKind.idCard => _k('Photo of your ID card', 'Foto KTP'),
+    CaptureKind.selfieWithIdCard => _k(
+      'Selfie with your ID card',
+      'Selfie dengan KTP',
+    ),
+  };
+  String captureFramingHint(CaptureKind kind) => switch (kind) {
+    CaptureKind.idCard => _k(
+      'Fit the card inside the frame.',
+      'Posisikan KTP di dalam bingkai.',
+    ),
+    CaptureKind.selfieWithIdCard => _k(
+      'Keep your face in the oval and hold the card below your chin.',
+      'Posisikan wajah di dalam oval dan pegang KTP di bawah dagu.',
+    ),
+  };
+  String capturePhotoLabel(CaptureKind kind) => switch (kind) {
+    CaptureKind.idCard => _k('Your photo: ID card', 'Foto Anda: KTP'),
+    CaptureKind.selfieWithIdCard => _k(
+      'Your photo: selfie with ID card',
+      'Foto Anda: selfie dengan KTP',
+    ),
+  };
+  String captureFrameLabel(CaptureKind kind) => switch (kind) {
+    CaptureKind.idCard => _k('Frame for your ID card', 'Bingkai untuk KTP'),
+    CaptureKind.selfieWithIdCard => _k(
+      'Frame for your face and ID card',
+      'Bingkai untuk wajah dan KTP',
+    ),
+  };
 
   // Interaction
   String get close => _k('Close', 'Tutup');
