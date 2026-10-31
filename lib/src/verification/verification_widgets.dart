@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../controls/controls.dart';
 import '../foundation/focus_ring.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
@@ -108,18 +109,10 @@ class _VerificationIntroState extends State<VerificationIntro> {
               label: Text(l10n.readPrivacyPolicy),
             ),
           ),
-        CheckboxListTile(
+        PaymentCheckbox(
           value: _consented,
-          onChanged: (v) => setState(() => _consented = v ?? false),
-          controlAffinity: ListTileControlAffinity.leading,
-          contentPadding: EdgeInsets.zero,
-          // The unchecked box is a control edge, so it uses the border
-          // token rather than the decorative rule.
-          side: BorderSide(color: theme.border, width: 2),
-          title: Text(
-            widget.consentLabel ?? l10n.consentLabel,
-            style: type.body,
-          ),
+          onChanged: (v) => setState(() => _consented = v),
+          label: widget.consentLabel ?? l10n.consentLabel,
         ),
         SizedBox(height: theme.spacing),
         PaymentButton(

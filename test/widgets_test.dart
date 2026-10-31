@@ -146,7 +146,7 @@ void main() {
     await tester.pump();
     expect(confirms, 0);
 
-    await tester.tap(find.byType(Checkbox));
+    await tester.tap(find.byType(PaymentCheckbox));
     await tester.pump();
     await tester.tap(find.text('Pay Rp103,500'));
     await tester.pump();
@@ -248,13 +248,13 @@ void main() {
         ),
       ),
     );
-    final checkbox = tester.widget<CheckboxListTile>(
-      find.byType(CheckboxListTile),
+    final checkbox = tester.widget<PaymentCheckbox>(
+      find.byType(PaymentCheckbox),
     );
     expect(checkbox.value, isFalse);
     await tester.tap(find.text('Continue'), warnIfMissed: false);
     expect(continued, 0);
-    await tester.tap(find.byType(CheckboxListTile));
+    await tester.tap(find.byType(PaymentCheckbox));
     await tester.pump();
     await tester.tap(find.text('Continue'));
     expect(continued, 1);

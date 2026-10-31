@@ -71,7 +71,7 @@ class PaymentInstructions extends StatelessWidget {
                 ),
             ],
           ),
-          Divider(color: theme.outline, height: theme.spacing * 2),
+          PaymentDivider(height: theme.spacing * 2),
           // A total row, not a second display amount: the status header
           // already shows the one large figure on this screen.
           InfoRow(
@@ -415,7 +415,7 @@ class PaymentStatusView extends StatelessWidget {
             ),
           ),
         if (slot != null && large) ...[SizedBox(height: theme.spacing), slot],
-        Divider(color: theme.outline, height: theme.spacing * 3),
+        PaymentDivider(height: theme.spacing * 3),
         InfoRow(
           label: l10n.attemptReference,
           value: MiddleEllipsisText(
@@ -437,7 +437,7 @@ class PaymentStatusView extends StatelessWidget {
         ],
         if (snapshot != null &&
             snapshot.refund.status != RefundStatus.none) ...[
-          Divider(color: theme.outline, height: theme.spacing * 3),
+          PaymentDivider(height: theme.spacing * 3),
           RefundSection(refund: snapshot.refund, paidAmount: amount),
         ],
       ],

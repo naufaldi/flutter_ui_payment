@@ -1930,14 +1930,14 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] StateMessage padding dartdoc; Contrast radius comment; icon family audit
 
 **Phase 1B: foundation pages**
-- [ ] Token tables + Stripe mappings: color, typography, spacing and radius, motion, focus, money and dates
-- [ ] New pages: Surfaces, Iconography
+- [x] Token tables + Stripe mappings: color, typography, spacing and radius, motion, focus, money and dates
+- [x] New pages: Surfaces, Iconography
 
 **Phase 2A: adopt**
-- [ ] PaymentCheckbox in VerificationIntro + PaymentConfirmation; PaymentRadio mark in PaymentMethodPicker (D12)
-- [ ] 11 raw dividers (incl. ActionTileGroup) → PaymentDivider
-- [ ] Video loading → PaymentSpinner; KycCaptureGuide errorBuilder (D9)
-- [ ] Internal _RowShell (D19)
+- [x] PaymentCheckbox in VerificationIntro + PaymentConfirmation; PaymentRadio mark in PaymentMethodPicker (D12)
+- [x] 11 raw dividers (incl. ActionTileGroup) → PaymentDivider
+- [x] Video loading → PaymentSpinner; KycCaptureGuide errorBuilder (D9)
+- [x] Internal _RowShell (D19)
 
 **Phase 2B: Button and Text variants**
 - [ ] PaymentButton size (small/medium/large, 48 dp box, D29), width (PaymentWidth), autofocus

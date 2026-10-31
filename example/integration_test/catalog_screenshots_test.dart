@@ -212,6 +212,12 @@ void main() {
     clearSnackBars();
     await settle(tester);
 
+    await open('Video');
+    await top('PaymentVideoPlayer + video_player adapter');
+    await tapVisible(tester, find.text('Loading'));
+    await top('PaymentVideoPlayer + video_player adapter');
+    await shot('video_loading');
+    await open('Interaction');
     await top('ExpandableSection');
     await shot('expandable');
     // The last entries cannot scroll to the top, so this frame also shows

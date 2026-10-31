@@ -109,7 +109,7 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
             children: [
               for (final line in data.lines)
                 InfoRow(label: line.label, value: AmountText(line.amount)),
-              Divider(color: theme.outline, height: theme.spacing * 2),
+              PaymentDivider(height: theme.spacing * 2),
               InfoRow(
                 label: l10n.totalLabel,
                 emphasis: true,
@@ -156,7 +156,7 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
           ),
         ),
         if (data.refund.status != RefundStatus.none) ...[
-          Divider(color: theme.outline, height: theme.spacing * 3),
+          PaymentDivider(height: theme.spacing * 3),
           RefundSection(refund: data.refund, paidAmount: data.total),
         ],
         if (_feedback != null) ...[

@@ -37,6 +37,24 @@ void main() {
 
       var c = await runScenario(tester, app, 'K07', variant: 2);
       await shot('kyc_review', look);
+      c = await runScenario(tester, app, 'H01');
+      await tapVisible(tester, find.byKey(const Key('buy')));
+      await pumpUntil(tester, () => c.step == FlowStep.kycIntro);
+      final consent = PaymentLocalizations.of(
+        tester.element(find.byType(VerificationIntro)),
+      ).consentLabel;
+      await Scrollable.ensureVisible(
+        tester.element(find.text(consent)),
+        alignment: 0.5,
+      );
+      await shot('kyc_intro', look);
+      c = await runScenario(tester, app, 'P03', variant: 1);
+      await pumpUntil(tester, () => c.quote != null && !c.quoting);
+      await Scrollable.ensureVisible(
+        tester.element(find.textContaining('4242')),
+        alignment: 0.5,
+      );
+      await shot('methods_unavailable', look);
 
       c = await runScenario(tester, app, 'H02');
       await pumpUntil(tester, () => c.quote != null && !c.quoting);
@@ -49,6 +67,13 @@ void main() {
       c.reviewOrder();
       await c.confirm();
       await pumpUntil(tester, () => c.quote?.revision == 2 && !c.confirming);
+      if (look == 'light_200') {
+        await settle(tester);
+        await Scrollable.ensureVisible(
+          tester.element(find.byType(PaymentCheckbox)),
+          alignment: 0.5,
+        );
+      }
       await shot('requote', look);
 
       c = await runScenario(tester, app, 'P06');

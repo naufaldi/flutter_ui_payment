@@ -592,12 +592,14 @@ class _VideoDemoState extends State<_VideoDemo> {
     'assets/video/ruang_bayar_demo.mp4',
   );
   late final _broken = VideoPlayerAdapter.asset('assets/video/missing.mp4');
-  bool _showBroken = false;
+  String _video = 'bundled';
+  final _loading = _StalledVideo();
 
   @override
   void dispose() {
     _playable.dispose();
     _broken.dispose();
+    _loading.dispose();
     super.dispose();
   }
 
@@ -607,19 +609,25 @@ class _VideoDemoState extends State<_VideoDemo> {
     return _Entry(
       name: 'PaymentVideoPlayer + video_player adapter',
       states: _StatePicker(
-        values: const [false, true],
-        selected: _showBroken,
-        onSelected: (v) => setState(() => _showBroken = v),
-        label: (v) => v
-            ? t('Missing file', 'File hilang')
-            : t('Bundled clip', 'Klip bawaan'),
+        values: const ['bundled', 'missing', 'loading'],
+        selected: _video,
+        onSelected: (v) => setState(() => _video = v),
+        label: (v) => switch (v) {
+          'missing' => t('Missing file', 'File hilang'),
+          'loading' => t('Loading', 'Memuat'),
+          _ => t('Bundled clip', 'Klip bawaan'),
+        },
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           PaymentVideoPlayer(
-            key: ValueKey(_showBroken),
-            controller: _showBroken ? _broken : _playable,
+            key: ValueKey(_video),
+            controller: switch (_video) {
+              'missing' => _broken,
+              'loading' => _loading,
+              _ => _playable,
+            },
             title: t(
               'How to pay with a virtual account (demo clip)',
               'Cara bayar virtual account (klip demo)',
@@ -1321,4 +1329,24 @@ class _TabsDemoState extends State<_TabsDemo> {
       ),
     );
   }
+}
+
+class _StalledVideo extends PaymentVideoController {
+  @override
+  Future<void> initialize() async {
+    value = const VideoPlaybackValue(phase: VideoPhase.loading);
+  }
+
+  @override
+  Future<void> play() async {}
+  @override
+  Future<void> pause() async {}
+  @override
+  Future<void> seekTo(Duration position) async {}
+  @override
+  Future<void> setMuted(bool muted) async {}
+  @override
+  Future<void> retry() async {}
+  @override
+  Widget buildSurface(BuildContext context) => const SizedBox.shrink();
 }

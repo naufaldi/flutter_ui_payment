@@ -14,9 +14,10 @@ Everything between "what am I paying for" and "send it": every fee shown before 
 
 <Screens>
   <Screen name="ios_refined_checkout_light" dark="ios_refined_checkout_dark" alt="Checkout: summary led by the total, fee line, bordered method list with radios and an outlined selected row, pinned total and Review payment." caption="PaymentSummary, PaymentMethodPicker, PaymentActionBar" />
-  <Screen name="ios_requote_light" alt="Review in Indonesian after a re-quote: a total-changed notice, an acceptance checkbox and a disabled pay button." caption="PaymentConfirmation after a re-quote (Indonesian)" />
+  <Screen name="ios_requote_light" alt="Review in Indonesian after a re-quote: a total-changed notice, an acceptance checkbox aligned to the content gutter and a disabled pay button." caption="PaymentConfirmation after a re-quote (Indonesian)" />
   <Screen name="ios_authorize_light" alt="Host authorization step in Indonesian with a plain title, muted message and a button to start the host challenge." caption="AuthorizationPrompt (Indonesian)" />
   <Screen name="ios_kit_checkout" dark="ios_kit_checkout_dark" alt="Gallery checkout section in Indonesian: MerchantHeader with a verified badge, PaymentStepIndicator at step 2 of 4, and the order summary." caption="MerchantHeader, PaymentStepIndicator (Indonesian)" />
+  <Screen name="ios_methods_unavailable_light" dark="ios_methods_unavailable_dark" alt="Payment methods in Indonesian: the unavailable card has a thin muted radio ring and a danger-colored reason; the selected method retains its thick ring and outline." caption="Unavailable method (Indonesian)" />
 </Screens>
 
 ## Usage
@@ -98,3 +99,7 @@ AuthorizationPrompt(
 ## API
 
 <Props names={['PaymentSummary', 'PaymentMethodPicker', 'PaymentConfirmation', 'AuthorizationPrompt', 'AuthorizationPhase', 'PaymentActionBar', 'MerchantHeader', 'PaymentStepIndicator', 'BalanceCard', 'BalanceState', 'PromoCodeInput', 'PromoCodeStatus', 'PaymentQuote', 'QuoteLine', 'QuoteLineKind', 'PaymentMethod', 'PaymentMethodKind']} />
+
+## Pattern adoption
+
+Changed-total approval uses `PaymentCheckbox`, aligned to the content gutter. Pay stays disabled until the customer accepts. Unavailable methods keep their reason below a muted label and show a thin disabled radio ring.

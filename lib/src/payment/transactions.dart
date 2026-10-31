@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../controls/controls.dart';
+import '../foundation/row_shell.dart';
 import '../foundation/focus_ring.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/money.dart';
@@ -153,65 +154,53 @@ class TransactionListItem extends StatelessWidget {
         ),
     ];
     return MergeSemantics(
-      child: PaymentFocusRing(
-        radius: BorderRadius.zero,
-        child: InkWell(
-          focusColor: Colors.transparent,
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: theme.spacing * 1.5),
-              child: Column(
+      child: RowShell(
+        onTap: onTap,
+        centerShortRows: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Large text stacks the amount under the title so neither
+            // squeezes the other into breaking mid-word.
+            if (stacked) ...[
+              title,
+              Align(alignment: AlignmentDirectional.centerStart, child: amount),
+            ] else
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Large text stacks the amount under the title so neither
-                  // squeezes the other into breaking mid-word.
-                  if (stacked) ...[
-                    title,
-                    Align(
-                      alignment: AlignmentDirectional.centerStart,
-                      child: amount,
-                    ),
-                  ] else
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(child: title),
-                        SizedBox(width: theme.spacing * 2),
-                        amount,
-                      ],
-                    ),
-                  SizedBox(height: theme.spacing * 0.5),
-                  // Two lines so the date is never elided at large text.
-                  Text(
-                    [
-                      ?record.merchant,
-                      l10n.formatDateTime(record.createdAt),
-                    ].join(' · '),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: type.caption,
-                  ),
-                  // A success row shows no tag, but screen readers still hear
-                  // the status, as they do for every other row.
-                  if (settled)
-                    Semantics(
-                      label: l10n.paymentStatusShort(status),
-                      child: const SizedBox.shrink(),
-                    ),
-                  if (tags.isNotEmpty) ...[
-                    SizedBox(height: theme.spacing),
-                    Wrap(
-                      spacing: theme.spacing,
-                      runSpacing: theme.spacing * 0.5,
-                      children: tags,
-                    ),
-                  ],
+                  Expanded(child: title),
+                  SizedBox(width: theme.spacing * 2),
+                  amount,
                 ],
               ),
+            SizedBox(height: theme.spacing * 0.5),
+            // Two lines so the date is never elided at large text.
+            Text(
+              [
+                ?record.merchant,
+                l10n.formatDateTime(record.createdAt),
+              ].join(' · '),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: type.caption,
             ),
-          ),
+            // A success row shows no tag, but screen readers still hear
+            // the status, as they do for every other row.
+            if (settled)
+              Semantics(
+                label: l10n.paymentStatusShort(status),
+                child: const SizedBox.shrink(),
+              ),
+            if (tags.isNotEmpty) ...[
+              SizedBox(height: theme.spacing),
+              Wrap(
+                spacing: theme.spacing,
+                runSpacing: theme.spacing * 0.5,
+                children: tags,
+              ),
+            ],
+          ],
         ),
       ),
     );
@@ -315,7 +304,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
       content = Column(
         children: [
           for (final (i, r) in widget.records.indexed) ...[
-            if (i > 0) Divider(height: 1, color: theme.outline),
+            if (i > 0) const PaymentDivider(),
             TransactionListItem(record: r, onTap: () => widget.onOpen(r)),
           ],
         ],
@@ -459,7 +448,7 @@ class TransactionDetail extends StatelessWidget {
         // The refund is its own ruled section with its own state; the
         // original payment above keeps its success.
         if (record.refund.status != RefundStatus.none) ...[
-          Divider(color: theme.outline, height: theme.spacing * 3),
+          PaymentDivider(height: theme.spacing * 3),
           RefundSection(refund: record.refund, paidAmount: record.amount),
         ],
       ],

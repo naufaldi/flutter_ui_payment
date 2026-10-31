@@ -7,6 +7,14 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
 
 ## 0.1.0 (unreleased)
 
+Design system Phase 2A (31 Oct 2026):
+
+* Consent and changed-total rows use PaymentCheckbox, aligned on the content gutter with label typography and a 48 dp minimum.
+* Method selection shares the radio mark; unavailable methods show a thin disabled ring and their reason.
+* Horizontal pattern rules use PaymentDivider. Material 2 and custom DividerTheme hosts now receive a consistent 1 dp thickness.
+* Video loading uses a 32 dp white spinner with 3.84 dp stroke, or a 32 dp hourglass under reduced motion.
+* Failed photo decoding shows the illustrated capture frame. Row layout is shared internally; no public API change.
+
 Design system Phase 1A (31 Oct 2026):
 
 * Public `PaymentType`: `of`, `isLarge`, `bodyFor`, nine roles, `firstLineHeight`, `tabular` and `reference`.

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../foundation/focus_ring.dart';
+import '../foundation/primitives.dart';
+import '../foundation/payment_tokens.dart';
+import '../foundation/token_resolvers.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
@@ -234,7 +237,6 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final l10n = PaymentLocalizations.of(context);
-    final motion = PaymentMotion.of(context);
     final type = PaymentType.of(context);
     final v = _c.value;
     final loaded = switch (v.phase) {
@@ -292,15 +294,12 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
             ExcludeSemantics(child: widget.poster!),
           if (busy)
             Center(
-              child: motion.reduced
-                  ? const Icon(Icons.hourglass_top, color: Colors.white)
-                  : const SizedBox.square(
-                      dimension: 32,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 3,
-                        color: Colors.white,
-                      ),
-                    ),
+              child: ExcludeSemantics(
+                child: PaymentSpinner(
+                  size: PaymentIconSize.large.resolve(context),
+                  color: Colors.white,
+                ),
+              ),
             )
           else if (canControl && !playing)
             // A large target over the paused picture; hidden while playing
@@ -364,7 +363,7 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
                   aspectRatio: v.aspectRatio ?? widget.aspectRatio,
                   child: ColoredBox(color: Colors.black, child: picture()),
                 ),
-                Divider(height: 1, thickness: 1, color: theme.outline),
+                const PaymentDivider(),
                 if (v.phase == VideoPhase.error)
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(

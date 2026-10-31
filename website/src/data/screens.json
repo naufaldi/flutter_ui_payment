@@ -1,4 +1,39 @@
 {
+  "ios_kyc_intro_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios kyc intro light, Indonesian"
+  },
+  "ios_kyc_intro_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios kyc intro dark, Indonesian"
+  },
+  "ios_kyc_intro_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios kyc intro light 200, Indonesian"
+  },
+  "ios_methods_unavailable_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios methods unavailable light, Indonesian"
+  },
+  "ios_methods_unavailable_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios methods unavailable dark, Indonesian"
+  },
+  "ios_methods_unavailable_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios methods unavailable light 200, Indonesian"
+  },
+  "ios_catalog_video_loading": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog video loading, English"
+  },
   "ios_catalog_chart_line": {
     "width": 640,
     "height": 1387,

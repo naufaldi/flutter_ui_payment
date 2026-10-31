@@ -235,3 +235,17 @@ TokenTable rejects unknown, missing and duplicate rows. At 320 px, generated
 tables scroll inside their own wrapper, matching the existing swatches and
 Starlight table pattern, so the document itself stays within the viewport.
 No plan deviation; no library rendering changes in 1B.
+
+### Phase 2A implementation decisions
+
+- RowShell and RadioMark live in internal files and are not exported. Shared Dart libraries require public names. The shell retains each row's content and semantics and the transaction row's lack of centering.
+- Leading slots intentionally retain existing differences: ActionTile icons scale to 32 at 200%; selection marks retain a 20 dp slot. Unification belongs in Phase 2D.
+- VerticalDivider in navigation remains: PaymentDivider is horizontal-only. Word-boundary review excludes VerticalDivider.
+- Checkbox labels use label 15/20 instead of body 15/22, on the 16 dp content gutter with a 48 dp minimum.
+- Video loading stroke changes from 3 to 3.84; reduced-motion hourglass changes from 24 to 32. Its spinner is excluded from semantics because the status line announces loading.
+- Failed photo decoding uses the illustrated frame without a preview. The semantic label remains photo until Phase 4A.
+- Native proof completed on iPhone 16 / iOS 18.1: all three screenshot suites and all 14 flow tests pass. Captures were inspected in light, dark and 200% text; reapproval scrolls to the checkbox only at 200%. The flow locator uses PaymentCheckbox rather than obsolete consent copy. Below-status-bar regression differences are limited to generated timestamps and the live countdown; action tiles, checkout and choice controls are pixel-identical. WebP assets and documentation embeds are published with this change.
+
+Element counts (same host and synthetic workload, base → Phase 2A): history 847 → 862, confirmation 406 → 409, intro 344 → 346. RowShell and PaymentDivider each add a component element, without adding render objects or layout/paint passes. This is the documented exception to §12’s equal-or-lower element count criterion.
+
+Plan correction: the suggested literal English reapproval sentence did not match the actual localization. The test taps PaymentCheckbox instead, preserving the same interaction without duplicating localized copy.
