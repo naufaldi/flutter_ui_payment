@@ -322,7 +322,7 @@ class PaymentMeterChart extends StatelessWidget {
                               ),
                               AmountText(
                                 s.value,
-                                style: PaymentType.of(context).caption,
+                                variant: AmountTextVariant.caption,
                               ),
                               if (s.status != ChartPointStatus.settled)
                                 Text(
@@ -429,7 +429,7 @@ class ChartModule extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (headline != null)
-                    AmountText(headline!, style: type.amountLarge)
+                    AmountText(headline!, variant: AmountTextVariant.large)
                   else if (state == ChartState.loading)
                     const SizedBox(
                       height: 48,

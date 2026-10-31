@@ -98,7 +98,7 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
         SizedBox(height: theme.spacing * 0.5),
         Align(
           alignment: AlignmentDirectional.centerStart,
-          child: AmountText(data.total, emphasis: true),
+          child: AmountText(data.total, variant: AmountTextVariant.display),
         ),
         SizedBox(height: theme.spacing * 0.5),
         Text(l10n.formatDateTime(data.paidAt), style: type.caption),
@@ -113,10 +113,7 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
               InfoRow(
                 label: l10n.totalLabel,
                 emphasis: true,
-                value: AmountText(
-                  data.total,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
+                value: AmountText(data.total, variant: AmountTextVariant.total),
               ),
               InfoRow(label: l10n.paymentMethod, valueText: data.methodLabel),
               // The ID and its label share the top line; the copy button

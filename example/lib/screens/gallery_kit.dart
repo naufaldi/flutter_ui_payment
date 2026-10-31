@@ -523,7 +523,10 @@ class _SheetsDemo extends StatelessWidget {
             const InfoRow(
               label: 'Total',
               emphasis: true,
-              value: AmountText(Money.idr(102500), emphasis: true),
+              value: AmountText(
+                Money.idr(102500),
+                variant: AmountTextVariant.display,
+              ),
             ),
           ],
         ),
@@ -1115,53 +1118,172 @@ class _HistoryDemoState extends State<_HistoryDemo> {
 
 class _ButtonsDemo extends StatelessWidget {
   const _ButtonsDemo();
-
   @override
   Widget build(BuildContext context) {
-    String t(String en, String id) => _t(context, en, id);
+    final theme = PaymentTheme.of(context);
+    Widget caption(String label) => Text(
+      label,
+      textScaler: devScaler(context),
+      style: devMono(theme.textSecondary),
+    );
     return _Entry(
       name: 'PaymentButton · variants',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          PaymentButton(
-            label: t('Pay Rp102.500', 'Bayar Rp102.500'),
-            onPressed: () => Future.delayed(const Duration(seconds: 2)),
-          ),
-          const SizedBox(height: 8),
-          PaymentButton(
-            label: t('Change method', 'Ganti metode'),
-            variant: PaymentButtonVariant.secondary,
-            onPressed: () =>
-                _hostSays(context, 'Host opens methods', 'Host membuka metode'),
-          ),
-          const SizedBox(height: 8),
-          PaymentButton(
-            label: t('Not now', 'Nanti saja'),
-            variant: PaymentButtonVariant.quiet,
-            onPressed: () => _hostSays(context, 'Dismissed', 'Ditutup'),
-          ),
-          const SizedBox(height: 8),
-          PaymentButton(
-            label: t('Remove card', 'Hapus kartu'),
-            variant: PaymentButtonVariant.destructive,
-            icon: Icons.delete_outline,
-            onPressed: () => _hostSays(
+          caption(
+            _t(
               context,
-              'Card removed (simulated)',
-              'Kartu dihapus (simulasi)',
+              'Documentation specimen: the one-primary rule is waived here.',
+              'Spesimen dokumentasi: aturan satu aksi utama dikecualikan di sini.',
             ),
           ),
-          const SizedBox(height: 8),
-          PaymentButton(
-            label: t('Sending payment', 'Mengirim pembayaran'),
-            busy: true,
-            onPressed: () {},
+          for (final variant in PaymentButtonVariant.values) ...[
+            caption(variant.name),
+            Wrap(
+              spacing: theme.spacing,
+              runSpacing: theme.spacing,
+              children: [
+                PaymentButton(
+                  label: variant == PaymentButtonVariant.destructive
+                      ? _t(context, 'Remove card', 'Hapus kartu')
+                      : _t(context, 'Save changes', 'Simpan perubahan'),
+                  variant: variant,
+                  width: PaymentWidth.hug,
+                  icon: variant == PaymentButtonVariant.destructive
+                      ? Icons.delete_outline
+                      : null,
+                  onPressed: () => _hostSays(
+                    context,
+                    'Changes saved (simulated)',
+                    'Perubahan disimpan (simulasi)',
+                  ),
+                ),
+                PaymentButton(
+                  label: _t(context, 'Unavailable', 'Tidak tersedia'),
+                  variant: variant,
+                  width: PaymentWidth.hug,
+                  onPressed: null,
+                ),
+              ],
+            ),
+          ],
+          caption(_t(context, 'Busy', 'Memproses')),
+          Wrap(
+            spacing: theme.spacing,
+            runSpacing: theme.spacing,
+            children: [
+              for (final variant in [
+                PaymentButtonVariant.primary,
+                PaymentButtonVariant.destructive,
+              ])
+                PaymentButton(
+                  label: _t(context, 'Saving changes', 'Menyimpan perubahan'),
+                  variant: variant,
+                  width: PaymentWidth.hug,
+                  busy: true,
+                  onPressed: () {},
+                ),
+            ],
           ),
-          const SizedBox(height: 8),
-          PaymentButton(
-            label: t('Pay Rp102.500', 'Bayar Rp102.500'),
-            onPressed: null,
+          caption(_t(context, 'Sizes', 'Ukuran')),
+          for (final size in PaymentSize.values)
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: PaymentButton(
+                key: size == PaymentSize.medium
+                    ? const ValueKey('button-specimen-focus')
+                    : null,
+                label: _t(context, 'Edit', 'Ubah'),
+                size: size,
+                width: PaymentWidth.hug,
+                variant: PaymentButtonVariant.secondary,
+                onPressed: () => _hostSays(
+                  context,
+                  'Host opens editor',
+                  'Host membuka editor',
+                ),
+              ),
+            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _t(context, 'Saved cards', 'Kartu tersimpan'),
+                  style: PaymentType.of(context).heading,
+                ),
+              ),
+              PaymentButton(
+                label: _t(context, 'Add card', 'Tambah kartu'),
+                size: PaymentSize.small,
+                width: PaymentWidth.hug,
+                variant: PaymentButtonVariant.secondary,
+                onPressed: () => _hostSays(
+                  context,
+                  'Host opens card form',
+                  'Host membuka formulir kartu',
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AmountTextVariantsDemo extends StatelessWidget {
+  const _AmountTextVariantsDemo();
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    return _Entry(
+      name: 'AmountText · variants',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final variant in AmountTextVariant.values)
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: theme.spacing),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      variant.name,
+                      textScaler: devScaler(context),
+                      style: devMono(theme.textSecondary),
+                    ),
+                  ),
+                  Flexible(
+                    child: AmountText(
+                      const Money.idr(102500),
+                      variant: variant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          InfoRow(
+            label: _t(context, 'Total', 'Total'),
+            emphasis: true,
+            value: const AmountText(
+              Money.idr(102500),
+              variant: AmountTextVariant.total,
+            ),
+          ),
+          InfoRow(
+            label: _t(context, 'Muted', 'Redup'),
+            value: AmountText(
+              const Money.idr(102500),
+              style: TextStyle(color: theme.textSecondary),
+            ),
+          ),
+          InfoRow(
+            label: _t(context, 'Struck', 'Dicoret'),
+            value: const AmountText(
+              Money.idr(102500),
+              style: TextStyle(decoration: TextDecoration.lineThrough),
+            ),
           ),
         ],
       ),

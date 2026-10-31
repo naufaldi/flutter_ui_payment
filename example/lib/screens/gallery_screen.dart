@@ -171,7 +171,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _CaptureGuideDemo(),
         _KycStatusDemo(),
       ],
-      _ => const [_Foundation(), _AmountDemo()],
+      _ => const [_Foundation(), _AmountTextVariantsDemo(), _AmountDemo()],
     };
     return AdaptiveNavShell(
       title: Text(s.tabGallery),
@@ -376,7 +376,10 @@ class _Foundation extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const AmountText(Money.idr(102500), emphasis: true),
+            const AmountText(
+              Money.idr(102500),
+              variant: AmountTextVariant.display,
+            ),
             const InfoRow(
               label: 'Biaya layanan',
               value: AmountText(Money.idr(2500)),

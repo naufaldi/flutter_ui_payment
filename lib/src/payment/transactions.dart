@@ -399,7 +399,7 @@ class TransactionDetail extends StatelessWidget {
         SizedBox(height: theme.spacing * 1.5),
         Align(
           alignment: AlignmentDirectional.centerStart,
-          child: AmountText(record.amount, emphasis: true),
+          child: AmountText(record.amount, variant: AmountTextVariant.display),
         ),
         SizedBox(height: theme.spacing * 0.5),
         Text(

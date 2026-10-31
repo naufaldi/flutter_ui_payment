@@ -314,7 +314,10 @@ class _Overview extends StatelessWidget {
               ),
               if (!flexible) ...[
                 const SizedBox(height: 12),
-                const AmountText(Money.idr(100000), emphasis: true),
+                const AmountText(
+                  Money.idr(100000),
+                  variant: AmountTextVariant.display,
+                ),
               ],
               const SizedBox(height: 8),
               InfoRow(
@@ -724,7 +727,10 @@ class _Authorize extends StatelessWidget {
               SizedBox(height: theme.spacing * 0.5),
               Align(
                 alignment: AlignmentDirectional.centerStart,
-                child: AmountText(c.quote!.total, emphasis: true),
+                child: AmountText(
+                  c.quote!.total,
+                  variant: AmountTextVariant.display,
+                ),
               ),
               InfoRow(
                 label: l10n.payWithTitle,
