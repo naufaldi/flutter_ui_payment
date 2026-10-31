@@ -45,7 +45,7 @@ class _VerificationIntroState extends State<VerificationIntro> {
       borderRadius: theme.controlBorderRadius,
     );
     final scaler = MediaQuery.textScalerOf(context);
-    final line = scaler.scale(15) * 20 / 15;
+    final line = PaymentType.firstLineHeight(context);
     final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -1,7 +1,7 @@
 # PRD: Design system — foundations, components, patterns
 
 Date: 31 October 2026 (revision 3, owner decision "full Stripe parity")
-Status: **revision 3, for owner review in PR #5.** Revision 2 was approved on 31 October 2026 (Q1–Q10). Later that day the owner decided **full Stripe Apps component parity** (§1). Every revision-2 decision not listed below stays approved. The adaptations D28–D44 and the open questions Q11–Q12 await review. Nothing marked **New** is implemented.
+Status: **revision 3, for owner review in PR #5.** Revision 2 was approved on 31 October 2026 (Q1–Q10). Later that day the owner decided **full Stripe Apps component parity** (§1). Every revision-2 decision not listed below stays approved. The adaptations D28–D44 and Q11–Q12 are accepted for Phase 1 implementation. Phase 1A foundation APIs are implemented; other items marked **New** remain planned.
 Builds on: `PRD.md` §2, §4, §7, §10, §11 and §16a; `docs/decisions.md`; `docs/foundation-plan.md`; the docs catalog in PR #1; the charts and KYC capture work in PR #4; Stripe's component pages (`https://docs.stripe.com/stripe-apps/components/<slug>.md?app-sdk-version=9`, read 31 Oct 2026).
 Tracked by: issue #2.
 
@@ -364,7 +364,7 @@ The scale is `PaymentType` (`payment_type.dart:14`). It has 9 roles on 7 sizes a
 | block | 12 | `spacing * 1.5` | Row vertical padding (`ActionTile`, controls), icon → row text, notice padding, band → title | — |
 | group | 16 | `spacing * 2` | Screen and sheet gutter, label ↔ value gap, sheet footer inset | A gutter other than 16 at any width |
 | section | 24 | `spacing * 3` | Content → primary action, ruled section gap (divider in the middle) | — |
-| major | 32 | `spacing * 4` | Reserved for `StateMessage` padding by the dartdoc | — |
+| major | 32 | `spacing * 4` | Largest gap; no kit widget uses it today | — |
 
 **Gaps.**
 
@@ -432,7 +432,7 @@ Icons are Material `Icons` from the Flutter SDK, with no icon package. **New** `
 
 | Icon | Meaning |
 | --- | --- |
-| `chevron_right`/`chevron_left` (RTL) | Opens something |
+| `chevron_right`; the SDK mirrors it | Opens something |
 | `open_in_new` | Leaves the app |
 | `close` | Dismiss UI only |
 | `copy_rounded` → `check` | Copy, then copied |
@@ -1904,8 +1904,8 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 
 ### Open questions (revision 3)
 
-11. **Stripe text roles.** Stripe's Inline has nine `font` roles, and five of them (`subtitle`, `subheading`, `lead`, `bodyEmphasized`, `kicker`) have no matching `PaymentType` role. Map them onto the existing nine roles (§3.2 table), or add roles to `PaymentType`? **Recommendation: map (D35).** D15 just froze nine roles as public API. `lead` and `kicker` would add looks with no second use, and a larger `lead` would compete with the one display amount per screen.
-12. **Typed date order in English.** `MoneyFormat.en` follows US separators. Should `PaymentDateField` typed entry use `MM/DD/YYYY` in `en`, or `DD/MM/YYYY` in both locales? **Recommendation: `DD/MM/YYYY` in both, overridable by the host, with the pattern always shown as the hint and the picker as the primary path.** The kit's users are in Indonesia even when the UI is in English. A per-locale order would make the same date of birth type differently after a language switch.
+11. **Stripe text roles.** Stripe's Inline has nine `font` roles, and five of them (`subtitle`, `subheading`, `lead`, `bodyEmphasized`, `kicker`) have no matching `PaymentType` role. Map them onto the existing nine roles (§3.2 table), or add roles to `PaymentType`? **Resolved: map (D35).** D15 just froze nine roles as public API. `lead` and `kicker` would add looks with no second use, and a larger `lead` would compete with the one display amount per screen.
+12. **Typed date order in English.** `MoneyFormat.en` follows US separators. Should `PaymentDateField` typed entry use `MM/DD/YYYY` in `en`, or `DD/MM/YYYY` in both locales? **Resolved: `DD/MM/YYYY` in both, overridable by the host, with the pattern always shown as the hint and the picker as the primary path.** The kit's users are in Indonesia even when the UI is in English. A per-locale order would make the same date of birth type differently after a language switch.
 
 ## 14. Issue checklist
 
@@ -1916,18 +1916,18 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] PR #3 merged: foundation PRD on main (f74b882)
 - [x] Owner answers Q1–Q10 (31 Oct 2026)
 - [x] Owner decision: full Stripe Apps parity, 48 components (31 Oct 2026)
-- [ ] Owner reviews revision 3 (D28–D44) and answers Q11–Q12
+- [x] Owner reviews revision 3 (D28–D44) and answers Q11–Q12
 - [ ] Merge PR #1 (docs/component-catalog) to main (owner)
 - [ ] Merge PR #4 (feat/charts-kyc-capture, stacked on #1) to main (owner)
 - [ ] Merge PR #5 (docs/design-system-prd) to main (owner)
 - [ ] Record Q1–Q12 and D28–D44 in docs/decisions.md
 
 **Phase 1A: type and token API**
-- [ ] Export PaymentType; firstLineHeight (replace 8 copies); tabular/reference; deprecate amountStyle(large:) (D15)
-- [ ] Token enums: PaymentSize, PaymentWidth, PaymentSpace + PaymentTheme.space, PaymentRadius, PaymentTextRole, PaymentTextColor, PaymentFontWeight, PaymentIconSize, PaymentFieldPart
-- [ ] PaymentIcons + internal tone→icon helper (replace 2 copies)
-- [ ] PaymentLocalizations.formatDate + dateInputPattern (D36)
-- [ ] StateMessage padding dartdoc; Contrast radius comment; icon family audit
+- [x] Export PaymentType; firstLineHeight (replace 8 copies); tabular/reference; deprecate amountStyle(large:) (D15)
+- [x] Token enums: PaymentSize, PaymentWidth, PaymentSpace + PaymentTheme.space, PaymentRadius, PaymentTextRole, PaymentTextColor, PaymentFontWeight, PaymentIconSize, PaymentFieldPart
+- [x] PaymentIcons + internal tone→icon helper (replace 2 copies)
+- [x] PaymentLocalizations.formatDate + dateInputPattern (D36)
+- [x] StateMessage padding dartdoc; Contrast radius comment; icon family audit
 
 **Phase 1B: foundation pages**
 - [ ] Token tables + Stripe mappings: color, typography, spacing and radius, motion, focus, money and dates

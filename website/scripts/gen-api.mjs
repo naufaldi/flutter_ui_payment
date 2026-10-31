@@ -4,7 +4,7 @@
 //
 // Deliberately small: it understands the shapes this package uses
 // (`const Foo({...})` constructors, `final Type name;` fields, `///` docs,
-// enums and top-level functions). It fails loudly when it cannot match a
+// enums and top-level functions, including show-filtered exports). It fails loudly when it cannot match a
 // constructor parameter to a field, so drift shows up as a broken build.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -16,7 +16,7 @@ const lib = resolve(here, '../../lib');
 const out = resolve(here, '../src/data/api.json');
 
 const barrel = readFileSync(join(lib, 'flutter_ui_payment.dart'), 'utf8');
-const files = [...barrel.matchAll(/^export '([^']+)';/gm)].map((m) => m[1]);
+const files = [...barrel.matchAll(/^export '([^']+)'(?:\s+show\s+([^;]+))?;/gm)].map((m) => ({ rel: m[1], show: m[2] ? new Set(m[2].split(',').map((n) => n.trim())) : null }));
 if (files.length === 0) throw new Error('No exports found in the barrel file');
 
 /** Removes // comments (not ///) and string contents, keeping line lengths. */
@@ -179,12 +179,18 @@ function collectSignature(lines, start) {
 
 const api = {};
 
+let shown = null;
+let found = new Set();
 function add(name, entry) {
+  if (shown && !shown.has(name)) return;
+  found.add(name);
   if (api[name]) throw new Error(`Duplicate public name ${name}`);
   api[name] = entry;
 }
 
-for (const rel of files) {
+for (const {rel, show} of files) {
+  shown = show;
+  found = new Set();
   const path = join(lib, rel);
   const source = readFileSync(path, 'utf8');
   const lines = source.split('\n');
@@ -312,6 +318,9 @@ for (const rel of files) {
         params: parseParams(raw),
       });
     }
+  }
+  for (const name of show ?? []) {
+    if (!found.has(name)) throw new Error(`Unmatched shown name ${name} in ${rel}`);
   }
 }
 

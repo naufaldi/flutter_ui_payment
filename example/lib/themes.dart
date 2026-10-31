@@ -36,8 +36,8 @@ ThemeData buildTheme(DemoBrand brand, Brightness brightness) {
       );
       return _base(scheme, payment, background: surface);
     case DemoBrand.lumen:
-      // "Contrast": pure black and white, heavier amounts, tighter corners
-      // everywhere. Shows that a host can restyle the kit through tokens.
+      // "Contrast": pure black and white and heavier amounts, with the same
+      // corners as Hairline (radius 8).
       final ink = dark ? Colors.white : Colors.black;
       final surface = dark ? const Color(0xFF0F0F0F) : Colors.white;
       final scheme = ColorScheme.fromSeed(

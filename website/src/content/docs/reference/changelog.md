@@ -7,6 +7,15 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
 
 ## 0.1.0 (unreleased)
 
+Design system Phase 1A (31 Oct 2026):
+
+* Public `PaymentType`: `of`, `isLarge`, `bodyFor`, nine roles, `firstLineHeight`, `tabular` and `reference`.
+* New closed token enums: `PaymentSize`, `PaymentWidth`, `PaymentSpace`, `PaymentRadius`, `PaymentTextRole`, `PaymentTextColor`, `PaymentFontWeight`, `PaymentIconSize`, `PaymentFieldPart`; `PaymentTheme.space` resolves spacing.
+* `PaymentIcons` defines fixed meanings using existing glyphs.
+* `PaymentLocalizations.formatDate` preserves calendar dates; `dateInputPattern` defaults to `DD/MM/YYYY` in both locales and is host-overridable.
+* Deprecated `amountStyle(large:)`: migrate row amounts to `type.tabular(type.label)`; use `type.tabular(type.heading)` only when the old 600 weight is needed. `amountStyle(context)` remains the display alias.
+* No visual change: shared helpers preserve existing arithmetic and glyphs.
+
 First local version. Not published.
 
 Charts and KYC capture (31 Oct 2026):
