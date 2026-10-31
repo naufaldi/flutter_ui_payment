@@ -1,3 +1,5 @@
+import '../foundation/payment_icons.dart';
+import '../controls/actions.dart';
 import '../controls/text_field.dart';
 import 'dart:math' as math;
 
@@ -514,11 +516,10 @@ class _PromoCodeInputState extends State<PromoCodeInput> {
         children: [
           Flexible(child: tag),
           if (widget.onRemove != null)
-            IconButton(
+            PaymentIconButton(
+              icon: PaymentIcons.close,
               tooltip: l10n.remove,
               onPressed: widget.onRemove,
-              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-              icon: Icon(Icons.close, size: 20, color: theme.textSecondary),
             ),
         ],
       );

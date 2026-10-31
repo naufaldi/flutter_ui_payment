@@ -2332,6 +2332,8 @@
       "captureFramingHint",
       "capturePhotoLabel",
       "captureFrameLabel",
+      "opensExternally",
+      "hideBanner",
       "close",
       "cancel",
       "confirm",
@@ -2950,7 +2952,7 @@
         "kind": "static",
         "static": true,
         "type": "IconData",
-        "value": "Icons.copy_rounded",
+        "value": "Icons.copy_outlined",
         "doc": "Copy action, handled by the host."
       },
       {
@@ -5992,6 +5994,17 @@
         "factory": false,
         "params": [
           {
+            "name": "focusNode",
+            "type": "FocusNode?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "focusNode",
+            "doc": "Specific outcome of pressing the button. Wraps rather than truncates.\nHost focus node, for example for menu focus return."
+          },
+          {
             "name": "label",
             "type": "String",
             "required": true,
@@ -6000,7 +6013,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": "Specific outcome of pressing the button. Wraps rather than truncates."
+            "doc": ""
           },
           {
             "name": "onPressed",
@@ -6098,11 +6111,18 @@
     "statics": [],
     "members": [
       {
+        "name": "focusNode",
+        "kind": "field",
+        "static": false,
+        "type": "FocusNode?",
+        "doc": "Specific outcome of pressing the button. Wraps rather than truncates.\nHost focus node, for example for menu focus return."
+      },
+      {
         "name": "label",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Specific outcome of pressing the button. Wraps rather than truncates."
+        "doc": ""
       },
       {
         "name": "variant",
@@ -6400,7 +6420,7 @@
     "kind": "class",
     "file": "lib/src/foundation/primitives.dart",
     "doc": "Inline message for errors, warnings and explanations.",
-    "extends": "StatelessWidget",
+    "extends": "StatefulWidget",
     "constructors": [
       {
         "name": "PaymentBanner",
@@ -6415,7 +6435,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "tone",
-            "doc": ""
+            "doc": "Semantic message tone."
           },
           {
             "name": "title",
@@ -6426,7 +6446,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": ""
+            "doc": "Visible banner heading."
           },
           {
             "name": "message",
@@ -6437,7 +6457,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "message",
-            "doc": ""
+            "doc": "Optional explanation."
           },
           {
             "name": "icon",
@@ -6448,7 +6468,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "icon",
-            "doc": ""
+            "doc": "Default trigger glyph."
           },
           {
             "name": "actions",
@@ -6459,7 +6479,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "actions",
-            "doc": ""
+            "doc": "Inline links or hug secondary/quiet actions."
           },
           {
             "name": "announce",
@@ -6471,6 +6491,17 @@
             "isSuper": false,
             "fieldName": "announce",
             "doc": "Announces the banner to screen readers when it appears."
+          },
+          {
+            "name": "onDismiss",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onDismiss",
+            "doc": "Shows Hide banner; reports at most once. The host removes the banner."
           }
         ],
         "doc": ""
@@ -6484,35 +6515,35 @@
         "kind": "field",
         "static": false,
         "type": "StatusTone",
-        "doc": ""
+        "doc": "Semantic message tone."
       },
       {
         "name": "title",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "Visible banner heading."
       },
       {
         "name": "message",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Optional explanation."
       },
       {
         "name": "icon",
         "kind": "field",
         "static": false,
         "type": "IconData?",
-        "doc": ""
+        "doc": "Default trigger glyph."
       },
       {
         "name": "actions",
         "kind": "field",
         "static": false,
         "type": "List<Widget>",
-        "doc": ""
+        "doc": "Inline links or hug secondary/quiet actions."
       },
       {
         "name": "announce",
@@ -6520,6 +6551,13 @@
         "static": false,
         "type": "bool",
         "doc": "Announces the banner to screen readers when it appears."
+      },
+      {
+        "name": "onDismiss",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Shows Hide banner; reports at most once. The host removes the banner."
       }
     ],
     "copyWith": null
@@ -7552,7 +7590,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "entries",
-            "doc": ""
+            "doc": "Menu entries and groups."
           },
           {
             "name": "onAction",
@@ -7563,7 +7601,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onAction",
-            "doc": ""
+            "doc": "Reports a selected entry identifier."
           },
           {
             "name": "icon",
@@ -7574,7 +7612,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "icon",
-            "doc": ""
+            "doc": "Default trigger glyph."
           },
           {
             "name": "tooltip",
@@ -7586,6 +7624,17 @@
             "isSuper": false,
             "fieldName": "tooltip",
             "doc": "Spoken and shown on long-press; defaults to \"More actions\"."
+          },
+          {
+            "name": "trigger",
+            "type": "Widget Function(VoidCallback toggle, FocusNode focusNode)?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "trigger",
+            "doc": "Builds a button using toggle and focusNode for focus return."
           }
         ],
         "doc": ""
@@ -7599,21 +7648,21 @@
         "kind": "field",
         "static": false,
         "type": "List<PaymentMenuEntry>",
-        "doc": ""
+        "doc": "Menu entries and groups."
       },
       {
         "name": "onAction",
         "kind": "field",
         "static": false,
         "type": "ValueChanged<String>?",
-        "doc": ""
+        "doc": "Reports a selected entry identifier."
       },
       {
         "name": "icon",
         "kind": "field",
         "static": false,
         "type": "IconData",
-        "doc": ""
+        "doc": "Default trigger glyph."
       },
       {
         "name": "tooltip",
@@ -16079,6 +16128,323 @@
         "static": false,
         "type": "String?",
         "doc": "Controlled query used by the search constructor."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentIconButtonVariant": {
+    "kind": "enum",
+    "file": "lib/src/controls/actions.dart",
+    "doc": "Semantic icon colors. Nothing else exists.",
+    "values": [
+      {
+        "name": "neutral",
+        "doc": "Secondary text for ordinary controls."
+      },
+      {
+        "name": "accent",
+        "doc": "Accent for the main value affordance."
+      }
+    ]
+  },
+  "PaymentIconButton": {
+    "kind": "class",
+    "file": "lib/src/controls/actions.dart",
+    "doc": "A 48 dp action with a spoken tooltip, circular focus ring and press feedback.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentIconButton",
+        "factory": false,
+        "params": [
+          {
+            "name": "icon",
+            "type": "IconData",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "icon",
+            "doc": "Semantic glyph."
+          },
+          {
+            "name": "tooltip",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "tooltip",
+            "doc": "Nonempty spoken action label."
+          },
+          {
+            "name": "onPressed",
+            "type": "VoidCallback?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onPressed",
+            "doc": "Host action; null disables interaction."
+          },
+          {
+            "name": "variant",
+            "type": "PaymentIconButtonVariant",
+            "required": false,
+            "default": "PaymentIconButtonVariant.neutral",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "variant",
+            "doc": "Semantic icon color."
+          },
+          {
+            "name": "focusNode",
+            "type": "FocusNode?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "focusNode",
+            "doc": "Host focus node for focus return."
+          }
+        ],
+        "doc": "Creates an icon action; null onPressed disables it."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData",
+        "doc": "Semantic glyph."
+      },
+      {
+        "name": "tooltip",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Nonempty spoken action label."
+      },
+      {
+        "name": "onPressed",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Host action; null disables interaction."
+      },
+      {
+        "name": "variant",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentIconButtonVariant",
+        "doc": "Semantic icon color."
+      },
+      {
+        "name": "focusNode",
+        "kind": "field",
+        "static": false,
+        "type": "FocusNode?",
+        "doc": "Host focus node for focus return."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentLinkVariant": {
+    "kind": "enum",
+    "file": "lib/src/controls/actions.dart",
+    "doc": "Inline text hierarchy. Nothing else exists.",
+    "values": [
+      {
+        "name": "primary",
+        "doc": "Heading-weight accent action."
+      },
+      {
+        "name": "secondary",
+        "doc": "Underlined secondary caption."
+      }
+    ]
+  },
+  "PaymentLink": {
+    "kind": "class",
+    "file": "lib/src/controls/actions.dart",
+    "doc": "Inline text action; the host opens any destination.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentLink",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Visible action label."
+          },
+          {
+            "name": "onPressed",
+            "type": "VoidCallback?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onPressed",
+            "doc": "Host action; null disables interaction."
+          },
+          {
+            "name": "external",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "external",
+            "doc": "Adds an external glyph, link role and destination hint."
+          },
+          {
+            "name": "variant",
+            "type": "PaymentLinkVariant",
+            "required": false,
+            "default": "PaymentLinkVariant.primary",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "variant",
+            "doc": "Visual text hierarchy."
+          },
+          {
+            "name": "semanticLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "semanticLabel",
+            "doc": "Spoken replacement, such as Edit: Your details."
+          }
+        ],
+        "doc": "Creates a text action with a 48 dp target."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Visible action label."
+      },
+      {
+        "name": "onPressed",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Host action; null disables interaction."
+      },
+      {
+        "name": "external",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Adds an external glyph, link role and destination hint."
+      },
+      {
+        "name": "variant",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentLinkVariant",
+        "doc": "Visual text hierarchy."
+      },
+      {
+        "name": "semanticLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Spoken replacement, such as Edit: Your details."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentCopyButton": {
+    "kind": "class",
+    "file": "lib/src/controls/actions.dart",
+    "doc": "Host-owned copying with a temporary check and persistent inline failure.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentCopyButton",
+        "factory": false,
+        "params": [
+          {
+            "name": "value",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": "Synthetic or host-supplied value to copy."
+          },
+          {
+            "name": "onCopy",
+            "type": "Future<bool> Function(String value)",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onCopy",
+            "doc": "Host copy implementation; exceptions are reported as failure."
+          },
+          {
+            "name": "tooltip",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "tooltip",
+            "doc": "Spoken label; defaults to the localized copy action."
+          }
+        ],
+        "doc": "Creates a copy action; the host returns whether copying worked."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Synthetic or host-supplied value to copy."
+      },
+      {
+        "name": "tooltip",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Spoken label; defaults to the localized copy action."
       }
     ],
     "copyWith": null

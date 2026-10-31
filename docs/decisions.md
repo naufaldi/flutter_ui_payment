@@ -270,7 +270,7 @@ Analyzer correction: MinTapTarget.updateRenderObject accepts RenderObject and ca
 
 Renames use deprecated typedefs, preserving constructors and Type identity. The snack bar wrapper retains its Material controller return. The API parser now records aliases and deprecations, and snippet checks resolve their targets. Existing documentation slugs stay until Phase 6.
 
-Toast duration scales by words: clamp 1000 + 300 × words to 4–10 seconds, or 6–10 with an action. Pending and accessible actions persist. SnackBar persist is explicitly true because the kit owns timeouts. The content owns timer cleanup: messenger disposal does not complete closed futures. A surface-colored TextButton and focus ring provide the inverted action until Phase 3B.
+Toast duration scales by words: clamp 1000 + 300 × words to 4–10 seconds, or 6–10 with an action. Pending and accessible actions persist. SnackBar persist is explicitly true because the kit owns timeouts. The content owns timer cleanup: messenger disposal does not complete closed futures. A surface-colored TextButton and focus ring retain the inverted action: the closed PaymentLink variants do not support ink surfaces, and this single private use does not justify another variant.
 
 Warning and reduced-motion busy use outlined icons. Checkout's bank-wait hourglass was never rendered outside exceptions and is now schedule. Tooltip placement is one twelve-value enum instead of side × alignment. Description uses Flutter's semantic tooltip property to preserve spoken trigger information; label names the trigger. Bubbles ignore pointers and semantics. Keyboard focus shows immediately, Escape dismisses.
 
@@ -319,3 +319,9 @@ The shared decoration is internal; currency entry retains its parsing TextField 
 Measured InputDecorator heights at 1×: small 48 dp, medium 56 dp, large 64 dp. The hidden-label semantic wrapper reaches the EditableText node in the behavioral test.
 
 Plan correction: currency_field_test inspected InputDecoration.helperText, which is null when the planned shared FieldMessage helper is used. The assertion now checks the rendered description-before-limits text; its size and typography assertions remain intact.
+
+### Phase 3B implementation decisions
+
+IconButton retains its Material tooltip for existing consumers, with a local ink TooltipTheme. External links have link role and hint; in-place links use button role. Secondary links are underlined to preserve their affordance. MinTapTarget centers short labels. The policy link removes the old inner indent and uses directional alignment with a trailing glyph. Copy uses pending/copied/failed states and a cancellable 1500 ms timer, with a generation guard for value changes during asynchronous work. Banner dismissal is stateful and once-only. PaymentButton.focusNode supports custom menu focus return. The toast action stays private on its ink surface because the closed link variants have no inverted color. Existing kit/flow captures are not refreshed under the owner's one-catalog-run scope.
+
+Capture harness correction: ensuring the failed copy button was visible scrolled its specimen heading and first row offscreen. Restore the specimen heading after pressing. Only the affected action captures are repeated; the icon captures also explicitly request keyboard focus for the focus specimen.

@@ -94,4 +94,6 @@ A `PaymentButton` fills its width, so give it a narrower parent if it should not
 
 ## Stripe mapping and actions
 
-Stripe default maps to neutral or info, caution to warning and critical to danger. Success is kit-only. Actions must be hug-width secondary or quiet PaymentButtons; unsupported actions assert in debug. Use a banner for a required next step, not routine success feedback. The icon-to-title gap is 12 dp. Dismiss support arrives in Phase 3B.
+
+
+Use onDismiss for a Hide banner action reported once; the host removes the banner. Actions accept PaymentLink or hug secondary/quiet PaymentButton.

@@ -1,4 +1,109 @@
 {
+  "ios_catalog_line_chart_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog line_chart variants, English"
+  },
+  "ios_catalog_line_chart_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog line_chart variants_dark, English"
+  },
+  "ios_catalog_line_chart_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog line_chart variants_200, English"
+  },
+  "ios_catalog_bar_chart_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog bar_chart variants, English"
+  },
+  "ios_catalog_bar_chart_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog bar_chart variants_dark, English"
+  },
+  "ios_catalog_bar_chart_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog bar_chart variants_200, English"
+  },
+  "ios_catalog_meter_chart_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog meter_chart variants, English"
+  },
+  "ios_catalog_meter_chart_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog meter_chart variants_dark, English"
+  },
+  "ios_catalog_meter_chart_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog meter_chart variants_200, English"
+  },
+  "ios_catalog_text_field_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog text_field variants, English"
+  },
+  "ios_catalog_text_field_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog text_field variants_dark, English"
+  },
+  "ios_catalog_text_field_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog text_field variants_200, English"
+  },
+  "ios_catalog_link_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog link variants, English"
+  },
+  "ios_catalog_link_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog link variants_dark, English"
+  },
+  "ios_catalog_link_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog link variants_200, English"
+  },
+  "ios_catalog_sparkline_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog sparkline variants, English"
+  },
+  "ios_catalog_sparkline_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog sparkline variants_dark, English"
+  },
+  "ios_catalog_icon_button_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog icon_button variants, English"
+  },
+  "ios_catalog_icon_button_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog icon_button variants_dark, English"
+  },
+  "ios_catalog_copy_button_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog copy_button variants, English"
+  },
+  "ios_catalog_copy_button_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog copy_button variants_dark, English"
+  },
   "ios_catalog_badge_variants": {
     "width": 640,
     "height": 1387,

@@ -25,7 +25,7 @@ PaymentSection(
   trailing: PaymentMenu(entries: [
     PaymentMenuItem(
       label: 'Copy account ID',
-      icon: Icons.copy_rounded,
+      icon: Icons.copy_outlined,
       onSelected: copyId,
     ),
     const PaymentMenuItem(
@@ -77,6 +77,8 @@ An entry with `onSelected: null` is shown disabled. Keep it in the menu when peo
 
 ## Variants, behavior and migration
 
-Stripe Menu, MenuItem and MenuGroup map to PaymentMenu, PaymentMenuItem and PaymentMenuGroup. Menu onAction receives ids; an item's onSelected takes precedence. Explicit disabled always wins. Put destructive actions in their own final untitled group. Do not place them next to routine actions without a separator. Group titles are headers, not controls. Arrow keys navigate, Escape closes, and focus returns to the trigger. A custom trigger arrives in Phase 3B.
+
 
 Migration: ActionMenu and ActionMenuEntry remain deprecated aliases until 0.2.0; rename to PaymentMenu and PaymentMenuItem. Old constructors keep compiling.
+
+Use trigger: (toggle, focusNode) to return PaymentButton or PaymentIconButton. Pass both the toggle callback and focus node so closing restores focus.

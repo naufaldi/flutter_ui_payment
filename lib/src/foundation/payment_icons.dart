@@ -26,7 +26,7 @@ class PaymentIcons {
   static const IconData close = Icons.close;
 
   /// Copy action, handled by the host.
-  static const IconData copy = Icons.copy_rounded;
+  static const IconData copy = Icons.copy_outlined;
 
   /// Copy completed.
   static const IconData copied = Icons.check;

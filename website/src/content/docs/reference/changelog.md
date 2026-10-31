@@ -5,6 +5,14 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Design system Phase 3B (1 Nov 2026)
+
+- Add PaymentIconButton, PaymentLink and PaymentCopyButton with semantic variants, 48 dp targets, focus and press feedback.
+- Add PaymentBanner.onDismiss, PaymentMenu.trigger and PaymentButton.focusNode.
+- The copy glyph is now outlined. Success shows a 1.5 s check; failures stay inline. Receipt banners report share feedback only; copyFailedReceipt remains API but is no longer used by the kit.
+- Policy links align to the gutter with trailing external glyphs. Media and navigation icons use secondary text; all migrated controls gain shared focus/press treatment and ink tooltips.
+- Delivers the 2E–3B specimen captures.
+
 ## Design system Phase 3A (1 Nov 2026)
 
 - Add PaymentTextField and its controlled search constructor, with persistent labels, type traits and host-error hiding.

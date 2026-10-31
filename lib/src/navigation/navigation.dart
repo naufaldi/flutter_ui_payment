@@ -1,3 +1,4 @@
+import '../controls/actions.dart';
 import 'package:flutter/material.dart';
 
 import '../foundation/focus_ring.dart';
@@ -304,10 +305,10 @@ class _AdaptiveNavShellState extends State<AdaptiveNavShell> {
         automaticallyImplyLeading: false,
         leading: wide
             ? null
-            : IconButton(
+            : PaymentIconButton(
                 focusNode: _menuFocus,
+                icon: Icons.menu,
                 tooltip: l10n.openNavigation,
-                icon: const Icon(Icons.menu),
                 onPressed: () => _scaffold.currentState?.openDrawer(),
               ),
         title: widget.title,

@@ -1,0 +1,39 @@
+---
+title: Icon button
+description: A 48 dp icon action needs a nonempty tooltip.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+
+A 48 dp icon action needs a nonempty tooltip. Neutral uses secondary text; accent marks a primary value affordance. Keyboard focus draws a circular ring and presses scale to 0.96. Disabled uses the disabled token. Use a labeled button when the glyph cannot explain the action. Variants: neutral, accent. Nothing else exists.
+
+<Screens>
+  <Screen name="ios_catalog_icon_button_variants" alt="icon-button variants" />
+  <Screen name="ios_catalog_icon_button_variants_dark" alt="icon-button variants_dark" />
+</Screens>
+
+## Usage
+
+```dart
+PaymentIconButton(icon: PaymentIcons.close, tooltip: 'Close', onPressed: () {});
+```
+
+## Stripe → kit
+
+| Source | Kit |
+| --- | --- |
+| children | label or icon |
+| disabled | onPressed: null (icon and link) |
+| onPress | onPressed, or host onCopy for copy |
+| external / href / target / rel | external visual/semantics; host callback owns destination |
+| type | variant where supported |
+
+Width and alignment follow content. Host widgets own keyboard ordering and platform services. Do use a clear action name; avoid unlabeled glyphs and button-like containers for links.
+
+## Accessibility
+
+Targets are at least 48 dp. Tooltips name icon actions. Links announce their role and external destinations. Copy feedback uses a live region and a check rather than color alone.
+
+<Props names={['PaymentIconButton', 'PaymentIconButtonVariant']} />

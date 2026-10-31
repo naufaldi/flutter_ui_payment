@@ -435,7 +435,7 @@ Icons are Material `Icons` from the Flutter SDK, with no icon package. **New** `
 | `chevron_right`; the SDK mirrors it | Opens something |
 | `open_in_new` | Leaves the app |
 | `close` | Dismiss UI only |
-| `copy_rounded` → `check` | Copy, then copied |
+| `copy_outlined` → `check` | Copy, then copied |
 | `cloud_off_outlined` | Load failed |
 | `search_off` | No matches |
 | `hourglass_top` | Busy under reduced motion |
@@ -444,7 +444,7 @@ Icons are Material `Icons` from the Flutter SDK, with no icon package. **New** `
 **Rules.**
 
 - An icon never carries meaning alone. It always sits beside words, or has a tooltip on an icon button.
-- One family: outlined. The exceptions `copy_rounded` and `warning_amber_outlined` are audited in Phase 1, and either replaced or recorded.
+- One family: outlined. The exceptions `copy_outlined` and `warning_amber_outlined` are audited in Phase 1, and either replaced or recorded.
 
 **Gaps.**
 
@@ -1968,10 +1968,10 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Migrate PaymentCurrencyField, PromoCodeInput, IdentityForm, TransactionHistory
 
 **Phase 3B: icon button, link and copy**
-- [ ] PaymentIconButton; migrate 10 sites (D18)
-- [ ] PaymentLink (PaymentLinkVariant primary/secondary, external); migrate 5 inline actions
-- [ ] PaymentCopyButton; migrate 2 copy sites
-- [ ] PaymentBanner.onDismiss and PaymentMenu.trigger on PaymentIconButton
+- [x] PaymentIconButton; migrate 10 sites (D18)
+- [x] PaymentLink (PaymentLinkVariant primary/secondary, external); migrate 5 inline actions
+- [x] PaymentCopyButton; migrate 2 copy sites
+- [x] PaymentBanner.onDismiss and PaymentMenu.trigger on PaymentIconButton
 
 **Phase 4A: layout primitives**
 - [ ] PaymentBox (D33)
@@ -2035,3 +2035,7 @@ Series use solid, long-dash (8/4), and dash-dot (8/3/2/3) encoding. MeterSegment
 Text fields retain 16 px input text. Width is deferred to field groups. keyboardType overrides type traits for custom host keyboards. Sizes use H−8 / H / H+8 padding rather than the earlier 40/48/56 sketch.
 
 Measured text-field heights: 48 / 56 / 64 dp (small / medium / large).
+
+### Phase 3B implementation notes
+
+Icon buttons retain tooltips and 48 dp targets. External links announce link role and hint, with directional alignment and trailing icons. Menu trigger receives toggle and focusNode and returns a kit button. Copy feedback is inline; success reverts after 1500 ms. Banners report dismissal once.

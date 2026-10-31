@@ -1,3 +1,4 @@
+import '../controls/actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/semantics.dart';
@@ -337,13 +338,9 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
               ? widget.suffix
               : widget.query!.isEmpty
               ? null
-              : IconButton(
+              : PaymentIconButton(
+                  icon: PaymentIcons.close,
                   tooltip: l10n.clearSearch,
-                  icon: Icon(
-                    PaymentIcons.close,
-                    size: 20,
-                    color: theme.textSecondary,
-                  ),
                   onPressed: () {
                     widget.onChanged!('');
                     _focus.requestFocus();

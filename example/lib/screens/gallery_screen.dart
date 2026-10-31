@@ -158,6 +158,9 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ],
       'controls' => const [
         _ButtonsDemo(),
+        _ActionSpecimen('PaymentIconButton'),
+        _ActionSpecimen('PaymentLink'),
+        _ActionSpecimen('PaymentCopyButton'),
         _TabsSpecimen(),
         _SelectionSpecimen('PaymentCheckbox'),
         _SelectionSpecimen('PaymentRadio'),

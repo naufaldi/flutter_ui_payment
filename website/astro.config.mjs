@@ -83,7 +83,10 @@ export default defineConfig({
             {
               label: 'Actions',
               items: [
-                { label: 'Button', slug: 'components/button' },
+                { label: 'Icon button', slug: 'components/icon-button' },
+            { label: 'Link', slug: 'components/link' },
+            { label: 'Copy button', slug: 'components/copy-button' },
+            { label: 'Button', slug: 'components/button' },
                 { label: 'List', slug: 'components/action-tile' },
                 { label: 'Menu', slug: 'components/action-menu' },
               ],

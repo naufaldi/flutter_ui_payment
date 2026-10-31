@@ -1,6 +1,6 @@
+import '../controls/actions.dart';
 import 'package:flutter/material.dart';
 
-import '../foundation/focus_ring.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
@@ -65,15 +65,6 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
     }
   }
 
-  Future<void> _copy() async {
-    final l10n = PaymentLocalizations.of(context);
-    final ok = await widget.onCopyTransactionId!(widget.data.transactionId);
-    if (!mounted) return;
-    ok
-        ? _show(l10n.copied, StatusTone.success)
-        : _show(l10n.copyFailedReceipt, StatusTone.danger);
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = PaymentLocalizations.of(context);
@@ -127,26 +118,9 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
                 ),
                 trailing: widget.onCopyTransactionId == null
                     ? null
-                    : PaymentFocusRing(
-                        radius: BorderRadius.circular(24),
-                        child: PaymentPressScale(
-                          child: IconButton(
-                            tooltip: l10n.copy,
-                            constraints: const BoxConstraints(
-                              minWidth: 48,
-                              minHeight: 48,
-                            ),
-                            style: PaymentFocusRing.withoutFocusFill(
-                              const ButtonStyle(),
-                            ),
-                            icon: Icon(
-                              Icons.copy_rounded,
-                              size: 20,
-                              color: theme.accent,
-                            ),
-                            onPressed: _copy,
-                          ),
-                        ),
+                    : PaymentCopyButton(
+                        value: data.transactionId,
+                        onCopy: widget.onCopyTransactionId!,
                       ),
               ),
             ],

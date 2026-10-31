@@ -1,6 +1,7 @@
+import '../foundation/payment_icons.dart';
+import '../controls/actions.dart';
 import 'package:flutter/material.dart';
 
-import '../foundation/focus_ring.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
@@ -60,20 +61,10 @@ class PaymentSheetHeader extends StatelessWidget {
             ),
           ),
           if (onClose != null)
-            PaymentFocusRing(
-              radius: BorderRadius.circular(24),
-              child: PaymentPressScale(
-                child: IconButton(
-                  tooltip: l10n.closeSheet,
-                  // Standard density keeps the 48 dp target on desktop too.
-                  visualDensity: VisualDensity.standard,
-                  style: PaymentFocusRing.withoutFocusFill(
-                    IconButton.styleFrom(minimumSize: const Size(48, 48)),
-                  ),
-                  icon: Icon(Icons.close, size: 20, color: theme.textSecondary),
-                  onPressed: onClose,
-                ),
-              ),
+            PaymentIconButton(
+              icon: PaymentIcons.close,
+              tooltip: l10n.closeSheet,
+              onPressed: onClose,
             ),
         ],
       ),

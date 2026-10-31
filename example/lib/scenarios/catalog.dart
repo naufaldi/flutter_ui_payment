@@ -757,8 +757,8 @@ const scenarios = <Scenario>[
       'Share batal/gagal, salin gagal',
     ),
     expect: Bi(
-      'Feedback appears below the receipt; the receipt and status do not change. Only allowlisted fields are shared (host log).',
-      'Umpan balik muncul di bawah struk; struk dan status tidak berubah. Hanya field allowlist yang dibagikan (log host).',
+      'Share feedback appears below the receipt; copy feedback appears beside the ID. The receipt and status do not change. Only allowlisted fields are shared (host log).',
+      'Umpan balik share muncul di bawah struk; hasil salin muncul di samping ID. Struk dan status tidak berubah. Hanya field allowlist yang dibagikan (log host).',
     ),
     variants: [
       ScenarioVariant(

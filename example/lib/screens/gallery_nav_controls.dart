@@ -5,42 +5,60 @@ class _MenuSpecimen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => _Entry(
     name: 'PaymentMenu · variants',
-    child: Align(
-      alignment: AlignmentDirectional.centerEnd,
-      child: PaymentMenu(
-        key: const Key('menu-specimen'),
-        onAction: (id) => _hostSays(context, id, id),
-        entries: const [
-          PaymentMenuGroup(
-            title: 'Receipt',
-            items: [
-              PaymentMenuItem(
-                id: 'download',
-                label: 'Download PDF',
-                icon: Icons.download_outlined,
+    child: Column(
+      children: [
+        Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child: PaymentMenu(
+            key: const Key('menu-specimen'),
+            onAction: (id) => _hostSays(context, id, id),
+            entries: const [
+              PaymentMenuGroup(
+                title: 'Receipt',
+                items: [
+                  PaymentMenuItem(
+                    id: 'download',
+                    label: 'Download PDF',
+                    icon: Icons.download_outlined,
+                  ),
+                  PaymentMenuItem(
+                    id: 'share',
+                    label: 'Share',
+                    icon: Icons.share_outlined,
+                  ),
+                ],
               ),
-              PaymentMenuItem(
-                id: 'share',
-                label: 'Share',
-                icon: Icons.share_outlined,
+              PaymentMenuGroup(
+                items: [
+                  PaymentMenuItem(label: 'Export history', disabled: true),
+                ],
+              ),
+              PaymentMenuGroup(
+                items: [
+                  PaymentMenuItem(
+                    id: 'cancel',
+                    label: 'Cancel payment',
+                    destructive: true,
+                    icon: Icons.cancel_outlined,
+                  ),
+                ],
               ),
             ],
           ),
-          PaymentMenuGroup(
-            items: [PaymentMenuItem(label: 'Export history', disabled: true)],
+        ),
+        PaymentMenu(
+          key: const Key('menu-trigger'),
+          trigger: (toggle, node) => PaymentButton(
+            label: 'Options',
+            width: PaymentWidth.hug,
+            variant: PaymentButtonVariant.secondary,
+            size: PaymentSize.small,
+            focusNode: node,
+            onPressed: toggle,
           ),
-          PaymentMenuGroup(
-            items: [
-              PaymentMenuItem(
-                id: 'cancel',
-                label: 'Cancel payment',
-                destructive: true,
-                icon: Icons.cancel_outlined,
-              ),
-            ],
-          ),
-        ],
-      ),
+          entries: [PaymentMenuItem(label: 'Download', onSelected: () {})],
+        ),
+      ],
     ),
   );
 }

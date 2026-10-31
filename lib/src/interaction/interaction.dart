@@ -1,3 +1,4 @@
+import '../controls/actions.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -293,14 +294,23 @@ class PaymentMenu extends StatefulWidget {
     this.onAction,
     this.icon = Icons.more_vert,
     this.tooltip,
-  });
+    this.trigger,
+  }) : assert(trigger == null || tooltip == null);
 
+  /// Menu entries and groups.
   final List<PaymentMenuEntry> entries;
+
+  /// Reports a selected entry identifier.
   final ValueChanged<String>? onAction;
+
+  /// Default trigger glyph.
   final IconData icon;
 
   /// Spoken and shown on long-press; defaults to "More actions".
   final String? tooltip;
+
+  /// Builds a button using toggle and focusNode for focus return.
+  final Widget Function(VoidCallback toggle, FocusNode focusNode)? trigger;
 
   @override
   State<PaymentMenu> createState() => _PaymentMenuState();
@@ -359,17 +369,20 @@ class _PaymentMenuState extends State<PaymentMenu> {
           RoundedRectangleBorder(borderRadius: theme.controlBorderRadius),
         ),
       ),
-      builder: (context, controller, _) => PaymentFocusRing(
-        radius: BorderRadius.circular(24),
-        child: IconButton(
-          focusNode: _triggerFocus,
-          style: PaymentFocusRing.withoutFocusFill(const ButtonStyle()),
-          tooltip: tooltip ?? l10n.moreActions,
-          icon: Icon(icon),
-          onPressed: () =>
-              controller.isOpen ? controller.close() : controller.open(),
-        ),
-      ),
+      builder: (context, controller, _) {
+        void toggle() =>
+            controller.isOpen ? controller.close() : controller.open();
+        final built =
+            widget.trigger?.call(toggle, _triggerFocus) ??
+            PaymentIconButton(
+              focusNode: _triggerFocus,
+              icon: icon,
+              tooltip: tooltip ?? l10n.moreActions,
+              onPressed: toggle,
+            );
+        assert(built is PaymentButton || built is PaymentIconButton);
+        return built;
+      },
       menuChildren: [
         for (final (i, entry) in entries.indexed) ...[
           if (i > 0 &&

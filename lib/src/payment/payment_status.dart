@@ -1,8 +1,8 @@
+import '../controls/actions.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../foundation/focus_ring.dart';
 import '../foundation/money.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
@@ -65,7 +65,7 @@ class PaymentInstructions extends StatelessWidget {
                 ),
               ),
               if (onCopyNumber != null)
-                _CopyButton(
+                PaymentCopyButton(
                   value: instructions.accountNumber,
                   onCopy: onCopyNumber!,
                 ),
@@ -145,62 +145,6 @@ class PaymentInstructions extends StatelessWidget {
             ),
         ],
       ),
-    );
-  }
-}
-
-class _CopyButton extends StatefulWidget {
-  const _CopyButton({required this.value, required this.onCopy});
-
-  final String value;
-  final Future<bool> Function(String value) onCopy;
-
-  @override
-  State<_CopyButton> createState() => _CopyButtonState();
-}
-
-class _CopyButtonState extends State<_CopyButton> {
-  bool? _copied;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = PaymentLocalizations.of(context);
-    final theme = PaymentTheme.of(context);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        PaymentFocusRing(
-          radius: BorderRadius.circular(24),
-          child: PaymentPressScale(
-            child: IconButton(
-              tooltip: l10n.copy,
-              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-              style: PaymentFocusRing.withoutFocusFill(const ButtonStyle()),
-              icon: Icon(
-                _copied == true ? Icons.check : Icons.copy_rounded,
-                size: 20,
-                color: theme.accent,
-              ),
-              onPressed: () async {
-                final ok = await widget.onCopy(widget.value);
-                if (mounted) setState(() => _copied = ok);
-              },
-            ),
-          ),
-        ),
-        if (_copied != null)
-          Semantics(
-            liveRegion: true,
-            child: Text(
-              _copied! ? l10n.copied : l10n.copyFailed,
-              style: PaymentType.of(context).tag.copyWith(
-                color: _copied!
-                    ? theme.success.foreground
-                    : theme.danger.foreground,
-              ),
-            ),
-          ),
-      ],
     );
   }
 }
