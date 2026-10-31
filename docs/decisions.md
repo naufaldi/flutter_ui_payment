@@ -249,3 +249,17 @@ No plan deviation; no library rendering changes in 1B.
 Element counts (same host and synthetic workload, base → Phase 2A): history 847 → 862, confirmation 406 → 409, intro 344 → 346. RowShell and PaymentDivider each add a component element, without adding render objects or layout/paint passes. This is the documented exception to §12’s equal-or-lower element count criterion.
 
 Plan correction: the suggested literal English reapproval sentence did not match the actual localization. The test taps PaymentCheckbox instead, preserving the same interaction without duplicating localized copy.
+
+### Phase 2B implementation decisions
+
+- MinTapTarget sits outside PaymentFocusRing: layout/hit box stays at least 48 dp while focus follows the small visual. The render object preserves all four intrinsics, dry layout and baseline for PaymentActionBar; hit forwarding rejects positions outside its bounds.
+- Medium keeps Material default padding and 20 dp icons, preserving existing mobile geometry. The PRD table's 16 dp side padding contradicted D29's medium-equals-current rule and is corrected; the table already said 20 dp icons despite the plan describing that cell as 16. Small uses 12 dp padding and 16 dp icons/spinners; large uses 24 dp padding and 20 dp icons/spinners.
+- Standard visual density is explicit: desktop/web medium buttons change from 40 to 48 dp. Hug remains at least 112 dp for every size; revisit small module-header uses in 4C/4D.
+- Dialog overflow goes up, so Confirm stacks above Cancel with 8 dp spacing. At 320 dp this also stacks at 100%. Destructive initial focus is Cancel.
+- Total amounts use heading weight, preserving w600 under hosts with w700 amountWeight. The five variants reproduce the existing merges. Countdown defaults to label plus tabular figures.
+- D27 applies to Button only here; choices/tabs and the full dialog variants specimen remain Phase 6. The 200% confirm capture fixture is included.
+- Native proof retains the Phase 2A device-support blocker. Capture registration/fixtures are prepared; new embeds, webp updates, deletion of old button captures, regression-set pixel comparisons and native flow proof remain pending. Existing committed captures are preserved to avoid breaking published pages.
+
+Plan correction from dialog geometry: stock AlertDialog action padding and per-button padding stacked 112 dp actions even at 393 dp. Use token-based 16 dp actions padding and 4 dp per-button horizontal padding to retain an 8 dp horizontal gap and fit the two actions on the normal iPhone width. The narrow/200% layout still stacks with an 8 dp vertical gap.
+
+Phase 2B element counts on the same workload: history: 862, confirmation: 410, intro: 347. MinTapTarget adds one centered render wrapper per button. It has no LayoutBuilder, speculative remeasurement or new timers; the literal no-added-layout-pass target is not claimed because the hit-area wrapper performs layout. Native frame-time proof is blocked.

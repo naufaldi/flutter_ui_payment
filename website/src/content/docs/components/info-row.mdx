@@ -39,7 +39,7 @@ Pass `valueText` for plain text or `value` for any widget; one of the two is req
 ```dart
 InfoRow(
   label: 'Total',
-  value: AmountText(quote.total),
+  value: AmountText(quote.total, variant: AmountTextVariant.total),
   emphasis: true,
 );
 ```

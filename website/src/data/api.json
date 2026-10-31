@@ -4797,6 +4797,33 @@
     ],
     "copyWith": null
   },
+  "AmountTextVariant": {
+    "kind": "enum",
+    "file": "lib/src/foundation/primitives.dart",
+    "doc": "The five amount looks. Nothing else exists.",
+    "values": [
+      {
+        "name": "caption",
+        "doc": "13/18 caption for legends and meta lines."
+      },
+      {
+        "name": "row",
+        "doc": "15/20 regular label for line items. Default."
+      },
+      {
+        "name": "total",
+        "doc": "15/20 at heading weight for Total values."
+      },
+      {
+        "name": "large",
+        "doc": "20/28 headline amount, capped at 1.6 times text scale."
+      },
+      {
+        "name": "display",
+        "doc": "32/36 display amount, capped at 1.6 times text scale."
+      }
+    ]
+  },
   "AmountText": {
     "kind": "class",
     "file": "lib/src/foundation/primitives.dart",
@@ -4827,7 +4854,18 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "style",
-            "doc": ""
+            "doc": "Color and decoration only: muted or struck amounts."
+          },
+          {
+            "name": "variant",
+            "type": "AmountTextVariant",
+            "required": false,
+            "default": "AmountTextVariant.row",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "variant",
+            "doc": "Semantic amount role. Default is the regular row label."
           },
           {
             "name": "emphasis",
@@ -4838,7 +4876,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "emphasis",
-            "doc": "Uses the large amount style reserved for the final total."
+            "doc": "Legacy display amount, replaced by the display variant."
           }
         ],
         "doc": ""
@@ -4859,14 +4897,21 @@
         "kind": "field",
         "static": false,
         "type": "TextStyle?",
-        "doc": ""
+        "doc": "Color and decoration only: muted or struck amounts."
+      },
+      {
+        "name": "variant",
+        "kind": "field",
+        "static": false,
+        "type": "AmountTextVariant",
+        "doc": "Semantic amount role. Default is the regular row label."
       },
       {
         "name": "emphasis",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "Uses the large amount style reserved for the final total."
+        "doc": "Legacy display amount, replaced by the display variant."
       }
     ],
     "copyWith": null
@@ -5115,7 +5160,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": ""
+            "doc": "Specific outcome of pressing the button. Wraps rather than truncates."
           },
           {
             "name": "onPressed",
@@ -5126,7 +5171,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onPressed",
-            "doc": ""
+            "doc": "Called once per action; null disables the button. Futures lock repeat presses."
           },
           {
             "name": "variant",
@@ -5137,7 +5182,40 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "variant",
-            "doc": ""
+            "doc": "Visual priority: one primary action per view."
+          },
+          {
+            "name": "size",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": "Drawn height: small 36, medium 48, large 56 dp. Hit box stays at least 48."
+          },
+          {
+            "name": "width",
+            "type": "PaymentWidth",
+            "required": false,
+            "default": "PaymentWidth.fill",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "width",
+            "doc": "Fill the parent or hug the wrapped label, at least 112 dp wide."
+          },
+          {
+            "name": "autofocus",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "autofocus",
+            "doc": "Initial route focus, useful for the safe choice in destructive dialogs."
           },
           {
             "name": "busy",
@@ -5159,7 +5237,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "busyLabel",
-            "doc": ""
+            "doc": "Spoken status while busy, defaulting to the localized working label."
           },
           {
             "name": "icon",
@@ -5170,7 +5248,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "icon",
-            "doc": ""
+            "doc": "Optional leading icon in the label color."
           }
         ],
         "doc": ""
@@ -5184,14 +5262,35 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "Specific outcome of pressing the button. Wraps rather than truncates."
       },
       {
         "name": "variant",
         "kind": "field",
         "static": false,
         "type": "PaymentButtonVariant",
-        "doc": ""
+        "doc": "Visual priority: one primary action per view."
+      },
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSize",
+        "doc": "Drawn height: small 36, medium 48, large 56 dp. Hit box stays at least 48."
+      },
+      {
+        "name": "width",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentWidth",
+        "doc": "Fill the parent or hug the wrapped label, at least 112 dp wide."
+      },
+      {
+        "name": "autofocus",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Initial route focus, useful for the safe choice in destructive dialogs."
       },
       {
         "name": "busy",
@@ -5205,14 +5304,14 @@
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Spoken status while busy, defaulting to the localized working label."
       },
       {
         "name": "icon",
         "kind": "field",
         "static": false,
         "type": "IconData?",
-        "doc": ""
+        "doc": "Optional leading icon in the label color."
       }
     ],
     "copyWith": null
@@ -8429,7 +8528,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "action",
-            "doc": ""
+            "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton."
           },
           {
             "name": "total",
@@ -8476,7 +8575,7 @@
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": ""
+        "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton."
       },
       {
         "name": "total",

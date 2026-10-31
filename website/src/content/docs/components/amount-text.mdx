@@ -33,10 +33,10 @@ The default: the 15/20 label size, regular weight, aligned to the end. Use it in
 
 ## Emphasis
 
-`emphasis: true` uses the 32/36 display style with `PaymentTheme.amountWeight`. Use it for the one total per screen.
+`variant: AmountTextVariant.display` uses the 32/36 display style with `PaymentTheme.amountWeight`. Use it for the one total per screen.
 
 ```dart
-AmountText(quote.total, emphasis: true);
+AmountText(quote.total, variant: AmountTextVariant.display);
 ```
 
 ## Custom style
@@ -52,14 +52,14 @@ AmountText(
 
 ## Large text and long amounts
 
-- Amounts 20 px and larger, and every `emphasis` amount, follow text scaling only up to 1.6×, as platform large titles do.
+- Amounts 20 px and larger, and every display amount, follow text scaling only up to 1.6×, as platform large titles do.
 - An amount that still does not fit scales down instead of being clipped. A hidden digit is worse than a smaller one.
 - It never wraps: an amount is always one line.
 
 ## Content guidelines
 
 - Show the currency the host charges in. Do not convert in the UI.
-- One emphasis amount per screen. Two totals that look equal compete.
+- One display amount per screen. Two totals that look equal compete.
 - Never animate an amount changing. Show the new value, and explain the change with a [notice banner](/components/notice-banner/) when it matters.
 
 ## Accessibility
@@ -68,10 +68,30 @@ AmountText(
 
 ## API
 
-<Props names={['AmountText']} />
+<Props names={['AmountText', 'AmountTextVariant']} />
 
 ## See also
 
 - [Info row](/components/info-row/)
 - [Money](/foundations/money/)
 - [Typography](/foundations/typography/)
+
+## Variants
+
+Variants: caption, row, total, large, display. Nothing else exists.
+
+| Variant | Role | Use |
+| --- | --- | --- |
+| caption | 13/18 tabular | Legends and meta lines |
+| row (default) | 15/20 regular tabular | Line items |
+| total | 15/20 heading weight | Total row value |
+| large | 20/28 amountLarge | Action bar, balance, chart headline |
+| display | 32/36 display | The one display amount on a screen |
+
+Large and display text cap at 1.6 times scaling. Total uses heading weight even when the host selects a heavier amount weight. Use `style` for color and decoration only, such as muted or struck values.
+
+Migrate `emphasis: true` to `variant: AmountTextVariant.display`. The old parameter is deprecated and will be removed in 0.2.0.
+
+```dart
+AmountText(quote.total, variant: AmountTextVariant.display);
+```

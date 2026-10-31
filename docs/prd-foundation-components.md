@@ -649,7 +649,7 @@ Is it a row in a list?                                                      → 
 | Container | Fill, outline or none |
 | Leading icon | Optional, 20 px, spacing 8 |
 | Label | `heading` 15/20 w600, centered, wraps at large text |
-| Busy indicator | `PaymentSpinner` 20 in the label color. The label keeps its space (`:326-347`) |
+| Busy indicator | `PaymentSpinner` 16 for small and 20 for medium/large in the label color. The label keeps its space (`:326-347`) |
 | Focus ring | At the control radius |
 
 **Variants** (`PaymentButtonVariant`, `:240-255`). These four, and nothing else exists:
@@ -688,7 +688,7 @@ Default                                                       → quiet
 | `PaymentSize` | Visual height | Side padding | Label | Icon | Use when |
 | --- | --- | --- | --- | --- | --- |
 | `small` | 36 (inside a 48 dp box) | 12 | `heading` | `PaymentIconSize.small` (16) | Inside a module header, a table row, a chip row; never the screen's main action |
-| `medium` (default) | 48 (today's look, `:350`) | 16 | `heading` | 20 | Everything else |
+| `medium` (default) | 48 (today's look, `:350`) | Material default (24; quiet 12), today's look | `heading` | 20 | Everything else |
 | `large` | 56 | 24 | `heading` | 20 | The one primary action of a full-screen view on wide layouts (sign-in, onboarding) |
 
 - **How B5 is preserved.** A `small` button lays out at 48 dp tall and at least 48 dp wide. The 36 dp container is centered inside it, as with Material's `MaterialTapTargetSize.padded`. A tap anywhere in the 48 dp box activates it, and the focus ring follows the visual container. In a row, two `small` buttons sit 8 dp apart visually, while their boxes still never overlap.
@@ -1940,9 +1940,9 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Internal _RowShell (D19)
 
 **Phase 2B: Button and Text variants**
-- [ ] PaymentButton size (small/medium/large, 48 dp box, D29), width (PaymentWidth), autofocus
-- [ ] showPaymentConfirmDialog uses PaymentButton (hug + autofocus) (D23)
-- [ ] AmountTextVariant; deprecate emphasis; migrate total rows (D24); CountdownText default style
+- [x] PaymentButton size (small/medium/large, 48 dp box, D29), width (PaymentWidth), autofocus
+- [x] showPaymentConfirmDialog uses PaymentButton (hug + autofocus) (D23)
+- [x] AmountTextVariant; deprecate emphasis; migrate total rows (D24); CountdownText default style
 
 **Phase 2C: feedback renames and variants**
 - [ ] StatusBadge → PaymentBadge (+ .urgent, optional icon, 1.6× icon) (D20, D38)

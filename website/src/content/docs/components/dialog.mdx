@@ -61,3 +61,9 @@ The cancel button says "Cancel" by default. Pass `cancelLabel` when the safe cho
 
 - [Button](/components/button/#destructive) for the destructive variant that usually opens this dialog.
 - [Toast](/components/toast/) for feedback after the action ran.
+
+## Actions and focus
+
+The dialog uses two hug-width PaymentButtons with a 112 dp minimum. Cancel is quiet; Confirm is primary or destructive. Keyboard focus uses the neutral ring, starting on Cancel for destructive actions and Confirm otherwise. Enter activates that safe initial choice.
+
+At 320 dp the actions stack, including at normal text size. Confirm appears above Cancel with an 8 dp gap. At large text, labels wrap and the dialog content scrolls.

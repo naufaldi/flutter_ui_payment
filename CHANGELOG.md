@@ -1,5 +1,13 @@
 ## 0.1.0 (unreleased)
 
+Design system Phase 2B (31 Oct 2026):
+
+* PaymentButton adds size, width and autofocus. Small draws at 36 dp inside a 48 dp hit box; medium stays 48 and large draws at 56. Hug width has a 112 dp minimum; labels wrap. Desktop/web density changes medium from 40 to 48 dp.
+* Confirm dialogs use hug PaymentButtons with neutral focus rings, safe autofocus and 8 dp spacing when stacked. At 320 dp confirm stacks above cancel.
+* AmountTextVariant adds caption, row, total, large and display. Replace deprecated emphasis: true with variant: AmountTextVariant.display before removal in 0.2.0.
+* CountdownText defaults to label typography with tabular figures.
+* Button and amount specimens cover states and sizes. Native screenshot regeneration remains blocked by device support.
+
 Design system Phase 2A (31 Oct 2026):
 
 * Consent and changed-total rows use PaymentCheckbox, aligned on the content gutter with label typography and a 48 dp minimum.

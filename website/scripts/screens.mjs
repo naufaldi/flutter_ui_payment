@@ -22,6 +22,14 @@ const sharp = requireFromAstro('sharp');
 
 // name → what it shows (locale noted, because captures mix en and id).
 const screens = {
+  ios_catalog_button_variants: 'ios catalog button variants, English',
+  ios_catalog_button_variants_dark: 'ios catalog button variants dark, English',
+  ios_catalog_button_variants_200: 'ios catalog button variants 200, English',
+  ios_catalog_amount_text_variants: 'ios catalog amount text variants, English',
+  ios_catalog_amount_text_variants_dark: 'ios catalog amount text variants dark, English',
+  ios_catalog_amount_text_variants_200: 'ios catalog amount text variants 200, English',
+  ios_catalog_confirm_dialog_200: 'ios catalog confirm dialog 200, English',
+
   ios_kyc_intro_light: 'ios kyc intro light, Indonesian',
   ios_kyc_intro_dark: 'ios kyc intro dark, Indonesian',
   ios_kyc_intro_light_200: 'ios kyc intro light 200, Indonesian',
