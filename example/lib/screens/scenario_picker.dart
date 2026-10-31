@@ -32,6 +32,7 @@ class _ScenarioPickerState extends State<ScenarioPicker> {
     final theme = PaymentTheme.of(context);
     final text = Theme.of(context).textTheme;
     String group(String id) => switch (id[0]) {
+      'A' => s.groupAccount,
       'H' => s.groupJourneys,
       'K' => s.groupKyc,
       'P' => s.groupPayment,

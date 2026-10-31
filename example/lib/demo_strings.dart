@@ -12,6 +12,68 @@ class DemoStrings {
   bool get _id => languageCode == 'id';
   String _t(String en, String id) => _id ? id : en;
 
+  String get groupAccount => _t("Account", "Akun");
+  String get yourAccount => _t("Your account", "Akun Anda");
+  String get transactions => _t("Transactions", "Transaksi");
+  String get statement => _t("Statement", "Laporan");
+  String get fees => _t("Fees", "Biaya");
+  String get accountSettings => _t("Settings", "Pengaturan");
+  String get signInContinue =>
+      _t("Continue with Ruang Bayar", "Lanjut dengan Ruang Bayar");
+  String get signInDescription => _t(
+    "Sign in to pay, verify your identity and see your payments.",
+    "Masuk untuk membayar, memverifikasi identitas, dan melihat pembayaran Anda.",
+  );
+  String get signInLearnMore =>
+      _t("What this app can see", "Yang bisa dilihat aplikasi ini");
+  String get signInCanceled =>
+      _t("Sign-in was canceled. Try again.", "Masuk dibatalkan. Coba lagi.");
+  String get signInFootnote => _t(
+    "Ruang Bayar never asks for your PIN in this app.",
+    "Ruang Bayar tidak pernah meminta PIN Anda di aplikasi ini.",
+  );
+  String get terms => _t("Terms", "Ketentuan");
+  String get privacy => _t("Privacy", "Privasi");
+  String get verifyTitle =>
+      _t("Verify your identity", "Verifikasi identitas Anda");
+  String get verifyDescription =>
+      _t("Three steps, about 3 minutes.", "Tiga langkah, sekitar 3 menit.");
+  String get taskDetails => _t("Your details", "Data diri");
+  String get taskDocuments => _t("Documents", "Dokumen");
+  String get taskReview => _t("Review and submit", "Tinjau dan kirim");
+  String get groupPersonal => _t("Personal details", "Data pribadi");
+  String get groupWorkAddress => _t("Work and address", "Pekerjaan dan alamat");
+  String get province => _t("Province", "Provinsi");
+  String get provinceRequired =>
+      _t("Choose your province", "Pilih provinsi Anda");
+  String get fixHighlighted =>
+      _t("Fix the highlighted details", "Perbaiki data yang ditandai");
+  String get spendingTitle => _t(
+    "Spending, this month vs last",
+    "Pengeluaran, bulan ini vs bulan lalu",
+  );
+  String get thisMonth => _t("This month", "Bulan ini");
+  String get lastMonth => _t("Last month", "Bulan lalu");
+  String get dateRange => _t("Date range", "Rentang tanggal");
+  String get activeFilters => _t("Active filters", "Filter aktif");
+  String get clearAll => _t("Clear all", "Hapus semua");
+  String get filterDate => _t("Date", "Tanggal");
+  String get filterStatus => _t("Status", "Status");
+  String get filterSearch => _t("Search", "Cari");
+  String get noTransactionsTitle =>
+      _t("No transactions in this range", "Tidak ada transaksi di rentang ini");
+  String get noTransactionsMessage => _t(
+    "Try a wider date range or clear the filters.",
+    "Coba rentang tanggal lebih luas atau hapus filter.",
+  );
+  String get historyFailed =>
+      _t("Transactions didn't load", "Transaksi gagal dimuat");
+  String get orderContext => _t("Your order", "Pesanan Anda");
+  String get merchantHelp => _t("Merchant help", "Bantuan merchant");
+  String get last7Days => _t("Last 7 days", "7 hari terakhir");
+  String get presetThisMonth => _t("This month", "Bulan ini");
+  String get presetLastMonth => _t("Last month", "Bulan lalu");
+
   String get appName => 'Ruang Bayar';
   String get simulated => _t(
     'Simulation — synthetic data, no real money or identity',

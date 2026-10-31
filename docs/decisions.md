@@ -403,3 +403,12 @@ Capture-glance corrections: the harness resets descendant scroll positions befor
 - Single link-only detail values align to their labels; large text wraps. Breadcrumb glyph side bearings remain unchanged.
 
 - Verification deviation: the legacy row-family geometry oracle was run once and failed (expected 4 target rectangles, observed 5 after the switch alignment change). No oracle or baseline updates are made: the owner's later scope explicitly drops geometry oracles and element counts. The focused switch alignment and minimum-target regression passes.
+
+### Phase 5-2 implementation decisions
+
+- View steps mount in the Scaffold body with bounded height; list steps retain developer tools. Sign-in hides the account menu and has no credential inputs.
+- The coordinator owns sign-in, history filters and host-computed spending. New async history and sign-in work uses the session epoch guard; account switching clears the new state.
+- Consent stays before onboarding. Details, documents and review share the host-owned three-task progress; status is a separate result screen.
+- Date, status and search chips are independently removable; status remains a text-tab filter. A range-only empty result explains how to clear filters.
+- History contains spending rather than adding another navigation step. Wide checkout has supporting order context without another primary action.
+- Plan API-name corrections proven by code: tasks use `PaymentTaskListItem`/`subTasks` (not `PaymentTask`/`subtasks`), refunds use `RefundStatus.refunded` (not `completed`), amounts use `MoneyFormat`, and verification copy uses `safeReason`. These preserve the planned behavior.

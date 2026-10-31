@@ -98,6 +98,29 @@ const scenarios = <Scenario>[
   ),
   // ---------------------------------------------------------------- KYC
   Scenario(
+    id: 'H04',
+    title: Bi(
+      'Signed out: sign in → verify → pay → details → report',
+      'Belum masuk: masuk → verifikasi → bayar → detail → lapor',
+    ),
+    expect: Bi(
+      'Sign in without credential fields, verify and pay.',
+      'Masuk tanpa kolom kredensial, verifikasi dan bayar.',
+    ),
+    variants: [
+      ScenarioVariant(
+        label: Bi('Sign in', 'Masuk'),
+        config: ScenarioConfig(signedOut: true, hostPolls: true),
+        start: FlowStep.signIn,
+      ),
+      ScenarioVariant(
+        label: Bi('Sign-in canceled once', 'Masuk dibatalkan sekali'),
+        config: ScenarioConfig(signedOut: true, signInCancelsOnce: true),
+        start: FlowStep.signIn,
+      ),
+    ],
+  ),
+  Scenario(
     id: 'K01',
     title: Bi('Consent not given', 'Consent belum diberikan'),
     expect: Bi(
@@ -881,6 +904,31 @@ const scenarios = <Scenario>[
             ServerStep(PaymentStatus.succeeded),
           ],
         ),
+      ),
+    ],
+  ),
+  Scenario(
+    id: 'A01',
+    title: Bi('Transactions and spending', 'Transaksi dan pengeluaran'),
+    expect: Bi(
+      'Filter history by date, status and query; clear each filter.',
+      'Filter riwayat menurut tanggal, status, dan pencarian; hapus setiap filter.',
+    ),
+    variants: [
+      ScenarioVariant(
+        label: Bi('Typical', 'Umum'),
+        config: ScenarioConfig(),
+        start: FlowStep.history,
+      ),
+      ScenarioVariant(
+        label: Bi('No transactions', 'Belum ada transaksi'),
+        config: ScenarioConfig(historyEmpty: true),
+        start: FlowStep.history,
+      ),
+      ScenarioVariant(
+        label: Bi('Fails once', 'Gagal sekali'),
+        config: ScenarioConfig(historyFailsOnce: true),
+        start: FlowStep.history,
       ),
     ],
   ),

@@ -1,3 +1,4 @@
+import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment_example/adapters/fake_host.dart';
@@ -83,3 +84,29 @@ Finder textOf(String text) => find.text(text);
 Finder payButtons() => find.byWidgetPredicate(
   (w) => w is Text && (w.data?.startsWith('Pay Rp') ?? false),
 );
+
+Future<void> fillIdentity(WidgetTester tester) async {
+  final fields = find.byType(TextFormField);
+  await tester.enterText(fields.at(0), 'Sari Wulandari (Demo)');
+  await tester.enterText(fields.at(1), '3100000000001234');
+  await tester.enterText(fields.at(2), '17/08/1995');
+  FocusManager.instance.primaryFocus?.unfocus();
+  await settle(tester);
+  await Scrollable.ensureVisible(
+    tester.element(find.byType(PaymentSelect<String>)),
+    alignment: 0.5,
+  );
+  await settle(tester);
+  await tapVisible(tester, find.text('Occupation'));
+  await tapVisible(tester, find.text('Employee'));
+  final search = find.descendant(
+    of: find.byType(PaymentSearchField<String>),
+    matching: find.byType(EditableText),
+  );
+  await tester.ensureVisible(search);
+  await tester.enterText(search, 'Jawa B');
+  await settle(tester);
+  await tapVisible(tester, find.text('Jawa Barat'));
+  FocusManager.instance.primaryFocus?.unfocus();
+  await settle(tester);
+}

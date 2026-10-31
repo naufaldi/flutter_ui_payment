@@ -2012,8 +2012,8 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] PaymentDetailPagePropertyList, PaymentDetailPageTable
 
 **Phase 5: pattern adoption (example)**
-- [ ] KYC onboarding with task list and field kinds
-- [ ] History full page + date range filter + active-filter chips; spending overview (D10)
+- [x] KYC onboarding with task list and field kinds
+- [x] History full page + date range filter + active-filter chips; spending overview (D10)
 - [ ] Transaction detail page (property list + attempts table); report a problem focus view; onCopyReference (Q5)
 - [ ] Settlement statement (DataTable); fee schedule (Table)
 - [ ] Settings view; sign-in view; order context view on wide checkout
@@ -2081,3 +2081,7 @@ The Phase 4C–4D API sketches above are synchronized with the implemented optio
 ### Phase 5-1 implementation notes
 
 Carry-over alignment and phone table fixes ship with direct module admission, reference copy, grouped identity fields and searchable host options. The owner approved six stacked PRs, the search enum migration and dropping DataTable reorder/resize (D28, deprecated in 6-1). No new dependency or host transport was added.
+
+### Phase 5-2 implementation notes
+
+Sign-in H04, KYC onboarding, history/spending A01 and wide checkout order context use bounded view bodies. The host owns async work, filters, chart totals and task states. API names follow the existing task, refund, money and verification models (see decisions).

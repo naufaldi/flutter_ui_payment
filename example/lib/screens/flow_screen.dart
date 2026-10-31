@@ -1,9 +1,11 @@
-import 'capture_screen.dart';
+export 'steps/kyc_fields.dart';
+import 'steps/kyc_onboarding_step.dart';
+import 'steps/sign_in_step.dart';
+import 'steps/history_step.dart';
+import 'steps/order_context.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 
-import '../adapters/fake_host.dart';
 import '../coordinator/demo_coordinator.dart';
 import '../demo_strings.dart';
 import '../dev_chrome.dart';
@@ -33,7 +35,7 @@ class FlowScreen extends StatelessWidget {
       builder: (context, _) {
         final c = coordinator;
         final s = DemoStrings.of(context);
-        final atRoot = c.step == FlowStep.overview;
+        final atRoot = c.step == FlowStep.overview || c.step == FlowStep.signIn;
         return PopScope(
           canPop: atRoot,
           onPopInvokedWithResult: (didPop, _) {
@@ -44,9 +46,9 @@ class FlowScreen extends StatelessWidget {
               leading: atRoot
                   ? null
                   : BackButton(onPressed: () => _handleBack(context, c)),
-              title: Text(_title(s, c.step)),
+              title: _isViewStep(c.step) ? null : Text(_title(s, c.step)),
               actions: [
-                _AccountMenu(coordinator: c),
+                if (c.signedIn) _AccountMenu(coordinator: c),
                 IconButton(
                   tooltip: s.settings,
                   icon: const Icon(Icons.tune),
@@ -70,34 +72,39 @@ class FlowScreen extends StatelessWidget {
                   reverseDuration: PaymentMotion.of(context).exit,
                   transitionBuilder: PaymentMotion.fadeRise,
                   layoutBuilder: PaymentMotion.topLayout,
-                  child: ListView(
-                    key: ValueKey('flow-list-${c.step.name}'),
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                    children: [
-                      if (c.notice == 'support') ...[
-                        PaymentBanner(
-                          tone: StatusTone.info,
-                          title: s.supportOpened,
-                          announce: true,
-                        ),
-                        const SizedBox(height: 12),
-                      ],
-                      if (c.starting)
-                        Padding(
-                          padding: const EdgeInsets.all(32),
-                          child: Center(child: Text(s.loading)),
+                  child: _isViewStep(c.step) && !c.starting
+                      ? SizedBox.expand(
+                          key: ValueKey('flow-view-${c.step.name}'),
+                          child: _StepBody(coordinator: c),
                         )
-                      else
-                        _StepBody(coordinator: c),
-                      const SizedBox(height: 24),
-                      _HostTools(
-                        coordinator: c,
-                        scenarioLabel: scenarioLabel,
-                        onRestart: onRestart,
-                        onBackground: onBackground,
-                      ),
-                    ],
-                  ),
+                      : ListView(
+                          key: ValueKey('flow-list-${c.step.name}'),
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                          children: [
+                            if (c.notice == 'support') ...[
+                              PaymentBanner(
+                                tone: StatusTone.info,
+                                title: s.supportOpened,
+                                announce: true,
+                              ),
+                              const SizedBox(height: 12),
+                            ],
+                            if (c.starting)
+                              Padding(
+                                padding: const EdgeInsets.all(32),
+                                child: Center(child: Text(s.loading)),
+                              )
+                            else
+                              _StepBody(coordinator: c),
+                            const SizedBox(height: 24),
+                            _HostTools(
+                              coordinator: c,
+                              scenarioLabel: scenarioLabel,
+                              onRestart: onRestart,
+                              onBackground: onBackground,
+                            ),
+                          ],
+                        ),
                 ),
               ),
             ),
@@ -109,6 +116,12 @@ class FlowScreen extends StatelessWidget {
 
   String _title(DemoStrings s, FlowStep step) => switch (step) {
     FlowStep.overview => s.appName,
+    FlowStep.signIn => s.appName,
+    FlowStep.history => s.transactions,
+    FlowStep.transactionDetail ||
+    FlowStep.statement ||
+    FlowStep.fees ||
+    FlowStep.accountSettings => s.yourAccount,
     FlowStep.kycIntro => s.stepConsent,
     FlowStep.kycIdentity => s.stepIdentity,
     FlowStep.kycDocuments => s.stepDocuments,
@@ -123,8 +136,15 @@ class FlowScreen extends StatelessWidget {
 
   Future<void> _handleBack(BuildContext context, DemoCoordinator c) async {
     switch (c.step) {
+      case FlowStep.signIn:
       case FlowStep.overview:
         return;
+      case FlowStep.history ||
+          FlowStep.transactionDetail ||
+          FlowStep.statement ||
+          FlowStep.fees ||
+          FlowStep.accountSettings:
+        c.goHome();
       case FlowStep.kycIntro || FlowStep.kycStatus || FlowStep.checkout:
         c.goHome();
       case FlowStep.kycIdentity:
@@ -229,10 +249,16 @@ class _StepBody extends StatelessWidget {
     final c = coordinator;
     return switch (c.step) {
       FlowStep.overview => _Overview(c),
+      FlowStep.signIn => SignInStep(c),
+      FlowStep.history => HistoryStep(c),
+      FlowStep.transactionDetail ||
+      FlowStep.statement ||
+      FlowStep.fees ||
+      FlowStep.accountSettings => const SizedBox.shrink(),
       FlowStep.kycIntro => _KycIntro(c),
-      FlowStep.kycIdentity => _KycIdentity(c),
-      FlowStep.kycDocuments => _KycDocuments(c),
-      FlowStep.kycReview => _KycReview(c),
+      FlowStep.kycIdentity ||
+      FlowStep.kycDocuments ||
+      FlowStep.kycReview => KycOnboardingStep(c),
       FlowStep.kycStatus => VerificationStatusView(
         snapshot: c.kyc,
         outcomeUnknown: c.kycOutcomeUnknown,
@@ -345,6 +371,18 @@ class _Overview extends StatelessWidget {
             ],
           ),
         ),
+        PaymentSection(
+          title: s.yourAccount,
+          child: PaymentList(
+            children: [
+              PaymentListItem(
+                icon: Icons.receipt_long_outlined,
+                title: s.transactions,
+                onPressed: c.openHistory,
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -374,214 +412,6 @@ class _KycIntro extends StatelessWidget {
   }
 }
 
-/// Host identity rules: any script for names, 16-digit NIK, 17+ years.
-List<IdentityFieldSpec> identityFields(DemoStrings s) => [
-  IdentityFieldSpec(
-    key: 'name',
-    label: s.fullName,
-    textCapitalization: TextCapitalization.words,
-    autofillHints: const [AutofillHints.name],
-    validator: (v) {
-      if (v.isEmpty) return s.nameRequired;
-      if (v.runes.length < 2) return s.nameTooShort;
-      return null;
-    },
-  ),
-  IdentityFieldSpec(
-    key: 'nik',
-    label: s.idNumber,
-    keyboardType: TextInputType.number,
-    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9 ]'))],
-    maskInReview: true,
-    validator: (v) {
-      final digits = v.replaceAll(' ', '');
-      if (digits.isEmpty) return s.idRequired;
-      if (!RegExp(r'^\d{16}$').hasMatch(digits)) return s.idFormat;
-      return null;
-    },
-  ),
-  IdentityFieldSpec(
-    key: 'dob',
-    label: s.birthDate,
-    kind: IdentityFieldKind.date,
-    firstDate: DateTime(1900),
-    lastDate: DateUtils.dateOnly(DateTime.now()),
-    validator: (v) {
-      if (v.isEmpty) return s.dobRequired;
-      final date = DateTime.parse(v);
-      final now = DateTime.now();
-      if (date.isAfter(DateTime(now.year - 17, now.month, now.day))) {
-        return s.dobAge;
-      }
-      return null;
-    },
-  ),
-  IdentityFieldSpec(
-    key: 'occupation',
-    label: s.occupation,
-    kind: IdentityFieldKind.choice,
-    options: [
-      PaymentSelectOption(value: 'employee', label: s.employee),
-      PaymentSelectOption(value: 'entrepreneur', label: s.entrepreneur),
-      PaymentSelectOption(value: 'student', label: s.student),
-      PaymentSelectOption(value: 'civilServant', label: s.civilServant),
-      PaymentSelectOption(value: 'homemaker', label: s.homemaker),
-      PaymentSelectOption(value: 'freelancer', label: s.freelancer),
-      PaymentSelectOption(value: 'retired', label: s.retired),
-      PaymentSelectOption(value: 'other', label: s.other),
-    ],
-    validator: (v) => v.isEmpty ? s.occupationRequired : null,
-  ),
-];
-
-List<DocumentRequirement> documentRequirements(DemoStrings s) => [
-  DocumentRequirement(
-    key: idCardSlot,
-    label: s.idCardLabel,
-    acceptedTypes: const {'image/jpeg', 'image/png'},
-    acceptedTypesLabel: s.imageTypes,
-    maxBytes: 5 * 1024 * 1024,
-  ),
-  DocumentRequirement(
-    key: selfieSlot,
-    label: s.selfieLabel,
-    acceptedTypes: const {'image/jpeg', 'image/png'},
-    acceptedTypesLabel: s.imageTypes,
-    maxBytes: 5 * 1024 * 1024,
-  ),
-];
-
-class _KycIdentity extends StatelessWidget {
-  const _KycIdentity(this.c);
-  final DemoCoordinator c;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = DemoStrings.of(context);
-    return IdentityForm(
-      fields: identityFields(s),
-      initialValues: c.identity,
-      highlightFields: c.kyc.fieldsToFix,
-      onSubmit: c.submitIdentity,
-    );
-  }
-}
-
-class _KycDocuments extends StatelessWidget {
-  const _KycDocuments(this.c);
-  final DemoCoordinator c;
-
-  Future<void> _pick(BuildContext context, DocumentRequirement req) async {
-    final source = await showCaptureSourceSheet(context: context);
-    if (source == null || !context.mounted) return;
-    if (source != CaptureSource.file) {
-      final allowed = await c.requestCapture(req.key);
-      if (!allowed || !context.mounted) return;
-    }
-    if (source == CaptureSource.camera) {
-      await Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => KycCaptureScreen(
-            c: c,
-            requirement: req,
-            kind: req.key == selfieSlot
-                ? CaptureKind.selfieWithIdCard
-                : CaptureKind.idCard,
-          ),
-        ),
-      );
-      return;
-    }
-    final s = DemoStrings.of(context);
-    final l10n = PaymentLocalizations.of(context);
-    final fixture = await showModalBottomSheet<DocumentFixture>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (context) => SafeArea(
-        child: ListView(
-          shrinkWrap: true,
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          children: [
-            Text(s.pickFixture, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 4),
-            Text(s.fixtureNote, style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: 8),
-            for (final f in demoFixtures)
-              ListTile(
-                key: Key('fixture-${f.file.name}'),
-                minTileHeight: 56,
-                leading: Icon(
-                  f.file.mimeType == 'application/pdf'
-                      ? Icons.picture_as_pdf_outlined
-                      : Icons.image_outlined,
-                ),
-                title: Text(f.file.name),
-                subtitle: Text(
-                  '${l10n.formatBytes(f.file.sizeBytes)} · ${s.fixtureTag(f.description)}',
-                ),
-                onTap: () => Navigator.pop(context, f),
-              ),
-          ],
-        ),
-      ),
-    );
-    if (fixture != null) await c.uploadDocument(req, fixture.file);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final s = DemoStrings.of(context);
-    final reqs = documentRequirements(s);
-    final ready = reqs.every(
-      (r) => c.documents[r.key]?.phase == DocumentSlotPhase.uploaded,
-    );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final req in reqs) ...[
-          DocumentUploadTile(
-            key: Key('slot-${req.key}'),
-            requirement: req,
-            state: c.documents[req.key]!,
-            needsUpdate: c.kyc.fieldsToFix.contains(req.key),
-            onPick: () => _pick(context, req),
-            onOpenSettings: () => c.openSettings(req.key),
-          ),
-          const SizedBox(height: 12),
-        ],
-        const SizedBox(height: 12),
-        PaymentButton(
-          key: const Key('to-review'),
-          label: s.continueToReview,
-          onPressed: ready ? c.goToReview : null,
-        ),
-      ],
-    );
-  }
-}
-
-class _KycReview extends StatelessWidget {
-  const _KycReview(this.c);
-  final DemoCoordinator c;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = DemoStrings.of(context);
-    return VerificationReview(
-      fields: identityFields(s),
-      values: c.identity,
-      documents: [
-        for (final r in documentRequirements(s)) (r, c.documents[r.key]!),
-      ],
-      busy: c.kycSubmitting,
-      onSubmit: c.submitKyc,
-      onEditDetails: c.editIdentity,
-      onEditDocuments: c.editDocuments,
-    );
-  }
-}
-
 class _Checkout extends StatelessWidget {
   const _Checkout(this.c);
   final DemoCoordinator c;
@@ -590,7 +420,7 @@ class _Checkout extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = DemoStrings.of(context);
     final quote = c.quote;
-    return Column(
+    final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (c.config.flexibleAmount) ...[
@@ -652,6 +482,18 @@ class _Checkout extends StatelessWidget {
           onChanged: c.selectMethod,
         ),
       ],
+    );
+    return LayoutBuilder(
+      builder: (context, k) => k.maxWidth < 840
+          ? body
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: PaymentTheme.of(context).space(PaymentSpace.section),
+              children: [
+                Expanded(child: body),
+                SizedBox(width: 360, child: OrderContext(c)),
+              ],
+            ),
     );
   }
 }
@@ -979,3 +821,16 @@ class _HostTools extends StatelessWidget {
     );
   }
 }
+
+bool _isViewStep(FlowStep step) => switch (step) {
+  FlowStep.signIn ||
+  FlowStep.kycIdentity ||
+  FlowStep.kycDocuments ||
+  FlowStep.kycReview ||
+  FlowStep.history ||
+  FlowStep.transactionDetail ||
+  FlowStep.statement ||
+  FlowStep.fees ||
+  FlowStep.accountSettings => true,
+  _ => false,
+};
