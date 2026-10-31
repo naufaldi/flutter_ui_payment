@@ -58,3 +58,6 @@ export 'src/content/table.dart';
 
 export 'src/controls/button_group.dart';
 export 'src/content/task_list.dart';
+
+export 'src/content/data_table.dart';
+export 'src/content/empty_message.dart';

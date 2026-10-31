@@ -24,6 +24,7 @@ class _ContentSpecimen extends StatelessWidget {
     return _Entry(
       name: '$name · variants',
       child: switch (name) {
+        'PaymentDataTable' => _SettlementSpecimen(),
         'PaymentButtonGroup' => Column(
           spacing: 16,
           children: [
@@ -126,6 +127,125 @@ class _ContentSpecimen extends StatelessWidget {
         ),
         _ => const LoadingSkeleton.table(rows: 3, columns: 3),
       },
+    );
+  }
+}
+
+class _SettlementSpecimen extends StatefulWidget {
+  @override
+  State<_SettlementSpecimen> createState() => _SettlementSpecimenState();
+}
+
+class _SettlementSpecimenState extends State<_SettlementSpecimen> {
+  Set<String> selected = {};
+  String query = '';
+  @override
+  Widget build(BuildContext context) {
+    final columns = [
+      PaymentDataColumn<int>(
+        key: 'date',
+        label: 'Date',
+        value: (r) => DateTime(2026, 10, r % 28 + 1),
+        cell: PaymentCellType.date,
+        sortable: true,
+      ),
+      PaymentDataColumn<int>(
+        key: 'id',
+        label: 'Reference',
+        value: (r) => 'STL-DEMO-${r.toString().padLeft(4, '0')}',
+        cell: PaymentCellType.id,
+        pinned: true,
+      ),
+      PaymentDataColumn<int>(
+        key: 'description',
+        label: 'Description',
+        value: (r) => 'Settlement $r',
+      ),
+      PaymentDataColumn<int>(
+        key: 'status',
+        label: 'Status',
+        value: (r) => r % 3 == 0 ? 'Pending' : 'Paid',
+        cell: PaymentCellType.status,
+        statusMap: {'Paid': StatusTone.success, 'Pending': StatusTone.warning},
+      ),
+      PaymentDataColumn<int>(
+        key: 'amount',
+        label: 'Amount',
+        value: (r) => Money.idr(r * 2500),
+        cell: PaymentCellType.currency,
+        sortable: true,
+      ),
+    ];
+    return Column(
+      spacing: 16,
+      children: [
+        PaymentTextField.search(
+          query: query,
+          label: 'Search settlements',
+          onChanged: (v) => setState(() => query = v),
+        ),
+        PaymentDataTable<int>(
+          columns: columns,
+          rows: List.generate(40, (i) => i + 1),
+          rowKey: (r) => '$r',
+          pagination: const PaymentPagination.local(pageSize: 10),
+          selection: selected,
+          onSelectionChanged: (v) => setState(() => selected = v),
+          filter: (r, q) => 'STL-DEMO-$r Settlement $r'.toLowerCase().contains(
+            q.toLowerCase(),
+          ),
+          filterQuery: query,
+          batchActions: [
+            PaymentButton(
+              label: 'Download selected',
+              variant: PaymentButtonVariant.secondary,
+              onPressed: () {},
+            ),
+          ],
+          rowActions: [
+            PaymentRowAction<int>(
+              id: 'view',
+              label: 'View receipt',
+              onPressed: (_) {},
+            ),
+            PaymentRowAction<int>(
+              id: 'report',
+              label: 'Report a problem',
+              onPressed: (_) {},
+            ),
+            PaymentRowAction<int>(
+              id: 'cancel',
+              label: 'Cancel payout',
+              destructive: true,
+              onPressed: (_) {},
+            ),
+          ],
+        ),
+        PaymentDataTable<int>(
+          columns: columns,
+          rows: const [],
+          rowKey: (r) => '$r',
+          pending: true,
+        ),
+        PaymentDataTable<int>(
+          columns: columns,
+          rows: const [],
+          rowKey: (r) => '$r',
+          emptyMessage: PaymentEmptyMessage(
+            'No settlements yet',
+            message: 'Settlements appear after your first payout.',
+            actionLabel: 'Set up payouts',
+            onAction: () {},
+          ),
+        ),
+        PaymentDataTable<int>(
+          columns: columns,
+          rows: const [],
+          rowKey: (r) => '$r',
+          errorText: 'Statement didn’t load',
+          onRetry: () {},
+        ),
+      ],
     );
   }
 }

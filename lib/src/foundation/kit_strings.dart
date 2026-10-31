@@ -296,6 +296,63 @@ extension KitStrings on PaymentLocalizations {
     '$done of $total sub-tasks complete',
     '$done dari $total subtugas selesai',
   );
+
+  /// Select all on this page.
+  String get selectAllOnPage =>
+      _k('Select all on this page', 'Pilih semua di halaman ini');
+
+  /// Previous page.
+  String get previousPage => _k('Previous page', 'Halaman sebelumnya');
+
+  /// Next page.
+  String get nextPage => _k('Next page', 'Halaman berikutnya');
+
+  /// Nothing here yet.
+  String get emptyTitle => _k('Nothing here yet', 'Belum ada data');
+
+  /// Sort.
+  String get sort => _k('Sort', 'Urutkan');
+
+  /// Move left.
+  String get moveLeft => _k('Move left', 'Geser ke kiri');
+
+  /// Move right.
+  String get moveRight => _k('Move right', 'Geser ke kanan');
+
+  /// Wider.
+  String get wider => _k('Wider', 'Lebarkan');
+
+  /// Narrower.
+  String get narrower => _k('Narrower', 'Sempitkan');
+
+  /// Localized selectRow label.
+  String selectRow(String title) => _k('Select $title', 'Pilih $title');
+
+  /// Localized rowsSelected label.
+  String rowsSelected(int n) => _k('$n selected', '$n dipilih');
+
+  /// Localized pageRange label.
+  String pageRange(int from, int to, int total) =>
+      _k('$from–$to of $total', '$from–$to dari $total');
+
+  /// Localized pageNumber label.
+  String pageNumber(int n) => _k('Page $n', 'Halaman $n');
+
+  /// Localized rowActions label.
+  String rowActions(String title) =>
+      _k('Actions for $title', 'Aksi untuk $title');
+
+  /// Localized sortedAscending label.
+  String sortedAscending(String label) =>
+      _k('$label, ascending', '$label, naik');
+
+  /// Localized sortedDescending label.
+  String sortedDescending(String label) =>
+      _k('$label, descending', '$label, turun');
+
+  /// Localized columnOptions label.
+  String columnOptions(String label) =>
+      _k('Column options for $label', 'Opsi kolom $label');
 }
 
 /// Groups used by transaction filters. Defined here so the strings and the

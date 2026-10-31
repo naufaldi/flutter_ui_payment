@@ -1304,7 +1304,7 @@ PaymentChipList({Key? key, required List<PaymentChip> children})
   - `loading` → `pending` (the `table` skeleton).
   - `emptyMessage` (text, or text + action) → **New** `PaymentEmptyMessage(message, actionLabel, onAction)`, rendered as a `StateMessage`.
   - `enableColumnReorder`, `enableColumnResize`, `onColumnOrderChange` → the same names. They act on the wide layout only. The pointer drags the header, and the keyboard uses a "Columns" `PaymentMenu` on each header (move left or right, wider or narrower).
-  - **Not added:** sorting and filtering. Stripe's DataTable has neither, so the admission rule applies. Filtering stays with the host or `PaymentSearchField`.
+  - **D43 amendment (owner approved, 1 Nov 2026):** local sorting and a host predicate filter operate only on host-supplied rows. Offset/cursor pages use host callbacks and prohibit local filtering.
 - **Narrow width:** collapses like `PaymentTable`. The pinned column is the title, a `status` cell becomes a badge on the meta line, a `currency` cell sits end-aligned, and row actions become a trailing `PaymentIconButton` (`more_vert`). Batch selection becomes a leading `PaymentCheckbox` on each row.
 - **States:** pending, empty, ready, selected (n), page n of m, error (the host passes `errorText` → `StateMessage(danger)` with retry).
 - **Payment use:** a settlement statement (date, reference, description, status, amount) with local paging of 25 and "Download selected" (host).
@@ -1603,7 +1603,7 @@ New in revision 3 (parity; for review):
 | D40 | **Overlay parity.** `PaymentTooltip` gains 12 placements on `OverlayPortal`, plus `type` (label vs description semantics) and `delay`. `PaymentMenu` gains groups, a custom trigger and `onAction`. `PaymentFocusView` gains `size` and `confirmClose`. | Flutter's `Tooltip` only places above or below; `OverlayPortal` is in the SDK. |
 | D41 | **`PaymentListItem` replaces `ActionTile`** and gains `value`, `image`, `size` (`standard` 48 / `large` 64) and `id`; **`PaymentList` replaces `ActionTileGroup`** and gains `onAction`. Still no compact density, and still separate classes for switch, checkbox and radio rows. Supersedes part of D19 and Q8. | One public action-row class, not two. Stripe's sizes are both ≥ 48 dp. |
 | D42 | **`PaymentImage` takes a host `ImageProvider`.** The kit never constructs a network image. `alt` is required (`''` = decorative). Loading and error states are built in. | B11: no network in `lib`; the D9 error-state gap becomes impossible. |
-| D43 | **`PaymentDataTable` works on host rows.** Local paging and selection only; offset and cursor paging are host callbacks; no sorting or filtering (not in Stripe's props); column reorder and resize on wide layouts only, with a keyboard menu. | Host owns data and queries; nothing the kit computes changes a total. |
+| D43 | **`PaymentDataTable` works on host rows.** Local paging, selection, sorting and filtering over host-supplied rows (D43 amended 1 Nov 2026, owner approved). Offset and cursor paging use host callbacks. Column reorder/resize deferred to Phase 6. | Host owns data and queries; nothing the kit computes changes a total. |
 | D44 | **`PaymentOnboardingView.completed`** shows a completion state and calls `onCompleted` once. There is no kit timer. Phone layout: a step header plus a collapsible task list. | B11 (no kit timers that act on their own); the host owns navigation. |
 
 ## 9. Variant governance
@@ -1993,7 +1993,7 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 **Phase 4C: content**
 - [x] PaymentPropertyList + PaymentPropertyListItem
 - [x] PaymentTable (+ row, header cell, cell; narrow collapse) (D30)
-- [ ] PaymentDataTable (columns, cell types, row actions, selection, pagination, reorder/resize) (D30, D43)
+- [x] PaymentDataTable (columns, cell types, row actions, selection, pagination; reorder/resize deferred to Phase 6) (D30, D43)
 - [x] PaymentTaskList + PaymentTaskListItem
 - [x] PaymentButtonGroup; migrate status stack and dialog actions (D23)
 - [x] LoadingSkeleton table shape
@@ -2059,3 +2059,7 @@ PropertyList, responsive Table and table skeleton are implemented. Tables collap
 ### Phase 4C-2 implementation notes
 
 At most one primary action. Auto overflow moves actions from the end, retaining the first; destructive actions always occupy a separate final menu group. The layout computes visible buttons immediately, while menu contents and focus exclusion update after layout. Vertical groups retain host order; overflowing non-collapsing rows put the emphasized action on top. menuTrigger uses the existing menu builder contract. TaskList supports one level of children and uses distinct shapes and spoken status. Receipt has one action; TransactionDetail actions remain arbitrary host widgets.
+
+### Phase 4C-3 implementation notes
+
+D43 amended 1 Nov 2026: the owner approves local sorting and filtering exclusively over host-supplied rows. Offset/cursor pages are never filtered or reordered locally; callbacks report intent. Local sorting is stable and cycles ascending, descending, host order. Select-all covers this page and retains off-page selections. batchActions is a kit addition for host statement actions. Narrow tables render only the current page in a non-scrolling Column. ID cells are bounded at 160 dp. Plan cut: column reorder and resize are deferred to Phase 6; enabling either flag asserts false. Control columns omit cell padding because the planned padded 48 dp checkbox cell overflowed by 8 dp.
