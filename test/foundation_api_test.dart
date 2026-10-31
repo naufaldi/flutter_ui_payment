@@ -179,7 +179,7 @@ void main() {
         Icons.chevron_right,
         Icons.open_in_new,
         Icons.close,
-        Icons.copy_rounded,
+        Icons.copy_outlined,
         Icons.check,
         Icons.cloud_off_outlined,
         Icons.search_off,

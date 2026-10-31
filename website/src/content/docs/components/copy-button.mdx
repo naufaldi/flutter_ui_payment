@@ -1,0 +1,34 @@
+---
+title: Copy button
+description: The host owns copying through onCopy and returns a boolean.
+---
+
+import Props from '../../../components/Props.astro';
+
+The host owns copying through onCopy and returns a boolean. Success shows a check and live Copied announcement for 1500 ms. Failure shows Copy failed beneath the icon until the next attempt. Pending presses cannot duplicate the host call. Value changes invalidate stale results. There are no additional variants. Nothing else exists.
+
+## Usage
+
+```dart
+PaymentCopyButton(value: 'TRX-DEMO', onCopy: (value) async => true);
+```
+
+The host implementation performs the actual platform copy before returning true.
+
+## Stripe → kit
+
+| Source | Kit |
+| --- | --- |
+| children | label or icon |
+| disabled | onPressed: null (icon and link) |
+| onPress | onPressed, or host onCopy for copy |
+| external / href / target / rel | external visual/semantics; host callback owns destination |
+| type | variant where supported |
+
+Width and alignment follow content. Host widgets own keyboard ordering and platform services. Do use a clear action name; avoid unlabeled glyphs and button-like containers for links.
+
+## Accessibility
+
+Targets are at least 48 dp. Tooltips name icon actions. Links announce their role and external destinations. Copy feedback uses a live region and a check rather than color alone.
+
+<Props names={['PaymentCopyButton']} />

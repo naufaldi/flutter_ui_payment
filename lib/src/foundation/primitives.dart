@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+import '../controls/actions.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -306,6 +308,7 @@ enum PaymentButtonVariant {
 class PaymentButton extends StatefulWidget {
   const PaymentButton({
     super.key,
+    this.focusNode,
     required this.label,
     required this.onPressed,
     this.variant = PaymentButtonVariant.primary,
@@ -318,6 +321,8 @@ class PaymentButton extends StatefulWidget {
   });
 
   /// Specific outcome of pressing the button. Wraps rather than truncates.
+  /// Host focus node, for example for menu focus return.
+  final FocusNode? focusNode;
   final String label;
 
   /// Called once per action; null disables the button. Futures lock repeat presses.
@@ -453,6 +458,7 @@ class _PaymentButtonState extends State<PaymentButton> {
     final onPressed = enabled ? _handle : null;
     final button = switch (widget.variant) {
       PaymentButtonVariant.primary => FilledButton(
+        focusNode: widget.focusNode,
         autofocus: widget.autofocus,
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
@@ -474,6 +480,7 @@ class _PaymentButtonState extends State<PaymentButton> {
       // Same colors as the confirm button of a destructive
       // showPaymentConfirmDialog: surface on the danger foreground.
       PaymentButtonVariant.destructive => FilledButton(
+        focusNode: widget.focusNode,
         autofocus: widget.autofocus,
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
@@ -493,6 +500,7 @@ class _PaymentButtonState extends State<PaymentButton> {
         child: child,
       ),
       PaymentButtonVariant.secondary => OutlinedButton(
+        focusNode: widget.focusNode,
         autofocus: widget.autofocus,
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
@@ -519,6 +527,7 @@ class _PaymentButtonState extends State<PaymentButton> {
         child: child,
       ),
       PaymentButtonVariant.quiet => TextButton(
+        focusNode: widget.focusNode,
         autofocus: widget.autofocus,
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
@@ -712,7 +721,7 @@ class PaymentBadge extends StatelessWidget {
 typedef StatusBadge = PaymentBadge;
 
 /// Inline message for errors, warnings and explanations.
-class PaymentBanner extends StatelessWidget {
+class PaymentBanner extends StatefulWidget {
   const PaymentBanner({
     super.key,
     required this.tone,
@@ -721,31 +730,50 @@ class PaymentBanner extends StatelessWidget {
     this.icon,
     this.actions = const [],
     this.announce = false,
+    this.onDismiss,
   });
 
+  /// Semantic message tone.
   final StatusTone tone;
+
+  /// Visible banner heading.
   final String title;
+
+  /// Optional explanation.
   final String? message;
+
+  /// Default trigger glyph.
   final IconData? icon;
+
+  /// Inline links or hug secondary/quiet actions.
   final List<Widget> actions;
 
   /// Announces the banner to screen readers when it appears.
   final bool announce;
 
+  /// Shows Hide banner; reports at most once. The host removes the banner.
+  final VoidCallback? onDismiss;
+  @override
+  State<PaymentBanner> createState() => _PaymentBannerState();
+}
+
+class _PaymentBannerState extends State<PaymentBanner> {
+  bool _reported = false;
   @override
   Widget build(BuildContext context) {
     assert(
-      actions.every(
+      widget.actions.every(
         (w) =>
+            w is PaymentLink ||
             w is PaymentButton &&
-            w.width == PaymentWidth.hug &&
-            (w.variant == PaymentButtonVariant.secondary ||
-                w.variant == PaymentButtonVariant.quiet),
+                w.width == PaymentWidth.hug &&
+                (w.variant == PaymentButtonVariant.secondary ||
+                    w.variant == PaymentButtonVariant.quiet),
       ),
-      'PaymentBanner actions are hug secondary or quiet PaymentButtons.',
+      'PaymentBanner actions are links or hug secondary/quiet buttons.',
     );
     final theme = PaymentTheme.of(context);
-    final colors = theme.tone(tone);
+    final colors = theme.tone(widget.tone);
     final type = PaymentType.of(context);
     final scaler = MediaQuery.textScalerOf(context);
     // One line of the 15/20 heading title.
@@ -753,10 +781,15 @@ class PaymentBanner extends StatelessWidget {
     final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     return Semantics(
       container: true,
-      liveRegion: announce,
+      liveRegion: widget.announce,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(theme.spacing * 1.5),
+        padding: widget.onDismiss == null
+            ? EdgeInsets.all(theme.spacing * 1.5)
+            : EdgeInsetsDirectional.only(
+                start: theme.spacing * 1.5,
+                bottom: theme.spacing * 1.5,
+              ),
         decoration: BoxDecoration(
           color: colors.container,
           borderRadius: theme.controlBorderRadius,
@@ -769,41 +802,75 @@ class PaymentBanner extends StatelessWidget {
               children: [
                 // The icon scales with the text up to 1.6× and centers on
                 // the title's first line, however many lines it wraps to.
-                SizedBox(
-                  width: iconSize,
-                  height: line,
-                  child: Center(
-                    child: Icon(
-                      icon ?? toneIcon(tone),
-                      color: colors.foreground,
-                      size: iconSize,
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: widget.onDismiss == null ? 0 : theme.spacing * 1.5,
+                  ),
+                  child: SizedBox(
+                    width: iconSize,
+                    height: line,
+                    child: Center(
+                      child: Icon(
+                        widget.icon ?? toneIcon(widget.tone),
+                        color: colors.foreground,
+                        size: iconSize,
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(width: theme.spacing * 1.5),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: type.heading.copyWith(color: colors.foreground),
-                      ),
-                      if (message != null) ...[
-                        SizedBox(height: theme.spacing * 0.5),
-                        Text(message!, style: type.bodyFor(context)),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: widget.onDismiss == null ? 0 : theme.spacing * 1.5,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: type.heading.copyWith(
+                            color: colors.foreground,
+                          ),
+                        ),
+                        if (widget.message != null) ...[
+                          SizedBox(height: theme.spacing * 0.5),
+                          Text(widget.message!, style: type.bodyFor(context)),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
+                if (widget.onDismiss != null)
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: math.max(0, theme.spacing * 1.5 + line / 2 - 24),
+                    ),
+                    child: PaymentIconButton(
+                      icon: PaymentIcons.close,
+                      tooltip:
+                          '${PaymentLocalizations.of(context).hideBanner}: ${widget.title}',
+                      onPressed: _reported
+                          ? null
+                          : () {
+                              setState(() => _reported = true);
+                              widget.onDismiss!();
+                            },
+                    ),
+                  ),
               ],
             ),
-            if (actions.isNotEmpty) ...[
+            if (widget.actions.isNotEmpty) ...[
               SizedBox(height: theme.spacing),
-              Wrap(
-                spacing: theme.spacing,
-                runSpacing: theme.spacing * 0.5,
-                children: actions,
+              Padding(
+                padding: EdgeInsetsDirectional.only(
+                  end: widget.onDismiss == null ? 0 : theme.spacing * 1.5,
+                ),
+                child: Wrap(
+                  spacing: theme.spacing,
+                  runSpacing: theme.spacing * 0.5,
+                  children: widget.actions,
+                ),
               ),
             ],
           ],

@@ -1,10 +1,10 @@
+import '../controls/actions.dart';
 import '../controls/text_field.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 
 import '../controls/controls.dart';
-import '../foundation/focus_ring.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';
@@ -43,9 +43,6 @@ class _VerificationIntroState extends State<VerificationIntro> {
     final l10n = PaymentLocalizations.of(context);
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
-    final controlShape = RoundedRectangleBorder(
-      borderRadius: theme.controlBorderRadius,
-    );
     final scaler = MediaQuery.textScalerOf(context);
     final line = PaymentType.firstLineHeight(context);
     final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
@@ -98,16 +95,11 @@ class _VerificationIntroState extends State<VerificationIntro> {
         SizedBox(height: theme.spacing * 1.5),
         if (widget.onOpenPolicy != null)
           Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
+            alignment: AlignmentDirectional.centerStart,
+            child: PaymentLink(
+              label: l10n.readPrivacyPolicy,
+              external: true,
               onPressed: widget.onOpenPolicy,
-              style: TextButton.styleFrom(
-                minimumSize: const Size(48, 48),
-                shape: controlShape,
-                textStyle: type.heading,
-              ),
-              icon: const Icon(Icons.open_in_new, size: 20),
-              label: Text(l10n.readPrivacyPolicy),
             ),
           ),
         PaymentCheckbox(
@@ -503,31 +495,10 @@ class VerificationReview extends StatelessWidget {
     // Two "Edit" buttons on one screen: the spoken label names the section.
     Widget? editButton(VoidCallback? onTap, String section) => onTap == null
         ? null
-        : PaymentFocusRing(
-            radius: theme.controlBorderRadius,
-            child: PaymentPressScale(
-              enabled: !busy,
-              child: TextButton(
-                onPressed: busy ? null : onTap,
-                // No inner padding, so the label's edge lines up with the
-                // value column; the 48 dp target is kept.
-                style: PaymentFocusRing.withoutFocusFill(
-                  TextButton.styleFrom(
-                    minimumSize: const Size(48, 48),
-                    padding: EdgeInsets.zero,
-                    alignment: AlignmentDirectional.centerEnd,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: theme.controlBorderRadius,
-                    ),
-                    textStyle: type.heading,
-                  ),
-                ),
-                child: Text(
-                  l10n.edit,
-                  semanticsLabel: '${l10n.edit}: $section',
-                ),
-              ),
-            ),
+        : PaymentLink(
+            label: l10n.edit,
+            semanticLabel: '${l10n.edit}: $section',
+            onPressed: busy ? null : onTap,
           );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

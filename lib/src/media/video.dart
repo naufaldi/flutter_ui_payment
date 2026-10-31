@@ -1,3 +1,4 @@
+import '../controls/actions.dart';
 import 'package:flutter/material.dart';
 
 import '../foundation/focus_ring.dart';
@@ -334,14 +335,6 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
       );
     }
 
-    final controlIcon = theme.textPrimary;
-    final iconStyle = PaymentFocusRing.withoutFocusFill(
-      IconButton.styleFrom(
-        minimumSize: const Size(48, 48),
-        foregroundColor: controlIcon,
-      ),
-    );
-
     // One radius-8 frame: the picture on top, flat controls under a hairline.
     return Semantics(
       container: true,
@@ -381,16 +374,7 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
                               .bodyFor(context)
                               .copyWith(color: theme.textSecondary),
                         ),
-                        TextButton(
-                          onPressed: _c.retry,
-                          style: TextButton.styleFrom(
-                            foregroundColor: theme.accent,
-                            minimumSize: const Size(48, 48),
-                            padding: EdgeInsets.zero,
-                            textStyle: type.heading,
-                          ),
-                          child: Text(l10n.retry),
-                        ),
+                        PaymentLink(label: l10n.retry, onPressed: _c.retry),
                       ],
                     ),
                   )
@@ -453,18 +437,10 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
                     ),
                     child: Row(
                       children: [
-                        PaymentFocusRing(
-                          radius: BorderRadius.circular(24),
-                          child: PaymentPressScale(
-                            enabled: canControl,
-                            child: IconButton(
-                              tooltip: playLabel,
-                              style: iconStyle,
-                              color: controlIcon,
-                              onPressed: canControl ? _toggle : null,
-                              icon: Icon(playIcon, size: 20),
-                            ),
-                          ),
+                        PaymentIconButton(
+                          icon: playIcon,
+                          tooltip: playLabel,
+                          onPressed: canControl ? _toggle : null,
                         ),
                         // Loading/buffering/finished are announced; the
                         // running time is not (the slider already speaks it).
@@ -479,25 +455,14 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
                             ),
                           ),
                         ),
-                        PaymentFocusRing(
-                          radius: BorderRadius.circular(24),
-                          child: PaymentPressScale(
-                            enabled: canControl,
-                            child: IconButton(
-                              tooltip: v.muted ? l10n.unmute : l10n.mute,
-                              style: iconStyle,
-                              color: controlIcon,
-                              onPressed: canControl
-                                  ? () => _c.setMuted(!v.muted)
-                                  : null,
-                              icon: Icon(
-                                v.muted
-                                    ? Icons.volume_off_outlined
-                                    : Icons.volume_up_outlined,
-                                size: 20,
-                              ),
-                            ),
-                          ),
+                        PaymentIconButton(
+                          icon: v.muted
+                              ? Icons.volume_off_outlined
+                              : Icons.volume_up_outlined,
+                          tooltip: v.muted ? l10n.unmute : l10n.mute,
+                          onPressed: canControl
+                              ? () => _c.setMuted(!v.muted)
+                              : null,
                         ),
                       ],
                     ),

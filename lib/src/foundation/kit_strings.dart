@@ -106,6 +106,13 @@ extension KitStrings on PaymentLocalizations {
     ),
   };
 
+  /// Hint for external destinations.
+  String get opensExternally =>
+      _k('Opens outside the app', 'Membuka di luar aplikasi');
+
+  /// Banner dismiss action.
+  String get hideBanner => _k('Hide banner', 'Sembunyikan banner');
+
   // Interaction
   String get close => _k('Close', 'Tutup');
   String get cancel => _k('Cancel', 'Batal');

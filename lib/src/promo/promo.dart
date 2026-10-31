@@ -1,8 +1,9 @@
+import '../foundation/payment_icons.dart';
+import '../controls/actions.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../foundation/focus_ring.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';
@@ -98,26 +99,10 @@ class PromoCard extends StatelessWidget {
     // target. At large text sizes it moves under the disclosure.
     final why = onAbout == null
         ? null
-        : PaymentFocusRing(
-            radius: BorderRadius.circular(24),
-            child: PaymentPressScale(
-              child: TextButton(
-                onPressed: onAbout,
-                style: PaymentFocusRing.withoutFocusFill(
-                  TextButton.styleFrom(
-                    foregroundColor: theme.textSecondary,
-                    minimumSize: const Size(48, 48),
-                    padding: stacked
-                        ? EdgeInsets.zero
-                        : EdgeInsets.symmetric(horizontal: theme.spacing),
-                    textStyle: caption.copyWith(
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-                child: Text(l10n.whyThisAd),
-              ),
-            ),
+        : PaymentLink(
+            label: l10n.whyThisAd,
+            variant: PaymentLinkVariant.secondary,
+            onPressed: onAbout,
           );
 
     // One muted caption line, "Sponsored · Bank Contoh". It wraps instead of
@@ -153,19 +138,10 @@ class PromoCard extends StatelessWidget {
         ),
         if (!stacked) ?why,
         if (onDismiss != null)
-          PaymentFocusRing(
-            radius: BorderRadius.circular(24),
-            child: PaymentPressScale(
-              child: IconButton(
-                tooltip: '${l10n.dismiss}: ${content.title}',
-                visualDensity: VisualDensity.standard,
-                style: PaymentFocusRing.withoutFocusFill(
-                  IconButton.styleFrom(minimumSize: const Size(48, 48)),
-                ),
-                icon: Icon(Icons.close, size: 20, color: theme.textSecondary),
-                onPressed: onDismiss,
-              ),
-            ),
+          PaymentIconButton(
+            icon: PaymentIcons.close,
+            tooltip: '${l10n.dismiss}: ${content.title}',
+            onPressed: onDismiss,
           ),
       ],
     );
@@ -205,23 +181,7 @@ class PromoCard extends StatelessWidget {
       width: content.media != null ? theme.spacing * 1.5 : theme.spacing,
     );
 
-    final quietCta = PaymentFocusRing(
-      radius: theme.controlBorderRadius,
-      child: TextButton(
-        onPressed: onAction,
-        style: PaymentFocusRing.withoutFocusFill(
-          TextButton.styleFrom(
-            foregroundColor: theme.accent,
-            minimumSize: const Size(48, 48),
-            shape: RoundedRectangleBorder(
-              borderRadius: theme.controlBorderRadius,
-            ),
-            textStyle: type.heading,
-          ),
-        ),
-        child: Text(content.ctaLabel),
-      ),
-    );
+    final quietCta = PaymentLink(label: content.ctaLabel, onPressed: onAction);
 
     // The one bordered box here: a promo is a single dismissible object.
     return Semantics(

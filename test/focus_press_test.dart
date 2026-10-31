@@ -113,7 +113,7 @@ void main() {
     expect(_copyScale(tester), 1);
 
     final gesture = await tester.startGesture(
-      tester.getCenter(find.byIcon(Icons.copy_rounded)),
+      tester.getCenter(find.byIcon(PaymentIcons.copy)),
     );
     await tester.pump();
     expect(_copyScale(tester), 0.96);
@@ -129,7 +129,7 @@ void main() {
     await tester.pumpWidget(_copyButton(reduceMotion: true));
 
     final gesture = await tester.startGesture(
-      tester.getCenter(find.byIcon(Icons.copy_rounded)),
+      tester.getCenter(find.byIcon(PaymentIcons.copy)),
     );
     await tester.pump();
     expect(_copyScale(tester), 1);

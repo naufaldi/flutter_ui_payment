@@ -1,0 +1,32 @@
+---
+title: Link
+description: Inline actions hug their label with a 48 dp target and no container.
+---
+
+import Props from '../../../components/Props.astro';
+
+Inline actions hug their label with a 48 dp target and no container. Primary uses an accent heading; secondary uses an underlined caption. External destinations have a trailing glyph, link role and spoken hint. In-place actions use the button role. The host opens the destination. Variants: primary, secondary. Nothing else exists.
+
+## Usage
+
+```dart
+PaymentLink(label: 'Edit', onPressed: () {});
+```
+
+## Stripe → kit
+
+| Source | Kit |
+| --- | --- |
+| children | label or icon |
+| disabled | onPressed: null (icon and link) |
+| onPress | onPressed, or host onCopy for copy |
+| external / href / target / rel | external visual/semantics; host callback owns destination |
+| type | variant where supported |
+
+Width and alignment follow content. Host widgets own keyboard ordering and platform services. Do use a clear action name; avoid unlabeled glyphs and button-like containers for links.
+
+## Accessibility
+
+Targets are at least 48 dp. Tooltips name icon actions. Links announce their role and external destinations. Copy feedback uses a live region and a check rather than color alone.
+
+<Props names={['PaymentLink', 'PaymentLinkVariant']} />
