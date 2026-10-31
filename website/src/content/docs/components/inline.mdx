@@ -1,0 +1,65 @@
+---
+title: Inline
+description: Text roles for payment instructions and references.
+---
+
+import Props from '../../../components/Props.astro';
+
+Text roles for payment instructions and references.
+
+## Usage
+
+```dart
+const PaymentInline('Pay before 14:05', role: PaymentTextRole.body);
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| Inline | `PaymentInline` |
+| css and numeric styling | Semantic token enums |
+
+Variants: nine text roles, regular, semibold, bold. Nothing else exists.
+
+## Which variant when
+
+Use roles for hierarchy and weights for emphasis inside running text. Reference text uses the host reference face.
+
+## States
+
+Layout and inline text are passive. Images preserve a loading surface and recover from decode failures. Copy feedback stays with the value.
+
+## Do and don't
+
+Use semantic tokens and host-owned data. Keep instructions in persistent text. Avoid duplicate surface fills.
+
+## Content guidelines
+
+Use short payment labels and synthetic references in examples.
+
+## Accessibility
+
+Keep reading order aligned with layout. Decorative glyphs are excluded from semantics. Images require alt text; copy actions have labeled targets and confirmation.
+
+## API
+
+<Props names={ ['PaymentInline', 'PaymentSpan', 'PaymentTextRole', 'PaymentTextColor', 'PaymentFontWeight'] } />
+
+## See also
+
+- [Spacing](/foundations/spacing/)
+- [Typography](/foundations/typography/)
+
+## Stripe font roles
+
+| Stripe | Kit role |
+| --- | --- |
+| title | title |
+| subtitle, heading, subheading | heading |
+| lead, body | body |
+| bodyEmphasized | body with semibold |
+| caption | caption |
+| kicker | tag |
+
+Payment totals and entered amounts use amountLarge; the single screen amount uses display. These payment roles have no Stripe equivalent.

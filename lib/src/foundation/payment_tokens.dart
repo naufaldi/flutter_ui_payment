@@ -43,7 +43,7 @@ enum PaymentSpace {
   major,
 }
 
-/// Corner roles; resolved internally until layout primitives arrive.
+/// Corner roles for PaymentBox and PaymentImage.
 enum PaymentRadius {
   /// BorderRadius.zero. Stripe none.
   none,

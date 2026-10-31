@@ -54,3 +54,7 @@ PaymentDivider(height: PaymentTheme.of(context).spacing * 3);
 ## Pattern adoption
 
 Every horizontal rule in kit patterns uses `PaymentDivider`, including action groups, checkout, receipts, history and video controls. Side-by-side navigation keeps its vertical rule. Thickness is always 1 dp, including Material 2 hosts and hosts with a custom divider thickness.
+
+## Stripe → kit
+
+Divider has no props; `height` is the kit's spacing knob. Nothing else exists.

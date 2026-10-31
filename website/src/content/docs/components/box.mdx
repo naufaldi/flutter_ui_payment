@@ -1,0 +1,52 @@
+---
+title: Box
+description: Token-only spacing and surfaces for the virtual account block.
+---
+
+import Props from '../../../components/Props.astro';
+
+Token-only spacing and surfaces for the virtual account block.
+
+## Usage
+
+```dart
+PaymentBox(gap: PaymentSpace.group, children: const [Text('Total'), Text('IDR 50.000')]);
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| Box | `PaymentBox` |
+| css and numeric styling | Semantic token enums |
+
+Variants: horizontal, vertical, layered. Nothing else exists.
+
+## Which variant when
+
+Use vertical for a form, horizontal for totals, and layered for passive overlays. Fill needs a bounded parent; use hug inside a Row.
+
+## States
+
+Layout and inline text are passive. Images preserve a loading surface and recover from decode failures. Copy feedback stays with the value.
+
+## Do and don't
+
+Use semantic tokens and host-owned data. Keep instructions in persistent text. Avoid duplicate surface fills.
+
+## Content guidelines
+
+Use short payment labels and synthetic references in examples.
+
+## Accessibility
+
+Keep reading order aligned with layout. Decorative glyphs are excluded from semantics. Images require alt text; copy actions have labeled targets and confirmation.
+
+## API
+
+<Props names={ ['PaymentBox', 'PaymentStack', 'PaymentDistribute', 'PaymentAlign', 'PaymentBoxBackground', 'PaymentKeyline', 'PaymentSpace', 'PaymentRadius', 'PaymentWidth'] } />
+
+## See also
+
+- [Spacing](/foundations/spacing/)
+- [Typography](/foundations/typography/)

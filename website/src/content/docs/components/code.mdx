@@ -1,0 +1,52 @@
+---
+title: Code
+description: References people copy into a banking app.
+---
+
+import Props from '../../../components/Props.astro';
+
+References people copy into a banking app.
+
+## Usage
+
+```dart
+PaymentCode('8808 0012 3456 7890', onCopy: hostCopy);
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| Code | `PaymentCode` |
+| css and numeric styling | Semantic token enums |
+
+Variants: code, pre, samp, kbd. Nothing else exists.
+
+## Which variant when
+
+Use code for a VA number, pre for multiline content, samp for host output, and kbd for a key. The host copies the value. Copy confirms briefly or shows an inline failure. Numeric speech is grouped in fours.
+
+## States
+
+Layout and inline text are passive. Images preserve a loading surface and recover from decode failures. Copy feedback stays with the value.
+
+## Do and don't
+
+Use semantic tokens and host-owned data. Keep instructions in persistent text. Avoid duplicate surface fills.
+
+## Content guidelines
+
+Use short payment labels and synthetic references in examples.
+
+## Accessibility
+
+Keep reading order aligned with layout. Decorative glyphs are excluded from semantics. Images require alt text; copy actions have labeled targets and confirmation.
+
+## API
+
+<Props names={ ['PaymentCode', 'PaymentCodeKind', 'PaymentSize'] } />
+
+## See also
+
+- [Spacing](/foundations/spacing/)
+- [Typography](/foundations/typography/)

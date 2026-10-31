@@ -1,3 +1,5 @@
+import '../foundation/payment_icons.dart';
+import '../foundation/payment_tokens.dart';
 import '../controls/actions.dart';
 import '../controls/text_field.dart';
 import 'dart:async';
@@ -43,9 +45,6 @@ class _VerificationIntroState extends State<VerificationIntro> {
     final l10n = PaymentLocalizations.of(context);
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
-    final scaler = MediaQuery.textScalerOf(context);
-    final line = PaymentType.firstLineHeight(context);
-    final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -64,16 +63,9 @@ class _VerificationIntroState extends State<VerificationIntro> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Centered on the title's first line at any scale.
-                        SizedBox(
-                          width: iconSize,
-                          height: line,
-                          child: Center(
-                            child: Icon(
-                              Icons.check_circle_outline,
-                              size: iconSize,
-                              color: theme.textSecondary,
-                            ),
-                          ),
+                        const PaymentIcon(
+                          Icons.check_circle_outline,
+                          color: PaymentTextColor.secondary,
                         ),
                         SizedBox(width: theme.spacing * 1.5),
                         Expanded(
@@ -370,10 +362,10 @@ class DocumentUploadTile extends StatelessWidget {
             SizedBox(height: theme.spacing),
             Row(
               children: [
-                Icon(
+                const PaymentIcon(
                   Icons.description_outlined,
-                  size: 20,
-                  color: theme.textSecondary,
+                  size: PaymentIconSize.medium,
+                  color: PaymentTextColor.secondary,
                 ),
                 SizedBox(width: theme.spacing),
                 Flexible(

@@ -132,7 +132,10 @@ class _ExpandableDemoState extends State<_ExpandableDemo> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           PaymentAccordionItem(
-            leading: Icons.help_outline,
+            media: const PaymentIcon(
+              Icons.help_outline,
+              color: PaymentTextColor.secondary,
+            ),
             title: t(
               'How long does a transfer take?',
               'Berapa lama transfer diproses?',
@@ -154,7 +157,10 @@ class _ExpandableDemoState extends State<_ExpandableDemo> {
             onChanged: (v) => setState(() => _open = v),
           ),
           PaymentAccordionItem(
-            leading: Icons.shield_outlined,
+            media: const PaymentIcon(
+              Icons.shield_outlined,
+              color: PaymentTextColor.secondary,
+            ),
             title: t('Buyer protection', 'Perlindungan pembeli'),
             subtitle: t('Provided by the merchant', 'Disediakan merchant'),
             expanded: _open,

@@ -1,3 +1,5 @@
+import '../foundation/payment_icons.dart';
+import '../foundation/payment_tokens.dart';
 import '../controls/actions.dart';
 import 'package:flutter/material.dart';
 
@@ -136,9 +138,7 @@ class _NavTile extends StatelessWidget {
         : theme.textSecondary;
     // The icon and badge center on the label's first line, so a wrapped
     // label at large text keeps them beside its start.
-    final scaler = MediaQuery.textScalerOf(context);
     final line = PaymentType.firstLineHeight(context);
-    final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     // Selection is instant: navigation is used constantly and keyboard users
     // move through it fast, so it should never wait on an animation. It is
     // shown by color and a muted fill (a shape, so not by color alone), never
@@ -171,18 +171,15 @@ class _NavTile extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          width: iconSize,
-                          height: line,
-                          child: Center(
-                            child: Icon(
-                              selected
-                                  ? (item.selectedIcon ?? item.icon)
-                                  : item.icon,
-                              color: foreground,
-                              size: iconSize,
-                            ),
-                          ),
+                        PaymentIcon(
+                          selected
+                              ? (item.selectedIcon ?? item.icon)
+                              : item.icon,
+                          color: selected
+                              ? PaymentTextColor.accent
+                              : enabled
+                              ? PaymentTextColor.primary
+                              : PaymentTextColor.secondary,
                         ),
                         SizedBox(width: theme.spacing * 1.5),
                         Expanded(

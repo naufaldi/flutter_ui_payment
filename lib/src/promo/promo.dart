@@ -49,6 +49,7 @@ class PromoContent {
 
   /// Optional image or illustration supplied by the host (already loaded or
   /// with its own loading state). Decorative: excluded from semantics.
+  /// Prefer PaymentImage with empty alt; the card labels the promotion.
   final Widget? media;
 
   /// Short conditions, e.g. "Until 31 Dec. Min. purchase Rp50.000".

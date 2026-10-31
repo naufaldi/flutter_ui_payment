@@ -5,6 +5,19 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
+  testWidgets('accordion leading remains a compatible alias', (tester) async {
+    await tester.pumpWidget(
+      host(
+        const PaymentAccordionItem(
+          title: 'Legacy',
+          leading: Icons.info_outline,
+          child: Text('Details'),
+        ),
+        1,
+      ),
+    );
+    expect(find.byIcon(Icons.info_outline), findsOneWidget);
+  });
   testWidgets('feedback aliases preserve constructors and types', (
     tester,
   ) async {

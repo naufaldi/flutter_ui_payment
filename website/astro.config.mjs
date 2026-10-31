@@ -91,6 +91,7 @@ export default defineConfig({
                 { label: 'Menu', slug: 'components/action-menu' },
               ],
             },
+            { label: 'Layout', items: [{ label: 'Box', slug: 'components/box' }, { label: 'Inline', slug: 'components/inline' }, { label: 'Icon', slug: 'components/icon' }, { label: 'Image', slug: 'components/image' }, { label: 'Code', slug: 'components/code' }] },
             {
               label: 'Forms',
               items: [

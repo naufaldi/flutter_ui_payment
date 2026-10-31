@@ -1,3 +1,4 @@
+import '../foundation/payment_icons.dart';
 import '../controls/actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +9,6 @@ import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/payment_tokens.dart';
-import '../foundation/payment_icons.dart';
 
 /// Input traits; sensitive input belongs to the host.
 enum PaymentTextFieldType {
@@ -327,12 +327,9 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
           prefixText: widget.prefixText,
           prefixIcon: widget.query == null
               ? widget.prefixIcon
-              : ExcludeSemantics(
-                  child: Icon(
-                    Icons.search,
-                    size: 20,
-                    color: theme.textSecondary,
-                  ),
+              : const PaymentIcon(
+                  Icons.search,
+                  color: PaymentTextColor.secondary,
                 ),
           suffixIcon: widget.query == null
               ? widget.suffix
