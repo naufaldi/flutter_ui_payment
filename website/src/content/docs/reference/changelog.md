@@ -5,6 +5,13 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Design system Phase 2E (1 Nov 2026)
+
+- Charts gain named series, axis/grid controls, legends and money/percent/number units.
+- **Breaking:** remove MeterSegment.color; use the category ramp. MeterSegment.value and ChartPoint.value are optional; supply measure for numeric units. Chart points may be omitted when supplying series.
+- Meter legend rows support host actions. Sparklines support inspection.
+- Meter swatches are 12 dp; chart headline spacing derives from typography.
+
 ## 0.1.0 (unreleased)
 
 Design system Phase 2D-2 (1 Nov 2026):

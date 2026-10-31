@@ -48,3 +48,22 @@ A single generated summary announces settled lowest, highest and latest amounts 
 
 - [Chart layout](/patterns/chart-layout/) for height, state and headline composition.
 - [Money](/foundations/money/) for precise and compact amounts.
+
+## Series, axes and units
+
+Use named series with identical period labels and ordering. Line and bar charts accept up to three series; sparklines accept two. Series use an accent ramp and distinct dash patterns, never status tones. All series share a scale. `showLegend` controls the legend for multiple series.
+
+| Stripe | Kit |
+| --- | --- |
+| x / y | `axis` and `grid`: x, y, both or none |
+| color / z | Named `PaymentChartSeries` |
+| format / tickFormat / unitFormat | `unit`: money, percent or number |
+| legend | `showLegend` |
+
+Use a line for direction, bars for period comparisons, a meter for category proportions and a sparkline beside a KPI. Percent and number units read `measure`; money reads `value`. A measure of 45 means 45 percent. Missing readings remain gaps.
+
+Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to read a value. Meter `onSegmentPressed` activates full-width legend rows; the painted bar takes no taps.
+
+**Breaking:** `MeterSegment.color` is removed. Use the semantic category ramp. `MeterSegment.value` is optional; supply `measure` for numeric units. Point `value` and chart `points` are optional when using measures or series.
+
+<Props names={['PaymentChartSeries', 'PaymentChartAxis', 'PaymentChartUnit', 'ChartPoint', 'MeterSegment']} />

@@ -180,6 +180,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
       'status' => const [_StatusDemo(), _InstructionsDemo(), _ReceiptDemo()],
       'history' => const [_HistoryDemo()],
       'charts' => const [
+        _ChartVariants('line'),
+        _ChartVariants('bar'),
+        _ChartVariants('meter'),
+        _ChartVariants('sparkline'),
         _ChartDemo(kind: 'line'),
         _ChartDemo(kind: 'bar'),
         _ChartDemo(kind: 'meter'),

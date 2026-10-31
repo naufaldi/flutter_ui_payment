@@ -2025,3 +2025,7 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [ ] "Not in the kit": D28 non-mirrored props only
 - [x] PRD.md §16a row updated to full Stripe parity (revision 3)
 ```
+
+### Phase 2E implementation notes
+
+Series use solid, long-dash (8/4), and dash-dot (8/3/2/3) encoding. MeterSegment.measure supports percentage and number readings. Inspectable sparklines use press-and-hold tooltips. The headline region derives from the amount line, caption line and section gap.

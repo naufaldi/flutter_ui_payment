@@ -184,3 +184,99 @@ class _ContextHistoryState extends State<_ContextHistory> {
     ),
   );
 }
+
+class _ChartVariants extends StatelessWidget {
+  const _ChartVariants(this.kind);
+  final String kind;
+  @override
+  Widget build(BuildContext context) {
+    final series = [
+      PaymentChartSeries(label: 'This month', points: _chartFixture('pending')),
+      PaymentChartSeries(label: 'Last month', points: _chartFixture('typical')),
+    ];
+    final measures = List.generate(
+      5,
+      (i) => ChartPoint(label: 'W${i + 1}', measure: [92, 95, 88, 97, 99][i]),
+    );
+    final chart = switch (kind) {
+      'bar' => PaymentBarChart(series: series),
+      'meter' => PaymentMeterChart(
+        segments: [
+          for (final label in ['Transfer', 'QRIS', 'Card'])
+            MeterSegment(label: label, value: const Money.idr(250000)),
+        ],
+        onSegmentPressed: (s) => _galleryFeedback(
+          context,
+          'Host: open ${s.label}',
+          'Host: buka ${s.label}',
+        ),
+      ),
+      'sparkline' => Row(
+        children: [
+          const Expanded(child: Text('Spending trend')),
+          PaymentSparkline(
+            key: const Key('sparkline-inspect'),
+            series: series,
+            inspectable: true,
+          ),
+        ],
+      ),
+      _ => PaymentLineChart(series: series),
+    };
+    final name = switch (kind) {
+      'bar' => 'PaymentBarChart',
+      'meter' => 'PaymentMeterChart',
+      'sparkline' => 'PaymentSparkline',
+      _ => 'PaymentLineChart',
+    };
+    return _Entry(
+      name: '$name · variants',
+      child: Column(
+        children: [
+          ChartModule(
+            title: 'Spending, this month vs last month',
+            state: ChartState.ready,
+            showHeadline: false,
+            height: kind == 'meter' ? null : 180,
+            chart: chart,
+          ),
+          if (kind == 'line' || kind == 'bar')
+            SizedBox(
+              height: 120,
+              child: kind == 'line'
+                  ? PaymentLineChart(
+                      points: measures,
+                      unit: PaymentChartUnit.percent,
+                      axis: PaymentChartAxis.y,
+                    )
+                  : PaymentBarChart(
+                      points: measures,
+                      unit: PaymentChartUnit.number,
+                      grid: PaymentChartAxis.none,
+                    ),
+            ),
+          if (kind == 'line')
+            SizedBox(
+              height: 120,
+              child: PaymentLineChart(
+                points: _chartFixture('typical'),
+                axis: PaymentChartAxis.none,
+                grid: PaymentChartAxis.none,
+              ),
+            ),
+          if (kind == 'meter')
+            PaymentMeterChart(
+              unit: PaymentChartUnit.percent,
+              segments: [
+                MeterSegment(label: 'Transfer', measure: 40),
+                MeterSegment(label: 'QRIS', measure: 25),
+                MeterSegment(label: 'Card', measure: 10),
+              ],
+            ),
+          if (kind == 'sparkline')
+            PaymentSparkline(points: _chartFixture('typical')),
+        ],
+      ),
+    );
+  }
+}
