@@ -1263,11 +1263,81 @@
     ],
     "copyWith": null
   },
+  "PaymentTooltipPlacement": {
+    "kind": "enum",
+    "file": "lib/src/controls/controls.dart",
+    "doc": "Twelve placements; start and end follow the text direction.",
+    "values": [
+      {
+        "name": "top",
+        "doc": "Stripe top."
+      },
+      {
+        "name": "topStart",
+        "doc": "Stripe top start."
+      },
+      {
+        "name": "topEnd",
+        "doc": "Stripe top end."
+      },
+      {
+        "name": "bottom",
+        "doc": "Stripe bottom."
+      },
+      {
+        "name": "bottomStart",
+        "doc": "Stripe bottom start."
+      },
+      {
+        "name": "bottomEnd",
+        "doc": "Stripe bottom end."
+      },
+      {
+        "name": "start",
+        "doc": "Stripe left in LTR."
+      },
+      {
+        "name": "startTop",
+        "doc": "Stripe left top in LTR."
+      },
+      {
+        "name": "startBottom",
+        "doc": "Stripe left bottom in LTR."
+      },
+      {
+        "name": "end",
+        "doc": "Stripe right in LTR."
+      },
+      {
+        "name": "endTop",
+        "doc": "Stripe right top in LTR."
+      },
+      {
+        "name": "endBottom",
+        "doc": "Stripe right bottom in LTR."
+      }
+    ]
+  },
+  "PaymentTooltipType": {
+    "kind": "enum",
+    "file": "lib/src/controls/controls.dart",
+    "doc": "Whether the message names the trigger or adds detail.",
+    "values": [
+      {
+        "name": "label",
+        "doc": "Becomes the trigger's semantic label."
+      },
+      {
+        "name": "description",
+        "doc": "Becomes the trigger's semantic tooltip."
+      }
+    ]
+  },
   "PaymentTooltip": {
     "kind": "class",
     "file": "lib/src/controls/controls.dart",
-    "doc": "A short hint shown on long press or hover, in ink on the page with the\ncaption type. Keyboard focus does not open it; screen readers read\n`message` as the child's tooltip.\n\nA tooltip is easy to miss on touch screens, so it may only repeat or name\nsomething: an icon button's label, a full date behind \"2d ago\". Never put\na fee, a requirement or an error only in a tooltip.",
-    "extends": "StatelessWidget",
+    "doc": "A noninteractive hint shown on hover, long press or keyboard focus.\nEscape, blur, exit and an outside tap hide it. Requires an Overlay.\nNever put a fee, a requirement or an error only in a tooltip.",
+    "extends": "StatefulWidget",
     "constructors": [
       {
         "name": "PaymentTooltip",
@@ -1282,7 +1352,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "message",
-            "doc": "One short sentence or a label. Also what screen readers hear."
+            "doc": ""
           },
           {
             "name": "child",
@@ -1293,6 +1363,39 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "child",
+            "doc": ""
+          },
+          {
+            "name": "placement",
+            "type": "PaymentTooltipPlacement",
+            "required": false,
+            "default": "PaymentTooltipPlacement.bottom",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "placement",
+            "doc": ""
+          },
+          {
+            "name": "type",
+            "type": "PaymentTooltipType",
+            "required": false,
+            "default": "PaymentTooltipType.description",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "type",
+            "doc": ""
+          },
+          {
+            "name": "delay",
+            "type": "Duration",
+            "required": false,
+            "default": "const Duration(milliseconds: 500)",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "delay",
             "doc": ""
           }
         ],
@@ -1307,13 +1410,34 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "One short sentence or a label. Also what screen readers hear."
+        "doc": ""
       },
       {
         "name": "child",
         "kind": "field",
         "static": false,
         "type": "Widget",
+        "doc": ""
+      },
+      {
+        "name": "placement",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentTooltipPlacement",
+        "doc": ""
+      },
+      {
+        "name": "type",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentTooltipType",
+        "doc": ""
+      },
+      {
+        "name": "delay",
+        "kind": "field",
+        "static": false,
+        "type": "Duration",
         "doc": ""
       }
     ],
@@ -2062,7 +2186,7 @@
         "kind": "static",
         "static": true,
         "type": "IconData",
-        "value": "Icons.warning_amber_rounded",
+        "value": "Icons.warning_amber_outlined",
         "doc": "Warning requiring attention."
       },
       {
@@ -2142,7 +2266,7 @@
         "kind": "static",
         "static": true,
         "type": "IconData",
-        "value": "Icons.hourglass_top",
+        "value": "Icons.hourglass_top_outlined",
         "doc": "Work in progress."
       },
       {
@@ -5320,7 +5444,7 @@
     "kind": "class",
     "file": "lib/src/foundation/primitives.dart",
     "doc": "Indeterminate progress for a wait with no known length: a thin ring, or a\nstill hourglass when the platform or host asks for reduced motion.\n\nPrefer a `LoadingSkeleton` where content is loading into a known shape,\nand `PaymentButton`'s `busy` state for an action that is running; both\nalready show progress. Screen readers hear `semanticLabel`, \"Loading\" by\ndefault.",
-    "extends": "StatelessWidget",
+    "extends": "StatefulWidget",
     "constructors": [
       {
         "name": "PaymentSpinner",
@@ -5328,14 +5452,25 @@
         "params": [
           {
             "name": "size",
-            "type": "double",
+            "type": "PaymentSize",
             "required": false,
-            "default": "20",
+            "default": "PaymentSize.medium",
             "named": true,
             "viaThis": true,
             "isSuper": false,
             "fieldName": "size",
             "doc": "Width and height. The ring's stroke is 12% of it."
+          },
+          {
+            "name": "delay",
+            "type": "Duration",
+            "required": false,
+            "default": "Duration.zero",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "delay",
+            "doc": ""
           },
           {
             "name": "color",
@@ -5370,8 +5505,15 @@
         "name": "size",
         "kind": "field",
         "static": false,
-        "type": "double",
+        "type": "PaymentSize",
         "doc": "Width and height. The ring's stroke is 12% of it."
+      },
+      {
+        "name": "delay",
+        "kind": "field",
+        "static": false,
+        "type": "Duration",
+        "doc": ""
       },
       {
         "name": "color",
@@ -5428,14 +5570,14 @@
     ],
     "copyWith": null
   },
-  "StatusBadge": {
+  "PaymentBadge": {
     "kind": "class",
     "file": "lib/src/foundation/primitives.dart",
     "doc": "Small tag showing a status with icon and text; color only supports the\nlabel.",
     "extends": "StatelessWidget",
     "constructors": [
       {
-        "name": "StatusBadge",
+        "name": "PaymentBadge",
         "factory": false,
         "params": [
           {
@@ -5462,8 +5604,37 @@
           },
           {
             "name": "icon",
-            "type": "IconData",
+            "type": "IconData?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "icon",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      },
+      {
+        "name": "PaymentBadge.urgent",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
             "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": ""
+          },
+          {
+            "name": "icon",
+            "type": "IconData?",
+            "required": false,
             "default": null,
             "named": true,
             "viaThis": true,
@@ -5496,20 +5667,27 @@
         "name": "icon",
         "kind": "field",
         "static": false,
-        "type": "IconData",
+        "type": "IconData?",
         "doc": ""
       }
     ],
     "copyWith": null
   },
-  "NoticeBanner": {
+  "StatusBadge": {
+    "kind": "typedef",
+    "file": "lib/src/foundation/primitives.dart",
+    "doc": "Deprecated alias of `PaymentBadge`.",
+    "aliasOf": "PaymentBadge",
+    "deprecated": "Use PaymentBadge. Removed in 0.2.0."
+  },
+  "PaymentBanner": {
     "kind": "class",
     "file": "lib/src/foundation/primitives.dart",
     "doc": "Inline message for errors, warnings and explanations.",
     "extends": "StatelessWidget",
     "constructors": [
       {
-        "name": "NoticeBanner",
+        "name": "PaymentBanner",
         "factory": false,
         "params": [
           {
@@ -5629,6 +5807,13 @@
       }
     ],
     "copyWith": null
+  },
+  "NoticeBanner": {
+    "kind": "typedef",
+    "file": "lib/src/foundation/primitives.dart",
+    "doc": "Deprecated alias of `PaymentBanner`.",
+    "aliasOf": "PaymentBanner",
+    "deprecated": "Use PaymentBanner. Removed in 0.2.0."
   },
   "PaymentSection": {
     "kind": "class",
@@ -6437,10 +6622,127 @@
       }
     ]
   },
-  "showPaymentSnackBar": {
+  "PaymentToastController": {
+    "kind": "class",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "Controls one toast from `showPaymentToast`.",
+    "extends": null,
+    "constructors": [],
+    "getters": [
+      {
+        "name": "closed",
+        "type": "Future<void>",
+        "doc": "Completes when the toast leaves the screen."
+      }
+    ],
+    "statics": [],
+    "members": [
+      {
+        "name": "closed",
+        "kind": "getter",
+        "static": false,
+        "type": "Future<void>",
+        "doc": "Completes when the toast leaves the screen."
+      },
+      {
+        "name": "update",
+        "kind": "method",
+        "static": false,
+        "type": "void",
+        "signature": "void update( String message, { StatusTone tone = StatusTone.neutral, bool pending = false, })",
+        "doc": "Replaces the entire state in place and restarts its reading time."
+      },
+      {
+        "name": "dismiss",
+        "kind": "method",
+        "static": false,
+        "type": "void",
+        "signature": "void dismiss()",
+        "doc": "Safe before visibility, after closing, and when called repeatedly."
+      }
+    ],
+    "copyWith": null
+  },
+  "showPaymentToast": {
     "kind": "function",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "Short feedback after an action (\"Copied\", \"Share canceled\").\n\nThe tone adds an icon so the message is not carried by color alone.\nSnack bars are announced by screen readers automatically.",
+    "doc": "Short feedback after an action. Failures requiring a fix use `PaymentBanner`.\nNeutral, success, warning, or pending. Reading time is 4–10 seconds,\nat least 6 with an action; pending and accessible actions never time out.",
+    "returns": "PaymentToastController",
+    "typeParams": "",
+    "params": [
+      {
+        "name": "context",
+        "type": "BuildContext",
+        "required": true,
+        "default": null,
+        "named": false,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "message",
+        "type": "String",
+        "required": true,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "tone",
+        "type": "StatusTone",
+        "required": false,
+        "default": "StatusTone.neutral",
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "pending",
+        "type": "bool",
+        "required": false,
+        "default": "false",
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "actionLabel",
+        "type": "String?",
+        "required": false,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "onAction",
+        "type": "VoidCallback?",
+        "required": false,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      }
+    ]
+  },
+  "showPaymentSnackBar": {
+    "kind": "function",
+    "deprecated": "Use showPaymentToast. Removed in 0.2.0.",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "Deprecated wrapper of `showPaymentToast` returning the Material controller.",
     "returns": "ScaffoldFeatureController<SnackBar, SnackBarClosedReason>",
     "typeParams": "",
     "params": [

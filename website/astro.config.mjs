@@ -100,8 +100,8 @@ export default defineConfig({
             {
               label: 'Feedback',
               items: [
-                { label: 'Status badge', slug: 'components/status-badge' },
-                { label: 'Notice banner', slug: 'components/notice-banner' },
+                { label: 'Badge', slug: 'components/status-badge' },
+                { label: 'Banner', slug: 'components/notice-banner' },
                 { label: 'Toast', slug: 'components/toast' },
                 { label: 'Status header', slug: 'components/status-header' },
                 { label: 'Spinner', slug: 'components/spinner' },

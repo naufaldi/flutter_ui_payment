@@ -141,13 +141,13 @@ class TransactionListItem extends StatelessWidget {
     final (refundTone, refundIcon) = _refundLook(record.refund.status);
     final tags = [
       if (!settled)
-        StatusBadge(
+        PaymentBadge(
           tone: tone,
           icon: icon,
           label: l10n.paymentStatusShort(status),
         ),
       if (refunded)
-        StatusBadge(
+        PaymentBadge(
           tone: refundTone,
           icon: refundIcon,
           label: l10n.refundStatusLabel(record.refund.status),

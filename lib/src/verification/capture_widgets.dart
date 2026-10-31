@@ -285,7 +285,7 @@ class KycCaptureGuide extends StatelessWidget {
         ),
         SizedBox(height: theme.spacing),
         if (state.phase != DocumentSlotPhase.empty)
-          StatusBadge(
+          PaymentBadge(
             icon: Icons.cloud_outlined,
             label: switch (state.phase) {
               DocumentSlotPhase.uploading => l10n.documentUploading,
@@ -308,13 +308,13 @@ class KycCaptureGuide extends StatelessWidget {
             ),
           ),
         if (needsUpdate)
-          NoticeBanner(
+          PaymentBanner(
             tone: StatusTone.warning,
             title: l10n.fieldNeedsUpdate,
             message: updateReason ?? l10n.fieldNeedsUpdate,
           ),
         if (issue != null)
-          NoticeBanner(
+          PaymentBanner(
             tone: StatusTone.danger,
             announce: true,
             title: l10n.documentIssueTitle(issue.kind),

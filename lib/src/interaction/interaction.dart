@@ -293,36 +293,248 @@ Future<bool> showPaymentConfirmDialog(
   return result ?? false;
 }
 
-/// Short feedback after an action ("Copied", "Share canceled").
-///
-/// The tone adds an icon so the message is not carried by color alone.
-/// Snack bars are announced by screen readers automatically.
+/// Controls one toast from [showPaymentToast].
+class PaymentToastController {
+  PaymentToastController._(this._state, this._hasAction, this._waitForUser);
+  final ValueNotifier<_ToastState> _state;
+  final bool _hasAction;
+  final bool _waitForUser;
+  late final ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _feature;
+  Timer? _timer;
+  bool _visible = false;
+  bool _closed = false;
+  bool _dismissRequested = false;
+
+  /// Completes when the toast leaves the screen.
+  Future<void> get closed => _feature.closed.then((_) {});
+
+  /// Replaces the entire state in place and restarts its reading time.
+  void update(
+    String message, {
+    StatusTone tone = StatusTone.neutral,
+    bool pending = false,
+  }) {
+    if (_closed) return;
+    _state.value = _ToastState(message, tone, pending);
+    _schedule();
+  }
+
+  /// Safe before visibility, after closing, and when called repeatedly.
+  void dismiss() {
+    if (_closed) return;
+    if (!_visible) {
+      _dismissRequested = true;
+      return;
+    }
+    _timer?.cancel();
+    _feature.close();
+  }
+
+  void _detach() {
+    _timer?.cancel();
+    _closed = true;
+  }
+
+  void _onVisible() {
+    _visible = true;
+    if (_dismissRequested) {
+      dismiss();
+    } else {
+      _schedule();
+    }
+  }
+
+  void _schedule() {
+    _timer?.cancel();
+    if (_closed ||
+        !_visible ||
+        _state.value.pending ||
+        (_hasAction && _waitForUser)) {
+      return;
+    }
+    final words = _state.value.message.trim().split(RegExp(r'\s+')).length;
+    final ms = (1000 + 300 * words).clamp(_hasAction ? 6000 : 4000, 10000);
+    _timer = Timer(Duration(milliseconds: ms), dismiss);
+  }
+}
+
+class _ToastState {
+  const _ToastState(this.message, this.tone, this.pending);
+  final String message;
+  final StatusTone tone;
+  final bool pending;
+}
+
+/// Short feedback after an action. Failures requiring a fix use [PaymentBanner].
+/// Neutral, success, warning, or pending. Reading time is 4–10 seconds,
+/// at least 6 with an action; pending and accessible actions never time out.
+PaymentToastController showPaymentToast(
+  BuildContext context, {
+  required String message,
+  StatusTone tone = StatusTone.neutral,
+  bool pending = false,
+  String? actionLabel,
+  VoidCallback? onAction,
+}) => _showToast(
+  context,
+  message: message,
+  tone: tone,
+  pending: pending,
+  actionLabel: actionLabel,
+  onAction: onAction,
+);
+
+/// Deprecated wrapper of [showPaymentToast] returning the Material controller.
+@Deprecated('Use showPaymentToast. Removed in 0.2.0.')
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showPaymentSnackBar(
   BuildContext context, {
   required String message,
   StatusTone tone = StatusTone.neutral,
   String? actionLabel,
   VoidCallback? onAction,
+}) => _showToast(
+  context,
+  message: message,
+  tone: tone,
+  actionLabel: actionLabel,
+  onAction: onAction,
+)._feature;
+
+PaymentToastController _showToast(
+  BuildContext context, {
+  required String message,
+  StatusTone tone = StatusTone.neutral,
+  bool pending = false,
+  String? actionLabel,
+  VoidCallback? onAction,
 }) {
   final theme = PaymentTheme.of(context);
-  final icon = toneIcon(tone);
+  final s = theme.spacing;
+  final hasAction = actionLabel != null && onAction != null;
+  final controller = PaymentToastController._(
+    ValueNotifier(_ToastState(message, tone, pending)),
+    hasAction,
+    MediaQuery.maybeAccessibleNavigationOf(context) ?? false,
+  );
   final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
-  return messenger.showSnackBar(
+  controller._feature = messenger.showSnackBar(
     SnackBar(
       behavior: SnackBarBehavior.floating,
+      persist: true,
+      backgroundColor: theme.textPrimary,
+      elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: theme.controlBorderRadius),
-      content: Row(
-        children: [
-          ExcludeSemantics(child: Icon(icon, size: 20)),
-          SizedBox(width: theme.spacing * 1.5),
-          Expanded(child: Text(message)),
-        ],
+      margin: EdgeInsets.fromLTRB(s * 2, 0, s * 2, s * 2),
+      padding: EdgeInsetsDirectional.fromSTEB(
+        s * 2,
+        s,
+        hasAction ? s : s * 2,
+        s,
       ),
-      action: actionLabel == null || onAction == null
-          ? null
-          : SnackBarAction(label: actionLabel, onPressed: onAction),
+      onVisible: controller._onVisible,
+      content: _ToastContent(
+        controller: controller,
+        actionLabel: actionLabel,
+        onAction: onAction,
+      ),
     ),
+    snackBarAnimationStyle: PaymentMotion.of(context).reduced
+        ? AnimationStyle.noAnimation
+        : null,
   );
+  controller._feature.closed.then((_) => controller._detach());
+  return controller;
+}
+
+class _ToastContent extends StatefulWidget {
+  const _ToastContent({
+    required this.controller,
+    this.actionLabel,
+    this.onAction,
+  });
+  final PaymentToastController controller;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+  @override
+  State<_ToastContent> createState() => _ToastContentState();
+}
+
+class _ToastContentState extends State<_ToastContent> {
+  @override
+  void dispose() {
+    widget.controller._detach();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    final type = PaymentType.of(context);
+    final s = theme.spacing;
+    final iconSize = PaymentIconSize.medium.resolve(context);
+    return ValueListenableBuilder<_ToastState>(
+      valueListenable: widget.controller._state,
+      builder: (context, state, _) => DefaultTextStyle(
+        style: type.label.copyWith(color: theme.surface),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ExcludeSemantics(
+              child: SizedBox(
+                width: iconSize,
+                height: PaymentType.firstLineHeight(context),
+                child: Center(
+                  child: state.pending
+                      ? PaymentSpinner(
+                          size: PaymentSize.small,
+                          color: theme.surface,
+                        )
+                      : Icon(
+                          toneIcon(state.tone),
+                          size: iconSize,
+                          color: theme.surface,
+                        ),
+                ),
+              ),
+            ),
+            SizedBox(width: s * 1.5),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: s * 0.5),
+                child: Text(state.message),
+              ),
+            ),
+            if (widget.actionLabel != null && widget.onAction != null) ...[
+              SizedBox(width: s),
+              PaymentFocusRing(
+                radius: theme.controlBorderRadius,
+                color: theme.surface,
+                child: TextButton(
+                  onPressed: () {
+                    widget.controller.dismiss();
+                    widget.onAction!();
+                  },
+                  style: PaymentFocusRing.withoutFocusFill(
+                    TextButton.styleFrom(
+                      foregroundColor: theme.surface,
+                      textStyle: type.label.copyWith(
+                        fontWeight: type.heading.fontWeight,
+                      ),
+                      minimumSize: const Size(48, 48),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.standard,
+                      padding: EdgeInsets.symmetric(horizontal: s * 1.5),
+                    ),
+                  ),
+                  child: Text(widget.actionLabel!),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 /// A titled section whose body can be shown or hidden.

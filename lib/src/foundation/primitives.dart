@@ -10,6 +10,7 @@ import 'payment_localizations.dart';
 import 'payment_motion.dart';
 import 'payment_theme.dart';
 import 'payment_type.dart';
+import 'payment_icons.dart';
 import 'token_resolvers.dart';
 import 'payment_tokens.dart';
 import 'tap_target.dart';
@@ -430,7 +431,12 @@ class _PaymentButtonState extends State<PaymentButton> {
           // The button announces busy through its own value.
           child: _busy
               ? ExcludeSemantics(
-                  child: PaymentSpinner(color: foreground, size: metrics.icon),
+                  child: PaymentSpinner(
+                    color: foreground,
+                    size: widget.size == PaymentSize.small
+                        ? PaymentSize.small
+                        : PaymentSize.medium,
+                  ),
                 )
               : SizedBox.square(dimension: metrics.icon),
         ),
@@ -555,30 +561,63 @@ class _PaymentButtonState extends State<PaymentButton> {
 /// and [PaymentButton]'s `busy` state for an action that is running; both
 /// already show progress. Screen readers hear [semanticLabel], "Loading" by
 /// default.
-class PaymentSpinner extends StatelessWidget {
+class PaymentSpinner extends StatefulWidget {
   const PaymentSpinner({
     super.key,
-    this.size = 20,
+    this.size = PaymentSize.medium,
+    this.delay = Duration.zero,
     this.color,
     this.semanticLabel,
   });
 
   /// Width and height. The ring's stroke is 12% of it.
-  final double size;
+  final PaymentSize size;
+  final Duration delay;
 
   /// Defaults to [PaymentTheme.textSecondary]: waiting is not a brand moment.
   final Color? color;
   final String? semanticLabel;
 
   @override
+  State<PaymentSpinner> createState() => _PaymentSpinnerState();
+}
+
+class _PaymentSpinnerState extends State<PaymentSpinner> {
+  late bool _shown = widget.delay == Duration.zero;
+  Timer? _timer;
+  @override
+  void initState() {
+    super.initState();
+    if (!_shown) {
+      _timer = Timer(widget.delay, () {
+        if (mounted) setState(() => _shown = true);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
-    final color = this.color ?? theme.textSecondary;
+    final size = switch (widget.size) {
+      PaymentSize.small => 16.0,
+      PaymentSize.medium => 20.0,
+      PaymentSize.large => 32.0,
+    };
+    if (!_shown) {
+      return SizedBox.square(dimension: size);
+    }
+    final color = widget.color ?? theme.textSecondary;
     return Semantics(
-      label: semanticLabel ?? PaymentLocalizations.of(context).loading,
+      label: widget.semanticLabel ?? PaymentLocalizations.of(context).loading,
       child: ExcludeSemantics(
         child: PaymentMotion.of(context).reduced
-            ? Icon(Icons.hourglass_top, size: size, color: color)
+            ? Icon(PaymentIcons.busy, size: size, color: color)
             : SizedBox.square(
                 dimension: size,
                 child: CircularProgressIndicator(
@@ -613,17 +652,22 @@ class PaymentDivider extends StatelessWidget {
 
 /// Small tag showing a status with icon and text; color only supports the
 /// label.
-class StatusBadge extends StatelessWidget {
-  const StatusBadge({
+class PaymentBadge extends StatelessWidget {
+  const PaymentBadge({
     super.key,
     required this.tone,
     required this.label,
-    required this.icon,
-  });
+    this.icon,
+  }) : _urgent = false;
+
+  const PaymentBadge.urgent({super.key, required this.label, this.icon})
+    : tone = StatusTone.danger,
+      _urgent = true;
 
   final StatusTone tone;
   final String label;
-  final IconData icon;
+  final IconData? icon;
+  final bool _urgent;
 
   @override
   Widget build(BuildContext context) {
@@ -635,20 +679,26 @@ class StatusBadge extends StatelessWidget {
         vertical: theme.spacing * 0.5,
       ),
       decoration: BoxDecoration(
-        color: colors.container,
+        color: _urgent ? colors.foreground : colors.container,
         borderRadius: theme.tagBorderRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: colors.foreground),
+          Icon(
+            icon ?? toneIcon(tone),
+            size: MediaQuery.textScalerOf(
+              context,
+            ).clamp(maxScaleFactor: 1.6).scale(14),
+            color: _urgent ? theme.surface : colors.foreground,
+          ),
           SizedBox(width: theme.spacing * 0.5),
           Flexible(
             child: Text(
               label,
-              style: PaymentType.of(
-                context,
-              ).tag.copyWith(color: colors.foreground),
+              style: PaymentType.of(context).tag.copyWith(
+                color: _urgent ? theme.surface : colors.foreground,
+              ),
             ),
           ),
         ],
@@ -657,9 +707,13 @@ class StatusBadge extends StatelessWidget {
   }
 }
 
+/// Deprecated alias of [PaymentBadge].
+@Deprecated('Use PaymentBadge. Removed in 0.2.0.')
+typedef StatusBadge = PaymentBadge;
+
 /// Inline message for errors, warnings and explanations.
-class NoticeBanner extends StatelessWidget {
-  const NoticeBanner({
+class PaymentBanner extends StatelessWidget {
+  const PaymentBanner({
     super.key,
     required this.tone,
     required this.title,
@@ -680,6 +734,16 @@ class NoticeBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    assert(
+      actions.every(
+        (w) =>
+            w is PaymentButton &&
+            w.width == PaymentWidth.hug &&
+            (w.variant == PaymentButtonVariant.secondary ||
+                w.variant == PaymentButtonVariant.quiet),
+      ),
+      'PaymentBanner actions are hug secondary or quiet PaymentButtons.',
+    );
     final theme = PaymentTheme.of(context);
     final colors = theme.tone(tone);
     final type = PaymentType.of(context);
@@ -716,7 +780,7 @@ class NoticeBanner extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: theme.spacing),
+                SizedBox(width: theme.spacing * 1.5),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -748,6 +812,10 @@ class NoticeBanner extends StatelessWidget {
     );
   }
 }
+
+/// Deprecated alias of [PaymentBanner].
+@Deprecated('Use PaymentBanner. Removed in 0.2.0.')
+typedef NoticeBanner = PaymentBanner;
 
 /// A titled group of content. Sections are flat: they sit on the page
 /// surface and are separated by space, never boxed, so they nest inside a

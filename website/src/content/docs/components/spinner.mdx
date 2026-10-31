@@ -35,7 +35,7 @@ Put words beside the spinner that say what is happening. A spinner on its own sa
 
 ## Size and color
 
-`size` sets the width and height (default 20); the ring's stroke is 12% of it. `color` defaults to `textSecondary`, because waiting is not a brand moment. Pass the label color when the spinner sits on a filled surface, as the busy button does.
+`size` is PaymentSize.small (16 dp), medium (20 dp, default), or large (32 dp); the ring's stroke is 12% of it. `color` defaults to `textSecondary`, because waiting is not a brand moment. Pass the label color when the spinner sits on a filled surface, as the busy button does.
 
 ## Reduced motion
 
@@ -47,7 +47,7 @@ When the platform or host asks for reduced motion, the ring is replaced by a sti
 
 ## API
 
-<Props names={['PaymentSpinner']} />
+<Props names={['PaymentSpinner', 'PaymentSize']} />
 
 ## See also
 
@@ -57,3 +57,7 @@ When the platform or host asks for reduced motion, the ring is replaced by a sti
 ## Pattern adoption
 
 Video loading uses a white 32 dp `PaymentSpinner` over the picture, with a 3.84 dp stroke. Reduced motion shows a 32 dp hourglass. The spinner is excluded from semantics because the video status already announces Loading video.
+
+## Delay and migration
+
+Delay reserves space without announcing progress until the wait passes. One timer is canceled on disposal. A fast wait never flashes. Replace numeric size 20 with `PaymentSize.medium`; numeric sizes no longer compile.

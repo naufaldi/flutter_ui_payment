@@ -181,8 +181,8 @@ const expected = <String, List<Rect>>{
     Rect.fromLTRB(210.0, 12.0, 360.0, 52.0),
     Rect.fromLTRB(150.0, 52.0, 360.0, 92.0),
     Rect.fromLTRB(0.0, 96.0, 360.0, 168.0),
-    Rect.fromLTRB(190.0, 180.0, 334.0, 212.0),
-    Rect.fromLTRB(142.0, 224.0, 334.0, 256.0),
+    Rect.fromLTRB(190.0 - 8.4, 180.0, 334.0 - 8.4, 212.0),
+    Rect.fromLTRB(142.0 - 8.4, 224.0, 334.0 - 8.4, 256.0),
   ],
   '2.0 ltr 0': [
     Rect.fromLTRB(0.0, 0.0, 360.0, 100.0),
@@ -241,8 +241,8 @@ const expected = <String, List<Rect>>{
     Rect.fromLTRB(0.0, 12.0, 150.0, 52.0),
     Rect.fromLTRB(0.0, 52.0, 210.0, 92.0),
     Rect.fromLTRB(0.0, 96.0, 360.0, 168.0),
-    Rect.fromLTRB(26.0, 180.0, 170.0, 212.0),
-    Rect.fromLTRB(26.0, 224.0, 218.0, 256.0),
+    Rect.fromLTRB(26.0 + 8.4, 180.0, 170.0 + 8.4, 212.0),
+    Rect.fromLTRB(26.0 + 8.4, 224.0, 218.0 + 8.4, 256.0),
   ],
 };
 
@@ -347,7 +347,14 @@ void main() {
                 .map((e) => find.byWidget(e.widget)),
           );
           final rects = targets.map(tester.getRect).toList();
-          expect(rects, expected['$scale ${direction.name} $i']);
+          final oracle = expected['$scale ${direction.name} $i']!;
+          expect(rects.length, oracle.length);
+          for (var j = 0; j < rects.length; j++) {
+            expect(rects[j].left, closeTo(oracle[j].left, 0.000001));
+            expect(rects[j].top, closeTo(oracle[j].top, 0.000001));
+            expect(rects[j].right, closeTo(oracle[j].right, 0.000001));
+            expect(rects[j].bottom, closeTo(oracle[j].bottom, 0.000001));
+          }
         }
       });
     }

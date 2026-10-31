@@ -185,7 +185,7 @@ class PaymentSummary extends StatelessWidget {
             SizedBox(height: theme.spacing),
           ],
           if (changed) ...[
-            NoticeBanner(
+            PaymentBanner(
               tone: StatusTone.warning,
               announce: true,
               title: l10n.totalChangedTitle,
@@ -251,7 +251,7 @@ class PaymentMethodPicker extends StatelessWidget {
     final l10n = PaymentLocalizations.of(context);
     final theme = PaymentTheme.of(context);
     if (methods.isEmpty) {
-      return NoticeBanner(
+      return PaymentBanner(
         tone: StatusTone.neutral,
         title: l10n.noMethodsTitle,
         message: emptyMessage ?? l10n.noMethodsMessage,
@@ -523,7 +523,7 @@ class AuthorizationPrompt extends StatelessWidget {
         StatusTone.info,
         l10n.authInProgressTitle,
         l10n.authInProgressMessage,
-        Icons.hourglass_top,
+        Icons.schedule,
       ),
       AuthorizationPhase.approved => (
         StatusTone.success,
@@ -566,7 +566,7 @@ class AuthorizationPrompt extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (exception)
-          NoticeBanner(
+          PaymentBanner(
             tone: tone,
             icon: icon,
             title: title,

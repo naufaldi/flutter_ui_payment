@@ -42,13 +42,19 @@ A tooltip is easy to miss on a phone: nothing shows that it is there. It may onl
 ## Accessibility
 
 - The message is also the control's tooltip in the semantics tree, so screen readers read it with the control.
-- Keyboard focus does not open it. Do not rely on a tooltip for anything a keyboard user needs.
+- Keyboard focus opens it. Do not rely on a tooltip for anything a keyboard user needs.
 
 ## API
 
-<Props names={['PaymentTooltip']} />
+<Props names={['PaymentTooltip', 'PaymentTooltipPlacement', 'PaymentTooltipType']} />
 
 ## See also
 
 - [Info row](/components/info-row/)
 - [Action menu](/components/action-menu/)
+
+## Placement, type and timing
+
+The twelve placements are top, topStart, topEnd, bottom, bottomStart, bottomEnd, start, startTop, startBottom, end, endTop and endBottom. Start and end follow direction. A bubble flips when the opposite side fits, then shifts inside an 8 dp margin. Default placement is bottom.
+
+Label names an icon-only trigger; description adds its semantic tooltip. The bubble is never interactive or focusable and needs an Overlay. Hover waits 500 ms by default; keyboard focus opens immediately. Escape, blur, exit, outside tap and another tooltip close it. Long press closes 1.5 seconds after release. Never put a fee, requirement or error only here.

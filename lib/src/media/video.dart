@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../foundation/focus_ring.dart';
 import '../foundation/primitives.dart';
 import '../foundation/payment_tokens.dart';
-import '../foundation/token_resolvers.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
@@ -293,10 +292,10 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
           else if (widget.poster != null)
             ExcludeSemantics(child: widget.poster!),
           if (busy)
-            Center(
+            const Center(
               child: ExcludeSemantics(
                 child: PaymentSpinner(
-                  size: PaymentIconSize.large.resolve(context),
+                  size: PaymentSize.large,
                   color: Colors.white,
                 ),
               ),

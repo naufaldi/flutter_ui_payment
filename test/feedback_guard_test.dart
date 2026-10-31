@@ -16,12 +16,12 @@ void main() {
           const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              StatusBadge(
+              PaymentBadge(
                 tone: StatusTone.warning,
                 label: 'Pending',
                 icon: Icons.schedule,
               ),
-              NoticeBanner(
+              PaymentBanner(
                 tone: StatusTone.warning,
                 title: 'Total changed',
                 message: 'From Rp102.500 to Rp103.500.',
@@ -32,14 +32,14 @@ void main() {
         ),
       );
       expect(
-        tester.getRect(find.byType(StatusBadge)),
+        tester.getRect(find.byType(PaymentBadge)),
         scale == 1
             ? const Rect.fromLTRB(0, 0, 118, 24)
-            : const Rect.fromLTRB(0, 0, 202, 40),
+            : const Rect.fromLTRB(0, 0, 202 + 22.4 - 14, 40),
       );
       expect(
         tester.getTopLeft(find.text('Total changed')).dx,
-        scale == 1 ? 40 : 52,
+        scale == 1 ? 40 + 4 : 52 + 4,
       );
       expect(tester.takeException(), isNull);
     });

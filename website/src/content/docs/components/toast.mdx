@@ -1,6 +1,6 @@
 ---
 title: Toast
-description: showPaymentSnackBar shows short feedback after an action, with a toned icon and an optional undo. It replaces any toast already showing.
+description: showPaymentToast shows short feedback after an action, with a toned icon and an optional undo. It replaces any toast already showing.
 ---
 
 import Screen from '../../../components/Screen.astro';
@@ -8,7 +8,7 @@ import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
-`showPaymentSnackBar` confirms that something happened: "Reference copied", "Share canceled". It floats at the bottom of the screen and goes away on its own.
+`showPaymentToast` confirms that something happened: "Reference copied", "Share canceled". It floats at the bottom of the screen and goes away on its own.
 
 <HostOwns>the message and what its action does, for example restoring something the person hid.</HostOwns>
 
@@ -19,7 +19,7 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-showPaymentSnackBar(
+showPaymentToast(
   context,
   message: 'Reference copied',
   tone: StatusTone.success,
@@ -36,7 +36,7 @@ It needs a `ScaffoldMessenger` above `context`, which `MaterialApp` provides. An
 | --- | --- |
 | `neutral` (default), `info` | `Icons.info_outline` |
 | `success` | `Icons.check_circle_outline` |
-| `warning` | `Icons.warning_amber_rounded` |
+| `warning` | `Icons.warning_amber_outlined` |
 | `danger` | `Icons.error_outline` |
 
 ## With undo
@@ -44,7 +44,7 @@ It needs a `ScaffoldMessenger` above `context`, which `MaterialApp` provides. An
 Pass both `actionLabel` and `onAction` to add an action. If either is missing, no action is shown.
 
 ```dart
-showPaymentSnackBar(
+showPaymentToast(
   context,
   message: 'Promo hidden',
   actionLabel: 'Undo',
@@ -66,9 +66,24 @@ showPaymentSnackBar(
 
 ## API
 
-<Props names={['showPaymentSnackBar']} />
+<Props names={['showPaymentToast', 'PaymentToastController', 'showPaymentSnackBar']} />
 
 ## See also
 
 - [Notice banner](/components/notice-banner/) for messages that must stay.
 - [Dialog](/components/dialog/) to ask before an action instead of offering undo after it.
+
+## Pending and reading time
+
+Stripe none, success and caution map to neutral, success and warning. Pending uses a small spinner and never times out. A blocking failure belongs in a banner.
+
+```dart
+final toast = showPaymentToast(context, message: 'Refreshing balance…', pending: true);
+toast.update('Balance updated', tone: StatusTone.success);
+```
+
+Short messages last 4 seconds, or 6 with an action. Longer messages get 1 second plus 300 ms per word, capped at 10 seconds. An action remains available during accessible navigation. Ink toasts use textPrimary fill and surface text, with no shadow. Aim for about 30 characters. Updates keep the same toast on screen; dismiss is safe to repeat.
+
+## Migration
+
+`showPaymentSnackBar` remains a deprecated wrapper returning the Material controller until 0.2.0. Use `showPaymentToast` for pending, update and dismiss.

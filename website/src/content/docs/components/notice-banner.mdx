@@ -1,6 +1,6 @@
 ---
-title: Notice banner
-description: NoticeBanner is an inline message for errors, warnings and explanations, with a toned icon, an optional message, actions and a screen-reader announcement.
+title: Banner
+description: PaymentBanner is an inline message for errors, warnings and explanations, with a toned icon, an optional message, actions and a screen-reader announcement.
 ---
 
 import Screen from '../../../components/Screen.astro';
@@ -8,7 +8,7 @@ import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
-`NoticeBanner` explains something on the page where it applies: a total that changed, a method that is unavailable, a status that is not confirmed yet. It stays until the situation changes.
+`PaymentBanner` explains something on the page where it applies: a total that changed, a method that is unavailable, a status that is not confirmed yet. It stays until the situation changes.
 
 <HostOwns>when the banner appears, its words, and what its actions do.</HostOwns>
 
@@ -19,7 +19,7 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-const NoticeBanner(
+const PaymentBanner(
   tone: StatusTone.warning,
   title: 'Total changed',
   message: 'Review the new total before you pay.',
@@ -37,7 +37,7 @@ The banner fills the width it is given. The title is in the tone's foreground co
 | --- | --- | --- |
 | `info`, `neutral` | `Icons.info_outline` | An explanation, such as how long a transfer takes. |
 | `success` | `Icons.check_circle_outline` | A confirmed result worth calling out on the page. |
-| `warning` | `Icons.warning_amber_rounded` | Something to review before going on, such as a changed total. |
+| `warning` | `Icons.warning_amber_outlined` | Something to review before going on, such as a changed total. |
 | `danger` | `Icons.error_outline` | A failure that blocks the next step. |
 
 ## With actions
@@ -45,7 +45,7 @@ The banner fills the width it is given. The title is in the tone's foreground co
 `actions` takes widgets shown under the text, in a row that wraps. Use one or two buttons that resolve the notice.
 
 ```dart
-NoticeBanner(
+PaymentBanner(
   tone: StatusTone.danger,
   title: 'Couldn’t load your balance',
   message: 'You can still pay with another method.',
@@ -80,9 +80,17 @@ A `PaymentButton` fills its width, so give it a narrower parent if it should not
 
 ## API
 
-<Props names={['NoticeBanner']} />
+<Props names={['PaymentBanner', 'NoticeBanner']} />
 
 ## See also
 
 - [Status badge](/components/status-badge/) for a one-word status.
 - [State message](/components/state-message/) for a list that is empty or failed to load.
+
+## Migration
+
+`NoticeBanner` remains a deprecated alias until 0.2.0. Replace the constructor name with `PaymentBanner`; existing arguments keep compiling.
+
+## Stripe mapping and actions
+
+Stripe default maps to neutral or info, caution to warning and critical to danger. Success is kit-only. Actions must be hug-width secondary or quiet PaymentButtons; unsupported actions assert in debug. Use a banner for a required next step, not routine success feedback. The icon-to-title gap is 12 dp. Dismiss support arrives in Phase 3B.

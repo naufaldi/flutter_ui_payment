@@ -424,7 +424,7 @@ Icons are Material `Icons` from the Flutter SDK, with no icon package. **New** `
 | Tone | Icon |
 | --- | --- |
 | success | `check_circle_outline` |
-| warning | `warning_amber_rounded` |
+| warning | `warning_amber_outlined` |
 | danger | `error_outline` |
 | info, neutral | `info_outline` |
 
@@ -444,7 +444,7 @@ Icons are Material `Icons` from the Flutter SDK, with no icon package. **New** `
 **Rules.**
 
 - An icon never carries meaning alone. It always sits beside words, or has a tooltip on an icon button.
-- One family: outlined. The exceptions `copy_rounded` and `warning_amber_rounded` are audited in Phase 1, and either replaced or recorded.
+- One family: outlined. The exceptions `copy_rounded` and `warning_amber_outlined` are audited in Phase 1, and either replaced or recorded.
 
 **Gaps.**
 
@@ -1945,11 +1945,11 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] AmountTextVariant; deprecate emphasis; migrate total rows (D24); CountdownText default style
 
 **Phase 2C: feedback renames and variants**
-- [ ] StatusBadge → PaymentBadge (+ .urgent, optional icon, 1.6× icon) (D20, D38)
-- [ ] NoticeBanner → PaymentBanner (actions assert) (D21, D38)
-- [ ] showPaymentSnackBar → showPaymentToast + PaymentToastController (pending/update/dismiss), ink tokens (D22, D38)
-- [ ] PaymentSpinner PaymentSize + delay; PaymentTooltip placement/type/delay on OverlayPortal (D40)
-- [ ] Deprecated aliases/wrappers + CHANGELOG migration (D34)
+- [x] StatusBadge → PaymentBadge (+ .urgent, optional icon, 1.6× icon) (D20, D38)
+- [x] NoticeBanner → PaymentBanner (actions assert) (D21, D38)
+- [x] showPaymentSnackBar → showPaymentToast + PaymentToastController (pending/update/dismiss), ink tokens (D22, D38)
+- [x] PaymentSpinner PaymentSize + delay; PaymentTooltip placement/type/delay on OverlayPortal (D40)
+- [x] Deprecated aliases/wrappers + CHANGELOG migration (D34)
 
 **Phase 2D: navigation, list and control parity**
 - [ ] ActionMenu → PaymentMenu (+ PaymentMenuItem, PaymentMenuGroup, onAction)

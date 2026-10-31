@@ -7,7 +7,7 @@ part of 'gallery_screen.dart';
 // would hold it.
 
 void _hostSays(BuildContext context, String en, String id) =>
-    showPaymentSnackBar(context, message: _t(context, en, id));
+    showPaymentToast(context, message: _t(context, en, id));
 
 // ── Interaction ─────────────────────────────────────────────────────────────
 
@@ -31,7 +31,7 @@ class _ActionsDemo extends StatelessWidget {
       destructive: true,
     );
     if (!context.mounted) return;
-    showPaymentSnackBar(
+    showPaymentToast(
       context,
       tone: ok ? StatusTone.success : StatusTone.neutral,
       message: ok
@@ -98,56 +98,6 @@ class _ActionsDemo extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _FeedbackDemo extends StatelessWidget {
-  const _FeedbackDemo();
-
-  @override
-  Widget build(BuildContext context) {
-    String t(String en, String id) => _t(context, en, id);
-    return _Entry(
-      name: 'showPaymentSnackBar',
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          OutlinedButton(
-            onPressed: () => showPaymentSnackBar(
-              context,
-              tone: StatusTone.success,
-              message: t('Reference copied', 'Referensi disalin'),
-            ),
-            child: Text(t('Success', 'Berhasil')),
-          ),
-          OutlinedButton(
-            onPressed: () => showPaymentSnackBar(
-              context,
-              tone: StatusTone.warning,
-              message: t(
-                'Share canceled. Your receipt is still here.',
-                'Berbagi dibatalkan. Struk tetap tersedia.',
-              ),
-            ),
-            child: Text(t('Canceled', 'Dibatalkan')),
-          ),
-          OutlinedButton(
-            onPressed: () => showPaymentSnackBar(
-              context,
-              tone: StatusTone.neutral,
-              message: t('Promo hidden', 'Promo disembunyikan'),
-              actionLabel: t('Undo', 'Urungkan'),
-              onAction: () => showPaymentSnackBar(
-                context,
-                message: t('Demo promo restored', 'Promo simulasi dipulihkan'),
-              ),
-            ),
-            child: Text(t('With undo', 'Dengan urungkan')),
-          ),
-        ],
       ),
     );
   }
@@ -310,7 +260,7 @@ class _NavigationDemoState extends State<_NavigationDemo> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          NoticeBanner(
+          PaymentBanner(
             tone: StatusTone.info,
             title: t(
               'This gallery runs inside AdaptiveNavShell',
@@ -474,7 +424,7 @@ class _SheetsDemo extends StatelessWidget {
           children: [
             const InfoRow(label: 'Total', value: AmountText(Money.idr(104000))),
             const SizedBox(height: 8),
-            NoticeBanner(
+            PaymentBanner(
               tone: StatusTone.info,
               title: t(
                 'Closing this panel does not cancel the payment',
@@ -743,7 +693,7 @@ class _PromoDemoState extends State<_PromoDemo> {
               onAction: () => cta(own),
               onDismiss: () {
                 setState(() => _bannerDismissed = true);
-                showPaymentSnackBar(
+                showPaymentToast(
                   context,
                   message: t('Promo hidden', 'Promo disembunyikan'),
                   actionLabel: t('Undo', 'Urungkan'),
