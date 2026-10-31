@@ -244,7 +244,7 @@ No plan deviation; no library rendering changes in 1B.
 - Checkbox labels use label 15/20 instead of body 15/22, on the 16 dp content gutter with a 48 dp minimum.
 - Video loading stroke changes from 3 to 3.84; reduced-motion hourglass changes from 24 to 32. Its spinner is excluded from semantics because the status line announces loading.
 - Failed photo decoding uses the illustrated frame without a preview. The semantic label remains photo until Phase 4A.
-- Native verification is blocked: device_screenshot twice returned “Could not communicate with device support. Try refreshing devices.” after device inventory refresh. The connected baseline flutter drive run produced no PNG before cancellation. Native captures, regression image diffs, webp regeneration and flow_test remain outstanding; no visual parity claim is made.
+- Native verification is blocked: device_screenshot twice returned “Could not communicate with device support. Try refreshing devices.” after device inventory refresh. The baseline screenshots_test runner completed successfully after the initial status check and saved 30 before PNGs. Nine consent/reapproval/unavailable-method baseline captures were inspected; the 200% reapproval frame does not reach the checkbox and needs a scrolled capture in the next native pass. Native captures, regression image diffs, webp regeneration and flow_test remain outstanding; no visual parity claim is made.
 
 Element counts (same host and synthetic workload, base → Phase 2A): history 847 → 862, confirmation 406 → 409, intro 344 → 346. RowShell and PaymentDivider each add a component element, without adding render objects or layout/paint passes. This is the documented exception to §12’s equal-or-lower element count criterion.
 
