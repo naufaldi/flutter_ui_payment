@@ -15,6 +15,7 @@ part 'gallery_kit.dart';
 part 'gallery_charts.dart';
 part 'gallery_capture.dart';
 part 'gallery_feedback.dart';
+part 'gallery_nav_controls.dart';
 
 void _galleryFeedback(BuildContext context, String en, String id) {
   showPaymentToast(context, message: _t(context, en, id));
@@ -139,7 +140,14 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ),
     ];
     final List<Widget> entries = switch (_section) {
-      'interaction' => const [_ActionsDemo(), _ExpandableDemo(), _StatesDemo()],
+      'interaction' => const [
+        _ActionsDemo(),
+        _ExpandableDemo(),
+        _StatesDemo(),
+        _MenuSpecimen(),
+        _AccordionSpecimen(),
+        _ListSpecimen(),
+      ],
       'feedback' => const [
         _BadgeSpecimen(),
         _BannerSpecimen(),

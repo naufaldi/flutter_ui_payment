@@ -41,4 +41,35 @@ void main() {
     await controller.closed;
     expect(find.byType(SnackBar), findsNothing);
   });
+  testWidgets('navigation aliases preserve old constructors', (tester) async {
+    expect(ActionTileGroup, PaymentList);
+    expect(ActionMenu, PaymentMenu);
+    expect(ActionMenuEntry, PaymentMenuItem);
+    expect(ExpandableSection, PaymentAccordionItem);
+    void action() {}
+    await tester.pumpWidget(
+      host(ActionTile(title: 'Old', subtitle: 'Detail', onTap: action), 1),
+    );
+    final row = tester.widget<PaymentListItem>(find.byType(PaymentListItem));
+    expect(row.secondaryTitle, 'Detail');
+    expect(row.onPressed, same(action));
+    await tester.pumpWidget(
+      host(
+        ActionMenu(
+          entries: [ActionMenuEntry(label: 'Old action', onSelected: action)],
+        ),
+        1,
+      ),
+    );
+    await tester.tap(find.byTooltip('More actions'));
+    await tester.pumpAndSettle();
+    expect(find.text('Old action'), findsOneWidget);
+    await tester.pumpWidget(
+      host(
+        const ExpandableSection(title: 'Old section', child: Text('Body')),
+        1,
+      ),
+    );
+    expect(find.byType(PaymentAccordionItem), findsOneWidget);
+  });
 }

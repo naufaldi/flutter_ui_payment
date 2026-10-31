@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../foundation/focus_ring.dart';
 import '../foundation/row_shell.dart';
+import '../foundation/payment_icons.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
@@ -16,12 +17,203 @@ import '../foundation/primitives.dart';
 /// A tappable row for settings, menus and action lists.
 ///
 /// The row is flat: a plain outlined icon, a title and a muted detail line,
-/// with no container. Put consecutive tiles in an [ActionTileGroup] so they
+/// with no container. Put consecutive tiles in a [PaymentList] so they
 /// are separated by hairlines.
 ///
 /// Disabled rows stay visible; pass [disabledReason] so people know why.
 /// [destructive] uses the danger tone for both icon and label, never color
 /// alone: the label must already say what happens.
+/// Stripe ListItem sizes. Both keep at least a 48 dp target.
+enum PaymentListItemSize {
+  /// Standard label row.
+  standard,
+
+  /// Heading row with a 64 dp minimum.
+  large,
+}
+
+class PaymentListItem extends StatelessWidget {
+  const PaymentListItem({
+    super.key,
+    required this.title,
+    this.secondaryTitle,
+    this.icon,
+    this.trailing,
+    this.value,
+    this.id,
+    this.size = PaymentListItemSize.standard,
+    this.onPressed,
+    this.destructive = false,
+    this.disabledReason,
+  });
+
+  final String? id;
+  final Widget? value;
+  final PaymentListItemSize size;
+  final String title;
+  final String? secondaryTitle;
+  final IconData? icon;
+
+  /// Defaults to a chevron when [onPressed] is set.
+  final Widget? trailing;
+  final VoidCallback? onPressed;
+  final bool destructive;
+  final String? disabledReason;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    final type = PaymentType.of(context);
+    assert(
+      value == null || trailing == null,
+      'PaymentListItem takes value or trailing, not both.',
+    );
+    final scope = context
+        .dependOnInheritedWidgetOfExactType<_PaymentListScope>();
+    final handler =
+        onPressed ??
+        (id != null && scope?.onAction != null
+            ? () => scope!.onAction!(id!)
+            : null);
+    final enabled = handler != null;
+    final disabled = !enabled && disabledReason != null;
+    final danger = destructive && enabled;
+    final foreground = disabled
+        ? theme.textSecondary
+        : danger
+        ? theme.danger.foreground
+        : theme.textPrimary;
+    final detail = !enabled && disabledReason != null
+        ? disabledReason
+        : secondaryTitle;
+    // Icon and chevron center on the title's first line, not on the whole
+    // block, so multi-line rows at large text keep them beside the title.
+    final scaler = MediaQuery.textScalerOf(context);
+    final line = PaymentType.firstLineHeight(context);
+    final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
+    final row = RowShell(
+      onTap: handler,
+      minHeight: size == PaymentListItemSize.large ? 64 : 48,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (icon != null) ...[
+            SizedBox(
+              width: iconSize,
+              height: line,
+              child: Center(
+                child: Icon(
+                  icon,
+                  size: iconSize,
+                  color: danger ? theme.danger.foreground : theme.textSecondary,
+                ),
+              ),
+            ),
+            SizedBox(width: theme.spacing * 1.5),
+          ],
+          Expanded(
+            flex: value == null ? 1 : 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style:
+                      (size == PaymentListItemSize.large
+                              ? type.heading
+                              : type.label)
+                          .copyWith(color: foreground),
+                ),
+                if (detail != null) Text(detail, style: type.caption),
+              ],
+            ),
+          ),
+          if (value != null) ...[
+            SizedBox(width: theme.spacing * 2),
+            Flexible(
+              flex: 2,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: line),
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: DefaultTextStyle.merge(
+                    style: type.label.copyWith(color: theme.textPrimary),
+                    textAlign: TextAlign.end,
+                    child: value!,
+                  ),
+                ),
+              ),
+            ),
+            if (enabled) SizedBox(width: theme.spacing),
+          ],
+          if (trailing != null)
+            // A minimum, never a fixed height, so a switch or a 48 dp
+            // button keeps its own size.
+            ConstrainedBox(
+              constraints: BoxConstraints(minHeight: line),
+              child: Center(child: trailing),
+            )
+          else if (enabled)
+            SizedBox(
+              height: line,
+              child: Center(
+                child: ExcludeSemantics(
+                  child: Icon(
+                    PaymentIcons.forward,
+                    size: 20,
+                    color: theme.textSecondary,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+    return enabled || disabled
+        ? Semantics(button: true, enabled: enabled, child: row)
+        : MergeSemantics(child: row);
+  }
+}
+
+/// A list of [PaymentListItem]s (or other rows) separated by hairlines. There is
+/// no box around the group: it sits on the page surface like a section.
+class PaymentList extends StatelessWidget {
+  const PaymentList({super.key, required this.children, this.onAction});
+  final ValueChanged<String>? onAction;
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return _PaymentListScope(
+      onAction: onAction,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final (i, child) in children.indexed) ...[
+            if (i > 0) const PaymentDivider(),
+            child,
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PaymentListScope extends InheritedWidget {
+  const _PaymentListScope({required this.onAction, required super.child});
+  final ValueChanged<String>? onAction;
+  @override
+  bool updateShouldNotify(_PaymentListScope oldWidget) =>
+      onAction != oldWidget.onAction;
+}
+
+/// Deprecated alias of [PaymentList].
+@Deprecated('Use PaymentList. Removed in 0.2.0.')
+typedef ActionTileGroup = PaymentList;
+
+/// Deprecated wrapper: subtitle is secondaryTitle and onTap is onPressed.
+@Deprecated('Use PaymentListItem. Removed in 0.2.0.')
 class ActionTile extends StatelessWidget {
   const ActionTile({
     super.key,
@@ -45,117 +237,35 @@ class ActionTile extends StatelessWidget {
   final String? disabledReason;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = PaymentTheme.of(context);
-    final type = PaymentType.of(context);
-    final enabled = onTap != null;
-    final danger = destructive && enabled;
-    final foreground = !enabled
-        ? theme.textSecondary
-        : danger
-        ? theme.danger.foreground
-        : theme.textPrimary;
-    final detail = !enabled && disabledReason != null
-        ? disabledReason
-        : subtitle;
-    // Icon and chevron center on the title's first line, not on the whole
-    // block, so multi-line rows at large text keep them beside the title.
-    final scaler = MediaQuery.textScalerOf(context);
-    final line = PaymentType.firstLineHeight(context);
-    final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
-    return Semantics(
-      button: true,
-      enabled: enabled,
-      child: RowShell(
-        onTap: onTap,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (icon != null) ...[
-              SizedBox(
-                width: iconSize,
-                height: line,
-                child: Center(
-                  child: Icon(
-                    icon,
-                    size: iconSize,
-                    color: danger
-                        ? theme.danger.foreground
-                        : theme.textSecondary,
-                  ),
-                ),
-              ),
-              SizedBox(width: theme.spacing * 1.5),
-            ],
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: type.label.copyWith(color: foreground)),
-                  if (detail != null) Text(detail, style: type.caption),
-                ],
-              ),
-            ),
-            if (trailing != null)
-              // A minimum, never a fixed height, so a switch or a 48 dp
-              // button keeps its own size.
-              ConstrainedBox(
-                constraints: BoxConstraints(minHeight: line),
-                child: Center(child: trailing),
-              )
-            else if (enabled)
-              SizedBox(
-                height: line,
-                child: Center(
-                  child: ExcludeSemantics(
-                    child: Icon(
-                      Directionality.of(context) == TextDirection.rtl
-                          ? Icons.chevron_left
-                          : Icons.chevron_right,
-                      size: 20,
-                      color: theme.textSecondary,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => PaymentListItem(
+    title: title,
+    secondaryTitle: subtitle,
+    icon: icon,
+    trailing: trailing,
+    onPressed: onTap,
+    destructive: destructive,
+    disabledReason: disabledReason,
+  );
 }
 
-/// A list of [ActionTile]s (or other rows) separated by hairlines. There is
-/// no box around the group: it sits on the page surface like a section.
-class ActionTileGroup extends StatelessWidget {
-  const ActionTileGroup({super.key, required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final (i, child) in children.indexed) ...[
-          if (i > 0) const PaymentDivider(),
-          child,
-        ],
-      ],
-    );
-  }
-}
-
-/// One entry of an [ActionMenu].
+/// One entry of a [PaymentMenu].
 @immutable
-class ActionMenuEntry {
-  const ActionMenuEntry({
+abstract class PaymentMenuEntry {
+  const PaymentMenuEntry._();
+}
+
+class PaymentMenuItem extends PaymentMenuEntry {
+  const PaymentMenuItem({
     required this.label,
-    required this.onSelected,
+    this.onSelected,
+    this.id,
+    this.disabled = false,
     this.icon,
     this.destructive = false,
-  });
+  }) : super._();
 
+  final String? id;
+  final bool disabled;
   final String label;
   final IconData? icon;
 
@@ -164,31 +274,82 @@ class ActionMenuEntry {
   final bool destructive;
 }
 
+/// A titled run of menu actions, separated from neighboring groups.
+class PaymentMenuGroup extends PaymentMenuEntry {
+  const PaymentMenuGroup({this.title, required this.items}) : super._();
+  final String? title;
+  final List<PaymentMenuItem> items;
+}
+
 /// Overflow menu behind an icon button.
 ///
 /// Built on [MenuAnchor], so arrow keys move between entries, Escape closes
 /// the menu and focus returns to the button. Opening is instant: a menu used
 /// many times a day should not make people wait for it.
-class ActionMenu extends StatelessWidget {
-  const ActionMenu({
+class PaymentMenu extends StatefulWidget {
+  const PaymentMenu({
     super.key,
     required this.entries,
+    this.onAction,
     this.icon = Icons.more_vert,
     this.tooltip,
   });
 
-  final List<ActionMenuEntry> entries;
+  final List<PaymentMenuEntry> entries;
+  final ValueChanged<String>? onAction;
   final IconData icon;
 
   /// Spoken and shown on long-press; defaults to "More actions".
   final String? tooltip;
 
   @override
+  State<PaymentMenu> createState() => _PaymentMenuState();
+}
+
+class _PaymentMenuState extends State<PaymentMenu> {
+  final _triggerFocus = FocusNode();
+  @override
+  void dispose() {
+    _triggerFocus.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final entries = widget.entries;
+    final onAction = widget.onAction;
+    final icon = widget.icon;
+    final tooltip = widget.tooltip;
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     final l10n = PaymentLocalizations.of(context);
+    Widget menuItem(PaymentMenuItem entry) => MenuItemButton(
+      leadingIcon: entry.icon == null
+          ? null
+          : Icon(
+              entry.icon,
+              size: 20,
+              color: entry.destructive
+                  ? theme.danger.foreground
+                  : theme.textSecondary,
+            ),
+      style: MenuItemButton.styleFrom(
+        minimumSize: const Size(160, 48),
+        foregroundColor: entry.destructive
+            ? theme.danger.foreground
+            : theme.textPrimary,
+        textStyle: type.label,
+      ),
+      onPressed: entry.disabled
+          ? null
+          : entry.onSelected ??
+                (entry.id != null && onAction != null
+                    ? () => onAction(entry.id!)
+                    : null),
+      child: Text(entry.label),
+    );
     return MenuAnchor(
+      childFocusNode: _triggerFocus,
       style: MenuStyle(
         backgroundColor: WidgetStatePropertyAll(theme.surface),
         surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
@@ -201,6 +362,7 @@ class ActionMenu extends StatelessWidget {
       builder: (context, controller, _) => PaymentFocusRing(
         radius: BorderRadius.circular(24),
         child: IconButton(
+          focusNode: _triggerFocus,
           style: PaymentFocusRing.withoutFocusFill(const ButtonStyle()),
           tooltip: tooltip ?? l10n.moreActions,
           icon: Icon(icon),
@@ -209,31 +371,40 @@ class ActionMenu extends StatelessWidget {
         ),
       ),
       menuChildren: [
-        for (final entry in entries)
-          MenuItemButton(
-            leadingIcon: entry.icon == null
-                ? null
-                : Icon(
-                    entry.icon,
-                    size: 20,
-                    color: entry.destructive
-                        ? theme.danger.foreground
-                        : theme.textSecondary,
-                  ),
-            style: MenuItemButton.styleFrom(
-              minimumSize: const Size(160, 48),
-              foregroundColor: entry.destructive
-                  ? theme.danger.foreground
-                  : theme.textPrimary,
-              textStyle: type.label,
-            ),
-            onPressed: entry.onSelected,
-            child: Text(entry.label),
-          ),
+        for (final (i, entry) in entries.indexed) ...[
+          if (i > 0 &&
+              (entry is PaymentMenuGroup || entries[i - 1] is PaymentMenuGroup))
+            const PaymentDivider(),
+          if (entry is PaymentMenuGroup) ...[
+            if (entry.title != null)
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(
+                  theme.spacing * 1.5,
+                  theme.spacing,
+                  theme.spacing * 1.5,
+                  theme.spacing * 0.5,
+                ),
+                child: Semantics(
+                  header: true,
+                  child: Text(entry.title!, style: type.caption),
+                ),
+              ),
+            for (final item in entry.items) menuItem(item),
+          ] else if (entry is PaymentMenuItem)
+            menuItem(entry),
+        ],
       ],
     );
   }
 }
+
+/// Deprecated alias of [PaymentMenu].
+@Deprecated('Use PaymentMenu. Removed in 0.2.0.')
+typedef ActionMenu = PaymentMenu;
+
+/// Deprecated alias of [PaymentMenuItem].
+@Deprecated('Use PaymentMenuItem. Removed in 0.2.0.')
+typedef ActionMenuEntry = PaymentMenuItem;
 
 /// Asks before an action that cannot be undone. Resolves to true only when
 /// the person confirms; dismissing, Back and Escape all resolve to false.
@@ -543,8 +714,8 @@ class _ToastContentState extends State<_ToastContent> {
 /// [onExpandedChanged]). Hidden content is removed from the tree, so it is
 /// never reachable by Tab or a screen reader. Do not hide fees here: the
 /// payment summary keeps every fee visible by design.
-class ExpandableSection extends StatefulWidget {
-  const ExpandableSection({
+class PaymentAccordionItem extends StatefulWidget {
+  const PaymentAccordionItem({
     super.key,
     required this.title,
     required this.child,
@@ -553,8 +724,10 @@ class ExpandableSection extends StatefulWidget {
     this.expanded,
     this.initiallyExpanded = false,
     this.onExpandedChanged,
+    this.actions = const [],
   });
 
+  final List<Widget> actions;
   final String title;
   final String? subtitle;
   final IconData? leading;
@@ -566,10 +739,10 @@ class ExpandableSection extends StatefulWidget {
   final ValueChanged<bool>? onExpandedChanged;
 
   @override
-  State<ExpandableSection> createState() => _ExpandableSectionState();
+  State<PaymentAccordionItem> createState() => _PaymentAccordionItemState();
 }
 
-class _ExpandableSectionState extends State<ExpandableSection> {
+class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
   late bool _expanded = widget.initiallyExpanded;
 
   bool get _isExpanded => widget.expanded ?? _expanded;
@@ -582,6 +755,18 @@ class _ExpandableSectionState extends State<ExpandableSection> {
 
   @override
   Widget build(BuildContext context) {
+    assert(
+      widget.actions.where((a) => a is! PaymentMenu).length <= 2 &&
+          widget.actions.whereType<PaymentMenu>().length <= 1 &&
+          widget.actions.every(
+            (a) =>
+                a is PaymentMenu ||
+                (a is PaymentButton &&
+                    a.size == PaymentSize.small &&
+                    a.width == PaymentWidth.hug),
+          ),
+      'Accordion actions need up to two small hug buttons and one menu.',
+    );
     final theme = PaymentTheme.of(context);
     final l10n = PaymentLocalizations.of(context);
     final motion = PaymentMotion.of(context);
@@ -589,6 +774,55 @@ class _ExpandableSectionState extends State<ExpandableSection> {
     final open = _isExpanded;
     // Flat: no box, only a hairline under the section, so consecutive
     // sections read as one ruled list.
+    final header = Semantics(
+      button: true,
+      expanded: open,
+      hint: open ? l10n.collapse : l10n.expand,
+      child: PaymentFocusRing(
+        radius: BorderRadius.zero,
+        child: InkWell(
+          focusColor: Colors.transparent,
+          onTap: _toggle,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: theme.spacing * 1.5),
+              child: Row(
+                children: [
+                  if (widget.leading != null) ...[
+                    Icon(widget.leading, size: 20, color: theme.textSecondary),
+                    SizedBox(width: theme.spacing * 1.5),
+                  ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.title, style: type.heading),
+                        if (widget.subtitle != null)
+                          Text(widget.subtitle!, style: type.caption),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: theme.spacing),
+                  // Rotation is a transform: no layout, no repaint of
+                  // the row. 150 ms, the same as other state changes.
+                  AnimatedRotation(
+                    turns: open ? 0.5 : 0,
+                    duration: motion.quick,
+                    curve: PaymentMotion.easeOut,
+                    child: Icon(
+                      Icons.expand_more,
+                      size: 20,
+                      color: theme.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: theme.outline)),
@@ -596,61 +830,44 @@ class _ExpandableSectionState extends State<ExpandableSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Semantics(
-            button: true,
-            expanded: open,
-            hint: open ? l10n.collapse : l10n.expand,
-            child: PaymentFocusRing(
-              radius: BorderRadius.zero,
-              child: InkWell(
-                focusColor: Colors.transparent,
-                onTap: _toggle,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 48),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: theme.spacing * 1.5,
-                    ),
-                    child: Row(
+          if (widget.actions.isEmpty)
+            header
+          else
+            LayoutBuilder(
+              builder: (context, box) =>
+                  box.maxWidth < 400 || PaymentType.isLarge(context)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (widget.leading != null) ...[
-                          Icon(
-                            widget.leading,
-                            size: 20,
-                            color: theme.textSecondary,
-                          ),
-                          SizedBox(width: theme.spacing * 1.5),
-                        ],
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(widget.title, style: type.heading),
-                              if (widget.subtitle != null)
-                                Text(widget.subtitle!, style: type.caption),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: theme.spacing),
-                        // Rotation is a transform: no layout, no repaint of
-                        // the row. 150 ms, the same as other state changes.
-                        AnimatedRotation(
-                          turns: open ? 0.5 : 0,
-                          duration: motion.quick,
-                          curve: PaymentMotion.easeOut,
-                          child: Icon(
-                            Icons.expand_more,
-                            size: 20,
-                            color: theme.textSecondary,
+                        header,
+                        Padding(
+                          padding: EdgeInsets.only(bottom: theme.spacing),
+                          child: Wrap(
+                            spacing: theme.spacing,
+                            runSpacing: theme.spacing,
+                            children: widget.actions,
                           ),
                         ),
                       ],
+                    )
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: header),
+                        SizedBox(width: theme.spacing),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (final (i, action)
+                                in widget.actions.indexed) ...[
+                              if (i > 0) SizedBox(width: theme.spacing),
+                              action,
+                            ],
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-              ),
             ),
-          ),
           // Size eases so the content below does not jump; collapses to an
           // instant change under reduced motion.
           AnimatedSize(
@@ -670,6 +887,21 @@ class _ExpandableSectionState extends State<ExpandableSection> {
     );
   }
 }
+
+/// A ruled list of disclosure items; items own their hairlines.
+class PaymentAccordion extends StatelessWidget {
+  const PaymentAccordion({super.key, required this.children});
+  final List<PaymentAccordionItem> children;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: children,
+  );
+}
+
+/// Deprecated alias of [PaymentAccordionItem].
+@Deprecated('Use PaymentAccordionItem. Removed in 0.2.0.')
+typedef ExpandableSection = PaymentAccordionItem;
 
 /// Placeholder blocks shaped like the content that is loading.
 ///

@@ -5535,7 +5535,7 @@
   "PaymentDivider": {
     "kind": "class",
     "file": "lib/src/foundation/primitives.dart",
-    "doc": "A 1 px hairline in `PaymentTheme.outline` that separates rows or groups.\nDecorative: screen readers skip it.\n\nBetween rows of a list use the default `height` of 1, as\n`ActionTileGroup` does. Between sections use `spacing * 3` so the rule\nsits in the middle of a section gap.",
+    "doc": "A 1 px hairline in `PaymentTheme.outline` that separates rows or groups.\nDecorative: screen readers skip it.\n\nBetween rows of a list use the default `height` of 1, as\n`PaymentList` does. Between sections use `spacing * 3` so the rule\nsits in the middle of a section gap.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -6197,10 +6197,289 @@
     ],
     "copyWith": null
   },
-  "ActionTile": {
+  "PaymentListItemSize": {
+    "kind": "enum",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "A tappable row for settings, menus and action lists.\n\nThe row is flat: a plain outlined icon, a title and a muted detail line,\nwith no container. Put consecutive tiles in a `PaymentList` so they\nare separated by hairlines.\n\nDisabled rows stay visible; pass `disabledReason` so people know why.\n`destructive` uses the danger tone for both icon and label, never color\nalone: the label must already say what happens.\nStripe ListItem sizes. Both keep at least a 48 dp target.",
+    "values": [
+      {
+        "name": "standard",
+        "doc": "Standard label row."
+      },
+      {
+        "name": "large",
+        "doc": "Heading row with a 64 dp minimum."
+      }
+    ]
+  },
+  "PaymentListItem": {
     "kind": "class",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "A tappable row for settings, menus and action lists.\n\nThe row is flat: a plain outlined icon, a title and a muted detail line,\nwith no container. Put consecutive tiles in an `ActionTileGroup` so they\nare separated by hairlines.\n\nDisabled rows stay visible; pass `disabledReason` so people know why.\n`destructive` uses the danger tone for both icon and label, never color\nalone: the label must already say what happens.",
+    "doc": "",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentListItem",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": ""
+          },
+          {
+            "name": "secondaryTitle",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "secondaryTitle",
+            "doc": ""
+          },
+          {
+            "name": "icon",
+            "type": "IconData?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "icon",
+            "doc": ""
+          },
+          {
+            "name": "trailing",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "trailing",
+            "doc": "Defaults to a chevron when `onPressed` is set."
+          },
+          {
+            "name": "value",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": ""
+          },
+          {
+            "name": "id",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "id",
+            "doc": ""
+          },
+          {
+            "name": "size",
+            "type": "PaymentListItemSize",
+            "required": false,
+            "default": "PaymentListItemSize.standard",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": ""
+          },
+          {
+            "name": "onPressed",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onPressed",
+            "doc": ""
+          },
+          {
+            "name": "destructive",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "destructive",
+            "doc": ""
+          },
+          {
+            "name": "disabledReason",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "disabledReason",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "id",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": ""
+      },
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentListItemSize",
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "secondaryTitle",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData?",
+        "doc": ""
+      },
+      {
+        "name": "trailing",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Defaults to a chevron when `onPressed` is set."
+      },
+      {
+        "name": "onPressed",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "destructive",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "disabledReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentList": {
+    "kind": "class",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "A list of `PaymentListItem`s (or other rows) separated by hairlines. There is\nno box around the group: it sits on the page surface like a section.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentList",
+        "factory": false,
+        "params": [
+          {
+            "name": "children",
+            "type": "List<Widget>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "children",
+            "doc": ""
+          },
+          {
+            "name": "onAction",
+            "type": "ValueChanged<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onAction",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "onAction",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<String>?",
+        "doc": ""
+      },
+      {
+        "name": "children",
+        "kind": "field",
+        "static": false,
+        "type": "List<Widget>",
+        "doc": ""
+      }
+    ],
+    "copyWith": null
+  },
+  "ActionTileGroup": {
+    "kind": "typedef",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "Deprecated alias of `PaymentList`.",
+    "aliasOf": "PaymentList",
+    "deprecated": "Use PaymentList. Removed in 0.2.0."
+  },
+  "ActionTile": {
+    "deprecated": "Use PaymentListItem. Removed in 0.2.0.",
+    "kind": "class",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "Deprecated wrapper: subtitle is secondaryTitle and onTap is onPressed.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -6343,52 +6622,25 @@
     ],
     "copyWith": null
   },
-  "ActionTileGroup": {
-    "kind": "class",
+  "PaymentMenuEntry": {
+    "kind": "abstract class",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "A list of `ActionTile`s (or other rows) separated by hairlines. There is\nno box around the group: it sits on the page surface like a section.",
-    "extends": "StatelessWidget",
-    "constructors": [
-      {
-        "name": "ActionTileGroup",
-        "factory": false,
-        "params": [
-          {
-            "name": "children",
-            "type": "List<Widget>",
-            "required": true,
-            "default": null,
-            "named": true,
-            "viaThis": true,
-            "isSuper": false,
-            "fieldName": "children",
-            "doc": ""
-          }
-        ],
-        "doc": ""
-      }
-    ],
+    "doc": "One entry of a `PaymentMenu`.",
+    "extends": null,
+    "constructors": [],
     "getters": [],
     "statics": [],
-    "members": [
-      {
-        "name": "children",
-        "kind": "field",
-        "static": false,
-        "type": "List<Widget>",
-        "doc": ""
-      }
-    ],
+    "members": [],
     "copyWith": null
   },
-  "ActionMenuEntry": {
+  "PaymentMenuItem": {
     "kind": "class",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "One entry of an `ActionMenu`.",
-    "extends": null,
+    "doc": "",
+    "extends": "PaymentMenuEntry",
     "constructors": [
       {
-        "name": "ActionMenuEntry",
+        "name": "PaymentMenuItem",
         "factory": false,
         "params": [
           {
@@ -6405,13 +6657,35 @@
           {
             "name": "onSelected",
             "type": "VoidCallback?",
-            "required": true,
+            "required": false,
             "default": null,
             "named": true,
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onSelected",
             "doc": "Null shows the entry disabled."
+          },
+          {
+            "name": "id",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "id",
+            "doc": ""
+          },
+          {
+            "name": "disabled",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "disabled",
+            "doc": ""
           },
           {
             "name": "icon",
@@ -6443,6 +6717,20 @@
     "statics": [],
     "members": [
       {
+        "name": "id",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "disabled",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
         "name": "label",
         "kind": "field",
         "static": false,
@@ -6473,25 +6761,92 @@
     ],
     "copyWith": null
   },
-  "ActionMenu": {
+  "PaymentMenuGroup": {
+    "kind": "class",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "A titled run of menu actions, separated from neighboring groups.",
+    "extends": "PaymentMenuEntry",
+    "constructors": [
+      {
+        "name": "PaymentMenuGroup",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": ""
+          },
+          {
+            "name": "items",
+            "type": "List<PaymentMenuItem>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "items",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "items",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentMenuItem>",
+        "doc": ""
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentMenu": {
     "kind": "class",
     "file": "lib/src/interaction/interaction.dart",
     "doc": "Overflow menu behind an icon button.\n\nBuilt on `MenuAnchor`, so arrow keys move between entries, Escape closes\nthe menu and focus returns to the button. Opening is instant: a menu used\nmany times a day should not make people wait for it.",
-    "extends": "StatelessWidget",
+    "extends": "StatefulWidget",
     "constructors": [
       {
-        "name": "ActionMenu",
+        "name": "PaymentMenu",
         "factory": false,
         "params": [
           {
             "name": "entries",
-            "type": "List<ActionMenuEntry>",
+            "type": "List<PaymentMenuEntry>",
             "required": true,
             "default": null,
             "named": true,
             "viaThis": true,
             "isSuper": false,
             "fieldName": "entries",
+            "doc": ""
+          },
+          {
+            "name": "onAction",
+            "type": "ValueChanged<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onAction",
             "doc": ""
           },
           {
@@ -6527,7 +6882,14 @@
         "name": "entries",
         "kind": "field",
         "static": false,
-        "type": "List<ActionMenuEntry>",
+        "type": "List<PaymentMenuEntry>",
+        "doc": ""
+      },
+      {
+        "name": "onAction",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<String>?",
         "doc": ""
       },
       {
@@ -6546,6 +6908,20 @@
       }
     ],
     "copyWith": null
+  },
+  "ActionMenu": {
+    "kind": "typedef",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "Deprecated alias of `PaymentMenu`.",
+    "aliasOf": "PaymentMenu",
+    "deprecated": "Use PaymentMenu. Removed in 0.2.0."
+  },
+  "ActionMenuEntry": {
+    "kind": "typedef",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "Deprecated alias of `PaymentMenuItem`.",
+    "aliasOf": "PaymentMenuItem",
+    "deprecated": "Use PaymentMenuItem. Removed in 0.2.0."
   },
   "showPaymentConfirmDialog": {
     "kind": "function",
@@ -6803,14 +7179,14 @@
       }
     ]
   },
-  "ExpandableSection": {
+  "PaymentAccordionItem": {
     "kind": "class",
     "file": "lib/src/interaction/interaction.dart",
     "doc": "A titled section whose body can be shown or hidden.\n\nWorks uncontrolled (`initiallyExpanded`) or controlled (`expanded` plus\n`onExpandedChanged`). Hidden content is removed from the tree, so it is\nnever reachable by Tab or a screen reader. Do not hide fees here: the\npayment summary keeps every fee visible by design.",
     "extends": "StatefulWidget",
     "constructors": [
       {
-        "name": "ExpandableSection",
+        "name": "PaymentAccordionItem",
         "factory": false,
         "params": [
           {
@@ -6889,6 +7265,17 @@
             "isSuper": false,
             "fieldName": "onExpandedChanged",
             "doc": ""
+          },
+          {
+            "name": "actions",
+            "type": "List<Widget>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "actions",
+            "doc": ""
           }
         ],
         "doc": ""
@@ -6897,6 +7284,13 @@
     "getters": [],
     "statics": [],
     "members": [
+      {
+        "name": "actions",
+        "kind": "field",
+        "static": false,
+        "type": "List<Widget>",
+        "doc": ""
+      },
       {
         "name": "title",
         "kind": "field",
@@ -6948,6 +7342,51 @@
       }
     ],
     "copyWith": null
+  },
+  "PaymentAccordion": {
+    "kind": "class",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "A ruled list of disclosure items; items own their hairlines.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentAccordion",
+        "factory": false,
+        "params": [
+          {
+            "name": "children",
+            "type": "List<PaymentAccordionItem>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "children",
+            "doc": ""
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "children",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentAccordionItem>",
+        "doc": ""
+      }
+    ],
+    "copyWith": null
+  },
+  "ExpandableSection": {
+    "kind": "typedef",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "Deprecated alias of `PaymentAccordionItem`.",
+    "aliasOf": "PaymentAccordionItem",
+    "deprecated": "Use PaymentAccordionItem. Removed in 0.2.0."
   },
   "LoadingSkeleton": {
     "kind": "class",

@@ -1,6 +1,6 @@
 ---
-title: Action menu
-description: ActionMenu is an overflow menu behind an icon button, built on MenuAnchor, with disabled and destructive entries.
+title: Menu
+description: PaymentMenu is an overflow menu behind an icon button, built on MenuAnchor, with disabled and destructive entries.
 ---
 
 import Screen from '../../../components/Screen.astro';
@@ -8,7 +8,7 @@ import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
-`ActionMenu` keeps secondary actions behind one icon button, usually in a [section](/components/section/) header or an app bar.
+`PaymentMenu` keeps secondary actions behind one icon button, usually in a [section](/components/section/) header or an app bar.
 
 <HostOwns>the entries and what each one does.</HostOwns>
 
@@ -21,18 +21,18 @@ import HostOwns from '../../../components/HostOwns.astro';
 ```dart
 PaymentSection(
   title: 'Account',
-  trailing: ActionMenu(entries: [
-    ActionMenuEntry(
+  trailing: PaymentMenu(entries: [
+    PaymentMenuItem(
       label: 'Copy account ID',
       icon: Icons.copy_rounded,
       onSelected: copyId,
     ),
-    const ActionMenuEntry(
+    const PaymentMenuItem(
       label: 'Export history',
       icon: Icons.download_outlined,
       onSelected: null, // shown disabled
     ),
-    ActionMenuEntry(
+    PaymentMenuItem(
       label: 'Sign out everywhere',
       icon: Icons.logout,
       destructive: true,
@@ -67,9 +67,15 @@ An entry with `onSelected: null` is shown disabled. Keep it in the menu when peo
 
 ## API
 
-<Props names={['ActionMenu', 'ActionMenuEntry']} />
+<Props names={['PaymentMenu', 'PaymentMenuEntry', 'PaymentMenuItem', 'PaymentMenuGroup', 'ActionMenu', 'ActionMenuEntry']} />
 
 ## See also
 
 - [Action tile](/components/action-tile/) for actions that deserve their own row.
 - [Dialog](/components/dialog/) to confirm a destructive entry.
+
+## Variants, behavior and migration
+
+Stripe Menu, MenuItem and MenuGroup map to PaymentMenu, PaymentMenuItem and PaymentMenuGroup. Menu onAction receives ids; an item's onSelected takes precedence. Explicit disabled always wins. Put destructive actions in their own final untitled group. Do not place them next to routine actions without a separator. Group titles are headers, not controls. Arrow keys navigate, Escape closes, and focus returns to the trigger. A custom trigger arrives in Phase 3B.
+
+Migration: ActionMenu and ActionMenuEntry remain deprecated aliases until 0.2.0; rename to PaymentMenu and PaymentMenuItem. Old constructors keep compiling.

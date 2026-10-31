@@ -1952,9 +1952,9 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Deprecated aliases/wrappers + CHANGELOG migration (D34)
 
 **Phase 2D: navigation, list and control parity**
-- [ ] ActionMenu → PaymentMenu (+ PaymentMenuItem, PaymentMenuGroup, onAction)
-- [ ] ExpandableSection → PaymentAccordionItem (+ actions) + PaymentAccordion
-- [ ] ActionTile/ActionTileGroup → PaymentListItem/PaymentList (+ value, size, id, onAction) (D41)
+- [x] ActionMenu → PaymentMenu (+ PaymentMenuItem, PaymentMenuGroup, onAction)
+- [x] ExpandableSection → PaymentAccordionItem (+ actions) + PaymentAccordion
+- [x] ActionTile/ActionTileGroup → PaymentListItem/PaymentList (+ value, size, id, onAction) (D41)
 - [ ] PaymentTabs (tabs: PaymentTab, size, fitted) + PaymentTabPanels
 - [ ] Checkbox indeterminate; Checkbox/Radio/Switch errorText, required, hiddenElements
 - [ ] AmountInput → PaymentCurrencyField (+ size, description, padFractionDigits)

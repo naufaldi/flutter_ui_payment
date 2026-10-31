@@ -195,10 +195,10 @@ void main() {
     );
     await shot('capture_selfie_200');
     await open('Interaction');
-    await top('ActionTile · ActionMenu · showPaymentConfirmDialog');
+    await top('PaymentList · PaymentMenu · showPaymentConfirmDialog');
     // A longer host label exercises overflow at 200% on this iPhone width.
     final confirmation = showPaymentConfirmDialog(
-      tester.element(find.byType(ActionTileGroup).first),
+      tester.element(find.byType(PaymentList).first),
       title: 'Sign out of all devices?',
       message:
           'You will need to sign in again on every device. Payments already sent are not affected.',
@@ -243,7 +243,7 @@ void main() {
     await shot('foundation');
 
     await open('Interaction');
-    await top('ActionTile · ActionMenu · showPaymentConfirmDialog');
+    await top('PaymentList · PaymentMenu · showPaymentConfirmDialog');
     await shot('actions');
     await tester.tap(find.byTooltip('More actions'));
     await settle(tester);
@@ -263,7 +263,7 @@ void main() {
     await top('PaymentVideoPlayer + video_player adapter');
     await shot('video_loading');
     await open('Interaction');
-    await top('ExpandableSection');
+    await top('PaymentAccordionItem');
     await shot('expandable');
     // The last entries cannot scroll to the top, so this frame also shows
     // the expandable section; the picker switches the fixture state.
