@@ -8,6 +8,9 @@ import '../controls/actions.dart';
 import '../foundation/view_frame.dart';
 import '../controls/button_group.dart';
 import 'page_module.dart';
+import 'detail_page_property_list.dart';
+import 'detail_page_table.dart';
+import '../charts/charts.dart';
 import 'overview_page.dart';
 
 /// Detail body owning one scroll region; do not nest in FullPageView.
@@ -23,28 +26,37 @@ class PaymentDetailPage extends StatelessWidget {
     this.pending = false,
   });
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String title;
 
-  /// Primary supplied by the host.
-  final List<PaymentPageModule> primary;
+  /// Primary page modules, in reading order.
+  final List<Widget> primary;
 
-  /// Secondary supplied by the host.
-  final List<PaymentPageModule>? secondary;
+  /// Supporting page modules, below the primary on phones.
+  final List<Widget>? secondary;
 
-  /// Breadcrumbs supplied by the host.
+  /// Host destinations leading back to the parent page.
   final List<PaymentBreadcrumb> breadcrumbs;
 
-  /// Description supplied by the host.
+  /// Supporting explanation below the heading.
   final String? description;
 
-  /// Actions supplied by the host.
+  /// Host actions displayed in the page header.
   final List<PaymentButton> actions;
 
-  /// Pending supplied by the host.
+  /// Shows placeholders while the host loads content.
   final bool pending;
   @override
   Widget build(BuildContext context) {
+    assert(
+      [...primary, ...?secondary].every(
+        (w) =>
+            w is PaymentPageModule ||
+            w is PaymentDetailPagePropertyList ||
+            w is PaymentDetailPageTable ||
+            w is ChartModule,
+      ),
+    );
     final l = PaymentLocalizations.of(context);
     return ViewFrame(
       header: Column(

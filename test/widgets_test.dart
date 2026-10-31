@@ -99,6 +99,38 @@ PaymentAttempt _attempt({
 );
 
 void main() {
+  testWidgets('detail reference copy is opt-in and delegates the reference', (
+    t,
+  ) async {
+    final record = TransactionRecord(
+      id: 'DEMO',
+      title: 'Payment',
+      amount: const Money.idr(2500),
+      createdAt: DateTime(2026),
+      status: PaymentStatus.succeeded,
+      reference: 'TRX-DEMO-42',
+    );
+    String? copied;
+    await t.pumpWidget(
+      host(
+        TransactionDetail(
+          record: record,
+          onCopyReference: (v) async {
+            copied = v;
+            return true;
+          },
+        ),
+      ),
+    );
+    await t.ensureVisible(find.byType(PaymentCopyButton));
+    await t.tap(find.byType(PaymentCopyButton));
+    await t.pumpAndSettle();
+    expect(copied, 'TRX-DEMO-42');
+    await t.pumpWidget(host(TransactionDetail(record: record)));
+    expect(find.byType(PaymentCopyButton), findsNothing);
+    await t.pump(const Duration(seconds: 2));
+  });
+
   testWidgets('PaymentButton runs one callback at a time', (tester) async {
     final gate = Completer<void>();
     var calls = 0;

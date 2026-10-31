@@ -16,6 +16,57 @@ Widget bounded(
 );
 void main() {
   testWidgets(
+    'phone footer fills width with primary first and settings adapts',
+    (t) async {
+      await setSurface(t, const Size(360, 1000));
+      await t.pumpWidget(
+        bounded(
+          PaymentContextView(
+            title: 'Order',
+            actions: [
+              PaymentButton(
+                label: 'Copy order',
+                variant: PaymentButtonVariant.secondary,
+                onPressed: () {},
+              ),
+            ],
+            primaryAction: PaymentButton(label: 'Pay', onPressed: () {}),
+            secondaryAction: PaymentButton(
+              label: 'Close',
+              variant: PaymentButtonVariant.quiet,
+              onPressed: () {},
+            ),
+            child: const Text('Body'),
+          ),
+        ),
+      );
+      expect(
+        t.getTopLeft(find.text('Copy order')).dx,
+        greaterThanOrEqualTo(t.getTopLeft(find.text('Body')).dx),
+      );
+      final pay = t.getRect(find.widgetWithText(PaymentButton, 'Pay'));
+      final close = t.getRect(find.widgetWithText(PaymentButton, 'Close'));
+      expect(pay.width, close.width);
+      expect(pay.top, lessThan(close.top));
+      for (final width in [360.0, 800.0]) {
+        t.view.physicalSize = Size(width, 1000);
+        await t.pumpWidget(
+          bounded(
+            PaymentSettingsView(
+              title: 'Settings',
+              child: const Text('Body'),
+              onSave: () async {},
+            ),
+          ),
+        );
+        await t.pumpAndSettle();
+        final save = t.getRect(find.byType(PaymentButton));
+        expect(save.width, width == 360 ? greaterThan(300) : lessThan(200));
+      }
+    },
+  );
+
+  testWidgets(
     'views are scrollable bodies with no scaffold or route of their own',
     (t) async {
       for (final view in [

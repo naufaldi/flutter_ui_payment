@@ -4,6 +4,75 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'content_host.dart';
 
 void main() {
+  testWidgets('link-only detail value centers with its label', (t) async {
+    await t.pumpWidget(
+      contentHost(
+        PaymentDetailPagePropertyList(
+          title: 'Merchant',
+          pending: false,
+          items: [
+            PaymentDetailProperty(
+              label: 'Support',
+              values: [
+                PaymentDetailValue.link(
+                  PaymentLink(label: 'Help centre', onPressed: () {}),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    expect(
+      (t.getCenter(find.text('Support')).dy -
+              t.getCenter(find.byType(PaymentLink)).dy)
+          .abs(),
+      lessThanOrEqualTo(1),
+    );
+  });
+
+  testWidgets(
+    'direct modules show each heading once and reject arbitrary bodies',
+    (t) async {
+      await t.pumpWidget(
+        contentHost(
+          const PaymentDetailPage(
+            title: 'Transaction',
+            primary: [
+              PaymentDetailPagePropertyList(
+                title: 'Payment details',
+                pending: false,
+              ),
+              PaymentDetailPageTable<int>(
+                title: 'Attempts',
+                pending: false,
+                columns: [
+                  PaymentDataColumn<int>(key: 'id', label: 'ID', value: keyOf),
+                ],
+                rows: [],
+                rowKey: keyOf,
+              ),
+            ],
+          ),
+        ),
+      );
+      expect(find.text('Payment details'), findsOneWidget);
+      expect(find.text('Attempts'), findsOneWidget);
+      await t.pumpWidget(
+        contentHost(
+          const PaymentOverviewPage(
+            primary: [ChartModule(title: 'Spending', state: ChartState.empty)],
+          ),
+        ),
+      );
+      expect(t.takeException(), isNull);
+      await t.pumpWidget(
+        contentHost(const PaymentOverviewPage(primary: [Text('Invalid')])),
+      );
+      expect(t.takeException(), isAssertionError);
+    },
+  );
+
   const primary = [
     PaymentPageModule(title: 'Details', child: Text('Primary content')),
   ];
@@ -189,3 +258,5 @@ void main() {
     }
   });
 }
+
+String keyOf(int row) => '$row';

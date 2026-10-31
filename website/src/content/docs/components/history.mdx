@@ -56,6 +56,8 @@ TransactionHistory(
 - Filters are text tabs with a 2 px underline. Pending and unknown share the amber tag in the list and differ by icon and word; the hatched band appears only on the detail.
 - `TransactionHistory` lays records out in a column. For long lists, build `TransactionListItem`s in a `ListView.builder` yourself.
 
+Pass `onCopyReference` to TransactionDetail to show reference copying; the host performs the copy and reports success.
+
 ## API
 
 <Props names={['TransactionHistory', 'TransactionListItem', 'TransactionDetail', 'TransactionRecord', 'TransactionFilter']} />

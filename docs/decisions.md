@@ -391,3 +391,15 @@ Final API review also corrected two table contract gaps: visually hidden header 
 Capture correction: the overview chart specimen now has a fixed 240 dp height, as required by the existing chart API. The capture run exposed an unbounded-height assertion; only affected specimen looks are recaptured after this example-only correction.
 
 Capture-glance corrections: the harness resets descendant scroll positions before each shot because retained offsets hid initial content across looks. Narrow DataTable metadata now uses natural wrapping instead of reserving most of the line for the label, which cramped description values at 200%. Only affected looks/specimens are recaptured.
+
+### Phase 5-1 implementation decisions
+
+- Approved: deliver Phases 5 and 6 as six stacked PRs, stopping before merge.
+- Approved: add `IdentityFieldKind.search`; hosts with exhaustive switches must add a `search` case. A separate kind makes the long-list control explicit rather than hiding it behind a choice flag.
+- Approved D28 amendment (ships in 6-1): DataTable column reorder/resize are not mirrored; deprecate the three flags/callback and five unused strings. On phones the table collapses to a list; wide columns remain host configuration.
+- Widen detail/overview module lists to widgets with debug admission checks for page, property, table and chart modules. Existing module lists remain source-compatible and headings no longer need wrappers.
+- Identity groups use consecutive equal host legends. Search accepts a host focus node so first-error focus works across every identity field kind.
+- Phone footers stack full-width original buttons with the primary first; wide footers retain hugged actions. Settings reuses that footer. Switch marks align to the first line while preserving the row target.
+- Single link-only detail values align to their labels; large text wraps. Breadcrumb glyph side bearings remain unchanged.
+
+- Verification deviation: the legacy row-family geometry oracle was run once and failed (expected 4 target rectangles, observed 5 after the switch alignment change). No oracle or baseline updates are made: the owner's later scope explicitly drops geometry oracles and element counts. The focused switch alignment and minimum-target regression passes.

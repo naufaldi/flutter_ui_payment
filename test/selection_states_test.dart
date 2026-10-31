@@ -5,6 +5,27 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
+  testWidgets('switch label centers with its mark and retains a tap target', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      host(
+        PaymentSwitch(label: 'Promotions', value: true, onChanged: (_) {}),
+        1,
+      ),
+    );
+    expect(
+      (t.getCenter(find.text('Promotions')).dy -
+              t.getCenter(find.byType(Switch)).dy)
+          .abs(),
+      lessThanOrEqualTo(1),
+    );
+    expect(
+      t.getSize(find.byType(PaymentSwitch)).height,
+      greaterThanOrEqualTo(48),
+    );
+  });
+
   testWidgets('indeterminate checkbox reports true and paints a dash', (
     tester,
   ) async {

@@ -23,34 +23,31 @@ class PaymentContextView extends StatelessWidget {
     this.footer,
   });
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String title;
 
-  /// Child supplied by the host.
+  /// Body content owned by the host.
   final Widget child;
 
-  /// Description supplied by the host.
+  /// Supporting explanation below the heading.
   final String? description;
 
-  /// Brand supplied by the host.
+  /// Host brand icon or image.
   final Widget? brand;
 
-  /// Actions supplied by the host.
+  /// Host actions displayed in the page header.
   final List<PaymentButton> actions;
 
-  /// Banner supplied by the host.
   final PaymentBanner? banner;
 
-  /// Externallink supplied by the host.
   final PaymentLink? externalLink;
 
-  /// Primaryaction supplied by the host.
+  /// The single primary action for the contextual task.
   final PaymentButton? primaryAction;
 
-  /// Secondaryaction supplied by the host.
+  /// Optional supporting action below the primary action.
   final PaymentButton? secondaryAction;
 
-  /// Footer supplied by the host.
   final Widget? footer;
   @override
   Widget build(BuildContext context) {
@@ -72,6 +69,8 @@ class PaymentContextView extends StatelessWidget {
         description: description,
         leading: brand,
         below: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: PaymentTheme.of(context).spacing * 2,
           children: [
             if (actions.isNotEmpty) PaymentButtonGroup(children: actions),
             ?banner,

@@ -18,10 +18,10 @@ import 'chip.dart';
 class PaymentSearchOption<T> {
   const PaymentSearchOption({required this.value, required this.label});
 
-  /// value for this component.
+  /// Stable host value returned when this option is chosen.
   final T value;
 
-  /// label for this component.
+  /// Visible label for the control.
   final String label;
 }
 
@@ -41,6 +41,7 @@ class PaymentSearchField<T> extends StatefulWidget {
     this.description,
     this.errorText,
     this.enabled = true,
+    this.focusNode,
   }) : _values = const <Never>{},
        onSelectionChanged = null,
        _multiple = false;
@@ -60,6 +61,7 @@ class PaymentSearchField<T> extends StatefulWidget {
     String? description,
     String? errorText,
     bool enabled = true,
+    FocusNode? focusNode,
   }) => PaymentSearchField._(
     key: key,
     label: label,
@@ -74,6 +76,7 @@ class PaymentSearchField<T> extends StatefulWidget {
     description: description,
     errorText: errorText,
     enabled: enabled,
+    focusNode: focusNode,
   );
   const PaymentSearchField._({
     super.key,
@@ -89,50 +92,54 @@ class PaymentSearchField<T> extends StatefulWidget {
     this.description,
     this.errorText,
     this.enabled = true,
+    this.focusNode,
   }) : selected = null,
        onSelected = null,
        _multiple = true;
 
-  /// label for this component.
+  /// Visible label for the control.
   final String label;
 
-  /// options for this component.
+  /// Allowed values with their visible labels.
   final List<PaymentSearchOption<T>> options;
 
-  /// selected for this component.
+  /// Current selected host value.
   final T? selected;
 
-  /// onSelected for this component.
+  /// Reports the selected value to the host.
   final ValueChanged<T?>? onSelected;
 
-  /// onSelectionChanged for this component.
+  /// Reports the current set of selected values.
   final ValueChanged<Set<T>>? onSelectionChanged;
   final Set<T> _values;
   final bool _multiple;
 
-  /// onQueryChanged for this component.
+  /// Reports search edits for host filtering.
   final ValueChanged<String>? onQueryChanged;
 
-  /// initialQuery for this component.
+  /// Initial query shown before the first edit.
   final String? initialQuery;
 
-  /// loading for this component.
+  /// Shows the pending search state.
   final bool loading;
 
-  /// listboxSize for this component.
+  /// Density of the search result rows.
   final PaymentSize listboxSize;
 
-  /// hint for this component.
+  /// Example input shown while empty.
   final String? hint;
 
-  /// description for this component.
+  /// Supporting explanation below the heading.
   final String? description;
 
-  /// errorText for this component.
+  /// Safe error message displayed beside the control.
   final String? errorText;
 
-  /// enabled for this component.
+  /// Whether the customer can edit the search.
   final bool enabled;
+
+  /// Optional host focus node, for example to focus the first error.
+  final FocusNode? focusNode;
   @override
   State<PaymentSearchField<T>> createState() => _PaymentSearchFieldState<T>();
 }
@@ -142,13 +149,12 @@ class _PaymentSearchFieldState<T> extends State<PaymentSearchField<T>> {
     text: widget.initialQuery ?? _label(widget.selected),
   );
 
-  /// FocusNode() for this component.
-  final _focus = FocusNode();
+  final _ownFocus = FocusNode();
+  FocusNode get _focus => widget.focusNode ?? _ownFocus;
   late List<String> _folded = [
     for (final o in widget.options) foldForSearch(o.label),
   ];
 
-  /// {} for this component.
   final Map<T, GlobalKey> _rowKeys = {};
   bool _open = false;
   int? _active;
@@ -173,6 +179,10 @@ class _PaymentSearchFieldState<T> extends State<PaymentSearchField<T>> {
   @override
   void didUpdateWidget(PaymentSearchField<T> old) {
     super.didUpdateWidget(old);
+    if (old.focusNode != widget.focusNode) {
+      (old.focusNode ?? _ownFocus).removeListener(_focused);
+      _focus.addListener(_focused);
+    }
     if (!identical(old.options, widget.options)) {
       _folded = [for (final o in widget.options) foldForSearch(o.label)];
       _rowKeys.clear();
@@ -188,7 +198,7 @@ class _PaymentSearchFieldState<T> extends State<PaymentSearchField<T>> {
   @override
   void dispose() {
     _focus.removeListener(_focused);
-    _focus.dispose();
+    _ownFocus.dispose();
     _controller.dispose();
     super.dispose();
   }

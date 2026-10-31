@@ -523,10 +523,21 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (w.selection != null)
+            if (narrow && w.selection != null)
+              PaymentCheckbox(
+                label: l.selectAllOnPage,
+                value: keys.isNotEmpty && selectedOnPage == keys.length,
+                indeterminate:
+                    selectedOnPage > 0 && selectedOnPage < keys.length,
+                onChanged: (v) => w.onSelectionChanged!(
+                  {...selected}
+                    ..removeAll(v ? <String>{} : keys)
+                    ..addAll(v ? keys : <String>{}),
+                ),
+              ),
+            if (w.selection != null && selected.isNotEmpty)
               Row(
                 children: [
-                  if (narrow) selectAll(),
                   if (selected.isNotEmpty) ...[
                     Expanded(
                       child: Semantics(
@@ -545,27 +556,46 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
                 ],
               ),
             if (narrow && cols.any((c) => c.sortable))
-              PaymentMenu(
-                trigger: (toggle, focus) => PaymentButton(
-                  label: l.sort,
-                  onPressed: toggle,
-                  focusNode: focus,
-                  variant: PaymentButtonVariant.quiet,
-                  width: PaymentWidth.hug,
-                  size: PaymentSize.small,
-                ),
-                entries: [
-                  for (final c in cols.where((c) => c.sortable)) ...[
-                    PaymentMenuItem(
-                      label: l.sortedAscending(c.label),
-                      onSelected: () => sort(c, ascending: true),
-                    ),
-                    PaymentMenuItem(
-                      label: l.sortedDescending(c.label),
-                      onSelected: () => sort(c, ascending: false),
-                    ),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: PaymentMenu(
+                  trigger: (toggle, focus) => PaymentButton(
+                    label: _sort == null
+                        ? l.sort
+                        : l.sortBy(
+                            '${cols.firstWhere((c) => c.key == _sort!.columnKey).label}, ${l.sortDirection(cols.firstWhere((c) => c.key == _sort!.columnKey).cell, _sort!.ascending)}',
+                          ),
+                    onPressed: toggle,
+                    focusNode: focus,
+                    variant: PaymentButtonVariant.secondary,
+                    icon: Icons.swap_vert,
+                    width: PaymentWidth.hug,
+                    size: PaymentSize.small,
+                  ),
+                  entries: [
+                    for (final c in cols.where((c) => c.sortable)) ...[
+                      PaymentMenuItem(
+                        label: '${c.label}, ${l.sortDirection(c.cell, true)}',
+                        onSelected: () => sort(c, ascending: true),
+                      ),
+                      PaymentMenuItem(
+                        label: '${c.label}, ${l.sortDirection(c.cell, false)}',
+                        onSelected: () => sort(c, ascending: false),
+                      ),
+                    ],
+                    if (_sort != null)
+                      PaymentMenuItem(
+                        label: l.sortDefault,
+                        onSelected: () {
+                          setState(() {
+                            _sort = null;
+                            _page = 1;
+                          });
+                          w.onSortChanged?.call(null);
+                        },
+                      ),
                   ],
-                ],
+                ),
               ),
             if (narrow)
               Column(

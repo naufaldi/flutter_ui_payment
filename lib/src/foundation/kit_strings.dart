@@ -1,3 +1,4 @@
+import '../content/data_table.dart';
 import '../content/task_list.dart';
 import '../forms/date_range_picker.dart';
 import '../payment/payment_models.dart';
@@ -13,6 +14,24 @@ extension KitStrings on PaymentLocalizations {
 
   /// Spoken percentage.
   String chartPercent(String value) => _k('$value percent', '$value persen');
+
+  /// Current local sort summary.
+  String sortBy(String summary) => _k('Sort: $summary', 'Urutkan: $summary');
+
+  String get sortDefault => _k('Default order', 'Urutan bawaan');
+
+  /// Direction words matching the column's value kind.
+  String sortDirection(PaymentCellType cell, bool ascending) => switch (cell) {
+    PaymentCellType.date =>
+      ascending
+          ? _k('oldest first', 'terlama dulu')
+          : _k('newest first', 'terbaru dulu'),
+    PaymentCellType.currency =>
+      ascending
+          ? _k('lowest first', 'terendah dulu')
+          : _k('highest first', 'tertinggi dulu'),
+    _ => ascending ? _k('A to Z', 'A ke Z') : _k('Z to A', 'Z ke A'),
+  };
 
   // Charts
   String get chartLine => _k('Line chart', 'Grafik garis');

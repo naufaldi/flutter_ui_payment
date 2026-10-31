@@ -1,4 +1,5 @@
 import '../content/property_list.dart';
+import '../controls/actions.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -106,6 +107,7 @@ class TransactionListItem extends StatelessWidget {
   const TransactionListItem({super.key, required this.record, this.onTap});
 
   final TransactionRecord record;
+
   final VoidCallback? onTap;
 
   @override
@@ -313,8 +315,6 @@ class TransactionHistory extends StatelessWidget {
   }
 }
 
-/// Clips horizontally to the box but leaves 4 px above and below, the room a
-/// focus ring needs.
 /// Details of one transaction. The original payment and any refund are
 /// shown as separate sections; host actions go in [actions].
 class TransactionDetail extends StatelessWidget {
@@ -322,9 +322,13 @@ class TransactionDetail extends StatelessWidget {
     super.key,
     required this.record,
     this.actions = const [],
+    this.onCopyReference,
   });
 
   final TransactionRecord record;
+
+  /// Copies the reference through the host; null hides the copy button.
+  final Future<bool> Function(String reference)? onCopyReference;
 
   /// Host-chosen actions such as "View receipt" or "Check status". For an
   /// unconfirmed payment, offer a status check, never paying again.
@@ -395,6 +399,12 @@ class TransactionDetail extends StatelessWidget {
             if (record.reference != null)
               PaymentPropertyListItem(
                 label: l10n.transactionReference,
+                trailing: onCopyReference == null
+                    ? null
+                    : PaymentCopyButton(
+                        value: record.reference!,
+                        onCopy: onCopyReference!,
+                      ),
                 value: MiddleEllipsisText(
                   record.reference!,
                   style: type.label.reference(theme),
