@@ -5,6 +5,13 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Design system Phase 3A (1 Nov 2026)
+
+- Add PaymentTextField and its controlled search constructor, with persistent labels, type traits and host-error hiding.
+- Currency fields gain errorText and hiddenElements. Currency, promo, identity and history fields share state edges and error icons.
+- TransactionHistory is stateless. Search uses a 20 dp glyph, accent focus edge and clear-to-refocus behavior.
+- Identity update descriptions gain a warning icon; empty promo errors clear on edit.
+
 ## Design system Phase 2E (1 Nov 2026)
 
 - Charts gain named series, axis/grid controls, legends and money/percent/number units.

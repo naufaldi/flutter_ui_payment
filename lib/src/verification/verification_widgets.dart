@@ -1,3 +1,4 @@
+import '../controls/text_field.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -213,7 +214,6 @@ class _IdentityFormState extends State<IdentityForm> {
   Widget build(BuildContext context) {
     final l10n = PaymentLocalizations.of(context);
     final theme = PaymentTheme.of(context);
-    final type = PaymentType.of(context);
     return Form(
       key: _formKey,
       autovalidateMode: _submitted
@@ -224,7 +224,13 @@ class _IdentityFormState extends State<IdentityForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             for (final (i, f) in widget.fields.indexed) ...[
-              TextFormField(
+              PaymentTextField(
+                label: f.label,
+                hint: f.hint,
+                description: widget.highlightFields.contains(f.key)
+                    ? l10n.fieldNeedsUpdate
+                    : null,
+                descriptionTone: StatusTone.warning,
                 controller: _controllers[f.key],
                 focusNode: _focus[f.key],
                 keyboardType: f.keyboardType,
@@ -234,7 +240,7 @@ class _IdentityFormState extends State<IdentityForm> {
                 textInputAction: i == widget.fields.length - 1
                     ? TextInputAction.done
                     : TextInputAction.next,
-                onFieldSubmitted: (_) {
+                onSubmitted: (_) {
                   if (i == widget.fields.length - 1) _submit();
                 },
                 onChanged: (_) {
@@ -244,35 +250,9 @@ class _IdentityFormState extends State<IdentityForm> {
                   }
                 },
                 validator: (value) => f.validator?.call((value ?? '').trim()),
-                style: type.input,
-                forceErrorText: _editedSinceServerErrors.contains(f.key)
+                errorText: _editedSinceServerErrors.contains(f.key)
                     ? null
                     : widget.serverErrors[f.key],
-                decoration: InputDecoration(
-                  labelText: f.label,
-                  hintText: f.hint,
-                  errorMaxLines: 3,
-                  helperText: widget.highlightFields.contains(f.key)
-                      ? l10n.fieldNeedsUpdate
-                      : null,
-                  helperStyle: type.caption.copyWith(
-                    color: theme.warning.foreground,
-                  ),
-                  errorStyle: type.caption.copyWith(
-                    color: theme.danger.foreground,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: theme.controlBorderRadius,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: theme.controlBorderRadius,
-                    borderSide: BorderSide(color: theme.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: theme.controlBorderRadius,
-                    borderSide: BorderSide(color: theme.accent, width: 2),
-                  ),
-                ),
               ),
               SizedBox(height: theme.spacing * 2),
             ],

@@ -374,13 +374,7 @@ class _SheetsDemo extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                TextField(
-                  style: const TextStyle(fontSize: 16),
-                  decoration: InputDecoration(
-                    labelText: t('Merchant name', 'Nama merchant'),
-                    border: const OutlineInputBorder(),
-                  ),
-                ),
+                PaymentTextField(label: t('Merchant name', 'Nama merchant')),
               ],
             ),
             footer: PaymentButton(

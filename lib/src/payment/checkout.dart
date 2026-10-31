@@ -1,3 +1,4 @@
+import '../foundation/field_decoration.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -32,6 +33,8 @@ class PaymentCurrencyField extends StatefulWidget {
     this.description,
     this.size = PaymentSize.medium,
     this.padFractionDigits = false,
+    this.errorText,
+    this.hiddenElements = const {},
   });
 
   /// Helper text above the host's limits.
@@ -42,12 +45,32 @@ class PaymentCurrencyField extends StatefulWidget {
 
   /// Pads missing minor digits on blur/submit without reporting a new value.
   final bool padFractionDigits;
+
+  /// Host error shown instead of a parse issue.
+  final String? errorText;
+
+  /// Hidden field parts remain spoken.
+  final Set<PaymentFieldPart> hiddenElements;
+
+  /// Currency code for parsing and formatting.
   final String currency;
+
+  /// Reports every parse result.
   final ValueChanged<AmountParseResult> onChanged;
+
+  /// Optional lower bound.
   final Money? minimum;
+
+  /// Optional upper bound.
   final Money? maximum;
+
+  /// Initial formatted input.
   final String? initialText;
+
+  /// Persistent field label.
   final String? label;
+
+  /// Whether parse errors are visible before interaction.
   final bool showErrors;
 
   @override
@@ -154,50 +177,43 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
         ),
         textInputAction: TextInputAction.done,
         style: type.amountLarge,
-        decoration: InputDecoration(
-          contentPadding: switch (widget.size) {
-            PaymentSize.small => EdgeInsetsDirectional.fromSTEB(
-              theme.spacing * 1.5,
-              theme.spacing * 2,
-              theme.spacing * 1.5,
-              theme.spacing,
+        decoration:
+            paymentFieldDecoration(
+              context,
+              label: widget.label ?? l10n.amountLabel,
+              hideLabel: widget.hiddenElements.contains(PaymentFieldPart.label),
+              contentPadding: fieldContentPadding(theme, widget.size),
+              prefixText: '${spec.symbol} ',
+              prefixStyle: type.amountLarge.copyWith(
+                color: theme.textSecondary,
+              ),
+              helper: widget.description == null && limits.isEmpty
+                  ? null
+                  : FieldMessage(
+                      [
+                        ?widget.description,
+                        if (limits.isNotEmpty) limits,
+                      ].join('\n'),
+                      hidden: widget.hiddenElements.contains(
+                        PaymentFieldPart.description,
+                      ),
+                    ),
+            ).copyWith(
+              error: widget.errorText == null && !showError
+                  ? null
+                  : FieldMessage(
+                      widget.errorText ??
+                          l10n.amountIssue(
+                            issue!,
+                            minimum: widget.minimum,
+                            maximum: widget.maximum,
+                          ),
+                      tone: StatusTone.danger,
+                      hidden: widget.hiddenElements.contains(
+                        PaymentFieldPart.error,
+                      ),
+                    ),
             ),
-            PaymentSize.medium => null,
-            PaymentSize.large => EdgeInsetsDirectional.fromSTEB(
-              theme.spacing * 1.5,
-              theme.spacing * 3,
-              theme.spacing * 1.5,
-              theme.spacing * 2,
-            ),
-          },
-          labelText: widget.label ?? l10n.amountLabel,
-          labelStyle: type.label.copyWith(color: theme.textSecondary),
-          prefixText: '${spec.symbol} ',
-          prefixStyle: type.amountLarge.copyWith(color: theme.textSecondary),
-          helperText: widget.description == null && limits.isEmpty
-              ? null
-              : [?widget.description, if (limits.isNotEmpty) limits].join('\n'),
-          helperStyle: type.caption,
-          helperMaxLines: 4,
-          errorStyle: type.caption.copyWith(color: theme.danger.foreground),
-          errorMaxLines: 3,
-          errorText: showError
-              ? l10n.amountIssue(
-                  issue,
-                  minimum: widget.minimum,
-                  maximum: widget.maximum,
-                )
-              : null,
-          border: OutlineInputBorder(borderRadius: theme.controlBorderRadius),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: theme.controlBorderRadius,
-            borderSide: BorderSide(color: theme.border),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: theme.controlBorderRadius,
-            borderSide: BorderSide(color: theme.accent, width: 2),
-          ),
-        ),
       ),
     );
   }

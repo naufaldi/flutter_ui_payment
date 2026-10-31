@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../controls/controls.dart';
 import '../foundation/row_shell.dart';
-import '../foundation/focus_ring.dart';
+import '../controls/text_field.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/money.dart';
 import '../foundation/payment_localizations.dart';
@@ -214,7 +214,7 @@ class TransactionListItem extends StatelessWidget {
 /// from its API) and gets [onQueryChanged] and [onFilterChanged]. Records are
 /// laid out in a column for pages of up to a few dozen; for longer lists,
 /// build [TransactionListItem]s in a `ListView.builder`.
-class TransactionHistory extends StatefulWidget {
+class TransactionHistory extends StatelessWidget {
   const TransactionHistory({
     super.key,
     required this.records,
@@ -244,46 +244,24 @@ class TransactionHistory extends StatefulWidget {
   final List<TransactionFilter> filters;
 
   @override
-  State<TransactionHistory> createState() => _TransactionHistoryState();
-}
-
-class _TransactionHistoryState extends State<TransactionHistory> {
-  late final _search = TextEditingController(text: widget.query);
-
-  @override
-  void didUpdateWidget(TransactionHistory oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.query != _search.text) _search.text = widget.query;
-  }
-
-  @override
-  void dispose() {
-    _search.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final l10n = PaymentLocalizations.of(context);
-    final type = PaymentType.of(context);
-    final narrowed =
-        widget.query.trim().isNotEmpty ||
-        widget.filter != TransactionFilter.all;
+    final narrowed = query.trim().isNotEmpty || filter != TransactionFilter.all;
 
     Widget content;
-    if (widget.loading) {
+    if (loading) {
       content = const LoadingSkeleton(rows: 4, leading: false);
-    } else if (widget.error != null) {
+    } else if (error != null) {
       content = StateMessage(
         icon: Icons.cloud_off_outlined,
         tone: StatusTone.danger,
         title: l10n.transactionsFailedTitle,
-        message: widget.error,
-        actionLabel: widget.onRetry == null ? null : l10n.retry,
-        onAction: widget.onRetry,
+        message: error,
+        actionLabel: onRetry == null ? null : l10n.retry,
+        onAction: onRetry,
       );
-    } else if (widget.records.isEmpty) {
+    } else if (records.isEmpty) {
       content = narrowed
           ? StateMessage(
               icon: Icons.search_off,
@@ -291,8 +269,8 @@ class _TransactionHistoryState extends State<TransactionHistory> {
               message: l10n.noMatchesMessage,
               actionLabel: l10n.resetFilters,
               onAction: () {
-                widget.onQueryChanged('');
-                widget.onFilterChanged(TransactionFilter.all);
+                onQueryChanged('');
+                onFilterChanged(TransactionFilter.all);
               },
             )
           : StateMessage(
@@ -303,9 +281,9 @@ class _TransactionHistoryState extends State<TransactionHistory> {
     } else {
       content = Column(
         children: [
-          for (final (i, r) in widget.records.indexed) ...[
+          for (final (i, r) in records.indexed) ...[
             if (i > 0) const PaymentDivider(),
-            TransactionListItem(record: r, onTap: () => widget.onOpen(r)),
+            TransactionListItem(record: r, onTap: () => onOpen(r)),
           ],
         ],
       );
@@ -314,46 +292,19 @@ class _TransactionHistoryState extends State<TransactionHistory> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PaymentFocusRing(
-          radius: theme.controlBorderRadius,
-          child: TextField(
-            controller: _search,
-            onChanged: widget.onQueryChanged,
-            textInputAction: TextInputAction.search,
-            style: type.input,
-            decoration: InputDecoration(
-              labelText: l10n.searchTransactions,
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: widget.query.isEmpty
-                  ? null
-                  : IconButton(
-                      tooltip: l10n.clearSearch,
-                      icon: const Icon(Icons.close),
-                      onPressed: () => widget.onQueryChanged(''),
-                    ),
-              border: OutlineInputBorder(
-                borderRadius: theme.controlBorderRadius,
-              ),
-              // A control edge, not a rule, so it meets 3:1.
-              enabledBorder: OutlineInputBorder(
-                borderRadius: theme.controlBorderRadius,
-                borderSide: BorderSide(color: theme.border),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: theme.controlBorderRadius,
-                borderSide: BorderSide(color: theme.accent, width: 2),
-              ),
-            ),
-          ),
+        PaymentTextField.search(
+          query: query,
+          onChanged: onQueryChanged,
+          label: l10n.searchTransactions,
         ),
         SizedBox(height: theme.spacing),
         PaymentTabs(
           tabs: [
-            for (final f in widget.filters)
+            for (final f in filters)
               PaymentTab(label: l10n.transactionFilterLabel(f)),
           ],
-          selectedIndex: widget.filters.indexOf(widget.filter),
-          onSelected: (i) => widget.onFilterChanged(widget.filters[i]),
+          selectedIndex: filters.indexOf(filter),
+          onSelected: (i) => onFilterChanged(filters[i]),
         ),
         Semantics(liveRegion: true, container: true, child: content),
       ],

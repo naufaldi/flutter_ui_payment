@@ -65,8 +65,8 @@ void main() {
         PaymentType.of(tester.element(find.byType(TextField))).amountLarge,
       );
       expect(
-        field.decoration!.helperText,
-        startsWith('Use your available balance\n'),
+        find.textContaining('Use your available balance\n'),
+        findsOneWidget,
       );
     }
     expect(heights[1] - heights[0], 8);

@@ -311,3 +311,11 @@ The final tooltip-only native run used a successful fresh build, asserted opacit
 Readings are unit-aware so painting, inspection and spoken summaries agree on missing data. Series use an accent ramp and long-dash/dash-dot encoding, independently of pending and unknown markers. Meter segments gain measure for non-money units. Sparkline inspection uses a tooltip and a 48 dp target. Meter actions live on legend rows so the bar stays decorative. The headline region derives from typography and spacing; meter swatches use 12 dp. The premature Phase 2E checklist ticks now describe implemented work.
 
 The existing internal barRects helper remains compatible for current geometry consumers; groupedBarRects supplies the new painter path.
+
+### Phase 3A implementation decisions
+
+The shared decoration is internal; currency entry retains its parsing TextField rather than exposing a second public field style. TextFormField errorBuilder renders icon and text. Host errors hide on edit and reset when the host value changes. Width is deferred until field groups define it. The keyboardType override preserves IdentityFieldSpec custom keyboards; initialValue supports uncontrolled forms. A semantic wrapper retains hidden labels. Local search stays immediate per D2; hosts debounce remote queries. Autofocus is omitted on touch; hosts request focus explicitly.
+
+Measured InputDecorator heights at 1×: small 48 dp, medium 56 dp, large 64 dp. The hidden-label semantic wrapper reaches the EditableText node in the behavioral test.
+
+Plan correction: currency_field_test inspected InputDecoration.helperText, which is null when the planned shared FieldMessage helper is used. The assertion now checks the rendered description-before-limits text; its size and typography assertions remain intact.

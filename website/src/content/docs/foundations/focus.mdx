@@ -62,3 +62,5 @@ Full-width button/row? → Material pressed layer
 ```
 
 Use semantic tokens only. Do: preserve 4 dp clearance around the existing focus ring. Don't: clip it or add a second ring to a field. PaymentSize small/medium/large changes only visual treatment; every layout and hit box stays at least 48×48 dp, visual centered (D29). PaymentButton is the first size consumer. Internal ring and press helpers are not exported. There is no Stripe mapping. Nothing else exists.
+
+Text inputs, including history search, use the accent border only.

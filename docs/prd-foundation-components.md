@@ -1964,8 +1964,8 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Chart dartdoc (B1), token spacing (B2), remove MeterSegment.color (Q9)
 
 **Phase 3A: text fields**
-- [ ] PaymentTextField (size, type without password, description, required, hiddenElements) + .search; docs, tests, specimen
-- [ ] Migrate PaymentCurrencyField, PromoCodeInput, IdentityForm, TransactionHistory
+- [x] PaymentTextField (size, type without password, description, required, hiddenElements) + .search; docs, tests, specimen
+- [x] Migrate PaymentCurrencyField, PromoCodeInput, IdentityForm, TransactionHistory
 
 **Phase 3B: icon button, link and copy**
 - [ ] PaymentIconButton; migrate 10 sites (D18)
@@ -2029,3 +2029,9 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 ### Phase 2E implementation notes
 
 Series use solid, long-dash (8/4), and dash-dot (8/3/2/3) encoding. MeterSegment.measure supports percentage and number readings. Inspectable sparklines use press-and-hold tooltips. The headline region derives from the amount line, caption line and section gap.
+
+### Phase 3A implementation notes
+
+Text fields retain 16 px input text. Width is deferred to field groups. keyboardType overrides type traits for custom host keyboards. Sizes use H−8 / H / H+8 padding rather than the earlier 40/48/56 sketch.
+
+Measured text-field heights: 48 / 56 / 64 dp (small / medium / large).
