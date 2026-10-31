@@ -5,6 +5,10 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Design system Phase 4C-2 (2026-11-01)
+
+- Add responsive ButtonGroup and host-owned TaskList; migrate status and dialog actions.
+
 ## Design system Phase 4C-1 (2026-11-01)
 
 - Add PropertyList, responsive Table and LoadingSkeleton.table.

@@ -126,6 +126,8 @@ export default defineConfig({
             {
               label: 'Content',
               items: [
+              'components/task-list',
+              'components/button-group',
               'components/property-list',
               'components/table',
                 { label: 'Amount text', slug: 'components/amount-text' },

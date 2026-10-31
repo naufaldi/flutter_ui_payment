@@ -1,3 +1,4 @@
+import '../controls/button_group.dart';
 import '../content/property_list.dart';
 import '../layout/content.dart';
 import '../layout/layout.dart';
@@ -339,21 +340,27 @@ class PaymentStatusView extends StatelessWidget {
         // What to do now comes before the reference numbers, so the action
         // stays on the first screen at large text.
         SizedBox(height: theme.spacing * 3),
-        for (final action in _orderedActions(actions))
+        if (actions.isNotEmpty)
           Padding(
             padding: EdgeInsets.only(bottom: theme.spacing),
-            child: PaymentButton(
-              label: l10n.paymentActionLabel(action),
-              variant: action == _primaryAction(actions)
-                  ? PaymentButtonVariant.primary
-                  : action == PaymentAction.contactSupport
-                  ? PaymentButtonVariant.quiet
-                  : PaymentButtonVariant.secondary,
-              busy:
-                  busyAction == action ||
-                  (action == PaymentAction.checkStatus && refreshing),
-              busyLabel: l10n.checkingStatus,
-              onPressed: () => onAction(action),
+            child: PaymentButtonGroup(
+              direction: Axis.vertical,
+              children: [
+                for (final action in _orderedActions(actions))
+                  PaymentButton(
+                    label: l10n.paymentActionLabel(action),
+                    variant: action == _primaryAction(actions)
+                        ? PaymentButtonVariant.primary
+                        : action == PaymentAction.contactSupport
+                        ? PaymentButtonVariant.quiet
+                        : PaymentButtonVariant.secondary,
+                    busy:
+                        busyAction == action ||
+                        (action == PaymentAction.checkStatus && refreshing),
+                    busyLabel: l10n.checkingStatus,
+                    onPressed: () => onAction(action),
+                  ),
+              ],
             ),
           ),
         if (slot != null && large) ...[SizedBox(height: theme.spacing), slot],

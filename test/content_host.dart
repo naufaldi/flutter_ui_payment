@@ -20,9 +20,13 @@ Widget contentHost(
     GlobalMaterialLocalizations.delegate,
     GlobalWidgetsLocalizations.delegate,
   ],
-  home: MediaQuery(
-    data: MediaQueryData(textScaler: TextScaler.linear(scale)),
-    child: Scaffold(body: SingleChildScrollView(child: child)),
+  home: Builder(
+    builder: (context) => MediaQuery(
+      data: MediaQuery.of(
+        context,
+      ).copyWith(textScaler: TextScaler.linear(scale)),
+      child: Scaffold(body: SingleChildScrollView(child: child)),
+    ),
   ),
 );
 Future<void> setSurface(WidgetTester t, Size size) async {

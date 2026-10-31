@@ -1994,8 +1994,8 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] PaymentPropertyList + PaymentPropertyListItem
 - [x] PaymentTable (+ row, header cell, cell; narrow collapse) (D30)
 - [ ] PaymentDataTable (columns, cell types, row actions, selection, pagination, reorder/resize) (D30, D43)
-- [ ] PaymentTaskList + PaymentTaskListItem
-- [ ] PaymentButtonGroup; migrate status stack and dialog actions (D23)
+- [x] PaymentTaskList + PaymentTaskListItem
+- [x] PaymentButtonGroup; migrate status stack and dialog actions (D23)
 - [x] LoadingSkeleton table shape
 
 **Phase 4D: views and pages**
@@ -2055,3 +2055,7 @@ Multiple selections use .multiple factories, date ranges use fromPreset, and pre
 ### Phase 4C-1 implementation notes
 
 PropertyList, responsive Table and table skeleton are implemented. Tables collapse below 600 dp or at large text; wide cells repeat column labels in semantics.
+
+### Phase 4C-2 implementation notes
+
+At most one primary action. Auto overflow moves actions from the end, retaining the first; destructive actions always occupy a separate final menu group. The layout computes visible buttons immediately, while menu contents and focus exclusion update after layout. Vertical groups retain host order; overflowing non-collapsing rows put the emphasized action on top. menuTrigger uses the existing menu builder contract. TaskList supports one level of children and uses distinct shapes and spoken status. Receipt has one action; TransactionDetail actions remain arbitrary host widgets.

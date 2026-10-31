@@ -363,3 +363,11 @@ Capture-proven plan deviation: a width-only test for image fallback captions ove
 ### Phase 4C-1 implementation decisions
 
 PropertyList and Table never scroll vertically. Tables collapse below 600 dp or at large text. Wide rows use fixed heights and single-line cells to align pinned and scrolling regions; each data cell repeats its header in semantics instead of invalid split table roles. Horizontal overflow has edge fades. Numeric columns use end-aligned tabular figures, without stripes. Cell spans, centered alignment, arbitrary sizes and nested PropertyLists are not mirrored because they undermine responsive label/value relationships. TransactionDetail.actions remains host widgets.
+
+### Phase 4C-2 implementation decisions
+
+At most one primary action. Auto overflow moves actions from the end, retaining the first; destructive actions always occupy a separate final menu group. The layout computes visible buttons immediately, while menu contents and focus exclusion update after layout. Vertical groups retain host order; overflowing non-collapsing rows put the emphasized action on top. menuTrigger uses the existing menu builder contract. TaskList supports one level of children and uses distinct shapes and spoken status. Receipt has one action; TransactionDetail actions remain arbitrary host widgets.
+
+Long overflow labels failed the 320 dp × 2 test without a width bound. Menu items now cap their width to the viewport minus group spacing and explicitly wrap. This is a style cap, not a responsive layout switch.
+
+Plan deviation: the contentHost helper now copies the ambient MediaQuery rather than constructing size-zero MediaQueryData. The planned menu width cap exposed negative constraints in tests; preserving the real viewport makes the test represent the phone.
