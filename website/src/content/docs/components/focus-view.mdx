@@ -1,0 +1,39 @@
+---
+title: Focus view
+description: Add context, full-page, focus, settings, sign-in and onboarding view bodies.
+---
+
+import Props from '../../../components/Props.astro';
+
+A report or other focused task presented through existing sheets. Variants: small, large. Nothing else exists. Stripe size maps to showPaymentFocusView(size:), shown/setShown map to its Future and host dismissal, confirmCloseMessages maps to PaymentConfirmClose. Phone small hugs content, large fills; wide panels are 420/720 dp. Drag dismiss is disabled so it cannot bypass confirmation. Close, scrim, Escape and Back ask before discarding when confirmClose is supplied. Inline specimens do not block their host route.
+
+## Usage
+
+```dart
+showPaymentFocusView<void>(context, builder: (_) => const PaymentFocusView(title: 'Report a problem', child: Text('Details')));
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| FocusView | `PaymentFocusView` |
+| FocusViewSize | `PaymentFocusViewSize` |
+| ConfirmClose | `PaymentConfirmClose` |
+| showPaymentFocusView | `showPaymentFocusView` |
+
+## States and content
+
+The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Accessibility
+
+Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+
+## API
+
+<Props names={['PaymentFocusView', 'PaymentFocusViewSize', 'PaymentConfirmClose', 'showPaymentFocusView']} />
+
+## See also
+
+- [Components](/components/)

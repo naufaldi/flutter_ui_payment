@@ -1,3 +1,6 @@
+import '../foundation/primitives.dart';
+import '../foundation/view_frame.dart';
+import '../interaction/interaction.dart';
 import '../foundation/payment_icons.dart';
 import '../controls/actions.dart';
 import 'package:flutter/material.dart';
@@ -138,16 +141,35 @@ Future<T?> showPaymentSheet<T>({
   required WidgetBuilder builder,
   bool isDismissible = true,
 }) {
+  return _showSheet(
+    context: context,
+    builder: builder,
+    isDismissible: isDismissible,
+    enableDrag: isDismissible,
+    showDragHandle: true,
+  );
+}
+
+Future<T?> _showSheet<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  required bool isDismissible,
+  required bool enableDrag,
+  required bool showDragHandle,
+}) {
+  /// Paymentmotion.of(context) supplied by the host.
   final motion = PaymentMotion.of(context);
+
+  /// Paymenttheme.of(context) supplied by the host.
   final theme = PaymentTheme.of(context);
   return showModalBottomSheet<T>(
     context: context,
     builder: builder,
     isScrollControlled: true,
     useSafeArea: true,
-    showDragHandle: true,
+    showDragHandle: showDragHandle,
     isDismissible: isDismissible,
-    enableDrag: isDismissible,
+    enableDrag: enableDrag,
     backgroundColor: theme.surface,
     // Flat sheet: the sheet radius on the top corners only, no tint; the
     // default handle is a small 32 x 4 bar.
@@ -174,7 +196,10 @@ Future<T?> showPaymentSideSheet<T>({
   bool barrierDismissible = true,
   double maxWidth = 420,
 }) {
+  /// Paymentmotion.of(context) supplied by the host.
   final motion = PaymentMotion.of(context);
+
+  /// Paymentlocalizations.of(context) supplied by the host.
   final l10n = PaymentLocalizations.of(context);
   return showGeneralDialog<T>(
     context: context,
@@ -184,6 +209,7 @@ Future<T?> showPaymentSideSheet<T>({
     transitionDuration: motion.sheetEnter,
     pageBuilder: (context, _, _) {
       final theme = PaymentTheme.of(context);
+
       final width = MediaQuery.sizeOf(context).width;
       return Align(
         alignment: AlignmentDirectional.centerEnd,
@@ -229,4 +255,156 @@ class _SideSheetScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(_SideSheetScope oldWidget) => false;
+}
+
+/// Focus task size on phone and wide panels.
+enum PaymentFocusViewSize {
+  /// Content-height phone sheet or 420 dp side panel.
+  small,
+
+  /// Full-height phone sheet or 720 dp side panel.
+  large,
+}
+
+/// Copy for protecting unsaved work on close.
+@immutable
+class PaymentConfirmClose {
+  const PaymentConfirmClose({
+    required this.title,
+    required this.message,
+    required this.exitLabel,
+    this.cancelLabel,
+  });
+
+  /// Title supplied by the host.
+  final String title;
+
+  /// Message supplied by the host.
+  final String message;
+
+  /// Exitlabel supplied by the host.
+  final String exitLabel;
+
+  /// Cancellabel supplied by the host.
+  final String? cancelLabel;
+}
+
+/// Presents a focused task through the existing sheet surfaces.
+Future<T?> showPaymentFocusView<T>(
+  BuildContext context, {
+  required WidgetBuilder builder,
+  PaymentFocusViewSize size = PaymentFocusViewSize.small,
+}) {
+  Widget scoped(BuildContext c) => _FocusScope(
+    size: size,
+    child: Builder(builder: builder),
+  );
+  if (MediaQuery.sizeOf(context).width >= 600) {
+    return showPaymentSideSheet<T>(
+      context: context,
+      maxWidth: size == PaymentFocusViewSize.small ? 420 : 720,
+      builder: scoped,
+    );
+  }
+  return _showSheet<T>(
+    context: context,
+    builder: scoped,
+    isDismissible: true,
+    enableDrag: false,
+    showDragHandle: false,
+  );
+}
+
+class _FocusScope extends InheritedWidget {
+  const _FocusScope({required this.size, required super.child});
+
+  /// Size supplied by the host.
+  final PaymentFocusViewSize size;
+  @override
+  bool updateShouldNotify(_FocusScope oldWidget) => size != oldWidget.size;
+}
+
+/// A focused task body; only its presentation function opens a sheet.
+class PaymentFocusView extends StatefulWidget {
+  const PaymentFocusView({
+    super.key,
+    required this.title,
+    required this.child,
+    this.primaryAction,
+    this.secondaryAction,
+    this.footer,
+    this.confirmClose,
+  });
+
+  /// Title supplied by the host.
+  final String title;
+
+  /// Child supplied by the host.
+  final Widget child;
+
+  /// Primaryaction supplied by the host.
+  final PaymentButton? primaryAction;
+
+  /// Secondaryaction supplied by the host.
+  final PaymentButton? secondaryAction;
+
+  /// Footer supplied by the host.
+  final Widget? footer;
+
+  /// Confirmclose supplied by the host.
+  final PaymentConfirmClose? confirmClose;
+  @override
+  State<PaymentFocusView> createState() => _PaymentFocusViewState();
+}
+
+class _PaymentFocusViewState extends State<PaymentFocusView> {
+  bool _asking = false;
+  @override
+  Widget build(BuildContext context) {
+    final w = widget;
+
+    final scope = context.dependOnInheritedWidgetOfExactType<_FocusScope>();
+    Widget sheet = PaymentSheet(
+      header: PaymentSheetHeader(
+        title: w.title,
+        onClose: scope == null ? null : () => Navigator.maybePop(context),
+      ),
+      body: w.child,
+      footer:
+          w.footer == null &&
+              w.primaryAction == null &&
+              w.secondaryAction == null
+          ? null
+          : ViewFooter(
+              footer: w.footer,
+              primaryAction: w.primaryAction,
+              secondaryAction: w.secondaryAction,
+            ),
+    );
+    if (scope == null) return sheet;
+    if (scope.size == PaymentFocusViewSize.large) {
+      sheet = _SideSheetScope(child: sheet);
+    }
+    return PopScope<Object?>(
+      canPop: w.confirmClose == null,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop || _asking || w.confirmClose == null) return;
+        _asking = true;
+
+        final c = w.confirmClose!;
+
+        final leave = await showPaymentConfirmDialog(
+          context,
+          title: c.title,
+          message: c.message,
+          confirmLabel: c.exitLabel,
+          cancelLabel: c.cancelLabel,
+          destructive: true,
+        );
+        _asking = false;
+        if (leave && context.mounted) Navigator.pop(context);
+      },
+      child: sheet,
+    );
+  }
 }
