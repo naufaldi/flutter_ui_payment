@@ -3,9 +3,16 @@ title: Copy button
 description: The host owns copying through onCopy and returns a boolean.
 ---
 
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 The host owns copying through onCopy and returns a boolean. Success shows a check and live Copied announcement for 1500 ms. Failure shows Copy failed beneath the icon until the next attempt. Pending presses cannot duplicate the host call. Value changes invalidate stale results. There are no additional variants. Nothing else exists.
+
+<Screens>
+  <Screen name="ios_catalog_copy_button_variants" alt="copy-button variants" />
+  <Screen name="ios_catalog_copy_button_variants_dark" alt="copy-button variants_dark" />
+</Screens>
 
 ## Usage
 

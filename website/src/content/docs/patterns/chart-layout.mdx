@@ -51,7 +51,7 @@ Choose loading before error, error before empty, then ready. `ChartModule` keeps
 
 ## The payment boundary
 
-Pending uses dashed/outlined marks. Unknown uses dotted/hatched marks. Missing data leaves a gap. Only settled values enter the generated lowest/highest/latest summary. Headlines are host-provided Money values; the kit never computes totals. The meter legend lists amounts, not percentages.
+Pending uses dashed/outlined marks. Unknown uses dotted/hatched marks. Missing data leaves a gap. Only settled values enter the generated lowest/highest/latest summary. Headlines are host-provided Money values; the kit never computes totals. The meter legend formats the selected unit: money, percent or number.
 
 ## Content guidelines
 
@@ -69,3 +69,18 @@ The chart summary remains available without pointer inspection. At narrow widths
 
 - [Line chart](/components/line-chart/), [bar chart](/components/bar-chart/), [meter chart](/components/meter-chart/), [sparkline](/components/sparkline/).
 - Layout guidance adapted from [Stripe’s chart layout pattern](https://docs.stripe.com/stripe-apps/patterns/chart-layout).
+
+## Comparing periods
+
+The headline region derives from the scaled amount line, caption line and section gap. Named series share period labels and one scale:
+
+```dart
+PaymentLineChart(series: const [
+  PaymentChartSeries(label: 'This month', points: [
+    ChartPoint(label: 'Week 1', value: Money.idr(350000)),
+  ]),
+  PaymentChartSeries(label: 'Last month', points: [
+    ChartPoint(label: 'Week 1', value: Money.idr(280000)),
+  ]),
+]);
+```

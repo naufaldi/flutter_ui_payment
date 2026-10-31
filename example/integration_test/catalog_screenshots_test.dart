@@ -102,6 +102,39 @@ void main() {
     app.updateSettings(const DemoSettings(locale: Locale('en')));
     app.selectTab(2);
     await settle(tester);
+    if (const bool.fromEnvironment('CAPTURE_ACTIONS_ONLY')) {
+      for (final (look, settings) in [
+        ('', const DemoSettings(locale: Locale('en'))),
+        (
+          '_dark',
+          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+        ),
+      ]) {
+        app.updateSettings(settings);
+        await settle(tester);
+        await open('Controls');
+        await top('PaymentIconButton · variants');
+        FocusManager.instance.highlightStrategy =
+            FocusHighlightStrategy.alwaysTraditional;
+        Focus.of(
+          tester.element(
+            find.descendant(
+              of: find.byKey(const Key('icon-button-focus')),
+              matching: find.byType(Icon),
+            ),
+          ),
+        ).requestFocus();
+        await shot('icon_button_variants$look');
+        FocusManager.instance.highlightStrategy =
+            FocusHighlightStrategy.automatic;
+        FocusManager.instance.primaryFocus?.unfocus();
+        await top('PaymentCopyButton · variants');
+        await tapVisible(tester, find.byKey(const Key('copy-failed')));
+        await top('PaymentCopyButton · variants');
+        await shot('copy_button_variants$look');
+      }
+      return;
+    }
     if (const bool.fromEnvironment('CAPTURE_TOOLTIP_ONLY')) {
       for (final (look, settings) in [
         ('', const DemoSettings(locale: Locale('en'))),
@@ -167,8 +200,16 @@ void main() {
           ('PaymentRadio', 'radio'),
           ('PaymentSwitch', 'switch'),
           ('PaymentCurrencyField', 'currency_field'),
+          ('PaymentTextField', 'text_field'),
+          ('PaymentLink', 'link'),
+          if (look != '_200') ('PaymentIconButton', 'icon_button'),
+          if (look != '_200') ('PaymentCopyButton', 'copy_button'),
         ]) {
           await top('$entry · variants');
+          if (name == 'copy_button') {
+            await tapVisible(tester, find.byKey(const Key('copy-failed')));
+            await top('$entry · variants');
+          }
           await shot('${name}_variants$look');
         }
         await open('Foundation');
@@ -210,6 +251,16 @@ void main() {
         await shot('accordion_variants$look');
         await top('PaymentList · variants');
         await shot('list_variants$look');
+        await open('Charts');
+        for (final (entry, name) in [
+          ('PaymentLineChart', 'line_chart'),
+          ('PaymentBarChart', 'bar_chart'),
+          ('PaymentMeterChart', 'meter_chart'),
+          if (look != '_200') ('PaymentSparkline', 'sparkline'),
+        ]) {
+          await top('$entry · variants');
+          await shot('${name}_variants$look');
+        }
       }
 
       for (final dark in [false, true]) {

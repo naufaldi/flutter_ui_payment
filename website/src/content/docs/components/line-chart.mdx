@@ -17,6 +17,12 @@ import HostOwns from '../../../components/HostOwns.astro';
   <Screen name="ios_catalog_chart_line_dark" alt="Line chart specimen with synthetic spending amounts in dark mode" caption="Line chart, dark" />
 </Screens>
 
+<Screens>
+  <Screen name="ios_catalog_line_chart_variants" alt="line-chart variants" />
+  <Screen name="ios_catalog_line_chart_variants_dark" alt="line-chart variants_dark" />
+  <Screen name="ios_catalog_line_chart_variants_200" alt="line-chart variants_200" />
+</Screens>
+
 ## Usage
 
 ```dart
@@ -67,3 +73,5 @@ Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to 
 **Breaking:** `MeterSegment.color` is removed. Use the semantic category ramp. `MeterSegment.value` is optional; supply `measure` for numeric units. Point `value` and chart `points` are optional when using measures or series.
 
 <Props names={['PaymentChartSeries', 'PaymentChartAxis', 'PaymentChartUnit', 'ChartPoint', 'MeterSegment']} />
+
+Parameters: `points`, `series`, `zeroBased`, `inspectable`, `axis`, `grid`, `showLegend`, `unit`, `semanticLabel`. Nothing else exists.
