@@ -67,6 +67,13 @@ void main() {
       c.reviewOrder();
       await c.confirm();
       await pumpUntil(tester, () => c.quote?.revision == 2 && !c.confirming);
+      if (look == 'light_200') {
+        await settle(tester);
+        await Scrollable.ensureVisible(
+          tester.element(find.byType(PaymentCheckbox)),
+          alignment: 0.5,
+        );
+      }
       await shot('requote', look);
 
       c = await runScenario(tester, app, 'P06');

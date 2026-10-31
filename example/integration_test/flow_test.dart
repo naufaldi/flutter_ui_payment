@@ -298,7 +298,7 @@ void main() {
     await settle(tester);
     expect(c.step, FlowStep.confirm);
 
-    await tapVisible(tester, find.text('I accept the new total of Rp103,500'));
+    await tapVisible(tester, find.byType(PaymentCheckbox));
     await tapVisible(tester, find.text('Pay Rp103,500'));
     await pumpUntil(tester, () => c.step == FlowStep.authorize);
     expect(c.authPhase, AuthorizationPhase.ready);
