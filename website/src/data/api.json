@@ -78,6 +78,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": "Null is missing data, never zero."
+      },
+      {
+        "name": "status",
+        "kind": "field",
+        "static": false,
+        "type": "ChartPointStatus",
+        "doc": ""
+      },
+      {
+        "name": "spokenLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "MeterSegment": {
@@ -140,6 +170,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "Money",
+        "doc": ""
+      },
+      {
+        "name": "status",
+        "kind": "field",
+        "static": false,
+        "type": "ChartPointStatus",
+        "doc": ""
+      },
+      {
+        "name": "color",
+        "kind": "field",
+        "static": false,
+        "type": "Color?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "ChartState": {
@@ -225,6 +285,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "points",
+        "kind": "field",
+        "static": false,
+        "type": "List<ChartPoint>",
+        "doc": ""
+      },
+      {
+        "name": "zeroBased",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "inspectable",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "semanticLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentBarChart": {
@@ -276,6 +366,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "points",
+        "kind": "field",
+        "static": false,
+        "type": "List<ChartPoint>",
+        "doc": ""
+      },
+      {
+        "name": "inspectable",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "semanticLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentSparkline": {
@@ -338,6 +451,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "points",
+        "kind": "field",
+        "static": false,
+        "type": "List<ChartPoint>",
+        "doc": ""
+      },
+      {
+        "name": "width",
+        "kind": "field",
+        "static": false,
+        "type": "double",
+        "doc": ""
+      },
+      {
+        "name": "height",
+        "kind": "field",
+        "static": false,
+        "type": "double",
+        "doc": ""
+      },
+      {
+        "name": "semanticLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentMeterChart": {
@@ -389,6 +532,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "segments",
+        "kind": "field",
+        "static": false,
+        "type": "List<MeterSegment>",
+        "doc": ""
+      },
+      {
+        "name": "showLegend",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "semanticLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "ChartModule": {
@@ -564,6 +730,115 @@
       "compactHeight",
       "featuredHeight"
     ],
+    "members": [
+      {
+        "name": "compactHeight",
+        "kind": "static",
+        "static": true,
+        "type": "double",
+        "value": "180",
+        "doc": ""
+      },
+      {
+        "name": "featuredHeight",
+        "kind": "static",
+        "static": true,
+        "type": "double",
+        "value": "320",
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "state",
+        "kind": "field",
+        "static": false,
+        "type": "ChartState",
+        "doc": ""
+      },
+      {
+        "name": "chart",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": ""
+      },
+      {
+        "name": "headline",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": "Host-provided amount. The kit never computes a headline total."
+      },
+      {
+        "name": "headlineCaption",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "showHeadline",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "delta",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "deltaTone",
+        "kind": "field",
+        "static": false,
+        "type": "StatusTone",
+        "doc": ""
+      },
+      {
+        "name": "height",
+        "kind": "field",
+        "static": false,
+        "type": "double?",
+        "doc": ""
+      },
+      {
+        "name": "emptyTitle",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "emptyMessage",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "errorMessage",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "trailing",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentCheckbox": {
@@ -637,6 +912,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "onChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<bool>?",
+        "doc": ""
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "What checking the box agrees to, as a full phrase: \"Save this card for\nnext time\", not \"Save\"."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "A muted line under the label."
+      },
+      {
+        "name": "disabledReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Replaces `description` while the row is disabled."
+      }
+    ],
     "copyWith": null
   },
   "PaymentRadio": {
@@ -721,6 +1033,50 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "T",
+        "doc": ""
+      },
+      {
+        "name": "groupValue",
+        "kind": "field",
+        "static": false,
+        "type": "T?",
+        "doc": ""
+      },
+      {
+        "name": "onChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<T>?",
+        "doc": "Called with `value` when this option is chosen. Null disables it."
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "disabledReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Replaces `description` while the option is disabled."
+      }
+    ],
     "copyWith": null
   },
   "PaymentSwitch": {
@@ -794,6 +1150,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "onChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<bool>?",
+        "doc": ""
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "disabledReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Replaces `description` while the row is disabled."
+      }
+    ],
     "copyWith": null
   },
   "PaymentTabs": {
@@ -845,6 +1238,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "labels",
+        "kind": "field",
+        "static": false,
+        "type": "List<String>",
+        "doc": "Short nouns, one or two words each."
+      },
+      {
+        "name": "selectedIndex",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": ""
+      },
+      {
+        "name": "onSelected",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<int>",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentTooltip": {
@@ -885,6 +1301,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "message",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "One short sentence or a label. Also what screen readers hear."
+      },
+      {
+        "name": "child",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "HostErrorCategory": {
@@ -990,6 +1422,36 @@
       }
     ],
     "statics": [],
+    "members": [
+      {
+        "name": "category",
+        "kind": "field",
+        "static": false,
+        "type": "HostErrorCategory",
+        "doc": ""
+      },
+      {
+        "name": "safeMessage",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Copy approved by the host for end users, or null to use the default."
+      },
+      {
+        "name": "retryable",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "outcomeUnknown",
+        "kind": "getter",
+        "static": false,
+        "type": "bool",
+        "doc": "Whether the server may have acted on the request. Callers must not\ntreat these as failures."
+      }
+    ],
     "copyWith": null
   },
   "KitStrings": {
@@ -1182,6 +1644,45 @@
       "register",
       "of"
     ],
+    "members": [
+      {
+        "name": "code",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "symbol",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "minorDigits",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": "Number of decimal digits stored in minor units (IDR = 0, USD = 2)."
+      },
+      {
+        "name": "register",
+        "kind": "static",
+        "static": true,
+        "type": "void",
+        "signature": "static void register(CurrencySpec spec)",
+        "doc": ""
+      },
+      {
+        "name": "of",
+        "kind": "static",
+        "static": true,
+        "type": "CurrencySpec",
+        "signature": "static CurrencySpec of(String code)",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "Money": {
@@ -1274,6 +1775,36 @@
       }
     ],
     "statics": [],
+    "members": [
+      {
+        "name": "minorUnits",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": ""
+      },
+      {
+        "name": "currency",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "isZero",
+        "kind": "getter",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "isNegative",
+        "kind": "getter",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "MoneyFormat": {
@@ -1314,6 +1845,61 @@
       }
     ],
     "statics": [],
+    "members": [
+      {
+        "name": "languageCode",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "groupSeparator",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "decimalSeparator",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "format",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String format(Money money, {bool withSymbol = true})",
+        "doc": ""
+      },
+      {
+        "name": "compact",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String compact(Money money)",
+        "doc": "Short chart-axis notation. Never use for an amount a customer pays or confirms."
+      },
+      {
+        "name": "spoken",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String spoken(Money money)",
+        "doc": "Plain digits for screen readers, e.g. \"100000 IDR\"."
+      },
+      {
+        "name": "parse",
+        "kind": "method",
+        "static": false,
+        "type": "AmountParseResult",
+        "signature": "AmountParseResult parse(String input, String currency)",
+        "doc": "Parses typed or pasted text into `Money`.\n\nAccepts the currency symbol/code, spaces and correctly placed group\nseparators. Anything that could be read two ways (for example `100,000`\nfor IDR under `id`) is rejected as `AmountIssue.ambiguous` instead of\nbeing guessed."
+      }
+    ],
     "copyWith": null
   },
   "AmountIssue": {
@@ -1407,6 +1993,37 @@
       }
     ],
     "statics": [],
+    "members": [
+      {
+        "name": "money",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": ""
+      },
+      {
+        "name": "issue",
+        "kind": "field",
+        "static": false,
+        "type": "AmountIssue?",
+        "doc": ""
+      },
+      {
+        "name": "isValid",
+        "kind": "getter",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "withinLimits",
+        "kind": "method",
+        "static": false,
+        "type": "AmountParseResult",
+        "signature": "AmountParseResult withinLimits({Money? minimum, Money? maximum})",
+        "doc": "Applies host-supplied limits to a successfully parsed amount."
+      }
+    ],
     "copyWith": null
   },
   "PaymentIcons": {
@@ -1430,6 +2047,112 @@
       "noMatches",
       "busy",
       "hidden"
+    ],
+    "members": [
+      {
+        "name": "success",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.check_circle_outline",
+        "doc": "Successful result."
+      },
+      {
+        "name": "warning",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.warning_amber_rounded",
+        "doc": "Warning requiring attention."
+      },
+      {
+        "name": "danger",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.error_outline",
+        "doc": "Error requiring recovery."
+      },
+      {
+        "name": "info",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.info_outline",
+        "doc": "Informational or neutral message."
+      },
+      {
+        "name": "forward",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.chevron_right",
+        "doc": "Forward navigation; SDK matchTextDirection mirrors in RTL. Never swap by hand."
+      },
+      {
+        "name": "externalLink",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.open_in_new",
+        "doc": "External destination, handled by the host."
+      },
+      {
+        "name": "close",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.close",
+        "doc": "Dismiss the current surface."
+      },
+      {
+        "name": "copy",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.copy_rounded",
+        "doc": "Copy action, handled by the host."
+      },
+      {
+        "name": "copied",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.check",
+        "doc": "Copy completed."
+      },
+      {
+        "name": "loadFailed",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.cloud_off_outlined",
+        "doc": "Content failed to load."
+      },
+      {
+        "name": "noMatches",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.search_off",
+        "doc": "Search has no matches."
+      },
+      {
+        "name": "busy",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.hourglass_top",
+        "doc": "Work in progress."
+      },
+      {
+        "name": "hidden",
+        "kind": "static",
+        "static": true,
+        "type": "IconData",
+        "value": "Icons.lock_outline",
+        "doc": "Content hidden."
+      }
     ],
     "copyWith": null
   },
@@ -1986,6 +2709,935 @@
       "delegate",
       "of"
     ],
+    "members": [
+      {
+        "name": "dateInputPattern",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Typed date hint, DD/MM/YYYY in both locales (Q12).\nDD, MM and YYYY each occur once with one repeated /, . or - separator.\nOverride app-wide with a host `LocalizationsDelegate<PaymentLocalizations>`\nreturning `PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY')`.\nPer-field overrides arrive with date fields in Phase 4B."
+      },
+      {
+        "name": "formatDate",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String formatDate(DateTime value)",
+        "doc": "Calendar date in the host zone; unlike `formatDateTime`, no conversion\nto the device zone occurs and the time is ignored."
+      },
+      {
+        "name": "languageCode",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "moneyFormat",
+        "kind": "field",
+        "static": false,
+        "type": "MoneyFormat",
+        "doc": ""
+      },
+      {
+        "name": "supportedLanguages",
+        "kind": "static",
+        "static": true,
+        "type": "const",
+        "value": "['en', 'id']",
+        "doc": ""
+      },
+      {
+        "name": "delegate",
+        "kind": "static",
+        "static": true,
+        "type": "LocalizationsDelegate<PaymentLocalizations>",
+        "value": "_PaymentLocalizationsDelegate()",
+        "doc": ""
+      },
+      {
+        "name": "of",
+        "kind": "static",
+        "static": true,
+        "type": "PaymentLocalizations",
+        "signature": "static PaymentLocalizations of(BuildContext context)",
+        "doc": ""
+      },
+      {
+        "name": "formatDateTime",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String formatDateTime(DateTime value)",
+        "doc": "\"30 Oct 2026, 14:05\" / \"30 Okt 2026, 14.05\" in the device time zone."
+      },
+      {
+        "name": "formatBytes",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String formatBytes(int bytes)",
+        "doc": ""
+      },
+      {
+        "name": "working",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "contentHidden",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "timeRemaining",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String timeRemaining(String time)",
+        "doc": ""
+      },
+      {
+        "name": "continueLabel",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "tryAgain",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "edit",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "copy",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "copied",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "copyFailed",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "unavailable",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "detailsTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "lastUpdated",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "updatedAt",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String updatedAt(String time)",
+        "doc": ""
+      },
+      {
+        "name": "checkingStatus",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "submitting",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "amountLabel",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "minimumAmount",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String minimumAmount(String v)",
+        "doc": ""
+      },
+      {
+        "name": "maximumAmount",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String maximumAmount(String v)",
+        "doc": ""
+      },
+      {
+        "name": "amountIssue",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String amountIssue(AmountIssue issue, {Money? minimum, Money? maximum})",
+        "doc": ""
+      },
+      {
+        "name": "summaryTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "totalLabel",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "totalChangedTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "totalChangedMessage",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String totalChangedMessage(String before, String after)",
+        "doc": ""
+      },
+      {
+        "name": "acceptNewTotal",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String acceptNewTotal(String total)",
+        "doc": ""
+      },
+      {
+        "name": "methodTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "paymentMethod",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "payWithTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "noMethodsTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "noMethodsMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "payAmount",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String payAmount(String total)",
+        "doc": ""
+      },
+      {
+        "name": "sendingPayment",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authReadyTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authReadyMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authInProgressTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authInProgressMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authApprovedTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authApprovedMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authCanceledTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authCanceledMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authFailedTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authFailedMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authExpiredTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authExpiredMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authorize",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "authorizeAgain",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "backToReview",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "instructionsTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "accountNumber",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "amountToPay",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "payBefore",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "howToPay",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "instructionsElapsedTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "instructionsElapsedMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusSendingTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusSendingMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusUnknownTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusUnknownMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusUnknownLead",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "First line of the unknown-outcome screen, set on its own so the one\ninstruction that prevents a double charge is read first."
+      },
+      {
+        "name": "statusUnknownDetail",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusRequiresActionTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusRequiresActionMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusProcessingTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusProcessingMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusPendingTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusPendingMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusSucceededTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusSucceededMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusFailedTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusFailedMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusCanceledTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusCanceledMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusExpiredTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusExpiredMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusUnavailableTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusUnavailableMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "statusLastKnown",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String statusLastKnown(String time)",
+        "doc": ""
+      },
+      {
+        "name": "attemptReference",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "transactionReference",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "notYetConfirmed",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "paymentActionLabel",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String paymentActionLabel(PaymentAction action)",
+        "doc": ""
+      },
+      {
+        "name": "refundTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "refundStatusLabel",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String refundStatusLabel(RefundStatus status)",
+        "doc": ""
+      },
+      {
+        "name": "refundAmount",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "refundAmountUnavailable",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "refundSeparateNote",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "merchant",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "paidAt",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "receiptShareTitle",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String receiptShareTitle(String merchant)",
+        "doc": ""
+      },
+      {
+        "name": "shareReceipt",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "shareDone",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "shareDismissed",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "shareFailed",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "copyFailedReceipt",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "shareAllowlistNote",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "kycIntroTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "kycIntroMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "readPrivacyPolicy",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "consentLabel",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "consentRequiredHint",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "fieldNeedsUpdate",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "documentLimits",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String documentLimits(String types, String size)",
+        "doc": ""
+      },
+      {
+        "name": "documentEmpty",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "documentUploading",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "documentUploaded",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "documentFailed",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "documentMissing",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chooseDocument",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "replaceDocument",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "openSettings",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "documentIssueTitle",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String documentIssueTitle(DocumentIssueKind kind)",
+        "doc": ""
+      },
+      {
+        "name": "documentIssueMessage",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String documentIssueMessage( DocumentIssueKind kind, String limits, )",
+        "doc": ""
+      },
+      {
+        "name": "reviewDetailsTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "reviewDocumentsTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "documentsIncomplete",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "submitVerification",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "kycUnknownTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "kycUnknownMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "kycStatusTitle",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String kycStatusTitle(VerificationStatus status)",
+        "doc": ""
+      },
+      {
+        "name": "kycStatusMessage",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String kycStatusMessage(VerificationStatus status)",
+        "doc": ""
+      },
+      {
+        "name": "verificationActionLabel",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String verificationActionLabel(VerificationAction action)",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentMotion": {
@@ -2058,6 +3710,112 @@
       "fadeRise",
       "topLayout"
     ],
+    "members": [
+      {
+        "name": "reduced",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "True when animations should not play at all."
+      },
+      {
+        "name": "easeOut",
+        "kind": "static",
+        "static": true,
+        "type": "Curve",
+        "value": "Cubic(0.23, 1, 0.32, 1)",
+        "doc": "Strong ease-out: movement starts immediately, so it reads as response."
+      },
+      {
+        "name": "easeInOut",
+        "kind": "static",
+        "static": true,
+        "type": "Curve",
+        "value": "Cubic(0.77, 0, 0.175, 1)",
+        "doc": "For elements already on screen that change size or position."
+      },
+      {
+        "name": "drawer",
+        "kind": "static",
+        "static": true,
+        "type": "Curve",
+        "value": "Cubic(0.32, 0.72, 0, 1)",
+        "doc": "iOS-like drawer curve for sheets and side panels that travel further."
+      },
+      {
+        "name": "press",
+        "kind": "getter",
+        "static": false,
+        "type": "Duration",
+        "doc": "Press feedback and color changes."
+      },
+      {
+        "name": "quick",
+        "kind": "getter",
+        "static": false,
+        "type": "Duration",
+        "doc": "Selection, hover-like and color/border changes."
+      },
+      {
+        "name": "enter",
+        "kind": "getter",
+        "static": false,
+        "type": "Duration",
+        "doc": "A status or content swap entering."
+      },
+      {
+        "name": "exit",
+        "kind": "getter",
+        "static": false,
+        "type": "Duration",
+        "doc": "The matching exit, roughly 30% faster than `enter`."
+      },
+      {
+        "name": "sheetEnter",
+        "kind": "getter",
+        "static": false,
+        "type": "Duration",
+        "doc": "Bottom sheets and side panels: larger surfaces get a little longer."
+      },
+      {
+        "name": "sheetExit",
+        "kind": "getter",
+        "static": false,
+        "type": "Duration",
+        "doc": "The matching sheet exit."
+      },
+      {
+        "name": "pressedScale",
+        "kind": "getter",
+        "static": false,
+        "type": "double",
+        "doc": "Scale applied while a compact control is held down. Full-width buttons\ndo not scale."
+      },
+      {
+        "name": "fadeScale",
+        "kind": "static",
+        "static": true,
+        "type": "Widget",
+        "signature": "static Widget fadeScale(Widget child, Animation<double> animation)",
+        "doc": "Fade plus a slight scale-up from 0.95, never from nothing."
+      },
+      {
+        "name": "fadeRise",
+        "kind": "static",
+        "static": true,
+        "type": "Widget",
+        "signature": "static Widget fadeRise(Widget child, Animation<double> animation)",
+        "doc": "Fade plus an 8 px rise, used when a flow moves to its next step."
+      },
+      {
+        "name": "topLayout",
+        "kind": "static",
+        "static": true,
+        "type": "Widget",
+        "signature": "static Widget topLayout(Widget? current, List<Widget> previous)",
+        "doc": "Layout for swaps: outgoing children keep painting while they fade but\ntake no taps and are hidden from screen readers, so a leaving \"Pay\"\nbutton can never be pressed."
+      }
+    ],
     "copyWith": null
   },
   "StatusTone": {
@@ -2126,6 +3884,22 @@
     "getters": [],
     "statics": [
       "lerp"
+    ],
+    "members": [
+      {
+        "name": "foreground",
+        "kind": "field",
+        "static": false,
+        "type": "Color",
+        "doc": ""
+      },
+      {
+        "name": "container",
+        "kind": "field",
+        "static": false,
+        "type": "Color",
+        "doc": ""
+      }
     ],
     "copyWith": null
   },
@@ -2414,6 +4188,208 @@
     ],
     "statics": [
       "of"
+    ],
+    "members": [
+      {
+        "name": "accent",
+        "kind": "field",
+        "static": false,
+        "type": "Color",
+        "doc": ""
+      },
+      {
+        "name": "onAccent",
+        "kind": "field",
+        "static": false,
+        "type": "Color",
+        "doc": ""
+      },
+      {
+        "name": "surface",
+        "kind": "field",
+        "static": false,
+        "type": "Color",
+        "doc": ""
+      },
+      {
+        "name": "surfaceMuted",
+        "kind": "field",
+        "static": false,
+        "type": "Color",
+        "doc": ""
+      },
+      {
+        "name": "outline",
+        "kind": "field",
+        "static": false,
+        "type": "Color",
+        "doc": "Hairline rule, decorative: dividers, the method-group edge and the\naction-bar top. It may sit below 3:1; control edges use `border`."
+      },
+      {
+        "name": "textPrimary",
+        "kind": "field",
+        "static": false,
+        "type": "Color",
+        "doc": ""
+      },
+      {
+        "name": "textSecondary",
+        "kind": "field",
+        "static": false,
+        "type": "Color",
+        "doc": ""
+      },
+      {
+        "name": "neutral",
+        "kind": "field",
+        "static": false,
+        "type": "ToneColors",
+        "doc": ""
+      },
+      {
+        "name": "info",
+        "kind": "field",
+        "static": false,
+        "type": "ToneColors",
+        "doc": ""
+      },
+      {
+        "name": "success",
+        "kind": "field",
+        "static": false,
+        "type": "ToneColors",
+        "doc": ""
+      },
+      {
+        "name": "warning",
+        "kind": "field",
+        "static": false,
+        "type": "ToneColors",
+        "doc": ""
+      },
+      {
+        "name": "danger",
+        "kind": "field",
+        "static": false,
+        "type": "ToneColors",
+        "doc": ""
+      },
+      {
+        "name": "radius",
+        "kind": "field",
+        "static": false,
+        "type": "double",
+        "doc": "Corner radius of selectable boxes such as the method list. Buttons and\ninputs use three quarters of it."
+      },
+      {
+        "name": "spacing",
+        "kind": "field",
+        "static": false,
+        "type": "double",
+        "doc": "Base spacing unit; use `space` to resolve named roles:\n\n* inline, `spacing * 0.5` (4): label → caption, title → meta.\n* related, `spacing` (8): row padding, between stacked actions.\n* block, `spacing * 1.5` (12): band → title, notice padding.\n* group, `spacing * 2` (16): screen and sheet gutter, groups, state message padding.\n* section, `spacing * 3` (24): content → primary action, ruled gaps.\n* major, `spacing * 4` (32): the largest gap; no kit widget uses it today."
+      },
+      {
+        "name": "space",
+        "kind": "method",
+        "static": false,
+        "type": "double",
+        "signature": "double space(PaymentSpace role)",
+        "doc": "Resolves a semantic spacing role using this theme's base unit."
+      },
+      {
+        "name": "amountWeight",
+        "kind": "field",
+        "static": false,
+        "type": "FontWeight",
+        "doc": ""
+      },
+      {
+        "name": "amountFontFamily",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "border",
+        "kind": "getter",
+        "static": false,
+        "type": "Color",
+        "doc": "Edge of a control: inputs, secondary buttons, unselected checkboxes.\nUnlike `outline` it must reach 3:1 against `surface`. Defaults to\n`textSecondary` a quarter of the way to `surface`."
+      },
+      {
+        "name": "disabled",
+        "kind": "getter",
+        "static": false,
+        "type": "Color",
+        "doc": "Label and icon color of a disabled control, drawn on `surfaceMuted`.\nDefaults to `textSecondary` 45% of the way to `surface`."
+      },
+      {
+        "name": "referenceFontFamily",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Font for references people copy or compare: virtual account numbers,\ntransaction IDs, promo codes. Defaults to the platform monospace."
+      },
+      {
+        "name": "referenceFontFamilyFallback",
+        "kind": "getter",
+        "static": false,
+        "type": "List<String>",
+        "doc": ""
+      },
+      {
+        "name": "of",
+        "kind": "static",
+        "static": true,
+        "type": "PaymentTheme",
+        "signature": "static PaymentTheme of(BuildContext context)",
+        "doc": ""
+      },
+      {
+        "name": "tone",
+        "kind": "method",
+        "static": false,
+        "type": "ToneColors",
+        "signature": "ToneColors tone(StatusTone tone)",
+        "doc": ""
+      },
+      {
+        "name": "borderRadius",
+        "kind": "getter",
+        "static": false,
+        "type": "BorderRadius",
+        "doc": ""
+      },
+      {
+        "name": "tagBorderRadius",
+        "kind": "getter",
+        "static": false,
+        "type": "BorderRadius",
+        "doc": "Badges and tags."
+      },
+      {
+        "name": "controlBorderRadius",
+        "kind": "getter",
+        "static": false,
+        "type": "BorderRadius",
+        "doc": "Buttons, inputs, notices and menus."
+      },
+      {
+        "name": "sheetBorderRadius",
+        "kind": "getter",
+        "static": false,
+        "type": "BorderRadius",
+        "doc": "The top of a sheet and dialogs."
+      },
+      {
+        "name": "amountStyle",
+        "kind": "method",
+        "static": false,
+        "type": "TextStyle",
+        "signature": "TextStyle amountStyle( BuildContext context, { @Deprecated( 'Row amounts use PaymentType.of(context).label with tabular figures (AmountText does this). Removed in 0.2.0.', ) bool large = true, })",
+        "doc": "Text style for amounts: the 32/36 display total when `large`, otherwise\na 15/20 row amount. Both use `amountWeight` and tabular figures, and the\nhost's font unless `amountFontFamily` is set.\nSame as `PaymentType.of(context).display`."
+      }
     ],
     "copyWith": [
       "accent",
@@ -2714,6 +4690,111 @@
       "isLarge",
       "firstLineHeight"
     ],
+    "members": [
+      {
+        "name": "isLarge",
+        "kind": "static",
+        "static": true,
+        "type": "bool",
+        "signature": "static bool isLarge(BuildContext context)",
+        "doc": "Whether text is scaled above 1.5×, where rows wrap and paragraphs\ntighten their leading."
+      },
+      {
+        "name": "firstLineHeight",
+        "kind": "static",
+        "static": true,
+        "type": "double",
+        "signature": "static double firstLineHeight(BuildContext context)",
+        "doc": "Height of one 15/20 heading or label line at the current text scale.\nCenter leading icons in a box this tall when text wraps."
+      },
+      {
+        "name": "tabular",
+        "kind": "method",
+        "static": false,
+        "type": "TextStyle",
+        "signature": "TextStyle tabular(TextStyle style)",
+        "doc": "`style` with tabular figures."
+      },
+      {
+        "name": "reference",
+        "kind": "method",
+        "static": false,
+        "type": "TextStyle",
+        "signature": "TextStyle reference(TextStyle style)",
+        "doc": "`style` with tabular figures in `PaymentTheme.referenceFontFamily`."
+      },
+      {
+        "name": "display",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle",
+        "doc": "The one display amount per screen: 32/36, tracking −0.32."
+      },
+      {
+        "name": "amountLarge",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle",
+        "doc": "Action-bar total, balance, VA number, entered amount: 20/28."
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle",
+        "doc": "Sheet, dialog and app-bar titles: 17/24 w600."
+      },
+      {
+        "name": "heading",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle",
+        "doc": "Section and status titles, the Total row, buttons: 15/20 w600."
+      },
+      {
+        "name": "body",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle",
+        "doc": "Paragraphs: 15/22. Use `bodyFor` so leading tightens at large text."
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle",
+        "doc": "Single-line row text, labels and values: 15/20."
+      },
+      {
+        "name": "caption",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle",
+        "doc": "Supporting lines under a title: 13/18, muted."
+      },
+      {
+        "name": "tag",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle",
+        "doc": "Badges and tags: 12/16 w600. No color; the tone sets it."
+      },
+      {
+        "name": "input",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle",
+        "doc": "Text fields: 16/24."
+      },
+      {
+        "name": "bodyFor",
+        "kind": "method",
+        "static": false,
+        "type": "TextStyle",
+        "signature": "TextStyle bodyFor(BuildContext context)",
+        "doc": "`body`, with 1.3 leading above 1.5× text so long paragraphs stay short."
+      }
+    ],
     "copyWith": null
   },
   "AmountText": {
@@ -2765,6 +4846,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "money",
+        "kind": "field",
+        "static": false,
+        "type": "Money",
+        "doc": ""
+      },
+      {
+        "name": "style",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle?",
+        "doc": ""
+      },
+      {
+        "name": "emphasis",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Uses the large amount style reserved for the final total."
+      }
+    ],
     "copyWith": null
   },
   "MiddleEllipsisText": {
@@ -2816,6 +4920,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "text",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "style",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle?",
+        "doc": ""
+      },
+      {
+        "name": "textAlign",
+        "kind": "field",
+        "static": false,
+        "type": "TextAlign",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "InfoRow": {
@@ -2900,6 +5027,50 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": ""
+      },
+      {
+        "name": "valueText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "caption",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "emphasis",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "trailing",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Optional action after the value, such as a 48 dp copy button. Label and\nvalue keep the top line; the action centers against them."
+      }
+    ],
     "copyWith": null
   },
   "PaymentButtonVariant": {
@@ -3007,6 +5178,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "variant",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButtonVariant",
+        "doc": ""
+      },
+      {
+        "name": "busy",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Externally owned busy state, e.g. a submit the coordinator is running."
+      },
+      {
+        "name": "busyLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentSpinner": {
@@ -3058,6 +5266,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "double",
+        "doc": "Width and height. The ring's stroke is 12% of it."
+      },
+      {
+        "name": "color",
+        "kind": "field",
+        "static": false,
+        "type": "Color?",
+        "doc": "Defaults to `PaymentTheme.textSecondary`: waiting is not a brand moment."
+      },
+      {
+        "name": "semanticLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentDivider": {
@@ -3087,6 +5318,15 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "height",
+        "kind": "field",
+        "static": false,
+        "type": "double",
+        "doc": "Total height, with the rule centered in it."
+      }
+    ],
     "copyWith": null
   },
   "StatusBadge": {
@@ -3138,6 +5378,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "tone",
+        "kind": "field",
+        "static": false,
+        "type": "StatusTone",
+        "doc": ""
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "NoticeBanner": {
@@ -3222,6 +5485,50 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "tone",
+        "kind": "field",
+        "static": false,
+        "type": "StatusTone",
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "message",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData?",
+        "doc": ""
+      },
+      {
+        "name": "actions",
+        "kind": "field",
+        "static": false,
+        "type": "List<Widget>",
+        "doc": ""
+      },
+      {
+        "name": "announce",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Announces the banner to screen readers when it appears."
+      }
+    ],
     "copyWith": null
   },
   "PaymentSection": {
@@ -3273,6 +5580,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "trailing",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Optional action beside the title, such as an \"Edit\" button. Keeping a\nsection's action in its header saves a row and ties it to the content."
+      },
+      {
+        "name": "child",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "StatusHeader": {
@@ -3335,6 +5665,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "tone",
+        "kind": "field",
+        "static": false,
+        "type": "StatusTone",
+        "doc": ""
+      },
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData",
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "hatched",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Marks an outcome that is not known yet."
+      }
+    ],
     "copyWith": null
   },
   "StatusBand": {
@@ -3375,6 +5735,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "tone",
+        "kind": "field",
+        "static": false,
+        "type": "StatusTone",
+        "doc": ""
+      },
+      {
+        "name": "hatched",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PrivacyMask": {
@@ -3415,6 +5791,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "obscured",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "child",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "CountdownText": {
@@ -3479,6 +5871,45 @@
     "statics": [
       "remaining",
       "formatDuration"
+    ],
+    "members": [
+      {
+        "name": "expiresAt",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": ""
+      },
+      {
+        "name": "onElapsed",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "style",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle?",
+        "doc": ""
+      },
+      {
+        "name": "remaining",
+        "kind": "static",
+        "static": true,
+        "type": "Duration",
+        "signature": "static Duration remaining(DateTime expiresAt, DateTime now)",
+        "doc": ""
+      },
+      {
+        "name": "formatDuration",
+        "kind": "static",
+        "static": true,
+        "type": "String",
+        "signature": "static String formatDuration(Duration d)",
+        "doc": ""
+      }
     ],
     "copyWith": null
   },
@@ -3575,6 +6006,57 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "subtitle",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData?",
+        "doc": ""
+      },
+      {
+        "name": "trailing",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Defaults to a chevron when `onTap` is set."
+      },
+      {
+        "name": "onTap",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "destructive",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "disabledReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "ActionTileGroup": {
@@ -3604,6 +6086,15 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "children",
+        "kind": "field",
+        "static": false,
+        "type": "List<Widget>",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "ActionMenuEntry": {
@@ -3666,6 +6157,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData?",
+        "doc": ""
+      },
+      {
+        "name": "onSelected",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Null shows the entry disabled."
+      },
+      {
+        "name": "destructive",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "ActionMenu": {
@@ -3717,6 +6238,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "entries",
+        "kind": "field",
+        "static": false,
+        "type": "List<ActionMenuEntry>",
+        "doc": ""
+      },
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData",
+        "doc": ""
+      },
+      {
+        "name": "tooltip",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Spoken and shown on long-press; defaults to \"More actions\"."
+      }
+    ],
     "copyWith": null
   },
   "showPaymentConfirmDialog": {
@@ -3951,6 +6495,57 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "subtitle",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "leading",
+        "kind": "field",
+        "static": false,
+        "type": "IconData?",
+        "doc": ""
+      },
+      {
+        "name": "child",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": ""
+      },
+      {
+        "name": "expanded",
+        "kind": "field",
+        "static": false,
+        "type": "bool?",
+        "doc": "Controlled state. When null the section keeps its own state."
+      },
+      {
+        "name": "initiallyExpanded",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "onExpandedChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<bool>?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "LoadingSkeleton": {
@@ -4002,6 +6597,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "rows",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": ""
+      },
+      {
+        "name": "leading",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Shows a small square before each row, where a row's icon would be."
+      },
+      {
+        "name": "semanticLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "StateMessage": {
@@ -4086,6 +6704,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData",
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "message",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "tone",
+        "kind": "field",
+        "static": false,
+        "type": "StatusTone",
+        "doc": "`StatusTone.danger` announces the message when it appears. The headline\ncarries the meaning, so the icon stays muted in every tone."
+      },
+      {
+        "name": "actionLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "VideoPhase": {
@@ -4215,6 +6870,57 @@
       }
     ],
     "statics": [],
+    "members": [
+      {
+        "name": "phase",
+        "kind": "field",
+        "static": false,
+        "type": "VideoPhase",
+        "doc": ""
+      },
+      {
+        "name": "position",
+        "kind": "field",
+        "static": false,
+        "type": "Duration",
+        "doc": ""
+      },
+      {
+        "name": "duration",
+        "kind": "field",
+        "static": false,
+        "type": "Duration",
+        "doc": ""
+      },
+      {
+        "name": "muted",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "aspectRatio",
+        "kind": "field",
+        "static": false,
+        "type": "double?",
+        "doc": "Width / height of the decoded video, once known."
+      },
+      {
+        "name": "errorMessage",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Safe, user-facing message. Never a raw player or network error."
+      },
+      {
+        "name": "isPlaying",
+        "kind": "getter",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": [
       "phase",
       "position",
@@ -4251,6 +6957,64 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "initialize",
+        "kind": "method",
+        "static": false,
+        "type": "Future<void>",
+        "signature": "Future<void> initialize()",
+        "doc": "Loads the media. Called by the widget once when `value` is idle."
+      },
+      {
+        "name": "play",
+        "kind": "method",
+        "static": false,
+        "type": "Future<void>",
+        "signature": "Future<void> play()",
+        "doc": ""
+      },
+      {
+        "name": "pause",
+        "kind": "method",
+        "static": false,
+        "type": "Future<void>",
+        "signature": "Future<void> pause()",
+        "doc": ""
+      },
+      {
+        "name": "seekTo",
+        "kind": "method",
+        "static": false,
+        "type": "Future<void>",
+        "signature": "Future<void> seekTo(Duration position)",
+        "doc": ""
+      },
+      {
+        "name": "setMuted",
+        "kind": "method",
+        "static": false,
+        "type": "Future<void>",
+        "signature": "Future<void> setMuted(bool muted)",
+        "doc": ""
+      },
+      {
+        "name": "retry",
+        "kind": "method",
+        "static": false,
+        "type": "Future<void>",
+        "signature": "Future<void> retry()",
+        "doc": "Starts over after an error."
+      },
+      {
+        "name": "buildSurface",
+        "kind": "method",
+        "static": false,
+        "type": "Widget",
+        "signature": "Widget buildSurface(BuildContext context)",
+        "doc": "Renders the current frame. Called only when the media is loaded."
+      }
+    ],
     "copyWith": null
   },
   "PaymentVideoPlayer": {
@@ -4324,6 +7088,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "controller",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentVideoController",
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Describes the video for screen readers, e.g. \"How to pay with QRIS\"."
+      },
+      {
+        "name": "poster",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Shown before the first frame is ready."
+      },
+      {
+        "name": "aspectRatio",
+        "kind": "field",
+        "static": false,
+        "type": "double",
+        "doc": "Used until the media reports its own ratio."
+      },
+      {
+        "name": "autoPlay",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentNavItem": {
@@ -4419,6 +7220,57 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "id",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData",
+        "doc": ""
+      },
+      {
+        "name": "selectedIcon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData?",
+        "doc": ""
+      },
+      {
+        "name": "enabled",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "disabledReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Shown under a disabled item so people know why it can't be opened."
+      },
+      {
+        "name": "badge",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Short count or tag, e.g. \"2\" pending payments or \"New\"."
+      }
+    ],
     "copyWith": null
   },
   "PaymentNavSection": {
@@ -4459,6 +7311,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "items",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentNavItem>",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "NavSidebar": {
@@ -4532,6 +7400,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "sections",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentNavSection>",
+        "doc": ""
+      },
+      {
+        "name": "selectedId",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "onSelected",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<PaymentNavItem>",
+        "doc": ""
+      },
+      {
+        "name": "header",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": ""
+      },
+      {
+        "name": "footer",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "AdaptiveNavShell": {
@@ -4660,6 +7565,78 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": ""
+      },
+      {
+        "name": "sections",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentNavSection>",
+        "doc": ""
+      },
+      {
+        "name": "selectedId",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "onSelected",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<PaymentNavItem>",
+        "doc": ""
+      },
+      {
+        "name": "body",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": ""
+      },
+      {
+        "name": "actions",
+        "kind": "field",
+        "static": false,
+        "type": "List<Widget>",
+        "doc": ""
+      },
+      {
+        "name": "sidebarHeader",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": ""
+      },
+      {
+        "name": "sidebarFooter",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": ""
+      },
+      {
+        "name": "breakpoint",
+        "kind": "field",
+        "static": false,
+        "type": "double",
+        "doc": ""
+      },
+      {
+        "name": "sidebarWidth",
+        "kind": "field",
+        "static": false,
+        "type": "double",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentSheetHeader": {
@@ -4711,6 +7688,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "subtitle",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "onClose",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Null hides the close button (for example while a host call runs)."
+      }
+    ],
     "copyWith": null
   },
   "PaymentSheet": {
@@ -4762,6 +7762,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "header",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": ""
+      },
+      {
+        "name": "body",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": ""
+      },
+      {
+        "name": "footer",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "showPaymentSheet": {
@@ -4952,6 +7975,57 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "currency",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "onChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<AmountParseResult>",
+        "doc": ""
+      },
+      {
+        "name": "minimum",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": ""
+      },
+      {
+        "name": "maximum",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": ""
+      },
+      {
+        "name": "initialText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "showErrors",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentSummary": {
@@ -5003,6 +8077,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "quote",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentQuote",
+        "doc": ""
+      },
+      {
+        "name": "previousQuote",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentQuote?",
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentMethodPicker": {
@@ -5066,6 +8163,44 @@
     "getters": [],
     "statics": [
       "validSelection"
+    ],
+    "members": [
+      {
+        "name": "methods",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentMethod>",
+        "doc": ""
+      },
+      {
+        "name": "selectedId",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "onChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<PaymentMethod>",
+        "doc": ""
+      },
+      {
+        "name": "emptyMessage",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "validSelection",
+        "kind": "static",
+        "static": true,
+        "type": "String?",
+        "signature": "static String? validSelection(List<PaymentMethod> methods, String? id)",
+        "doc": "Returns `selectedId` only when it still names an available method."
+      }
     ],
     "copyWith": null
   },
@@ -5151,6 +8286,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "quote",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentQuote",
+        "doc": ""
+      },
+      {
+        "name": "method",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentMethod",
+        "doc": ""
+      },
+      {
+        "name": "previousQuote",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentQuote?",
+        "doc": ""
+      },
+      {
+        "name": "busy",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "footnote",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "AuthorizationPrompt": {
@@ -5213,6 +8385,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "phase",
+        "kind": "field",
+        "static": false,
+        "type": "AuthorizationPhase",
+        "doc": ""
+      },
+      {
+        "name": "onBackToReview",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "methodLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentActionBar": {
@@ -5275,6 +8470,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "action",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": ""
+      },
+      {
+        "name": "total",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": ""
+      },
+      {
+        "name": "totalLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "updating",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "MerchantHeader": {
@@ -5348,6 +8573,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "name",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "orderReference",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "category",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "verified",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Set only when the host has verified the merchant."
+      },
+      {
+        "name": "logo",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Host-supplied logo. Defaults to the merchant's initials."
+      }
+    ],
     "copyWith": null
   },
   "PaymentStepIndicator": {
@@ -5388,6 +8650,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "steps",
+        "kind": "field",
+        "static": false,
+        "type": "List<String>",
+        "doc": ""
+      },
+      {
+        "name": "current",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": "Zero-based index of the active step."
+      }
+    ],
     "copyWith": null
   },
   "BalanceState": {
@@ -5502,6 +8780,57 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "state",
+        "kind": "field",
+        "static": false,
+        "type": "BalanceState",
+        "doc": ""
+      },
+      {
+        "name": "balance",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "shortfall",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": ""
+      },
+      {
+        "name": "limitUsed",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": ""
+      },
+      {
+        "name": "limitTotal",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": ""
+      },
+      {
+        "name": "action",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Optional host action such as \"Top up\"."
+      }
+    ],
     "copyWith": null
   },
   "PromoCodeStatus": {
@@ -5609,6 +8938,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "status",
+        "kind": "field",
+        "static": false,
+        "type": "PromoCodeStatus",
+        "doc": ""
+      },
+      {
+        "name": "appliedCode",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "discount",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": "Discount the host applied, shown next to the applied code."
+      },
+      {
+        "name": "message",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Host reason for a rejected code (\"Code expired\")."
+      },
+      {
+        "name": "onRemove",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "QuoteLineKind": {
@@ -5700,6 +9066,36 @@
       }
     ],
     "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "amount",
+        "kind": "field",
+        "static": false,
+        "type": "Money",
+        "doc": ""
+      },
+      {
+        "name": "kind",
+        "kind": "field",
+        "static": false,
+        "type": "QuoteLineKind",
+        "doc": ""
+      },
+      {
+        "name": "detail",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentQuote": {
@@ -5795,6 +9191,80 @@
       }
     ],
     "statics": [],
+    "members": [
+      {
+        "name": "id",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "revision",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": ""
+      },
+      {
+        "name": "lines",
+        "kind": "field",
+        "static": false,
+        "type": "List<QuoteLine>",
+        "doc": "Items, fees, discounts and taxes in display order. Fees are always shown."
+      },
+      {
+        "name": "total",
+        "kind": "field",
+        "static": false,
+        "type": "Money",
+        "doc": ""
+      },
+      {
+        "name": "expiresAt",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": ""
+      },
+      {
+        "name": "methodId",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "The payment method this quote was priced for, if method-specific."
+      },
+      {
+        "name": "items",
+        "kind": "getter",
+        "static": false,
+        "type": "Iterable<QuoteLine>",
+        "doc": ""
+      },
+      {
+        "name": "adjustments",
+        "kind": "getter",
+        "static": false,
+        "type": "Iterable<QuoteLine>",
+        "doc": ""
+      },
+      {
+        "name": "isExpiredAt",
+        "kind": "method",
+        "static": false,
+        "type": "bool",
+        "signature": "bool isExpiredAt(DateTime now)",
+        "doc": ""
+      },
+      {
+        "name": "termsDifferFrom",
+        "kind": "method",
+        "static": false,
+        "type": "bool",
+        "signature": "bool termsDifferFrom(PaymentQuote other)",
+        "doc": "True when the customer-visible terms differ, so prior consent no longer\ncovers this quote."
+      }
+    ],
     "copyWith": null
   },
   "PaymentMethodKind": {
@@ -5912,6 +9382,57 @@
       }
     ],
     "statics": [],
+    "members": [
+      {
+        "name": "id",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "kind",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentMethodKind",
+        "doc": ""
+      },
+      {
+        "name": "detail",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Masked secondary text such as \"Balance Rp250.000\" or \"•••• 4242\"."
+      },
+      {
+        "name": "unavailableReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "When non-null the method is shown disabled with this host-provided reason."
+      },
+      {
+        "name": "feeNote",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "isAvailable",
+        "kind": "getter",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentStatus": {
@@ -6036,6 +9557,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "status",
+        "kind": "field",
+        "static": false,
+        "type": "RefundStatus",
+        "doc": ""
+      },
+      {
+        "name": "amount",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": ""
+      },
+      {
+        "name": "updatedAt",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime?",
+        "doc": ""
+      },
+      {
+        "name": "safeReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentAction": {
@@ -6140,6 +9691,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "providerLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "accountNumber",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "amount",
+        "kind": "field",
+        "static": false,
+        "type": "Money",
+        "doc": ""
+      },
+      {
+        "name": "expiresAt",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": ""
+      },
+      {
+        "name": "steps",
+        "kind": "field",
+        "static": false,
+        "type": "List<String>",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentStatusSnapshot": {
@@ -6268,6 +9856,78 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "attemptId",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "serverReference",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "status",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentStatus",
+        "doc": ""
+      },
+      {
+        "name": "revision",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": "Monotonic server revision used to order snapshots."
+      },
+      {
+        "name": "updatedAt",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": ""
+      },
+      {
+        "name": "allowedActions",
+        "kind": "field",
+        "static": false,
+        "type": "Set<PaymentAction>",
+        "doc": ""
+      },
+      {
+        "name": "safeReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "refund",
+        "kind": "field",
+        "static": false,
+        "type": "RefundInfo",
+        "doc": ""
+      },
+      {
+        "name": "instructions",
+        "kind": "field",
+        "static": false,
+        "type": "VirtualAccountInstructions?",
+        "doc": ""
+      },
+      {
+        "name": "isCorrection",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "An official provider correction, the only way a succeeded payment may\nchange to another business status."
+      }
+    ],
     "copyWith": null
   },
   "SubmissionState": {
@@ -6442,6 +10102,107 @@
       }
     ],
     "statics": [],
+    "members": [
+      {
+        "name": "attemptId",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "quoteId",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "quoteRevision",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": ""
+      },
+      {
+        "name": "methodId",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "submission",
+        "kind": "field",
+        "static": false,
+        "type": "SubmissionState",
+        "doc": ""
+      },
+      {
+        "name": "snapshot",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentStatusSnapshot?",
+        "doc": "Last trusted snapshot; kept when a refresh fails so the UI can show the\nlast-known state."
+      },
+      {
+        "name": "observation",
+        "kind": "field",
+        "static": false,
+        "type": "Observation",
+        "doc": ""
+      },
+      {
+        "name": "lastCheckedAt",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime?",
+        "doc": ""
+      },
+      {
+        "name": "status",
+        "kind": "getter",
+        "static": false,
+        "type": "PaymentStatus?",
+        "doc": ""
+      },
+      {
+        "name": "serverReference",
+        "kind": "getter",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "isUnresolved",
+        "kind": "getter",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "allowsNewAttempt",
+        "kind": "getter",
+        "static": false,
+        "type": "bool",
+        "doc": "A new attempt is allowed only when the host says so and this attempt's\nresult is final and not a success."
+      },
+      {
+        "name": "availableActions",
+        "kind": "getter",
+        "static": false,
+        "type": "Set<PaymentAction>",
+        "doc": "Actions to offer. Never includes `PaymentAction.startNewAttempt` while\nthe outcome is unresolved."
+      },
+      {
+        "name": "reconcile",
+        "kind": "method",
+        "static": false,
+        "type": "ReconcileResult",
+        "signature": "ReconcileResult reconcile(PaymentStatusSnapshot incoming)",
+        "doc": "Applies an incoming snapshot using the ordering rules the host adapter\nmust uphold. Returns the updated attempt, or the unchanged attempt plus\na reason when the snapshot is ignored."
+      }
+    ],
     "copyWith": [
       "submission",
       "snapshot",
@@ -6534,6 +10295,29 @@
       }
     ],
     "statics": [],
+    "members": [
+      {
+        "name": "attempt",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentAttempt",
+        "doc": ""
+      },
+      {
+        "name": "rejection",
+        "kind": "field",
+        "static": false,
+        "type": "ReconcileRejection?",
+        "doc": ""
+      },
+      {
+        "name": "applied",
+        "kind": "getter",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "AuthorizationPhase": {
@@ -6627,6 +10411,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "instructions",
+        "kind": "field",
+        "static": false,
+        "type": "VirtualAccountInstructions",
+        "doc": ""
+      },
+      {
+        "name": "onElapsed",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentStatusView": {
@@ -6700,6 +10500,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "attempt",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentAttempt",
+        "doc": ""
+      },
+      {
+        "name": "amount",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": ""
+      },
+      {
+        "name": "instructions",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Manual payment instructions, shown after the explanation and before the\nactions, so the account to pay into comes before Check status.\n\nAbove 1.5× text they move after the actions. Not shown while the\noutcome is unknown, where an account to pay into would read as an\ninvitation to pay again."
+      },
+      {
+        "name": "busyAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentAction?",
+        "doc": "Action whose host call is running, shown as busy."
+      }
+    ],
     "copyWith": null
   },
   "RefundSection": {
@@ -6740,6 +10570,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "refund",
+        "kind": "field",
+        "static": false,
+        "type": "RefundInfo",
+        "doc": ""
+      },
+      {
+        "name": "paidAmount",
+        "kind": "field",
+        "static": false,
+        "type": "Money?",
+        "doc": "Original amount; a refund above it is treated as invalid host data."
+      }
+    ],
     "copyWith": null
   },
   "TransactionRecord": {
@@ -6859,6 +10705,87 @@
     "statics": [
       "where"
     ],
+    "members": [
+      {
+        "name": "id",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "amount",
+        "kind": "field",
+        "static": false,
+        "type": "Money",
+        "doc": ""
+      },
+      {
+        "name": "createdAt",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": ""
+      },
+      {
+        "name": "status",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentStatus?",
+        "doc": ""
+      },
+      {
+        "name": "merchant",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "methodLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "reference",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "refund",
+        "kind": "field",
+        "static": false,
+        "type": "RefundInfo",
+        "doc": ""
+      },
+      {
+        "name": "matches",
+        "kind": "method",
+        "static": false,
+        "type": "bool",
+        "signature": "bool matches(TransactionFilter filter)",
+        "doc": "Whether this record belongs in `filter`'s group."
+      },
+      {
+        "name": "where",
+        "kind": "static",
+        "static": true,
+        "type": "List<TransactionRecord>",
+        "signature": "static List<TransactionRecord> where( Iterable<TransactionRecord> records, { String query = '', TransactionFilter filter = TransactionFilter.all, })",
+        "doc": "Local search and filter for hosts that already hold the records.\nHosts that search on the server pass their results straight to\n`TransactionHistory` instead."
+      }
+    ],
     "copyWith": null
   },
   "TransactionListItem": {
@@ -6899,6 +10826,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "record",
+        "kind": "field",
+        "static": false,
+        "type": "TransactionRecord",
+        "doc": ""
+      },
+      {
+        "name": "onTap",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "TransactionHistory": {
@@ -7027,6 +10970,71 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "records",
+        "kind": "field",
+        "static": false,
+        "type": "List<TransactionRecord>",
+        "doc": "Already filtered for `query` and `filter`."
+      },
+      {
+        "name": "query",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "filter",
+        "kind": "field",
+        "static": false,
+        "type": "TransactionFilter",
+        "doc": ""
+      },
+      {
+        "name": "onQueryChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<String>",
+        "doc": ""
+      },
+      {
+        "name": "onFilterChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<TransactionFilter>",
+        "doc": ""
+      },
+      {
+        "name": "onOpen",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<TransactionRecord>",
+        "doc": ""
+      },
+      {
+        "name": "loading",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "error",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Safe message when the host could not load the list."
+      },
+      {
+        "name": "filters",
+        "kind": "field",
+        "static": false,
+        "type": "List<TransactionFilter>",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "TransactionDetail": {
@@ -7067,6 +11075,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "record",
+        "kind": "field",
+        "static": false,
+        "type": "TransactionRecord",
+        "doc": ""
+      },
+      {
+        "name": "actions",
+        "kind": "field",
+        "static": false,
+        "type": "List<Widget>",
+        "doc": "Host-chosen actions such as \"View receipt\" or \"Check status\". For an\nunconfirmed payment, offer a status check, never paying again."
+      }
+    ],
     "copyWith": null
   },
   "PromoKind": {
@@ -7199,6 +11223,71 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "id",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "kind",
+        "kind": "field",
+        "static": false,
+        "type": "PromoKind",
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "message",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "ctaLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "advertiser",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Who paid for a sponsored placement."
+      },
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData?",
+        "doc": "Kept for compatibility. Cards no longer draw it: a generic icon beside\nthe title adds nothing the title does not already say."
+      },
+      {
+        "name": "media",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Optional image or illustration supplied by the host (already loaded or\nwith its own loading state). Decorative: excluded from semantics."
+      },
+      {
+        "name": "terms",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Short conditions, e.g. \"Until 31 Dec. Min. purchase Rp50.000\"."
+      }
+    ],
     "copyWith": null
   },
   "PromoLayout": {
@@ -7287,6 +11376,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "content",
+        "kind": "field",
+        "static": false,
+        "type": "PromoContent",
+        "doc": ""
+      },
+      {
+        "name": "onDismiss",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "onAbout",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Opens the host's \"why am I seeing this\" explanation."
+      },
+      {
+        "name": "layout",
+        "kind": "field",
+        "static": false,
+        "type": "PromoLayout",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PromoSlotState": {
@@ -7416,6 +11535,50 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "state",
+        "kind": "field",
+        "static": false,
+        "type": "PromoSlotState",
+        "doc": ""
+      },
+      {
+        "name": "content",
+        "kind": "field",
+        "static": false,
+        "type": "PromoContent?",
+        "doc": ""
+      },
+      {
+        "name": "onDismiss",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<PromoContent>?",
+        "doc": ""
+      },
+      {
+        "name": "onAbout",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<PromoContent>?",
+        "doc": ""
+      },
+      {
+        "name": "layout",
+        "kind": "field",
+        "static": false,
+        "type": "PromoLayout",
+        "doc": ""
+      },
+      {
+        "name": "collapseWhenEmpty",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentReceipt": {
@@ -7467,6 +11630,15 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "data",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentReceiptData",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "PaymentReceiptData": {
@@ -7562,6 +11734,57 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "transactionId",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "merchantName",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "paidAt",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": ""
+      },
+      {
+        "name": "lines",
+        "kind": "field",
+        "static": false,
+        "type": "List<QuoteLine>",
+        "doc": ""
+      },
+      {
+        "name": "total",
+        "kind": "field",
+        "static": false,
+        "type": "Money",
+        "doc": ""
+      },
+      {
+        "name": "methodLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Already masked by the host, e.g. \"Saldo •••• 2190\"."
+      },
+      {
+        "name": "refund",
+        "kind": "field",
+        "static": false,
+        "type": "RefundInfo",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "ReceiptShareData": {
@@ -7675,6 +11898,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "text",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "ShareOutcome": {
@@ -7832,6 +12071,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "kind",
+        "kind": "field",
+        "static": false,
+        "type": "CaptureKind",
+        "doc": ""
+      },
+      {
+        "name": "overPreview",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "KycCaptureGuide": {
@@ -7993,6 +12248,99 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "kind",
+        "kind": "field",
+        "static": false,
+        "type": "CaptureKind",
+        "doc": ""
+      },
+      {
+        "name": "state",
+        "kind": "field",
+        "static": false,
+        "type": "DocumentSlotState",
+        "doc": ""
+      },
+      {
+        "name": "photo",
+        "kind": "field",
+        "static": false,
+        "type": "ImageProvider?",
+        "doc": ""
+      },
+      {
+        "name": "preview",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": ""
+      },
+      {
+        "name": "requirement",
+        "kind": "field",
+        "static": false,
+        "type": "DocumentRequirement?",
+        "doc": ""
+      },
+      {
+        "name": "tips",
+        "kind": "field",
+        "static": false,
+        "type": "List<String>?",
+        "doc": ""
+      },
+      {
+        "name": "needsUpdate",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "updateReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "onCapture",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "onRetake",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "onUsePhoto",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "onOpenSettings",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "aspectRatio",
+        "kind": "field",
+        "static": false,
+        "type": "double",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "VerificationStatus": {
@@ -8135,6 +12483,50 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "status",
+        "kind": "field",
+        "static": false,
+        "type": "VerificationStatus",
+        "doc": ""
+      },
+      {
+        "name": "requestId",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "safeReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "fieldsToFix",
+        "kind": "field",
+        "static": false,
+        "type": "Set<String>",
+        "doc": "Keys of `IdentityFieldSpec`s or `DocumentRequirement`s to correct."
+      },
+      {
+        "name": "allowedActions",
+        "kind": "field",
+        "static": false,
+        "type": "Set<VerificationAction>",
+        "doc": ""
+      },
+      {
+        "name": "updatedAt",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "DataRequirement": {
@@ -8175,6 +12567,22 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "purpose",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "IdentityFieldSpec": {
@@ -8292,6 +12700,64 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "key",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "hint",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "keyboardType",
+        "kind": "field",
+        "static": false,
+        "type": "TextInputType",
+        "doc": ""
+      },
+      {
+        "name": "inputFormatters",
+        "kind": "field",
+        "static": false,
+        "type": "List<TextInputFormatter>",
+        "doc": ""
+      },
+      {
+        "name": "textCapitalization",
+        "kind": "field",
+        "static": false,
+        "type": "TextCapitalization",
+        "doc": ""
+      },
+      {
+        "name": "autofillHints",
+        "kind": "field",
+        "static": false,
+        "type": "List<String>",
+        "doc": ""
+      },
+      {
+        "name": "maskInReview",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Review screens show only the last four characters."
+      }
+    ],
     "copyWith": null
   },
   "DocumentRequirement": {
@@ -8365,6 +12831,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "key",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "acceptedTypes",
+        "kind": "field",
+        "static": false,
+        "type": "Set<String>",
+        "doc": "MIME types the host accepts. A matching type is not proof the document\nis valid; the host still validates the content server-side."
+      },
+      {
+        "name": "maxBytes",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": ""
+      },
+      {
+        "name": "acceptedTypesLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Human label such as \"JPG or PNG\"."
+      }
+    ],
     "copyWith": null
   },
   "DocumentFile": {
@@ -8416,6 +12919,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "name",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "mimeType",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "sizeBytes",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "DocumentIssueKind": {
@@ -8509,6 +13035,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "kind",
+        "kind": "field",
+        "static": false,
+        "type": "DocumentIssueKind",
+        "doc": ""
+      },
+      {
+        "name": "safeMessage",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "canRetry",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "canOpenSettings",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Host capability: it can open the OS settings for this permission."
+      }
+    ],
     "copyWith": null
   },
   "DocumentSlotPhase": {
@@ -8658,6 +13214,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "phase",
+        "kind": "field",
+        "static": false,
+        "type": "DocumentSlotPhase",
+        "doc": ""
+      },
+      {
+        "name": "file",
+        "kind": "field",
+        "static": false,
+        "type": "DocumentFile?",
+        "doc": ""
+      },
+      {
+        "name": "requestId",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      },
+      {
+        "name": "progress",
+        "kind": "field",
+        "static": false,
+        "type": "double?",
+        "doc": ""
+      },
+      {
+        "name": "issue",
+        "kind": "field",
+        "static": false,
+        "type": "DocumentIssue?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "checkDocumentLimits": {
@@ -8751,6 +13344,36 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "requirements",
+        "kind": "field",
+        "static": false,
+        "type": "List<DataRequirement>",
+        "doc": ""
+      },
+      {
+        "name": "onContinue",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback",
+        "doc": ""
+      },
+      {
+        "name": "onOpenPolicy",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Opens the host's privacy policy; hidden when null."
+      },
+      {
+        "name": "consentLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "IdentityForm": {
@@ -8835,6 +13458,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "fields",
+        "kind": "field",
+        "static": false,
+        "type": "List<IdentityFieldSpec>",
+        "doc": ""
+      },
+      {
+        "name": "highlightFields",
+        "kind": "field",
+        "static": false,
+        "type": "Set<String>",
+        "doc": "Fields the host asked to correct (actionRequired)."
+      },
+      {
+        "name": "submitLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "DocumentUploadTile": {
@@ -8908,6 +13554,43 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "requirement",
+        "kind": "field",
+        "static": false,
+        "type": "DocumentRequirement",
+        "doc": ""
+      },
+      {
+        "name": "state",
+        "kind": "field",
+        "static": false,
+        "type": "DocumentSlotState",
+        "doc": ""
+      },
+      {
+        "name": "onPick",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Host picker/capture. Also used to replace a file mid-upload."
+      },
+      {
+        "name": "onOpenSettings",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "needsUpdate",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "VerificationReview": {
@@ -9005,6 +13688,44 @@
     "statics": [
       "mask"
     ],
+    "members": [
+      {
+        "name": "fields",
+        "kind": "field",
+        "static": false,
+        "type": "List<IdentityFieldSpec>",
+        "doc": ""
+      },
+      {
+        "name": "onEditDetails",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "onEditDocuments",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": ""
+      },
+      {
+        "name": "busy",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": ""
+      },
+      {
+        "name": "mask",
+        "kind": "static",
+        "static": true,
+        "type": "String",
+        "signature": "static String mask(String value)",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   },
   "VerificationStatusView": {
@@ -9067,6 +13788,29 @@
     ],
     "getters": [],
     "statics": [],
+    "members": [
+      {
+        "name": "snapshot",
+        "kind": "field",
+        "static": false,
+        "type": "VerificationSnapshot",
+        "doc": ""
+      },
+      {
+        "name": "outcomeUnknown",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "The last submit timed out: the host may or may not have received it."
+      },
+      {
+        "name": "busyAction",
+        "kind": "field",
+        "static": false,
+        "type": "VerificationAction?",
+        "doc": ""
+      }
+    ],
     "copyWith": null
   }
 }

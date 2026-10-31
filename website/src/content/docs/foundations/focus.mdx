@@ -42,3 +42,23 @@ The ring and press widgets are internal to the package. To match them on your ow
 - [Motion](/foundations/motion/) for the press duration and reduced motion.
 - [Accessibility](/concepts/accessibility/) for keyboard and screen-reader behavior.
 - [Color](/foundations/color/) for `textPrimary`.
+
+## Focus contract
+
+| Token / rule | Value | Source |
+| --- | --- | --- |
+| Focus ring | 2 px stroke, 2 px outside the control, radius +3, in `textPrimary` (white on pictures), keyboard highlight mode only | `focus_ring.dart:6-12, 101-110` |
+| Text input focus | 2 px `accent` border, never also the ring (B8) | D1 |
+| Press, compact controls (≤ 48 dp wide icon buttons, links, tabs) | `PaymentPressScale` → 0.96 over `press` | `focus_ring.dart:118-162`, `controls.dart:398` |
+| Press, full-width buttons and rows | Material pressed layer, no scale | `primitives.dart:423-426` |
+| Hover/focus fill | Removed by `PaymentFocusRing.withoutFocusFill`; pressed and hovered layers are kept | `focus_ring.dart:32-44` |
+| Clearance | ≥ 4 px between a focusable control and any clipping ancestor | `focus_ring.dart:11-12`, `PaymentTabs` side clip `controls.dart:353-361` |
+
+```text
+Text field? → accent border only
+Keyboard-focused control? → textPrimary ring
+Compact press? → pressedScale
+Full-width button/row? → Material pressed layer
+```
+
+Use semantic tokens only. Do: preserve 4 dp clearance around the existing focus ring. Don't: clip it or add a second ring to a field. PaymentSize small/medium/large changes only visual treatment; every layout and hit box stays at least 48×48 dp, visual centered (D29). **New** size consumers arrive in later phases. Internal ring and press helpers are not exported. There is no Stripe mapping. Nothing else exists.

@@ -1,94 +1,156 @@
 ---
 title: Color
-description: The PaymentTheme color tokens by role (backgrounds, borders, text, accent and status tones), with the values of the example Hairline brand.
+description: Semantic colors, generated Hairline light and dark values, and control edge rules.
 ---
 
 import Props from '../../../components/Props.astro';
-import Swatches from '../../../components/Swatches.astro';
+import TokenTable from '../../../components/TokenTable.astro';
+import Screen from '../../../components/Screen.astro';
 
-Every kit widget takes its colors from `PaymentTheme`. A widget never picks a color by itself, so a brand is a change of tokens, not a fork. To install a brand, see [Theming](/concepts/theming/).
+Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
 
-```dart
-final theme = PaymentTheme.of(context);
-final warning = theme.tone(StatusTone.warning);
+Which text color:
 
-Text('Total changed', style: TextStyle(color: warning.foreground));
+```
+Is the control disabled?            → disabled
+Is it a status word or status icon? → tone(t).foreground
+Is it on an accent fill?            → onAccent
+Is it a label, caption or muted icon? → textSecondary
+Default                             → textPrimary
 ```
 
-`PaymentTheme.of` returns the extension on your `ThemeData`, or `PaymentTheme.fromColorScheme` of your `ColorScheme` when none is installed.
+Which line:
 
-## Where the values come from
+```
+Is the line how someone finds a control (input, secondary button, unchecked box)? → border (≥ 3:1)
+Is it the selected or focused edge?  → accent (selected) / textPrimary ring (focus, §3.8)
+Default (separates content only)     → outline (may be < 3:1)
+```
 
-- **Status tones** (`info`, `success`, `warning`, `danger`) are fixed, contrast-checked values in `PaymentTheme.fromColorScheme`, whatever your seed color is. Their containers mix the foreground into your `surface`: 90% of the way to the surface in light mode, 84% in dark mode.
-- **Every other token** comes from your `ColorScheme`, or from what you set with `copyWith`. The tables below show the example app's Hairline brand (`example/lib/themes.dart`) so you can see a complete, contrast-checked set. Your values will differ.
 
-## Backgrounds
-
-<Swatches rows={[
-  { token: 'surface', light: '#FFFFFF', dark: '#131417', note: 'The page, sheets and dialogs. Sections sit flat on it.' },
-  { token: 'surfaceMuted', light: '#F5F6F8', dark: '#1C1E23', note: 'Disabled button fill, skeleton blocks, the selected navigation item.' },
+<TokenTable group="color" rows={[
+  {
+    "token": "surface",
+    "use": "Page, sheets, dialogs and flat sections.",
+    "dont": "Do not box normal sections."
+  },
+  {
+    "token": "surfaceMuted",
+    "use": "Disabled fills, skeletons and selected navigation.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "outline",
+    "use": "Decorative separators; may be below 3:1.",
+    "dont": "Never use for a control edge."
+  },
+  {
+    "token": "border",
+    "use": "Control edges, at least 3:1 on surface.",
+    "dont": "Never use for decorative rules."
+  },
+  {
+    "token": "textPrimary",
+    "use": "Titles, values, body and focus ring.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "textSecondary",
+    "use": "Labels, captions and muted icons.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "disabled",
+    "use": "Disabled text, icons and marks.",
+    "dont": "Do not replace with opacity."
+  },
+  {
+    "token": "accent",
+    "use": "Primary fill, selected controls, links, focused input edge.",
+    "dont": "Do not use as a status color or focus ring."
+  },
+  {
+    "token": "onAccent",
+    "use": "Text and icons on accent.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "neutral.foreground",
+    "use": "Status words and icons.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "neutral.container",
+    "use": "Status fill paired with foreground, icon and text.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "info.foreground",
+    "use": "Status words and icons.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "info.container",
+    "use": "Status fill paired with foreground, icon and text.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "success.foreground",
+    "use": "Status words and icons.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "success.container",
+    "use": "Status fill paired with foreground, icon and text.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "warning.foreground",
+    "use": "Status words and icons.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "warning.container",
+    "use": "Status fill paired with foreground, icon and text.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "danger.foreground",
+    "use": "Status words and icons.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "danger.container",
+    "use": "Status fill paired with foreground, icon and text.",
+    "dont": "Use only for this role."
+  }
 ]} />
 
-## Borders
+Values are exported from the real Hairline theme in `example/lib/themes.dart`, in both brightness modes. Hosts override tokens through `PaymentTheme.copyWith`. Tone containers mix foreground toward surface by 90% in light mode and 84% in dark mode. Neutral follows the host scheme. Text must reach 4.5:1, control edges and meaningful marks 3:1. Decorative rules may recede below 3:1.
 
-<Swatches rows={[
-  { token: 'outline', light: '#E3E6EC', dark: '#2C2E35', note: 'Decorative hairlines: dividers, the method-list edge, the action-bar top. May sit below 3:1.' },
-  { token: 'border', light: '#868C9A', dark: '#7E838E', note: 'The edge of a control: inputs, secondary buttons, unchecked boxes. At least 3:1 on surface (3.37:1 light, 4.85:1 dark here).' },
-]} />
+## Do and don't
 
-Use `outline` when the line only separates content and nothing breaks if someone cannot see it. Use `border` when the line is how someone finds a control. When you do not set `border`, it defaults to `textSecondary` a quarter of the way to `surface`.
+Do: `theme.border` on an input edge, as in the existing controls. Don't: `theme.outline` for that edge; it cannot identify a control at 3:1.
 
-## Text and icons
+## Raw-color exceptions
 
-<Swatches rows={[
-  { token: 'textPrimary', light: '#1A1F36', dark: '#ECEDF0', note: 'Titles, values, body text. Also the keyboard focus ring.' },
-  { token: 'textSecondary', light: '#5E6678', dark: '#A2A8B5', note: 'Labels, captions, icons beside text (5.76:1 light, 7.72:1 dark here).' },
-  { token: 'disabled', light: '#A6ABB5', dark: '#62656E', note: 'Label and icon of a disabled control, on surfaceMuted.' },
-]} />
+Camera overlay: `capture_widgets.dart:116,158` uses black54 and white over a host preview. Video controls/scrim: `video.dart:282,296,301,312,315,326,365` uses white70, white, black54 and black over imagery. Side sheet: `sheets.dart:192` uses black54 as its barrier. Transparent focus/surface tint entries remove Material fill rather than define a new color. No other raw-color styling is admitted.
 
-When you do not set `disabled`, it defaults to `textSecondary` 45% of the way to `surface`.
+The toast still uses Material SnackBar background defaults. D22 schedules its token restyle in 2C; this page does not claim that gap is fixed.
 
-## Accent
+## Stripe text color mapping
 
-<Swatches rows={[
-  { token: 'accent', light: '#1A1F36', dark: '#ECEDF0', note: 'Primary buttons, selected radios and tabs, the checked checkbox.' },
-  { token: 'onAccent', light: '#FFFFFF', dark: '#131417', note: 'Text and icons on accent.' },
-]} />
+| Stripe | PaymentTextColor | Token |
+| --- | --- | --- |
+| primary | `primary` | `textPrimary` |
+| secondary | `secondary` | `textSecondary` |
+| disabled | `disabled` | `disabled` |
+| brand | `accent` | `accent` |
+| info | `info` | `info.foreground` |
+| success | `success` | `success.foreground` |
+| attention | `warning` | `warning.foreground` |
+| critical | `danger` | `danger.foreground` |
 
-Hairline uses its ink as the accent, so the brand reads as calm. A host with a brand color sets `accent` to it and `onAccent` to a color that reaches 4.5:1 on it.
+These enums and theme tokens are the closed color set. Nothing else exists. **New** `PaymentBox` and **New** `PaymentKeyline` are planned consumers, not usable APIs.
 
-## Status tones
-
-Each tone is a `ToneColors` pair: a `foreground` for icons and text, and a `container` for the fill behind them. Foregrounds are the same for every host. Containers below are computed for the Hairline surfaces (`#FFFFFF` and `#131417`).
-
-<Swatches rows={[
-  { token: 'info.foreground', light: '#2A55A8', dark: '#93B2F0', note: 'Fixed. 7.09:1 on white, 8.65:1 on #131417.' },
-  { token: 'info.container', light: '#EAEEF6', dark: '#272D3A', note: 'Computed from the foreground and surface.' },
-  { token: 'success.foreground', light: '#1D6B45', dark: '#6FC79B', note: 'Fixed. 6.48:1 on white, 9.05:1 on #131417.' },
-  { token: 'success.container', light: '#E8F0EC', dark: '#22312C', note: 'Computed from the foreground and surface.' },
-  { token: 'warning.foreground', light: '#8A5300', dark: '#E3A64C', note: 'Fixed. 6.33:1 on white, 8.62:1 on #131417.' },
-  { token: 'warning.container', light: '#F3EEE6', dark: '#342B1F', note: 'Computed from the foreground and surface.' },
-  { token: 'danger.foreground', light: '#A8231C', dark: '#F2897F', note: 'Fixed. 7.19:1 on white, 7.60:1 on #131417. Also the destructive button fill.' },
-  { token: 'danger.container', light: '#F6E9E8', dark: '#372728', note: 'Computed from the foreground and surface.' },
-]} />
-
-`neutral` follows your scheme: `onSurfaceVariant` for the foreground and `surfaceContainerHigh` for the container. It has no fixed value to show.
-
-A tone never carries a status alone. `StatusBadge`, `NoticeBanner`, `StatusHeader` and `showPaymentSnackBar` always pair the tone with an icon and words, and the [status band](/components/status-header/) adds a shape: hatched when the outcome is not known yet. Do the same in your own screens.
-
-## Contrast rules
-
-- Text reaches 4.5:1 on the background it sits on. Each fixed tone foreground reaches at least 5.8:1 on white and 7.6:1 on `#131417`.
-- Control edges (`border`) and meaningful icons reach 3:1.
-- Decorative rules (`outline`) may be lower, because nothing depends on seeing them.
-- Disabled controls are exempt, but `disabled` stays readable on `surfaceMuted`.
-
-## API
-
-<Props names={['PaymentTheme', 'ToneColors', 'StatusTone']} />
-
-## See also
-
-- [Theming](/concepts/theming/) to install a brand for light and dark.
-- [Typography](/foundations/typography/) and [Spacing and radius](/foundations/spacing/) for the other tokens.
-- [Accessibility](/concepts/accessibility/) for how the kit is checked.
+<Props names={['PaymentTheme','ToneColors','StatusTone','PaymentTextColor']} members />

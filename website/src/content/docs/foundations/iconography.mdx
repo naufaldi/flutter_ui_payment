@@ -1,0 +1,52 @@
+---
+title: Iconography
+description: Fixed icon meanings, sizes and RTL behavior from the Flutter SDK.
+---
+
+import Props from '../../../components/Props.astro';
+import TokenTable from '../../../components/TokenTable.astro';
+import Screen from '../../../components/Screen.astro';
+
+Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
+
+Use Flutter SDK Material icons. Never add a second family. **New** `PaymentIcon` will consume the size and color enums in 4A; it is not implemented.
+
+```text
+Inside badge? → xsmall
+Compact slot? → small
+Beside 15/20 text? → medium, first-line centered
+State illustration? → large
+Privacy mask? → xlarge
+```
+
+| `PaymentIconSize` (Stripe) | Size | Use for | Color |
+| --- | --- | --- | --- |
+| `xsmall` (12) | 14 | Inside a badge (`primitives.dart:531`) or chip. 14, not 12, is the kit's smallest icon | Tone `foreground` |
+| `small` (16) | 16 | Existing merchant verification mark (`payment_extras.dart:237`); planned small control slots | Label color |
+| `medium` (20), default | 20, scales with text up to 1.6×, first-line centered | Beside 15/20 text: row leading, button icon, banner, status header, state message, chevron, close, copy | `textSecondary`; tone `foreground` for status; `accent` only for an icon that is the action itself (copy) |
+| `large` (32) | 32 | Existing video control (`video.dart:281`); planned state art | `textSecondary` |
+| `xlarge` (64) | 48 | `PrivacyMask` (`primitives.dart:844`) | `textSecondary` |
+| — | 32 / 36 | Video overlay only (`video.dart:281, 325`); documented media exception | `Colors.white` on scrim |
+
+## Meanings
+
+<Props names={['PaymentIcons','PaymentIconSize']} members />
+
+| Tone | PaymentIcons |
+| --- | --- |
+| success | success |
+| warning | warning |
+| danger | danger |
+| info, neutral | info |
+
+An icon always has adjacent words or an accessible label/tooltip. Status always combines color, icon and text. Keep the outlined family; audited exceptions are copy_rounded (3B), warning_amber_rounded and hourglass_top (2C), upload_file (4B). Media keeps play_arrow, pause and replay. No glyph is swapped in Phase 1.
+
+Do: `Icons.chevron_right`, relying on SDK matchTextDirection in RTL. Don't: manually swap to chevron_left. ActionTile currently double flips this way; Phase 2D owns the fix and RTL test.
+
+## Payment pattern mappings
+
+Transaction status maps pending→schedule, unknown→help_outline, requiresAction→touch_app_outlined, processing→sync, succeeded→check_circle_outline, failed→error_outline, canceled→block, expired→timer_off_outlined (`payment/transactions.dart:80–95`). Payment status adds submission sending→sync and outcomeUnknown or missing snapshot→help_outline; refund none→remove, pending→schedule, partial→call_split, refunded→undo, failed→error_outline (`payment_status.dart`, _StatusLook and refund switch). These remain Tier 2 mappings, not extra foundation meanings.
+
+The sizes and meanings above are closed. Nothing else exists.
+
+<Screen name="ios_catalog_foundation" alt="Foundation specimen showing existing icon and status treatments." />

@@ -1,62 +1,109 @@
 ---
 title: Typography
-description: The kit's text roles (seven sizes, two weights), tabular figures for money, monospace for references, and how text behaves at large sizes.
+description: Public PaymentType roles, numeric modifiers and large-text behavior.
 ---
 
-Kit widgets set text through a small set of roles: seven sizes, two weights, with explicit line height and no extra letter spacing. The font is always yours. The package bundles no fonts, and every role copies the family from your `textTheme.bodyMedium`.
+import Props from '../../../components/Props.astro';
+import TokenTable from '../../../components/TokenTable.astro';
+import Screen from '../../../components/Screen.astro';
 
-## Roles
+Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
 
-| Role | Size / line | Weight | Used for |
-| --- | --- | --- | --- |
-| `display` | 32 / 36 | `amountWeight` (600) | The one display amount on a screen, such as the total. Tracking −0.32. |
-| `amountLarge` | 20 / 28 | `amountWeight` (600) | Action-bar total, balance, a virtual account number, an entered amount. |
-| `title` | 17 / 24 | 600 | Sheet, dialog and app-bar titles. |
-| `heading` | 15 / 20 | 600 | Section and status titles, the Total row, button labels. |
-| `body` | 15 / 22 | 400 | Paragraphs. |
-| `label` | 15 / 20 | 400 | Single-line row text: labels, values, list titles. |
-| `caption` | 13 / 18 | 400 | Supporting lines under a title, in `textSecondary`. |
-| `tag` | 12 / 16 | 600 | Badges and tags. The tone sets the color. |
-| `input` | 16 / 24 | 400 | Text fields. |
+`PaymentType.of(context)` exposes nine roles. Every role inherits the host font from textTheme.bodyMedium; the kit bundles no fonts. Values below show size, line, weight and tracking.
 
-The roles are internal (`PaymentType` is not exported), so your own screens use your text theme. To match the kit, use the same sizes for the same jobs.
+```text
+One display amount? → display
+Action-bar total or balance? → amountLarge
+Sheet/dialog title? → title
+Section/status title or button? → heading
+Paragraph? → bodyFor(context)
+Row label/value? → label
+Supporting line? → caption
+Short status? → tag
+Field entry? → input
+```
 
-## What you can change
+<TokenTable group="type" rows={[
+  {
+    "token": "display",
+    "use": "One display amount per screen.",
+    "dont": "Never two on one screen."
+  },
+  {
+    "token": "amountLarge",
+    "use": "Action-bar total, balance, VA number, entered amount.",
+    "dont": "Not row amounts."
+  },
+  {
+    "token": "title",
+    "use": "Sheet, dialog and app-bar title.",
+    "dont": "Not section titles."
+  },
+  {
+    "token": "heading",
+    "use": "Section and status titles, Total row, buttons.",
+    "dont": "Not paragraphs."
+  },
+  {
+    "token": "body",
+    "use": "Paragraphs; bodyFor tightens leading above 1.5×.",
+    "dont": "Not single-line rows."
+  },
+  {
+    "token": "label",
+    "use": "Row labels, values, tabs and row amounts.",
+    "dont": "Not paragraphs."
+  },
+  {
+    "token": "caption",
+    "use": "Supporting lines, helper text, meta, legends.",
+    "dont": "Not essential action instructions."
+  },
+  {
+    "token": "tag",
+    "use": "Badge or copy feedback, at most three words.",
+    "dont": "Not more than three words."
+  },
+  {
+    "token": "input",
+    "use": "Text inside fields.",
+    "dont": "Not field labels."
+  }
+]} />
 
-You brand text through your font and three `PaymentTheme` tokens:
+## Modifiers
 
-- Your app font, from `ThemeData.textTheme`. Every role uses it.
-- `amountWeight` sets the weight of the display and large amounts. The example's Lumen brand uses `FontWeight.w700`.
-- `amountFontFamily` sets a separate family for amounts.
-- `referenceFontFamily` is the font for things people copy or compare digit by digit, such as virtual account numbers, transaction IDs and promo codes. It defaults to the platform monospace (Menlo, then `monospace` and Courier).
+Use `type.tabular(style)` for changing or aligned numbers. Use `type.reference(style)` for VA numbers, transaction IDs and promo codes: it adds tabular figures in the host reference font (Menlo, monospace, Courier fallback). PaymentType has no weight modifier; choose heading instead of label for hierarchy. Hosts may set amountWeight, amountFontFamily and referenceFontFamily.
+
+Do: `PaymentType.of(context).caption`, as the existing rows do. Don't: `TextStyle(fontSize: 13)`, which loses host font and semantic intent.
 
 ```dart
-PaymentTheme.fromColorScheme(scheme).copyWith(
-  amountWeight: FontWeight.w700,
-  referenceFontFamily: 'JetBrains Mono',
+final type = PaymentType.of(context);
+final rowAmount = type.tabular(type.label);
+final reference = type.reference(type.label);
+SizedBox(
+  height: PaymentType.firstLineHeight(context),
+  child: const Center(child: Icon(PaymentIcons.info)),
 );
 ```
 
-## Numbers
+Above 1.5×, rows wrap values and bodyFor uses 1.3 leading. At 200%, titles still wrap. Amounts at 20 and above and adjacent medium icons clamp at 1.6×; amounts scale down rather than hide digits. Use sentence case, specific copy and put key words first. Never truncate an action label.
 
-- Amounts use tabular figures, so digits line up in columns and do not shift as a countdown or a total changes.
-- References use `referenceFontFamily` with tabular figures, so `0` and `O`, or `1` and `l`, are easy to tell apart when someone types them into a banking app.
-- Only totals are heavy. Row amounts use the regular `label` weight.
+## Stripe mapping
 
-## Large text
+| Stripe font | PaymentTextRole |
+| --- | --- |
+| title | title |
+| subtitle, heading, subheading | heading |
+| lead, body | body |
+| bodyEmphasized | body + semibold |
+| caption | caption |
+| kicker | tag |
 
-- Above 1.5× text scale, rows let the value wrap under the label when the two do not fit on one line, and paragraphs tighten from a line height of 22/15 to 1.3.
-- Amounts of 20 px and up stop growing at 1.6×, as platform large titles do. An amount that still does not fit scales down instead of being clipped: a hidden digit is worse than a smaller one.
-- Icons beside text grow with it, up to 1.6×.
+PaymentFontWeight is regular (400), semibold (600), bold (700). Bold is only for emphasis inside running text. **New** `PaymentInline` is its planned consumer. This does not add a tenth role. Nothing else exists.
 
-## Content guidelines
+## Migration
 
-- Use sentence case for titles, labels and buttons.
-- Keep one display amount per screen. If two numbers compete, the screen has two jobs.
-- Put the most important words first. At large text, the end of a line is what wraps.
+`theme.amountStyle(context)` remains the display alias. The deprecated large parameter becomes `type.tabular(type.label)` for row amounts; choose `type.tabular(type.heading)` only when preserving the old 600 weight is required.
 
-## See also
-
-- [Amount text](/components/amount-text/) for formatted money.
-- [Color](/foundations/color/) for text colors.
-- [Accessibility](/concepts/accessibility/) for large-text checks.
+<Props names={['PaymentType','PaymentTextRole','PaymentFontWeight']} members />

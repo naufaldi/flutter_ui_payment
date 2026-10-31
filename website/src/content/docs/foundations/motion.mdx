@@ -3,6 +3,8 @@ title: Motion
 description: Motion is feedback only. PaymentMotion holds the tokens, and everything collapses to zero under reduced motion.
 ---
 
+import TokenTable from '../../../components/TokenTable.astro';
+
 import Props from '../../../components/Props.astro';
 
 Motion in the kit is feedback: a press was heard, a status changed, a step moved forward. Durations stay under 300 ms, exits are faster than enters, and nothing moves on its own.
@@ -11,15 +13,58 @@ Motion in the kit is feedback: a press was heard, a status changed, a step moved
 
 `PaymentMotion.of(context)` returns the tokens for the current context. Every duration is `Duration.zero` when the platform or host asks for reduced motion (`MediaQueryData.disableAnimations`).
 
-| Token | Value | Used for |
-| --- | --- | --- |
-| `press` | 100 ms | Press feedback and color changes |
-| `quick` | 150 ms | Selection and border changes |
-| `enter` | 220 ms | A status or content swap entering |
-| `exit` | 150 ms | The matching exit |
-| `sheetEnter` | 280 ms | Bottom sheets and side panels opening |
-| `sheetExit` | 200 ms | The matching close |
-| `pressedScale` | 0.96 | Compact controls while held (1 under reduced motion) |
+<TokenTable group="motion" rows={[
+  {
+    "token": "press",
+    "use": "Press feedback and colors.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "quick",
+    "use": "Selection and borders.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "enter",
+    "use": "Status/content entering.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "exit",
+    "use": "Matching exit.",
+    "dont": "Never slower than entry."
+  },
+  {
+    "token": "sheetEnter",
+    "use": "Sheet opening.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "sheetExit",
+    "use": "Sheet closing.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "pressedScale",
+    "use": "Compact controls held.",
+    "dont": "Never full-width buttons or rows."
+  },
+  {
+    "token": "easeOut",
+    "use": "Entering or response.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "easeInOut",
+    "use": "On-screen size or position.",
+    "dont": "Use only for this role."
+  },
+  {
+    "token": "drawer",
+    "use": "Sheets.",
+    "dont": "Use only for this role."
+  }
+]} />
 
 Curves are static: `PaymentMotion.easeOut` (strong ease-out, `Cubic(0.23, 1, 0.32, 1)`), `easeInOut` for elements already on screen, and `drawer` (`Cubic(0.32, 0.72, 0, 1)`) for sheets.
 
@@ -56,3 +101,15 @@ AnimatedSwitcher(
 - [Focus and press](/foundations/focus/) for the 0.96 press scale.
 - [Spinner](/components/spinner/) and [Loading skeleton](/components/loading-skeleton/) for waiting states.
 - [Accessibility](/concepts/accessibility/) for reduced motion.
+
+## Choose feedback
+
+```text
+Press? → press
+Selection/border? → quick
+Status/content swap? → enter + exit
+Sheet? → sheetEnter + sheetExit, drawer curve
+Reduced motion? → zero duration, scale 1
+```
+
+Use semantic motion tokens only. Do: the existing AnimatedSwitcher enter/exit pair above. Don't: a raw 400 ms duration or animated countdown ticks. Stripe Apps components define no motion tokens. The token set above is closed. Nothing else exists.
