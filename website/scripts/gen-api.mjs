@@ -53,6 +53,14 @@ function docAbove(lines, index) {
   return cleanDoc(doc.join('\n'));
 }
 
+function deprecatedAbove(lines, index) {
+  for (let i = index - 1; i >= 0 && /^\s*@/.test(lines[i]); i--) {
+    const match = lines[i].match(/^\s*@Deprecated\('([^']*)'\)/);
+    if (match) return { deprecated: match[1] };
+  }
+  return {};
+}
+
 function cleanDoc(text) {
   return text
     .replace(/\[([A-Za-z_][\w.]*)\]/g, '`$1`')
@@ -238,6 +246,12 @@ for (const {rel, show} of files) {
       continue;
     }
 
+    const typedefMatch = line.match(/^typedef ([A-Z]\w*)(?:<[^>]+>)? = ([A-Z][\w<>?, ]*);/);
+    if (typedefMatch) {
+      add(typedefMatch[1], { kind: 'typedef', file, doc: docAbove(lines, i), aliasOf: typedefMatch[2].trim(), ...deprecatedAbove(lines, i) });
+      continue;
+    }
+
     const classMatch = line.match(/^(abstract )?class ([A-Z]\w*)(?:<[^>]+>)?(.*)$/);
     if (classMatch) {
       const name = classMatch[2];
@@ -307,6 +321,7 @@ for (const {rel, show} of files) {
         .filter(([k]) => k.startsWith('get:'))
         .map(([k, v]) => ({ name: k.slice(4), type: v.type, doc: v.doc }));
       add(name, {
+        ...deprecatedAbove(lines, i),
         kind: classMatch[1] ? 'abstract class' : 'class',
         file,
         doc: docAbove(lines, i),
@@ -329,6 +344,7 @@ for (const {rel, show} of files) {
       const raw = parenContent(sig, sig.indexOf('('));
       add(fnMatch[2], {
         kind: 'function',
+        ...deprecatedAbove(lines, i),
         file,
         doc: docAbove(lines, i),
         returns: fnMatch[1].trim(),

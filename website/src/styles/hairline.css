@@ -376,3 +376,8 @@ starlight-theme-select select {
   border: 1px solid var(--fup-rule);
   border-radius: 4px;
 }
+
+.fup-api .fup-deprecated {
+  color: var(--sl-color-gray-2);
+  font-size: var(--sl-text-sm);
+}
