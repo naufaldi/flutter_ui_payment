@@ -9,6 +9,9 @@ import 'payment_localizations.dart';
 extension KitStrings on PaymentLocalizations {
   String _k(String en, String id) => languageCode == 'id' ? id : en;
 
+  /// Spoken percentage.
+  String chartPercent(String value) => _k('$value percent', '$value persen');
+
   // Charts
   String get chartLine => _k('Line chart', 'Grafik garis');
   String get chartBar => _k('Bar chart', 'Grafik batang');

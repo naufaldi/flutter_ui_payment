@@ -7,7 +7,10 @@ import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/primitives.dart';
+import '../foundation/row_shell.dart';
+import '../foundation/payment_tokens.dart';
 import '../interaction/interaction.dart';
+import '../controls/controls.dart';
 import 'chart_geometry.dart';
 import 'chart_models.dart';
 import 'chart_painters.dart';
@@ -15,17 +18,47 @@ import 'chart_painters.dart';
 bool _oneCurrency(Iterable<Money?> values) =>
     values.whereType<Money>().map((v) => v.currency).toSet().length <= 1;
 
+/// Trends across periods, with gaps for missing readings.
 class PaymentLineChart extends StatefulWidget {
+  /// Creates a chart.
   const PaymentLineChart({
     super.key,
-    required this.points,
+    this.points = const [],
+    this.series = const [],
+    this.unit = PaymentChartUnit.money,
+    this.axis = PaymentChartAxis.both,
+    this.grid = PaymentChartAxis.y,
+    this.showLegend = true,
     this.zeroBased = false,
     this.inspectable = true,
     this.semanticLabel,
   });
+
+  /// Single-series points; leave empty when providing series.
   final List<ChartPoint> points;
+
+  /// Named series with matching period labels; at most three.
+  final List<PaymentChartSeries> series;
+
+  /// Which reading to display and announce.
+  final PaymentChartUnit unit;
+
+  /// Axes whose labels are visible.
+  final PaymentChartAxis axis;
+
+  /// Axes whose grid rules are visible.
+  final PaymentChartAxis grid;
+
+  /// Whether to show the series legend.
+  final bool showLegend;
+
+  /// Whether the scale includes zero.
   final bool zeroBased;
+
+  /// Whether pointer gestures select a reading.
   final bool inspectable;
+
+  /// Host-authored replacement for the generated summary.
   final String? semanticLabel;
   @override
   State<PaymentLineChart> createState() => _PaymentLineChartState();
@@ -35,21 +68,54 @@ class _PaymentLineChartState extends State<PaymentLineChart> {
   @override
   Widget build(BuildContext context) => _PointChart(
     points: widget.points,
+    series: widget.series,
+    unit: widget.unit,
+    axis: widget.axis,
+    grid: widget.grid,
+    showLegend: widget.showLegend,
     zeroBased: widget.zeroBased,
     inspectable: widget.inspectable,
     semanticLabel: widget.semanticLabel,
   );
 }
 
+/// Non-negative grouped readings across periods.
 class PaymentBarChart extends StatefulWidget {
+  /// Creates a chart.
   const PaymentBarChart({
     super.key,
-    required this.points,
+    this.points = const [],
+    this.series = const [],
+    this.unit = PaymentChartUnit.money,
+    this.axis = PaymentChartAxis.both,
+    this.grid = PaymentChartAxis.y,
+    this.showLegend = true,
     this.inspectable = true,
     this.semanticLabel,
   });
+
+  /// Single-series points; leave empty when providing series.
   final List<ChartPoint> points;
+
+  /// Named series with matching period labels; at most three.
+  final List<PaymentChartSeries> series;
+
+  /// Which reading to display and announce.
+  final PaymentChartUnit unit;
+
+  /// Axes whose labels are visible.
+  final PaymentChartAxis axis;
+
+  /// Axes whose grid rules are visible.
+  final PaymentChartAxis grid;
+
+  /// Whether to show the series legend.
+  final bool showLegend;
+
+  /// Whether pointer gestures select a reading.
   final bool inspectable;
+
+  /// Host-authored replacement for the generated summary.
   final String? semanticLabel;
   @override
   State<PaymentBarChart> createState() => _PaymentBarChartState();
@@ -59,32 +125,64 @@ class _PaymentBarChartState extends State<PaymentBarChart> {
   @override
   Widget build(BuildContext context) => _PointChart(
     points: widget.points,
+    series: widget.series,
+    unit: widget.unit,
+    axis: widget.axis,
+    grid: widget.grid,
+    showLegend: widget.showLegend,
     bars: true,
     inspectable: widget.inspectable,
     semanticLabel: widget.semanticLabel,
   );
 }
 
+/// Compact trend with optional pointer inspection.
 class PaymentSparkline extends StatelessWidget {
+  /// Creates a chart.
   const PaymentSparkline({
     super.key,
-    required this.points,
+    this.points = const [],
+    this.series = const [],
+    this.unit = PaymentChartUnit.money,
+    this.inspectable = false,
     this.width = 80,
     this.height = 24,
     this.semanticLabel,
   });
+
+  /// Single-series points; leave empty when providing series.
   final List<ChartPoint> points;
+
+  /// Named series with matching period labels; at most three.
+  final List<PaymentChartSeries> series;
+
+  /// Which reading to display and announce.
+  final PaymentChartUnit unit;
+
+  /// Whether pointer gestures select a reading.
+  final bool inspectable;
+
+  /// Width.
   final double width;
+
+  /// Height.
   final double height;
+
+  /// Host-authored replacement for the generated summary.
   final String? semanticLabel;
   @override
   Widget build(BuildContext context) => SizedBox(
     width: width,
-    height: height,
+    height: inspectable ? math.max(height, 48) : height,
     child: _PointChart(
       points: points,
+      series: series,
+      unit: unit,
+      axis: PaymentChartAxis.none,
+      grid: PaymentChartAxis.none,
+      showLegend: false,
       spark: true,
-      inspectable: false,
+      inspectable: inspectable,
       semanticLabel: semanticLabel,
     ),
   );
@@ -92,18 +190,50 @@ class PaymentSparkline extends StatelessWidget {
 
 class _PointChart extends StatefulWidget {
   const _PointChart({
-    required this.points,
+    this.points = const [],
+    this.series = const [],
+    this.unit = PaymentChartUnit.money,
+    this.axis = PaymentChartAxis.both,
+    this.grid = PaymentChartAxis.y,
+    this.showLegend = true,
     this.bars = false,
     this.spark = false,
     this.zeroBased = false,
     this.inspectable = true,
     this.semanticLabel,
   });
+
+  /// Single-series points; leave empty when providing series.
   final List<ChartPoint> points;
+
+  /// Named series with matching period labels; at most three.
+  final List<PaymentChartSeries> series;
+
+  /// Which reading to display and announce.
+  final PaymentChartUnit unit;
+
+  /// Axes whose labels are visible.
+  final PaymentChartAxis axis;
+
+  /// Axes whose grid rules are visible.
+  final PaymentChartAxis grid;
+
+  /// Whether to show the series legend.
+  final bool showLegend;
+
+  /// Bars.
   final bool bars;
+
+  /// Spark.
   final bool spark;
+
+  /// Whether the scale includes zero.
   final bool zeroBased;
+
+  /// Whether pointer gestures select a reading.
   final bool inspectable;
+
+  /// Host-authored replacement for the generated summary.
   final String? semanticLabel;
   @override
   State<_PointChart> createState() => _PointChartState();
@@ -113,13 +243,35 @@ class _PointChartState extends State<_PointChart> {
   int? selected;
   @override
   Widget build(BuildContext context) {
+    assert(widget.points.isEmpty || widget.series.isEmpty);
+    assert(widget.series.length <= (widget.spark ? 2 : 3));
+    final series = widget.series.isEmpty
+        ? [PaymentChartSeries(label: '', points: widget.points)]
+        : widget.series;
+    final points = series.first.points;
     assert(
-      _oneCurrency(widget.points.map((p) => p.value)),
+      series.every(
+        (s) =>
+            s.points.length == points.length &&
+            List.generate(
+              points.length,
+              (i) => s.points[i].label == points[i].label,
+            ).every((v) => v),
+      ),
+    );
+    final all = series.expand((s) => s.points);
+    assert(
+      widget.unit != PaymentChartUnit.money ||
+          _oneCurrency(all.map((p) => p.value)),
       'Use one currency per chart.',
     );
     assert(
       !widget.bars ||
-          widget.points.every((p) => p.value == null || !p.value!.isNegative),
+          all.every(
+            (p) =>
+                chartReading(p, widget.unit) == null ||
+                chartReading(p, widget.unit)! >= 0,
+          ),
     );
     final l10n = PaymentLocalizations.of(context);
     final theme = PaymentTheme.of(context);
@@ -130,22 +282,30 @@ class _PointChartState extends State<_PointChart> {
         ? l10n.chartBar
         : l10n.chartLine;
     final keys = <String>[];
-    if (widget.points.any(
-      (p) => p.value != null && p.status == ChartPointStatus.pending,
+    if (all.any(
+      (p) =>
+          chartReading(p, widget.unit) != null &&
+          p.status == ChartPointStatus.pending,
     )) {
       keys.add('○ ${l10n.chartPendingKey}');
     }
-    if (widget.points.any(
-      (p) => p.value != null && p.status == ChartPointStatus.unknown,
+    if (all.any(
+      (p) =>
+          chartReading(p, widget.unit) != null &&
+          p.status == ChartPointStatus.unknown,
     )) {
       keys.add('▧ ${l10n.chartUnknownKey}');
     }
-    if (widget.points.any((p) => p.value == null)) {
+    if (all.any((p) => chartReading(p, widget.unit) == null)) {
       keys.add('┄ ${l10n.chartNoData}');
     }
     return Semantics(
       container: true,
-      label: widget.semanticLabel ?? chartSummary(l10n, kind, widget.points),
+      label:
+          widget.semanticLabel ??
+          (series.length == 1
+              ? chartSummary(l10n, kind, points, widget.unit)
+              : '$kind ${points.isEmpty ? '' : l10n.chartRange(points.first.label, points.last.label, points.length)} ${series.map((s) => '${s.label}: ${chartSummary(l10n, '', s.points, widget.unit, false)}').join(' ')}'),
       child: ExcludeSemantics(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -159,9 +319,23 @@ class _PointChartState extends State<_PointChart> {
                   child: LayoutBuilder(
                     builder: (context, box) {
                       final painter = ChartPainter(
-                        points: widget.points,
+                        series: series,
+                        unit: widget.unit,
+                        colors: meterColors(theme, series.length),
+                        showX:
+                            widget.axis == PaymentChartAxis.x ||
+                            widget.axis == PaymentChartAxis.both,
+                        showY:
+                            widget.axis == PaymentChartAxis.y ||
+                            widget.axis == PaymentChartAxis.both,
+                        gridX:
+                            widget.grid == PaymentChartAxis.x ||
+                            widget.grid == PaymentChartAxis.both,
+                        gridY:
+                            widget.grid == PaymentChartAxis.y ||
+                            widget.grid == PaymentChartAxis.both,
                         theme: theme,
-                        format: l10n.moneyFormat,
+                        l10n: l10n,
                         style: type.caption.tabular,
                         scaler: MediaQuery.textScalerOf(
                           context,
@@ -172,7 +346,7 @@ class _PointChartState extends State<_PointChart> {
                         selected: selected,
                       );
                       void inspect(Offset position, bool toggle) {
-                        if (!widget.inspectable || widget.points.isEmpty) {
+                        if (!widget.inspectable || points.isEmpty) {
                           return;
                         }
                         final area = painter.plot(box.biggest);
@@ -183,10 +357,9 @@ class _PointChartState extends State<_PointChart> {
                             );
                         final index =
                             (widget.bars
-                                    ? (fraction * widget.points.length).floor()
-                                    : (fraction * (widget.points.length - 1))
-                                          .round())
-                                .clamp(0, widget.points.length - 1);
+                                    ? (fraction * points.length).floor()
+                                    : (fraction * (points.length - 1)).round())
+                                .clamp(0, points.length - 1);
                         setState(
                           () => selected = toggle && selected == index
                               ? null
@@ -195,10 +368,20 @@ class _PointChartState extends State<_PointChart> {
                       }
 
                       final point =
-                          selected != null && selected! < widget.points.length
-                          ? widget.points[selected!]
+                          selected != null && selected! < points.length
+                          ? points[selected!]
                           : null;
-                      return MouseRegion(
+                      final index =
+                          selected ??
+                          points.lastIndexWhere(
+                            (p) =>
+                                p.status == ChartPointStatus.settled &&
+                                chartReading(p, widget.unit) != null,
+                          );
+                      final message = index < 0
+                          ? l10n.chartNoData
+                          : '${points[index].label} · ${formatChartValue(l10n, chartReading(points[index], widget.unit) ?? 0, widget.unit, currency: points[index].value?.currency ?? 'IDR')}';
+                      final plot = MouseRegion(
                         onHover: (event) => inspect(event.localPosition, false),
                         onExit: (_) => setState(() => selected = null),
                         child: GestureDetector(
@@ -210,7 +393,7 @@ class _PointChartState extends State<_PointChart> {
                               Positioned.fill(
                                 child: CustomPaint(painter: painter),
                               ),
-                              if (point != null)
+                              if (point != null && !widget.spark)
                                 Positioned(
                                   top: 0,
                                   left: 4,
@@ -218,13 +401,18 @@ class _PointChartState extends State<_PointChart> {
                                   child: ColoredBox(
                                     color: theme.surface,
                                     child: Text(
-                                      '${point.label} · ${point.value == null ? l10n.chartNoData : l10n.moneyFormat.format(point.value!)}${point.status == ChartPointStatus.pending
-                                          ? ' · ${l10n.chartPendingKey}'
-                                          : point.status == ChartPointStatus.unknown
-                                          ? ' · ${l10n.chartUnknownKey}'
-                                          : ''}',
+                                      series
+                                          .map((s) {
+                                            final p = s.points[selected!];
+                                            final reading = chartReading(
+                                              p,
+                                              widget.unit,
+                                            );
+                                            return '${p.label} · ${series.length > 1 ? '${s.label} ' : ''}${reading == null ? l10n.chartNoData : formatChartValue(l10n, reading, widget.unit, currency: p.value?.currency ?? 'IDR')}${p.status == ChartPointStatus.settled ? '' : ' · ${p.status == ChartPointStatus.pending ? l10n.chartPendingKey : l10n.chartUnknownKey}'}';
+                                          })
+                                          .join(' · '),
                                       style: type.caption,
-                                      maxLines: 2,
+                                      maxLines: 1 + series.length,
                                     ),
                                   ),
                                 ),
@@ -232,9 +420,50 @@ class _PointChartState extends State<_PointChart> {
                           ),
                         ),
                       );
+                      return widget.spark && widget.inspectable
+                          ? PaymentTooltip(
+                              message: message,
+                              type: PaymentTooltipType.description,
+                              placement: PaymentTooltipPlacement.top,
+                              delay: Duration.zero,
+                              child: plot,
+                            )
+                          : plot;
                     },
                   ),
                 ),
+                if (!widget.spark && widget.showLegend && series.length > 1)
+                  Wrap(
+                    spacing: theme.space(PaymentSpace.group),
+                    runSpacing: theme.space(PaymentSpace.inline),
+                    children: List.generate(
+                      series.length,
+                      (i) => Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: theme.spacing * 2,
+                            height: theme.spacing * 1.5,
+                            child: CustomPaint(
+                              painter: _SeriesKey(
+                                meterColors(theme, series.length)[i],
+                                seriesDash[i],
+                                widget.bars,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: theme.spacing * .5),
+                          Text(
+                            series[i].label,
+                            style: type.caption,
+                            textScaler: MediaQuery.textScalerOf(
+                              context,
+                            ).clamp(maxScaleFactor: 1.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 if (!widget.spark && keys.isNotEmpty)
                   Text(
                     keys.join('   '),
@@ -252,101 +481,137 @@ class _PointChartState extends State<_PointChart> {
   }
 }
 
+/// A categorical breakdown with optional host actions on legend rows.
 class PaymentMeterChart extends StatelessWidget {
+  /// Creates a meter chart.
   const PaymentMeterChart({
     super.key,
     required this.segments,
     this.showLegend = true,
+    this.unit = PaymentChartUnit.money,
+    this.onSegmentPressed,
     this.semanticLabel,
   });
+
+  /// Segments.
   final List<MeterSegment> segments;
+
+  /// Whether to show the series legend.
   final bool showLegend;
+
+  /// Which reading to display and announce.
+  final PaymentChartUnit unit;
+
+  /// On Segment Pressed.
+  final ValueChanged<MeterSegment>? onSegmentPressed;
+
+  /// Host-authored replacement for the generated summary.
   final String? semanticLabel;
   @override
   Widget build(BuildContext context) {
     assert(
-      _oneCurrency(segments.map((s) => s.value)),
-      'Use one currency per chart.',
+      unit != PaymentChartUnit.money ||
+          _oneCurrency(segments.map((s) => s.value)),
     );
-    assert(segments.every((s) => !s.value.isNegative));
+    assert(onSegmentPressed == null || showLegend);
     final theme = PaymentTheme.of(context);
     final l10n = PaymentLocalizations.of(context);
+    final type = PaymentType.of(context);
     final colors = meterColors(theme, segments.length);
-    final summary = segments.isEmpty
-        ? '${l10n.chartMeter}. ${l10n.chartNoData}'
-        : '${l10n.chartMeter}. ${segments.map((s) => '${l10n.meterItem(s.label, l10n.moneyFormat.spoken(s.value))}${s.status == ChartPointStatus.pending
-              ? ' ${l10n.chartPendingKey}'
-              : s.status == ChartPointStatus.unknown
-              ? ' ${l10n.chartUnknownKey}'
-              : ''}').join('. ')}';
+    String spoken(MeterSegment s) =>
+        '${s.label}, ${spokenChartValue(l10n, meterReading(s, unit), unit, currency: s.value?.currency ?? 'IDR')}${s.status == ChartPointStatus.settled ? '' : ', ${s.status == ChartPointStatus.pending ? l10n.chartPendingKey : l10n.chartUnknownKey}'}';
+    Widget entry(int i) {
+      final s = segments[i];
+      final child = Row(
+        mainAxisSize: onSegmentPressed == null
+            ? MainAxisSize.min
+            : MainAxisSize.max,
+        children: [
+          Container(
+            width: theme.spacing * 1.5,
+            height: theme.spacing * 1.5,
+            color: colors[i],
+          ),
+          SizedBox(width: theme.spacing * .5),
+          Flexible(
+            child: Wrap(
+              spacing: theme.spacing * .5,
+              children: [
+                Text(s.label, style: type.caption),
+                Text(
+                  formatChartValue(
+                    l10n,
+                    meterReading(s, unit),
+                    unit,
+                    currency: s.value?.currency ?? 'IDR',
+                  ),
+                  style: type.caption,
+                ),
+                if (s.status != ChartPointStatus.settled)
+                  Text(
+                    s.status == ChartPointStatus.pending
+                        ? l10n.chartPendingKey
+                        : l10n.chartUnknownKey,
+                    style: type.caption,
+                  ),
+              ],
+            ),
+          ),
+        ],
+      );
+      return onSegmentPressed == null
+          ? child
+          : Semantics(
+              button: true,
+              label: spoken(s),
+              excludeSemantics: true,
+              child: RowShell(onTap: () => onSegmentPressed!(s), child: child),
+            );
+    }
+
+    final legend = onSegmentPressed == null
+        ? Wrap(
+            spacing: theme.space(PaymentSpace.group),
+            runSpacing: theme.spacing,
+            children: List.generate(segments.length, entry),
+          )
+        : Column(children: List.generate(segments.length, entry));
     return Semantics(
       container: true,
-      label: semanticLabel ?? summary,
-      child: ExcludeSemantics(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 12,
+      label:
+          semanticLabel ??
+          (onSegmentPressed != null
+              ? l10n.chartMeter
+              : '${l10n.chartMeter}. ${segments.isEmpty ? l10n.chartNoData : segments.map(spoken).join('. ')}'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ExcludeSemantics(
+            child: SizedBox(
+              height: theme.spacing * 1.5,
               width: double.infinity,
               child: CustomPaint(
-                painter: MeterPainter(segments, colors, theme.surface),
+                painter: MeterPainter(segments, colors, theme.surface, unit),
               ),
             ),
-            if (showLegend)
-              Padding(
-                padding: EdgeInsets.only(top: theme.spacing),
-                child: Wrap(
-                  spacing: 16,
-                  runSpacing: 8,
-                  children: List.generate(segments.length, (i) {
-                    final s = segments[i];
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 10,
-                          height: 10,
-                          color: s.color ?? colors[i],
-                        ),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Wrap(
-                            spacing: 4,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              Text(
-                                s.label,
-                                style: PaymentType.of(context).caption,
-                              ),
-                              AmountText(
-                                s.value,
-                                variant: AmountTextVariant.caption,
-                              ),
-                              if (s.status != ChartPointStatus.settled)
-                                Text(
-                                  s.status == ChartPointStatus.pending
-                                      ? l10n.chartPendingKey
-                                      : l10n.chartUnknownKey,
-                                  style: PaymentType.of(context).caption,
-                                ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-                ),
-              ),
-          ],
-        ),
+          ),
+          if (showLegend)
+            Padding(
+              padding: EdgeInsets.only(top: theme.spacing),
+              child: onSegmentPressed == null
+                  ? ExcludeSemantics(child: legend)
+                  : legend,
+            ),
+        ],
       ),
     );
   }
 }
 
+/// A chart section with stable loading, empty and error states.
 class ChartModule extends StatelessWidget {
+  /// Creates a chart.
   const ChartModule({
     super.key,
     required this.title,
@@ -364,23 +629,53 @@ class ChartModule extends StatelessWidget {
     this.onRetry,
     this.trailing,
   }) : assert(state != ChartState.ready || chart != null);
+
+  /// Compact Height.
   static const double compactHeight = 180;
+
+  /// Featured Height.
   static const double featuredHeight = 320;
+
+  /// Title.
   final String title;
+
+  /// State.
   final ChartState state;
+
+  /// Chart.
   final Widget? chart;
 
   /// Host-provided amount. The kit never computes a headline total.
   final Money? headline;
+
+  /// Headline Caption.
   final String? headlineCaption;
+
+  /// Show Headline.
   final bool showHeadline;
+
+  /// Delta.
   final String? delta;
+
+  /// Delta Tone.
   final StatusTone deltaTone;
+
+  /// Height.
   final double? height;
+
+  /// Empty Title.
   final String? emptyTitle;
+
+  /// Empty Message.
   final String? emptyMessage;
+
+  /// Error Message.
   final String? errorMessage;
+
+  /// On Retry.
   final FutureOr<void> Function()? onRetry;
+
+  /// Trailing.
   final Widget? trailing;
   @override
   Widget build(BuildContext context) {
@@ -424,7 +719,16 @@ class ChartModule extends StatelessWidget {
         children: [
           if (showHeadline)
             SizedBox(
-              height: MediaQuery.textScalerOf(context).scale(72),
+              height:
+                  MediaQuery.textScalerOf(context)
+                      .clamp(maxScaleFactor: 1.6)
+                      .scale(
+                        type.amountLarge.fontSize! * type.amountLarge.height!,
+                      ) +
+                  MediaQuery.textScalerOf(
+                    context,
+                  ).scale(type.caption.fontSize! * type.caption.height!) +
+                  theme.space(PaymentSpace.section),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -440,7 +744,7 @@ class ChartModule extends StatelessWidget {
                   else
                     Text('—', style: type.amountLarge),
                   Wrap(
-                    spacing: 8,
+                    spacing: theme.spacing,
                     children: [
                       if (headlineCaption != null)
                         Text(headlineCaption!, style: type.caption),
@@ -465,4 +769,40 @@ class ChartModule extends StatelessWidget {
       ),
     );
   }
+}
+
+class _SeriesKey extends CustomPainter {
+  _SeriesKey(this.color, this.pattern, this.bars);
+  final Color color;
+  final List<double>? pattern;
+  final bool bars;
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (bars) {
+      canvas.drawRect(Offset.zero & size, Paint()..color = color);
+    } else if (pattern == null) {
+      canvas.drawLine(
+        Offset(0, size.height / 2),
+        Offset(size.width, size.height / 2),
+        Paint()
+          ..color = color
+          ..strokeWidth = 2,
+      );
+    } else {
+      dashPattern(
+        canvas,
+        Offset(0, size.height / 2),
+        Offset(size.width, size.height / 2),
+        color,
+        pattern!,
+        2,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_SeriesKey oldDelegate) =>
+      oldDelegate.color != color ||
+      oldDelegate.pattern != pattern ||
+      oldDelegate.bars != bars;
 }

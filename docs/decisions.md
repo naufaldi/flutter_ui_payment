@@ -305,3 +305,9 @@ Plan correction: key each outer Offstage by panel index, not only the nested Key
 Capture harness corrections: the appended menu specimens made the old global More actions finder ambiguous; scope it to the first account-menu trigger. A tail-only mode rechecks that failed portion without repeating the specimen matrix. Tooltip captures now assert the message and settled opacity before saving and offer a tooltip-only mode. The full pass produced all 40 new assets; focused reruns repair the harness outputs instead of repeating regression matrices. An intermediate tooltip harness compile error was discarded rather than accepting Flutter's stale-app fallback.
 
 The final tooltip-only native run used a successful fresh build, asserted opacity 1, passed all four captures and produced visible bubbles in light/dark/200% and edge-flip screenshots. The stale paused app was closed through agent-device before this run.
+
+### Phase 2E implementation decisions
+
+Readings are unit-aware so painting, inspection and spoken summaries agree on missing data. Series use an accent ramp and long-dash/dash-dot encoding, independently of pending and unknown markers. Meter segments gain measure for non-money units. Sparkline inspection uses a tooltip and a 48 dp target. Meter actions live on legend rows so the bar stays decorative. The headline region derives from typography and spacing; meter swatches use 12 dp. The premature Phase 2E checklist ticks now describe implemented work.
+
+The existing internal barRects helper remains compatible for current geometry consumers; groupedBarRects supplies the new painter path.

@@ -2,26 +2,26 @@
   "ChartPointStatus": {
     "kind": "enum",
     "file": "lib/src/charts/chart_models.dart",
-    "doc": "",
+    "doc": "Settlement state of a reading.",
     "values": [
       {
         "name": "settled",
-        "doc": ""
+        "doc": "Confirmed reading."
       },
       {
         "name": "pending",
-        "doc": ""
+        "doc": "Awaiting confirmation."
       },
       {
         "name": "unknown",
-        "doc": ""
+        "doc": "Not yet confirmed."
       }
     ]
   },
   "ChartPoint": {
     "kind": "class",
     "file": "lib/src/charts/chart_models.dart",
-    "doc": "",
+    "doc": "One period reading, with missing values distinct from zero.",
     "extends": null,
     "constructors": [
       {
@@ -37,12 +37,12 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": ""
+            "doc": "Visible period or category label."
           },
           {
             "name": "value",
             "type": "Money?",
-            "required": true,
+            "required": false,
             "default": null,
             "named": true,
             "viaThis": true,
@@ -59,7 +59,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "status",
-            "doc": ""
+            "doc": "Settlement state; never encoded by a series color."
           },
           {
             "name": "spokenLabel",
@@ -70,10 +70,21 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "spokenLabel",
-            "doc": ""
+            "doc": "Optional expanded period name for spoken summaries."
+          },
+          {
+            "name": "measure",
+            "type": "num?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "measure",
+            "doc": "Host-computed quantity; null is missing data."
           }
         ],
-        "doc": ""
+        "doc": "Creates a period reading."
       }
     ],
     "getters": [],
@@ -84,7 +95,7 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "Visible period or category label."
       },
       {
         "name": "value",
@@ -94,18 +105,25 @@
         "doc": "Null is missing data, never zero."
       },
       {
+        "name": "measure",
+        "kind": "field",
+        "static": false,
+        "type": "num?",
+        "doc": "Host-computed quantity; null is missing data."
+      },
+      {
         "name": "status",
         "kind": "field",
         "static": false,
         "type": "ChartPointStatus",
-        "doc": ""
+        "doc": "Settlement state; never encoded by a series color."
       },
       {
         "name": "spokenLabel",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Optional expanded period name for spoken summaries."
       }
     ],
     "copyWith": null
@@ -113,7 +131,7 @@
   "MeterSegment": {
     "kind": "class",
     "file": "lib/src/charts/chart_models.dart",
-    "doc": "",
+    "doc": "One non-negative category in a meter.",
     "extends": null,
     "constructors": [
       {
@@ -129,18 +147,18 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": ""
+            "doc": "Visible period or category label."
           },
           {
             "name": "value",
-            "type": "Money",
-            "required": true,
+            "type": "Money?",
+            "required": false,
             "default": null,
             "named": true,
             "viaThis": true,
             "isSuper": false,
             "fieldName": "value",
-            "doc": ""
+            "doc": "Money reading when using currency units."
           },
           {
             "name": "status",
@@ -151,21 +169,21 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "status",
-            "doc": ""
+            "doc": "Settlement state; never encoded by a series color."
           },
           {
-            "name": "color",
-            "type": "Color?",
+            "name": "measure",
+            "type": "num?",
             "required": false,
             "default": null,
             "named": true,
             "viaThis": true,
             "isSuper": false,
-            "fieldName": "color",
-            "doc": ""
+            "fieldName": "measure",
+            "doc": "Host-computed non-negative quantity."
           }
         ],
-        "doc": ""
+        "doc": "Creates a category reading."
       }
     ],
     "getters": [],
@@ -176,28 +194,28 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "Visible period or category label."
       },
       {
         "name": "value",
         "kind": "field",
         "static": false,
-        "type": "Money",
-        "doc": ""
+        "type": "Money?",
+        "doc": "Money reading when using currency units."
       },
       {
         "name": "status",
         "kind": "field",
         "static": false,
         "type": "ChartPointStatus",
-        "doc": ""
+        "doc": "Settlement state; never encoded by a series color."
       },
       {
-        "name": "color",
+        "name": "measure",
         "kind": "field",
         "static": false,
-        "type": "Color?",
-        "doc": ""
+        "type": "num?",
+        "doc": "Host-computed non-negative quantity."
       }
     ],
     "copyWith": null
@@ -205,36 +223,89 @@
   "ChartState": {
     "kind": "enum",
     "file": "lib/src/charts/chart_models.dart",
-    "doc": "",
+    "doc": "Host-owned chart loading state.",
     "values": [
       {
         "name": "loading",
-        "doc": ""
+        "doc": "Fetch in progress."
       },
       {
         "name": "ready",
-        "doc": ""
+        "doc": "Data available."
       },
       {
         "name": "empty",
-        "doc": ""
+        "doc": "No data available."
       },
       {
         "name": "error",
-        "doc": ""
+        "doc": "Fetch failed."
       }
     ]
   },
-  "PaymentLineChart": {
+  "PaymentChartAxis": {
+    "kind": "enum",
+    "file": "lib/src/charts/chart_models.dart",
+    "doc": "Axes to label or grid.",
+    "values": [
+      {
+        "name": "x",
+        "doc": "Horizontal axis."
+      },
+      {
+        "name": "y",
+        "doc": "Vertical axis."
+      },
+      {
+        "name": "both",
+        "doc": "Both axes."
+      },
+      {
+        "name": "none",
+        "doc": "Neither axis."
+      }
+    ]
+  },
+  "PaymentChartUnit": {
+    "kind": "enum",
+    "file": "lib/src/charts/chart_models.dart",
+    "doc": "How a chart reads its values.",
+    "values": [
+      {
+        "name": "money",
+        "doc": "Currency amounts."
+      },
+      {
+        "name": "percent",
+        "doc": "Host-computed percentages, where 45 means 45 percent."
+      },
+      {
+        "name": "number",
+        "doc": "Plain counts or quantities."
+      }
+    ]
+  },
+  "PaymentChartSeries": {
     "kind": "class",
-    "file": "lib/src/charts/charts.dart",
-    "doc": "",
-    "extends": "StatefulWidget",
+    "file": "lib/src/charts/chart_models.dart",
+    "doc": "Named points sharing the same periods with the other series.",
+    "extends": null,
     "constructors": [
       {
-        "name": "PaymentLineChart",
+        "name": "PaymentChartSeries",
         "factory": false,
         "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Legend and spoken name."
+          },
           {
             "name": "points",
             "type": "List<ChartPoint>",
@@ -244,7 +315,107 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "points",
-            "doc": ""
+            "doc": "One point per period."
+          }
+        ],
+        "doc": "Creates a series."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Legend and spoken name."
+      },
+      {
+        "name": "points",
+        "kind": "field",
+        "static": false,
+        "type": "List<ChartPoint>",
+        "doc": "One point per period."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentLineChart": {
+    "kind": "class",
+    "file": "lib/src/charts/charts.dart",
+    "doc": "Trends across periods, with gaps for missing readings.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentLineChart",
+        "factory": false,
+        "params": [
+          {
+            "name": "points",
+            "type": "List<ChartPoint>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "points",
+            "doc": "Single-series points; leave empty when providing series."
+          },
+          {
+            "name": "series",
+            "type": "List<PaymentChartSeries>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "series",
+            "doc": "Named series with matching period labels; at most three."
+          },
+          {
+            "name": "unit",
+            "type": "PaymentChartUnit",
+            "required": false,
+            "default": "PaymentChartUnit.money",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "unit",
+            "doc": "Which reading to display and announce."
+          },
+          {
+            "name": "axis",
+            "type": "PaymentChartAxis",
+            "required": false,
+            "default": "PaymentChartAxis.both",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "axis",
+            "doc": "Axes whose labels are visible."
+          },
+          {
+            "name": "grid",
+            "type": "PaymentChartAxis",
+            "required": false,
+            "default": "PaymentChartAxis.y",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "grid",
+            "doc": "Axes whose grid rules are visible."
+          },
+          {
+            "name": "showLegend",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "showLegend",
+            "doc": "Whether to show the series legend."
           },
           {
             "name": "zeroBased",
@@ -255,7 +426,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "zeroBased",
-            "doc": ""
+            "doc": "Whether the scale includes zero."
           },
           {
             "name": "inspectable",
@@ -266,7 +437,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "inspectable",
-            "doc": ""
+            "doc": "Whether pointer gestures select a reading."
           },
           {
             "name": "semanticLabel",
@@ -277,10 +448,10 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "semanticLabel",
-            "doc": ""
+            "doc": "Host-authored replacement for the generated summary."
           }
         ],
-        "doc": ""
+        "doc": "Creates a chart."
       }
     ],
     "getters": [],
@@ -291,28 +462,63 @@
         "kind": "field",
         "static": false,
         "type": "List<ChartPoint>",
-        "doc": ""
+        "doc": "Single-series points; leave empty when providing series."
+      },
+      {
+        "name": "series",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentChartSeries>",
+        "doc": "Named series with matching period labels; at most three."
+      },
+      {
+        "name": "unit",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentChartUnit",
+        "doc": "Which reading to display and announce."
+      },
+      {
+        "name": "axis",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentChartAxis",
+        "doc": "Axes whose labels are visible."
+      },
+      {
+        "name": "grid",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentChartAxis",
+        "doc": "Axes whose grid rules are visible."
+      },
+      {
+        "name": "showLegend",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Whether to show the series legend."
       },
       {
         "name": "zeroBased",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": ""
+        "doc": "Whether the scale includes zero."
       },
       {
         "name": "inspectable",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": ""
+        "doc": "Whether pointer gestures select a reading."
       },
       {
         "name": "semanticLabel",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Host-authored replacement for the generated summary."
       }
     ],
     "copyWith": null
@@ -320,7 +526,7 @@
   "PaymentBarChart": {
     "kind": "class",
     "file": "lib/src/charts/charts.dart",
-    "doc": "",
+    "doc": "Non-negative grouped readings across periods.",
     "extends": "StatefulWidget",
     "constructors": [
       {
@@ -330,13 +536,68 @@
           {
             "name": "points",
             "type": "List<ChartPoint>",
-            "required": true,
-            "default": null,
+            "required": false,
+            "default": "const []",
             "named": true,
             "viaThis": true,
             "isSuper": false,
             "fieldName": "points",
-            "doc": ""
+            "doc": "Single-series points; leave empty when providing series."
+          },
+          {
+            "name": "series",
+            "type": "List<PaymentChartSeries>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "series",
+            "doc": "Named series with matching period labels; at most three."
+          },
+          {
+            "name": "unit",
+            "type": "PaymentChartUnit",
+            "required": false,
+            "default": "PaymentChartUnit.money",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "unit",
+            "doc": "Which reading to display and announce."
+          },
+          {
+            "name": "axis",
+            "type": "PaymentChartAxis",
+            "required": false,
+            "default": "PaymentChartAxis.both",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "axis",
+            "doc": "Axes whose labels are visible."
+          },
+          {
+            "name": "grid",
+            "type": "PaymentChartAxis",
+            "required": false,
+            "default": "PaymentChartAxis.y",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "grid",
+            "doc": "Axes whose grid rules are visible."
+          },
+          {
+            "name": "showLegend",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "showLegend",
+            "doc": "Whether to show the series legend."
           },
           {
             "name": "inspectable",
@@ -347,7 +608,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "inspectable",
-            "doc": ""
+            "doc": "Whether pointer gestures select a reading."
           },
           {
             "name": "semanticLabel",
@@ -358,10 +619,10 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "semanticLabel",
-            "doc": ""
+            "doc": "Host-authored replacement for the generated summary."
           }
         ],
-        "doc": ""
+        "doc": "Creates a chart."
       }
     ],
     "getters": [],
@@ -372,21 +633,56 @@
         "kind": "field",
         "static": false,
         "type": "List<ChartPoint>",
-        "doc": ""
+        "doc": "Single-series points; leave empty when providing series."
+      },
+      {
+        "name": "series",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentChartSeries>",
+        "doc": "Named series with matching period labels; at most three."
+      },
+      {
+        "name": "unit",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentChartUnit",
+        "doc": "Which reading to display and announce."
+      },
+      {
+        "name": "axis",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentChartAxis",
+        "doc": "Axes whose labels are visible."
+      },
+      {
+        "name": "grid",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentChartAxis",
+        "doc": "Axes whose grid rules are visible."
+      },
+      {
+        "name": "showLegend",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Whether to show the series legend."
       },
       {
         "name": "inspectable",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": ""
+        "doc": "Whether pointer gestures select a reading."
       },
       {
         "name": "semanticLabel",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Host-authored replacement for the generated summary."
       }
     ],
     "copyWith": null
@@ -394,7 +690,7 @@
   "PaymentSparkline": {
     "kind": "class",
     "file": "lib/src/charts/charts.dart",
-    "doc": "",
+    "doc": "Compact trend with optional pointer inspection.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -404,13 +700,46 @@
           {
             "name": "points",
             "type": "List<ChartPoint>",
-            "required": true,
-            "default": null,
+            "required": false,
+            "default": "const []",
             "named": true,
             "viaThis": true,
             "isSuper": false,
             "fieldName": "points",
-            "doc": ""
+            "doc": "Single-series points; leave empty when providing series."
+          },
+          {
+            "name": "series",
+            "type": "List<PaymentChartSeries>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "series",
+            "doc": "Named series with matching period labels; at most three."
+          },
+          {
+            "name": "unit",
+            "type": "PaymentChartUnit",
+            "required": false,
+            "default": "PaymentChartUnit.money",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "unit",
+            "doc": "Which reading to display and announce."
+          },
+          {
+            "name": "inspectable",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "inspectable",
+            "doc": "Whether pointer gestures select a reading."
           },
           {
             "name": "width",
@@ -421,7 +750,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "width",
-            "doc": ""
+            "doc": "Width."
           },
           {
             "name": "height",
@@ -432,7 +761,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "height",
-            "doc": ""
+            "doc": "Height."
           },
           {
             "name": "semanticLabel",
@@ -443,10 +772,10 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "semanticLabel",
-            "doc": ""
+            "doc": "Host-authored replacement for the generated summary."
           }
         ],
-        "doc": ""
+        "doc": "Creates a chart."
       }
     ],
     "getters": [],
@@ -457,28 +786,49 @@
         "kind": "field",
         "static": false,
         "type": "List<ChartPoint>",
-        "doc": ""
+        "doc": "Single-series points; leave empty when providing series."
+      },
+      {
+        "name": "series",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentChartSeries>",
+        "doc": "Named series with matching period labels; at most three."
+      },
+      {
+        "name": "unit",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentChartUnit",
+        "doc": "Which reading to display and announce."
+      },
+      {
+        "name": "inspectable",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Whether pointer gestures select a reading."
       },
       {
         "name": "width",
         "kind": "field",
         "static": false,
         "type": "double",
-        "doc": ""
+        "doc": "Width."
       },
       {
         "name": "height",
         "kind": "field",
         "static": false,
         "type": "double",
-        "doc": ""
+        "doc": "Height."
       },
       {
         "name": "semanticLabel",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Host-authored replacement for the generated summary."
       }
     ],
     "copyWith": null
@@ -486,7 +836,7 @@
   "PaymentMeterChart": {
     "kind": "class",
     "file": "lib/src/charts/charts.dart",
-    "doc": "",
+    "doc": "A categorical breakdown with optional host actions on legend rows.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -502,7 +852,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "segments",
-            "doc": ""
+            "doc": "Segments."
           },
           {
             "name": "showLegend",
@@ -513,7 +863,29 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "showLegend",
-            "doc": ""
+            "doc": "Whether to show the series legend."
+          },
+          {
+            "name": "unit",
+            "type": "PaymentChartUnit",
+            "required": false,
+            "default": "PaymentChartUnit.money",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "unit",
+            "doc": "Which reading to display and announce."
+          },
+          {
+            "name": "onSegmentPressed",
+            "type": "ValueChanged<MeterSegment>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onSegmentPressed",
+            "doc": "On Segment Pressed."
           },
           {
             "name": "semanticLabel",
@@ -524,10 +896,10 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "semanticLabel",
-            "doc": ""
+            "doc": "Host-authored replacement for the generated summary."
           }
         ],
-        "doc": ""
+        "doc": "Creates a meter chart."
       }
     ],
     "getters": [],
@@ -538,21 +910,35 @@
         "kind": "field",
         "static": false,
         "type": "List<MeterSegment>",
-        "doc": ""
+        "doc": "Segments."
       },
       {
         "name": "showLegend",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": ""
+        "doc": "Whether to show the series legend."
+      },
+      {
+        "name": "unit",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentChartUnit",
+        "doc": "Which reading to display and announce."
+      },
+      {
+        "name": "onSegmentPressed",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<MeterSegment>?",
+        "doc": "On Segment Pressed."
       },
       {
         "name": "semanticLabel",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Host-authored replacement for the generated summary."
       }
     ],
     "copyWith": null
@@ -560,7 +946,7 @@
   "ChartModule": {
     "kind": "class",
     "file": "lib/src/charts/charts.dart",
-    "doc": "",
+    "doc": "A chart section with stable loading, empty and error states.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -576,7 +962,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": ""
+            "doc": "Title."
           },
           {
             "name": "state",
@@ -587,7 +973,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "state",
-            "doc": ""
+            "doc": "State."
           },
           {
             "name": "chart",
@@ -598,7 +984,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "chart",
-            "doc": ""
+            "doc": "Chart."
           },
           {
             "name": "headline",
@@ -620,7 +1006,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "headlineCaption",
-            "doc": ""
+            "doc": "Headline Caption."
           },
           {
             "name": "showHeadline",
@@ -631,7 +1017,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "showHeadline",
-            "doc": ""
+            "doc": "Show Headline."
           },
           {
             "name": "delta",
@@ -642,7 +1028,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "delta",
-            "doc": ""
+            "doc": "Delta."
           },
           {
             "name": "deltaTone",
@@ -653,7 +1039,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "deltaTone",
-            "doc": ""
+            "doc": "Delta Tone."
           },
           {
             "name": "height",
@@ -664,7 +1050,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "height",
-            "doc": ""
+            "doc": "Height."
           },
           {
             "name": "emptyTitle",
@@ -675,7 +1061,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "emptyTitle",
-            "doc": ""
+            "doc": "Empty Title."
           },
           {
             "name": "emptyMessage",
@@ -686,7 +1072,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "emptyMessage",
-            "doc": ""
+            "doc": "Empty Message."
           },
           {
             "name": "errorMessage",
@@ -697,7 +1083,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "errorMessage",
-            "doc": ""
+            "doc": "Error Message."
           },
           {
             "name": "onRetry",
@@ -708,7 +1094,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onRetry",
-            "doc": ""
+            "doc": "On Retry."
           },
           {
             "name": "trailing",
@@ -719,10 +1105,10 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "trailing",
-            "doc": ""
+            "doc": "Trailing."
           }
         ],
-        "doc": ""
+        "doc": "Creates a chart."
       }
     ],
     "getters": [],
@@ -737,7 +1123,7 @@
         "static": true,
         "type": "double",
         "value": "180",
-        "doc": ""
+        "doc": "Compact Height."
       },
       {
         "name": "featuredHeight",
@@ -745,28 +1131,28 @@
         "static": true,
         "type": "double",
         "value": "320",
-        "doc": ""
+        "doc": "Featured Height."
       },
       {
         "name": "title",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "Title."
       },
       {
         "name": "state",
         "kind": "field",
         "static": false,
         "type": "ChartState",
-        "doc": ""
+        "doc": "State."
       },
       {
         "name": "chart",
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": ""
+        "doc": "Chart."
       },
       {
         "name": "headline",
@@ -780,63 +1166,63 @@
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Headline Caption."
       },
       {
         "name": "showHeadline",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": ""
+        "doc": "Show Headline."
       },
       {
         "name": "delta",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Delta."
       },
       {
         "name": "deltaTone",
         "kind": "field",
         "static": false,
         "type": "StatusTone",
-        "doc": ""
+        "doc": "Delta Tone."
       },
       {
         "name": "height",
         "kind": "field",
         "static": false,
         "type": "double?",
-        "doc": ""
+        "doc": "Height."
       },
       {
         "name": "emptyTitle",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Empty Title."
       },
       {
         "name": "emptyMessage",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Empty Message."
       },
       {
         "name": "errorMessage",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Error Message."
       },
       {
         "name": "trailing",
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": ""
+        "doc": "Trailing."
       }
     ],
     "copyWith": null
@@ -1912,6 +2298,7 @@
     "on": "PaymentLocalizations",
     "doc": "English/Indonesian strings for the interaction, navigation, sheet, media,\npromotion and transaction components. Kept apart from the payment strings\nso each file stays readable; hosts use them through\n`PaymentLocalizations.of` like every other kit string.",
     "members": [
+      "chartPercent",
       "chartLine",
       "chartBar",
       "chartMeter",
