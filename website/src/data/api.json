@@ -2407,7 +2407,9 @@
       "paymentLabel",
       "dateLabel",
       "methodLabel",
-      "merchantLabel"
+      "merchantLabel",
+      "taskStatus",
+      "subTasksComplete"
     ]
   },
   "TransactionFilter": {
@@ -20507,6 +20509,259 @@
         "static": false,
         "type": "bool",
         "doc": "Marks a numeric value."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentButtonGroupCollapse": {
+    "kind": "enum",
+    "file": "lib/src/controls/button_group.dart",
+    "doc": "Responsive action overflow policy.",
+    "values": [
+      {
+        "name": "auto",
+        "doc": "Move trailing actions into a menu, retaining the first action."
+      },
+      {
+        "name": "none",
+        "doc": "Stack an overflowing row, with the emphasized action on top."
+      }
+    ]
+  },
+  "PaymentButtonGroup": {
+    "kind": "class",
+    "file": "lib/src/controls/button_group.dart",
+    "doc": "Related actions with at most one primary and separated destructive actions.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentButtonGroup",
+        "factory": false,
+        "params": [
+          {
+            "name": "children",
+            "type": "List<PaymentButton>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "children",
+            "doc": "Actions in host reading order."
+          },
+          {
+            "name": "direction",
+            "type": "Axis",
+            "required": false,
+            "default": "Axis.horizontal",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "direction",
+            "doc": "Vertical actions fill the available width."
+          },
+          {
+            "name": "collapse",
+            "type": "PaymentButtonGroupCollapse",
+            "required": false,
+            "default": "PaymentButtonGroupCollapse.auto",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "collapse",
+            "doc": "Horizontal overflow policy."
+          },
+          {
+            "name": "menuTrigger",
+            "type": "Widget Function(VoidCallback toggle, FocusNode focusNode)?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "menuTrigger",
+            "doc": "Optional menu trigger receiving its toggle and focus node."
+          }
+        ],
+        "doc": "Creates an action group."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "children",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentButton>",
+        "doc": "Actions in host reading order."
+      },
+      {
+        "name": "direction",
+        "kind": "field",
+        "static": false,
+        "type": "Axis",
+        "doc": "Vertical actions fill the available width."
+      },
+      {
+        "name": "collapse",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButtonGroupCollapse",
+        "doc": "Horizontal overflow policy."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentTaskStatus": {
+    "kind": "enum",
+    "file": "lib/src/content/task_list.dart",
+    "doc": "Host-owned task progress.",
+    "values": [
+      {
+        "name": "notStarted",
+        "doc": "Work has not begun."
+      },
+      {
+        "name": "inProgress",
+        "doc": "Work is underway."
+      },
+      {
+        "name": "blocked",
+        "doc": "Work requires intervention."
+      },
+      {
+        "name": "complete",
+        "doc": "Work is complete."
+      }
+    ]
+  },
+  "PaymentTaskList": {
+    "kind": "class",
+    "file": "lib/src/content/task_list.dart",
+    "doc": "Sequential setup tasks with distinct status marks.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentTaskList",
+        "factory": false,
+        "params": [
+          {
+            "name": "items",
+            "type": "List<PaymentTaskListItem>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "items",
+            "doc": "Top-level tasks, each with at most one level of sub-tasks."
+          }
+        ],
+        "doc": "Creates a task list."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "items",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentTaskListItem>",
+        "doc": "Top-level tasks, each with at most one level of sub-tasks."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentTaskListItem": {
+    "kind": "class",
+    "file": "lib/src/content/task_list.dart",
+    "doc": "One task and its host-defined status.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentTaskListItem",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Task name."
+          },
+          {
+            "name": "status",
+            "type": "PaymentTaskStatus",
+            "required": false,
+            "default": "PaymentTaskStatus.notStarted",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "status",
+            "doc": "Host-owned progress state."
+          },
+          {
+            "name": "onPressed",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onPressed",
+            "doc": "Optional host action."
+          },
+          {
+            "name": "subTasks",
+            "type": "List<PaymentTaskListItem>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "subTasks",
+            "doc": "One level of child tasks; hidden when complete."
+          }
+        ],
+        "doc": "Creates a setup task."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Task name."
+      },
+      {
+        "name": "status",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentTaskStatus",
+        "doc": "Host-owned progress state."
+      },
+      {
+        "name": "onPressed",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Optional host action."
+      },
+      {
+        "name": "subTasks",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentTaskListItem>",
+        "doc": "One level of child tasks; hidden when complete."
       }
     ],
     "copyWith": null

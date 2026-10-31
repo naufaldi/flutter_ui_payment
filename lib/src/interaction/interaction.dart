@@ -1,3 +1,4 @@
+import '../controls/button_group.dart';
 import '../foundation/table_grid.dart';
 import '../layout/content.dart';
 import '../controls/actions.dart';
@@ -373,6 +374,11 @@ class _PaymentMenuState extends State<PaymentMenu> {
             ),
       style: MenuItemButton.styleFrom(
         minimumSize: const Size(160, 48),
+        maximumSize: Size(
+          MediaQuery.sizeOf(context).width -
+              2 * theme.space(PaymentSpace.group),
+          double.infinity,
+        ),
         foregroundColor: entry.destructive
             ? theme.danger.foreground
             : theme.textPrimary,
@@ -384,7 +390,7 @@ class _PaymentMenuState extends State<PaymentMenu> {
                 (entry.id != null && onAction != null
                     ? () => onAction(entry.id!)
                     : null),
-      child: Text(entry.label),
+      child: Text(entry.label, softWrap: true),
     );
     return MenuAnchor(
       childFocusNode: _triggerFocus,
@@ -478,25 +484,27 @@ Future<bool> showPaymentConfirmDialog(
           style: type.bodyFor(context).copyWith(color: theme.textSecondary),
         ),
         actionsPadding: EdgeInsets.all(theme.spacing * 2),
-        buttonPadding: EdgeInsets.symmetric(horizontal: theme.spacing * 0.5),
-        actionsOverflowDirection: VerticalDirection.up,
-        actionsOverflowButtonSpacing: theme.spacing,
         actions: [
-          PaymentButton(
-            label: cancelLabel ?? l10n.cancel,
-            variant: PaymentButtonVariant.quiet,
-            width: PaymentWidth.hug,
-            autofocus: destructive,
-            onPressed: () => Navigator.pop(context, false),
-          ),
-          PaymentButton(
-            label: confirmLabel,
-            variant: destructive
-                ? PaymentButtonVariant.destructive
-                : PaymentButtonVariant.primary,
-            width: PaymentWidth.hug,
-            autofocus: !destructive,
-            onPressed: () => Navigator.pop(context, true),
+          PaymentButtonGroup(
+            collapse: PaymentButtonGroupCollapse.none,
+            children: [
+              PaymentButton(
+                label: cancelLabel ?? l10n.cancel,
+                variant: PaymentButtonVariant.quiet,
+                width: PaymentWidth.hug,
+                autofocus: destructive,
+                onPressed: () => Navigator.pop(context, false),
+              ),
+              PaymentButton(
+                label: confirmLabel,
+                variant: destructive
+                    ? PaymentButtonVariant.destructive
+                    : PaymentButtonVariant.primary,
+                width: PaymentWidth.hug,
+                autofocus: !destructive,
+                onPressed: () => Navigator.pop(context, true),
+              ),
+            ],
           ),
         ],
       );

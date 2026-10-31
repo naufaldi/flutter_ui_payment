@@ -1,3 +1,4 @@
+import '../content/task_list.dart';
 import '../forms/date_range_picker.dart';
 import '../payment/payment_models.dart';
 import '../verification/capture_models.dart';
@@ -273,6 +274,28 @@ extension KitStrings on PaymentLocalizations {
   String get dateLabel => _k('Date', 'Tanggal');
   String get methodLabel => _k('Method', 'Metode');
   String get merchantLabel => _k('Merchant', 'Merchant');
+
+  /// Spoken task status.
+  String taskStatus(PaymentTaskStatus status) => _k(
+    switch (status) {
+      PaymentTaskStatus.notStarted => 'Not started',
+      PaymentTaskStatus.inProgress => 'In progress',
+      PaymentTaskStatus.blocked => 'Blocked',
+      PaymentTaskStatus.complete => 'Complete',
+    },
+    switch (status) {
+      PaymentTaskStatus.notStarted => 'Belum dimulai',
+      PaymentTaskStatus.inProgress => 'Sedang berjalan',
+      PaymentTaskStatus.blocked => 'Tertahan',
+      PaymentTaskStatus.complete => 'Selesai',
+    },
+  );
+
+  /// Spoken child task completion count.
+  String subTasksComplete(int done, int total) => _k(
+    '$done of $total sub-tasks complete',
+    '$done dari $total subtugas selesai',
+  );
 }
 
 /// Groups used by transaction filters. Defined here so the strings and the

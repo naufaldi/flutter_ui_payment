@@ -163,6 +163,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _ContentSpecimen('PaymentPropertyList'),
         _ContentSpecimen('PaymentTable'),
         _ContentSpecimen('LoadingSkeleton.table'),
+        _ContentSpecimen('PaymentButtonGroup'),
+        _ContentSpecimen('PaymentTaskList'),
       ],
       'layout' => const [
         _LayoutSpecimen('PaymentBox'),

@@ -1,3 +1,7 @@
+## Design system Phase 4C-2 (2026-11-01)
+
+- Add responsive ButtonGroup and host-owned TaskList; migrate status and dialog actions.
+
 ## Design system Phase 4C-1 (2026-11-01)
 
 - Add PropertyList, responsive Table and LoadingSkeleton.table.

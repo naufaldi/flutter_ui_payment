@@ -1,0 +1,38 @@
+---
+title: Task list
+description: Add responsive ButtonGroup and host-owned TaskList; migrate status and dialog actions.
+---
+
+import Props from '../../../components/Props.astro';
+
+Host-owned KYC setup tasks. Variants: notStarted, inProgress, blocked, complete. Nothing else exists. Distinct marks and spoken status distinguish progress without relying on color. Complete tasks hide their child tasks. The host decides every status.
+
+## Usage
+
+```dart
+const PaymentTaskList(items: [PaymentTaskListItem(title: "Identity", status: PaymentTaskStatus.complete), PaymentTaskListItem(title: "Documents")]);
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| TaskList | `PaymentTaskList` |
+| TaskListItem | `PaymentTaskListItem` |
+| TaskStatus | `PaymentTaskStatus` |
+
+## States and content
+
+The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Accessibility
+
+Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+
+## API
+
+<Props names={['PaymentTaskList', 'PaymentTaskListItem', 'PaymentTaskStatus']} />
+
+## See also
+
+- [Components](/components/)
