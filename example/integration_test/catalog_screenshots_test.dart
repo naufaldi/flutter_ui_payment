@@ -196,11 +196,19 @@ void main() {
     await shot('capture_selfie_200');
     await open('Interaction');
     await top('ActionTile · ActionMenu · showPaymentConfirmDialog');
-    await tester.tap(find.byTooltip('More actions'));
-    await settle(tester);
-    await tapVisible(tester, find.text('Sign out everywhere'));
+    // A longer host label exercises overflow at 200% on this iPhone width.
+    final confirmation = showPaymentConfirmDialog(
+      tester.element(find.byType(ActionTileGroup).first),
+      title: 'Sign out of all devices?',
+      message:
+          'You will need to sign in again on every device. Payments already sent are not affected.',
+      confirmLabel: 'Sign out everywhere',
+      destructive: true,
+    );
     await shot('confirm_dialog_200');
     await tapVisible(tester, find.text('Cancel'));
+    expect(await confirmation, isFalse);
+    await settle(tester);
     app.updateSettings(const DemoSettings(locale: Locale('en')));
     await settle(tester);
     await open('Controls');
@@ -221,6 +229,17 @@ void main() {
     await settle(tester);
 
     await open('Foundation');
+    tester
+        .state<ScrollableState>(
+          find
+              .descendant(
+                of: find.byType(ListView),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        )
+        .position
+        .jumpTo(0);
     await shot('foundation');
 
     await open('Interaction');

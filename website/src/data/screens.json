@@ -1,4 +1,39 @@
 {
+  "ios_catalog_button_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog button variants, English"
+  },
+  "ios_catalog_button_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog button variants dark, English"
+  },
+  "ios_catalog_button_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog button variants 200, English"
+  },
+  "ios_catalog_amount_text_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog amount text variants, English"
+  },
+  "ios_catalog_amount_text_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog amount text variants dark, English"
+  },
+  "ios_catalog_amount_text_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog amount text variants 200, English"
+  },
+  "ios_catalog_confirm_dialog_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ios catalog confirm dialog 200, English"
+  },
   "ios_kyc_intro_light": {
     "width": 640,
     "height": 1387,
@@ -308,16 +343,6 @@
     "width": 640,
     "height": 1387,
     "caption": "Gallery: video player"
-  },
-  "ios_catalog_controls_buttons": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: button variants, busy and disabled, English"
-  },
-  "ios_catalog_controls_buttons_dark": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: button variants, dark, English"
   },
   "ios_catalog_controls_choices": {
     "width": 640,

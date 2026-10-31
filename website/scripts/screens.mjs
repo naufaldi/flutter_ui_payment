@@ -94,8 +94,6 @@ const screens = {
   ios_kit_promo_200: 'Gallery: promotions at 200% text',
   ios_kit_video_ready: 'Gallery: video player',
   // English catalog captures (example/integration_test/catalog_screenshots_test.dart).
-  ios_catalog_controls_buttons: 'Gallery: button variants, busy and disabled, English',
-  ios_catalog_controls_buttons_dark: 'Gallery: button variants, dark, English',
   ios_catalog_controls_choices: 'Gallery: checkbox, radio and switch, English',
   ios_catalog_controls_choices_dark: 'Gallery: checkbox, radio and switch, dark, English',
   ios_catalog_controls_tabs: 'Gallery: tabs, divider, tooltip trigger and spinner, English',
