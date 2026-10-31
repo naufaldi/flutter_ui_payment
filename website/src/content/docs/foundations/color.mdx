@@ -29,101 +29,25 @@ Default (separates content only)     → outline (may be < 3:1)
 
 
 <TokenTable group="color" rows={[
-  {
-    "token": "surface",
-    "use": "Page, sheets, dialogs and flat sections.",
-    "dont": "Do not box normal sections."
-  },
-  {
-    "token": "surfaceMuted",
-    "use": "Disabled fills, skeletons and selected navigation.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "outline",
-    "use": "Decorative separators; may be below 3:1.",
-    "dont": "Never use for a control edge."
-  },
-  {
-    "token": "border",
-    "use": "Control edges, at least 3:1 on surface.",
-    "dont": "Never use for decorative rules."
-  },
-  {
-    "token": "textPrimary",
-    "use": "Titles, values, body and focus ring.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "textSecondary",
-    "use": "Labels, captions and muted icons.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "disabled",
-    "use": "Disabled text, icons and marks.",
-    "dont": "Do not replace with opacity."
-  },
-  {
-    "token": "accent",
-    "use": "Primary fill, selected controls, links, focused input edge.",
-    "dont": "Do not use as a status color or focus ring."
-  },
-  {
-    "token": "onAccent",
-    "use": "Text and icons on accent.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "neutral.foreground",
-    "use": "Status words and icons.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "neutral.container",
-    "use": "Status fill paired with foreground, icon and text.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "info.foreground",
-    "use": "Status words and icons.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "info.container",
-    "use": "Status fill paired with foreground, icon and text.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "success.foreground",
-    "use": "Status words and icons.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "success.container",
-    "use": "Status fill paired with foreground, icon and text.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "warning.foreground",
-    "use": "Status words and icons.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "warning.container",
-    "use": "Status fill paired with foreground, icon and text.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "danger.foreground",
-    "use": "Status words and icons.",
-    "dont": "Use only for this role."
-  },
-  {
-    "token": "danger.container",
-    "use": "Status fill paired with foreground, icon and text.",
-    "dont": "Use only for this role."
-  }
+  {"token": "surface", "use": "Page, sheets, dialogs and flat sections.", "dont": "Do not box normal sections."},
+  {"token": "surfaceMuted", "use": "Disabled fills, skeletons and selected navigation.", "dont": "Use only for this role."},
+  {"token": "outline", "use": "Decorative separators; may be below 3:1.", "dont": "Never use for a control edge."},
+  {"token": "border", "use": "Control edges, at least 3:1 on surface.", "dont": "Never use for decorative rules."},
+  {"token": "textPrimary", "use": "Titles, values, body and focus ring.", "dont": "Use only for this role."},
+  {"token": "textSecondary", "use": "Labels, captions and muted icons.", "dont": "Use only for this role."},
+  {"token": "disabled", "use": "Disabled text, icons and marks.", "dont": "Do not replace with opacity."},
+  {"token": "accent", "use": "Primary fill, selected controls, links, focused input edge.", "dont": "Do not use as a status color or focus ring."},
+  {"token": "onAccent", "use": "Text and icons on accent.", "dont": "Use only for this role."},
+  {"token": "neutral.foreground", "use": "Status words and icons.", "dont": "Use only for this role."},
+  {"token": "neutral.container", "use": "Status fill paired with foreground, icon and text.", "dont": "Use only for this role."},
+  {"token": "info.foreground", "use": "Status words and icons.", "dont": "Use only for this role."},
+  {"token": "info.container", "use": "Status fill paired with foreground, icon and text.", "dont": "Use only for this role."},
+  {"token": "success.foreground", "use": "Status words and icons.", "dont": "Use only for this role."},
+  {"token": "success.container", "use": "Status fill paired with foreground, icon and text.", "dont": "Use only for this role."},
+  {"token": "warning.foreground", "use": "Status words and icons.", "dont": "Use only for this role."},
+  {"token": "warning.container", "use": "Status fill paired with foreground, icon and text.", "dont": "Use only for this role."},
+  {"token": "danger.foreground", "use": "Status words and icons.", "dont": "Use only for this role."},
+  {"token": "danger.container", "use": "Status fill paired with foreground, icon and text.", "dont": "Use only for this role."}
 ]} />
 
 Values are exported from the real Hairline theme in `example/lib/themes.dart`, in both brightness modes. Hosts override tokens through `PaymentTheme.copyWith`. Tone containers mix foreground toward surface by 90% in light mode and 84% in dark mode. Neutral follows the host scheme. Text must reach 4.5:1, control edges and meaningful marks 3:1. Decorative rules may recede below 3:1.
