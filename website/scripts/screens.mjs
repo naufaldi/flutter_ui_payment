@@ -22,6 +22,14 @@ const sharp = requireFromAstro('sharp');
 
 // name → what it shows (locale noted, because captures mix en and id).
 const screens = {
+  ios_kyc_intro_light: 'ios kyc intro light, Indonesian',
+  ios_kyc_intro_dark: 'ios kyc intro dark, Indonesian',
+  ios_kyc_intro_light_200: 'ios kyc intro light 200, Indonesian',
+  ios_methods_unavailable_light: 'ios methods unavailable light, Indonesian',
+  ios_methods_unavailable_dark: 'ios methods unavailable dark, Indonesian',
+  ios_methods_unavailable_light_200: 'ios methods unavailable light 200, Indonesian',
+  ios_catalog_video_loading: 'ios catalog video loading, English',
+
   ios_catalog_chart_line: 'Gallery: chart line, English',
   ios_catalog_chart_line_dark: 'Gallery: chart line dark, English',
   ios_catalog_chart_bar: 'Gallery: chart bar, English',

@@ -110,3 +110,7 @@ VerificationStatusView(
 <Props names={['VerificationIntro', 'IdentityForm', 'DocumentUploadTile', 'VerificationReview', 'VerificationStatusView', 'VerificationSnapshot', 'VerificationStatus', 'VerificationAction', 'DataRequirement', 'IdentityFieldSpec', 'DocumentRequirement', 'DocumentFile', 'DocumentSlotState', 'DocumentSlotPhase', 'DocumentIssue', 'DocumentIssueKind', 'checkDocumentLimits']} />
 
 See also [KYC capture](/components/kyc-capture/) and [Capture source sheet](/components/capture-source-sheet/).
+
+## Pattern adoption
+
+Consent uses `PaymentCheckbox`: the box sits on the same gutter as requirement icons, the label wraps, and Continue remains disabled until consent is checked.

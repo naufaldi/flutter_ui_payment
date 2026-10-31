@@ -98,3 +98,7 @@ AuthorizationPrompt(
 ## API
 
 <Props names={['PaymentSummary', 'PaymentMethodPicker', 'PaymentConfirmation', 'AuthorizationPrompt', 'AuthorizationPhase', 'PaymentActionBar', 'MerchantHeader', 'PaymentStepIndicator', 'BalanceCard', 'BalanceState', 'PromoCodeInput', 'PromoCodeStatus', 'PaymentQuote', 'QuoteLine', 'QuoteLineKind', 'PaymentMethod', 'PaymentMethodKind']} />
+
+## Pattern adoption
+
+Changed-total approval uses `PaymentCheckbox`, aligned to the content gutter. Pay stays disabled until the customer accepts. Unavailable methods keep their reason below a muted label and show a thin disabled radio ring.
