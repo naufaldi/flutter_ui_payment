@@ -1,3 +1,4 @@
+import 'account_models.dart';
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -154,6 +155,73 @@ class DemoHost {
 
   Future<void> _latency([int ms = 600]) =>
       Future.delayed(Duration(milliseconds: (ms * latencyScale).round()));
+
+  bool _reportFailed = false, _saveFailed = false;
+  int _cases = 0;
+  Future<List<AttemptRow>> attempts(String account, TransactionRecord r) async {
+    await _latency();
+    if (r.id == 'TRX-DEMO-0042') {
+      return [
+        AttemptRow(
+          'DEMO-attempt-1',
+          r.createdAt.subtract(const Duration(minutes: 2)),
+          'Card',
+          PaymentStatus.failed,
+          r.amount,
+        ),
+        AttemptRow(
+          'DEMO-attempt-2',
+          r.createdAt,
+          'QRIS',
+          PaymentStatus.succeeded,
+          r.amount,
+        ),
+      ];
+    }
+    return [
+      AttemptRow(r.id, r.createdAt, r.methodLabel ?? '—', r.status, r.amount),
+    ];
+  }
+
+  Future<List<Settlement>> settlements() async {
+    await _latency();
+    return [
+      for (var i = 1; i <= 23; i++)
+        Settlement(
+          'STL-DEMO-${i.toString().padLeft(4, '0')}',
+          DateTime(2026, 10, i),
+          'Settlement DEMO-$i',
+          i == 4
+              ? 'Failed'
+              : i % 7 == 0
+              ? 'Pending'
+              : 'Paid',
+          Money.idr(i * 2500),
+        ),
+    ];
+  }
+
+  Future<String> reportProblem({
+    required String category,
+    required int length,
+  }) async {
+    await _latency();
+    if (config.reportFailsOnce && !_reportFailed) {
+      _reportFailed = true;
+      throw const HostException(HostError(HostErrorCategory.unavailable));
+    }
+    record('Problem reported ($category, $length chars)');
+    return 'CASE-DEMO-${(++_cases).toString().padLeft(4, '0')}';
+  }
+
+  Future<void> saveSettings(DemoAccountSettings settings) async {
+    await _latency();
+    if (config.settingsSaveFailsOnce && !_saveFailed) {
+      _saveFailed = true;
+      throw const HostException(HostError(HostErrorCategory.unavailable));
+    }
+    record('Settings saved');
+  }
 
   bool _signInCanceled = false, _historyFailed = false;
   Future<bool> signIn() async {

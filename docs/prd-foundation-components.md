@@ -2014,10 +2014,10 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 **Phase 5: pattern adoption (example)**
 - [x] KYC onboarding with task list and field kinds
 - [x] History full page + date range filter + active-filter chips; spending overview (D10)
-- [ ] Transaction detail page (property list + attempts table); report a problem focus view; onCopyReference (Q5)
-- [ ] Settlement statement (DataTable); fee schedule (Table)
-- [ ] Settings view; sign-in view; order context view on wide checkout
-- [ ] flow_test: sign-in → KYC onboarding → checkout → detail page → report a problem
+- [x] Transaction detail page (property list + attempts table); report a problem focus view; onCopyReference (Q5)
+- [x] Settlement statement (DataTable); fee schedule (Table)
+- [x] Settings view; sign-in view; order context view on wide checkout
+- [x] flow_test: sign-in → KYC onboarding → checkout → detail page → report a problem
 
 **Phase 6: docs IA**
 - [ ] Sidebar: Foundations; Components as one alphabetical list (48 Stripe + kit-specific); Patterns; Reference
@@ -2085,3 +2085,7 @@ Carry-over alignment and phone table fixes ship with direct module admission, re
 ### Phase 5-2 implementation notes
 
 Sign-in H04, KYC onboarding, history/spending A01 and wide checkout order context use bounded view bodies. The host owns async work, filters, chart totals and task states. API names follow the existing task, refund, money and verification models (see decisions).
+
+### Phase 5-3 implementation notes
+
+A02–A05 exercise transaction details/reporting, settlement statements, fees and grouped settings. Reports send metadata only; downloads are synthetic preparation. The H04 integration story extends sign-in and KYC through payment, detail and reporting. Verification results are recorded in the PR.

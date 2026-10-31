@@ -412,3 +412,11 @@ Capture-glance corrections: the harness resets descendant scroll positions befor
 - Date, status and search chips are independently removable; status remains a text-tab filter. A range-only empty result explains how to clear filters.
 - History contains spending rather than adding another navigation step. Wide checkout has supporting order context without another primary action.
 - Plan API-name corrections proven by code: tasks use `PaymentTaskListItem`/`subTasks` (not `PaymentTask`/`subtasks`), refunds use `RefundStatus.refunded` (not `completed`), amounts use `MoneyFormat`, and verification copy uses `safeReason`. These preserve the planned behavior.
+
+### Phase 5-3 implementation decisions
+
+- Transaction detail composes the payment module, direct attempt table and merchant property module. Copying remains a host callback; receipt and report are secondary header actions.
+- Report text stays inside the focus view and is disposed with it. The host receives only category and character count; logs cannot contain the message. Dirty cancellation confirms discard. Submission failures keep the draft available for retry.
+- Statement downloads prepare a synthetic host result only. Local pagination selects only the current page; filters and settings remain coordinator-owned and clear on account switch.
+- Settings groups Notifications, Payments and Language; Save is the only primary action, with a future lock and localized result. Fees use static Table rows and a focusable tooltip trigger.
+- No new Phase 5-3 plan deviations. Existing task/refund/money API-name corrections remain as recorded in 5-2.

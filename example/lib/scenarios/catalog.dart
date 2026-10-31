@@ -932,6 +932,79 @@ const scenarios = <Scenario>[
       ),
     ],
   ),
+  Scenario(
+    id: 'A02',
+    title: Bi(
+      'Transaction detail and report a problem',
+      'Detail transaksi dan laporkan masalah',
+    ),
+    expect: Bi(
+      'Explore transaction detail and report a problem with synthetic data.',
+      'Coba transaction detail and report a problem dengan data sintetis.',
+    ),
+    variants: [
+      ScenarioVariant(
+        label: Bi('Typical', 'Umum'),
+        config: ScenarioConfig(),
+        start: FlowStep.transactionDetail,
+      ),
+      ScenarioVariant(
+        label: Bi('Fails once', 'Gagal sekali'),
+        config: ScenarioConfig(reportFailsOnce: true),
+        start: FlowStep.transactionDetail,
+      ),
+    ],
+  ),
+  Scenario(
+    id: 'A03',
+    title: Bi('Settlement statement', 'Laporan penyelesaian'),
+    expect: Bi(
+      'Explore settlement statement with synthetic data.',
+      'Coba settlement statement dengan data sintetis.',
+    ),
+    variants: [
+      ScenarioVariant(
+        label: Bi('Typical', 'Umum'),
+        config: ScenarioConfig(),
+        start: FlowStep.statement,
+      ),
+    ],
+  ),
+  Scenario(
+    id: 'A04',
+    title: Bi('Fee schedule', 'Daftar biaya'),
+    expect: Bi(
+      'Explore fee schedule with synthetic data.',
+      'Coba fee schedule dengan data sintetis.',
+    ),
+    variants: [
+      ScenarioVariant(
+        label: Bi('Typical', 'Umum'),
+        config: ScenarioConfig(),
+        start: FlowStep.fees,
+      ),
+    ],
+  ),
+  Scenario(
+    id: 'A05',
+    title: Bi('Settings', 'Pengaturan'),
+    expect: Bi(
+      'Explore settings with synthetic data.',
+      'Coba settings dengan data sintetis.',
+    ),
+    variants: [
+      ScenarioVariant(
+        label: Bi('Typical', 'Umum'),
+        config: ScenarioConfig(),
+        start: FlowStep.accountSettings,
+      ),
+      ScenarioVariant(
+        label: Bi('Fails once', 'Gagal sekali'),
+        config: ScenarioConfig(settingsSaveFailsOnce: true),
+        start: FlowStep.accountSettings,
+      ),
+    ],
+  ),
 ];
 
 /// Same as [_noKyc]; exposed for the component gallery's standalone host.

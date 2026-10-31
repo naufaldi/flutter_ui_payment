@@ -214,6 +214,136 @@ void main() {
     expect(c.host.chargeCount, 1);
   });
 
+  testWidgets(
+    'H04 signed out: sign in → KYC onboarding → checkout → detail page → report a problem',
+    (tester) async {
+      final app = await launch(tester);
+      final c = await runScenario(tester, app, 'H04');
+
+      expect(c.step, FlowStep.signIn);
+      expect(
+        find.descendant(
+          of: find.byType(PaymentSignInView),
+          matching: find.byType(EditableText),
+        ),
+        findsNothing,
+      );
+      await tapVisible(tester, find.byKey(const Key('sign-in')));
+      await pumpUntil(tester, () => c.step == FlowStep.overview);
+      await tapVisible(tester, find.byKey(const Key('buy')));
+      expect(c.step, FlowStep.kycIntro);
+      await tapVisible(tester, find.byType(PaymentCheckbox));
+      await tapVisible(tester, find.text('Continue'));
+      expect(c.step, FlowStep.kycIdentity);
+
+      await fillIdentity(tester);
+      await tapVisible(tester, find.text('Continue'));
+      await pumpUntil(tester, () => c.step == FlowStep.kycDocuments);
+      expect(c.step, FlowStep.kycDocuments);
+      expect(c.identity['dob'], '1995-08-17');
+      expect(c.identity['occupation'], 'employee');
+      expect(c.identity['province'], 'jawa-barat');
+
+      for (final (slot, fixture) in [
+        ('idCard', 'ktp_demo_sari.jpg'),
+        ('selfie', 'ktp_demo_retake.png'),
+      ]) {
+        await tapVisible(
+          tester,
+          find.descendant(
+            of: find.byKey(Key('slot-$slot')),
+            matching: find.text('Choose document'),
+          ),
+        );
+        await tapVisible(tester, find.text('Choose a file'));
+        await tapVisible(tester, find.byKey(Key('fixture-$fixture')));
+        await pumpUntil(
+          tester,
+          () => c.documents[slot]!.phase == DocumentSlotPhase.uploaded,
+          reason: 'upload $slot',
+        );
+      }
+      await tapVisible(tester, find.byKey(const Key('to-review')));
+      expect(c.step, FlowStep.kycReview);
+      // The NIK is masked on review.
+      expect(find.text('••••••••••••1234'), findsOneWidget);
+
+      await tapVisible(tester, find.text('Submit for verification'));
+      await pumpUntil(tester, () => c.step == FlowStep.kycStatus);
+      expect(c.kyc.status, VerificationStatus.inReview);
+      await tapVisible(
+        tester,
+        find.text(l10n.kyc(VerificationAction.checkStatus)),
+      );
+      await pumpUntil(
+        tester,
+        () => c.kyc.status == VerificationStatus.verified,
+      );
+      await tapVisible(
+        tester,
+        find.text(l10n.kyc(VerificationAction.continueToPayment)),
+      );
+      await pumpUntil(tester, () => c.step == FlowStep.checkout);
+
+      await checkoutToAuthorize(tester, c);
+      expect(find.text('Rp102,500'), findsWidgets);
+      await authorizeAndSubmit(tester, c);
+      // The host coordinator polls; the UI never infers success.
+      await pumpUntil(
+        tester,
+        () => c.attempt?.status == PaymentStatus.succeeded,
+        reason: 'host polling to success',
+      );
+      await tapVisible(tester, find.text(l10n.pay(PaymentAction.viewReceipt)));
+      await pumpUntilFound(tester, find.text('Share receipt'));
+      expect(find.text('TRX-004071'), findsWidgets);
+      await tapVisible(tester, find.byTooltip('Copy'));
+      await pumpUntilFound(tester, find.byIcon(PaymentIcons.copied));
+      expect(find.byType(PaymentBanner), findsNothing);
+
+      expect(c.submitEvents, 1);
+      expect(c.host.attemptCount, 1);
+      expect(c.host.chargeCount, 1);
+
+      await tapVisible(tester, find.byKey(const Key('receipt-details')));
+      await pumpUntil(
+        tester,
+        () => c.step == FlowStep.transactionDetail && !c.detailLoading,
+      );
+      expect(find.byType(PaymentDetailPage), findsOneWidget);
+      expect(find.text(c.attempt!.attemptId), findsWidgets);
+      await openReport(tester);
+      await tapVisible(
+        tester,
+        find
+            .descendant(
+              of: find.byType(PaymentSelect<String>),
+              matching: find.byType(InkWell),
+            )
+            .first,
+      );
+      await tapVisible(tester, find.text('Charged twice'));
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(PaymentTextArea),
+          matching: find.byType(EditableText),
+        ),
+        'test note',
+      );
+      FocusManager.instance.primaryFocus?.unfocus();
+      await settle(tester);
+      await tapVisible(tester, find.byKey(const Key('send-report')));
+      await pumpUntilFound(tester, find.textContaining('Report sent'));
+      await settle(tester);
+      expect(find.byType(PaymentFocusView), findsNothing);
+      expect(logCount(c, 'Problem reported'), 1);
+      expect(
+        c.host.log.value.any((e) => e.message.contains('test note')),
+        isFalse,
+      );
+    },
+  );
+
   testWidgets('P05 double tap and slow submit send one payment', (
     tester,
   ) async {
@@ -495,4 +625,14 @@ void main() {
     final ids = scenarios.map((s) => s.id).toSet();
     expect(prdIds.difference(ids), isEmpty);
   });
+}
+
+Future<void> openReport(WidgetTester tester) async {
+  final button = find.byKey(const Key('report-problem'));
+  if (button.evaluate().isNotEmpty) {
+    await tapVisible(tester, button);
+  } else {
+    await tapVisible(tester, find.byTooltip('More actions'));
+    await tapVisible(tester, find.text('Report a problem'));
+  }
 }

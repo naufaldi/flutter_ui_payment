@@ -10,6 +10,12 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
 - Delivers the 4C–4D specimen captures: 45 new images and 6 refreshed Code/Tabs images.
 - Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
 
+## Design system Phase 5-3 (2026-11-01)
+
+- Add transaction detail with reference copying and attempt history; report problems through a focused task with discard confirmation and safe host metadata.
+- Add settlement statements with search, selection and download preparation, fee schedules with contextual help, and grouped account settings with save/retry feedback.
+- Add A02–A05 fixtures and the H04 sign-in → KYC → payment → detail → report integration story. No public library API changes.
+
 ## Design system Phase 5-2 (2026-11-01)
 
 - Add external sign-in with cancellation retry, KYC onboarding with grouped identity fields and province search, and transaction history with spending, date presets and removable filters.

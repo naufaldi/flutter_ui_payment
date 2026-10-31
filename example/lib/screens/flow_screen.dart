@@ -1,3 +1,7 @@
+import 'steps/transaction_detail_step.dart';
+import 'steps/statement_step.dart';
+import 'steps/fees_step.dart';
+import 'steps/account_settings_step.dart';
 export 'steps/kyc_fields.dart';
 import 'steps/kyc_onboarding_step.dart';
 import 'steps/sign_in_step.dart';
@@ -139,8 +143,9 @@ class FlowScreen extends StatelessWidget {
       case FlowStep.signIn:
       case FlowStep.overview:
         return;
+      case FlowStep.transactionDetail:
+        c.closeDetail();
       case FlowStep.history ||
-          FlowStep.transactionDetail ||
           FlowStep.statement ||
           FlowStep.fees ||
           FlowStep.accountSettings:
@@ -251,10 +256,10 @@ class _StepBody extends StatelessWidget {
       FlowStep.overview => _Overview(c),
       FlowStep.signIn => SignInStep(c),
       FlowStep.history => HistoryStep(c),
-      FlowStep.transactionDetail ||
-      FlowStep.statement ||
-      FlowStep.fees ||
-      FlowStep.accountSettings => const SizedBox.shrink(),
+      FlowStep.transactionDetail => TransactionDetailStep(c),
+      FlowStep.statement => StatementStep(c),
+      FlowStep.fees => FeesStep(c),
+      FlowStep.accountSettings => AccountSettingsStep(c),
       FlowStep.kycIntro => _KycIntro(c),
       FlowStep.kycIdentity ||
       FlowStep.kycDocuments ||
@@ -379,6 +384,21 @@ class _Overview extends StatelessWidget {
                 icon: Icons.receipt_long_outlined,
                 title: s.transactions,
                 onPressed: c.openHistory,
+              ),
+              PaymentListItem(
+                icon: Icons.description_outlined,
+                title: s.statement,
+                onPressed: c.openStatement,
+              ),
+              PaymentListItem(
+                icon: Icons.sell_outlined,
+                title: s.fees,
+                onPressed: c.openFees,
+              ),
+              PaymentListItem(
+                icon: Icons.settings_outlined,
+                title: s.accountSettings,
+                onPressed: c.openAccountSettings,
               ),
             ],
           ),
@@ -677,6 +697,12 @@ class _Receipt extends StatelessWidget {
             onCopyTransactionId: c.copy,
           ),
           const SizedBox(height: 8),
+          PaymentButton(
+            key: const Key('receipt-details'),
+            label: s.viewDetails,
+            variant: PaymentButtonVariant.secondary,
+            onPressed: c.openCurrentDetail,
+          ),
           PaymentButton(
             key: const Key('receipt-done'),
             label: s.done,

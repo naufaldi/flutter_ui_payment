@@ -74,6 +74,69 @@ class DemoStrings {
   String get presetThisMonth => _t("This month", "Bulan ini");
   String get presetLastMonth => _t("Last month", "Bulan lalu");
 
+  String get viewDetails =>
+      _t("View transaction details", "Lihat detail transaksi");
+  String get paymentModule => _t("Payment", "Pembayaran");
+  String get attempts => _t("Attempts", "Percobaan");
+  String get merchant => _t("Merchant", "Merchant");
+  String get viewReceipt => _t("View receipt", "Lihat struk");
+  String get reportProblem => _t("Report a problem", "Laporkan masalah");
+  String get whatWentWrong => _t("What went wrong?", "Apa masalahnya?");
+  String get chargedTwice => _t("Charged twice", "Terdebit dua kali");
+  String get wrongAmount => _t("Wrong amount", "Nominal salah");
+  String get notReceived =>
+      _t("Didn't get what I paid for", "Pesanan tidak diterima");
+  String get otherProblem => _t("Something else", "Lainnya");
+  String get describeProblem =>
+      _t("Describe the problem", "Jelaskan masalahnya");
+  String get noSecrets => _t(
+    "Don't include your PIN, OTP or card number.",
+    "Jangan tulis PIN, OTP, atau nomor kartu.",
+  );
+  String get sendReport => _t("Send report", "Kirim laporan");
+  String get discardTitle => _t("Discard this report?", "Buang laporan ini?");
+  String get discardMessage =>
+      _t("What you typed will be lost.", "Teks yang Anda tulis akan hilang.");
+  String get discard => _t("Discard", "Buang");
+  String get statementTitle => _t(
+    "Settlement statement, October 2026",
+    "Laporan penyelesaian, Oktober 2026",
+  );
+  String get searchSettlements => _t("Search settlements", "Cari penyelesaian");
+  String get download => _t("Download", "Unduh");
+  String get feesTitle => _t("Fee schedule", "Daftar biaya");
+  String get feesNote => _t("Fees include VAT.", "Biaya sudah termasuk PPN.");
+  String get feesTooltip => _t(
+    "Set by Ruang Bayar for each payment method.",
+    "Ditetapkan Ruang Bayar per metode pembayaran.",
+  );
+  String get notifications => _t("Notifications", "Notifikasi");
+  String get refundUpdates => _t("Refund updates", "Kabar pengembalian dana");
+  String get promotions => _t("Promotions", "Promosi");
+  String get payments => _t("Payments", "Pembayaran");
+  String get defaultMethod => _t("Default method", "Metode bawaan");
+  String get statementLanguage => _t("Statement language", "Bahasa laporan");
+  String get saved => _t("Saved", "Tersimpan");
+  String get saveFailed =>
+      _t("Couldn't save. Try again.", "Gagal menyimpan. Coba lagi.");
+  String get noSettlementsTitle =>
+      _t("No matching settlements", "Tidak ada penyelesaian yang cocok");
+  String get noSettlementsMessage => _t(
+    "Clear your search to see the statement.",
+    "Hapus pencarian untuk melihat laporan.",
+  );
+  String get clearSearch => _t("Clear search", "Hapus pencarian");
+  String get reportFailed => _t(
+    "Report wasn't sent. Try again.",
+    'Laporan belum terkirim. Coba lagi.',
+  );
+  String reportSent(String caseId) =>
+      _t('Report sent. Case $caseId', 'Laporan terkirim. Kasus $caseId');
+  String downloadSelected(int n) =>
+      _t('Download selected ($n)', 'Unduh yang dipilih ($n)');
+  String prepared(int n) =>
+      _t('Prepared $n settlements', '$n penyelesaian disiapkan');
+
   String get appName => 'Ruang Bayar';
   String get simulated => _t(
     'Simulation — synthetic data, no real money or identity',
