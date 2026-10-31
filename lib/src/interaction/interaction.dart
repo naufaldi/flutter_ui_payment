@@ -34,6 +34,7 @@ enum PaymentListItemSize {
   large,
 }
 
+/// A payment list row with a host action, icon or image.
 class PaymentListItem extends StatelessWidget {
   const PaymentListItem({
     super.key,

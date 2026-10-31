@@ -7109,7 +7109,7 @@
   "PaymentListItem": {
     "kind": "class",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "",
+    "doc": "A payment list row with a host action, icon or image.",
     "extends": "StatelessWidget",
     "constructors": [
       {
