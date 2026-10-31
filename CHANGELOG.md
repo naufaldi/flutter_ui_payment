@@ -1,3 +1,7 @@
+## Design system Phase 4D-2 (2026-11-01)
+
+- Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
+
 ## Design system Phase 4D-1 (2026-11-01)
 
 - Add context, full-page, focus, settings, sign-in and onboarding view bodies.

@@ -20,6 +20,87 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
     variant: variant,
     onPressed: () => _galleryFeedback(context, label, label),
   );
+  Widget property({
+    bool pending = false,
+    bool empty = false,
+    bool error = false,
+    bool horizontal = false,
+  }) => PaymentDetailPagePropertyList(
+    title: 'Payment details',
+    pending: pending,
+    orientation: horizontal ? Axis.horizontal : Axis.vertical,
+    errorText: error ? 'Details didn’t load' : null,
+    onRetry: () {},
+    onCreate: empty ? () {} : null,
+    emptyMessage: const PaymentEmptyMessage(
+      'No details yet',
+      message: 'Add a payment detail to get started.',
+    ),
+    items: empty
+        ? const []
+        : [
+            const PaymentDetailProperty(
+              label: 'Amount',
+              values: [
+                PaymentDetailValue('Rp102.500', subText: 'Including fee'),
+              ],
+            ),
+            PaymentDetailProperty(
+              label: 'Merchant',
+              values: [
+                PaymentDetailValue.link(
+                  PaymentLink(label: 'Toko Contoh', onPressed: () {}),
+                ),
+              ],
+            ),
+          ],
+  );
+  Widget attempts({
+    bool pending = false,
+    bool empty = false,
+    bool error = false,
+  }) => PaymentDetailPageTable<int>(
+    title: 'Attempts',
+    pending: pending,
+    errorText: error ? 'Attempts didn’t load' : null,
+    onRetry: () {},
+    columns: [
+      PaymentDataColumn<int>(
+        key: 'time',
+        label: 'Time',
+        value: (r) => DateTime(2026, 10, 1, 10, r),
+        cell: PaymentCellType.date,
+      ),
+      PaymentDataColumn<int>(
+        key: 'method',
+        label: 'Method',
+        value: (r) => 'BCA virtual account',
+        pinned: true,
+      ),
+      PaymentDataColumn<int>(
+        key: 'status',
+        label: 'Status',
+        value: (r) => r == 3 ? 'Paid' : 'Pending',
+        cell: PaymentCellType.status,
+        statusMap: {'Paid': StatusTone.success, 'Pending': StatusTone.warning},
+      ),
+      PaymentDataColumn<int>(
+        key: 'amount',
+        label: 'Amount',
+        value: (r) => const Money.idr(102500),
+        cell: PaymentCellType.currency,
+      ),
+    ],
+    rows: empty ? const [] : const [1, 2, 3],
+    rowKey: (r) => '$r',
+    rowActions: [
+      PaymentRowAction<int>(
+        id: 'view',
+        label: 'View attempt',
+        onPressed: (_) {},
+      ),
+    ],
+  );
   @override
   Widget build(BuildContext context) {
     const facts = [
@@ -203,6 +284,95 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
           ],
         ),
       ),
+      'PaymentDetailPage' => PaymentDetailPage(
+        title: 'Rp102.500 to Toko Contoh',
+        description: 'Paid with BCA virtual account · 1 Oct 2026',
+        breadcrumbs: [
+          PaymentBreadcrumb(label: 'Transactions', onPressed: () {}),
+        ],
+        actions: [
+          button('View receipt'),
+          button('Report a problem', variant: PaymentButtonVariant.quiet),
+          button('Request refund', variant: PaymentButtonVariant.destructive),
+        ],
+        primary: [
+          PaymentPageModule(title: 'Payment details', child: property()),
+          PaymentPageModule(title: 'Attempts', child: attempts()),
+        ],
+        secondary: const [
+          PaymentPageModule(
+            title: 'Merchant',
+            child: PaymentPropertyList(
+              items: [
+                PaymentPropertyListItem(
+                  label: 'Name',
+                  valueText: 'Toko Contoh',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      'PaymentOverviewPage' => PaymentFullPageView(
+        title: 'Spending',
+        child: PaymentOverviewPage(
+          primary: [
+            PaymentPageModule(
+              title: 'This month',
+              child: PaymentBarChart(points: _chartFixture('typical')),
+            ),
+            const PaymentPageModule(
+              title: 'Recent transactions',
+              child: PaymentPropertyList(
+                items: [
+                  PaymentPropertyListItem(
+                    label: 'Toko Contoh',
+                    valueText: 'Rp102.500',
+                  ),
+                  PaymentPropertyListItem(
+                    label: 'Groceries',
+                    valueText: 'Rp75.000',
+                  ),
+                  PaymentPropertyListItem(
+                    label: 'Coffee',
+                    valueText: 'Rp25.000',
+                  ),
+                ],
+              ),
+            ),
+          ],
+          secondary: const [
+            PaymentPageModule(
+              title: 'Balance',
+              child: PaymentPropertyList(
+                items: [
+                  PaymentPropertyListItem(
+                    label: 'Available',
+                    valueText: 'Rp500.000',
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      'PaymentDetailPagePropertyList' => Column(
+        children: [
+          property(),
+          property(horizontal: true),
+          property(pending: true),
+          property(empty: true),
+          property(error: true),
+        ],
+      ),
+      'PaymentDetailPageTable' => Column(
+        children: [
+          attempts(),
+          attempts(pending: true),
+          attempts(empty: true),
+          attempts(error: true),
+        ],
+      ),
       _ => const SizedBox.shrink(),
     };
     return _Entry(
@@ -224,7 +394,18 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
               ],
             )
           : null,
-      child: SizedBox(height: 560, child: view),
+      child:
+          widget.name == 'PaymentDetailPagePropertyList' ||
+              widget.name == 'PaymentDetailPageTable'
+          ? view
+          : SizedBox(
+              height:
+                  widget.name.startsWith('PaymentDetailPage') ||
+                      widget.name == 'PaymentOverviewPage'
+                  ? 640
+                  : 560,
+              child: view,
+            ),
     );
   }
 }

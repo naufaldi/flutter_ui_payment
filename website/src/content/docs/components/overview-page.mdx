@@ -1,0 +1,37 @@
+---
+title: Overview page
+description: Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
+---
+
+import Props from '../../../components/Props.astro';
+
+A spending overview composes flat ruled modules. Variants: single column, primary/secondary columns at 840 dp. Nothing else exists. OverviewPage never scrolls vertically; place it in FullPageView or an existing host scroll region. Module actions are small hug buttons; extra actions collapse into a menu.
+
+## Usage
+
+```dart
+const PaymentFullPageView(title: 'Spending', child: PaymentOverviewPage(primary: [PaymentPageModule(title: 'This month', child: Text('Spending summary'))]));
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| OverviewPage | `PaymentOverviewPage` |
+| PageModule | `PaymentPageModule` |
+
+## States and content
+
+The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Accessibility
+
+Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+
+## API
+
+<Props names={['PaymentOverviewPage', 'PaymentPageModule']} />
+
+## See also
+
+- [Components](/components/)

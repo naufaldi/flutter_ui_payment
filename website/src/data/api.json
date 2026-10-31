@@ -1774,7 +1774,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": ""
+            "doc": "Visible tab label."
           },
           {
             "name": "disabledReason",
@@ -1785,7 +1785,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "disabledReason",
-            "doc": ""
+            "doc": "Explanation for an unavailable tab."
           }
         ],
         "doc": ""
@@ -1799,14 +1799,14 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "Visible tab label."
       },
       {
         "name": "disabledReason",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Explanation for an unavailable tab."
       }
     ],
     "copyWith": null
@@ -1830,7 +1830,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "tabs",
-            "doc": ""
+            "doc": "Tabs in reading order."
           },
           {
             "name": "selectedIndex",
@@ -1841,7 +1841,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "selectedIndex",
-            "doc": ""
+            "doc": "Host-owned active tab index."
           },
           {
             "name": "onSelected",
@@ -1852,7 +1852,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onSelected",
-            "doc": ""
+            "doc": "Reports manual tab activation."
           },
           {
             "name": "size",
@@ -1863,7 +1863,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "size",
-            "doc": ""
+            "doc": "Typography and padding size."
           },
           {
             "name": "fitted",
@@ -1874,7 +1874,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "fitted",
-            "doc": ""
+            "doc": "Divide available width equally when every label fits; otherwise scroll."
           }
         ],
         "doc": ""
@@ -1888,35 +1888,35 @@
         "kind": "field",
         "static": false,
         "type": "List<PaymentTab>",
-        "doc": ""
+        "doc": "Tabs in reading order."
       },
       {
         "name": "selectedIndex",
         "kind": "field",
         "static": false,
         "type": "int",
-        "doc": ""
+        "doc": "Host-owned active tab index."
       },
       {
         "name": "onSelected",
         "kind": "field",
         "static": false,
         "type": "ValueChanged<int>",
-        "doc": ""
+        "doc": "Reports manual tab activation."
       },
       {
         "name": "size",
         "kind": "field",
         "static": false,
         "type": "PaymentSize",
-        "doc": ""
+        "doc": "Typography and padding size."
       },
       {
         "name": "fitted",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": ""
+        "doc": "Divide available width equally when every label fits; otherwise scroll."
       }
     ],
     "copyWith": null
@@ -2430,7 +2430,9 @@
       "save",
       "signInTitle",
       "allSteps",
-      "onboardingDone"
+      "onboardingDone",
+      "backTo",
+      "create"
     ]
   },
   "TransactionFilter": {
@@ -6196,7 +6198,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "focusNode",
-            "doc": "Specific outcome of pressing the button. Wraps rather than truncates.\nHost focus node, for example for menu focus return."
+            "doc": "Host focus node, for example for menu focus return."
           },
           {
             "name": "label",
@@ -6207,7 +6209,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": ""
+            "doc": "Specific outcome of pressing the button. Wraps rather than truncates."
           },
           {
             "name": "onPressed",
@@ -6309,14 +6311,14 @@
         "kind": "field",
         "static": false,
         "type": "FocusNode?",
-        "doc": "Specific outcome of pressing the button. Wraps rather than truncates.\nHost focus node, for example for menu focus return."
+        "doc": "Host focus node, for example for menu focus return."
       },
       {
         "name": "label",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "Specific outcome of pressing the button. Wraps rather than truncates."
       },
       {
         "name": "variant",
@@ -18354,7 +18356,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "noWrap",
-            "doc": "Scroll long references horizontally."
+            "doc": "Keep one line and scroll inside the block; an edge fade shows there is more."
           },
           {
             "name": "size",
@@ -18422,7 +18424,7 @@
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "Scroll long references horizontally."
+        "doc": "Keep one line and scroll inside the block; an edge fade shows there is more."
       },
       {
         "name": "size",
@@ -22970,6 +22972,944 @@
         "static": false,
         "type": "VoidCallback?",
         "doc": "Oncompleted supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentPageModule": {
+    "kind": "class",
+    "file": "lib/src/pages/page_module.dart",
+    "doc": "A flat, ruled section of a page.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentPageModule",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "child",
+            "type": "Widget",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "child",
+            "doc": "Child supplied by the host."
+          },
+          {
+            "name": "subtitle",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "subtitle",
+            "doc": "Subtitle supplied by the host."
+          },
+          {
+            "name": "extraActions",
+            "type": "List<PaymentButton>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "extraActions",
+            "doc": "Extraactions supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "child",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": "Child supplied by the host."
+      },
+      {
+        "name": "subtitle",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Subtitle supplied by the host."
+      },
+      {
+        "name": "extraActions",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentButton>",
+        "doc": "Extraactions supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentBreadcrumb": {
+    "kind": "class",
+    "file": "lib/src/pages/page_module.dart",
+    "doc": "Ancestor navigation delegated to the host.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentBreadcrumb",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Label supplied by the host."
+          },
+          {
+            "name": "onPressed",
+            "type": "VoidCallback",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onPressed",
+            "doc": "Onpressed supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Label supplied by the host."
+      },
+      {
+        "name": "onPressed",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback",
+        "doc": "Onpressed supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentDetailPage": {
+    "kind": "class",
+    "file": "lib/src/pages/detail_page.dart",
+    "doc": "Detail body owning one scroll region; do not nest in FullPageView.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentDetailPage",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "primary",
+            "type": "List<PaymentPageModule>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "primary",
+            "doc": "Primary supplied by the host."
+          },
+          {
+            "name": "secondary",
+            "type": "List<PaymentPageModule>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "secondary",
+            "doc": "Secondary supplied by the host."
+          },
+          {
+            "name": "breadcrumbs",
+            "type": "List<PaymentBreadcrumb>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "breadcrumbs",
+            "doc": "Breadcrumbs supplied by the host."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "Description supplied by the host."
+          },
+          {
+            "name": "actions",
+            "type": "List<PaymentButton>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "actions",
+            "doc": "Actions supplied by the host."
+          },
+          {
+            "name": "pending",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pending",
+            "doc": "Pending supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "primary",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentPageModule>",
+        "doc": "Primary supplied by the host."
+      },
+      {
+        "name": "secondary",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentPageModule>?",
+        "doc": "Secondary supplied by the host."
+      },
+      {
+        "name": "breadcrumbs",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentBreadcrumb>",
+        "doc": "Breadcrumbs supplied by the host."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Description supplied by the host."
+      },
+      {
+        "name": "actions",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentButton>",
+        "doc": "Actions supplied by the host."
+      },
+      {
+        "name": "pending",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Pending supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentOverviewPage": {
+    "kind": "class",
+    "file": "lib/src/pages/overview_page.dart",
+    "doc": "Non-scrolling page modules; place inside a FullPageView.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentOverviewPage",
+        "factory": false,
+        "params": [
+          {
+            "name": "primary",
+            "type": "List<PaymentPageModule>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "primary",
+            "doc": "Primary supplied by the host."
+          },
+          {
+            "name": "secondary",
+            "type": "List<PaymentPageModule>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "secondary",
+            "doc": "Secondary supplied by the host."
+          },
+          {
+            "name": "pending",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pending",
+            "doc": "Pending supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "primary",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentPageModule>",
+        "doc": "Primary supplied by the host."
+      },
+      {
+        "name": "secondary",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentPageModule>?",
+        "doc": "Secondary supplied by the host."
+      },
+      {
+        "name": "pending",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Pending supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentDetailValue": {
+    "kind": "class",
+    "file": "lib/src/pages/detail_page_property_list.dart",
+    "doc": "One displayed detail value with optional secondary copy.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentDetailValue",
+        "factory": false,
+        "params": [
+          {
+            "name": "text",
+            "type": "String?",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "text",
+            "doc": "Text supplied by the host."
+          },
+          {
+            "name": "subText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "subText",
+            "doc": "Subtext supplied by the host."
+          }
+        ],
+        "doc": ""
+      },
+      {
+        "name": "PaymentDetailValue.link",
+        "factory": false,
+        "params": [
+          {
+            "name": "link",
+            "type": "PaymentLink?",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "link",
+            "doc": "Link supplied by the host."
+          },
+          {
+            "name": "subText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "subText",
+            "doc": "Subtext supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "text",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Text supplied by the host."
+      },
+      {
+        "name": "link",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentLink?",
+        "doc": "Link supplied by the host."
+      },
+      {
+        "name": "subText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Subtext supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentDetailProperty": {
+    "kind": "class",
+    "file": "lib/src/pages/detail_page_property_list.dart",
+    "doc": "A labeled set of related values.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentDetailProperty",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Label supplied by the host."
+          },
+          {
+            "name": "values",
+            "type": "List<PaymentDetailValue>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "values",
+            "doc": "Values supplied by the host."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "Description supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Label supplied by the host."
+      },
+      {
+        "name": "values",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentDetailValue>",
+        "doc": "Values supplied by the host."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Description supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentDetailPagePropertyList": {
+    "kind": "class",
+    "file": "lib/src/pages/detail_page_property_list.dart",
+    "doc": "Property module with loading, empty and retry states.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentDetailPagePropertyList",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "pending",
+            "type": "bool",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pending",
+            "doc": "Pending supplied by the host."
+          },
+          {
+            "name": "items",
+            "type": "List<PaymentDetailProperty>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "items",
+            "doc": "Items supplied by the host."
+          },
+          {
+            "name": "orientation",
+            "type": "Axis",
+            "required": false,
+            "default": "Axis.vertical",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "orientation",
+            "doc": "Orientation supplied by the host."
+          },
+          {
+            "name": "onCreate",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onCreate",
+            "doc": "Oncreate supplied by the host."
+          },
+          {
+            "name": "emptyMessage",
+            "type": "PaymentEmptyMessage?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "emptyMessage",
+            "doc": "Emptymessage supplied by the host."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "Errortext supplied by the host."
+          },
+          {
+            "name": "onRetry",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onRetry",
+            "doc": "Onretry supplied by the host."
+          },
+          {
+            "name": "extraActions",
+            "type": "List<PaymentLink>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "extraActions",
+            "doc": "Extraactions supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "pending",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Pending supplied by the host."
+      },
+      {
+        "name": "items",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentDetailProperty>",
+        "doc": "Items supplied by the host."
+      },
+      {
+        "name": "orientation",
+        "kind": "field",
+        "static": false,
+        "type": "Axis",
+        "doc": "Orientation supplied by the host."
+      },
+      {
+        "name": "onCreate",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Oncreate supplied by the host."
+      },
+      {
+        "name": "emptyMessage",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentEmptyMessage?",
+        "doc": "Emptymessage supplied by the host."
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Errortext supplied by the host."
+      },
+      {
+        "name": "onRetry",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Onretry supplied by the host."
+      },
+      {
+        "name": "extraActions",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentLink>",
+        "doc": "Extraactions supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentDetailPageTable": {
+    "kind": "class",
+    "file": "lib/src/pages/detail_page_table.dart",
+    "doc": "A table module with host row actions and no selection or pagination.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentDetailPageTable",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "pending",
+            "type": "bool",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pending",
+            "doc": "Pending supplied by the host."
+          },
+          {
+            "name": "columns",
+            "type": "List<PaymentDataColumn<T>>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "columns",
+            "doc": "Columns supplied by the host."
+          },
+          {
+            "name": "rows",
+            "type": "List<T>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rows",
+            "doc": "Rows supplied by the host."
+          },
+          {
+            "name": "rowKey",
+            "type": "String Function(T row)",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rowKey",
+            "doc": "Rowkey supplied by the host."
+          },
+          {
+            "name": "onRowPressed",
+            "type": "void Function(T row)?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onRowPressed",
+            "doc": "Onrowpressed supplied by the host."
+          },
+          {
+            "name": "rowActions",
+            "type": "List<PaymentRowActionEntry<T>>",
+            "required": false,
+            "default": "const <Never>[]",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rowActions",
+            "doc": "Rowactions supplied by the host."
+          },
+          {
+            "name": "onCreate",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onCreate",
+            "doc": "Oncreate supplied by the host."
+          },
+          {
+            "name": "emptyMessage",
+            "type": "PaymentEmptyMessage?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "emptyMessage",
+            "doc": "Emptymessage supplied by the host."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "Errortext supplied by the host."
+          },
+          {
+            "name": "onRetry",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onRetry",
+            "doc": "Onretry supplied by the host."
+          },
+          {
+            "name": "extraActions",
+            "type": "List<PaymentLink>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "extraActions",
+            "doc": "Extraactions supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "pending",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Pending supplied by the host."
+      },
+      {
+        "name": "columns",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentDataColumn<T>>",
+        "doc": "Columns supplied by the host."
+      },
+      {
+        "name": "rows",
+        "kind": "field",
+        "static": false,
+        "type": "List<T>",
+        "doc": "Rows supplied by the host."
+      },
+      {
+        "name": "rowActions",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentRowActionEntry<T>>",
+        "doc": "Rowactions supplied by the host."
+      },
+      {
+        "name": "onCreate",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Oncreate supplied by the host."
+      },
+      {
+        "name": "emptyMessage",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentEmptyMessage?",
+        "doc": "Emptymessage supplied by the host."
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Errortext supplied by the host."
+      },
+      {
+        "name": "onRetry",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Onretry supplied by the host."
+      },
+      {
+        "name": "extraActions",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentLink>",
+        "doc": "Extraactions supplied by the host."
       }
     ],
     "copyWith": null

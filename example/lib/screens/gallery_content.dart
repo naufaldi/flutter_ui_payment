@@ -10,7 +10,10 @@ class _ContentSpecimen extends StatelessWidget {
         label: 'Method',
         valueText: 'BCA virtual account',
       ),
-      PaymentPropertyListItem(label: 'Amount', valueText: 'Rp102.500'),
+      PaymentPropertyListItem(
+        label: 'Amount',
+        value: AmountText(Money.idr(102500)),
+      ),
       PaymentPropertyListItem(
         label: 'Status',
         value: PaymentBadge(label: 'Paid', tone: StatusTone.success),

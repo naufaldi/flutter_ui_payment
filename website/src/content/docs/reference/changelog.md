@@ -5,6 +5,10 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Design system Phase 4D-2 (2026-11-01)
+
+- Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
+
 ## Design system Phase 4D-1 (2026-11-01)
 
 - Add context, full-page, focus, settings, sign-in and onboarding view bodies.

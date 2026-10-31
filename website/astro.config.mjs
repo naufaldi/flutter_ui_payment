@@ -164,7 +164,7 @@ export default defineConfig({
                 {label: 'Capture source sheet', slug: 'components/capture-source-sheet'},
               ],
             },
-            { label: 'Views and pages', items: ['components/context-view','components/full-page-view','components/focus-view','components/settings-view','components/sign-in-view','components/onboarding-view'] },
+            { label: 'Views and pages', items: ['components/detail-page','components/overview-page','components/detail-page-property-list','components/detail-page-table','components/context-view','components/full-page-view','components/focus-view','components/settings-view','components/sign-in-view','components/onboarding-view'] },
           ],
         },
         {

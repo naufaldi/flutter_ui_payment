@@ -1,0 +1,39 @@
+---
+title: Detail page property list
+description: Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
+---
+
+import Props from '../../../components/Props.astro';
+
+Transaction facts with optional linked values and subText. Variants: vertical, horizontal; pending, ready, empty, error. Nothing else exists. Stripe values map to PaymentDetailValue text or link with optional subText; extraActions are links in an overflow dropdown. A failed module uses warning tone because it is secondary content. The host owns retry, Create and link destinations. Empty messages explain why and offer an action.
+
+## Usage
+
+```dart
+const PaymentDetailPagePropertyList(title: 'Payment details', pending: false, items: [PaymentDetailProperty(label: 'Amount', values: [PaymentDetailValue('Rp102.500', subText: 'Including fee')])]);
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| DetailPagePropertyList | `PaymentDetailPagePropertyList` |
+| DetailProperty | `PaymentDetailProperty` |
+| DetailValue | `PaymentDetailValue` |
+| EmptyMessage | `PaymentEmptyMessage` |
+
+## States and content
+
+The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Accessibility
+
+Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+
+## API
+
+<Props names={['PaymentDetailPagePropertyList', 'PaymentDetailProperty', 'PaymentDetailValue', 'PaymentEmptyMessage']} />
+
+## See also
+
+- [Components](/components/)

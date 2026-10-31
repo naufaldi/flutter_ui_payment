@@ -172,6 +172,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _ViewSpecimen('PaymentSettingsView'),
         _ViewSpecimen('PaymentSignInView'),
         _ViewSpecimen('PaymentOnboardingView'),
+        _ViewSpecimen('PaymentDetailPage'),
+        _ViewSpecimen('PaymentOverviewPage'),
+        _ViewSpecimen('PaymentDetailPagePropertyList'),
+        _ViewSpecimen('PaymentDetailPageTable'),
       ],
       'content' => const [
         _ContentSpecimen('PaymentPropertyList'),
