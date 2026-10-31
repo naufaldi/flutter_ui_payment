@@ -46,6 +46,11 @@ void main() {
         ),
         findsNothing,
       );
+      expect(find.byType(PaymentListItem), findsOneWidget);
+      expect(
+        t.getTopLeft(find.byType(PaymentIcon).first).dx,
+        t.getTopLeft(find.text('Sign in to continue')).dx,
+      );
       await t.tap(find.text('Continue with bank'));
       await t.pumpAndSettle();
       expect(calls, 1);

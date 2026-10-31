@@ -3,6 +3,14 @@
 - Delivers the 4C–4D specimen captures: 45 new images and 6 refreshed Code/Tabs images.
 - Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
 
+## Design system Phase 5-1 (2026-11-01)
+
+- Label phone table selection, show the current sort and allow restoring host order.
+- Align sign-in disclosure and brand, context actions, stacked footers, settings Save, switch labels and link-only detail properties.
+- Accept property, table and chart modules directly in detail and overview pages (source-compatible widening).
+- Add `TransactionDetail.onCopyReference`, `IdentityFieldSpec.group`, and optional `PaymentSearchField.focusNode`.
+- Add `IdentityFieldKind.search`. Migration: hosts with exhaustive switches add a `search` case.
+
 ## Design system Phase 4D-1 (2026-11-01)
 
 - Add context, full-page, focus, settings, sign-in and onboarding view bodies.

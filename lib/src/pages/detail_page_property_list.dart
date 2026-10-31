@@ -114,26 +114,82 @@ class PaymentDetailPagePropertyList extends StatelessWidget {
             actionLabel: emptyMessage?.actionLabel,
             onAction: emptyMessage?.onAction,
           )
-        : PaymentPropertyList(
-            orientation: orientation,
-            items: [
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
               for (final p in items)
-                PaymentPropertyListItem(
-                  label: p.label,
-                  caption: p.description,
-                  value: Column(
-                    crossAxisAlignment: PaymentType.isLarge(context)
-                        ? CrossAxisAlignment.start
-                        : CrossAxisAlignment.end,
-                    children: [
-                      for (final v in p.values) ...[
-                        v.link ?? Text(v.text!, style: type.label),
-                        if (v.subText != null)
-                          Text(v.subText!, style: type.caption),
-                      ],
+                if (p.values.length == 1 &&
+                    p.values.single.link != null &&
+                    p.values.single.subText == null &&
+                    p.description == null)
+                  MergeSemantics(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: PaymentTheme.of(context).spacing,
+                      ),
+                      child: PaymentType.isLarge(context)
+                          ? Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: PaymentTheme.of(
+                                context,
+                              ).space(PaymentSpace.group),
+                              children: [
+                                Text(
+                                  p.label,
+                                  style: type.label.copyWith(
+                                    color: PaymentTheme.of(
+                                      context,
+                                    ).textSecondary,
+                                  ),
+                                ),
+                                p.values.single.link!,
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    p.label,
+                                    style: type.label.copyWith(
+                                      color: PaymentTheme.of(
+                                        context,
+                                      ).textSecondary,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: PaymentTheme.of(
+                                    context,
+                                  ).space(PaymentSpace.group),
+                                ),
+                                p.values.single.link!,
+                              ],
+                            ),
+                    ),
+                  )
+                else
+                  PaymentPropertyList(
+                    orientation: orientation,
+                    items: [
+                      PaymentPropertyListItem(
+                        label: p.label,
+                        caption: p.description,
+                        value: Column(
+                          crossAxisAlignment: PaymentType.isLarge(context)
+                              ? CrossAxisAlignment.start
+                              : CrossAxisAlignment.end,
+                          children: [
+                            for (final v in p.values) ...[
+                              v.link ?? Text(v.text!, style: type.label),
+                              if (v.subText != null)
+                                Text(v.subText!, style: type.caption),
+                            ],
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ),
             ],
           );
     return PageModuleFrame(

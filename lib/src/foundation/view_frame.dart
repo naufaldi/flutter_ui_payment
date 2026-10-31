@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'payment_theme.dart';
 import 'payment_type.dart';
 import 'primitives.dart';
+import 'payment_icons.dart';
+import 'payment_tokens.dart';
 import 'button_copy.dart';
 import '../controls/button_group.dart';
 
@@ -99,7 +101,15 @@ class ViewHeader extends StatelessWidget {
                       padding: EdgeInsetsDirectional.only(
                         end: theme.spacing * 1.5,
                       ),
-                      child: SizedBox.square(dimension: 40, child: leading),
+                      child: SizedBox.square(
+                        dimension: 40,
+                        child: leading is PaymentIcon
+                            ? Align(
+                                alignment: AlignmentDirectional.topStart,
+                                child: leading,
+                              )
+                            : leading,
+                      ),
                     ),
                   Expanded(child: copy()),
                   if (!stack && trailing != null) trailing!,
@@ -149,7 +159,15 @@ class ViewFooter extends StatelessWidget {
         if (k.maxWidth < 400 || PaymentType.isLarge(context)) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [?footer, group],
+            spacing: PaymentTheme.of(context).space(PaymentSpace.related),
+            children: [
+              ?footer,
+              if (primaryAction != null || secondaryAction != null)
+                PaymentButtonGroup(
+                  direction: Axis.vertical,
+                  children: [?primaryAction, ?secondaryAction],
+                ),
+            ],
           );
         }
         return Row(

@@ -1,3 +1,4 @@
+import '../interaction/interaction.dart';
 import 'package:flutter/material.dart';
 import '../foundation/primitives.dart';
 import '../foundation/payment_icons.dart';
@@ -20,13 +21,13 @@ class PaymentSignInLearnMore {
     required this.builder,
   });
 
-  /// Label supplied by the host.
+  /// Visible label for the control.
   final String label;
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String title;
 
-  /// Builder supplied by the host.
+  /// Builds the supplemental explanation.
   final WidgetBuilder builder;
 }
 
@@ -45,38 +46,37 @@ class PaymentSignInView extends StatefulWidget {
     this.errorText,
   });
 
-  /// Primaryaction supplied by the host.
+  /// The single primary action that starts host sign-in.
   final PaymentButton primaryAction;
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String? title;
 
-  /// Description supplied by the host.
+  /// Supporting explanation below the heading.
   final String? description;
 
-  /// Brand supplied by the host.
+  /// Host brand icon or image.
   final Widget? brand;
 
-  /// Learnmore supplied by the host.
+  /// Disclosure that opens a supplemental explanation.
   final PaymentSignInLearnMore? learnMore;
 
-  /// Secondaryaction supplied by the host.
+  /// Optional supporting action below the primary action.
   final PaymentButton? secondaryAction;
 
-  /// Legallinks supplied by the host.
+  /// Host terms and privacy destinations.
   final List<PaymentLink> legalLinks;
 
-  /// Footnote supplied by the host.
+  /// Short reassurance below the actions.
   final String? footnote;
 
-  /// Errortext supplied by the host.
+  /// Safe error message displayed beside the control.
   final String? errorText;
   @override
   State<PaymentSignInView> createState() => _PaymentSignInViewState();
 }
 
 class _PaymentSignInViewState extends State<PaymentSignInView> {
-  /// _errorfocus=focusnode() supplied by the host.
   final _errorFocus = FocusNode();
   void focusError() {
     if (widget.errorText != null) {
@@ -108,10 +108,8 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
   Widget build(BuildContext context) {
     final w = widget;
 
-    /// Type=paymenttype.of(context) supplied by the host.
     final type = PaymentType.of(context);
 
-    /// L=paymentlocalizations.of(context) supplied by the host.
     final l = PaymentLocalizations.of(context);
     assert(
       w.brand == null || w.brand is PaymentImage || w.brand is PaymentIcon,
@@ -132,7 +130,9 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
               if (w.brand != null)
                 Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: SizedBox.square(dimension: 48, child: w.brand),
+                  child: w.brand is PaymentIcon
+                      ? w.brand!
+                      : SizedBox.square(dimension: 48, child: w.brand),
                 ),
               Semantics(
                 header: true,
@@ -143,8 +143,10 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
               if (w.learnMore != null)
                 Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: PaymentLink(
-                    label: w.learnMore!.label,
+                  child: PaymentListItem(
+                    icon: Icons.info_outline,
+                    title: w.learnMore!.label,
+                    trailing: const PaymentIcon(Icons.chevron_right),
                     onPressed: () => showPaymentFocusView<void>(
                       context,
                       builder: (_) => PaymentFocusView(

@@ -69,6 +69,9 @@ enum IdentityFieldKind {
 
   /// Host option value.
   choice,
+
+  /// Host options filtered by typing, for long lists.
+  search,
 }
 
 /// A host-defined identity field. Validation rules belong to the host; the
@@ -86,6 +89,7 @@ class IdentityFieldSpec {
     this.autofillHints = const [],
     this.maskInReview = false,
     this.kind = IdentityFieldKind.text,
+    this.group,
     this.options = const [],
     this.firstDate,
     this.lastDate,
@@ -93,6 +97,9 @@ class IdentityFieldSpec {
 
   /// Field value kind.
   final IdentityFieldKind kind;
+
+  /// Legend shared by consecutive fields in the same group.
+  final String? group;
 
   /// Allowed choice options.
   final List<PaymentSelectOption<String>> options;

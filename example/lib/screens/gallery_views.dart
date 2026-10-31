@@ -135,6 +135,8 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
         title: 'Transactions',
         pageAction: button('Download statement'),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: PaymentTheme.of(context).space(PaymentSpace.block),
           children: [
             PaymentTabs(
               tabs: const [
@@ -154,6 +156,8 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
         secondaryAction: button('Cancel', variant: PaymentButtonVariant.quiet),
         primaryAction: button('Send', variant: PaymentButtonVariant.primary),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: PaymentTheme.of(context).space(PaymentSpace.block),
           children: [
             const PaymentTextArea(label: 'What went wrong?'),
             PaymentButton(
@@ -183,6 +187,8 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
           await Future<void>.delayed(const Duration(milliseconds: 600));
         },
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: PaymentTheme.of(context).space(PaymentSpace.block),
           children: [
             PaymentFormFieldGroup(
               legend: 'Notifications',
@@ -278,6 +284,7 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
         completed: state == 3,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: PaymentTheme.of(context).space(PaymentSpace.block),
           children: [
             const Text('Add your identity documents to get started.'),
             button('Continue', variant: PaymentButtonVariant.primary),
@@ -295,21 +302,29 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
           button('Report a problem', variant: PaymentButtonVariant.quiet),
           button('Request refund', variant: PaymentButtonVariant.destructive),
         ],
-        primary: [
-          PaymentPageModule(title: 'Payment details', child: property()),
-          PaymentPageModule(title: 'Attempts', child: attempts()),
-        ],
-        secondary: const [
-          PaymentPageModule(
+        primary: [property(), attempts()],
+        secondary: [
+          PaymentDetailPagePropertyList(
             title: 'Merchant',
-            child: PaymentPropertyList(
-              items: [
-                PaymentPropertyListItem(
-                  label: 'Name',
-                  valueText: 'Toko Contoh',
-                ),
-              ],
-            ),
+            pending: false,
+            items: [
+              const PaymentDetailProperty(
+                label: 'Name',
+                values: [PaymentDetailValue('Toko Contoh')],
+              ),
+              PaymentDetailProperty(
+                label: 'Support',
+                values: [
+                  PaymentDetailValue.link(
+                    PaymentLink(
+                      label: 'Help centre',
+                      external: true,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
@@ -317,9 +332,10 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
         title: 'Spending',
         child: PaymentOverviewPage(
           primary: [
-            PaymentPageModule(
+            ChartModule(
               title: 'This month',
-              child: SizedBox(
+              state: ChartState.ready,
+              chart: SizedBox(
                 height: 240,
                 child: PaymentBarChart(points: _chartFixture('typical')),
               ),

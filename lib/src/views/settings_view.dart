@@ -20,22 +20,22 @@ class PaymentSettingsView extends StatelessWidget {
     this.statusTone = StatusTone.neutral,
   });
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String title;
 
-  /// Child supplied by the host.
+  /// Body content owned by the host.
   final Widget child;
 
-  /// Onsave supplied by the host.
+  /// Saves settings; repeated activation waits for completion.
   final Future<void> Function()? onSave;
 
-  /// Savelabel supplied by the host.
+  /// Save button label; defaults to the localized Save.
   final String? saveLabel;
 
-  /// Statusmessage supplied by the host.
+  /// Result of the most recent save.
   final String? statusMessage;
 
-  /// Statustone supplied by the host.
+  /// Semantic tone of the save result.
   final StatusTone statusTone;
   @override
   Widget build(BuildContext context) {
@@ -48,6 +48,7 @@ class PaymentSettingsView extends StatelessWidget {
             : Semantics(
                 liveRegion: true,
                 child: Row(
+                  spacing: PaymentTheme.of(context).space(PaymentSpace.inline),
                   children: [
                     PaymentIcon.tone(statusTone),
                     Flexible(
@@ -63,11 +64,9 @@ class PaymentSettingsView extends StatelessWidget {
       body: child,
       footer: onSave == null
           ? null
-          : Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: PaymentButton(
+          : ViewFooter(
+              primaryAction: PaymentButton(
                 label: saveLabel ?? l.save,
-                width: PaymentWidth.hug,
                 onPressed: onSave,
               ),
             ),

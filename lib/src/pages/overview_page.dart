@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../foundation/payment_theme.dart';
 import '../interaction/interaction.dart';
 import 'page_module.dart';
+import 'detail_page_property_list.dart';
+import 'detail_page_table.dart';
+import '../charts/charts.dart';
 
 /// Non-scrolling page modules; place inside a FullPageView.
 class PaymentOverviewPage extends StatelessWidget {
@@ -12,17 +15,26 @@ class PaymentOverviewPage extends StatelessWidget {
     this.pending = false,
   });
 
-  /// Primary supplied by the host.
-  final List<PaymentPageModule> primary;
+  /// Primary page modules, in reading order.
+  final List<Widget> primary;
 
-  /// Secondary supplied by the host.
-  final List<PaymentPageModule>? secondary;
+  /// Supporting page modules, below the primary on phones.
+  final List<Widget>? secondary;
 
-  /// Pending supplied by the host.
+  /// Shows placeholders while the host loads content.
   final bool pending;
   @override
   Widget build(BuildContext context) {
-    Widget column(List<PaymentPageModule> items, int count) => Column(
+    assert(
+      [...primary, ...?secondary].every(
+        (w) =>
+            w is PaymentPageModule ||
+            w is PaymentDetailPagePropertyList ||
+            w is PaymentDetailPageTable ||
+            w is ChartModule,
+      ),
+    );
+    Widget column(List<Widget> items, int count) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: pending
           ? [

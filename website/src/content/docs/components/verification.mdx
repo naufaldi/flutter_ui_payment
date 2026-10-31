@@ -107,6 +107,8 @@ VerificationStatusView(
 - The status view offers only `allowedActions` from your `VerificationSnapshot`. There is never a bypass action, and a network failure never turns into "rejected".
 - A submit that timed out (`outcomeUnknown: true`) is shown as not confirmed yet; hold new submits until your host has checked the previous request.
 
+Identity fields support the search kind for long host option lists. Consecutive fields with the same group share one field-group legend.
+
 ## API
 
 <Props names={['VerificationIntro', 'IdentityForm', 'DocumentUploadTile', 'VerificationReview', 'VerificationStatusView', 'VerificationSnapshot', 'VerificationStatus', 'VerificationAction', 'DataRequirement', 'IdentityFieldSpec', 'DocumentRequirement', 'DocumentFile', 'DocumentSlotState', 'DocumentSlotPhase', 'DocumentIssue', 'DocumentIssueKind', 'checkDocumentLimits']} />

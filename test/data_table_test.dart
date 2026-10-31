@@ -4,6 +4,67 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'content_host.dart';
 
 void main() {
+  testWidgets('phone selection is labeled and sorting can restore host order', (
+    t,
+  ) async {
+    await setSurface(t, const Size(360, 1000));
+    var selected = <String>{};
+    PaymentDataSort? changed;
+    await t.pumpWidget(
+      contentHost(
+        StatefulBuilder(
+          builder: (context, update) => PaymentDataTable<int>(
+            columns: [
+              PaymentDataColumn<int>(
+                key: 'amount',
+                label: 'Amount',
+                value: (r) => Money.idr(r),
+                cell: PaymentCellType.currency,
+                sortable: true,
+              ),
+            ],
+            rows: const [2, 1],
+            rowKey: (r) => '$r',
+            selection: selected,
+            onSelectionChanged: (v) => update(() => selected = v),
+            onSortChanged: (v) => changed = v,
+          ),
+        ),
+      ),
+    );
+    expect(find.text('Select all on this page'), findsOneWidget);
+    await t.tap(find.text('Select all on this page'));
+    await t.pumpAndSettle();
+    expect(selected, {'1', '2'});
+    expect(find.text('2 selected'), findsOneWidget);
+    expect(
+      t.getTopLeft(find.widgetWithText(PaymentButton, 'Sort')).dx,
+      t.getTopLeft(find.byType(PaymentDataTable<int>)).dx,
+    );
+    await t.tap(find.text('Sort'));
+    await t.pumpAndSettle();
+    await t.tap(
+      find.descendant(
+        of: find.byType(MenuItemButton),
+        matching: find.text('Amount, highest first'),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(changed?.ascending, isFalse);
+    expect(find.text('Sort: Amount, highest first'), findsOneWidget);
+    await t.tap(find.text('Sort: Amount, highest first'));
+    await t.pumpAndSettle();
+    await t.tap(
+      find.descendant(
+        of: find.byType(MenuItemButton),
+        matching: find.text('Default order'),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(changed, isNull);
+    expect(find.text('Sort'), findsOneWidget);
+  });
+
   testWidgets('hidden heading retains spoken label and sort action', (t) async {
     await setSurface(t, const Size(800, 1000));
     final semantics = t.ensureSemantics();

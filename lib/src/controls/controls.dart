@@ -382,9 +382,10 @@ class _ControlRow extends StatelessWidget {
           ),
           if (markAtEnd) ...[
             SizedBox(width: theme.spacing * 2),
-            ConstrainedBox(
-              constraints: BoxConstraints(minHeight: line),
-              child: Center(child: painted),
+            SizedBox(
+              width: 52,
+              height: line,
+              child: OverflowBox(maxHeight: 48, child: painted),
             ),
           ],
         ],

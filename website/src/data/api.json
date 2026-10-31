@@ -2299,6 +2299,9 @@
     "doc": "English/Indonesian strings for the interaction, navigation, sheet, media,\npromotion and transaction components. Kept apart from the payment strings\nso each file stays readable; hosts use them through\n`PaymentLocalizations.of` like every other kit string.",
     "members": [
       "chartPercent",
+      "sortBy",
+      "sortDefault",
+      "sortDirection",
       "chartLine",
       "chartBar",
       "chartMeter",
@@ -13334,7 +13337,7 @@
   "TransactionDetail": {
     "kind": "class",
     "file": "lib/src/payment/transactions.dart",
-    "doc": "Clips horizontally to the box but leaves 4 px above and below, the room a\nfocus ring needs.\nDetails of one transaction. The original payment and any refund are\nshown as separate sections; host actions go in `actions`.",
+    "doc": "Details of one transaction. The original payment and any refund are\nshown as separate sections; host actions go in `actions`.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -13362,6 +13365,17 @@
             "isSuper": false,
             "fieldName": "actions",
             "doc": "Host-chosen actions such as \"View receipt\" or \"Check status\". For an\nunconfirmed payment, offer a status check, never paying again."
+          },
+          {
+            "name": "onCopyReference",
+            "type": "Future<bool> Function(String reference)?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onCopyReference",
+            "doc": "Copies the reference through the host; null hides the copy button."
           }
         ],
         "doc": ""
@@ -14895,6 +14909,10 @@
       {
         "name": "choice",
         "doc": "Host option value."
+      },
+      {
+        "name": "search",
+        "doc": "Host options filtered by typing, for long lists."
       }
     ]
   },
@@ -15019,6 +15037,17 @@
             "doc": "Field value kind."
           },
           {
+            "name": "group",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "group",
+            "doc": "Legend shared by consecutive fields in the same group."
+          },
+          {
             "name": "options",
             "type": "List<PaymentSelectOption<String>>",
             "required": false,
@@ -15064,6 +15093,13 @@
         "static": false,
         "type": "IdentityFieldKind",
         "doc": "Field value kind."
+      },
+      {
+        "name": "group",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Legend shared by consecutive fields in the same group."
       },
       {
         "name": "options",
@@ -19495,7 +19531,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "value",
-            "doc": "value for this component."
+            "doc": "Stable host value returned when this option is chosen."
           },
           {
             "name": "label",
@@ -19506,7 +19542,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": "label for this component."
+            "doc": "Visible label for the control."
           }
         ],
         "doc": ""
@@ -19520,14 +19556,14 @@
         "kind": "field",
         "static": false,
         "type": "T",
-        "doc": "value for this component."
+        "doc": "Stable host value returned when this option is chosen."
       },
       {
         "name": "label",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "label for this component."
+        "doc": "Visible label for the control."
       }
     ],
     "copyWith": null
@@ -19551,7 +19587,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": "label for this component."
+            "doc": "Visible label for the control."
           },
           {
             "name": "options",
@@ -19562,7 +19598,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "options",
-            "doc": "options for this component."
+            "doc": "Allowed values with their visible labels."
           },
           {
             "name": "selected",
@@ -19573,7 +19609,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "selected",
-            "doc": "selected for this component."
+            "doc": "Current selected host value."
           },
           {
             "name": "onSelected",
@@ -19584,7 +19620,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onSelected",
-            "doc": "onSelected for this component."
+            "doc": "Reports the selected value to the host."
           },
           {
             "name": "onQueryChanged",
@@ -19595,7 +19631,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onQueryChanged",
-            "doc": "onQueryChanged for this component."
+            "doc": "Reports search edits for host filtering."
           },
           {
             "name": "initialQuery",
@@ -19606,7 +19642,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "initialQuery",
-            "doc": "initialQuery for this component."
+            "doc": "Initial query shown before the first edit."
           },
           {
             "name": "loading",
@@ -19617,7 +19653,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "loading",
-            "doc": "loading for this component."
+            "doc": "Shows the pending search state."
           },
           {
             "name": "listboxSize",
@@ -19628,7 +19664,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "listboxSize",
-            "doc": "listboxSize for this component."
+            "doc": "Density of the search result rows."
           },
           {
             "name": "hint",
@@ -19639,7 +19675,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "hint",
-            "doc": "hint for this component."
+            "doc": "Example input shown while empty."
           },
           {
             "name": "description",
@@ -19650,7 +19686,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "description",
-            "doc": "description for this component."
+            "doc": "Supporting explanation below the heading."
           },
           {
             "name": "errorText",
@@ -19661,7 +19697,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "errorText",
-            "doc": "errorText for this component."
+            "doc": "Safe error message displayed beside the control."
           },
           {
             "name": "enabled",
@@ -19672,7 +19708,18 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "enabled",
-            "doc": "enabled for this component."
+            "doc": "Whether the customer can edit the search."
+          },
+          {
+            "name": "focusNode",
+            "type": "FocusNode?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "focusNode",
+            "doc": "Optional host focus node, for example to focus the first error."
           }
         ],
         "doc": ""
@@ -19823,6 +19870,17 @@
             "isSuper": false,
             "fieldName": null,
             "doc": ""
+          },
+          {
+            "name": "focusNode",
+            "type": "FocusNode?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
           }
         ],
         "doc": "Multiple values rendered as removable chips."
@@ -19836,91 +19894,98 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "label for this component."
+        "doc": "Visible label for the control."
       },
       {
         "name": "options",
         "kind": "field",
         "static": false,
         "type": "List<PaymentSearchOption<T>>",
-        "doc": "options for this component."
+        "doc": "Allowed values with their visible labels."
       },
       {
         "name": "selected",
         "kind": "field",
         "static": false,
         "type": "T?",
-        "doc": "selected for this component."
+        "doc": "Current selected host value."
       },
       {
         "name": "onSelected",
         "kind": "field",
         "static": false,
         "type": "ValueChanged<T?>?",
-        "doc": "onSelected for this component."
+        "doc": "Reports the selected value to the host."
       },
       {
         "name": "onSelectionChanged",
         "kind": "field",
         "static": false,
         "type": "ValueChanged<Set<T>>?",
-        "doc": "onSelectionChanged for this component."
+        "doc": "Reports the current set of selected values."
       },
       {
         "name": "onQueryChanged",
         "kind": "field",
         "static": false,
         "type": "ValueChanged<String>?",
-        "doc": "onQueryChanged for this component."
+        "doc": "Reports search edits for host filtering."
       },
       {
         "name": "initialQuery",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "initialQuery for this component."
+        "doc": "Initial query shown before the first edit."
       },
       {
         "name": "loading",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "loading for this component."
+        "doc": "Shows the pending search state."
       },
       {
         "name": "listboxSize",
         "kind": "field",
         "static": false,
         "type": "PaymentSize",
-        "doc": "listboxSize for this component."
+        "doc": "Density of the search result rows."
       },
       {
         "name": "hint",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "hint for this component."
+        "doc": "Example input shown while empty."
       },
       {
         "name": "description",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "description for this component."
+        "doc": "Supporting explanation below the heading."
       },
       {
         "name": "errorText",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "errorText for this component."
+        "doc": "Safe error message displayed beside the control."
       },
       {
         "name": "enabled",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "enabled for this component."
+        "doc": "Whether the customer can edit the search."
+      },
+      {
+        "name": "focusNode",
+        "kind": "field",
+        "static": false,
+        "type": "FocusNode?",
+        "doc": "Optional host focus node, for example to focus the first error."
       }
     ],
     "copyWith": null
@@ -22180,7 +22245,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "child",
@@ -22191,7 +22256,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "child",
-            "doc": "Child supplied by the host."
+            "doc": "Body content owned by the host."
           },
           {
             "name": "description",
@@ -22202,7 +22267,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "description",
-            "doc": "Description supplied by the host."
+            "doc": "Supporting explanation below the heading."
           },
           {
             "name": "brand",
@@ -22213,7 +22278,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "brand",
-            "doc": "Brand supplied by the host."
+            "doc": "Host brand icon or image."
           },
           {
             "name": "actions",
@@ -22224,7 +22289,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "actions",
-            "doc": "Actions supplied by the host."
+            "doc": "Host actions displayed in the page header."
           },
           {
             "name": "banner",
@@ -22235,7 +22300,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "banner",
-            "doc": "Banner supplied by the host."
+            "doc": ""
           },
           {
             "name": "externalLink",
@@ -22246,7 +22311,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "externalLink",
-            "doc": "Externallink supplied by the host."
+            "doc": ""
           },
           {
             "name": "primaryAction",
@@ -22257,7 +22322,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "primaryAction",
-            "doc": "Primaryaction supplied by the host."
+            "doc": "The single primary action for the contextual task."
           },
           {
             "name": "secondaryAction",
@@ -22268,7 +22333,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "secondaryAction",
-            "doc": "Secondaryaction supplied by the host."
+            "doc": "Optional supporting action below the primary action."
           },
           {
             "name": "footer",
@@ -22279,7 +22344,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "footer",
-            "doc": "Footer supplied by the host."
+            "doc": ""
           }
         ],
         "doc": ""
@@ -22293,70 +22358,70 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "child",
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": "Child supplied by the host."
+        "doc": "Body content owned by the host."
       },
       {
         "name": "description",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Description supplied by the host."
+        "doc": "Supporting explanation below the heading."
       },
       {
         "name": "brand",
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": "Brand supplied by the host."
+        "doc": "Host brand icon or image."
       },
       {
         "name": "actions",
         "kind": "field",
         "static": false,
         "type": "List<PaymentButton>",
-        "doc": "Actions supplied by the host."
+        "doc": "Host actions displayed in the page header."
       },
       {
         "name": "banner",
         "kind": "field",
         "static": false,
         "type": "PaymentBanner?",
-        "doc": "Banner supplied by the host."
+        "doc": ""
       },
       {
         "name": "externalLink",
         "kind": "field",
         "static": false,
         "type": "PaymentLink?",
-        "doc": "Externallink supplied by the host."
+        "doc": ""
       },
       {
         "name": "primaryAction",
         "kind": "field",
         "static": false,
         "type": "PaymentButton?",
-        "doc": "Primaryaction supplied by the host."
+        "doc": "The single primary action for the contextual task."
       },
       {
         "name": "secondaryAction",
         "kind": "field",
         "static": false,
         "type": "PaymentButton?",
-        "doc": "Secondaryaction supplied by the host."
+        "doc": "Optional supporting action below the primary action."
       },
       {
         "name": "footer",
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": "Footer supplied by the host."
+        "doc": ""
       }
     ],
     "copyWith": null
@@ -22454,7 +22519,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "child",
@@ -22465,7 +22530,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "child",
-            "doc": "Child supplied by the host."
+            "doc": "Body content owned by the host."
           },
           {
             "name": "onSave",
@@ -22476,7 +22541,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onSave",
-            "doc": "Onsave supplied by the host."
+            "doc": "Saves settings; repeated activation waits for completion."
           },
           {
             "name": "saveLabel",
@@ -22487,7 +22552,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "saveLabel",
-            "doc": "Savelabel supplied by the host."
+            "doc": "Save button label; defaults to the localized Save."
           },
           {
             "name": "statusMessage",
@@ -22498,7 +22563,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "statusMessage",
-            "doc": "Statusmessage supplied by the host."
+            "doc": "Result of the most recent save."
           },
           {
             "name": "statusTone",
@@ -22509,7 +22574,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "statusTone",
-            "doc": "Statustone supplied by the host."
+            "doc": "Semantic tone of the save result."
           }
         ],
         "doc": ""
@@ -22523,35 +22588,35 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "child",
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": "Child supplied by the host."
+        "doc": "Body content owned by the host."
       },
       {
         "name": "saveLabel",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Savelabel supplied by the host."
+        "doc": "Save button label; defaults to the localized Save."
       },
       {
         "name": "statusMessage",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Statusmessage supplied by the host."
+        "doc": "Result of the most recent save."
       },
       {
         "name": "statusTone",
         "kind": "field",
         "static": false,
         "type": "StatusTone",
-        "doc": "Statustone supplied by the host."
+        "doc": "Semantic tone of the save result."
       }
     ],
     "copyWith": null
@@ -22575,7 +22640,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": "Label supplied by the host."
+            "doc": "Visible label for the control."
           },
           {
             "name": "title",
@@ -22586,7 +22651,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "builder",
@@ -22597,7 +22662,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "builder",
-            "doc": "Builder supplied by the host."
+            "doc": "Builds the supplemental explanation."
           }
         ],
         "doc": ""
@@ -22611,21 +22676,21 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Label supplied by the host."
+        "doc": "Visible label for the control."
       },
       {
         "name": "title",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "builder",
         "kind": "field",
         "static": false,
         "type": "WidgetBuilder",
-        "doc": "Builder supplied by the host."
+        "doc": "Builds the supplemental explanation."
       }
     ],
     "copyWith": null
@@ -22649,7 +22714,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "primaryAction",
-            "doc": "Primaryaction supplied by the host."
+            "doc": "The single primary action that starts host sign-in."
           },
           {
             "name": "title",
@@ -22660,7 +22725,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "description",
@@ -22671,7 +22736,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "description",
-            "doc": "Description supplied by the host."
+            "doc": "Supporting explanation below the heading."
           },
           {
             "name": "brand",
@@ -22682,7 +22747,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "brand",
-            "doc": "Brand supplied by the host."
+            "doc": "Host brand icon or image."
           },
           {
             "name": "learnMore",
@@ -22693,7 +22758,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "learnMore",
-            "doc": "Learnmore supplied by the host."
+            "doc": "Disclosure that opens a supplemental explanation."
           },
           {
             "name": "secondaryAction",
@@ -22704,7 +22769,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "secondaryAction",
-            "doc": "Secondaryaction supplied by the host."
+            "doc": "Optional supporting action below the primary action."
           },
           {
             "name": "legalLinks",
@@ -22715,7 +22780,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "legalLinks",
-            "doc": "Legallinks supplied by the host."
+            "doc": "Host terms and privacy destinations."
           },
           {
             "name": "footnote",
@@ -22726,7 +22791,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "footnote",
-            "doc": "Footnote supplied by the host."
+            "doc": "Short reassurance below the actions."
           },
           {
             "name": "errorText",
@@ -22737,7 +22802,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "errorText",
-            "doc": "Errortext supplied by the host."
+            "doc": "Safe error message displayed beside the control."
           }
         ],
         "doc": ""
@@ -22751,63 +22816,63 @@
         "kind": "field",
         "static": false,
         "type": "PaymentButton",
-        "doc": "Primaryaction supplied by the host."
+        "doc": "The single primary action that starts host sign-in."
       },
       {
         "name": "title",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "description",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Description supplied by the host."
+        "doc": "Supporting explanation below the heading."
       },
       {
         "name": "brand",
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": "Brand supplied by the host."
+        "doc": "Host brand icon or image."
       },
       {
         "name": "learnMore",
         "kind": "field",
         "static": false,
         "type": "PaymentSignInLearnMore?",
-        "doc": "Learnmore supplied by the host."
+        "doc": "Disclosure that opens a supplemental explanation."
       },
       {
         "name": "secondaryAction",
         "kind": "field",
         "static": false,
         "type": "PaymentButton?",
-        "doc": "Secondaryaction supplied by the host."
+        "doc": "Optional supporting action below the primary action."
       },
       {
         "name": "legalLinks",
         "kind": "field",
         "static": false,
         "type": "List<PaymentLink>",
-        "doc": "Legallinks supplied by the host."
+        "doc": "Host terms and privacy destinations."
       },
       {
         "name": "footnote",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Footnote supplied by the host."
+        "doc": "Short reassurance below the actions."
       },
       {
         "name": "errorText",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Errortext supplied by the host."
+        "doc": "Safe error message displayed beside the control."
       }
     ],
     "copyWith": null
@@ -23143,29 +23208,29 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "primary",
-            "type": "List<PaymentPageModule>",
+            "type": "List<Widget>",
             "required": true,
             "default": null,
             "named": true,
             "viaThis": true,
             "isSuper": false,
             "fieldName": "primary",
-            "doc": "Primary supplied by the host."
+            "doc": "Primary page modules, in reading order."
           },
           {
             "name": "secondary",
-            "type": "List<PaymentPageModule>?",
+            "type": "List<Widget>?",
             "required": false,
             "default": null,
             "named": true,
             "viaThis": true,
             "isSuper": false,
             "fieldName": "secondary",
-            "doc": "Secondary supplied by the host."
+            "doc": "Supporting page modules, below the primary on phones."
           },
           {
             "name": "breadcrumbs",
@@ -23176,7 +23241,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "breadcrumbs",
-            "doc": "Breadcrumbs supplied by the host."
+            "doc": "Host destinations leading back to the parent page."
           },
           {
             "name": "description",
@@ -23187,7 +23252,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "description",
-            "doc": "Description supplied by the host."
+            "doc": "Supporting explanation below the heading."
           },
           {
             "name": "actions",
@@ -23198,7 +23263,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "actions",
-            "doc": "Actions supplied by the host."
+            "doc": "Host actions displayed in the page header."
           },
           {
             "name": "pending",
@@ -23209,7 +23274,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "pending",
-            "doc": "Pending supplied by the host."
+            "doc": "Shows placeholders while the host loads content."
           }
         ],
         "doc": ""
@@ -23223,49 +23288,49 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "primary",
         "kind": "field",
         "static": false,
-        "type": "List<PaymentPageModule>",
-        "doc": "Primary supplied by the host."
+        "type": "List<Widget>",
+        "doc": "Primary page modules, in reading order."
       },
       {
         "name": "secondary",
         "kind": "field",
         "static": false,
-        "type": "List<PaymentPageModule>?",
-        "doc": "Secondary supplied by the host."
+        "type": "List<Widget>?",
+        "doc": "Supporting page modules, below the primary on phones."
       },
       {
         "name": "breadcrumbs",
         "kind": "field",
         "static": false,
         "type": "List<PaymentBreadcrumb>",
-        "doc": "Breadcrumbs supplied by the host."
+        "doc": "Host destinations leading back to the parent page."
       },
       {
         "name": "description",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Description supplied by the host."
+        "doc": "Supporting explanation below the heading."
       },
       {
         "name": "actions",
         "kind": "field",
         "static": false,
         "type": "List<PaymentButton>",
-        "doc": "Actions supplied by the host."
+        "doc": "Host actions displayed in the page header."
       },
       {
         "name": "pending",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "Pending supplied by the host."
+        "doc": "Shows placeholders while the host loads content."
       }
     ],
     "copyWith": null
@@ -23282,25 +23347,25 @@
         "params": [
           {
             "name": "primary",
-            "type": "List<PaymentPageModule>",
+            "type": "List<Widget>",
             "required": true,
             "default": null,
             "named": true,
             "viaThis": true,
             "isSuper": false,
             "fieldName": "primary",
-            "doc": "Primary supplied by the host."
+            "doc": "Primary page modules, in reading order."
           },
           {
             "name": "secondary",
-            "type": "List<PaymentPageModule>?",
+            "type": "List<Widget>?",
             "required": false,
             "default": null,
             "named": true,
             "viaThis": true,
             "isSuper": false,
             "fieldName": "secondary",
-            "doc": "Secondary supplied by the host."
+            "doc": "Supporting page modules, below the primary on phones."
           },
           {
             "name": "pending",
@@ -23311,7 +23376,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "pending",
-            "doc": "Pending supplied by the host."
+            "doc": "Shows placeholders while the host loads content."
           }
         ],
         "doc": ""
@@ -23324,22 +23389,22 @@
         "name": "primary",
         "kind": "field",
         "static": false,
-        "type": "List<PaymentPageModule>",
-        "doc": "Primary supplied by the host."
+        "type": "List<Widget>",
+        "doc": "Primary page modules, in reading order."
       },
       {
         "name": "secondary",
         "kind": "field",
         "static": false,
-        "type": "List<PaymentPageModule>?",
-        "doc": "Secondary supplied by the host."
+        "type": "List<Widget>?",
+        "doc": "Supporting page modules, below the primary on phones."
       },
       {
         "name": "pending",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "Pending supplied by the host."
+        "doc": "Shows placeholders while the host loads content."
       }
     ],
     "copyWith": null
