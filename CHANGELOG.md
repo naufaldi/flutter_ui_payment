@@ -1,3 +1,7 @@
+## Design system Phase 4D-1 (2026-11-01)
+
+- Add context, full-page, focus, settings, sign-in and onboarding view bodies.
+
 ## Design system Phase 4C-3 (2026-11-01)
 
 - Add responsive DataTable with typed cells, paging, selection, actions and local sort/filter. Closes #17.

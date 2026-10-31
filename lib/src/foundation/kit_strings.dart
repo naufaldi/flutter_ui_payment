@@ -353,6 +353,20 @@ extension KitStrings on PaymentLocalizations {
   /// Localized columnOptions label.
   String columnOptions(String label) =>
       _k('Column options for $label', 'Opsi kolom $label');
+
+  /// Save.
+  String get save => _k('Save', 'Simpan');
+
+  /// Sign in to continue.
+  String get signInTitle =>
+      _k('Sign in to continue', 'Masuk untuk melanjutkan');
+
+  /// All steps.
+  String get allSteps => _k('All steps', 'Semua langkah');
+
+  /// All steps complete.
+  String get onboardingDone =>
+      _k('All steps complete', 'Semua langkah selesai');
 }
 
 /// Groups used by transaction filters. Defined here so the strings and the

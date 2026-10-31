@@ -19,6 +19,7 @@ Widget contentHost(
     PaymentLocalizations.delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
   ],
   home: Builder(
     builder: (context) => MediaQuery(

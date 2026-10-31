@@ -2426,7 +2426,11 @@
       "rowActions",
       "sortedAscending",
       "sortedDescending",
-      "columnOptions"
+      "columnOptions",
+      "save",
+      "signInTitle",
+      "allSteps",
+      "onboardingDone"
     ]
   },
   "TransactionFilter": {
@@ -9759,6 +9763,283 @@
         "doc": ""
       }
     ]
+  },
+  "PaymentFocusViewSize": {
+    "kind": "enum",
+    "file": "lib/src/overlay/sheets.dart",
+    "doc": "Focus task size on phone and wide panels.",
+    "values": [
+      {
+        "name": "small",
+        "doc": "Content-height phone sheet or 420 dp side panel."
+      },
+      {
+        "name": "large",
+        "doc": "Full-height phone sheet or 720 dp side panel."
+      }
+    ]
+  },
+  "PaymentConfirmClose": {
+    "kind": "class",
+    "file": "lib/src/overlay/sheets.dart",
+    "doc": "Copy for protecting unsaved work on close.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentConfirmClose",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "message",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "message",
+            "doc": "Message supplied by the host."
+          },
+          {
+            "name": "exitLabel",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "exitLabel",
+            "doc": "Exitlabel supplied by the host."
+          },
+          {
+            "name": "cancelLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "cancelLabel",
+            "doc": "Cancellabel supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "message",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Message supplied by the host."
+      },
+      {
+        "name": "exitLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Exitlabel supplied by the host."
+      },
+      {
+        "name": "cancelLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Cancellabel supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "showPaymentFocusView": {
+    "kind": "function",
+    "file": "lib/src/overlay/sheets.dart",
+    "doc": "Presents a focused task through the existing sheet surfaces.",
+    "returns": "Future<T?>",
+    "typeParams": "<T>",
+    "params": [
+      {
+        "name": "context",
+        "type": "BuildContext",
+        "required": true,
+        "default": null,
+        "named": false,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "builder",
+        "type": "WidgetBuilder",
+        "required": true,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "size",
+        "type": "PaymentFocusViewSize",
+        "required": false,
+        "default": "PaymentFocusViewSize.small",
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      }
+    ]
+  },
+  "PaymentFocusView": {
+    "kind": "class",
+    "file": "lib/src/overlay/sheets.dart",
+    "doc": "A focused task body; only its presentation function opens a sheet.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentFocusView",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "child",
+            "type": "Widget",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "child",
+            "doc": "Child supplied by the host."
+          },
+          {
+            "name": "primaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "primaryAction",
+            "doc": "Primaryaction supplied by the host."
+          },
+          {
+            "name": "secondaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "secondaryAction",
+            "doc": "Secondaryaction supplied by the host."
+          },
+          {
+            "name": "footer",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "footer",
+            "doc": "Footer supplied by the host."
+          },
+          {
+            "name": "confirmClose",
+            "type": "PaymentConfirmClose?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "confirmClose",
+            "doc": "Confirmclose supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "child",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": "Child supplied by the host."
+      },
+      {
+        "name": "primaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "Primaryaction supplied by the host."
+      },
+      {
+        "name": "secondaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "Secondaryaction supplied by the host."
+      },
+      {
+        "name": "footer",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Footer supplied by the host."
+      },
+      {
+        "name": "confirmClose",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentConfirmClose?",
+        "doc": "Confirmclose supplied by the host."
+      }
+    ],
+    "copyWith": null
   },
   "PaymentCurrencyField": {
     "kind": "class",
@@ -21874,6 +22155,821 @@
         "static": false,
         "type": "IconData",
         "doc": "Supporting visual cue."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentContextView": {
+    "kind": "class",
+    "file": "lib/src/views/context_view.dart",
+    "doc": "A contextual panel beside host content.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentContextView",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "child",
+            "type": "Widget",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "child",
+            "doc": "Child supplied by the host."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "Description supplied by the host."
+          },
+          {
+            "name": "brand",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "brand",
+            "doc": "Brand supplied by the host."
+          },
+          {
+            "name": "actions",
+            "type": "List<PaymentButton>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "actions",
+            "doc": "Actions supplied by the host."
+          },
+          {
+            "name": "banner",
+            "type": "PaymentBanner?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "banner",
+            "doc": "Banner supplied by the host."
+          },
+          {
+            "name": "externalLink",
+            "type": "PaymentLink?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "externalLink",
+            "doc": "Externallink supplied by the host."
+          },
+          {
+            "name": "primaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "primaryAction",
+            "doc": "Primaryaction supplied by the host."
+          },
+          {
+            "name": "secondaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "secondaryAction",
+            "doc": "Secondaryaction supplied by the host."
+          },
+          {
+            "name": "footer",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "footer",
+            "doc": "Footer supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "child",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": "Child supplied by the host."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Description supplied by the host."
+      },
+      {
+        "name": "brand",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Brand supplied by the host."
+      },
+      {
+        "name": "actions",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentButton>",
+        "doc": "Actions supplied by the host."
+      },
+      {
+        "name": "banner",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentBanner?",
+        "doc": "Banner supplied by the host."
+      },
+      {
+        "name": "externalLink",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentLink?",
+        "doc": "Externallink supplied by the host."
+      },
+      {
+        "name": "primaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "Primaryaction supplied by the host."
+      },
+      {
+        "name": "secondaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "Secondaryaction supplied by the host."
+      },
+      {
+        "name": "footer",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Footer supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentFullPageView": {
+    "kind": "class",
+    "file": "lib/src/views/full_page_view.dart",
+    "doc": "Full-page body; the host supplies its scaffold and navigation.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentFullPageView",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "child",
+            "type": "Widget",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "child",
+            "doc": "Child supplied by the host."
+          },
+          {
+            "name": "pageAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pageAction",
+            "doc": "Pageaction supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "child",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": "Child supplied by the host."
+      },
+      {
+        "name": "pageAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "Pageaction supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentSettingsView": {
+    "kind": "class",
+    "file": "lib/src/views/settings_view.dart",
+    "doc": "Grouped host settings with a future-locked Save action.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentSettingsView",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "child",
+            "type": "Widget",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "child",
+            "doc": "Child supplied by the host."
+          },
+          {
+            "name": "onSave",
+            "type": "Future<void> Function()?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onSave",
+            "doc": "Onsave supplied by the host."
+          },
+          {
+            "name": "saveLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "saveLabel",
+            "doc": "Savelabel supplied by the host."
+          },
+          {
+            "name": "statusMessage",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "statusMessage",
+            "doc": "Statusmessage supplied by the host."
+          },
+          {
+            "name": "statusTone",
+            "type": "StatusTone",
+            "required": false,
+            "default": "StatusTone.neutral",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "statusTone",
+            "doc": "Statustone supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "child",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": "Child supplied by the host."
+      },
+      {
+        "name": "saveLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Savelabel supplied by the host."
+      },
+      {
+        "name": "statusMessage",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Statusmessage supplied by the host."
+      },
+      {
+        "name": "statusTone",
+        "kind": "field",
+        "static": false,
+        "type": "StatusTone",
+        "doc": "Statustone supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentSignInLearnMore": {
+    "kind": "class",
+    "file": "lib/src/views/sign_in_view.dart",
+    "doc": "Supplemental explanation presented separately in a focus view.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentSignInLearnMore",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Label supplied by the host."
+          },
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "builder",
+            "type": "WidgetBuilder",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "builder",
+            "doc": "Builder supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Label supplied by the host."
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "builder",
+        "kind": "field",
+        "static": false,
+        "type": "WidgetBuilder",
+        "doc": "Builder supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentSignInView": {
+    "kind": "class",
+    "file": "lib/src/views/sign_in_view.dart",
+    "doc": "External sign-in entry point with no credential input or free content slot.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentSignInView",
+        "factory": false,
+        "params": [
+          {
+            "name": "primaryAction",
+            "type": "PaymentButton",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "primaryAction",
+            "doc": "Primaryaction supplied by the host."
+          },
+          {
+            "name": "title",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "Description supplied by the host."
+          },
+          {
+            "name": "brand",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "brand",
+            "doc": "Brand supplied by the host."
+          },
+          {
+            "name": "learnMore",
+            "type": "PaymentSignInLearnMore?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "learnMore",
+            "doc": "Learnmore supplied by the host."
+          },
+          {
+            "name": "secondaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "secondaryAction",
+            "doc": "Secondaryaction supplied by the host."
+          },
+          {
+            "name": "legalLinks",
+            "type": "List<PaymentLink>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "legalLinks",
+            "doc": "Legallinks supplied by the host."
+          },
+          {
+            "name": "footnote",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "footnote",
+            "doc": "Footnote supplied by the host."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "Errortext supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "primaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton",
+        "doc": "Primaryaction supplied by the host."
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Description supplied by the host."
+      },
+      {
+        "name": "brand",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Brand supplied by the host."
+      },
+      {
+        "name": "learnMore",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSignInLearnMore?",
+        "doc": "Learnmore supplied by the host."
+      },
+      {
+        "name": "secondaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "Secondaryaction supplied by the host."
+      },
+      {
+        "name": "legalLinks",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentLink>",
+        "doc": "Legallinks supplied by the host."
+      },
+      {
+        "name": "footnote",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Footnote supplied by the host."
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Errortext supplied by the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentOnboardingView": {
+    "kind": "class",
+    "file": "lib/src/views/onboarding_view.dart",
+    "doc": "Host-guided setup with current content before the task list on phones.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentOnboardingView",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Title supplied by the host."
+          },
+          {
+            "name": "tasks",
+            "type": "List<PaymentTaskListItem>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "tasks",
+            "doc": "Tasks supplied by the host."
+          },
+          {
+            "name": "child",
+            "type": "Widget",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "child",
+            "doc": "Child supplied by the host."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "Description supplied by the host."
+          },
+          {
+            "name": "pending",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pending",
+            "doc": "Pending supplied by the host."
+          },
+          {
+            "name": "error",
+            "type": "PaymentBanner?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "error",
+            "doc": "Error supplied by the host."
+          },
+          {
+            "name": "completed",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "completed",
+            "doc": "Completed supplied by the host."
+          },
+          {
+            "name": "onCompleted",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onCompleted",
+            "doc": "Oncompleted supplied by the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Title supplied by the host."
+      },
+      {
+        "name": "tasks",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentTaskListItem>",
+        "doc": "Tasks supplied by the host."
+      },
+      {
+        "name": "child",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": "Child supplied by the host."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Description supplied by the host."
+      },
+      {
+        "name": "pending",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Pending supplied by the host."
+      },
+      {
+        "name": "error",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentBanner?",
+        "doc": "Error supplied by the host."
+      },
+      {
+        "name": "completed",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Completed supplied by the host."
+      },
+      {
+        "name": "onCompleted",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Oncompleted supplied by the host."
       }
     ],
     "copyWith": null

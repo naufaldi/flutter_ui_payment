@@ -61,3 +61,13 @@ export 'src/content/task_list.dart';
 
 export 'src/content/data_table.dart';
 export 'src/content/empty_message.dart';
+
+export 'src/views/context_view.dart';
+
+export 'src/views/full_page_view.dart';
+
+export 'src/views/settings_view.dart';
+
+export 'src/views/sign_in_view.dart';
+
+export 'src/views/onboarding_view.dart';

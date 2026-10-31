@@ -1,0 +1,37 @@
+---
+title: Sign in view
+description: Add context, full-page, focus, settings, sign-in and onboarding view bodies.
+---
+
+import Props from '../../../components/Props.astro';
+
+Entry point for external bank sign-in. Variants: ready, host error. Nothing else exists. D32: no credential inputs and no free widget slot. The widget test asserts no EditableText anywhere in its subtree with all slots filled. Brand accepts only PaymentImage or PaymentIcon. Supplemental learnMore content opens separately in FocusView and is outside that guarantee. A host error takes focus and is announced. The host handles sign-in, destinations and legal links.
+
+## Usage
+
+```dart
+PaymentSignInView(primaryAction: PaymentButton(label: 'Continue with bank app', onPressed: () {}));
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| SignInView | `PaymentSignInView` |
+| SignInLearnMore | `PaymentSignInLearnMore` |
+
+## States and content
+
+The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Accessibility
+
+Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+
+## API
+
+<Props names={['PaymentSignInView', 'PaymentSignInLearnMore']} />
+
+## See also
+
+- [Components](/components/)

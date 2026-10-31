@@ -1,0 +1,36 @@
+---
+title: Onboarding view
+description: Add context, full-page, focus, settings, sign-in and onboarding view bodies.
+---
+
+import Props from '../../../components/Props.astro';
+
+KYC setup gets to current-step value first on phones, with all tasks in a collapsed accordion. At 840 dp a 280 dp task sidebar accompanies the current content. Variants: ready, pending, error, completed. Nothing else exists. The host owns every task status. onCompleted fires post-frame once when completed turns true, including an initially completed view; there is no timer or kit navigation.
+
+## Usage
+
+```dart
+const PaymentOnboardingView(title: 'Verify your identity', tasks: [PaymentTaskListItem(title: 'Documents')], child: Text('Add identity documents to get started.'));
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| OnboardingView | `PaymentOnboardingView` |
+
+## States and content
+
+The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Accessibility
+
+Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+
+## API
+
+<Props names={['PaymentOnboardingView']} />
+
+## See also
+
+- [Components](/components/)

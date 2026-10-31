@@ -375,3 +375,7 @@ Plan deviation: the contentHost helper now copies the ambient MediaQuery rather 
 ### Phase 4C-3 implementation decisions
 
 D43 amended 1 Nov 2026: the owner approves local sorting and filtering exclusively over host-supplied rows. Offset/cursor pages are never filtered or reordered locally; callbacks report intent. Local sorting is stable and cycles ascending, descending, host order. Select-all covers this page and retains off-page selections. batchActions is a kit addition for host statement actions. Narrow tables render only the current page in a non-scrolling Column. ID cells are bounded at 160 dp. Plan cut: column reorder and resize are deferred to Phase 6; enabling either flag asserts false. Control columns omit cell padding because the planned padded 48 dp checkbox cell overflowed by 8 dp.
+
+### Phase 4D-1 implementation decisions
+
+Views own their body scroll with an unbounded non-scrolling fallback; hosts own scaffolds and routes. FocusView size belongs to its presentation function. Drag dismissal is disabled; PopScope protects close, scrim, Escape and Back, with a guarded confirmation dialog. Brand types are asserted. Sign-in has no free widget slot or credential editor; learn-more is a separate focus route. Onboarding completion is post-frame on the transition, without timers, and phone content precedes collapsed tasks. Settings status lives in the header live region. Plan deviation: the test host also needs GlobalCupertinoLocalizations.delegate for Indonesian iOS route localization; missing it produced a Flutter localization error.
