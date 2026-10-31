@@ -11,7 +11,8 @@ import Props from '../../../components/Props.astro';
 ## Usage
 
 ```dart
-const PaymentPropertyList(items: [PaymentPropertyListItem(label: 'Method', valueText: 'BCA virtual account')]);
+// example/lib/screens/gallery_views.dart
+PaymentPropertyList(items: facts);
 ```
 
 ## Stripe → kit
@@ -23,25 +24,54 @@ const PaymentPropertyList(items: [PaymentPropertyListItem(label: 'Method', value
 
 ## Variants
 
-Variants: vertical, horizontal. Nothing else exists. Use vertical for receipt and status details; horizontal for a few short summary facts. Horizontal facts stack below 360 dp or at large text. Nested property lists are not supported.
+Variants: vertical, horizontal. Nothing else exists.
+
+Use vertical for receipt and status details; horizontal for a few short summary facts. Horizontal facts stack below 360 dp or at large text. Nested property lists are not supported.
+
+### Content and accessibility
+
+Use short, descriptive labels. Labels and narrow values wrap. Do show the currency beside an amount. Do not use color alone to communicate a result. Headings carry header semantics; facts merge their label and value. Wide table cells repeat their column label for assistive technology. Totals are computed by the host.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Sign-in data-sharing explanation | vertical | Use horizontal only for short facts that fit; narrow/large text stacks. |
+
+Use Table for records with shared columns.
 
 ## States
 
 The host supplies ready values. Use `LoadingSkeleton.table` for loading and `StateMessage` for an empty or failed load. Empty states should explain why and offer a next action.
 
-## Content and accessibility
+## Do and don't
 
-Use short, descriptive labels. Labels and narrow values wrap. Do show the currency beside an amount. Do not use color alone to communicate a result. Headings carry header semantics; facts merge their label and value. Wide table cells repeat their column label for assistive technology. Totals are computed by the host.
+**Do**: Use horizontal only for short facts that fit; narrow/large text stacks.
+
+**Don't**: Use a property list to simulate selectable ledger rows.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Use horizontal only for short facts that fit; narrow/large text stacks.
+
+## Accessibility
+
+Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+
+## Used in
+
+Sign-in H04; CheckoutSummary; PaymentReceipt. Real composition: `example/lib/screens/gallery_views.dart`.
 
 ## API
 
-<Props names={['PaymentPropertyList', 'PaymentPropertyListItem']} />
+<Props names={["PaymentPropertyList", "PaymentPropertyListItem"]} />
 
 ## See also
 
 - [Info row](/components/info-row/)
 - [Loading skeleton](/components/loading-skeleton/)
-
 
 <Screen name="ios_catalog_property_list_variants" alt="property list specimen" />
 <Screen name="ios_catalog_property_list_variants_dark" alt="property list specimen_dark" />

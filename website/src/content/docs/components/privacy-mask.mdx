@@ -13,30 +13,61 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
+// example/lib/adapters/synthetic_capture.dart
 PrivacyMask(
-  obscured: lifecycle != AppLifecycleState.resumed,
-  child: accountDetails,
-);
+              obscured: obscured,
+              child: const Text('3100000000001234'),
+            );
 ```
 
-`lifecycle` is your own state, kept from an `AppLifecycleListener` or `WidgetsBindingObserver`; `accountDetails` is the content to hide.
+## Stripe → kit
 
-## Obscured
+No Stripe equivalent. Admitted because: FlowScreen; synthetic capture preview; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: visible, obscured. Nothing else exists.
+
+### Obscured
 
 The child stays laid out underneath, so nothing jumps when the mask lifts. The cover uses `PaymentTheme.surface` with a 48 px lock icon in `textSecondary`.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| App switcher protection | obscured | Cover sensitive screen content when the host says it is obscured. |
+
+Use masked text for NIK in review.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Cover sensitive screen content when the host says it is obscured.
+
+**Don't**: Claim PrivacyMask encrypts or persists data securely.
 
 ## Content guidelines
 
 - Mask whole blocks, not single digits. A half-covered number still leaks.
 - Unmask as soon as the app is active again. The mask is not a lock screen; it asks for nothing.
 
+Cover sensitive screen content when the host says it is obscured.
+
 ## Accessibility
 
 - While obscured, the child is excluded from semantics and screen readers hear "Content hidden" instead.
 
+## Used in
+
+FlowScreen; synthetic capture preview. Real composition: `example/lib/adapters/synthetic_capture.dart`.
+
 ## API
 
-<Props names={['PrivacyMask']} />
+<Props names={["PrivacyMask"]} />
 
 ## See also
 

@@ -11,7 +11,49 @@ Payment attempts as a detail module. Variants: pending, ready, empty, error. Not
 ## Usage
 
 ```dart
-PaymentDetailPageTable<String>(title: 'Attempts', pending: false, columns: [PaymentDataColumn<String>(key: 'method', label: 'Method', value: (row) => row)], rows: const ['BCA virtual account'], rowKey: (row) => row);
+// example/lib/screens/gallery_views.dart
+PaymentDetailPageTable<int>(
+    title: 'Attempts',
+    pending: pending,
+    errorText: error ? 'Attempts didn’t load' : null,
+    onRetry: () {},
+    columns: [
+      PaymentDataColumn<int>(
+        key: 'time',
+        label: 'Time',
+        value: (r) => DateTime(2026, 10, 1, 10, r),
+        cell: PaymentCellType.date,
+      ),
+      PaymentDataColumn<int>(
+        key: 'method',
+        label: 'Method',
+        value: (r) => 'BCA virtual account',
+        pinned: true,
+      ),
+      PaymentDataColumn<int>(
+        key: 'status',
+        label: 'Status',
+        value: (r) => r == 3 ? 'Paid' : 'Pending',
+        cell: PaymentCellType.status,
+        statusMap: {'Paid': StatusTone.success, 'Pending': StatusTone.warning},
+      ),
+      PaymentDataColumn<int>(
+        key: 'amount',
+        label: 'Amount',
+        value: (r) => const Money.idr(102500),
+        cell: PaymentCellType.currency,
+      ),
+    ],
+    rows: empty ? const [] : const [1, 2, 3],
+    rowKey: (r) => '$r',
+    rowActions: [
+      PaymentRowAction<int>(
+        id: 'view',
+        label: 'View attempt',
+        onPressed: (_) {},
+      ),
+    ],
+  );
 ```
 
 ## Stripe → kit
@@ -22,9 +64,37 @@ PaymentDetailPageTable<String>(title: 'Attempts', pending: false, columns: [Paym
 | DataColumn | `PaymentDataColumn` |
 | EmptyMessage | `PaymentEmptyMessage` |
 
-## States and content
+## Variants
+
+Variants: pending, ready, empty, error. Nothing else exists.
+
+### States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Payment attempts | ready | Use direct columns and explicit status mapping; the module omits paging and selection. |
+
+Use Data table for selectable settlement pages.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use direct columns and explicit status mapping; the module omits paging and selection.
+
+**Don't**: Add a duplicate Attempts wrapper heading.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Use direct columns and explicit status mapping; the module omits paging and selection.
 
 ## Accessibility
 
@@ -32,14 +102,17 @@ Labels wrap at large text. Controls retain their keyboard and screen-reader beha
 
 A02 uses a direct attempts module with reference, date, method, status and amount columns. Unknown status uses a neutral explicit label.
 
+## Used in
+
+Transaction detail A02/H04. Real composition: `example/lib/screens/gallery_views.dart`.
+
 ## API
 
-<Props names={['PaymentDetailPageTable', 'PaymentDataColumn', 'PaymentEmptyMessage']} />
+<Props names={["PaymentDetailPageTable", "PaymentDataColumn", "PaymentEmptyMessage"]} />
 
 ## See also
 
 - [Components](/components/)
-
 
 <Screen name="ios_catalog_detail_page_table_variants" alt="detail page table specimen" />
 <Screen name="ios_catalog_detail_page_table_variants_dark" alt="detail page table specimen_dark" />

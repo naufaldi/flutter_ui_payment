@@ -10,18 +10,19 @@ import Props from '../../../components/Props.astro';
 ## Usage
 
 ```dart
-PaymentSection(
-  title: 'Payment details',
-  child: Column(
-    children: [
-      const InfoRow(label: 'Amount', value: AmountText(Money.idr(102500))),
-      InfoRow(label: 'Reference', valueText: attempt.attemptId),
-    ],
-  ),
-);
+// example/lib/screens/flow_screen.dart
+PaymentSection(child: LoadingSkeleton(rows: 3, leading: false));
 ```
 
-## With a header action
+## Stripe → kit
+
+No Stripe equivalent. Admitted because: Checkout and overview; Gallery Kit; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: titled, untitled, trailing action. Nothing else exists.
+
+### With a header action
 
 `trailing` puts an action beside the title, such as "Edit". Keeping a section's action in its header saves a row and ties the action to the content.
 
@@ -33,9 +34,27 @@ PaymentSection(
 );
 ```
 
-## Without a title
+### Without a title
 
 `title` is optional. Without it the section is only vertical padding around its child, which keeps spacing consistent with titled sections.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Group checkout content | titled | Use one short heading for a related block and a secondary trailing action. |
+
+Use Form field group for controls with a legend.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use one short heading for a related block and a secondary trailing action.
+
+**Don't**: Wrap already titled page modules just to add another heading.
 
 ## Content guidelines
 
@@ -43,18 +62,23 @@ PaymentSection(
 - Use a section per topic. If a section needs a sub-section, consider an [expandable section](/components/accordion/) or a separate screen.
 - Use a [divider](/components/divider/) between sections only when space alone does not separate them.
 
+Use one short heading for a related block and a secondary trailing action.
+
 ## Accessibility
 
 - The title is marked as a header, so screen-reader users can jump between sections.
 
+## Used in
+
+Checkout and overview; Gallery Kit. Real composition: `example/lib/screens/flow_screen.dart`.
+
 ## API
 
-<Props names={['PaymentSection']} />
+<Props names={["PaymentSection"]} />
 
 ## See also
 
 - [Info row](/components/info-row/)
 - [Spacing and radius](/foundations/spacing/)
-
 
 Use [Property list](/components/property-list/) for grouped payment facts and [Table](/components/table/) for fee schedules.

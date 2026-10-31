@@ -21,21 +21,33 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
+// example/lib/screens/gallery_selection.dart
 PaymentCheckbox(
-  value: saveCard,
-  onChanged: (v) => setState(() => saveCard = v),
-  label: 'Save this card for next time',
-  description: 'Stored by your payment provider',
-);
+              value: _sms,
+              onChanged: (v) => setState(() => _sms = v),
+              label: 'SMS receipt',
+            );
 ```
 
-The checkbox is controlled: keep `value` in your state and rebuild with the new value in `onChanged`.
+## Stripe → kit
 
-## Checked and unchecked
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| value | value | Semantic kit value; see API for the default. |
+| onChange | onChanged | Host callback owns the effect. |
+| label | label | Semantic kit value; see API for the default. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: unchecked, checked, indeterminate. Nothing else exists.
+
+### Checked and unchecked
 
 A checked box is filled with the accent and shows a check mark in `onAccent`. An unchecked box has a 2 px edge in the 3:1 `border` color, so it stays visible on any surface.
 
-## Disabled
+### Disabled
 
 Pass `onChanged: null`. The label turns muted, the box uses the `disabled` color, and taps do nothing. Pass `disabledReason`; it replaces `description` while the row is disabled.
 
@@ -48,6 +60,32 @@ const PaymentCheckbox(
 );
 ```
 
+### Pattern adoption
+
+Used in `VerificationIntro` for consent and `PaymentConfirmation` for changed-total approval. Both use the same 48 dp row and 20 dp mark slot, aligned with the section gutter. The consent sentence uses the label role and wraps at large text.
+
+### Behavior, states and migration
+
+Stripe indeterminate paints a dash and announces mixed. It ignores value and reports true when tapped, supporting select-all controls. Error text adds a danger icon, text and an unchecked danger edge. Required is spoken; the host still gates submission. HiddenElements hides label, description or error visually while retaining them in semantics. Do not rely on color alone or hide the only visible recovery instruction.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Select all statement rows | indeterminate | Use mixed state when some page rows are selected; consent starts unchecked. |
+
+Use Radio for one mutually exclusive choice.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use mixed state when some page rows are selected; consent starts unchecked.
+
+**Don't**: Hide the phone select-all label.
+
 ## Content guidelines
 
 - Write the label as the full thing people agree to: "Save this card for next time", not "Save".
@@ -55,25 +93,23 @@ const PaymentCheckbox(
 - Use the description for a consequence or a detail, not for terms that must be read; link those separately.
 - For a setting that takes effect at once, use a [switch](/components/switch/) instead.
 
+Use mixed state when some page rows are selected; consent starts unchecked.
+
 ## Accessibility
 
 - The whole row is one target of at least 48 dp and one screen-reader node that reads the label, the description and the checked state together.
 - The painted box takes no focus of its own, so one Tab reaches the row and Space toggles it. Keyboard focus draws the kit's [focus ring](/foundations/focus/).
 - The box centers on the label's first line, so it stays beside the label when the label wraps at large text.
 
+## Used in
+
+Statement A03; VerificationIntro; CheckoutReview. Real composition: `example/lib/screens/gallery_selection.dart`.
+
 ## API
 
-<Props names={['PaymentCheckbox', 'PaymentFieldPart']} />
+<Props names={["PaymentCheckbox", "PaymentFieldPart"]} />
 
 ## See also
 
 - [Switch](/components/switch/) for settings that apply immediately.
 - [Radio](/components/radio/) for one choice out of several.
-
-## Pattern adoption
-
-Used in `VerificationIntro` for consent and `PaymentConfirmation` for changed-total approval. Both use the same 48 dp row and 20 dp mark slot, aligned with the section gutter. The consent sentence uses the label role and wraps at large text.
-
-## Behavior, states and migration
-
-Stripe indeterminate paints a dash and announces mixed. It ignores value and reports true when tapped, supporting select-all controls. Error text adds a danger icon, text and an unchecked danger edge. Required is spoken; the host still gates submission. HiddenElements hides label, description or error visually while retaining them in semantics. Do not rely on color alone or hide the only visible recovery instruction.

@@ -29,22 +29,22 @@ class PaymentChip extends StatelessWidget {
                  onDropdown == null),
        );
 
-  /// label for this component.
+  /// Visible name identifying this value or control.
   final String label;
 
-  /// value for this component.
+  /// Current value of this applied filter.
   final String? value;
 
-  /// values for this component.
+  /// Multiple values summarized by this applied filter.
   final List<String>? values;
 
-  /// onClose for this component.
+  /// Removes this applied value through the host.
   final VoidCallback? onClose;
 
-  /// onDropdown for this component.
+  /// Opens host choices for this filter.
   final VoidCallback? onDropdown;
 
-  /// onAddSuggestion for this component.
+  /// Accepts this suggested filter through the host.
   final VoidCallback? onAddSuggestion;
   @override
   Widget build(BuildContext context) {
@@ -147,7 +147,7 @@ class PaymentChip extends StatelessWidget {
 class _DashedStadiumPainter extends CustomPainter {
   _DashedStadiumPainter(this.color);
 
-  /// color for this component.
+  /// Stroke color resolved from the theme.
   final Color color;
   @override
   void paint(Canvas canvas, Size size) {
@@ -184,10 +184,10 @@ class PaymentChipList extends StatelessWidget {
     this.reverse = false,
   });
 
-  /// children for this component.
+  /// Chips in host reading order.
   final List<PaymentChip> children;
 
-  /// reverse for this component.
+  /// Places the chip row in reverse reading order.
   final bool reverse;
   @override
   Widget build(BuildContext context) => FocusTraversalGroup(

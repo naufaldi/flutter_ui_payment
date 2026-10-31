@@ -19,25 +19,25 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-InfoRow(
-  label: 'Pay before',
-  value: CountdownText(
-    expiresAt: va.expiresAt,
-    clock: host.clock,
-    onElapsed: coordinator.checkStatus,
-  ),
-);
+// lib/src/foundation/primitives.dart
+CountdownText.formatDuration(left);
 ```
 
-`clock` returns the current time. Pass your host's clock, so the countdown agrees with the rest of your app and tests can fake it.
+## Stripe → kit
 
-## When the deadline passes
+No Stripe equivalent. Admitted because: PaymentInstructions P12; Gallery Kit; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: remaining, warning, elapsed. Nothing else exists.
+
+### When the deadline passes
 
 The countdown stops at `00:00` and never goes negative. `onElapsed` is called once, after the frame, including when the deadline has already passed the first time the widget builds. Changing `expiresAt` starts a new countdown, and `onElapsed` can fire again for the new deadline.
 
 Use `onElapsed` to ask your host for the status, not to show "expired". A transfer made in the last second may still arrive.
 
-## Formatting outside the widget
+### Formatting outside the widget
 
 The static helpers do the same arithmetic without a widget:
 
@@ -46,10 +46,30 @@ final left = CountdownText.remaining(va.expiresAt, host.clock());
 final text = CountdownText.formatDuration(left); // "14:59"
 ```
 
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Virtual account expiry | remaining | Pass the host expiry and clock; elapsed is a display state, not a payment verdict. |
+
+Use Status header for payment outcome.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Pass the host expiry and clock; elapsed is a display state, not a payment verdict.
+
+**Don't**: Infer payment failure from an elapsed timer.
+
 ## Content guidelines
 
 - Pair the countdown with the deadline itself (a date and time) so the person can plan, as the virtual account instructions do.
 - Label it with what the deadline is for: "Pay before", not "Timer".
+
+Pass the host expiry and clock; elapsed is a display state, not a payment verdict.
 
 ## Accessibility
 
@@ -57,9 +77,13 @@ final text = CountdownText.formatDuration(left); // "14:59"
 - Screen readers hear "Time remaining 14:59" (or the Indonesian equivalent).
 - The countdown is never animated beyond its once-a-second text change.
 
+## Used in
+
+PaymentInstructions P12; Gallery Kit. Real composition: `lib/src/foundation/primitives.dart`.
+
 ## API
 
-<Props names={['CountdownText']} />
+<Props names={["CountdownText"]} />
 
 ## See also
 

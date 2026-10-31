@@ -16,7 +16,8 @@ Semantic glyphs beside payment rows.
 ## Usage
 
 ```dart
-const PaymentIcon(Icons.schedule, color: PaymentTextColor.secondary);
+// example/lib/screens/gallery_layout.dart
+PaymentIcon.tone(tone);
 ```
 
 ## Stripe → kit
@@ -28,9 +29,17 @@ const PaymentIcon(Icons.schedule, color: PaymentTextColor.secondary);
 
 Variants: xsmall, small, medium, large, xlarge. Nothing else exists.
 
+## Variants
+
+Variants: xsmall, small, medium, large, xlarge. Nothing else exists.
+
 ## Which variant when
 
-Medium scales with text up to 1.6 times and centers on the first line. Fixed sizes are 14, 16, 32 and 48. Tone selects the status glyph and foreground.
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Status or action mark | medium | Choose the semantic size token; text still communicates the outcome. |
+
+Use Image for host artwork.
 
 ## States
 
@@ -38,19 +47,27 @@ Layout and inline text are passive. Images preserve a loading surface and recove
 
 ## Do and don't
 
-Use semantic tokens and host-owned data. Keep instructions in persistent text. Avoid duplicate surface fills.
+**Do**: Choose the semantic size token; text still communicates the outcome.
+
+**Don't**: Assign a raw color that bypasses semantic tone.
 
 ## Content guidelines
 
 Use short payment labels and synthetic references in examples.
 
+Choose the semantic size token; text still communicates the outcome.
+
 ## Accessibility
 
 Keep reading order aligned with layout. Decorative glyphs are excluded from semantics. Images require alt text; copy actions have labeled targets and confirmation.
 
+## Used in
+
+StatusHeader; KYC and checkout. Real composition: `example/lib/screens/gallery_layout.dart`.
+
 ## API
 
-<Props names={ ['PaymentIcon', 'PaymentIconSize', 'PaymentIcons'] } />
+<Props names={["PaymentIcon", "PaymentIconSize", "PaymentIcons"]} />
 
 ## See also
 

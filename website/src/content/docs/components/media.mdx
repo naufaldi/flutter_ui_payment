@@ -20,45 +20,78 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-class MyVideo extends PaymentVideoController {
-  @override
-  Future<void> initialize() async {
-    await engine.load(source);
-    value = value.copyWith(phase: VideoPhase.ready, duration: engine.duration);
-  }
-
-  @override
-  Future<void> play() => engine.play();
-  @override
-  Future<void> pause() => engine.pause();
-  @override
-  Future<void> seekTo(Duration position) => engine.seekTo(position);
-  @override
-  Future<void> setMuted(bool muted) => engine.setVolume(muted ? 0 : 1);
-  @override
-  Future<void> retry() => initialize();
-  @override
-  Widget buildSurface(BuildContext context) => engine.view();
-}
-
-PaymentVideoPlayer(controller: myVideo, title: 'How to pay with QRIS');
+// example/lib/screens/gallery_kit.dart
+PaymentVideoPlayer(
+            controller: switch (_video) {
+              'missing' => _broken,
+              'loading' => _loading,
+              _ => _playable,
+            },
+            title: t(
+              'How to pay with a virtual account (demo clip)',
+              'Cara bayar virtual account (klip demo)',
+            ),
+          );
 ```
 
-`engine` stands for your player. A complete adapter for the official `video_player` plugin is in `example/lib/adapters/video_adapter.dart` (about 100 lines). Report only safe `errorMessage` text; never show raw player errors.
+## Stripe → kit
 
-## Behavior
+No Stripe equivalent. Admitted because: Gallery Kit video adapter; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: idle, loading, ready, playing, paused, buffering, ended, error. Nothing else exists.
+
+### Behavior
 
 - No autoplay unless `autoPlay: true`, and never under reduced motion.
-- Pauses when the app goes to the background, inside an inactive `IndexedStack` tab, under a covering route, inside `TickerMode(false)`, and on dispose. It does not resume by itself: people press play again.
+- Pauses when the app goes to the background, inside an inactive IndexedStack tab, under a covering route, inside `TickerMode(false)`, and on dispose. It does not resume by itself: people press play again.
 - Controls sit below the picture, not over it, so they never hide content, keep their contrast on any frame and stay usable at 200% text.
 - Every control has a label, the seek slider speaks "0:04 of 0:08", and loading, buffering and finished states are announced.
 
-## API
-
-<Props names={['PaymentVideoPlayer', 'PaymentVideoController', 'VideoPlaybackValue', 'VideoPhase']} />
-
-## Pattern adoption
+### Pattern adoption
 
 The loading state uses a white 32 dp spinner; reduced motion substitutes a still hourglass at the same size. The status line owns the loading announcement.
 
 Media controls use secondary text icons. Retry uses PaymentLink.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Host video adapter | loading | The host owns playback and source; display loading/error without guessing readiness. |
+
+Use Image for a static preview.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: The host owns playback and source; display loading/error without guessing readiness.
+
+**Don't**: Put media transport or decoding policy into the kit.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+The host owns playback and source; display loading/error without guessing readiness.
+
+## Accessibility
+
+Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+
+## Used in
+
+Gallery Kit video adapter. Real composition: `example/lib/screens/gallery_kit.dart`.
+
+## API
+
+<Props names={["PaymentVideoPlayer", "PaymentVideoController", "VideoPlaybackValue", "VideoPhase"]} />
+
+## See also
+
+- [Components](/components/)
+- [Host-owned decisions](/concepts/host-owned/)

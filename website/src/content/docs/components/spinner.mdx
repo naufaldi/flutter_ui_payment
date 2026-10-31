@@ -16,48 +16,81 @@ import Props from '../../../components/Props.astro';
 ## Usage
 
 ```dart
-Row(
-  children: [
-    const PaymentSpinner(),
-    const SizedBox(width: 12),
-    Text('Checking payment status'),
-  ],
-);
+// example/lib/screens/gallery_feedback.dart
+PaymentSpinner(size: size);
 ```
 
-Put words beside the spinner that say what is happening. A spinner on its own says only "wait".
+## Stripe → kit
 
-## When to use something else
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| size | size | Semantic kit value; see API for the default. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: small, medium, large; delayed. Nothing else exists.
+
+### When to use something else
 
 - **Content loading into a known shape**, such as a list: use a [loading skeleton](/components/loading-skeleton/). It shows where content will appear.
 - **An action the person started**, such as paying: use [`PaymentButton`](/components/button/)'s busy state. The button already shows a spinner and blocks a second tap.
 - **A payment whose result is not known**: say so in words on the [status screen](/components/status-header/). A spinner suggests the answer is coming, which may not be true.
 
-## Size and color
+### Size and color
 
 `size` is PaymentSize.small (16 dp), medium (20 dp, default), or large (32 dp); the ring's stroke is 12% of it. `color` defaults to `textSecondary`, because waiting is not a brand moment. Pass the label color when the spinner sits on a filled surface, as the busy button does.
 
-## Reduced motion
+### Reduced motion
 
 When the platform or host asks for reduced motion, the ring is replaced by a still hourglass icon of the same size.
 
+### Pattern adoption
+
+Video loading uses a white 32 dp `PaymentSpinner` over the picture, with a 3.84 dp stroke. Reduced motion shows a 32 dp hourglass. The spinner is excluded from semantics because the video status already announces Loading video.
+
+### Delay and migration
+
+Delay reserves space without announcing progress until the wait passes. One timer is canceled on disposal. A fast wait never flashes. Replace numeric size 20 with `PaymentSize.medium`; numeric sizes no longer compile.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Unknown-shape short wait | medium | Delay brief indicators; busy actions use the button's built-in spinner. |
+
+Use Loading skeleton when the content shape is known.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Delay brief indicators; busy actions use the button's built-in spinner.
+
+**Don't**: Create a second primary action to stop a loading indicator.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Delay brief indicators; busy actions use the button's built-in spinner.
+
 ## Accessibility
 
-- Screen readers hear `semanticLabel`, "Loading" by default (or the Indonesian equivalent). Set a more specific label when the words beside it do not already say what is loading, or wrap the spinner in `ExcludeSemantics` when they do.
+- Screen readers hear `semanticLabel`, "Loading" by default (or the Indonesian equivalent). Set a more specific label when the words beside it do not already say what is loading, or wrap the spinner in ExcludeSemantics when they do.
+
+## Used in
+
+PaymentButton; PaymentOnboardingView; PaymentVideoPlayer. Real composition: `example/lib/screens/gallery_feedback.dart`.
 
 ## API
 
-<Props names={['PaymentSpinner', 'PaymentSize']} />
+<Props names={["PaymentSpinner", "PaymentSize"]} />
 
 ## See also
 
 - [Loading skeleton](/components/loading-skeleton/)
 - [Motion](/foundations/motion/)
-
-## Pattern adoption
-
-Video loading uses a white 32 dp `PaymentSpinner` over the picture, with a 3.84 dp stroke. Reduced motion shows a 32 dp hourglass. The spinner is excluded from semantics because the video status already announces Loading video.
-
-## Delay and migration
-
-Delay reserves space without announcing progress until the wait passes. One timer is canceled on disposal. A fast wait never flashes. Replace numeric size 20 with `PaymentSize.medium`; numeric sizes no longer compile.

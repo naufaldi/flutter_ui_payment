@@ -12,13 +12,13 @@ class PaymentFullPageView extends StatelessWidget {
     this.pageAction,
   });
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String title;
 
-  /// Child supplied by the host.
+  /// Content rendered inside this layout body.
   final Widget child;
 
-  /// Pageaction supplied by the host.
+  /// Supporting action alongside the page heading.
   final PaymentButton? pageAction;
   @override
   Widget build(BuildContext context) => ViewFrame(

@@ -18,13 +18,13 @@ class PaymentDetailValue {
   const PaymentDetailValue.link(PaymentLink this.link, {this.subText})
     : text = null;
 
-  /// Text supplied by the host.
+  /// Plain detail value; absent when a link is used.
   final String? text;
 
-  /// Link supplied by the host.
+  /// Interactive detail value; absent for plain text.
   final PaymentLink? link;
 
-  /// Subtext supplied by the host.
+  /// Supporting copy below a detail value.
   final String? subText;
 }
 
@@ -37,13 +37,13 @@ class PaymentDetailProperty {
     this.description,
   });
 
-  /// Label supplied by the host.
+  /// Visible name identifying this value or control.
   final String label;
 
-  /// Values supplied by the host.
+  /// Related values displayed together.
   final List<PaymentDetailValue> values;
 
-  /// Description supplied by the host.
+  /// Persistent explanation below the heading or label.
   final String? description;
 }
 
@@ -62,40 +62,38 @@ class PaymentDetailPagePropertyList extends StatelessWidget {
     this.extraActions = const [],
   });
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String title;
 
-  /// Pending supplied by the host.
+  /// Shows placeholders while the host loads content.
   final bool pending;
 
-  /// Items supplied by the host.
+  /// Host facts rendered in order.
   final List<PaymentDetailProperty> items;
 
-  /// Orientation supplied by the host.
+  /// Preferred arrangement of labels and values.
   final Axis orientation;
 
-  /// Oncreate supplied by the host.
+  /// Host action for adding a detail record.
   final VoidCallback? onCreate;
 
-  /// Emptymessage supplied by the host.
+  /// Explanation and optional recovery action for missing content.
   final PaymentEmptyMessage? emptyMessage;
 
-  /// Errortext supplied by the host.
+  /// Safe error copy displayed with the affected content.
   final String? errorText;
 
-  /// Onretry supplied by the host.
+  /// Retries the failed host request.
   final VoidCallback? onRetry;
 
-  /// Extraactions supplied by the host.
+  /// Supporting actions in the module header.
   final List<PaymentLink> extraActions;
   @override
   Widget build(BuildContext context) {
     final l = PaymentLocalizations.of(context);
 
-    /// Type=paymenttype.of(context) supplied by the host.
     final type = PaymentType.of(context);
 
-    /// P.values)...[v.link??text(v.text!,style:type.label),if(v.subtext!=null)text(v.subtext!,style:type.caption)]]))]) supplied by the host.
     final body = pending
         ? const LoadingSkeleton(rows: 3, leading: false)
         : errorText != null

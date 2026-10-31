@@ -17,7 +17,8 @@ References people copy into a banking app.
 ## Usage
 
 ```dart
-PaymentCode('8808 0012 3456 7890', onCopy: hostCopy);
+// example/lib/screens/gallery_content.dart
+PaymentCode('TRX-DEMO-42');
 ```
 
 ## Stripe → kit
@@ -29,9 +30,17 @@ PaymentCode('8808 0012 3456 7890', onCopy: hostCopy);
 
 Variants: code, pre, samp, kbd. Nothing else exists.
 
+## Variants
+
+Variants: code, pre, samp, kbd. Nothing else exists.
+
 ## Which variant when
 
-Use code for a VA number, pre for multiline content, samp for host output, and kbd for a key. The host copies the value. Copy confirms briefly or shows an inline failure. Numeric speech is grouped in fours.
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Virtual account number | code | Use a reference display with a host copy action; pre preserves line breaks. |
+
+Use Amount text for money.
 
 ## States
 
@@ -39,24 +48,31 @@ Layout and inline text are passive. Images preserve a loading surface and recove
 
 ## Do and don't
 
-Use semantic tokens and host-owned data. Keep instructions in persistent text. Avoid duplicate surface fills.
+**Do**: Use a reference display with a host copy action; pre preserves line breaks.
+
+**Don't**: Send the identifier to a transport from the component.
 
 ## Content guidelines
 
 Use short payment labels and synthetic references in examples.
 
+Use a reference display with a host copy action; pre preserves line breaks.
+
 ## Accessibility
 
 Keep reading order aligned with layout. Decorative glyphs are excluded from semantics. Images require alt text; copy actions have labeled targets and confirmation.
 
+## Used in
+
+PaymentInstructions; Gallery Layout. Real composition: `example/lib/screens/gallery_content.dart`.
+
 ## API
 
-<Props names={ ['PaymentCode', 'PaymentCodeKind', 'PaymentSize'] } />
+<Props names={["PaymentCode", "PaymentCodeKind", "PaymentSize"]} />
 
 ## See also
 
 - [Spacing](/foundations/spacing/)
 - [Typography](/foundations/typography/)
-
 
 Code wraps by default. noWrap keeps one line and scrolls inside the block; an edge fade shows there is more. Stripe noWrap maps directly to the kit noWrap parameter.

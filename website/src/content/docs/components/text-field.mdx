@@ -20,11 +20,8 @@ import Props from '../../../components/Props.astro';
 ## Usage
 
 ```dart
-PaymentTextField(label: 'Full name', onChanged: (value) {});
-PaymentTextField.search(query: 'kopi', onChanged: (query) {});
-Form(child: PaymentTextField(label: 'Email',
-  type: PaymentTextFieldType.email,
-  validator: (value) => value!.contains('@') ? null : 'Include @'));
+// example/lib/screens/gallery_forms.dart
+PaymentTextField(label: 'Name');
 ```
 
 ## Stripe → kit
@@ -44,31 +41,74 @@ Form(child: PaymentTextField(label: 'Email',
 
 Autofocus is omitted because touch keyboards should be requested deliberately through a focus node. Host forms own names, ordering and keyboard handlers. Use input formatters for length constraints and validators for meaning. Width is deferred until field groups define it. `keyboardType` preserves custom host keyboards, including dates.
 
-## Which variant
+## Variants
+
+Variants: text, number, tel, url, email, search; small, medium, large. Nothing else exists.
+
+### Which variant
 
 Use a general field for names and addresses, reference typography for identifiers, a currency field for money parsing, and `.search` for immediate local filtering. Remote search debounce belongs to the host.
 
 Variants: `type` × `size`, `reference`, `.search`. Nothing else exists.
 
-## States
-
-Default uses a border edge; focus uses a 2 px accent edge. Errors show an icon, message and danger edge, 2 px when focused. Disabled fields use disabled text and edge. Read-only retains default styling. Host errors hide after edits and return when the host passes a new error; pass null between identical attempts. Form validation timing belongs to the enclosing Form.
-
-## Content and accessibility
+### Content and accessibility
 
 Keep a persistent label. Never put the only instruction in `hint`. Explain how to fix an error. Every size uses 16 px input text; padding varies without shrinking text. Hidden labels, descriptions and errors remain spoken. Required is semantic; the host must enforce it. Clearing search reports an empty query and refocuses the field.
 
 <Props names={['PaymentTextField', 'PaymentTextFieldType', 'PaymentSize', 'PaymentFieldPart']} />
+
+### Field foundation
+
+Fields fill their parent. Stripe css width is not mirrored. PaymentFormFieldGroup adds optional marks when required and optional fields are mixed. Use [Text area](/components/text-area/) for several lines.
+
+Material-owned exception: outlined floating labels are single-line. Keep labels short (24 characters or fewer) and put instructions in description. A two-line floating-label experiment still clipped at 320 dp and 200% and was reverted.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| History query | search | Use search for list filtering; labels persist after entry. |
+
+Use Search field for selecting a known option.
+
+```text
+What does the value mean?
+├─ Filter visible records → search
+├─ Numeric input → number
+├─ Phone / destination / email → tel / url / email
+└─ Other non-secret single-line value → text
+```
+
+## States
+
+Default uses a border edge; focus uses a 2 px accent edge. Errors show an icon, message and danger edge, 2 px when focused. Disabled fields use disabled text and edge. Read-only retains default styling. Host errors hide after edits and return when the host passes a new error; pass null between identical attempts. Form validation timing belongs to the enclosing Form.
+
+## Do and don't
+
+**Do**: Use search for list filtering; labels persist after entry.
+
+**Don't**: Collect PIN, OTP, password or card secrets.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Use search for list filtering; labels persist after entry.
+
+## Accessibility
+
+Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+
+## Used in
+
+TransactionHistory A01; IdentityForm; statement A03. Real composition: `example/lib/screens/gallery_forms.dart`.
+
+## API
+
+<Props names={["PaymentTextField", "PaymentTextFieldType", "PaymentSize", "PaymentFieldPart"]} />
 
 ## See also
 
 - [Currency field](/components/currency-field/)
 - [Transaction history](/patterns/history/)
 - [Verification](/patterns/verification/)
-
-## Field foundation
-
-Fields fill their parent. Stripe css width is not mirrored. PaymentFormFieldGroup adds optional marks when required and optional fields are mixed. Use [Text area](/components/text-area/) for several lines.
-
-
-Material-owned exception: outlined floating labels are single-line. Keep labels short (24 characters or fewer) and put instructions in description. A two-line floating-label experiment still clipped at 320 dp and 200% and was reverted.

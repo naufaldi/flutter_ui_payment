@@ -20,16 +20,23 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-const PaymentBadge(
-  tone: StatusTone.warning,
-  icon: Icons.schedule,
-  label: 'Pending',
-);
+// example/lib/screens/gallery_feedback.dart
+PaymentBadge.urgent(label: 'Action required');
 ```
 
-The badge sizes to its content. Put badges in a `Wrap` when there can be more than one, as `TransactionListItem` does for an unsettled payment and its refund.
+## Stripe → kit
 
-## Tones
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| label | label | Semantic kit value; see API for the default. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: neutral, info, success, warning, danger, urgent. Nothing else exists.
+
+### Tones
 
 `StatusTone` has five values. Each one picks a foreground and container pair from [`PaymentTheme`](/foundations/color/).
 
@@ -43,11 +50,37 @@ The badge sizes to its content. Put badges in a `Wrap` when there can be more th
 
 Never pick `success` from what the UI saw (an upload finished, a button was pressed). Use it only when your host's snapshot says so.
 
+### Stripe mapping and variants
+
+Stripe neutral, info, positive, negative and warning map to neutral, info, success, danger and warning. Urgent maps to `PaymentBadge.urgent`. Variants: these five tones and urgent. Nothing else exists.
+
+Use urgent only when a person must act now to continue. Use schedule plus “Pending” for a bank wait, and help_outline plus “Not confirmed” when the result is unknown. Do not use a badge as the only failure explanation. Icons scale with text up to 1.6×.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Unresolved transaction status | warning | Pair the tone with a status word; urgent is reserved for immediate danger. |
+
+Use Banner for a sentence about the screen.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Pair the tone with a status word; urgent is reserved for immediate danger.
+
+**Don't**: Show color without a readable status label.
+
 ## Content guidelines
 
 - One or two words in sentence case: "Pending", "Refunded", "Not confirmed".
 - Pick an icon that agrees with the word. The icon and the label are what make the status readable without color.
 - Do not put amounts or dates in a badge. Use an [info row](/components/info-row/).
+
+Pair the tone with a status word; urgent is reserved for immediate danger.
 
 ## Accessibility
 
@@ -55,21 +88,19 @@ Never pick `success` from what the UI saw (an upload finished, a button was pres
 - Tone foregrounds are contrast-checked: at least 5.8:1 on white in light mode and 7.6:1 on `#131417` in dark mode.
 - The badge is text: screen readers read its label.
 
+## Used in
+
+TransactionHistory A01 and PaymentStatusView. Real composition: `example/lib/screens/gallery_feedback.dart`.
+
 ## API
 
-<Props names={['PaymentBadge', 'StatusTone']} />
-
-## See also
-
-- [Status header](/components/status-header/) for the status at the top of a screen.
-- [Notice banner](/components/banner/) when the status needs an explanation.
+<Props names={["PaymentBadge", "StatusTone"]} />
 
 ## Migration
 
 `StatusBadge` remains a deprecated alias until 0.2.0. Replace the constructor name with `PaymentBadge`; existing arguments keep compiling.
 
-## Stripe mapping and variants
+## See also
 
-Stripe neutral, info, positive, negative and warning map to neutral, info, success, danger and warning. Urgent maps to `PaymentBadge.urgent`. Variants: these five tones and urgent. Nothing else exists.
-
-Use urgent only when a person must act now to continue. Use schedule plus “Pending” for a bank wait, and help_outline plus “Not confirmed” when the result is unknown. Do not use a badge as the only failure explanation. Icons scale with text up to 1.6×.
+- [Status header](/components/status-header/) for the status at the top of a screen.
+- [Notice banner](/components/banner/) when the status needs an explanation.

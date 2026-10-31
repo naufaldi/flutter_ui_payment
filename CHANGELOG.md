@@ -3,6 +3,12 @@
 - Delivers the 4C–4D specimen captures: 45 new images and 6 refreshed Code/Tabs images.
 - Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
 
+## Design system Phase 6-2 (2026-11-01)
+
+- Give all 65 component pages a closed variant set, payment-specific selection rules, do/don't guidance, real source usage and example/story references.
+- Document Step indicator, Action bar and Chart module; document PaymentEmptyMessage with state messages.
+- Replace placeholder dartdoc with field meaning and add check:pages as a permanent docs structure lint. No runtime API changes.
+
 ## Design system Phase 6-1 (2026-11-01)
 
 - Flatten the component sidebar, move payment flows into Patterns and redirect 13 legacy URLs in Astro and hosting configuration.

@@ -175,7 +175,7 @@ class PaymentTableCell {
   /// Creates a value cell.
   const PaymentTableCell(this.child, {this.numeric = false});
 
-  /// Display value supplied by the host.
+  /// Content rendered inside this layout body.
   final Widget child;
 
   /// Marks a numeric value.

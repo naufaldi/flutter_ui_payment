@@ -11,7 +11,27 @@ The transaction-history body for an AdaptiveNavShell. Variants: full page body. 
 ## Usage
 
 ```dart
-const PaymentFullPageView(title: 'Transactions', child: Text('Recent payments'));
+// example/lib/screens/gallery_views.dart
+PaymentFullPageView(
+        title: 'Transactions',
+        pageAction: button('Download statement'),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: PaymentTheme.of(context).space(PaymentSpace.block),
+          children: [
+            PaymentTabs(
+              tabs: const [
+                PaymentTab(label: 'All'),
+                PaymentTab(label: 'In progress'),
+                PaymentTab(label: 'Refunds'),
+              ],
+              selectedIndex: state,
+              onSelected: (v) => setState(() => state = v),
+            ),
+            const PaymentPropertyList(items: facts),
+          ],
+        ),
+      );
 ```
 
 ## Stripe → kit
@@ -20,22 +40,53 @@ const PaymentFullPageView(title: 'Transactions', child: Text('Recent payments'))
 | --- | --- |
 | FullPageView | `PaymentFullPageView` |
 
-## States and content
+## Variants
+
+Variants: full page body. Nothing else exists.
+
+### States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| History destination | full page body | Mount directly in the bounded host body; content owns one scroll region. |
+
+Use Detail page for transaction modules and breadcrumbs.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Mount directly in the bounded host body; content owns one scroll region.
+
+**Don't**: Wrap a view in another unbounded scrolling page.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Mount directly in the bounded host body; content owns one scroll region.
 
 ## Accessibility
 
 Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
 
+## Used in
+
+History A01; fees A04; statement A03. Real composition: `example/lib/screens/gallery_views.dart`.
+
 ## API
 
-<Props names={['PaymentFullPageView']} />
+<Props names={["PaymentFullPageView"]} />
 
 ## See also
 
 - [Components](/components/)
-
 
 <Screen name="ios_catalog_full_page_view_variants" alt="full page view specimen" />
 <Screen name="ios_catalog_full_page_view_variants_dark" alt="full page view specimen_dark" />

@@ -1,0 +1,66 @@
+---
+title: Step indicator
+description: Show the current merchant-defined payment step without deciding progress.
+---
+
+import Props from '../../../components/Props.astro';
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+
+Show the host-defined checkout sequence and its current step. Use Task list for KYC tasks with nested document progress.
+
+## Usage
+
+```dart
+// example/lib/screens/gallery_kit.dart
+PaymentStepIndicator(steps: steps, current: _step);
+```
+
+## Stripe → kit
+
+No Stripe equivalent. Admitted because: Checkout merchant steps; Gallery Kit; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: current step in a host-defined sequence. Nothing else exists.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Merchant checkout steps | current step | Pass current and steps from the host; the indicator never advances itself. |
+
+Use Task list for nested KYC progress.
+
+## States
+
+The host supplies current progress. Completed and upcoming steps remain readable; the widget does not navigate or infer completion.
+
+## Do and don't
+
+**Do**: Pass current and steps from the host; the indicator never advances itself.
+
+**Don't**: Use it as an automatic payment-state machine.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Pass current and steps from the host; the indicator never advances itself.
+
+## Accessibility
+
+Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+
+## Used in
+
+Checkout merchant steps; Gallery Kit. Real composition: `example/lib/screens/gallery_kit.dart`.
+
+## API
+
+<Props names={["PaymentStepIndicator"]} />
+
+## See also
+
+- [Components](/components/)
+- [Host-owned decisions](/concepts/host-owned/)

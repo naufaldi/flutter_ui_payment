@@ -26,36 +26,27 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-PaymentBarChart(points: const [
-  ChartPoint(label: 'Week 1', value: Money.idr(350000)),
-  ChartPoint(label: 'Week 2', value: Money.idr(450000), status: ChartPointStatus.pending),
-]);
+// example/lib/screens/gallery_charts.dart
+PaymentBarChart(points: points);
 ```
 
-Wrap in `ChartModule` or a `SizedBox(height: 180)` with a bounded height. Use 320 for a featured plot. Below 200px, y labels are hidden and only the first and last x labels remain.
+## Stripe → kit
 
-## States and variants
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| children | child | Flutter body composition. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: one to three series, money, percentage, number. Nothing else exists.
+
+### States and variants
 
 Settled marks are solid, pending marks are outlined or dashed, and unknown marks are hatched or dotted. A null point is a gap, never zero. Use one currency per chart. Bar and meter amounts must be non-negative; line charts accept negative amounts.
 
-## Content guidelines
-
-Use short period labels and a clear title. Explain what is settled in the headline caption. The host supplies the headline; the kit never adds plotted values to produce a customer total.
-
-## Accessibility
-
-A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. Pointer inspection on line/bar charts is supplemental; it has no keyboard focus target. Status is conveyed by shape and words as well as color.
-
-## API
-
-<Props names={['PaymentBarChart']} />
-
-## See also
-
-- [Chart layout](/patterns/chart-layout/) for height, state and headline composition.
-- [Money](/foundations/money/) for precise and compact amounts.
-
-## Series, axes and units
+### Series, axes and units
 
 Use named series with identical period labels and ordering. Line and bar charts accept up to three series; sparklines accept two. Series use an accent ramp and distinct dash patterns, never status tones. All series share a scale. `showLegend` controls the legend for multiple series.
 
@@ -75,3 +66,44 @@ Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to 
 <Props names={['PaymentChartSeries', 'PaymentChartAxis', 'PaymentChartUnit', 'ChartPoint', 'MeterSegment']} />
 
 Parameters: `points`, `series`, `inspectable`, `axis`, `grid`, `showLegend`, `unit`, `semanticLabel`. Nothing else exists.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| This month versus last | two series | Use matching W1–W4 categories and a zero baseline for amounts. |
+
+Use Line chart for a continuous trend.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use matching W1–W4 categories and a zero baseline for amounts.
+
+**Don't**: Assign success/danger tones as series categories.
+
+## Content guidelines
+
+Use short period labels and a clear title. Explain what is settled in the headline caption. The host supplies the headline; the kit never adds plotted values to produce a customer total.
+
+Use matching W1–W4 categories and a zero baseline for amounts.
+
+## Accessibility
+
+A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. Pointer inspection on line/bar charts is supplemental; it has no keyboard focus target. Status is conveyed by shape and words as well as color.
+
+## Used in
+
+History spending A01; Gallery Charts. Real composition: `example/lib/screens/gallery_charts.dart`.
+
+## API
+
+<Props names={["PaymentBarChart"]} />
+
+## See also
+
+- [Chart layout](/patterns/chart-layout/) for height, state and headline composition.
+- [Money](/foundations/money/) for precise and compact amounts.

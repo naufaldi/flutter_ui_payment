@@ -93,6 +93,7 @@ export default defineConfig({
         { label: 'Components', items: [
           { label: 'Overview', slug: 'components' },
           { label: 'Accordion', slug: 'components/accordion' },
+          { label: 'Action bar', slug: 'components/action-bar' },
           { label: 'Amount text', slug: 'components/amount-text' },
           { label: 'Badge', slug: 'components/badge' },
           { label: 'Banner', slug: 'components/banner' },
@@ -100,6 +101,7 @@ export default defineConfig({
           { label: 'Box', slug: 'components/box' },
           { label: 'Button', slug: 'components/button' },
           { label: 'Button group', slug: 'components/button-group' },
+          { label: 'Chart module', slug: 'components/chart-module' },
           { label: 'Checkbox', slug: 'components/checkbox' },
           { label: 'Chip', slug: 'components/chip' },
           { label: 'Code', slug: 'components/code' },
@@ -146,6 +148,7 @@ export default defineConfig({
           { label: 'Spinner', slug: 'components/spinner' },
           { label: 'State message', slug: 'components/state-message' },
           { label: 'Status header', slug: 'components/status-header' },
+          { label: 'Step indicator', slug: 'components/step-indicator' },
           { label: 'Switch', slug: 'components/switch' },
           { label: 'Table', slug: 'components/table' },
           { label: 'Tabs', slug: 'components/tabs' },

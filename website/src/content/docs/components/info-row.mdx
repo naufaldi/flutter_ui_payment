@@ -17,22 +17,19 @@ import Props from '../../../components/Props.astro';
 ## Usage
 
 ```dart
-Column(
-  children: [
-    const InfoRow(label: 'Amount', value: AmountText(Money.idr(102500))),
-    InfoRow(label: 'Merchant', valueText: record.merchant),
-    InfoRow(
-      label: 'Pay before',
-      caption: 'Your bank may close earlier',
-      value: CountdownText(expiresAt: va.expiresAt, clock: host.clock),
-    ),
-  ],
-);
+// example/lib/screens/gallery_kit.dart
+InfoRow(label: 'Total', value: AmountText(Money.idr(104000)));
 ```
 
-Pass `valueText` for plain text or `value` for any widget; one of the two is required.
+## Stripe → kit
 
-## Emphasis
+No Stripe equivalent. Admitted because: CheckoutSummary; PaymentReceipt; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: plain, emphasis, caption, trailing action. Nothing else exists.
+
+### Emphasis
 
 `emphasis: true` sets the label in the heading style, for a "Total" row.
 
@@ -44,7 +41,7 @@ InfoRow(
 );
 ```
 
-## With a trailing action
+### With a trailing action
 
 `trailing` puts an action after the value, such as a 48 dp copy button. Label and value keep the top line, and the action centers against them.
 
@@ -60,7 +57,7 @@ InfoRow(
 );
 ```
 
-## Long values
+### Long values
 
 At normal text size the value keeps its natural width up to 60% of the row, and the label wraps in the rest. A short label never squeezes a file name or reference into breaking mid-word. `AmountText` values always keep their natural width.
 
@@ -73,28 +70,51 @@ InfoRow(
 );
 ```
 
-## Large text
+### Large text
 
 Above 1.5× text, label and value still share a line when they fit. When they do not, the value starts the next line at the left edge. Short rows stay one line, and nothing overflows.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Checkout total and receipt facts | emphasis | Reserve emphasis for the total; captions explain a fact and trailing copy delegates to the host. |
+
+Use Property list for a group of facts.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Reserve emphasis for the total; captions explain a fact and trailing copy delegates to the host.
+
+**Don't**: Render every value in display typography.
 
 ## Content guidelines
 
 - Labels are short nouns in sentence case: "Service fee", "Payment reference".
 - Keep values as the host gave them. Do not shorten references yourself; let `MiddleEllipsisText` do it, so screen readers still get the whole value.
 
+Reserve emphasis for the total; captions explain a fact and trailing copy delegates to the host.
+
 ## Accessibility
 
 - Label, caption and value are merged into one screen-reader node, read in order.
 - `MiddleEllipsisText` gives screen readers the full text, not the elided one.
 
+## Used in
+
+CheckoutSummary; PaymentReceipt. Real composition: `example/lib/screens/gallery_kit.dart`.
+
 ## API
 
-<Props names={['InfoRow', 'MiddleEllipsisText']} />
+<Props names={["InfoRow", "MiddleEllipsisText"]} />
 
 ## See also
 
 - [Amount text](/components/amount-text/)
 - [Section](/components/section/) to group rows under a title.
-
 
 Use [Property list](/components/property-list/) for grouped payment facts and [Table](/components/table/) for fee schedules.

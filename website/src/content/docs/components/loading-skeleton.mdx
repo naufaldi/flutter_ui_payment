@@ -19,26 +19,23 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-PaymentSection(
-  title: 'Saved billers',
-  child: switch (state) {
-    LoadState.loading => const LoadingSkeleton(),
-    LoadState.empty => const StateMessage(
-      icon: Icons.bookmark_border,
-      title: 'No saved billers',
-    ),
-    LoadState.ready => billerList,
-  },
-);
+// example/lib/screens/flow_screen.dart
+LoadingSkeleton(rows: 3, leading: false);
 ```
 
-`LoadState` here is your own enum.
+## Stripe → kit
 
-## Rows
+No Stripe equivalent. Admitted because: TransactionHistory A01; ChartModule; detail modules; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: list, text block, table. Nothing else exists.
+
+### Rows
 
 `rows` sets how many placeholder rows are drawn (default 3). Match roughly how many rows usually appear, so the page does not jump much when the content arrives.
 
-## Without leading squares
+### Without leading squares
 
 `leading: false` drops the square before each row, for content without icons.
 
@@ -46,23 +43,50 @@ PaymentSection(
 const LoadingSkeleton(rows: 2, leading: false);
 ```
 
-## Why it does not shimmer
+### Why it does not shimmer
 
 The skeleton is static on purpose. A shimmer repaints every frame for as long as the load takes and says nothing a still placeholder does not.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Transaction list loading | list | Use the shape that matches the pending content to preserve layout. |
+
+Use Spinner when the content shape is unknown.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use the shape that matches the pending content to preserve layout.
+
+**Don't**: Show a blank jump instead of the known pending shape.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Use the shape that matches the pending content to preserve layout.
 
 ## Accessibility
 
 - Screen readers hear one "Loading" (or `semanticLabel`) instead of a series of empty boxes.
 
+## Used in
+
+TransactionHistory A01; ChartModule; detail modules. Real composition: `example/lib/screens/flow_screen.dart`.
+
 ## API
 
-<Props names={['LoadingSkeleton']} />
+<Props names={["LoadingSkeleton"]} />
 
 ## See also
 
 - [State message](/components/state-message/) for what replaces the skeleton when there is nothing to show.
 - [Spinner](/components/spinner/) for a wait with no known shape.
-
 
 Use [Property list](/components/property-list/) for grouped payment facts and [Table](/components/table/) for fee schedules.
 

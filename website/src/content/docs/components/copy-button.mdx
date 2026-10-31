@@ -17,10 +17,12 @@ The host owns copying through onCopy and returns a boolean. Success shows a chec
 ## Usage
 
 ```dart
-PaymentCopyButton(value: 'TRX-DEMO', onCopy: (value) async => true);
+// example/lib/screens/gallery_selection.dart
+PaymentCopyButton(
+                value: '8808 1234 5678 9012',
+                onCopy: _copyGalleryValue,
+              );
 ```
-
-The host implementation performs the actual platform copy before returning true.
 
 ## Stripe → kit
 
@@ -34,8 +36,49 @@ The host implementation performs the actual platform copy before returning true.
 
 Width and alignment follow content. Host widgets own keyboard ordering and platform services. Do use a clear action name; avoid unlabeled glyphs and button-like containers for links.
 
+## Variants
+
+Variants: idle, pending, copied, failed. Nothing else exists.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Transaction reference | idle | Supply the exact reference and return whether host copying succeeded. |
+
+Use Icon button for actions without copy feedback.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Supply the exact reference and return whether host copying succeeded.
+
+**Don't**: Access the platform clipboard from the kit.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Supply the exact reference and return whether host copying succeeded.
+
 ## Accessibility
 
 Targets are at least 48 dp. Tooltips name icon actions. Links announce their role and external destinations. Copy feedback uses a live region and a check rather than color alone.
 
 <Props names={['PaymentCopyButton']} />
+
+## Used in
+
+TransactionDetail A02; PaymentReceipt; PaymentInstructions. Real composition: `example/lib/screens/gallery_selection.dart`.
+
+## API
+
+<Props names={["PaymentCopyButton"]} />
+
+## See also
+
+- [Components](/components/)
+- [Host-owned decisions](/concepts/host-owned/)

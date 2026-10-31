@@ -14,11 +14,14 @@ Compact payment filters and applied promo codes.
   <Screen name="ios_catalog_chip_variants_200" alt="chip at 200 percent text" caption="200% text" />
 </Screens>
 
-## Usage and Stripe → kit
+## Usage
 
 ```dart
-PaymentChip(label: 'Date', value: '1–31 Oct', onClose: clearRange);
+// example/lib/screens/gallery_forms.dart
+PaymentChip(label: 'Currency', value: 'IDR');
 ```
+
+## Stripe → kit
 
 | Stripe | Kit |
 | --- | --- |
@@ -27,12 +30,19 @@ PaymentChip(label: 'Date', value: '1–31 Oct', onClose: clearRange);
 | onAddSuggestion | suggested body |
 | direction | ChipList.reverse |
 
-
 Callbacks select static, removable, dropdown or suggested kinds. Nothing else exists. Removal uses a separate 48 dp action; suggested chips have a dashed edge. Multiple values summarize the first two labels plus a count. Arrow keys move between chip targets.
+
+## Variants
+
+Variants: label, label with value, removable. Nothing else exists.
 
 ## Which variant when
 
-Choose controls by the data being collected. Use a host callback for actions and keep the selected value controlled.
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Active history status filter | removable | Close clears that filter only; keep status choices as text tabs. |
+
+Use Badge for non-interactive status.
 
 ## States
 
@@ -40,19 +50,27 @@ Empty, selected, disabled and error states use semantic tokens. Search additiona
 
 ## Do and don't
 
-Keep labels visible. Use complete date ranges and meaningful option names. Avoid duplicating filters with several equally prominent controls.
+**Do**: Close clears that filter only; keep status choices as text tabs.
+
+**Don't**: Use chips as a replacement for status-filter tabs.
 
 ## Content guidelines
 
 Use short labels and compact localized values.
 
+Close clears that filter only; keep status choices as text tabs.
+
 ## Accessibility
 
 Targets are at least 48 dp. Pickers restore focus; result counts announce without platform calls. Keyboard navigation preserves Tab traversal.
 
+## Used in
+
+History A01; PromoCodeField. Real composition: `example/lib/screens/gallery_forms.dart`.
+
 ## API
 
-<Props names={ ['PaymentChip', 'PaymentChipList'] } />
+<Props names={["PaymentChip", "PaymentChipList"]} />
 
 ## See also
 

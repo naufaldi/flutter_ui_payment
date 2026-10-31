@@ -11,7 +11,24 @@ Order context alongside a checkout. Views are bodies: the host supplies Scaffold
 ## Usage
 
 ```dart
-const PaymentContextView(title: 'Order context', child: Text('Order details'));
+// example/lib/screens/gallery_views.dart
+PaymentContextView(
+        title: 'Order context',
+        description: 'Toko Contoh · Order DEMO-42',
+        brand: const PaymentIcon(Icons.storefront_outlined),
+        actions: [button('Copy order ID')],
+        externalLink: PaymentLink(
+          label: 'Merchant help',
+          external: true,
+          onPressed: () {},
+        ),
+        secondaryAction: button('Close'),
+        primaryAction: button(
+          'Continue to payment',
+          variant: PaymentButtonVariant.primary,
+        ),
+        child: const PaymentPropertyList(items: facts),
+      );
 ```
 
 ## Stripe → kit
@@ -20,9 +37,37 @@ const PaymentContextView(title: 'Order context', child: Text('Order details'));
 | --- | --- |
 | ContextView | `PaymentContextView` |
 
-## States and content
+## Variants
+
+Variants: context body with optional actions and footer. Nothing else exists.
+
+### States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Order beside checkout | context body | At 840 dp show supporting merchant/order facts beside payment. |
+
+Use Full page view for the main page body.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: At 840 dp show supporting merchant/order facts beside payment.
+
+**Don't**: Add a second primary Pay action to the context panel.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+At 840 dp show supporting merchant/order facts beside payment.
 
 ## Accessibility
 
@@ -32,14 +77,17 @@ Header actions align to the content start. Phone footers stack full-width action
 
 Used beside checkout at widths of at least 840 dp. The order context has supporting merchant help; the pinned checkout bar owns the primary Pay action.
 
+## Used in
+
+Wide checkout H02/H04. Real composition: `example/lib/screens/gallery_views.dart`.
+
 ## API
 
-<Props names={['PaymentContextView']} />
+<Props names={["PaymentContextView"]} />
 
 ## See also
 
 - [Components](/components/)
-
 
 <Screen name="ios_catalog_context_view_variants" alt="context view specimen" />
 <Screen name="ios_catalog_context_view_variants_dark" alt="context view specimen_dark" />

@@ -19,40 +19,75 @@ An app frame for payment apps: a sidebar at or above a breakpoint, a modal drawe
 ## Usage
 
 ```dart
+// example/lib/screens/gallery_screen.dart
 AdaptiveNavShell(
-  title: const Text('Ruang Bayar'),
-  selectedId: current,
-  onSelected: (item) => setState(() => current = item.id),
-  breakpoint: 840, // sidebar at or above this width, drawer below
-  sections: const [
-    PaymentNavSection(items: [
-      PaymentNavItem(id: 'home', label: 'Home', icon: Icons.home_outlined),
-      PaymentNavItem(
-        id: 'history',
-        label: 'History',
-        icon: Icons.history,
-        badge: '2',
+      title: Text(s.tabGallery),
+      sections: sections,
+      selectedId: _section,
+      onSelected: (item) => setState(() => _section = item.id),
+      breakpoint: 720,
+      actions: [
+        IconButton(
+          tooltip: s.settings,
+          icon: const Icon(Icons.tune),
+          onPressed: widget.onOpenSettings,
+        ),
+      ],
+      body: ColoredBox(
+        color: devWorkbench(context),
+        child: SafeArea(
+          // A new list per section so each one starts at the top.
+          child: ListView(
+            key: PageStorageKey('gallery-$_section'),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+            children: [
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 640),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: entries,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-      PaymentNavItem(
-        id: 'limits',
-        label: 'Limits',
-        icon: Icons.speed,
-        enabled: false,
-        disabledReason: 'Verify first',
-      ),
-    ]),
-  ],
-  body: pages[current]!,
-);
+    );
 ```
 
-Use `NavSidebar` alone if you already have a shell.
+## Stripe → kit
 
-## Behavior
+No Stripe equivalent. Admitted because: GalleryScreen; NavSidebar; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: sidebar, phone drawer. Nothing else exists.
+
+### Behavior
 
 - Selection is instant, with no animation, because navigation is used constantly. The selected item gets the selected color plus a muted fill.
 - Disabled items are visible with their reason but not focusable.
 - Opening the drawer moves focus into it. The scrim, Back and Escape close it, and focus returns to the menu button. Closed items are not in the focus order.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Example component sections | sidebar | Keep selected item and host destination synchronized; collapse when space breaks. |
+
+Use Tabs for alternate views of the same data.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Keep selected item and host destination synchronized; collapse when space breaks.
+
+**Don't**: Add three levels of nested navigation for a short flow.
 
 ## Content guidelines
 
@@ -61,9 +96,19 @@ Use `NavSidebar` alone if you already have a shell.
 - Keep a disabled item visible only when people can do something about it, and say what in `disabledReason`: "Verify first".
 - Use `badge` for a count that needs attention, such as unread or pending items, not for marketing.
 
+Keep selected item and host destination synchronized; collapse when space breaks.
+
+## Accessibility
+
+Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+
+## Used in
+
+GalleryScreen; NavSidebar. Real composition: `example/lib/screens/gallery_screen.dart`.
+
 ## API
 
-<Props names={['AdaptiveNavShell', 'NavSidebar', 'PaymentNavSection', 'PaymentNavItem']} />
+<Props names={["AdaptiveNavShell", "NavSidebar", "PaymentNavSection", "PaymentNavItem"]} />
 
 ## See also
 
@@ -71,6 +116,5 @@ Use `NavSidebar` alone if you already have a shell.
 - [Sheet](/components/sheets/) for a side panel over the current page.
 
 The drawer trigger uses PaymentIconButton with a 48 dp target.
-
 
 [Full page view](/components/full-page-view/) is a host scaffold body. [Focus view](/components/focus-view/) composes the existing sheets for a focused task.

@@ -17,28 +17,63 @@ import Props from '../../../components/Props.astro';
 ## Usage
 
 ```dart
+// example/lib/screens/gallery_feedback.dart
 PaymentTooltip(
-  message: 'Paid on 29 Oct 2026, 14:05',
-  child: IconButton(
-    icon: const Icon(Icons.info_outline),
-    onPressed: showPaymentDetails,
-  ),
-);
+          placement: PaymentTooltipPlacement.top,
+          message: 'Paid on 29 Oct 2026, 14:05',
+          child: Text('2d ago'),
+        );
 ```
 
-On touch screens the tooltip appears on long press. With a mouse it appears after hovering for 500 ms.
+## Stripe → kit
 
-## When not to use one
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| children | child | Flutter body composition. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: label, description; twelve placements. Nothing else exists.
+
+### When not to use one
 
 A tooltip is easy to miss on a phone: nothing shows that it is there. It may only repeat or name something already on screen.
 
 - Never put a fee, a requirement, a deadline or an error only in a tooltip. Show it on the page, in an [info row](/components/info-row/) or a [notice banner](/components/banner/).
 - Do not put a tooltip on something people tap for another reason and expect them to discover it.
 
+### Placement, type and timing
+
+The twelve placements are top, topStart, topEnd, bottom, bottomStart, bottomEnd, start, startTop, startBottom, end, endTop and endBottom. Start and end follow direction. A bubble flips when the opposite side fits, then shifts inside an 8 dp margin. Default placement is bottom.
+
+Label names an icon-only trigger; description adds its semantic tooltip. The bubble is never interactive or focusable and needs an Overlay. Hover waits 500 ms by default; keyboard focus opens immediately. Escape, blur, exit, outside tap and another tooltip close it. Long press closes 1.5 seconds after release. Never put a fee, requirement or error only here.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Fee policy explanation | description | Attach to a focusable 48 dp trigger; use label only when replacing the trigger name. |
+
+Use a focus view for interactive help content.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Attach to a focusable 48 dp trigger; use label only when replacing the trigger name.
+
+**Don't**: Put links or buttons inside hover-only tooltip content.
+
 ## Content guidelines
 
 - One short sentence or a label, in sentence case, without end punctuation for labels.
 - Do not repeat the visible text word for word. Add the detail it leaves out, such as the exact time.
+
+Attach to a focusable 48 dp trigger; use label only when replacing the trigger name.
 
 ## Accessibility
 
@@ -47,17 +82,15 @@ A tooltip is easy to miss on a phone: nothing shows that it is there. It may onl
 
 A04 gives the fee policy a real tooltip use, attached to a focusable information button with a 48 dp target.
 
+## Used in
+
+Fees A04; charts; Gallery Feedback. Real composition: `example/lib/screens/gallery_feedback.dart`.
+
 ## API
 
-<Props names={['PaymentTooltip', 'PaymentTooltipPlacement', 'PaymentTooltipType']} />
+<Props names={["PaymentTooltip", "PaymentTooltipPlacement", "PaymentTooltipType"]} />
 
 ## See also
 
 - [Info row](/components/info-row/)
 - [Action menu](/components/menu/)
-
-## Placement, type and timing
-
-The twelve placements are top, topStart, topEnd, bottom, bottomStart, bottomEnd, start, startTop, startBottom, end, endTop and endBottom. Start and end follow direction. A bubble flips when the opposite side fits, then shifts inside an 8 dp margin. Default placement is bottom.
-
-Label names an icon-only trigger; description adds its semantic tooltip. The bubble is never interactive or focusable and needs an Overlay. Hover waits 500 ms by default; keyboard focus opens immediately. Escape, blur, exit, outside tap and another tooltip close it. Long press closes 1.5 seconds after release. Never put a fee, requirement or error only here.
