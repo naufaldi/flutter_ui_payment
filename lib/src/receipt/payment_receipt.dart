@@ -1,3 +1,4 @@
+import '../content/property_list.dart';
 import '../controls/actions.dart';
 import 'package:flutter/material.dart';
 
@@ -98,30 +99,47 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
           title: l10n.detailsTitle,
           child: Column(
             children: [
-              for (final line in data.lines)
-                InfoRow(label: line.label, value: AmountText(line.amount)),
-              PaymentDivider(height: theme.spacing * 2),
-              InfoRow(
-                label: l10n.totalLabel,
-                emphasis: true,
-                value: AmountText(data.total, variant: AmountTextVariant.total),
+              PaymentPropertyList(
+                items: [
+                  for (final line in data.lines)
+                    PaymentPropertyListItem(
+                      label: line.label,
+                      value: AmountText(line.amount),
+                    ),
+                ],
               ),
-              InfoRow(label: l10n.paymentMethod, valueText: data.methodLabel),
-              // The ID and its label share the top line; the copy button
-              // centers beside them instead of pushing the ID down.
-              InfoRow(
-                label: l10n.transactionReference,
-                value: SelectableText(
-                  data.transactionId,
-                  textAlign: TextAlign.end,
-                  style: type.label.reference(theme),
-                ),
-                trailing: widget.onCopyTransactionId == null
-                    ? null
-                    : PaymentCopyButton(
-                        value: data.transactionId,
-                        onCopy: widget.onCopyTransactionId!,
-                      ),
+              PaymentDivider(height: theme.spacing * 2),
+              PaymentPropertyList(
+                items: [
+                  PaymentPropertyListItem(
+                    label: l10n.totalLabel,
+                    emphasis: true,
+                    value: AmountText(
+                      data.total,
+                      variant: AmountTextVariant.total,
+                    ),
+                  ),
+                  PaymentPropertyListItem(
+                    label: l10n.paymentMethod,
+                    valueText: data.methodLabel,
+                  ),
+                  // The ID and its label share the top line; the copy button
+                  // centers beside them instead of pushing the ID down.
+                  PaymentPropertyListItem(
+                    label: l10n.transactionReference,
+                    value: SelectableText(
+                      data.transactionId,
+                      textAlign: TextAlign.end,
+                      style: type.label.reference(theme),
+                    ),
+                    trailing: widget.onCopyTransactionId == null
+                        ? null
+                        : PaymentCopyButton(
+                            value: data.transactionId,
+                            onCopy: widget.onCopyTransactionId!,
+                          ),
+                  ),
+                ],
               ),
             ],
           ),

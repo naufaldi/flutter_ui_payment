@@ -1,3 +1,4 @@
+import '../foundation/table_grid.dart';
 import '../layout/content.dart';
 import '../controls/actions.dart';
 import 'dart:async';
@@ -990,12 +991,27 @@ class LoadingSkeleton extends StatelessWidget {
     this.rows = 3,
     this.leading = true,
     this.semanticLabel,
-  });
+  }) : columns = null;
 
+  /// Table placeholders collapse to list rows on narrow surfaces.
+  const LoadingSkeleton.table({
+    super.key,
+    this.rows = 5,
+    this.columns = 3,
+    this.semanticLabel,
+  }) : leading = false,
+       assert(columns != null && columns >= 2);
+
+  /// Table column count, or null for a list placeholder.
+  final int? columns;
+
+  /// Number of placeholder rows.
   final int rows;
 
   /// Shows a small square before each row, where a row's icon would be.
   final bool leading;
+
+  /// Spoken loading description, defaulting to localized Loading.
   final String? semanticLabel;
 
   @override
@@ -1014,6 +1030,51 @@ class LoadingSkeleton extends StatelessWidget {
         ),
       ),
     );
+    if (columns != null) {
+      return LayoutBuilder(
+        builder: (context, k) {
+          if (tableIsNarrow(context, k)) {
+            return LoadingSkeleton(
+              rows: rows,
+              leading: false,
+              semanticLabel: semanticLabel,
+            );
+          }
+          final height =
+              PaymentType.firstLineHeight(context) + 2 * theme.spacing * 1.5;
+          return Semantics(
+            label: semanticLabel ?? l10n.loading,
+            container: true,
+            child: ExcludeSemantics(
+              child: Column(
+                children: [
+                  for (var r = 0; r <= rows; r++)
+                    Container(
+                      height: height < 48 ? 48 : height,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: theme.outline),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          for (var c = 0; c < columns!; c++)
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.all(theme.spacing),
+                                child: bar(0.5, r == 0 ? 10 : 14),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
     return Semantics(
       label: semanticLabel ?? l10n.loading,
       container: true,

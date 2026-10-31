@@ -8379,7 +8379,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "rows",
-            "doc": ""
+            "doc": "Number of placeholder rows."
           },
           {
             "name": "leading",
@@ -8401,21 +8401,68 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "semanticLabel",
-            "doc": ""
+            "doc": "Spoken loading description, defaulting to localized Loading."
           }
         ],
         "doc": ""
+      },
+      {
+        "name": "LoadingSkeleton.table",
+        "factory": false,
+        "params": [
+          {
+            "name": "rows",
+            "type": "int",
+            "required": false,
+            "default": "5",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rows",
+            "doc": "Number of placeholder rows."
+          },
+          {
+            "name": "columns",
+            "type": "int?",
+            "required": false,
+            "default": "3",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "columns",
+            "doc": "Table column count, or null for a list placeholder."
+          },
+          {
+            "name": "semanticLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "semanticLabel",
+            "doc": "Spoken loading description, defaulting to localized Loading."
+          }
+        ],
+        "doc": "Table placeholders collapse to list rows on narrow surfaces."
       }
     ],
     "getters": [],
     "statics": [],
     "members": [
       {
+        "name": "columns",
+        "kind": "field",
+        "static": false,
+        "type": "int?",
+        "doc": "Table column count, or null for a list placeholder."
+      },
+      {
         "name": "rows",
         "kind": "field",
         "static": false,
         "type": "int",
-        "doc": ""
+        "doc": "Number of placeholder rows."
       },
       {
         "name": "leading",
@@ -8429,7 +8476,7 @@
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Spoken loading description, defaulting to localized Loading."
       }
     ],
     "copyWith": null
@@ -19998,6 +20045,468 @@
         "static": false,
         "type": "bool",
         "doc": "enabled for this component."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentPropertyList": {
+    "kind": "class",
+    "file": "lib/src/content/property_list.dart",
+    "doc": "Label/value pairs, stacked or arranged horizontally when space permits.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentPropertyList",
+        "factory": false,
+        "params": [
+          {
+            "name": "items",
+            "type": "List<PaymentPropertyListItem>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "items",
+            "doc": "Facts in reading order."
+          },
+          {
+            "name": "orientation",
+            "type": "Axis",
+            "required": false,
+            "default": "Axis.vertical",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "orientation",
+            "doc": "Preferred arrangement; narrow or large text always stacks."
+          },
+          {
+            "name": "title",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "Optional section heading."
+          }
+        ],
+        "doc": "Creates a list of host-provided facts."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "items",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentPropertyListItem>",
+        "doc": "Facts in reading order."
+      },
+      {
+        "name": "orientation",
+        "kind": "field",
+        "static": false,
+        "type": "Axis",
+        "doc": "Preferred arrangement; narrow or large text always stacks."
+      },
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Optional section heading."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentPropertyListItem": {
+    "kind": "class",
+    "file": "lib/src/content/property_list.dart",
+    "doc": "A fact with exactly one text or widget value.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentPropertyListItem",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Descriptive label."
+          },
+          {
+            "name": "valueText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "valueText",
+            "doc": "Plain value."
+          },
+          {
+            "name": "value",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": "Rich value."
+          },
+          {
+            "name": "emphasis",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "emphasis",
+            "doc": "Emphasizes a total or important fact."
+          },
+          {
+            "name": "caption",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "caption",
+            "doc": "Supporting explanation."
+          },
+          {
+            "name": "trailing",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "trailing",
+            "doc": "Optional action after the value."
+          }
+        ],
+        "doc": "Creates a fact. Supply either valueText or value."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Descriptive label."
+      },
+      {
+        "name": "valueText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Plain value."
+      },
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Rich value."
+      },
+      {
+        "name": "emphasis",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Emphasizes a total or important fact."
+      },
+      {
+        "name": "caption",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Supporting explanation."
+      },
+      {
+        "name": "trailing",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Optional action after the value."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentTable": {
+    "kind": "class",
+    "file": "lib/src/content/table.dart",
+    "doc": "A static table that becomes labeled list rows on phones and at large text.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentTable",
+        "factory": false,
+        "params": [
+          {
+            "name": "head",
+            "type": "List<PaymentTableHeaderCell>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "head",
+            "doc": "Column headings in display order."
+          },
+          {
+            "name": "rows",
+            "type": "List<PaymentTableRow>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rows",
+            "doc": "Data rows matching the column headings."
+          },
+          {
+            "name": "footer",
+            "type": "PaymentTableRow?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "footer",
+            "doc": "Optional host-computed summary."
+          },
+          {
+            "name": "caption",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "caption",
+            "doc": "Spoken table description."
+          }
+        ],
+        "doc": "Creates a table of host-computed values."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "head",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentTableHeaderCell>",
+        "doc": "Column headings in display order."
+      },
+      {
+        "name": "rows",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentTableRow>",
+        "doc": "Data rows matching the column headings."
+      },
+      {
+        "name": "footer",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentTableRow?",
+        "doc": "Optional host-computed summary."
+      },
+      {
+        "name": "caption",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Spoken table description."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentTableRow": {
+    "kind": "class",
+    "file": "lib/src/content/table.dart",
+    "doc": "A row with one cell per heading.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentTableRow",
+        "factory": false,
+        "params": [
+          {
+            "name": "cells",
+            "type": "List<PaymentTableCell>",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "cells",
+            "doc": "Values in column order."
+          }
+        ],
+        "doc": "Creates a row in column order."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "cells",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentTableCell>",
+        "doc": "Values in column order."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentTableHeaderCell": {
+    "kind": "class",
+    "file": "lib/src/content/table.dart",
+    "doc": "A labeled column.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentTableHeaderCell",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Visible and spoken label."
+          },
+          {
+            "name": "numeric",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "numeric",
+            "doc": "End-aligns tabular numbers."
+          },
+          {
+            "name": "rowHeader",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rowHeader",
+            "doc": "Pins this column and uses it as each narrow row's title."
+          }
+        ],
+        "doc": "Creates a column heading."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Visible and spoken label."
+      },
+      {
+        "name": "numeric",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "End-aligns tabular numbers."
+      },
+      {
+        "name": "rowHeader",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Pins this column and uses it as each narrow row's title."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentTableCell": {
+    "kind": "class",
+    "file": "lib/src/content/table.dart",
+    "doc": "A table value.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentTableCell",
+        "factory": false,
+        "params": [
+          {
+            "name": "child",
+            "type": "Widget",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "child",
+            "doc": "Display value supplied by the host."
+          },
+          {
+            "name": "numeric",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "numeric",
+            "doc": "Marks a numeric value."
+          }
+        ],
+        "doc": "Creates a value cell."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "child",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": "Display value supplied by the host."
+      },
+      {
+        "name": "numeric",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Marks a numeric value."
       }
     ],
     "copyWith": null

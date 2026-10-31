@@ -1,0 +1,44 @@
+---
+title: Table
+description: Host-provided payment facts in a responsive table.
+---
+
+import Props from '../../../components/Props.astro';
+
+`PaymentTable` presents host-provided payment facts. The host computes amounts and owns every action.
+
+## Usage
+
+```dart
+const PaymentTable(head: [PaymentTableHeaderCell('Method'), PaymentTableHeaderCell('Fee', numeric: true)], rows: [PaymentTableRow([PaymentTableCell(Text('QRIS')), PaymentTableCell(Text('Rp0'))])]);
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| Table | `PaymentTable` |
+| TableRow | `PaymentTableRow` |
+| TableHeaderCell | `PaymentTableHeaderCell` |
+| TableCell | `PaymentTableCell` |
+
+## Variants
+
+Variants: wide table, narrow list rows. Nothing else exists. Use for fee schedules or host-computed statement summaries. Below 600 dp or at large text, rows become labeled lists. Wide tables pin the row-header column and scroll other columns with an edge fade. Numeric columns align to the end with tabular figures. No stripes. Spans, centered columns, and arbitrary cell widths are not supported.
+
+## States
+
+The host supplies ready values. Use `LoadingSkeleton.table` for loading and `StateMessage` for an empty or failed load. Empty states should explain why and offer a next action.
+
+## Content and accessibility
+
+Use short, descriptive labels. Labels and narrow values wrap. Do show the currency beside an amount. Do not use color alone to communicate a result. Headings carry header semantics; facts merge their label and value. Wide table cells repeat their column label for assistive technology. Totals are computed by the host.
+
+## API
+
+<Props names={['PaymentTable', 'PaymentTableRow', 'PaymentTableHeaderCell', 'PaymentTableCell']} />
+
+## See also
+
+- [Info row](/components/info-row/)
+- [Loading skeleton](/components/loading-skeleton/)

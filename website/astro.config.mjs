@@ -126,6 +126,8 @@ export default defineConfig({
             {
               label: 'Content',
               items: [
+              'components/property-list',
+              'components/table',
                 { label: 'Amount text', slug: 'components/amount-text' },
                 { label: 'Info row', slug: 'components/info-row' },
                 { label: 'Section', slug: 'components/section' },

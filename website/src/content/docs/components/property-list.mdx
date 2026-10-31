@@ -1,0 +1,42 @@
+---
+title: Property list
+description: Host-provided payment facts in a responsive property list.
+---
+
+import Props from '../../../components/Props.astro';
+
+`PaymentPropertyList` presents host-provided payment facts. The host computes amounts and owns every action.
+
+## Usage
+
+```dart
+const PaymentPropertyList(items: [PaymentPropertyListItem(label: 'Method', valueText: 'BCA virtual account')]);
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| PropertyList | `PaymentPropertyList` |
+| PropertyListItem | `PaymentPropertyListItem` |
+
+## Variants
+
+Variants: vertical, horizontal. Nothing else exists. Use vertical for receipt and status details; horizontal for a few short summary facts. Horizontal facts stack below 360 dp or at large text. Nested property lists are not supported.
+
+## States
+
+The host supplies ready values. Use `LoadingSkeleton.table` for loading and `StateMessage` for an empty or failed load. Empty states should explain why and offer a next action.
+
+## Content and accessibility
+
+Use short, descriptive labels. Labels and narrow values wrap. Do show the currency beside an amount. Do not use color alone to communicate a result. Headings carry header semantics; facts merge their label and value. Wide table cells repeat their column label for assistive technology. Totals are computed by the host.
+
+## API
+
+<Props names={['PaymentPropertyList', 'PaymentPropertyListItem']} />
+
+## See also
+
+- [Info row](/components/info-row/)
+- [Loading skeleton](/components/loading-skeleton/)

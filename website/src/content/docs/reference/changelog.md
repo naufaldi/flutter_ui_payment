@@ -5,6 +5,11 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Design system Phase 4C-1 (2026-11-01)
+
+- Add PropertyList, responsive Table and LoadingSkeleton.table.
+- Status, receipt and transaction details compose PropertyList using the existing InfoRow layout.
+
 ## Design system Phase 4B-2 (1 Nov 2026)
 
 - Add Chip, ChipList, SearchField and DateRangePicker, with value/preset/granularity models.
