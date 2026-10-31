@@ -61,6 +61,8 @@ class ScenarioConfig {
   const ScenarioConfig({
     this.kycRequired = true,
     this.signedOut = false,
+    this.settingsSaveFailsOnce = false,
+    this.reportFailsOnce = false,
     this.signInCancelsOnce = false,
     this.historyEmpty = false,
     this.historyFailsOnce = false,
@@ -100,6 +102,7 @@ class ScenarioConfig {
   });
 
   final bool kycRequired;
+  final bool settingsSaveFailsOnce, reportFailsOnce;
   final bool signedOut, signInCancelsOnce, historyEmpty, historyFailsOnce;
   final VerificationStatus initialKyc;
   final Bi? kycReason;

@@ -97,7 +97,15 @@ Future<void> fillIdentity(WidgetTester tester) async {
     alignment: 0.5,
   );
   await settle(tester);
-  await tapVisible(tester, find.text('Occupation'));
+  await tapVisible(
+    tester,
+    find
+        .descendant(
+          of: find.byType(PaymentSelect<String>),
+          matching: find.byType(InkWell),
+        )
+        .first,
+  );
   await tapVisible(tester, find.text('Employee'));
   final search = find.descendant(
     of: find.byType(PaymentSearchField<String>),

@@ -54,6 +54,11 @@ class HistoryStep extends StatelessWidget {
         c.historyQuery.isNotEmpty;
     return PaymentFullPageView(
       title: s.transactions,
+      pageAction: PaymentButton(
+        label: s.statement,
+        variant: PaymentButtonVariant.secondary,
+        onPressed: c.openStatement,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: t.space(PaymentSpace.group),
@@ -188,7 +193,7 @@ class HistoryStep extends StatelessWidget {
             filter: c.historyFilter,
             onQueryChanged: c.setHistoryQuery,
             onFilterChanged: c.setHistoryFilter,
-            onOpen: (_) => showPaymentToast(context, message: s.transactions),
+            onOpen: c.openDetail,
             loading: c.historyLoading,
             error: c.historyError == null
                 ? null

@@ -1,3 +1,4 @@
+import '../adapters/account_models.dart';
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -60,6 +61,103 @@ class DemoCoordinator extends ChangeNotifier {
   bool starting = true;
   bool signedIn;
   bool signingIn = false, signInError = false;
+
+  TransactionRecord? detail;
+  List<AttemptRow> detailAttempts = [];
+  bool detailLoading = false;
+  FlowStep _detailFrom = FlowStep.history;
+  List<Settlement> settlements = [];
+  Set<String> selectedSettlements = {};
+  String settlementQuery = '';
+  DemoAccountSettings accountSettings = const DemoAccountSettings();
+  String? settingsStatus;
+  StatusTone settingsTone = StatusTone.neutral;
+  Future<void> openDetail(TransactionRecord r) async {
+    _detailFrom = step;
+    detail = r;
+    detailLoading = true;
+    detailAttempts = [];
+    _go(FlowStep.transactionDetail);
+    final rows = await _guard(() => host.attempts(account, r));
+    if (rows == null || detail?.id != r.id) return;
+    detailAttempts = rows;
+    detailLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> openCurrentDetail() async {
+    final r = receipt!;
+    await openDetail(
+      TransactionRecord(
+        id: attempt!.attemptId,
+        title: 'Paket Belajar',
+        amount: r.total,
+        createdAt: r.paidAt,
+        status: attempt!.status,
+        merchant: r.merchantName,
+        methodLabel: r.methodLabel,
+        reference: r.transactionId,
+      ),
+    );
+  }
+
+  void closeDetail() => _go(_detailFrom);
+  Future<String> reportProblem({
+    required String category,
+    required int length,
+  }) async {
+    final result = await _guard(
+      () => host.reportProblem(category: category, length: length),
+    );
+    if (result == null) throw StateError('Session changed');
+    return result;
+  }
+
+  Future<void> openStatement() async {
+    _go(FlowStep.statement);
+    final rows = await _guard(host.settlements);
+    if (rows == null) return;
+    settlements = rows;
+    notifyListeners();
+  }
+
+  void setSettlementQuery(String v) {
+    settlementQuery = v;
+    notifyListeners();
+  }
+
+  void setSelectedSettlements(Set<String> v) {
+    selectedSettlements = v;
+    notifyListeners();
+  }
+
+  Future<void> downloadSettlements(Set<String> ids) async {
+    host.record('Prepared ${ids.length} settlements');
+  }
+
+  void openFees() => _go(FlowStep.fees);
+  void openAccountSettings() => _go(FlowStep.accountSettings);
+  void updateAccountSettings(DemoAccountSettings v) {
+    accountSettings = v;
+    settingsStatus = null;
+    notifyListeners();
+  }
+
+  Future<void> saveAccountSettings() async {
+    final epoch = _epoch;
+    try {
+      await _guard(() => host.saveSettings(accountSettings));
+      if (epoch != _epoch) return;
+      settingsStatus = 'saved';
+      settingsTone = StatusTone.success;
+    } on HostException {
+      if (epoch != _epoch) return;
+      settingsStatus = 'failed';
+      settingsTone = StatusTone.danger;
+    }
+    notifyListeners();
+  }
+
   List<TransactionRecord> history = [];
   bool historyLoading = false;
   HostError? historyError;
@@ -313,7 +411,16 @@ class DemoCoordinator extends ChangeNotifier {
         ),
       };
     }
-    if (start == FlowStep.history) {
+    if (start == FlowStep.transactionDetail) {
+      final rows = await _guard(() => host.history(account));
+      if (rows != null && rows.isNotEmpty) await openDetail(rows.first);
+    } else if (start == FlowStep.statement) {
+      await openStatement();
+    } else if (start == FlowStep.fees) {
+      openFees();
+    } else if (start == FlowStep.accountSettings) {
+      openAccountSettings();
+    } else if (start == FlowStep.history) {
       await openHistory();
     } else if (start == FlowStep.checkout) {
       await openCheckout();
@@ -360,6 +467,16 @@ class DemoCoordinator extends ChangeNotifier {
   }
 
   void _resetSensitive() {
+    detail = null;
+    detailAttempts = [];
+    detailLoading = false;
+    _detailFrom = FlowStep.history;
+    settlements = [];
+    selectedSettlements = {};
+    settlementQuery = '';
+    accountSettings = const DemoAccountSettings();
+    settingsStatus = null;
+    settingsTone = StatusTone.neutral;
     history = [];
     historyLoading = false;
     historyError = null;

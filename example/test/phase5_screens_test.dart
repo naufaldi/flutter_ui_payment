@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
@@ -16,6 +17,170 @@ void surface(WidgetTester t, Size size) {
 }
 
 void main() {
+  testWidgets('A02 detail modules, attempts and reference copying', (t) async {
+    t.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (_) async => null,
+    );
+    addTearDown(
+      () => t.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      ),
+    );
+    final app = await launch(t);
+    final c = await runScenario(t, app, 'A02');
+    await pumpUntil(t, () => !c.detailLoading);
+    await settle(t);
+    expect(find.text('Payment'), findsOneWidget);
+    expect(find.text('Attempts'), findsOneWidget);
+    expect(c.detailAttempts.length, 2);
+    await tapVisible(t, find.byType(PaymentCopyButton));
+    await pumpUntilFound(t, find.byIcon(PaymentIcons.copied));
+    await drain(t);
+  });
+  testWidgets('A02 report discard, safe submission and retry', (t) async {
+    final app = await launch(t);
+    var c = await runScenario(t, app, 'A02');
+    await pumpUntil(t, () => !c.detailLoading);
+    await settle(t);
+    Future<void> open() async {
+      final direct = find.byKey(const Key('report-problem'));
+      if (direct.evaluate().isNotEmpty) {
+        await tapVisible(t, direct);
+      } else {
+        await tapVisible(t, find.byTooltip('More actions'));
+        await tapVisible(t, find.text('Report a problem'));
+      }
+    }
+
+    Future<void> choose() async {
+      await tapVisible(
+        t,
+        find
+            .descendant(
+              of: find.byType(PaymentSelect<String>),
+              matching: find.byType(InkWell),
+            )
+            .first,
+      );
+      await tapVisible(t, find.text('Charged twice'));
+    }
+
+    final editor = find.descendant(
+      of: find.byType(PaymentTextArea),
+      matching: find.byType(EditableText),
+    );
+    await open();
+    expect(
+      t.widget<PaymentButton>(find.byKey(const Key('send-report'))).onPressed,
+      isNull,
+    );
+    await t.enterText(editor, 'test note');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await settle(t);
+    await tapVisible(t, find.byKey(const Key('report-cancel')));
+    expect(find.text('Discard this report?'), findsOneWidget);
+    await tapVisible(t, find.text('Discard'));
+    await settle(t);
+    expect(find.byType(PaymentFocusView), findsNothing);
+    await open();
+    await choose();
+    await t.enterText(editor, 'test note');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await settle(t);
+    await tapVisible(t, find.byKey(const Key('send-report')));
+    await pumpUntilFound(t, find.textContaining('Report sent'));
+    await settle(t);
+    expect(find.byType(PaymentFocusView), findsNothing);
+    expect(
+      c.host.log.value.any(
+        (e) => e.message == 'Problem reported (chargedTwice, 9 chars)',
+      ),
+      isTrue,
+    );
+    expect(
+      c.host.log.value.any((e) => e.message.contains('test note')),
+      isFalse,
+    );
+    c = await runScenario(t, app, 'A02', variant: 1);
+    await pumpUntil(t, () => !c.detailLoading);
+    await settle(t);
+    await open();
+    await choose();
+    await tapVisible(t, find.byKey(const Key('send-report')));
+    await settle(t);
+    expect(find.byType(PaymentBanner), findsOneWidget);
+    expect(find.byType(PaymentFocusView), findsOneWidget);
+    await tapVisible(t, find.byKey(const Key('report-cancel')));
+    await tapVisible(t, find.text('Discard'));
+    await settle(t);
+    await drain(t);
+  });
+  testWidgets('A03 page selection, amount sort and search', (t) async {
+    surface(t, const Size(393, 852));
+    final app = await launch(t);
+    final c = await runScenario(t, app, 'A03');
+    await pumpUntil(t, () => c.settlements.isNotEmpty);
+    await settle(t);
+    await tapVisible(t, find.text('Select all on this page'));
+    expect(c.selectedSettlements.length, 10);
+    expect(find.text('Download selected (10)'), findsOneWidget);
+    await tapVisible(t, find.text('Sort: Date, newest first'));
+    await tapVisible(
+      t,
+      find.descendant(
+        of: find.byType(MenuItemButton),
+        matching: find.text('Amount, highest first'),
+      ),
+    );
+    expect(find.text('STL-DEMO-0023'), findsOneWidget);
+    final search = find.descendant(
+      of: find.byType(PaymentTextField),
+      matching: find.byType(EditableText),
+    );
+    await t.enterText(search, '0023');
+    await settle(t);
+    expect(find.text('STL-DEMO-0023'), findsOneWidget);
+    expect(find.text('STL-DEMO-0022'), findsNothing);
+    await drain(t);
+  });
+  testWidgets('A04 fees and help tooltip', (t) async {
+    final app = await launch(t);
+    await runScenario(t, app, 'A04');
+    expect(find.byType(PaymentTable), findsOneWidget);
+    expect(find.text('Virtual account'), findsOneWidget);
+    expect(find.text('Card'), findsOneWidget);
+    expect(
+      find.byTooltip('Set by Ruang Bayar for each payment method.'),
+      findsOneWidget,
+    );
+    await drain(t);
+  });
+  testWidgets('A05 grouped settings saves, clears status on edit and retries', (
+    t,
+  ) async {
+    final app = await launch(t);
+    var c = await runScenario(t, app, 'A05');
+    await tapVisible(t, find.text('Promotions'));
+    expect(c.accountSettings.promotions, isTrue);
+    await tapVisible(t, find.text('Save'));
+    expect(find.byType(PaymentSpinner), findsWidgets);
+    await pumpUntil(t, () => c.settingsStatus != null);
+    await settle(t);
+    expect(find.text('Saved'), findsOneWidget);
+    await tapVisible(t, find.text('Promotions'));
+    expect(c.settingsStatus, isNull);
+    c = await runScenario(t, app, 'A05', variant: 1);
+    await tapVisible(t, find.text('Save'));
+    await pumpUntil(t, () => c.settingsStatus != null);
+    await settle(t);
+    expect(find.text("Couldn't save. Try again."), findsOneWidget);
+    await tapVisible(t, find.text('Save'));
+    await pumpUntil(t, () => c.settingsStatus == 'saved');
+    await drain(t);
+  });
+
   testWidgets('H04 signs in without credential fields', (t) async {
     final app = await launch(t);
     final c = await runScenario(t, app, 'H04');
