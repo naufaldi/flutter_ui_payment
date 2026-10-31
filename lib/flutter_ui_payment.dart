@@ -8,6 +8,8 @@
 /// results, and it makes no network calls.
 library;
 
+export 'src/charts/chart_models.dart';
+export 'src/charts/charts.dart';
 export 'src/controls/controls.dart';
 export 'src/foundation/host_error.dart';
 export 'src/foundation/kit_strings.dart';

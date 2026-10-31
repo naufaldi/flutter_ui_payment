@@ -8,6 +8,45 @@ import 'payment_localizations.dart';
 extension KitStrings on PaymentLocalizations {
   String _k(String en, String id) => languageCode == 'id' ? id : en;
 
+  // Charts
+  String get chartLine => _k('Line chart', 'Grafik garis');
+  String get chartBar => _k('Bar chart', 'Grafik batang');
+  String get chartMeter => _k('Breakdown', 'Rincian');
+  String get chartSparkline => _k('Trend', 'Tren');
+  String get chartNoData => _k('No data', 'Tidak ada data');
+  String get chartPendingKey => _k('Pending', 'Menunggu');
+  String get chartUnknownKey => _k('Not confirmed', 'Belum terkonfirmasi');
+  String get chartLoadFailed => _k('Chart didn’t load', 'Grafik gagal dimuat');
+  String get chartEmptyTitle =>
+      _k('No data for this period', 'Belum ada data untuk periode ini');
+  String chartRange(String from, String to, int count) => _k(
+    'From $from to $to, $count period(s).',
+    'Dari $from sampai $to, $count periode.',
+  );
+  String chartLowest(String amount, String label) =>
+      _k('Lowest $amount on $label.', 'Terendah $amount pada $label.');
+  String chartHighest(String amount, String label) =>
+      _k('Highest $amount on $label.', 'Tertinggi $amount pada $label.');
+  String chartLatest(String amount, String label) =>
+      _k('Latest $amount on $label.', 'Terakhir $amount pada $label.');
+  String chartPendingCount(int n) => _k(
+    n == 1
+        ? '1 period is pending and not counted.'
+        : '$n periods are pending and not counted.',
+    '$n periode masih menunggu dan tidak dihitung.',
+  );
+  String chartUnknownCount(int n) => _k(
+    n == 1
+        ? '1 period is not confirmed yet and not counted.'
+        : '$n periods are not confirmed yet and not counted.',
+    '$n periode belum terkonfirmasi dan tidak dihitung.',
+  );
+  String chartMissingCount(int n) => _k(
+    n == 1 ? '1 period has no data.' : '$n periods have no data.',
+    '$n periode tanpa data.',
+  );
+  String meterItem(String label, String amount) => '$label $amount';
+
   // Interaction
   String get close => _k('Close', 'Tutup');
   String get cancel => _k('Cancel', 'Batal');
