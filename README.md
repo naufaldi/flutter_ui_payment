@@ -4,7 +4,9 @@ Composable Flutter UI for optional identity verification (KYC), checkout, host-o
 
 > **Ringkasan.** Library komponen UI Flutter untuk KYC opsional dan pembayaran. Komponen hanya merender data terstruktur dari host dan melaporkan aksi lewat callback. Host/backend tetap memutuskan KYC, harga, otorisasi, idempotency, status, dan refund. Library tidak memproses uang, tidak melakukan network call, dan tidak memerlukan router, state manager, kamera, atau SDK payment. Keputusan produk ada di [PRD.md](PRD.md).
 
-**Status:** `0.1.0`, local only. Not published to pub.dev or a public repository yet; the package name is unverified. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
+**Docs:** https://flutter-ui-payment.netlify.app
+
+**Status:** `0.1.0`. Install from this GitHub repository; it is not published to pub.dev yet, and the package name is unverified. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
 
 **Docs:** [components](docs/components.md) (inventory, API, what the host owns) · [integration](docs/integration.md) · [compatibility](docs/compatibility.md) (Android 7.0+/API 24 declared, what was actually run) · [decisions](docs/decisions.md) (design and engineering tradeoffs, performance findings).
 

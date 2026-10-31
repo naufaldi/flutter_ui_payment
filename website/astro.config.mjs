@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
 export default defineConfig({
+  site: 'https://flutter-ui-payment.netlify.app',
   integrations: [
     starlight({
       title: 'flutter_ui_payment',
