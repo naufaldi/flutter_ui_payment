@@ -1,9 +1,42 @@
+import 'package:flutter/rendering.dart';
+import 'content_host.dart' as phase4;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
+  testWidgets('short floating label leaves detail in wrapping description', (
+    t,
+  ) async {
+    await phase4.setSurface(t, const Size(320, 1000));
+    const label = 'Reference';
+    await t.pumpWidget(
+      phase4.contentHost(
+        const PaymentTextField(
+          label: label,
+          description:
+              'Use the reference from the payment receipt when asking for help.',
+        ),
+        scale: 2,
+      ),
+    );
+    final paragraph = t.renderObject<RenderParagraph>(find.text(label));
+    expect(paragraph.didExceedMaxLines, isFalse);
+    await t.tap(find.byType(EditableText));
+    await t.enterText(find.byType(EditableText), 'demo');
+    await t.pumpAndSettle();
+    expect(
+      t.renderObject<RenderParagraph>(find.text(label)).didExceedMaxLines,
+      isFalse,
+    );
+    expect(
+      t.getBottomLeft(find.text(label)).dy,
+      lessThanOrEqualTo(t.getTopLeft(find.byType(EditableText)).dy),
+    );
+    expect(t.takeException(), isNull);
+  });
+
   testWidgets('sizes keep 16px text and distinct padding', (tester) async {
     final heights = <double>[];
     for (final size in PaymentSize.values) {

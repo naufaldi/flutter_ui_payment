@@ -109,6 +109,7 @@ class _LayoutSpecimen extends StatelessWidget {
           kind: PaymentCodeKind.pre,
         ),
         PaymentCode('DEMO-${'0123456789' * 6}', noWrap: true),
+        PaymentCode('DEMO-${'0123456789' * 6}'),
       ],
       _ => <Widget>[
         const PaymentInline('Subtotal'),
