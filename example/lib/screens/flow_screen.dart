@@ -1,3 +1,4 @@
+import 'capture_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
@@ -454,8 +455,26 @@ class _KycDocuments extends StatelessWidget {
   final DemoCoordinator c;
 
   Future<void> _pick(BuildContext context, DocumentRequirement req) async {
-    final allowed = await c.requestCapture(req.key);
-    if (!allowed || !context.mounted) return;
+    final source = await showCaptureSourceSheet(context: context);
+    if (source == null || !context.mounted) return;
+    if (source != CaptureSource.file) {
+      final allowed = await c.requestCapture(req.key);
+      if (!allowed || !context.mounted) return;
+    }
+    if (source == CaptureSource.camera) {
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => KycCaptureScreen(
+            c: c,
+            requirement: req,
+            kind: req.key == selfieSlot
+                ? CaptureKind.selfieWithIdCard
+                : CaptureKind.idCard,
+          ),
+        ),
+      );
+      return;
+    }
     final s = DemoStrings.of(context);
     final l10n = PaymentLocalizations.of(context);
     final fixture = await showModalBottomSheet<DocumentFixture>(

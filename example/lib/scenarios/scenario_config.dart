@@ -67,6 +67,7 @@ class ScenarioConfig {
     this.kycReview = KycReviewOutcome.verified,
     this.captureAccess = const [CaptureAccess.granted],
     this.interruptFirstUpload = false,
+    this.rejectFirstCapture = false,
     this.uploadDuration = const Duration(milliseconds: 900),
     this.prefillIdentity = false,
     this.flexibleAmount = false,
@@ -104,6 +105,7 @@ class ScenarioConfig {
   /// Answers to successive capture-permission requests; the last repeats.
   final List<CaptureAccess> captureAccess;
   final bool interruptFirstUpload;
+  final bool rejectFirstCapture;
   final Duration uploadDuration;
 
   /// Starts KYC with synthetic data the host still holds (actionRequired).

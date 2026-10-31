@@ -134,8 +134,8 @@ const scenarios = <Scenario>[
     id: 'K03',
     title: Bi('Capture permission denied', 'Izin kamera ditolak'),
     expect: Bi(
-      'Host reports the denial; the slot shows Try again or Open settings. Other slots stay usable.',
-      'Host melaporkan penolakan; slot menampilkan Coba lagi atau Buka pengaturan. Slot lain tetap bisa dipakai.',
+      'Choose “Take a photo”. Host reports the denial; the slot shows Try again or Open settings. Other slots stay usable.',
+      'Pilih “Ambil foto”. Host melaporkan penolakan; slot menampilkan Coba lagi atau Buka pengaturan. Slot lain tetap bisa dipakai.',
     ),
     variants: [
       ScenarioVariant(
@@ -161,13 +161,18 @@ const scenarios = <Scenario>[
       'Terlalu besar, tipe salah, terputus',
     ),
     expect: Bi(
-      'Pick “ktp_scan_besar.jpg” (12 MB) or “ktp_dokumen.pdf” to see host limits; the first valid upload drops and offers Try again.',
+      'Pick “ktp_scan_besar.jpg” (12 MB) or “ktp_dokumen.pdf” to see host limits; the first valid upload drops and offers Try again. The camera variant shows a host rejection, then lets you retake.',
       'Pilih “ktp_scan_besar.jpg” (12 MB) atau “ktp_dokumen.pdf” untuk melihat batas host; unggahan valid pertama terputus dan menawarkan Coba lagi.',
     ),
     variants: [
       ScenarioVariant(
         label: Bi('Documents', 'Dokumen'),
         config: ScenarioConfig(interruptFirstUpload: true),
+        start: FlowStep.kycDocuments,
+      ),
+      ScenarioVariant(
+        label: Bi('Camera photo rejected', 'Foto kamera ditolak'),
+        config: ScenarioConfig(rejectFirstCapture: true),
         start: FlowStep.kycDocuments,
       ),
     ],

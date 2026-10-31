@@ -288,8 +288,25 @@ class DemoHost {
     record('Capture access enabled in (simulated) Settings');
   }
 
+  bool _captureRejected = false;
+
   Future<void> upload(String requestId, DocumentFile file) async {
     await Future.delayed(config.uploadDuration * latencyScale);
+    if (config.rejectFirstCapture &&
+        file.name.startsWith('kamera_') &&
+        !_captureRejected) {
+      _captureRejected = true;
+      record('Host rejected synthetic camera photo');
+      throw HostException(
+        HostError(
+          HostErrorCategory.validation,
+          safeMessage: _t(
+            'The ID photo is blurry. Retake it in good light.',
+            'Foto KTP buram. Ambil ulang di tempat yang terang.',
+          ),
+        ),
+      );
+    }
     if (config.interruptFirstUpload && !_uploadInterrupted) {
       _uploadInterrupted = true;
       throw const HostException(HostError(HostErrorCategory.network));

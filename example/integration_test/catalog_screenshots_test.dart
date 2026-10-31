@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter_ui_payment_example/main.dart';
 import 'package:integration_test/integration_test.dart';
 
@@ -81,6 +82,80 @@ void main() {
       await shot('controls_tabs$look');
     }
 
+    for (final dark in [false, true]) {
+      final suffix = dark ? '_dark' : '';
+      app.updateSettings(
+        DemoSettings(
+          locale: const Locale('en'),
+          themeMode: dark ? ThemeMode.dark : ThemeMode.light,
+        ),
+      );
+      await settle(tester);
+      await open('Charts');
+      for (final (entry, name) in [
+        ('PaymentLineChart', 'chart_line'),
+        ('PaymentBarChart', 'chart_bar'),
+        ('PaymentMeterChart', 'chart_meter'),
+        ('PaymentSparkline · beside a KPI', 'chart_sparkline'),
+        ('In context: spending above history', 'chart_in_context'),
+      ]) {
+        await top(entry);
+        await shot('$name$suffix');
+      }
+      await open('Verification (KYC)');
+      await top('showCaptureSourceSheet');
+      await tapVisible(tester, find.text('Add a photo'));
+      await shot('capture_source_sheet$suffix');
+      await tester.tap(find.byTooltip('Close panel'));
+      await settle(tester);
+      clearSnackBars();
+      await top('KycCaptureGuide');
+      await shot('capture_ktp$suffix');
+      await tapVisible(tester, find.text('selfie'));
+      await top('KycCaptureGuide');
+      await shot('capture_selfie$suffix');
+    }
+    app.updateSettings(const DemoSettings(locale: Locale('en')));
+    await settle(tester);
+    await open('Charts');
+    await top('ChartModule · states');
+    await shot('chart_states');
+    for (final state in ['error', 'empty']) {
+      await tapVisible(tester, find.text(state));
+      await top('ChartModule · states');
+      await shot('chart_states_$state');
+    }
+    await top('PaymentLineChart');
+    final inspectMouse = await tester.createGesture(
+      kind: PointerDeviceKind.mouse,
+    );
+    await inspectMouse.addPointer(location: Offset.zero);
+    await inspectMouse.moveTo(
+      tester.getCenter(find.byType(PaymentLineChart).first),
+    );
+    await tester.pump(const Duration(milliseconds: 400));
+    await shot('chart_line_inspect');
+    await inspectMouse.removePointer();
+    await open('Verification (KYC)');
+    await top('KycCaptureGuide');
+    for (final state in ['review', 'rejected', 'permission']) {
+      await tapVisible(tester, find.text(state));
+      await top('KycCaptureGuide');
+      await shot('capture_$state');
+    }
+    app.updateSettings(const DemoSettings(locale: Locale('en'), textScale: 2));
+    await settle(tester);
+    await open('Charts');
+    await top('In context: spending above history');
+    await shot('chart_in_context_200');
+    await open('Verification (KYC)');
+    await top('KycCaptureGuide');
+    await tapVisible(tester, find.text('selfie'));
+    await top('KycCaptureGuide');
+    await shot('capture_selfie_200');
+    app.updateSettings(const DemoSettings(locale: Locale('en')));
+    await settle(tester);
+    await open('Controls');
     // Tooltip, light.
     app.updateSettings(const DemoSettings(locale: Locale('en')));
     await settle(tester);

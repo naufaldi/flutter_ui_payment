@@ -13,7 +13,10 @@ Widget host(
 }) => MaterialApp(
   locale: Locale(locale),
   supportedLocales: const [Locale('en'), Locale('id')],
-  localizationsDelegates: const [PaymentLocalizations.delegate, ...GlobalMaterialLocalizations.delegates],
+  localizationsDelegates: const [
+    PaymentLocalizations.delegate,
+    ...GlobalMaterialLocalizations.delegates,
+  ],
   theme: ThemeData(brightness: dark ? Brightness.dark : Brightness.light),
   home: MediaQuery(
     data: MediaQueryData(textScaler: TextScaler.linear(scale)),

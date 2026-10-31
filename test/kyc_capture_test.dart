@@ -40,8 +40,9 @@ void main() {
     for (final kind in CaptureKind.values) {
       final frames = captureFrameRects(kind, const Size(300, 400));
       expect(frames.card.width / frames.card.height, closeTo(85.6 / 54, .01));
-      if (frames.face != null)
+      if (frames.face != null) {
         expect(frames.face!.bottom, lessThan(frames.card.top));
+      }
     }
   });
   testWidgets('source sheet orders choices, reports selection and dismissal', (
