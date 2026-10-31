@@ -10,8 +10,30 @@ import 'money.dart';
 /// Add [PaymentLocalizations.delegate] to `localizationsDelegates`. Without
 /// it, widgets still pick a language from the ambient locale.
 class PaymentLocalizations {
-  PaymentLocalizations(this.languageCode)
-    : moneyFormat = MoneyFormat(languageCode);
+  PaymentLocalizations(
+    this.languageCode, {
+    this.dateInputPattern = 'DD/MM/YYYY',
+  }) : assert(_validDatePattern(dateInputPattern)),
+       moneyFormat = MoneyFormat(languageCode);
+
+  /// Typed date hint, DD/MM/YYYY in both locales (Q12).
+  /// DD, MM and YYYY each occur once with one repeated /, . or - separator.
+  /// Override app-wide with a host LocalizationsDelegate<PaymentLocalizations>
+  /// returning `PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY')`.
+  /// Per-field overrides arrive with date fields in Phase 4B.
+  final String dateInputPattern;
+
+  static bool _validDatePattern(String pattern) {
+    final match = RegExp(
+      r'^(DD|MM|YYYY)([/.\-])(DD|MM|YYYY)\2(DD|MM|YYYY)$',
+    ).firstMatch(pattern);
+    return match != null && {match[1], match[3], match[4]}.length == 3;
+  }
+
+  /// Calendar date in the host zone; unlike [formatDateTime], no conversion
+  /// to the device zone occurs and the time is ignored.
+  String formatDate(DateTime value) =>
+      '${value.day} ${(_id ? _monthsId : _monthsEn)[value.month - 1]} ${value.year}';
 
   final String languageCode;
   final MoneyFormat moneyFormat;

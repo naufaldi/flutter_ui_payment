@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment/src/foundation/payment_type.dart';
 
 Widget host(Widget child, {ThemeData? theme, double textScale = 1}) =>
     MaterialApp(

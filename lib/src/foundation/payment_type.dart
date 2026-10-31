@@ -2,17 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'payment_theme.dart';
 
-/// The kit's text roles: 7 sizes, 2 weights, explicit leading and tracking.
-///
-/// Internal for now; hosts brand text through the host font, [PaymentTheme]
-/// colors, `amountWeight`, `amountFontFamily` and `referenceFontFamily`.
-///
-/// Every role copies the host font from `textTheme.bodyMedium`, because
-/// button and input text styles are not merged with [DefaultTextStyle], and
-/// sets tracking so no Material role's tracking leaks in.
+/// Public type foundation: nine closed roles, seven sizes and two weights.
+/// Every role inherits the host font. Choose a role for hierarchy; there is
+/// no weight modifier. Use [tabular] for numbers and [reference] for IDs.
 @immutable
 class PaymentType {
   const PaymentType._({
+    required PaymentTheme theme,
     required this.display,
     required this.amountLarge,
     required this.title,
@@ -22,8 +18,11 @@ class PaymentType {
     required this.caption,
     required this.tag,
     required this.input,
-  });
+  }) : _theme = theme;
 
+  final PaymentTheme _theme;
+
+  /// Resolves the nine roles from the ambient host font and payment theme.
   factory PaymentType.of(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final host = Theme.of(context).textTheme.bodyMedium;
@@ -44,6 +43,7 @@ class PaymentType {
     );
 
     return PaymentType._(
+      theme: theme,
       display: theme.amountStyle(context),
       amountLarge: role(
         20,
@@ -65,6 +65,17 @@ class PaymentType {
   /// tighten their leading.
   static bool isLarge(BuildContext context) =>
       MediaQuery.textScalerOf(context).scale(10) > 15;
+
+  /// Height of one 15/20 heading or label line at the current text scale.
+  /// Center leading icons in a box this tall when text wraps.
+  static double firstLineHeight(BuildContext context) =>
+      MediaQuery.textScalerOf(context).scale(15) * 20 / 15;
+
+  /// [style] with tabular figures.
+  TextStyle tabular(TextStyle style) => style.tabular;
+
+  /// [style] with tabular figures in [PaymentTheme.referenceFontFamily].
+  TextStyle reference(TextStyle style) => style.reference(_theme);
 
   /// The one display amount per screen: 32/36, tracking −0.32.
   final TextStyle display;

@@ -1,3 +1,4 @@
+import 'payment_tokens.dart';
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
@@ -102,15 +103,26 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
   /// inputs use three quarters of it.
   final double radius;
 
-  /// Base spacing unit; layouts use multiples of it, by role:
+  /// Base spacing unit; use [space] to resolve named roles:
   ///
   /// * inline, `spacing * 0.5` (4): label → caption, title → meta.
   /// * related, `spacing` (8): row padding, between stacked actions.
   /// * block, `spacing * 1.5` (12): band → title, notice padding.
-  /// * group, `spacing * 2` (16): screen and sheet gutter, groups.
+  /// * group, `spacing * 2` (16): screen and sheet gutter, groups, state message padding.
   /// * section, `spacing * 3` (24): content → primary action, ruled gaps.
-  /// * major, `spacing * 4` (32): empty and state message padding only.
+  /// * major, `spacing * 4` (32): the largest gap; no kit widget uses it today.
   final double spacing;
+
+  /// Resolves a semantic spacing role using this theme's base unit.
+  double space(PaymentSpace role) => switch (role) {
+    PaymentSpace.none => 0,
+    PaymentSpace.inline => spacing * 0.5,
+    PaymentSpace.related => spacing,
+    PaymentSpace.block => spacing * 1.5,
+    PaymentSpace.group => spacing * 2,
+    PaymentSpace.section => spacing * 3,
+    PaymentSpace.major => spacing * 4,
+  };
 
   final FontWeight amountWeight;
   final String? amountFontFamily;
@@ -165,7 +177,14 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
   /// Text style for amounts: the 32/36 display total when [large], otherwise
   /// a 15/20 row amount. Both use [amountWeight] and tabular figures, and the
   /// host's font unless [amountFontFamily] is set.
-  TextStyle amountStyle(BuildContext context, {bool large = true}) {
+  /// Same as `PaymentType.of(context).display`.
+  TextStyle amountStyle(
+    BuildContext context, {
+    @Deprecated(
+      'Row amounts use PaymentType.of(context).label with tabular figures (AmountText does this). Removed in 0.2.0.',
+    )
+    bool large = true,
+  }) {
     final host = Theme.of(context).textTheme.bodyMedium;
     return TextStyle(
       color: textPrimary,
