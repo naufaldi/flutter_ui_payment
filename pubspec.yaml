@@ -1,0 +1,32 @@
+name: flutter_ui_payment
+description: >-
+  Composable Flutter UI for optional identity verification (KYC), checkout,
+  host-owned authorization, payment instructions, payment status and receipts.
+  Host callbacks own every business decision; the package never moves money.
+version: 0.1.0
+publish_to: none
+repository: https://github.com/naufaldi/flutter_ui_payment
+issue_tracker: https://github.com/naufaldi/flutter_ui_payment/issues
+topics:
+  - payments
+  - checkout
+  - kyc
+  - ui
+  - design-system
+
+environment:
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:

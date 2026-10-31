@@ -1,0 +1,32 @@
+name: flutter_ui_payment_example
+description: Ruang Bayar demo — gallery, scenario picker and complete flow for flutter_ui_payment.
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_ui_payment:
+    path: ../
+  # Example-only media adapter. The package itself has no media dependency;
+  # see lib/adapters/video_adapter.dart. 2.11.x needs Android minSdk 24.
+  video_player: ^2.11.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    # Synthetic 8 s clip generated with ffmpeg for this demo (no third-party
+    # footage): 640×360 H.264 Constrained Baseline + AAC, 58 KB.
+    - assets/video/

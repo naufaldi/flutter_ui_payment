@@ -1,0 +1,181 @@
+import 'package:flutter/widgets.dart';
+
+/// Copy owned by the demo host app (not the package).
+class DemoStrings {
+  const DemoStrings(this.languageCode);
+
+  final String languageCode;
+
+  static DemoStrings of(BuildContext context) =>
+      DemoStrings(Localizations.localeOf(context).languageCode);
+
+  bool get _id => languageCode == 'id';
+  String _t(String en, String id) => _id ? id : en;
+
+  String get appName => 'Ruang Bayar';
+  String get simulated => _t(
+    'Simulation — synthetic data, no real money or identity',
+    'Simulasi — data sintetis, tanpa uang atau identitas asli',
+  );
+  String get tabDemo => _t('Demo', 'Demo');
+  String get tabScenarios => _t('Scenarios', 'Skenario');
+  String get tabGallery => _t('Gallery', 'Galeri');
+  String get settings => _t('Display settings', 'Pengaturan tampilan');
+  String get brand => _t('Brand theme', 'Tema brand');
+  String get appearance => _t('Appearance', 'Tampilan');
+  String get light => _t('Light', 'Terang');
+  String get darkLabel => _t('Dark', 'Gelap');
+  String get system => _t('System', 'Sistem');
+  String get language => _t('Language', 'Bahasa');
+  String get textSize => _t('Text size', 'Ukuran teks');
+  String get reduceMotion => _t('Reduce motion', 'Kurangi gerakan');
+
+  String get productTitle => 'Paket Belajar';
+  String get productSubtitle => _t(
+    'One month of guided lessons from Ruang Bayar Akademi',
+    'Satu bulan kelas terbimbing dari Ruang Bayar Akademi',
+  );
+  String get topUpTitle => _t('Learning credit top-up', 'Isi Saldo Belajar');
+  String get buyNow => _t('Buy now', 'Beli sekarang');
+  String get topUpNow => _t('Top up', 'Isi saldo');
+  String get identityStatus => _t('Identity', 'Identitas');
+  String get kycNotRequired =>
+      _t('Not required by this host', 'Tidak diwajibkan host ini');
+  String get unresolvedTitle =>
+      _t('A payment needs your attention', 'Ada pembayaran yang perlu dicek');
+  String get unresolvedMessage => _t(
+    'Its result isn’t final yet. Open it to check the status — don’t pay again.',
+    'Hasilnya belum final. Buka untuk cek status — jangan bayar lagi.',
+  );
+  String get openPayment => _t('Open payment', 'Buka pembayaran');
+  String account(String id) => _t('Account $id', 'Akun $id');
+  String get switchAccount => _t('Switch account', 'Ganti akun');
+  String get loading => _t('Loading…', 'Memuat…');
+
+  String get stepConsent => _t('Verification', 'Verifikasi');
+  String get stepIdentity => _t('Your identity', 'Identitas Anda');
+  String get stepDocuments => _t('Documents', 'Dokumen');
+  String get stepReview => _t('Review', 'Tinjau');
+  String get stepStatus => _t('Verification status', 'Status verifikasi');
+  String get stepCheckout => _t('Checkout', 'Checkout');
+  String get stepConfirm => _t('Review payment', 'Tinjau pembayaran');
+  String get stepAuthorize => _t('Confirm payment', 'Konfirmasi pembayaran');
+  String get stepPayment => _t('Payment', 'Pembayaran');
+  String get stepReceipt => _t('Receipt', 'Struk');
+
+  String get fullName =>
+      _t('Full name (as on ID)', 'Nama lengkap (sesuai KTP)');
+  String get idNumber => _t('ID number (NIK)', 'Nomor KTP (NIK)');
+  String get birthDate => _t('Date of birth', 'Tanggal lahir');
+  String get birthDateHint => _t('DD-MM-YYYY', 'HH-BB-TTTT');
+  String get nameRequired =>
+      _t('Enter your full name.', 'Masukkan nama lengkap.');
+  String get nameTooShort =>
+      _t('Name looks too short.', 'Nama terlalu pendek.');
+  String get idRequired => _t('Enter your ID number.', 'Masukkan nomor KTP.');
+  String get idFormat =>
+      _t('NIK must be exactly 16 digits.', 'NIK harus tepat 16 digit.');
+  String get dobRequired =>
+      _t('Enter your date of birth.', 'Masukkan tanggal lahir.');
+  String get dobFormat => _t(
+    'Use DD-MM-YYYY, for example 17-08-1995.',
+    'Gunakan HH-BB-TTTT, misalnya 17-08-1995.',
+  );
+  String get dobAge => _t('You must be 17 or older.', 'Usia minimal 17 tahun.');
+  String get reqIdentityTitle =>
+      _t('Name, NIK and date of birth', 'Nama, NIK, dan tanggal lahir');
+  String get reqIdentityPurpose => _t(
+    'To match you with your ID as required for paid learning services.',
+    'Untuk mencocokkan Anda dengan KTP sesuai ketentuan layanan berbayar.',
+  );
+  String get reqIdTitle => _t('Photo of your ID card', 'Foto KTP');
+  String get reqIdPurpose => _t(
+    'Checked once by our reviewer, then kept per the retention policy.',
+    'Diperiksa sekali oleh peninjau, lalu disimpan sesuai kebijakan retensi.',
+  );
+  String get reqSelfieTitle =>
+      _t('Selfie holding your ID', 'Swafoto dengan KTP');
+  String get reqSelfiePurpose => _t(
+    'Confirms the ID belongs to you. Never used for marketing.',
+    'Memastikan KTP milik Anda. Tidak dipakai untuk pemasaran.',
+  );
+  String get idCardLabel => _t('ID card (KTP)', 'KTP');
+  String get selfieLabel => _t('Selfie with ID', 'Swafoto dengan KTP');
+  String get imageTypes => 'JPG, PNG';
+  String get pickFixture => _t('Choose a demo document', 'Pilih dokumen demo');
+  String get fixtureNote => _t(
+    'Synthetic fixtures stand in for the host’s camera or file picker.',
+    'Fixture sintetis menggantikan kamera atau pemilih file host.',
+  );
+  String fixtureTag(String tag) => switch (tag) {
+    'tooLarge' => _t('Too large', 'Terlalu besar'),
+    'wrongType' => _t('Wrong type', 'Tipe salah'),
+    _ => _t('Valid sample', 'Contoh valid'),
+  };
+  String get continueToReview => _t('Continue to review', 'Lanjut ke tinjauan');
+  String get policyOpened => _t(
+    'Host opened its privacy policy (simulated).',
+    'Host membuka kebijakan privasinya (simulasi).',
+  );
+  String get supportOpened => _t(
+    'Support handoff opened by the host (simulated).',
+    'Host membuka kanal bantuan (simulasi).',
+  );
+  String get backToHome => _t('Back to home', 'Kembali ke beranda');
+  String get done => _t('Done', 'Selesai');
+  String get reviewAndPay => _t('Review payment', 'Tinjau pembayaran');
+  String get getQuote => _t('Get price', 'Lihat harga');
+  String get quoteLoading =>
+      _t('Getting the latest price…', 'Mengambil harga terbaru…');
+  String get quoteFailedTitle =>
+      _t('Price unavailable', 'Harga belum tersedia');
+  String get retry => _t('Try again', 'Coba lagi');
+  String get confirmFootnote => _t(
+    'The final price is confirmed by Ruang Bayar when you tap Pay.',
+    'Harga final dikonfirmasi Ruang Bayar saat Anda menekan Bayar.',
+  );
+  String get sessionExpiredTitle => _t('Signed out', 'Sesi berakhir');
+  String get cancelRequestedTitle =>
+      _t('Cancellation requested', 'Pembatalan diminta');
+  String get cancelRequestedMessage => _t(
+    'Waiting for the provider to confirm. Until then the payment may still complete.',
+    'Menunggu konfirmasi penyedia. Sampai saat itu pembayaran masih bisa selesai.',
+  );
+  String get leaveTitle => _t('Leave this screen?', 'Tinggalkan layar ini?');
+  String get leaveMessage => _t(
+    'Leaving doesn’t cancel the payment. It keeps going and you can check its status from Home.',
+    'Keluar tidak membatalkan pembayaran. Pembayaran tetap berjalan dan statusnya bisa dicek dari Beranda.',
+  );
+  String get stay => _t('Stay', 'Tetap di sini');
+  String get leave => _t('Leave', 'Keluar');
+  String get receiptLoadFailedTitle =>
+      _t('Receipt details didn’t load', 'Detail struk gagal dimuat');
+  String get receiptLoadFailedMessage => _t(
+    'Your payment is successful. Retrying only reloads the details.',
+    'Pembayaran Anda berhasil. Coba lagi hanya memuat ulang detail.',
+  );
+
+  // Host tools
+  String get hostTools => _t('Host tools (simulation)', 'Alat host (simulasi)');
+  String get simulateRestart => _t('Simulate restart', 'Simulasi restart');
+  String get simulateBackground =>
+      _t('Background & resume', 'Background & kembali');
+  String hostStats(int submits, int attempts, int charges) => _t(
+    'Submits $submits · server attempts $attempts · charges $charges',
+    'Submit $submits · attempt server $attempts · penarikan $charges',
+  );
+  String get hostLogEmpty => _t('No host events yet.', 'Belum ada event host.');
+
+  // Scenario picker
+  String get scenarioIntro => _t(
+    'Each scenario resets the simulated host with deterministic fixtures and opens the demo where the behavior can be tried.',
+    'Setiap skenario mereset host simulasi dengan fixture deterministik dan membuka demo di titik perilaku yang dapat dicoba.',
+  );
+  String get run => _t('Run', 'Jalankan');
+  String get groupJourneys => _t('Main journeys', 'Alur utama');
+  String get groupKyc => _t('Identity verification', 'Verifikasi identitas');
+  String get groupPayment => _t('Payment', 'Pembayaran');
+  String get groupCross => _t('Cross-cutting', 'Lintas fitur');
+  String activeScenario(String id) =>
+      _t('Scenario $id active', 'Skenario $id aktif');
+}

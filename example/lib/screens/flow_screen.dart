@@ -1,0 +1,938 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+
+import '../adapters/fake_host.dart';
+import '../coordinator/demo_coordinator.dart';
+import '../demo_strings.dart';
+import '../dev_chrome.dart';
+
+/// The demo purchase flow. Renders [DemoCoordinator] state step by step and
+/// forwards every user intent to it; no business state lives here.
+class FlowScreen extends StatelessWidget {
+  const FlowScreen({
+    super.key,
+    required this.coordinator,
+    required this.scenarioLabel,
+    required this.onRestart,
+    required this.onBackground,
+    required this.onOpenSettings,
+  });
+
+  final DemoCoordinator coordinator;
+  final String scenarioLabel;
+  final VoidCallback onRestart;
+  final VoidCallback onBackground;
+  final VoidCallback onOpenSettings;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: coordinator,
+      builder: (context, _) {
+        final c = coordinator;
+        final s = DemoStrings.of(context);
+        final atRoot = c.step == FlowStep.overview;
+        return PopScope(
+          canPop: atRoot,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop) _handleBack(context, c);
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              leading: atRoot
+                  ? null
+                  : BackButton(onPressed: () => _handleBack(context, c)),
+              title: Text(_title(s, c.step)),
+              actions: [
+                _AccountMenu(coordinator: c),
+                IconButton(
+                  tooltip: s.settings,
+                  icon: const Icon(Icons.tune),
+                  onPressed: onOpenSettings,
+                ),
+              ],
+            ),
+            // Checkout pins the total and its action; everything else in the
+            // step can scroll without hiding what the customer will pay.
+            bottomNavigationBar:
+                c.step == FlowStep.checkout && !c.starting && !c.obscured
+                ? _CheckoutBar(c)
+                : null,
+            body: SafeArea(
+              child: PrivacyMask(
+                obscured: c.obscured,
+                // Each step enters with a short fade and 8 px rise; the
+                // previous step leaves faster. Collapses under reduced motion.
+                child: AnimatedSwitcher(
+                  duration: PaymentMotion.of(context).enter,
+                  reverseDuration: PaymentMotion.of(context).exit,
+                  transitionBuilder: PaymentMotion.fadeRise,
+                  layoutBuilder: PaymentMotion.topLayout,
+                  child: ListView(
+                    key: ValueKey('flow-list-${c.step.name}'),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                    children: [
+                      if (c.notice == 'support') ...[
+                        NoticeBanner(
+                          tone: StatusTone.info,
+                          title: s.supportOpened,
+                          announce: true,
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                      if (c.starting)
+                        Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Center(child: Text(s.loading)),
+                        )
+                      else
+                        _StepBody(coordinator: c),
+                      const SizedBox(height: 24),
+                      _HostTools(
+                        coordinator: c,
+                        scenarioLabel: scenarioLabel,
+                        onRestart: onRestart,
+                        onBackground: onBackground,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String _title(DemoStrings s, FlowStep step) => switch (step) {
+    FlowStep.overview => s.appName,
+    FlowStep.kycIntro => s.stepConsent,
+    FlowStep.kycIdentity => s.stepIdentity,
+    FlowStep.kycDocuments => s.stepDocuments,
+    FlowStep.kycReview => s.stepReview,
+    FlowStep.kycStatus => s.stepStatus,
+    FlowStep.checkout => s.stepCheckout,
+    FlowStep.confirm => s.stepConfirm,
+    FlowStep.authorize => s.stepAuthorize,
+    FlowStep.payment => s.stepPayment,
+    FlowStep.receipt => s.stepReceipt,
+  };
+
+  Future<void> _handleBack(BuildContext context, DemoCoordinator c) async {
+    switch (c.step) {
+      case FlowStep.overview:
+        return;
+      case FlowStep.kycIntro || FlowStep.kycStatus || FlowStep.checkout:
+        c.goHome();
+      case FlowStep.kycIdentity:
+        c.kyc.status == VerificationStatus.actionRequired
+            ? c.kycAction(VerificationAction.start)
+            : c.goHome();
+      case FlowStep.kycDocuments:
+        c.editIdentity();
+      case FlowStep.kycReview:
+        c.editDocuments();
+      case FlowStep.confirm:
+        await c.openCheckout();
+      case FlowStep.authorize:
+        if (c.authPhase != AuthorizationPhase.inProgress) c.backToReview();
+      case FlowStep.receipt:
+        c.resumeAttempt();
+      case FlowStep.payment:
+        if (!c.hasUnresolvedAttempt) {
+          c.finish();
+          return;
+        }
+        final s = DemoStrings.of(context);
+        final leave = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(s.leaveTitle),
+            content: Text(s.leaveMessage),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(s.stay),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(s.leave),
+              ),
+            ],
+          ),
+        );
+        if (leave == true) c.goHome();
+    }
+  }
+}
+
+class _AccountMenu extends StatelessWidget {
+  const _AccountMenu({required this.coordinator});
+
+  final DemoCoordinator coordinator;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    return PopupMenuButton<String>(
+      key: const Key('account-menu'),
+      tooltip: s.switchAccount,
+      // Demo control for switching the signed-in test account: a plain
+      // outlined initial, not a tinted avatar that implies a real profile.
+      icon: Container(
+        width: 32,
+        height: 32,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: PaymentTheme.of(context).outline),
+        ),
+        child: Text(
+          coordinator.account,
+          semanticsLabel: s.account(coordinator.account),
+          // Developer chrome: capped near the AppBar title's own limit so
+          // the initial never outgrows its circle.
+          textScaler: MediaQuery.textScalerOf(
+            context,
+          ).clamp(maxScaleFactor: 1.3),
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: PaymentTheme.of(context).textPrimary,
+          ),
+        ),
+      ),
+      onSelected: coordinator.switchAccount,
+      itemBuilder: (context) => [
+        for (final id in const ['A', 'B'])
+          CheckedPopupMenuItem(
+            key: Key('account-$id'),
+            value: id,
+            checked: coordinator.account == id,
+            child: Text(s.account(id)),
+          ),
+      ],
+    );
+  }
+}
+
+class _StepBody extends StatelessWidget {
+  const _StepBody({required this.coordinator});
+
+  final DemoCoordinator coordinator;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = coordinator;
+    return switch (c.step) {
+      FlowStep.overview => _Overview(c),
+      FlowStep.kycIntro => _KycIntro(c),
+      FlowStep.kycIdentity => _KycIdentity(c),
+      FlowStep.kycDocuments => _KycDocuments(c),
+      FlowStep.kycReview => _KycReview(c),
+      FlowStep.kycStatus => VerificationStatusView(
+        snapshot: c.kyc,
+        outcomeUnknown: c.kycOutcomeUnknown,
+        busyAction: c.kycBusyAction,
+        onAction: c.kycAction,
+      ),
+      FlowStep.checkout => _Checkout(c),
+      FlowStep.confirm => _Confirm(c),
+      FlowStep.authorize => _Authorize(c),
+      FlowStep.payment => _Payment(c),
+      FlowStep.receipt => _Receipt(c),
+    };
+  }
+}
+
+class _Overview extends StatelessWidget {
+  const _Overview(this.c);
+  final DemoCoordinator c;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    final l10n = PaymentLocalizations.of(context);
+    final theme = PaymentTheme.of(context);
+    final text = Theme.of(context).textTheme;
+    final flexible = c.config.flexibleAmount;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        NoticeBanner(
+          tone: StatusTone.info,
+          icon: Icons.science_outlined,
+          title: s.simulated,
+        ),
+        const SizedBox(height: 16),
+        if (c.hasUnresolvedAttempt || c.attempt != null) ...[
+          NoticeBanner(
+            tone: StatusTone.warning,
+            icon: Icons.receipt_long_outlined,
+            title: s.unresolvedTitle,
+            message: s.unresolvedMessage,
+            actions: [
+              FilledButton.tonal(
+                onPressed: c.resumeAttempt,
+                child: Text(s.openPayment),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+        ],
+        PaymentSection(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Product thumbnail: a plain muted tile. The demo has no product
+              // photography, and a gradient would only decorate the gap.
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: theme.surfaceMuted,
+                  borderRadius: BorderRadius.circular(theme.radius * 0.75),
+                ),
+                child: Icon(
+                  flexible ? Icons.savings_outlined : Icons.school_outlined,
+                  size: 24,
+                  color: theme.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                flexible ? s.topUpTitle : s.productTitle,
+                style: text.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                s.productSubtitle,
+                style: text.bodyMedium?.copyWith(color: theme.textSecondary),
+              ),
+              if (!flexible) ...[
+                const SizedBox(height: 12),
+                const AmountText(Money.idr(100000), emphasis: true),
+              ],
+              const SizedBox(height: 8),
+              InfoRow(
+                label: s.identityStatus,
+                value: c.config.kycRequired
+                    ? StatusBadge(
+                        tone: c.kyc.status == VerificationStatus.verified
+                            ? StatusTone.success
+                            : StatusTone.neutral,
+                        icon: c.kyc.status == VerificationStatus.verified
+                            ? Icons.verified_outlined
+                            : Icons.badge_outlined,
+                        label: l10n.kycStatusTitle(c.kyc.status),
+                      )
+                    : Text(s.kycNotRequired, textAlign: TextAlign.end),
+              ),
+              const SizedBox(height: 12),
+              PaymentButton(
+                key: const Key('buy'),
+                label: flexible ? s.topUpNow : s.buyNow,
+                onPressed: c.beginPurchase,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _KycIntro extends StatelessWidget {
+  const _KycIntro(this.c);
+  final DemoCoordinator c;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    return VerificationIntro(
+      requirements: [
+        DataRequirement(
+          title: s.reqIdentityTitle,
+          purpose: s.reqIdentityPurpose,
+        ),
+        DataRequirement(title: s.reqIdTitle, purpose: s.reqIdPurpose),
+        DataRequirement(title: s.reqSelfieTitle, purpose: s.reqSelfiePurpose),
+      ],
+      onOpenPolicy: () => ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(s.policyOpened))),
+      onContinue: c.acceptConsent,
+    );
+  }
+}
+
+/// Host identity rules: any script for names, 16-digit NIK, 17+ years.
+List<IdentityFieldSpec> identityFields(DemoStrings s) => [
+  IdentityFieldSpec(
+    key: 'name',
+    label: s.fullName,
+    textCapitalization: TextCapitalization.words,
+    autofillHints: const [AutofillHints.name],
+    validator: (v) {
+      if (v.isEmpty) return s.nameRequired;
+      if (v.runes.length < 2) return s.nameTooShort;
+      return null;
+    },
+  ),
+  IdentityFieldSpec(
+    key: 'nik',
+    label: s.idNumber,
+    keyboardType: TextInputType.number,
+    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9 ]'))],
+    maskInReview: true,
+    validator: (v) {
+      final digits = v.replaceAll(' ', '');
+      if (digits.isEmpty) return s.idRequired;
+      if (!RegExp(r'^\d{16}$').hasMatch(digits)) return s.idFormat;
+      return null;
+    },
+  ),
+  IdentityFieldSpec(
+    key: 'dob',
+    label: s.birthDate,
+    hint: s.birthDateHint,
+    keyboardType: TextInputType.datetime,
+    validator: (v) {
+      if (v.isEmpty) return s.dobRequired;
+      final m = RegExp(r'^(\d{2})-(\d{2})-(\d{4})$').firstMatch(v);
+      if (m == null) return s.dobFormat;
+      final day = int.parse(m[1]!);
+      final month = int.parse(m[2]!);
+      final year = int.parse(m[3]!);
+      final date = DateTime(year, month, day);
+      if (date.day != day || date.month != month) return s.dobFormat;
+      final now = DateTime.now();
+      final adult = DateTime(now.year - 17, now.month, now.day);
+      if (date.isAfter(adult)) return s.dobAge;
+      return null;
+    },
+  ),
+];
+
+List<DocumentRequirement> documentRequirements(DemoStrings s) => [
+  DocumentRequirement(
+    key: idCardSlot,
+    label: s.idCardLabel,
+    acceptedTypes: const {'image/jpeg', 'image/png'},
+    acceptedTypesLabel: s.imageTypes,
+    maxBytes: 5 * 1024 * 1024,
+  ),
+  DocumentRequirement(
+    key: selfieSlot,
+    label: s.selfieLabel,
+    acceptedTypes: const {'image/jpeg', 'image/png'},
+    acceptedTypesLabel: s.imageTypes,
+    maxBytes: 5 * 1024 * 1024,
+  ),
+];
+
+class _KycIdentity extends StatelessWidget {
+  const _KycIdentity(this.c);
+  final DemoCoordinator c;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    return IdentityForm(
+      fields: identityFields(s),
+      initialValues: c.identity,
+      highlightFields: c.kyc.fieldsToFix,
+      onSubmit: c.submitIdentity,
+    );
+  }
+}
+
+class _KycDocuments extends StatelessWidget {
+  const _KycDocuments(this.c);
+  final DemoCoordinator c;
+
+  Future<void> _pick(BuildContext context, DocumentRequirement req) async {
+    final allowed = await c.requestCapture(req.key);
+    if (!allowed || !context.mounted) return;
+    final s = DemoStrings.of(context);
+    final l10n = PaymentLocalizations.of(context);
+    final fixture = await showModalBottomSheet<DocumentFixture>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (context) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          children: [
+            Text(s.pickFixture, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 4),
+            Text(s.fixtureNote, style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: 8),
+            for (final f in demoFixtures)
+              ListTile(
+                key: Key('fixture-${f.file.name}'),
+                minTileHeight: 56,
+                leading: Icon(
+                  f.file.mimeType == 'application/pdf'
+                      ? Icons.picture_as_pdf_outlined
+                      : Icons.image_outlined,
+                ),
+                title: Text(f.file.name),
+                subtitle: Text(
+                  '${l10n.formatBytes(f.file.sizeBytes)} · ${s.fixtureTag(f.description)}',
+                ),
+                onTap: () => Navigator.pop(context, f),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (fixture != null) await c.uploadDocument(req, fixture.file);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    final reqs = documentRequirements(s);
+    final ready = reqs.every(
+      (r) => c.documents[r.key]?.phase == DocumentSlotPhase.uploaded,
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final req in reqs) ...[
+          DocumentUploadTile(
+            key: Key('slot-${req.key}'),
+            requirement: req,
+            state: c.documents[req.key]!,
+            needsUpdate: c.kyc.fieldsToFix.contains(req.key),
+            onPick: () => _pick(context, req),
+            onOpenSettings: () => c.openSettings(req.key),
+          ),
+          const SizedBox(height: 12),
+        ],
+        const SizedBox(height: 12),
+        PaymentButton(
+          key: const Key('to-review'),
+          label: s.continueToReview,
+          onPressed: ready ? c.goToReview : null,
+        ),
+      ],
+    );
+  }
+}
+
+class _KycReview extends StatelessWidget {
+  const _KycReview(this.c);
+  final DemoCoordinator c;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    return VerificationReview(
+      fields: identityFields(s),
+      values: c.identity,
+      documents: [
+        for (final r in documentRequirements(s)) (r, c.documents[r.key]!),
+      ],
+      busy: c.kycSubmitting,
+      onSubmit: c.submitKyc,
+      onEditDetails: c.editIdentity,
+      onEditDocuments: c.editDocuments,
+    );
+  }
+}
+
+class _Checkout extends StatelessWidget {
+  const _Checkout(this.c);
+  final DemoCoordinator c;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    final quote = c.quote;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (c.config.flexibleAmount) ...[
+          PaymentSection(
+            title: s.topUpTitle,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AmountInput(
+                  key: const Key('amount'),
+                  currency: 'IDR',
+                  minimum: const Money.idr(10000),
+                  maximum: const Money.idr(2000000),
+                  onChanged: c.setAmount,
+                ),
+                const SizedBox(height: 12),
+                PaymentButton(
+                  key: const Key('get-quote'),
+                  label: s.getQuote,
+                  variant: PaymentButtonVariant.secondary,
+                  busy: c.quoting,
+                  onPressed: c.amount.isValid && c.selectedMethod != null
+                      ? c.loadQuote
+                      : null,
+                ),
+              ],
+            ),
+          ),
+        ],
+        if (c.quoteError != null) ...[
+          NoticeBanner(
+            tone: StatusTone.danger,
+            announce: true,
+            title: s.quoteFailedTitle,
+            message: c.quoteError!.safeMessage,
+            actions: [
+              FilledButton.tonal(
+                key: const Key('retry-quote'),
+                onPressed: c.quoting ? null : c.loadQuote,
+                child: Text(s.retry),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+        ],
+        // While a re-quote runs, the pinned bar says "Updating total…" and
+        // disables the action; the summary is not dimmed, which would need
+        // an offscreen layer over the whole card on every method switch.
+        if (quote != null)
+          PaymentSummary(quote: quote)
+        else if (c.quoting)
+          const PaymentSection(child: LoadingSkeleton(rows: 3, leading: false)),
+        // Sections stack flush: their own padding gives the 24 dp gap.
+        PaymentMethodPicker(
+          methods: c.methods,
+          selectedId: c.selectedMethodId,
+          onChanged: c.selectMethod,
+        ),
+      ],
+    );
+  }
+}
+
+class _CheckoutBar extends StatelessWidget {
+  const _CheckoutBar(this.c);
+  final DemoCoordinator c;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    final quote = c.quote;
+    return PaymentActionBar(
+      total: quote?.total,
+      updating: c.quoting,
+      action: PaymentButton(
+        key: const Key('review-order'),
+        label: s.reviewAndPay,
+        onPressed: quote != null && c.selectedMethod != null && !c.quoting
+            ? c.reviewOrder
+            : null,
+      ),
+    );
+  }
+}
+
+class _Confirm extends StatelessWidget {
+  const _Confirm(this.c);
+  final DemoCoordinator c;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    final error = c.submitError;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (error != null) ...[
+          NoticeBanner(
+            tone: StatusTone.warning,
+            announce: true,
+            icon: Icons.lock_clock_outlined,
+            title: error.category == HostErrorCategory.sessionExpired
+                ? s.sessionExpiredTitle
+                : s.quoteFailedTitle,
+            message: error.safeMessage,
+          ),
+          const SizedBox(height: 12),
+        ],
+        PaymentConfirmation(
+          quote: c.quote!,
+          method: c.selectedMethod!,
+          previousQuote: c.previousQuote,
+          busy: c.confirming,
+          footnote: s.confirmFootnote,
+          onConfirm: c.confirm,
+        ),
+      ],
+    );
+  }
+}
+
+class _Authorize extends StatelessWidget {
+  const _Authorize(this.c);
+  final DemoCoordinator c;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = PaymentLocalizations.of(context);
+    final theme = PaymentTheme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        PaymentSection(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // The one display amount, left-aligned under a caption rather
+              // than squeezed into the end of a row.
+              Text(
+                l10n.totalLabel,
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 18 / 13,
+                  letterSpacing: 0,
+                  color: theme.textSecondary,
+                ),
+              ),
+              SizedBox(height: theme.spacing * 0.5),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: AmountText(c.quote!.total, emphasis: true),
+              ),
+              InfoRow(
+                label: l10n.payWithTitle,
+                valueText: c.selectedMethod?.label ?? '',
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        AuthorizationPrompt(
+          phase: c.authPhase,
+          onStart: c.authorize,
+          onBackToReview: c.backToReview,
+        ),
+      ],
+    );
+  }
+}
+
+class _Payment extends StatelessWidget {
+  const _Payment(this.c);
+  final DemoCoordinator c;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    final attempt = c.attempt;
+    if (attempt == null) return const SizedBox.shrink();
+    final instructions = attempt.snapshot?.instructions;
+    final status = attempt.status;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (c.cancelRequested && !(status?.isTerminal ?? false)) ...[
+          NoticeBanner(
+            tone: StatusTone.info,
+            announce: true,
+            title: s.cancelRequestedTitle,
+            message: s.cancelRequestedMessage,
+          ),
+          const SizedBox(height: 12),
+        ],
+        PaymentStatusView(
+          attempt: attempt,
+          amount: c.attemptAmount,
+          busyAction: c.busyAction,
+          onAction: c.paymentAction,
+          instructions: instructions != null && c.showInstructions
+              ? PaymentInstructions(
+                  instructions: instructions,
+                  clock: c.host.clock,
+                  onCopyNumber: c.copy,
+                  onElapsed: c.onInstructionsElapsed,
+                )
+              : null,
+        ),
+        if (status != null && status.isTerminal) ...[
+          const SizedBox(height: 12),
+          PaymentButton(
+            key: const Key('done'),
+            label: s.done,
+            variant: PaymentButtonVariant.quiet,
+            onPressed: c.finish,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _Receipt extends StatelessWidget {
+  const _Receipt(this.c);
+  final DemoCoordinator c;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    final receipt = c.receipt;
+    if (receipt != null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PaymentReceipt(
+            data: receipt,
+            onShare: c.share,
+            onCopyTransactionId: c.copy,
+          ),
+          const SizedBox(height: 8),
+          PaymentButton(
+            key: const Key('receipt-done'),
+            label: s.done,
+            variant: PaymentButtonVariant.quiet,
+            onPressed: c.finish,
+          ),
+        ],
+      );
+    }
+    final attempt = c.attempt!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        PaymentStatusView(
+          attempt: attempt,
+          amount: c.attemptAmount,
+          busyAction: c.loadingReceipt ? PaymentAction.viewReceipt : null,
+          onAction: c.paymentAction,
+        ),
+        if (c.receiptError != null) ...[
+          const SizedBox(height: 8),
+          NoticeBanner(
+            tone: StatusTone.warning,
+            announce: true,
+            title: s.receiptLoadFailedTitle,
+            message: s.receiptLoadFailedMessage,
+            actions: [
+              FilledButton.tonal(
+                key: const Key('retry-receipt'),
+                onPressed: c.loadingReceipt ? null : c.loadReceipt,
+                child: Text(s.retry),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _HostTools extends StatelessWidget {
+  const _HostTools({
+    required this.coordinator,
+    required this.scenarioLabel,
+    required this.onRestart,
+    required this.onBackground,
+  });
+
+  final DemoCoordinator coordinator;
+  final String scenarioLabel;
+  final VoidCallback onRestart;
+  final VoidCallback onBackground;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = DemoStrings.of(context);
+    final theme = PaymentTheme.of(context);
+    final host = coordinator.host;
+    final scaler = devScaler(context);
+    final mono = devMono(theme.textPrimary);
+    // Gallery workbench voice, not product styling: a grey fill and mono
+    // text, so the panel never reads as part of the purchase. A Material
+    // (not a decorated box) so the tile's ink stays visible.
+    return Material(
+      color: devWorkbench(context),
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(borderRadius: theme.controlBorderRadius),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          key: const Key('host-tools'),
+          title: Text(
+            s.hostTools,
+            style: devMono(theme.textSecondary),
+            textScaler: scaler,
+          ),
+          subtitle: Text(
+            '${s.activeScenario(scenarioLabel)} · ${s.account(coordinator.account)}',
+            style: mono,
+            textScaler: scaler,
+          ),
+          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              s.hostStats(
+                coordinator.submitEvents,
+                host.attemptCount,
+                host.chargeCount,
+              ),
+              key: const Key('host-stats'),
+              style: mono,
+              textScaler: scaler,
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                OutlinedButton.icon(
+                  key: const Key('host-restart'),
+                  onPressed: onRestart,
+                  icon: const Icon(Icons.restart_alt),
+                  label: Text(s.simulateRestart),
+                ),
+                OutlinedButton.icon(
+                  key: const Key('host-background'),
+                  onPressed: onBackground,
+                  icon: const Icon(Icons.flip_to_back),
+                  label: Text(s.simulateBackground),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            ValueListenableBuilder(
+              valueListenable: host.log,
+              builder: (context, entries, _) {
+                if (entries.isEmpty) {
+                  return Text(s.hostLogEmpty, style: mono, textScaler: scaler);
+                }
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (final e in entries.reversed.take(30))
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          '${e.at.toIso8601String().substring(11, 19)}  ${e.message}',
+                          style: mono,
+                          textScaler: scaler,
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

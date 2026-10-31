@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment UI Direction Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f3f3f1; --fg: #17181c; --muted: #5a5d66; --line: rgba(0,0,0,.1); --card: #fff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #101113; --fg: #ecebe6; --muted: #a2a5ad; --line: #2c2e33; --card: #17181b; }
+  }
+  :root[data-theme="dark"] { --bg: #101113; --fg: #ecebe6; --muted: #a2a5ad; --line: #2c2e33; --card: #17181b; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; font-weight: 600; text-wrap: balance; }
+  h2 { font-size: 18px; margin: 48px 0 4px; font-weight: 600; }
+  .lede { color: var(--muted); max-width: 65ch; margin: 0; }
+  .sub { color: var(--muted); margin: 0 0 16px; max-width: 70ch; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+  figure { margin: 0; }
+  .shot { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+  .shot img { width: 100%; height: 300px; object-fit: cover; object-position: top; border-radius: 4px; display: block; background: #ddd; }
+  .shot.wide img { height: 240px; }
+  .tag { display: inline-block; font: 500 11px/1 "IBM Plex Mono", monospace; letter-spacing: .04em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 4px; padding: 4px 6px; color: var(--muted); }
+  figcaption { margin-top: 10px; font-size: 13px; }
+  figcaption b { display: block; font-size: 14px; margin: 6px 0 2px; }
+  figcaption a { color: inherit; }
+  .k { color: var(--muted); }
+  .no { color: #b3261e; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .no { color: #f2897f; } }
+
+  /* ---------- direction sketches: fixed palettes on purpose ---------- */
+  .phones { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); align-items: start; }
+  .phone { width: 100%; max-width: 330px; min-height: 600px; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); position: relative; display: flex; flex-direction: column; }
+  .cap { font-size: 13px; margin: 10px 0 0; max-width: 330px; }
+  .cap b { display: block; }
+
+  /* A: Statement */
+  .A { background: #f7f6f2; color: #17181c; font-family: "IBM Plex Sans", sans-serif; padding: 20px 20px 0; }
+  .A .bar { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 600; margin-bottom: 24px; }
+  .A .bar span { font-size: 18px; }
+  .A .m { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
+  .A .title { font-size: 20px; line-height: 26px; font-weight: 600; }
+  .A .ref { font: 13px/18px "IBM Plex Mono", monospace; color: #5a5d66; }
+  .A .row { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; font-size: 15px; line-height: 22px; }
+  .A .row .l2 { display: block; color: #5a5d66; font-size: 13px; line-height: 18px; }
+  .A .muted { color: #5a5d66; }
+  .A .rule { border-top: 1px solid #d9d7d0; }
+  .A .total { font-weight: 600; border-top: 1px solid #17181c; border-bottom: 4px double #17181c; }
+  .A .label { font-size: 13px; font-weight: 500; color: #5a5d66; margin: 24px 0 4px; }
+  .A .opt { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; margin: 0 -12px; font-size: 15px; border-bottom: 1px solid #d9d7d0; }
+  .A .opt.sel { border: 1.5px solid #17181c; border-radius: 8px; margin: 4px -12px; }
+  .A .radio { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #17181c; flex: none; display: grid; place-items: center; }
+  .A .opt.sel .radio::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #17181c; }
+  .A .opt .bal { margin-left: auto; font: 13px "IBM Plex Mono", monospace; color: #5a5d66; }
+  .A .action { flex-wrap: wrap; margin: auto -20px 0; padding: 12px 20px 16px; border-top: 1px solid #d9d7d0; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #f7f6f2; }
+  .A .action .t small { display: block; font-size: 13px; color: #5a5d66; }
+  .A .action .t .m { font-size: 20px; font-weight: 600; line-height: 28px; }
+  .A .btn { background: #17181c; color: #f7f6f2; border-radius: 6px; height: 48px; padding: 0 16px; white-space: nowrap; display: grid; place-items: center; font-weight: 600; font-size: 15px; }
+  .A .btn.full { width: 100%; margin-top: 20px; }
+  .A .link { display: block; text-align: left; margin: 14px 0 20px; font-size: 15px; text-decoration: underline; text-underline-offset: 3px; }
+  .A .band { height: 6px; border-radius: 1px; margin-bottom: 10px; }
+  .A .band.solid { background: #8a5300; }
+  .A .band.hatch { background: repeating-linear-gradient(-45deg, #8a5300 0 6px, #f7f6f2 6px 10px); }
+  .A .state { font: 600 12px/16px "IBM Plex Sans", sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #8a5300; display: flex; justify-content: space-between; }
+  .A .state .m { letter-spacing: 0; text-transform: none; font-weight: 500; }
+  .A .amt { font: 500 30px/36px "IBM Plex Mono", monospace; margin: 14px 0 2px; }
+  .A .strong { font-weight: 600; font-size: 15px; margin: 16px 0 4px; }
+  .A p { margin: 0; font-size: 15px; line-height: 22px; }
+  .A .va { background: #eeece6; border-radius: 8px; padding: 12px; margin-top: 16px; }
+  .A .va .hd { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: #5a5d66; }
+  .A .va .hd a { font: 600 15px "IBM Plex Sans", sans-serif; color: #17181c; text-decoration: underline; text-underline-offset: 3px; }
+  .A .va .num { font: 500 18px/26px "IBM Plex Mono", monospace; margin-top: 4px; overflow-wrap: anywhere; }
+  .A .disc { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #d9d7d0; font-size: 15px; }
+
+  /* A dark */
+  .A.dark { background: #131417; color: #eceae4; }
+  .A.dark .ref, .A.dark .muted, .A.dark .row .l2, .A.dark .label { color: #a2a5ad; }
+  .A.dark .rule, .A.dark .disc { border-color: #2c2e33; }
+  .A.dark .state { color: #e3a64c; }
+  .A.dark .band.hatch { background: repeating-linear-gradient(-45deg, #e3a64c 0 6px, #131417 6px 10px); }
+  .A.dark .btn { background: #eceae4; color: #131417; }
+
+  /* B: Slip */
+  .B { background: #cfd3d6; font-family: "IBM Plex Sans", sans-serif; color: #1d1b18; padding: 20px 16px; }
+  .B .slip { background: #fbf6ea; border-radius: 2px; padding: 20px 18px; position: relative; flex: 1; }
+  .B .slip::before, .B .slip::after { content: ""; position: absolute; left: 0; right: 0; height: 8px; background: radial-gradient(circle at 5px 0, transparent 4px, #fbf6ea 4.5px) repeat-x; background-size: 10px 8px; }
+  .B .slip::before { top: -8px; transform: scaleY(-1); }
+  .B .slip::after { bottom: -8px; }
+  .B .merchant { font-size: 13px; letter-spacing: .02em; color: #5c564c; }
+  .B .amt { font: 600 54px/1 "Barlow Condensed", sans-serif; margin: 10px 0 6px; font-variant-numeric: tabular-nums; }
+  .B .tear { border-top: 2px dashed #b9b0a0; margin: 22px -18px; position: relative; }
+  .B .stamp { display: inline-block; margin-top: 14px; transform: rotate(-6deg); border: 2.5px solid #c2410c; color: #c2410c; font: 600 20px/1 "Barlow Condensed", sans-serif; letter-spacing: .06em; padding: 6px 10px; border-radius: 4px; }
+  .B p { margin: 0 0 10px; font-size: 15px; line-height: 22px; }
+  .B .row { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; }
+  .B .row span:first-child { color: #5c564c; }
+  .B .btn { margin-top: 18px; height: 48px; border-radius: 4px; background: #c2410c; color: #fff; display: grid; place-items: center; font-weight: 600; }
+
+  /* C: Instrument */
+  .C { background: #d9d8d4; font-family: "IBM Plex Sans", sans-serif; color: #1c1c1c; padding: 0; gap: 1px; }
+  .C .panel { background: #e9e8e4; padding: 16px; }
+  .C .lab { font: 500 11px/14px "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: #6a6a66; }
+  .C .amt { font: 300 46px/1.1 "IBM Plex Sans", sans-serif; letter-spacing: -.02em; margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .C .led { display: flex; align-items: center; gap: 10px; font: 600 13px "IBM Plex Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }
+  .C .led i { width: 10px; height: 10px; border-radius: 50%; background: #e8590c; box-shadow: 0 0 0 3px rgba(232,89,12,.2); }
+  .C .seg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 12px; }
+  .C .seg span { height: 6px; background: #c4c3be; }
+  .C .seg span.on { background: #1c1c1c; }
+  .C p { margin: 8px 0 0; font-size: 14px; line-height: 20px; }
+  .C .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 13px; }
+  .C .kv span:nth-child(odd) { font: 500 11px/18px "IBM Plex Mono", monospace; letter-spacing: .12em; text-transform: uppercase; color: #6a6a66; }
+  .C .kv span:nth-child(even) { text-align: right; font-family: "IBM Plex Mono", monospace; }
+  .C .keys { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; align-content: end; }
+  .C .key { height: 56px; border-radius: 10px; background: #f4f3ef; border: 1px solid #c9c8c3; display: grid; place-items: center; font-weight: 600; font-size: 14px; }
+  .C .key.go { background: #e8590c; border-color: #e8590c; color: #fff; }
+
+  .swatches { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); margin-top: 12px; }
+  .sw { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; font-size: 12px; background: var(--card); }
+  .sw i { display: block; height: 44px; }
+  .sw div { padding: 8px; }
+  .sw div .mono { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>flutter_ui_payment: direction board</h1>
+  <p class="lede">Research-phase evidence for <span class="mono">docs/design-research.md</span>. Current native screenshots, real references captured 30 Oct 2026, and HTML sketches of three directions. The sketches are not Flutter output.</p>
+
+  <h2>1 · Current UI: what the owner rejected</h2>
+  <p class="sub">Inspected native captures from <span class="mono">example/build/screenshots/</span>. Notes name the visible problem, not the whole screen.</p>
+  <div class="grid">
+    <figure class="shot"><img src="../../example/build/screenshots/android_refined_checkout_light.png" alt="Current checkout, light"><figcaption><b>Checkout</b>Card-in-card method tile, total shown twice (44 px and 34 px), bold values everywhere, tonal avatar, "Rp102,500" beside "Rp350.000".</figcaption></figure>
+    <figure class="shot"><img src="../../example/build/screenshots/android_refined_status_unknown_dark.png" alt="Current unknown status, dark"><figcaption><b>Unknown status · dark</b>Centered icon circle and paragraph, the same orange as pending. "Last updated → Not confirmed" is a status in a timestamp row. Neon mint primary.</figcaption></figure>
+    <figure class="shot"><img src="../../example/build/screenshots/android_kit_history.png" alt="Current gallery history"><figcaption><b>Gallery · history</b>Fixture chips (ready/loading…) look identical to end-user filters (Semua/Berhasil…). The class-name heading dominates. The row wraps mid-date.</figcaption></figure>
+    <figure class="shot"><img src="../../example/build/screenshots/android_kit_promo_200.png" alt="Current promo at 200%"><figcaption><b>Promo · 200%</b>"Kenapa ini?" outsizes the sponsor disclosure, and the icon tile adds nothing. Pill fixture chips wrap to two rows.</figcaption></figure>
+    <figure class="shot"><img src="../../example/build/screenshots/android_kit_navigation_drawer.png" alt="Current drawer, Lumen theme"><figcaption><b>Drawer (Lumen example theme)</b>Unchosen indigo, a tonal selection blob, and filled and outlined icons mixed.</figcaption></figure>
+    <figure class="shot"><img src="../../example/build/screenshots/android_kit_sheet_pending.png" alt="Current pending sheet"><figcaption><b>Pending sheet · keep the logic</b>The "closing doesn't cancel" notice and separate cancel request are right. The blue tinted notice box and the 28 px sheet radius are default styling.</figcaption></figure>
+  </div>
+
+  <h2>2 · References: product components</h2>
+  <p class="sub">Real products or official demos, operated in a browser. The red line names what not to copy.</p>
+  <div class="grid">
+    <figure class="shot"><img src="refs/midtrans-snap-bca-pending.png" alt="Midtrans Snap BCA virtual account pending"><figcaption><span class="tag">Real · ID · sandbox</span><b><a href="https://demo.midtrans.com/">Midtrans Snap: VA pending</a></b>Amount pinned top-left, a "Pay within" countdown band, a big VA number with Copy, "How to pay" disclosure, <b style="display:inline">Check status</b> as the only action.<br><span class="no">Don't copy: TEST ribbon, empty half-screen, bank-logo grid.</span></figcaption></figure>
+    <figure class="shot"><img src="refs/stripe-checkout-mobile.png" alt="Stripe Checkout order summary on mobile"><figcaption><span class="tag">Real · official demo</span><b><a href="https://checkout.stripe.dev/checkout">Stripe Checkout: summary</a></b>No card. Label left, amount right, hairlines between groups only. The total is the same size as the rows, only heavier. Promo code shown as an inline token.<br><span class="no">Don't copy: purple, decimal IDR, Apple Pay-first.</span></figcaption></figure>
+    <figure class="shot"><img src="refs/govuk-confirmation.png" alt="GOV.UK confirmation page"><figcaption><span class="tag">Real · design system</span><b><a href="https://design-system.service.gov.uk/patterns/confirmation-pages/default/index.html">GOV.UK: confirmation</a></b>One block with the reference, then "What happens next" in plain sentences. Flat, no cards, tested for comprehension.<br><span class="no">Don't copy: Crown branding, full-bleed green banner.</span></figcaption></figure>
+    <figure class="shot"><img src="refs/mercury-demo-transactions.png" alt="Mercury demo transactions"><figcaption><span class="tag">Real · public demo</span><b><a href="https://demo.mercury.com/transactions">Mercury: transactions</a></b>A failed amount is <s>struck through</s> with a small "Failed" tag. Right-aligned tabular figures, hairline rows.<br><span class="no">Don't copy: the table on mobile, where it cuts off amounts (captured).</span></figcaption></figure>
+  </div>
+
+  <h2>3 · References: gallery, landing, docs</h2>
+  <div class="grid">
+    <figure class="shot wide"><img src="refs/stripe-checkout-desktop.png" alt="Stripe demo with feature panel and framed preview"><figcaption><span class="tag">Real · demo shell</span><b>Stripe demo: controls outside the product</b>Feature and style toggles in a side panel. The product sits in a frame on a dotted workbench, with the device/locale switch under the frame. This is the model for our gallery.</figcaption></figure>
+    <figure class="shot wide"><img src="refs/forui-docs-button.png" alt="Forui button docs"><figcaption><span class="tag">Real · Flutter docs</span><b><a href="https://forui.dev/docs/widgets/form/button">Forui docs: benchmark IA</a></b>Grouped sidebar, Preview / Code tabs, every variant an "On this page" anchor, API reference link.<br><span class="no">Don't copy: shadcn identity, one-word descriptions.</span></figcaption></figure>
+    <figure class="shot wide"><img src="refs/forui-landing.png" alt="Forui landing hero"><figcaption><span class="tag">Real · anti-reference</span><b><a href="https://forui.dev/">Forui landing hero</a></b>A "New" pill, a centered headline, two buttons, a widget collage: the template every generated landing uses. Avoid it.</figcaption></figure>
+    <figure class="shot wide"><img src="refs/te-op1-product.png" alt="teenage engineering OP-1 field product page"><figcaption><span class="tag">Real · marketing</span><b><a href="https://teenage.engineering/products/op-1">teenage engineering: the product is the hero</a></b>The real object rendered large, one light grotesk voice, a small outlined tag as the only label device.<br><span class="no">Don't copy: lowercase gimmick, centered paragraphs, skeuomorphism.</span></figcaption></figure>
+  </div>
+
+  <h2 id="directions">4 · Three directions, same unknown-status screen</h2>
+  <p class="sub">The same content each time, so the difference is in containment, type, density and status signal, not color alone. A is recommended.</p>
+  <div class="phones">
+    <div>
+      <div class="phone A">
+        <div class="bar"><span>←</span>Pembayaran</div>
+        <div class="band hatch"></div>
+        <div class="state">Hasil belum diketahui <span class="m">dikirim 20.08</span></div>
+        <div class="amt">Rp102.500</div>
+        <div class="muted" style="font-size:15px">Paket Belajar · 1 bulan</div>
+        <div class="strong">Jangan bayar lagi.</div>
+        <p>Pembayaran sudah dikirim, tetapi hasilnya belum diterima. Cek status untuk melihat hasilnya.</p>
+        <div class="rule" style="margin-top:20px"></div>
+        <div class="row"><span class="muted">Referensi</span><span class="m">att-mvv029kw-1</span></div>
+        <div class="row rule"><span class="muted">Dikirim</span><span class="m">30 Okt, 20.08</span></div>
+        <div class="btn full">Cek status</div>
+        <span class="link">Hubungi bantuan</span>
+      </div>
+      <p class="cap"><b>A · Statement (recommended)</b>A hatched band means unknown, a solid band means pending. Mono money. "Don't pay again" comes first. Ink action, no card.</p>
+    </div>
+    <div>
+      <div class="phone B">
+        <div class="slip">
+          <div class="merchant">RUANG BAYAR AKADEMI · RB-118</div>
+          <div class="amt">Rp102.500</div>
+          <div style="font-size:14px;color:#5c564c">Paket Belajar · 1 bulan</div>
+          <div class="stamp">BELUM PASTI</div>
+          <div class="tear"></div>
+          <p><b>Jangan bayar lagi.</b> Hasilnya belum diterima. Cek status untuk melihatnya.</p>
+          <div class="row"><span>Referensi</span><span class="mono">att-mvv029kw-1</span></div>
+          <div class="row"><span>Dikirim</span><span class="mono">30 Okt, 20.08</span></div>
+          <div class="btn">Cek status</div>
+        </div>
+      </div>
+      <p class="cap"><b>B · Slip</b>A counter receipt with a tear line, a rubber stamp for status and condensed amounts. Memorable, but the metaphor breaks on navigation and video. In the first draft the stamp collided with the amount, and at 200% it will collide again.</p>
+    </div>
+    <div>
+      <div class="phone C">
+        <div class="panel"><div class="lab">Status</div><div class="led" style="margin-top:8px"><i></i>Belum diketahui</div><div class="seg"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div></div>
+        <div class="panel"><div class="lab">Jumlah</div><div class="amt">Rp102.500</div><p>Jangan bayar lagi. Hasilnya belum diterima.</p></div>
+        <div class="panel"><div class="kv"><span>Ref</span><span>att-mvv029kw-1</span><span>Dikirim</span><span>30 Okt 20.08</span></div></div>
+        <div class="panel" style="flex:1;display:flex"><div class="keys"><div class="key">Bantuan</div><div class="key go">Cek status</div></div></div>
+      </div>
+      <p class="cap"><b>C · Instrument</b>Hardware-panel greys, a light display amount, an LED dot for status, keycap buttons. Dense and distinctive, but it reads as a tool for engineers, and a dot is a weak "don't pay again" signal.</p>
+    </div>
+  </div>
+
+  <h2 id="statement">5 · Statement: checkout and pending</h2>
+  <p class="sub">The recommended direction carried to the two other critical screens, plus unknown in dark mode.</p>
+  <div class="phones">
+    <div>
+      <div class="phone A">
+        <div class="bar"><span>←</span>Checkout</div>
+        <div class="title">Ruang Bayar Akademi</div>
+        <div class="ref">RB-2026-1030-118</div>
+        <div style="height:16px"></div>
+        <div class="row"><span>Paket Belajar<span class="l2">1 × 1 bulan</span></span><span class="m">Rp100.000</span></div>
+        <div class="row"><span class="muted">Biaya layanan</span><span class="m">Rp2.500</span></div>
+        <div class="row total"><span>Total</span><span class="m">Rp102.500</span></div>
+        <div class="label">Metode pembayaran</div>
+        <div class="opt sel"><span class="radio"></span>Saldo Ruang Bayar<span class="bal">Rp350.000</span></div>
+        <div class="opt"><span class="radio"></span>Transfer bank (VA)</div>
+        <div class="opt" style="border:0"><span class="radio"></span>QRIS</div>
+        <div class="action"><div class="t"><small>Total</small><span class="m">Rp102.500</span></div><div class="btn">Tinjau pembayaran</div></div>
+      </div>
+      <p class="cap"><b>Checkout</b>One display total (the bar). The summary total is closed by an accounting double rule. The selected method is the only box.</p>
+    </div>
+    <div>
+      <div class="phone A">
+        <div class="bar"><span>←</span>Pembayaran</div>
+        <div class="band solid"></div>
+        <div class="state">Menunggu pembayaran <span class="m">sisa 23:59:51</span></div>
+        <div class="amt">Rp102.500</div>
+        <div class="muted" style="font-size:15px">Transfer ke BCA virtual account</div>
+        <div class="va"><div class="hd"><span>Nomor virtual account</span><a>Salin</a></div><div class="num">0774 3508 8494 9582 7305 167</div></div>
+        <div class="disc"><span>Cara bayar</span><span>⌄</span></div>
+        <div class="btn full">Cek status</div>
+        <div style="height:20px"></div>
+      </div>
+      <p class="cap"><b>Pending (VA)</b>The Midtrans pattern in our language: a solid band with a tabular countdown, a sunken VA box with Copy on the label line, so a 22-digit VA number (as Midtrans issued) gets the full width. Check status only.</p>
+    </div>
+    <div>
+      <div class="phone A dark">
+        <div class="bar"><span>←</span>Pembayaran</div>
+        <div class="band hatch"></div>
+        <div class="state">Hasil belum diketahui <span class="m">dikirim 20.08</span></div>
+        <div class="amt">Rp102.500</div>
+        <div class="muted" style="font-size:15px">Paket Belajar · 1 bulan</div>
+        <div class="strong">Jangan bayar lagi.</div>
+        <p>Pembayaran sudah dikirim, tetapi hasilnya belum diterima. Cek status untuk melihat hasilnya.</p>
+        <div class="rule" style="margin-top:20px"></div>
+        <div class="row"><span class="muted">Referensi</span><span class="m">att-mvv029kw-1</span></div>
+        <div class="row rule"><span class="muted">Dikirim</span><span class="m">30 Okt, 20.08</span></div>
+        <div class="btn full">Cek status</div>
+        <span class="link">Hubungi bantuan</span>
+      </div>
+      <p class="cap"><b>Unknown · dark</b>The action is paper-on-ink, not neon. The amber is desaturated (8.6:1). The hatch survives without color.</p>
+    </div>
+  </div>
+
+  <h2>6 · Statement tokens</h2>
+  <div class="swatches">
+    <div class="sw"><i style="background:#f7f6f2"></i><div>paper<br><span class="mono">#F7F6F2 / #131417</span></div></div>
+    <div class="sw"><i style="background:#eeece6"></i><div>sunken<br><span class="mono">#EEECE6 / #0E0F11</span></div></div>
+    <div class="sw"><i style="background:#d9d7d0"></i><div>rule<br><span class="mono">#D9D7D0 / #2C2E33</span></div></div>
+    <div class="sw"><i style="background:#17181c"></i><div>ink · action<br><span class="mono">#17181C / #ECEAE4</span></div></div>
+    <div class="sw"><i style="background:#5a5d66"></i><div>ink muted<br><span class="mono">#5A5D66 / #A2A5AD</span></div></div>
+    <div class="sw"><i style="background:#8a5300"></i><div>pending<br><span class="mono">#8A5300 / #E3A64C</span></div></div>
+    <div class="sw"><i style="background:repeating-linear-gradient(-45deg,#8a5300 0 6px,#f7f6f2 6px 10px)"></i><div>unknown = pending + hatch</div></div>
+    <div class="sw"><i style="background:#1d6b45"></i><div>success<br><span class="mono">#1D6B45 / #6FC79B</span></div></div>
+    <div class="sw"><i style="background:#a8231c"></i><div>danger<br><span class="mono">#A8231C / #F2897F</span></div></div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stripe-calm Options</title>
+<style>
+  :root { --bg: #f3f3f1; --fg: #17181c; --muted: #5a5d66; --line: rgba(0,0,0,.1); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #101113; --fg: #ecebe6; --muted: #a2a5ad; --line: #2c2e33; } }
+  :root[data-theme="dark"] { --bg: #101113; --fg: #ecebe6; --muted: #a2a5ad; --line: #2c2e33; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 22px; margin: 0 0 4px; font-weight: 600; }
+  h2 { font-size: 16px; margin: 32px 0 12px; font-weight: 600; }
+  .sub { color: var(--muted); margin: 0; max-width: 72ch; }
+  .phones { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); align-items: start; }
+  .cap { font-size: 13px; margin: 10px 0 0; max-width: 330px; color: var(--muted); }
+  .cap b { display: block; color: var(--fg); }
+
+  /* shared skeleton */
+  .ph { width: 330px; min-height: 610px; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); display: flex; flex-direction: column; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-variant-numeric: tabular-nums; }
+  .pad { padding: 20px 20px 0; display: flex; flex-direction: column; flex: 1; }
+  .bar { display: flex; gap: 12px; font-weight: 600; font-size: 15px; margin-bottom: 20px; }
+  .mer { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .logo { width: 28px; height: 28px; border-radius: 6px; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+  .big { margin: 10px 0 16px; }
+  .row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; font-size: 15px; }
+  .lab { font-size: 13px; font-weight: 500; margin: 20px 0 8px; }
+  .opt { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 14px; font-size: 15px; }
+  .r { width: 18px; height: 18px; border-radius: 50%; flex: none; display: grid; place-items: center; }
+  .opt .b { margin-left: auto; font-size: 13px; }
+  .btn { height: 48px; border-radius: 6px; display: grid; place-items: center; font-weight: 600; font-size: 15px; white-space: nowrap; }
+  .grow { flex: 1; }
+  .band { height: 6px; margin-bottom: 10px; }
+  .st { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
+  .st span { font-weight: 400; }
+  p { margin: 0; font-size: 15px; line-height: 22px; }
+  .strong { font-weight: 600; font-size: 15px; margin: 4px 0; }
+  .link { margin: 14px 0 20px; font-size: 15px; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* 1 · Hairline: no shadows, separation by rules (emil-surfaces: borders separate) */
+  .H { background: #fff; color: #1a1f36; }
+  .H .mut, .H .mer { color: #5e6678; }
+  .H .logo { background: #1a1f36; color: #fff; }
+  .H .big { font-size: 32px; line-height: 1.1; font-weight: 600; letter-spacing: -0.01em; }
+  .H .hr { border-top: 1px solid #e3e6ec; }
+  .H .tot { font-weight: 600; }
+  .H .group { border: 1px solid #e3e6ec; border-radius: 8px; }
+  .H .opt + .opt { border-top: 1px solid #e3e6ec; }
+  .H .opt.sel { box-shadow: inset 0 0 0 2px #1a1f36; border-radius: 8px; }
+  .H .r { border: 1.5px solid #7a8396; }
+  .H .sel .r { border-color: #1a1f36; }
+  .H .sel .r::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #1a1f36; }
+  .H .btn { background: #1a1f36; color: #fff; }
+  .H .band { background: repeating-linear-gradient(-45deg, #8a5300 0 6px, #fff 6px 10px); border-radius: 3px; }
+  .H .st { color: #8a5300; } .H .st span { color: #5e6678; }
+
+  /* 2 · Lift: one raised surface per screen, layered shadow instead of border (emil-surfaces) */
+  .L { background: #f5f6f8; color: #1a1f36; }
+  .L .mut, .L .mer { color: #5e6678; }
+  .L .logo { background: #1a1f36; color: #fff; }
+  .L .big { font-size: 32px; line-height: 1.1; font-weight: 600; letter-spacing: -0.01em; }
+  .L .sheet { background: #fff; border-radius: 12px; padding: 4px 16px; box-shadow: 0 0 0 1px rgb(0 0 0 / .05), 0 1px 3px rgb(0 0 0 / .05), 0 4px 10px -4px rgb(0 0 0 / .06); }
+  .L .hr { border-top: 1px solid #eceef2; }
+  .L .tot { font-weight: 600; }
+  .L .opt { background: #fff; border-radius: 10px; margin-bottom: 8px; box-shadow: 0 0 0 1px rgb(0 0 0 / .06), 0 1px 2px rgb(0 0 0 / .04); }
+  .L .opt.sel { box-shadow: 0 0 0 2px #1a1f36, 0 2px 6px -2px rgb(0 0 0 / .12); }
+  .L .r { border: 1.5px solid #7a8396; }
+  .L .sel .r { border-color: #1a1f36; }
+  .L .sel .r::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #1a1f36; }
+  .L .btn { background: #1a1f36; color: #fff; box-shadow: 0 1px 1px rgb(0 0 0 / .08), 0 2px 5px rgb(26 31 54 / .18); }
+  .L .band { background: repeating-linear-gradient(-45deg, #8a5300 0 6px, #fff 6px 10px); border-radius: 3px; }
+  .L .st { color: #8a5300; } .L .st span { color: #5e6678; }
+
+  /* 3 · Contrast: Uber-Base-like black/white, heavy display, inverted selection (emil-typography: tighter tracking on display) */
+  .K { background: #fff; color: #000; }
+  .K .mut, .K .mer { color: #545454; }
+  .K .logo { background: #000; color: #fff; border-radius: 4px; }
+  .K .bar { font-weight: 700; }
+  .K .big { font-size: 40px; line-height: 1.05; font-weight: 700; letter-spacing: -0.025em; }
+  .K .hr { border-top: 1px solid #e8e8e8; }
+  .K .tot { font-weight: 700; }
+  .K .lab { font-weight: 700; color: #000; font-size: 15px; }
+  .K .opt { background: #f3f3f3; border-radius: 8px; margin-bottom: 8px; }
+  .K .opt.sel { background: #000; color: #fff; }
+  .K .opt.sel .b { color: #c7c7c7; }
+  .K .r { border: 2px solid #000; }
+  .K .sel .r { border-color: #fff; }
+  .K .sel .r::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+  .K .btn { background: #000; color: #fff; border-radius: 8px; height: 52px; font-size: 16px; }
+  .K .band { height: 8px; background: repeating-linear-gradient(-45deg, #000 0 6px, #ffc043 6px 12px); }
+  .K .st { color: #000; font-weight: 700; } .K .st span { color: #545454; }
+  .K .strong { font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Stripe-calm: three options</h1>
+  <p class="sub">The same base in each: what we take from Stripe (summary without a card, total near the top, bordered method list, amount on the pay button) plus Statement's status signals (hatched band = unknown, "Jangan bayar lagi" first, labeled time). They differ in surface depth and type weight. System fonts only, which is what a host gets without bundled fonts.</p>
+
+  <h2>Checkout</h2>
+  <div class="phones">
+    <div>
+      <div class="ph H"><div class="pad">
+        <div class="bar">← Checkout</div>
+        <div class="mer"><span class="logo">RB</span>Ruang Bayar Akademi</div>
+        <div class="big">Rp102.500</div>
+        <div class="row"><span>Paket Belajar · 1 bulan</span><span>Rp100.000</span></div>
+        <div class="row"><span class="mut">Biaya layanan</span><span>Rp2.500</span></div>
+        <div class="hr"></div>
+        <div class="row tot"><span>Total</span><span>Rp102.500</span></div>
+        <div class="lab">Metode pembayaran</div>
+        <div class="group"><div class="opt sel"><span class="r"></span>Saldo Ruang Bayar<span class="b mut">Rp350.000</span></div><div class="opt"><span class="r"></span>Transfer bank (VA)</div><div class="opt"><span class="r"></span>QRIS</div></div>
+        <div class="grow"></div>
+        <div class="btn" style="margin:20px 0">Bayar Rp102.500</div>
+      </div></div>
+      <p class="cap"><b>1 · Hairline (recommended default)</b>White, no shadows. Rules separate; the method group is one bordered list (a separation border, not a card). Lowest risk inside any host layout.</p>
+    </div>
+    <div>
+      <div class="ph L"><div class="pad">
+        <div class="bar">← Checkout</div>
+        <div class="mer"><span class="logo">RB</span>Ruang Bayar Akademi</div>
+        <div class="big">Rp102.500</div>
+        <div class="sheet">
+          <div class="row"><span>Paket Belajar · 1 bulan</span><span>Rp100.000</span></div>
+          <div class="row"><span class="mut">Biaya layanan</span><span>Rp2.500</span></div>
+          <div class="hr"></div>
+          <div class="row tot"><span>Total</span><span>Rp102.500</span></div>
+        </div>
+        <div class="lab">Metode pembayaran</div>
+        <div class="opt sel"><span class="r"></span>Saldo Ruang Bayar<span class="b mut">Rp350.000</span></div>
+        <div class="opt"><span class="r"></span>Transfer bank (VA)</div>
+        <div class="opt"><span class="r"></span>QRIS</div>
+        <div class="grow"></div>
+        <div class="btn" style="margin:20px 0">Bayar Rp102.500</div>
+      </div></div>
+      <p class="cap"><b>2 · Lift</b>Closest to Stripe Elements. Grey canvas, layered shadow instead of border (dark mode collapses it to a 1px white ring), separate method tiles. Softer, more "app-like"; risks the stacked-card look if overused.</p>
+    </div>
+    <div>
+      <div class="ph K"><div class="pad">
+        <div class="bar">← Checkout</div>
+        <div class="mer"><span class="logo">RB</span>Ruang Bayar Akademi</div>
+        <div class="big">Rp102.500</div>
+        <div class="row"><span>Paket Belajar · 1 bulan</span><span>Rp100.000</span></div>
+        <div class="row"><span class="mut">Biaya layanan</span><span>Rp2.500</span></div>
+        <div class="hr"></div>
+        <div class="row tot"><span>Total</span><span>Rp102.500</span></div>
+        <div class="lab">Metode pembayaran</div>
+        <div class="opt sel"><span class="r"></span>Saldo Ruang Bayar<span class="b">Rp350.000</span></div>
+        <div class="opt"><span class="r"></span>Transfer bank (VA)</div>
+        <div class="opt"><span class="r"></span>QRIS</div>
+        <div class="grow"></div>
+        <div class="btn" style="margin:20px 0">Bayar Rp102.500</div>
+      </div></div>
+      <p class="cap"><b>3 · Contrast</b>Uber Base influence: pure black and white, 40px bold display with tight tracking, selection shown by inverting the row. Most personality; the heaviest to brand and the loudest at 200% text.</p>
+    </div>
+  </div>
+
+  <h2>Unknown status</h2>
+  <div class="phones">
+    <div>
+      <div class="ph H"><div class="pad">
+        <div class="bar">← Pembayaran</div>
+        <div class="band"></div>
+        <div class="st">Hasil belum diketahui <span>dikirim 20.08</span></div>
+        <div class="big" style="margin-bottom:4px">Rp102.500</div>
+        <div class="mut" style="font-size:14px;margin-bottom:14px">Paket Belajar · 1 bulan</div>
+        <div class="strong">Jangan bayar lagi.</div>
+        <p>Pembayaran sudah dikirim, tetapi hasilnya belum diterima. Cek status untuk melihat hasilnya.</p>
+        <div class="hr" style="margin-top:18px"></div>
+        <div class="row"><span class="mut">Referensi</span><span>att-mvv029kw-1</span></div>
+        <div class="row"><span class="mut">Dikirim</span><span>30 Okt, 20.08</span></div>
+        <div class="btn" style="margin-top:20px">Cek status</div>
+        <span class="link">Hubungi bantuan</span>
+      </div></div>
+      <p class="cap"><b>Hairline · unknown</b>Amber hatched band and a 13px state line; everything else stays calm.</p>
+    </div>
+    <div>
+      <div class="ph L"><div class="pad">
+        <div class="bar">← Pembayaran</div>
+        <div class="sheet" style="padding:16px">
+          <div class="band"></div>
+          <div class="st">Hasil belum diketahui <span>dikirim 20.08</span></div>
+          <div class="big" style="margin:10px 0 4px">Rp102.500</div>
+          <div class="mut" style="font-size:14px;margin-bottom:12px">Paket Belajar · 1 bulan</div>
+          <div class="strong">Jangan bayar lagi.</div>
+          <p>Pembayaran sudah dikirim, tetapi hasilnya belum diterima. Cek status untuk melihat hasilnya.</p>
+        </div>
+        <div class="row" style="margin-top:12px"><span class="mut">Referensi</span><span>att-mvv029kw-1</span></div>
+        <div class="row"><span class="mut">Dikirim</span><span>30 Okt, 20.08</span></div>
+        <div class="btn" style="margin-top:16px">Cek status</div>
+        <span class="link">Hubungi bantuan</span>
+      </div></div>
+      <p class="cap"><b>Lift · unknown</b>The status itself is the one raised surface; details sit flat below it.</p>
+    </div>
+    <div>
+      <div class="ph K"><div class="pad">
+        <div class="bar">← Pembayaran</div>
+        <div class="band"></div>
+        <div class="st">HASIL BELUM DIKETAHUI <span>dikirim 20.08</span></div>
+        <div class="big" style="margin-bottom:4px">Rp102.500</div>
+        <div class="mut" style="font-size:14px;margin-bottom:14px">Paket Belajar · 1 bulan</div>
+        <div class="strong">Jangan bayar lagi.</div>
+        <p>Pembayaran sudah dikirim, tetapi hasilnya belum diterima. Cek status untuk melihat hasilnya.</p>
+        <div class="hr" style="margin-top:18px"></div>
+        <div class="row"><span class="mut">Referensi</span><span>att-mvv029kw-1</span></div>
+        <div class="row"><span class="mut">Dikirim</span><span>30 Okt, 20.08</span></div>
+        <div class="btn" style="margin-top:20px">Cek status</div>
+        <span class="link">Hubungi bantuan</span>
+      </div></div>
+      <p class="cap"><b>Contrast · unknown</b>Black-and-yellow caution band (Uber Base: "proportional urgency"), bold uppercase state line.</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
