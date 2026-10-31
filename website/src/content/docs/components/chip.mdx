@@ -1,0 +1,41 @@
+---
+title: Chip
+description: Compact payment filters and applied promo codes.
+---
+
+import Props from '../../../components/Props.astro';
+
+Compact payment filters and applied promo codes.
+
+## Usage and Stripe → kit
+
+Callbacks select static, removable, dropdown or suggested kinds. Nothing else exists. Removal uses a separate 48 dp action; suggested chips have a dashed edge. Multiple values summarize the first two labels plus a count. Arrow keys move between chip targets.
+
+## Which variant when
+
+Choose controls by the data being collected. Use a host callback for actions and keep the selected value controlled.
+
+## States
+
+Empty, selected, disabled and error states use semantic tokens. Search additionally supports loading and no matches.
+
+## Do and don't
+
+Keep labels visible. Use complete date ranges and meaningful option names. Avoid duplicating filters with several equally prominent controls.
+
+## Content guidelines
+
+Use short labels and compact localized values.
+
+## Accessibility
+
+Targets are at least 48 dp. Pickers restore focus; result counts announce without platform calls. Keyboard navigation preserves Tab traversal.
+
+## API
+
+<Props names={ ['PaymentChip', 'PaymentChipList'] } />
+
+## See also
+
+- [Select](/components/select/)
+- [Date field](/components/date-field/)

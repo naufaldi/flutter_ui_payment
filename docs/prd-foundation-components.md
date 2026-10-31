@@ -2047,3 +2047,7 @@ Layout primitives use semantic enums and internal resolvers. PaymentIcon.tone ac
 ### Phase 4B-1 implementation notes
 
 Fields share labels, disabled scope and errors. Select supports Form validation and focus nodes; date patterns are app-wide. Identity date values are ISO calendar dates. Fields fill their parent; css width is not mirrored. Multiple values use the .multiple factory. Currency changes report reparsed values after a frame.
+
+### Phase 4B implementation notes
+
+Multiple selections use .multiple factories, date ranges use fromPreset, and presets open in a kit sheet. Fields fill rather than mirror css width. Select integrates Form validators and focus nodes. Phase 5 retains history filter integration, identity grouping and province search in the real flow.

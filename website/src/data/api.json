@@ -2339,6 +2339,12 @@
       "optional",
       "charactersLeft",
       "currencyLabel",
+      "chooseDates",
+      "customRange",
+      "clearDates",
+      "removeItem",
+      "resultsCount",
+      "dateGranularity",
       "close",
       "cancel",
       "confirm",
@@ -3717,12 +3723,20 @@
         "doc": "Persistent localized pattern; parsing uses dateInputPattern."
       },
       {
+        "name": "formatDateRange",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String formatDateRange(DateTime start, DateTime end)",
+        "doc": "Calendar date in the host zone; unlike `formatDateTime`, no conversion\nto the device zone occurs and the time is ignored.\nCompact calendar range using the same localized month names as formatDate."
+      },
+      {
         "name": "formatDate",
         "kind": "method",
         "static": false,
         "type": "String",
         "signature": "String formatDate(DateTime value)",
-        "doc": "Calendar date in the host zone; unlike `formatDateTime`, no conversion\nto the device zone occurs and the time is ignored."
+        "doc": ""
       },
       {
         "name": "languageCode",
@@ -18925,6 +18939,1065 @@
         "static": false,
         "type": "Axis",
         "doc": "layout for this field."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentChip": {
+    "kind": "class",
+    "file": "lib/src/forms/chip.dart",
+    "doc": "Compact value or filter; callbacks select removable, edit or suggested kind.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentChip",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "label for this component."
+          },
+          {
+            "name": "value",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": "value for this component."
+          },
+          {
+            "name": "values",
+            "type": "List<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "values",
+            "doc": "values for this component."
+          },
+          {
+            "name": "onClose",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onClose",
+            "doc": "onClose for this component."
+          },
+          {
+            "name": "onDropdown",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onDropdown",
+            "doc": "onDropdown for this component."
+          },
+          {
+            "name": "onAddSuggestion",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onAddSuggestion",
+            "doc": "onAddSuggestion for this component."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "label for this component."
+      },
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "value for this component."
+      },
+      {
+        "name": "values",
+        "kind": "field",
+        "static": false,
+        "type": "List<String>?",
+        "doc": "values for this component."
+      },
+      {
+        "name": "onClose",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "onClose for this component."
+      },
+      {
+        "name": "onDropdown",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "onDropdown for this component."
+      },
+      {
+        "name": "onAddSuggestion",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "onAddSuggestion for this component."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentChipList": {
+    "kind": "class",
+    "file": "lib/src/forms/chip.dart",
+    "doc": "Related chips with arrow-key focus traversal.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentChipList",
+        "factory": false,
+        "params": [
+          {
+            "name": "children",
+            "type": "List<PaymentChip>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "children",
+            "doc": "children for this component."
+          },
+          {
+            "name": "reverse",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "reverse",
+            "doc": "reverse for this component."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "children",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentChip>",
+        "doc": "children for this component."
+      },
+      {
+        "name": "reverse",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "reverse for this component."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentSearchOption": {
+    "kind": "class",
+    "file": "lib/src/forms/search_field.dart",
+    "doc": "One host value and its visible search label.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentSearchOption",
+        "factory": false,
+        "params": [
+          {
+            "name": "value",
+            "type": "T",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": "value for this component."
+          },
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "label for this component."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "T",
+        "doc": "value for this component."
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "label for this component."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentSearchField": {
+    "kind": "class",
+    "file": "lib/src/forms/search_field.dart",
+    "doc": "Locally filtered or host-searched inline listbox with keyboard selection.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentSearchField",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "label for this component."
+          },
+          {
+            "name": "options",
+            "type": "List<PaymentSearchOption<T>>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "options",
+            "doc": "options for this component."
+          },
+          {
+            "name": "selected",
+            "type": "T?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "selected",
+            "doc": "selected for this component."
+          },
+          {
+            "name": "onSelected",
+            "type": "ValueChanged<T?>?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onSelected",
+            "doc": "onSelected for this component."
+          },
+          {
+            "name": "onQueryChanged",
+            "type": "ValueChanged<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onQueryChanged",
+            "doc": "onQueryChanged for this component."
+          },
+          {
+            "name": "initialQuery",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "initialQuery",
+            "doc": "initialQuery for this component."
+          },
+          {
+            "name": "loading",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "loading",
+            "doc": "loading for this component."
+          },
+          {
+            "name": "listboxSize",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "listboxSize",
+            "doc": "listboxSize for this component."
+          },
+          {
+            "name": "hint",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hint",
+            "doc": "hint for this component."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "description for this component."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "errorText for this component."
+          },
+          {
+            "name": "enabled",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "enabled",
+            "doc": "enabled for this component."
+          }
+        ],
+        "doc": ""
+      },
+      {
+        "name": "PaymentSearchField.multiple",
+        "factory": true,
+        "params": [
+          {
+            "name": "key",
+            "type": "Key?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "options",
+            "type": "List<PaymentSearchOption<T>>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "selected",
+            "type": "Set<T>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "onSelectionChanged",
+            "type": "ValueChanged<Set<T>>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "onQueryChanged",
+            "type": "ValueChanged<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "initialQuery",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "loading",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "listboxSize",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "hint",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "enabled",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          }
+        ],
+        "doc": "Multiple values rendered as removable chips."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "label for this component."
+      },
+      {
+        "name": "options",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentSearchOption<T>>",
+        "doc": "options for this component."
+      },
+      {
+        "name": "selected",
+        "kind": "field",
+        "static": false,
+        "type": "T?",
+        "doc": "selected for this component."
+      },
+      {
+        "name": "onSelected",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<T?>?",
+        "doc": "onSelected for this component."
+      },
+      {
+        "name": "onSelectionChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<Set<T>>?",
+        "doc": "onSelectionChanged for this component."
+      },
+      {
+        "name": "onQueryChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<String>?",
+        "doc": "onQueryChanged for this component."
+      },
+      {
+        "name": "initialQuery",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "initialQuery for this component."
+      },
+      {
+        "name": "loading",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "loading for this component."
+      },
+      {
+        "name": "listboxSize",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSize",
+        "doc": "listboxSize for this component."
+      },
+      {
+        "name": "hint",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "hint for this component."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "description for this component."
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "errorText for this component."
+      },
+      {
+        "name": "enabled",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "enabled for this component."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentDateGranularity": {
+    "kind": "enum",
+    "file": "lib/src/forms/date_range_picker.dart",
+    "doc": "Calendar grouping. Nothing else exists.",
+    "values": [
+      {
+        "name": "day",
+        "doc": "Daily."
+      },
+      {
+        "name": "week",
+        "doc": "Weekly."
+      },
+      {
+        "name": "month",
+        "doc": "Monthly."
+      },
+      {
+        "name": "year",
+        "doc": "Yearly."
+      }
+    ]
+  },
+  "PaymentDatePreset": {
+    "kind": "class",
+    "file": "lib/src/forms/date_range_picker.dart",
+    "doc": "A host-named complete calendar range.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentDatePreset",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "label for this component."
+          },
+          {
+            "name": "start",
+            "type": "DateTime",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "start",
+            "doc": "start for this component."
+          },
+          {
+            "name": "end",
+            "type": "DateTime",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "end",
+            "doc": "end for this component."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [
+      {
+        "name": "hashCode",
+        "type": "int",
+        "doc": ""
+      }
+    ],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "label for this component."
+      },
+      {
+        "name": "start",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": "start for this component."
+      },
+      {
+        "name": "end",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": "end for this component."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentDateRange": {
+    "kind": "class",
+    "file": "lib/src/forms/date_range_picker.dart",
+    "doc": "A complete range in the host zone, optionally from a preset.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentDateRange",
+        "factory": false,
+        "params": [
+          {
+            "name": "start",
+            "type": "DateTime",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "start",
+            "doc": "start for this component."
+          },
+          {
+            "name": "end",
+            "type": "DateTime",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "end",
+            "doc": "end for this component."
+          }
+        ],
+        "doc": ""
+      },
+      {
+        "name": "PaymentDateRange.fromPreset",
+        "factory": false,
+        "params": [
+          {
+            "name": "preset",
+            "type": "PaymentDatePreset?",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "preset",
+            "doc": "preset for this component."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [
+      {
+        "name": "hashCode",
+        "type": "int",
+        "doc": ""
+      }
+    ],
+    "statics": [],
+    "members": [
+      {
+        "name": "start",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": "start for this component."
+      },
+      {
+        "name": "end",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": "end for this component."
+      },
+      {
+        "name": "preset",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentDatePreset?",
+        "doc": "preset for this component."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentDateRangePicker": {
+    "kind": "class",
+    "file": "lib/src/forms/date_range_picker.dart",
+    "doc": "Preset sheet or Flutter range calendar; performs no zone conversion.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentDateRangePicker",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "label for this component."
+          },
+          {
+            "name": "value",
+            "type": "PaymentDateRange?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": "value for this component."
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<PaymentDateRange?>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onChanged",
+            "doc": "onChanged for this component."
+          },
+          {
+            "name": "firstDate",
+            "type": "DateTime",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "firstDate",
+            "doc": "firstDate for this component."
+          },
+          {
+            "name": "lastDate",
+            "type": "DateTime",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "lastDate",
+            "doc": "lastDate for this component."
+          },
+          {
+            "name": "presets",
+            "type": "List<PaymentDatePreset>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "presets",
+            "doc": "presets for this component."
+          },
+          {
+            "name": "granularity",
+            "type": "PaymentDateGranularity?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "granularity",
+            "doc": "granularity for this component."
+          },
+          {
+            "name": "onGranularityChanged",
+            "type": "ValueChanged<PaymentDateGranularity>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onGranularityChanged",
+            "doc": "onGranularityChanged for this component."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "description for this component."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "errorText for this component."
+          },
+          {
+            "name": "size",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": "size for this component."
+          },
+          {
+            "name": "enabled",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "enabled",
+            "doc": "enabled for this component."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "label for this component."
+      },
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentDateRange?",
+        "doc": "value for this component."
+      },
+      {
+        "name": "onChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<PaymentDateRange?>",
+        "doc": "onChanged for this component."
+      },
+      {
+        "name": "firstDate",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": "firstDate for this component."
+      },
+      {
+        "name": "lastDate",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": "lastDate for this component."
+      },
+      {
+        "name": "presets",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentDatePreset>",
+        "doc": "presets for this component."
+      },
+      {
+        "name": "granularity",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentDateGranularity?",
+        "doc": "granularity for this component."
+      },
+      {
+        "name": "onGranularityChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<PaymentDateGranularity>?",
+        "doc": "onGranularityChanged for this component."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "description for this component."
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "errorText for this component."
+      },
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSize",
+        "doc": "size for this component."
+      },
+      {
+        "name": "enabled",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "enabled for this component."
       }
     ],
     "copyWith": null

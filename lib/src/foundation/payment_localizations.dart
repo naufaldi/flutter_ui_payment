@@ -40,6 +40,20 @@ class PaymentLocalizations {
 
   /// Calendar date in the host zone; unlike [formatDateTime], no conversion
   /// to the device zone occurs and the time is ignored.
+  /// Compact calendar range using the same localized month names as formatDate.
+  String formatDateRange(DateTime start, DateTime end) {
+    if ((start.year == end.year &&
+        start.month == end.month &&
+        start.day == end.day)) {
+      return formatDate(start);
+    }
+    final e = formatDate(end);
+    if (start.year != end.year) return '${formatDate(start)} – $e';
+    if (start.month == end.month) return '${start.day}–$e';
+    final from = formatDate(start).split(' ').take(2).join(' ');
+    return '$from – $e';
+  }
+
   String formatDate(DateTime value) =>
       '${value.day} ${(_id ? _monthsId : _monthsEn)[value.month - 1]} ${value.year}';
 

@@ -1,0 +1,41 @@
+---
+title: Date range picker
+description: A complete calendar range for payment history filters.
+---
+
+import Props from '../../../components/Props.astro';
+
+A complete calendar range for payment history filters.
+
+## Usage and Stripe → kit
+
+Presets live in a kit sheet before the calendar, since the Flutter calendar cannot embed kit rows. Partial ranges and timeZone are not mirrored. The host owns zone interpretation. Granularity tabs remain below the trigger. fromPreset preserves the named range. formatDateRange produces shared localized text for fields and chips. History filter integration arrives in Phase 5.
+
+## Which variant when
+
+Choose controls by the data being collected. Use a host callback for actions and keep the selected value controlled.
+
+## States
+
+Empty, selected, disabled and error states use semantic tokens. Search additionally supports loading and no matches.
+
+## Do and don't
+
+Keep labels visible. Use complete date ranges and meaningful option names. Avoid duplicating filters with several equally prominent controls.
+
+## Content guidelines
+
+Use short labels and compact localized values.
+
+## Accessibility
+
+Targets are at least 48 dp. Pickers restore focus; result counts announce without platform calls. Keyboard navigation preserves Tab traversal.
+
+## API
+
+<Props names={ ['PaymentDateRangePicker', 'PaymentDateRange', 'PaymentDatePreset', 'PaymentDateGranularity'] } />
+
+## See also
+
+- [Select](/components/select/)
+- [Date field](/components/date-field/)

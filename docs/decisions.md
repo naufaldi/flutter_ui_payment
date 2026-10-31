@@ -345,3 +345,15 @@ Date patterns are app-wide only. The localized pattern remains visible below the
 Implementation deviation: PaymentTextArea uses a private stateful controller adapter to submit uncontrolled values accurately with modified Enter, while retaining PaymentTextField decoration and behavior. No dependency or public API change is needed for that ownership boundary.
 
 The multiple-select factory parameters inherit their meaning from the documented public fields. The generated API parser only attaches field docs to initializing formals; the factory remains documented at the constructor level.
+
+### Phase 4B-2 implementation decisions
+
+Chips draw their pill inside a 48 dp Stack; body and close are distinct targets. ChipList has related horizontal gaps and zero run spacing because the target already supplies vertical space. Promo codes lose their tag glyph and reference face, becoming labeled chips with the existing applied announcement.
+
+SearchField uses an inline listbox, local diacritic folding, live counts and hardware-key navigation. Any edit clears a single selection; empty text clears multiple selection. Host search bypasses local filtering. Named date presets live in a sheet because Flutter's range calendar cannot host kit content. fromPreset preserves a named complete range; partial ranges and zone conversion are not mirrored.
+
+Meter spacing was correct for 48 dp interaction targets. Pressable row anatomy now uses 15/20 labels and end-aligned amounts, without a chevron: a callback need not open a surface. This choice is reversible. Text/currency specimens use group gaps. The 1000-option timing benchmark is omitted by owner decision; pure filter correctness is tested. Captures refresh only the planned specimen set, not the full kit/flow matrix.
+
+Plan deviation proven by the 320 dp/200% chip test: an unconstrained body Row overflows for summarized methods. The body now receives a loose flex constraint and wraps its text runs, preserving the independent 48 dp close target. The pill grows with accessible text rather than clipping it.
+
+Final functional proof: the single iPhone 16/iOS 18.1 flow_test run passed all 17 tests, including H01 date and occupation and its ISO/value assertions. One label-finder tap emitted a Flutter hit-test warning but activated the trigger and the story completed; it was not suppressed. Functional proof uses the integration runner; no screenshot baseline or timing claim is made.
