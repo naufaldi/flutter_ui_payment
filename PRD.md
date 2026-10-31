@@ -342,6 +342,7 @@ Bagian ini menambah cakupan; requirement MVP pada bagian 1–16 tetap berlaku da
 | Video | `PaymentVideoPlayer` + kontrak `PaymentVideoController` | Tanpa dependency media di package; tanpa autoplay; pause saat background/tersembunyi; contoh memakai `video_player` dan klip sintetis lokal |
 | Promosi/iklan | `PromoCard`, `PromoSlot` | Selalu berlabel (bersponsor + pengiklan atau promo); tanpa SDK iklan, tracking, kampanye nyata, atau perubahan quote |
 | Pembayaran | `PaymentActionBar`, `MerchantHeader`, `PaymentStepIndicator`, `BalanceCard`, `PromoCodeInput`, `TransactionHistory`, `TransactionDetail` | Saldo, kode promo, dan riwayat adalah verdict host; status tidak diketahui tetap "dalam proses", bukan gagal |
+| Design system (Fondasi + Tier 1), ditambahkan 31 Oktober 2026 | Token publik `PaymentTheme`, `PaymentType`, `PaymentMotion`; komponen baru `PaymentTextField` (termasuk `.search`), `PaymentIconButton`, `PaymentCopyButton`, `PaymentLink`; pola pembayaran wajib memakai komponen Tier 1. Spesifikasi lengkap di `docs/prd-foundation-components.md` | Varian baru hanya dengan dua pemakaian nyata yang berbeda makna; komponen baru hanya hasil ekstraksi atau kebutuhan pola Tier 2; tidak ada field PIN/OTP/rahasia; clipboard, tautan, kamera dijalankan host lewat callback |
 
 Kompatibilitas Android lama: minimum yang dideklarasikan API 24 (Android 7.0), mengikuti Flutter 3.44.6 yang terpasang; dependency contoh tidak menaikkannya. Runtime yang benar-benar diuji hanya Android 11 (API 30) arm64 emulator. Detail di `docs/compatibility.md`.
 

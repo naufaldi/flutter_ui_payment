@@ -1,7 +1,7 @@
 # PRD: Design system — foundations, components, patterns
 
 Date: 31 October 2026 (revision 2, after owner feedback)
-Status: proposal for owner review. Nothing marked **New** is implemented. This document does not change `PRD.md`.
+Status: **approved by the owner on 31 October 2026.** All recommendations in §13 (Q1–Q10) were accepted. Nothing marked **New** is implemented yet. The §16a amendment row in §1 has been added to `PRD.md`.
 Builds on: `PRD.md` §2, §4, §7, §10, §11 and §16a; `docs/decisions.md`; `docs/foundation-plan.md`; the docs catalog in PR #1; the charts and KYC capture work in PR #4.
 Tracked by: issue #2.
 
@@ -11,7 +11,7 @@ Pemilik proyek menyetujui revisi pertama (tier, aturan penerimaan, inventaris St
 
 Keputusan utama:
 
-- `PaymentType` dijadikan API tipografi publik (perlu persetujuan pemilik, Q6).
+- `PaymentType` dijadikan API tipografi publik (disetujui pemilik, Q6).
 - Tidak ada widget `PaymentText`.
 - Button tetap satu tinggi (48 dp). "Ukuran" menjadi perilaku lebar: `fill` atau `hug`.
 - Tombol ikon diekstrak menjadi `PaymentIconButton`. Ada 10 salinan dengan tiga perlakuan berbeda.
@@ -81,7 +81,7 @@ A design system meets the owner's request without that risk only if every varian
 - Every variant name in the docs traces to code. Proposed ones are marked **New** until they ship.
 - Every Stripe entry the kit does not ship is listed under "Not in the kit" with the reason and the Flutter alternative.
 
-**Proposed PRD.md §16a amendment.** Add this row when the owner approves; this PRD does not edit PRD.md.
+**PRD.md §16a amendment** (approved 31 Oct 2026, added to `PRD.md`):
 
 | Kelompok | Komponen | Batas |
 | --- | --- | --- |
@@ -261,7 +261,7 @@ The scale is `PaymentType` (`payment_type.dart:14`). It has 9 roles on 7 sizes a
 - Hosts cannot use the scale. The docs page tells them to copy sizes by hand (`foundations/typography.mdx`, "The roles are internal").
 - `amountStyle(large: false)` returns 15/20 at `amountWeight` (w600). But row amounts in `AmountText` use `label`, which is w400 (`primitives.dart:30-32`). The public helper contradicts the "only totals are heavy" rule, and no call site uses `large: false`.
 
-**Decision D15 (owner decision Q6, recommended).** Export `PaymentType` as the type foundation.
+**Decision D15 (approved, Q6).** Export `PaymentType` as the type foundation.
 
 - **API:**
   - `PaymentType.of(context)` with the nine roles, plus `isLarge` and `bodyFor`.
@@ -526,7 +526,7 @@ Status values:
 
 | Kit | Status | Evidence |
 | --- | --- | --- |
-| `PaymentType` | Internal → public proposed (D15, Q6) | `foundation/payment_type.dart`; not in `lib/flutter_ui_payment.dart` |
+| `PaymentType` | Internal → public, approved (D15, Q6) | `foundation/payment_type.dart`; not in `lib/flutter_ui_payment.dart` |
 | `PaymentFocusRing`, `PaymentPressScale` | Internal (Q3) | `foundation/focus_ring.dart`, not exported |
 | `ChartPainter`, `MeterPainter`, hatch painter | Internal | `charts/chart_painters.dart:9, 257`, `foundation/hatch.dart` |
 
@@ -979,14 +979,14 @@ New in revision 2:
 
 | ID | Decision | Reason |
 | --- | --- | --- |
-| D15 | **Export `PaymentType`** (`show PaymentType`, not the extension) with `PaymentType.of(context)`. Add **New** `firstLineHeight(context)`, `tabular(style)` and `reference(style)`. Deprecate `amountStyle(large:)`. Owner decision Q6. | A design system needs consumable type roles. It mirrors the public `PaymentMotion.of`. Exporting the extension risks name clashes. `large: false` contradicts the weight rule. |
+| D15 | **Export `PaymentType`** (`show PaymentType`, not the extension) with `PaymentType.of(context)`. Add **New** `firstLineHeight(context)`, `tabular(style)` and `reference(style)`. Deprecate `amountStyle(large:)`. Approved (Q6). | A design system needs consumable type roles. It mirrors the public `PaymentMotion.of`. Exporting the extension risks name clashes. `large: false` contradicts the weight rule. |
 | D16 | **No `PaymentText` widget.** Type is consumed as styles. Text components exist only with behavior (`AmountText`, `MiddleEllipsisText`, `CountdownText`). | A style wrapper is the refused `Inline`. |
-| D17 | **`PaymentButton` keeps one height (48 dp)** and gains **New** `width: PaymentButtonWidth.fill / .hug`. It never scales on press, at any width. Owner decision Q7. | Stripe's small/medium/large are heights. Under B5 and one label role, a height scale either breaks the 48 dp floor or looks identical. Width is what the three conflicting call sites need. One press rule per class (D11). `PaymentActionBar` keeps its wrapper because it receives a host widget. |
+| D17 | **`PaymentButton` keeps one height (48 dp)** and gains **New** `width: PaymentButtonWidth.fill / .hug`. It never scales on press, at any width. Approved (Q7). | Stripe's small/medium/large are heights. Under B5 and one label role, a height scale either breaks the 48 dp floor or looks identical. Width is what the three conflicting call sites need. One press rule per class (D11). `PaymentActionBar` keeps its wrapper because it receives a host widget. |
 | D18 | **Extract `PaymentIconButton`** (`neutral`, `accent`), with a required tooltip, the ring, the 0.96 press, 48 dp, and an optional `focusNode`. Migrate all 10 sites. | Admission rule (a) with 10 sites; three lack the focus ring (B8). |
 | D19 | **List family = one row anatomy, separate classes by semantics.** No mode enum on `ActionTile`; no `value` slot; no avatar leading; no density enum; full-bleed dividers only. Rename the docs page to `components/list`. Add an internal `_RowShell`. | Each refused option has zero call sites. The classes' semantics differ. The shared metrics are already identical and should stay so by construction. |
 | D20 | **`StatusBadge.icon` becomes optional**, defaulting to the §3.6 tone icon. Its icon scales to 1.6×. | Removes a required parameter for the common case. History still passes its own icons (pending vs unknown). |
 | D21 | **`NoticeBanner` has no dismiss.** `actions` accepts `PaymentLink` or `hug` quiet/secondary `PaymentButton` only (documented, asserted in debug). | Banners mirror host state and leave when the state changes. A full-width button in a `Wrap` breaks the layout. |
-| D22 | **Toast uses kit tokens:** ink fill `textPrimary`, text and icon `surface`, radius `control`. Tone stays an icon. Owner decision Q10. | B2. The tooltip already uses this inversion, so the kit has one "ink" overlay. |
+| D22 | **Toast uses kit tokens:** ink fill `textPrimary`, text and icon `surface`, radius `control`. Tone stays an icon. Approved (Q10). | B2. The tooltip already uses this inversion, so the kit has one "ink" overlay. |
 | D23 | **The dialog adopts `PaymentButton`** (`hug`): quiet cancel + primary or destructive confirm. Needs **New** `PaymentButton.autofocus` so cancel keeps initial focus for destructive dialogs and confirm keeps it otherwise (`interaction.dart:291, 302`). | Closes a B8 gap (no focus ring today); one button implementation. |
 | D24 | **`AmountText` gains New `variant: AmountTextVariant`** (`caption`, `row`, `total`, `large`, `display`). `emphasis` is deprecated. `style` is for color and decoration only. | Five looks are already in use through ad-hoc styles, including literal `FontWeight.w600`. |
 | D25 | **`StateMessage` tone rule:** `danger` only when the screen's primary content failed (announced); `warning` for a secondary module. | Codifies the existing history vs chart and promo split. |
@@ -1060,7 +1060,7 @@ Per the owner's standing rule, every PR stops before merge, and a merge needs th
 
 **1A: type and token API.**
 
-- Export `PaymentType` (D15, after Q6).
+- Export `PaymentType` (D15, approved).
 - Add `firstLineHeight` and replace its 8 copies.
 - Add `tabular(style)` and `reference(style)`.
 - Deprecate `amountStyle(large:)`.
@@ -1100,7 +1100,7 @@ Per the owner's standing rule, every PR stops before merge, and a merge needs th
 - Toast tokens (D22).
 - The `NoticeBanner` actions assert (D21).
 - Chart dartdoc and token spacing.
-- `MeterSegment.color` per Q9. If PR #4 is still open, the chart items can go into PR #4 instead, if the owner prefers.
+- Remove `MeterSegment.color` (Q9, decided). If PR #4 is still open, the chart items can go into PR #4 instead, if the owner prefers.
 
 Screenshots to re-take and inspect in Phase 2:
 
@@ -1195,8 +1195,8 @@ PaymentCopyButton({
 ### Phase 4: pattern adoption
 
 - **Spending summary (D10):** `ChartModule` + `PaymentBarChart` above `TransactionHistory` in the example. Totals are host-owned, and all four `ChartState`s are reachable from the scenario picker.
-- **`TransactionDetail` reference copy**, if Q5 is approved.
-- Owner-approved builds from Q1 or Q2, each with an API sketch reviewed before code.
+- **`TransactionDetail` reference copy**, (Q5, decided: yes).
+- No builds from Q1 or Q2: both were decided as no new components (no DateField/Select; Switch and Tooltip kept as catalog entries).
 
 ### Phase 5: docs information architecture and specimens
 
@@ -1273,20 +1273,20 @@ These are local commands; the repo has no CI.
 | `IdentityForm` regression: server errors, focus order, autofill | Existing K02/K07 tests plus new per-field tests in 3A |
 | Branch churn: #1 and #4 unmerged | Phase 1 waits for Phase 0 or stacks on #4; it never edits files those PRs are changing |
 
-### Open questions for the owner
+### Owner decisions (resolved 31 Oct 2026)
 
-Each question has a recommendation. Defaults apply if there is no answer.
+The owner accepted every recommendation below on 31 Oct 2026. Each line is now a decision; the reasoning is kept for the record.
 
-1. **Date of birth.** Should `IdentityFieldSpec` gain field kinds (`text`, `date`, `choice`)? That would admit a `PaymentDateField` and a `PaymentSelect` (a sheet of `PaymentRadio` rows). *Recommendation: no (D4).*
-2. **Switch and Tooltip have no Tier 2 consumer.** Keep them as owner-approved, or give each a real use, for example a refund-notification `PaymentSwitch` in a settings example? *Recommendation: keep; add the settings example only if Phase 4 has room.*
-3. **Export `PaymentFocusRing` and `PaymentPressScale`?** *Recommendation: keep them internal.* With `PaymentIconButton` and `PaymentLink` public, hosts get the kit's focus and press by using those components. Revisit if a host must build a custom control.
-4. **Sidebar wording.** "Patterns" as Stripe does, or "Payment patterns"? *Recommendation: "Patterns", with the tier explained on the overview page.*
-5. **`TransactionDetail` reference copy.** Revision 1 said the reference was `SelectableText`. That was wrong: it is a `MiddleEllipsisText` (`transactions.dart:451`). It can be neither selected nor copied, and a long reference is elided. Should `TransactionDetail` accept an optional `onCopyReference` that renders `PaymentCopyButton` in `InfoRow.trailing`? *Recommendation: yes, in Phase 4. A reference people cannot read in full or copy is a support dead end.*
-6. **Export `PaymentType`** (D15)? *Recommendation: yes, as `PaymentType.of(context)` without the extension.*
-7. **Button sizes** (D17): add `PaymentButtonWidth.hug` and keep one height, or add Stripe-style heights? *Recommendation: `hug` only.* Heights below 48 dp break B5, and taller buttons would be a per-screen look. The alternative of no new parameter means documenting the `IntrinsicWidth` wrapper, but the dialog would still need it.
-8. **List density variant?** *Recommendation: no.* Actionable rows keep 48 dp and 12 dp padding; read-only `InfoRow` is already tighter.
-9. **`MeterSegment.color`.** Remove it before PR #4 merges, or keep it as an escape hatch? *Recommendation: remove it.* It is unreleased and lets status tones become categories, which the charts decisions forbid.
-10. **Toast restyle** (D22) to the ink overlay? *Recommendation: yes,* for B2. The alternative is to document that the toast follows the host `SnackBarTheme`, as the example sets it (`themes.dart:119-122`).
+1. **Date of birth.** Should `IdentityFieldSpec` gain field kinds (`text`, `date`, `choice`)? That would admit a `PaymentDateField` and a `PaymentSelect` (a sheet of `PaymentRadio` rows). **Decided: no (D4).**
+2. **Switch and Tooltip have no Tier 2 consumer.** Keep them as owner-approved, or give each a real use, for example a refund-notification `PaymentSwitch` in a settings example? **Decided: keep; add the settings example only if Phase 4 has room.**
+3. **Export `PaymentFocusRing` and `PaymentPressScale`?** **Decided: keep them internal.** With `PaymentIconButton` and `PaymentLink` public, hosts get the kit's focus and press by using those components. Revisit if a host must build a custom control.
+4. **Sidebar wording.** "Patterns" as Stripe does, or "Payment patterns"? **Decided: "Patterns", with the tier explained on the overview page.**
+5. **`TransactionDetail` reference copy.** Revision 1 said the reference was `SelectableText`. That was wrong: it is a `MiddleEllipsisText` (`transactions.dart:451`). It can be neither selected nor copied, and a long reference is elided. Should `TransactionDetail` accept an optional `onCopyReference` that renders `PaymentCopyButton` in `InfoRow.trailing`? **Decided: yes, in Phase 4. A reference people cannot read in full or copy is a support dead end.**
+6. **Export `PaymentType`** (D15)? **Decided: yes, as `PaymentType.of(context)` without the extension.**
+7. **Button sizes** (D17): add `PaymentButtonWidth.hug` and keep one height, or add Stripe-style heights? **Decided: `hug` only.** Heights below 48 dp break B5, and taller buttons would be a per-screen look. The alternative of no new parameter means documenting the `IntrinsicWidth` wrapper, but the dialog would still need it.
+8. **List density variant?** **Decided: no.** Actionable rows keep 48 dp and 12 dp padding; read-only `InfoRow` is already tighter.
+9. **`MeterSegment.color`.** Remove it before PR #4 merges, or keep it as an escape hatch? **Decided: remove it.** It is unreleased and lets status tones become categories, which the charts decisions forbid.
+10. **Toast restyle** (D22) to the ink overlay? **Decided: yes,** for B2. The alternative is to document that the toast follows the host `SnackBarTheme`, as the example sets it (`themes.dart:119-122`).
 
 ## 14. Issue checklist
 
@@ -1297,7 +1297,8 @@ Each question has a recommendation. Defaults apply if there is no answer.
 - [x] PR #3 merged: foundation PRD on main (f74b882)
 - [ ] Merge PR #1 (docs/component-catalog) to main (owner)
 - [ ] Merge PR #4 (feat/charts-kyc-capture, head 8a78eb1, stacked on #1) to main (owner)
-- [ ] Owner answers Q1–Q10; record in docs/decisions.md
+- [x] Owner answers Q1–Q10 (all recommendations accepted, 31 Oct 2026)
+- [ ] Record Q1–Q10 in docs/decisions.md
 
 **Phase 1A: type and token API**
 - [ ] Export PaymentType (show PaymentType) with of/isLarge/bodyFor (D15, Q6)
@@ -1330,7 +1331,7 @@ Each question has a recommendation. Defaults apply if there is no answer.
 - [ ] StatusBadge optional icon + 1.6× icon scaling (D20)
 - [ ] Toast on kit tokens (D22)
 - [ ] NoticeBanner actions rule + debug assert (D21)
-- [ ] Charts: dartdoc (B1), token spacing (B2), MeterSegment.color per Q9
+- [ ] Charts: dartdoc (B1), token spacing (B2), remove MeterSegment.color (Q9)
 
 **Phase 3A: text fields**
 - [ ] PaymentTextField (no obscureText) + docs + tests + specimen
@@ -1344,7 +1345,7 @@ Each question has a recommendation. Defaults apply if there is no answer.
 
 **Phase 4: pattern adoption**
 - [ ] History spending summary (ChartModule + PaymentBarChart) in the example (D10)
-- [ ] TransactionDetail onCopyReference (if Q5 approved)
+- [ ] TransactionDetail onCopyReference (Q5)
 
 **Phase 5: docs IA and specimens**
 - [ ] Sidebar: Foundations (+Surfaces, Iconography); Components in Stripe groups; Payment flows → Patterns (with redirects)
@@ -1354,5 +1355,5 @@ Each question has a recommendation. Defaults apply if there is no answer.
 - [ ] Patterns: loading, empty and error, forms (chart layout exists)
 - [ ] New pages: Icon button, Link, Copy button, Text field, Search field, Step indicator, Action bar
 - [ ] Overview: Stripe name → kit column; "Not in the kit" table with 21 refusals
-- [ ] PRD.md §16a amendment row (after owner approval)
+- [x] PRD.md §16a amendment row (added 31 Oct 2026)
 ```
