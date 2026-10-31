@@ -333,15 +333,19 @@ extension KitStrings on PaymentLocalizations {
   String get sort => _k('Sort', 'Urutkan');
 
   /// Move left.
+  @Deprecated('Not supported (D28). Removed in 0.2.0.')
   String get moveLeft => _k('Move left', 'Geser ke kiri');
 
   /// Move right.
+  @Deprecated('Not supported (D28). Removed in 0.2.0.')
   String get moveRight => _k('Move right', 'Geser ke kanan');
 
   /// Wider.
+  @Deprecated('Not supported (D28). Removed in 0.2.0.')
   String get wider => _k('Wider', 'Lebarkan');
 
   /// Narrower.
+  @Deprecated('Not supported (D28). Removed in 0.2.0.')
   String get narrower => _k('Narrower', 'Sempitkan');
 
   /// Localized selectRow label.
@@ -370,6 +374,7 @@ extension KitStrings on PaymentLocalizations {
       _k('$label, descending', '$label, turun');
 
   /// Localized columnOptions label.
+  @Deprecated('Not supported (D28). Removed in 0.2.0.')
   String columnOptions(String label) =>
       _k('Column options for $label', 'Opsi kolom $label');
 

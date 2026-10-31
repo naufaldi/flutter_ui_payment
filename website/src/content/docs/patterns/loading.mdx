@@ -1,0 +1,15 @@
+---
+title: Loading
+description: Keep the shape of payment content while the host works.
+---
+
+| Situation | Component | Why |
+| --- | --- | --- |
+| Known list shape | LoadingSkeleton or LoadingSkeleton.table | Preserves reading position while records load. |
+| Unknown duration without a content shape | PaymentSpinner with delay | Avoids flashing an indicator for short waits. |
+| Customer started an action | PaymentButton busy | Locks repeated activation until the returned Future completes. |
+| Whole page or module is loading | pending: true on a view, page or module | Keeps the heading and content boundary in place. |
+
+Run A01 to see history loading and A05 to save settings. The host sets loading state before awaiting work and clears it after success or failure. A loading placeholder never means a payment is accepted.
+
+Use the primary action's busy state for saving; do not add a second primary button to cancel the spinner. Use a [status result](/patterns/status-receipt/) for a payment whose outcome is still unknown.

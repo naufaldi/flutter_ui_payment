@@ -67,8 +67,8 @@ The frame has a kind-specific label and ignores pointer events so the host previ
 
 ## See also
 
-- [Capture source sheet](/components/capture-source-sheet/).
-- [Verification](/components/verification/) for document slots and host status.
+- [Capture source sheet](/patterns/kyc-capture/).
+- [Verification](/patterns/verification/) for document slots and host status.
 
 ## Pattern adoption
 
@@ -77,3 +77,43 @@ A photo that fails to decode falls back to the illustrated capture frame. Use ph
 ## Layout foundation
 
 PaymentImage preserves a muted loading surface. On decode failure the framing fallback owns the semantics.
+
+## Capture source sheet
+
+`showCaptureSourceSheet` reports the source the customer chose. It opens no device source itself.
+
+<HostOwns>available sources, permission, OS picker, camera, and opening settings.</HostOwns>
+
+<Screens><Screen name="ios_catalog_capture_source_sheet" alt="Add a photo sheet offering camera, gallery and file in order" caption="Source choice before permission" /><Screen name="ios_catalog_capture_source_sheet_dark" alt="Add a photo sheet in dark mode" caption="Dark mode" /></Screens>
+
+### Usage
+
+```dart
+final source = await showCaptureSourceSheet(
+  context: context,
+  sources: {CaptureSource.camera, CaptureSource.file},
+  unavailable: {CaptureSource.camera: 'Camera access is off'},
+  onOpenSettings: openHostSettings,
+);
+```
+
+### States and variants
+
+Rows always appear camera, gallery, file. Blocked rows show the host reason. Close, dismissal and Open settings return null. Skip the sheet when only one source is offered. The source set must be non-empty.
+
+### Content guidelines
+
+Describe permission availability in plain language. Offer only sources the host supports. Ask permission after the customer chooses a source.
+
+### Accessibility
+
+Action rows have full touch targets and disabled reasons. The sheet uses the existing close button, focus and dismissal behavior.
+
+### API
+
+<Props names={['showCaptureSourceSheet','CaptureSource']} />
+
+### See also
+
+- [KYC capture](/patterns/kyc-capture/) for framing, review and upload.
+- [Sheet](/components/sheets/) for the shared panel layout.

@@ -1,150 +1,130 @@
 ---
 title: Components
-description: Every widget in flutter_ui_payment, grouped by job, with a page each for usage, states, content guidelines and API.
+description: Choose a payment component by job, Stripe name and the kit API that implements it.
 ---
 
-Every widget is exported from one library and takes its colors from [`PaymentTheme`](/foundations/color/), its strings from [`PaymentLocalizations`](/foundations/localization/) and its motion from [`PaymentMotion`](/foundations/motion/).
+Every widget is exported from one library. Each page follows the same order: usage, Stripe → kit, variants, which variant when, states, do and don't, content, accessibility, used in, API and related components.
 
 ```dart
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 ```
 
-Each page follows the same order: what the component is for, a screenshot from the example app when one exists, usage, its variants and states, content guidelines, and the API table generated from the Dart source.
+## Layout
 
-## Actions
+| Component | Stripe Apps name | Kit class | Status |
+| --- | --- | --- | --- |
+| [Box](/components/box/) | Box | `PaymentBox` | New in 0.1 |
+| [Icon](/components/icon/) | Icon | `PaymentIcon` | New in 0.1 |
+| [Img](/components/image/) | Img | `PaymentImage` | New in 0.1 |
+| [Inline](/components/inline/) | Inline | `PaymentInline` | New in 0.1 |
+| [Section](/components/section/) | — | `PaymentSection` | Stable |
 
-| Component | What it is for |
-| --- | --- |
-| [Button](/components/button/) | `PaymentButton`: primary, secondary, quiet and destructive actions, with a busy state that locks while your callback runs. |
-| [Action tile](/components/action-tile/) | `PaymentListItem`, `PaymentList`: flat rows that open something or run an action, in groups separated by hairlines. |
-| [Action menu](/components/action-menu/) | `PaymentMenu`: an overflow menu behind an icon button, with keyboard support. |
+## Actions and navigation
 
-## Forms
-
-| Component | What it is for |
-| --- | --- |
-| [Checkbox](/components/checkbox/) | `PaymentCheckbox`: consent and opt-in choices, with the whole row as the target. |
-| [Radio](/components/radio/) | `PaymentRadio`: one choice out of a few visible options. |
-| [Switch](/components/switch/) | `PaymentSwitch`: an on/off setting that takes effect at once. |
-| [Currency field](/components/amount-input/) | `PaymentCurrencyField`: free-form money entry with strict, locale-aware parsing. |
-
-## Feedback
-
-| Component | What it is for |
-| --- | --- |
-| [Status badge](/components/status-badge/) | `PaymentBadge`: a small tag with an icon and a word for a status. |
-| [Notice banner](/components/notice-banner/) | `PaymentBanner`: an inline message for errors, warnings and explanations, with optional actions. |
-| [Toast](/components/toast/) | `showPaymentToast`: short feedback after an action, with an optional undo. |
-| [Status header](/components/status-header/) | `StatusHeader`, `StatusBand`: the top of a status screen; hatched when the outcome is not known yet. |
-| [Spinner](/components/spinner/) | `PaymentSpinner`: indeterminate progress, still under reduced motion. |
-| [Loading skeleton](/components/loading-skeleton/) | `LoadingSkeleton`: static placeholders shaped like the content that is loading. |
-| [State message](/components/state-message/) | `StateMessage`: empty, error and "nothing matches" states with one way forward. |
+| Component | Stripe Apps name | Kit class | Status |
+| --- | --- | --- | --- |
+| [Button](/components/button/) | Button | `PaymentButton` | Stable |
+| [Button Group](/components/button-group/) | ButtonGroup | `PaymentButtonGroup` | New in 0.1 |
+| [Link](/components/link/) | Link | `PaymentLink` | New in 0.1 |
+| [List](/components/list/) | List | `PaymentList` | Stable |
+| [ActionTile](/components/list/) | — | `ActionTile` | Deprecated alias; removed in 0.2.0 |
+| [ActionTileGroup](/components/list/) | — | `ActionTileGroup` | Deprecated alias; removed in 0.2.0 |
+| [Menu](/components/menu/) | Menu | `PaymentMenu` | Stable |
+| [ActionMenu](/components/menu/) | — | `ActionMenu` | Deprecated alias; removed in 0.2.0 |
+| [ActionMenuEntry](/components/menu/) | — | `ActionMenuEntry` | Deprecated alias; removed in 0.2.0 |
+| [Tabs](/components/tabs/) | Tabs | `PaymentTabs` | Stable |
+| [Icon button](/components/icon-button/) | — | `PaymentIconButton` | Stable |
+| [Copy button](/components/copy-button/) | — | `PaymentCopyButton` | Stable |
+| [Navigation shell](/components/navigation/) | — | `AdaptiveNavShell` | Stable |
 
 ## Content
 
-| Component | What it is for |
-| --- | --- |
-| [Amount text](/components/amount-text/) | `AmountText`: money formatted for the locale, with a spoken label, that scales down instead of clipping. |
-| [Info row](/components/info-row/) | `InfoRow`, `MiddleEllipsisText`: label and value rows that wrap well at large text. |
-| [Section](/components/section/) | `PaymentSection`: a titled group of content, flat on the page, with an optional header action. |
-| [Expandable section](/components/expandable-section/) | `PaymentAccordionItem`: a titled section whose body can be shown or hidden. |
-| [Divider](/components/divider/) | `PaymentDivider`: a 1 px hairline between rows or groups. |
-| [Tooltip](/components/tooltip/) | `PaymentTooltip`: a short hint on long press or hover. |
-| [Countdown](/components/countdown/) | `CountdownText`: time left until a deadline, from your clock. |
-| [Privacy mask](/components/privacy-mask/) | `PrivacyMask`: covers sensitive content, for example in the app switcher. |
+| Component | Stripe Apps name | Kit class | Status |
+| --- | --- | --- | --- |
+| [Code](/components/code/) | Code | `PaymentCode` | New in 0.1 |
+| [Data Table](/components/data-table/) | DataTable | `PaymentDataTable<T>` | New in 0.1 |
+| [Property List](/components/property-list/) | PropertyList | `PaymentPropertyList` | New in 0.1 |
+| [Table](/components/table/) | Table | `PaymentTable` | New in 0.1 |
+| [Task List](/components/task-list/) | TaskList | `PaymentTaskList` | New in 0.1 |
+| [Amount text](/components/amount-text/) | — | `AmountText` | Stable |
+| [Info row](/components/info-row/) | — | `InfoRow` | Stable |
+| [Countdown](/components/countdown/) | — | `CountdownText` | Stable |
+| [Privacy mask](/components/privacy-mask/) | — | `PrivacyMask` | Stable |
+| [Media (video)](/components/media/) | — | `PaymentVideoPlayer` | Stable |
+
+## Forms
+
+| Component | Stripe Apps name | Kit class | Status |
+| --- | --- | --- | --- |
+| [Checkbox](/components/checkbox/) | Checkbox | `PaymentCheckbox` | Stable |
+| [Chip](/components/chip/) | Chip | `PaymentChip` | New in 0.1 |
+| [Currency Field](/components/currency-field/) | CurrencyField | `PaymentCurrencyField` | Stable |
+| [AmountInput](/components/currency-field/) | — | `AmountInput` | Deprecated alias; removed in 0.2.0 |
+| [Date Field](/components/date-field/) | DateField | `PaymentDateField` | New in 0.1 |
+| [Date Range Picker](/components/date-range-picker/) | DateRangePicker | `PaymentDateRangePicker` | New in 0.1 |
+| [Form Field Group](/components/form-field-group/) | FormFieldGroup | `PaymentFormFieldGroup` | New in 0.1 |
+| [Radio](/components/radio/) | Radio | `PaymentRadio<T>` | Stable |
+| [Search Field](/components/search-field/) | SearchField | `PaymentSearchField<T>` | New in 0.1 |
+| [Select](/components/select/) | Select | `PaymentSelect<T>` | New in 0.1 |
+| [Switch](/components/switch/) | Switch | `PaymentSwitch` | Stable |
+| [Text Area](/components/text-area/) | TextArea | `PaymentTextArea` | New in 0.1 |
+| [Text Field](/components/text-field/) | TextField | `PaymentTextField` | New in 0.1 |
 
 ## Charts
 
-| Component | What it is for |
-| --- | --- |
-| [Line chart](/components/line-chart/) | `PaymentLineChart`: ordered money trends. |
-| [Bar chart](/components/bar-chart/) | `PaymentBarChart`: amounts compared from zero. |
-| [Meter chart](/components/meter-chart/) | `PaymentMeterChart`: category amounts in one snapshot. |
-| [Sparkline](/components/sparkline/) | `PaymentSparkline`: a compact trend beside a headline. |
+| Component | Stripe Apps name | Kit class | Status |
+| --- | --- | --- | --- |
+| [Bar Chart](/components/bar-chart/) | BarChart | `PaymentBarChart` | New in 0.1 |
+| [Line Chart](/components/line-chart/) | LineChart | `PaymentLineChart` | New in 0.1 |
+| [Meter Chart](/components/meter-chart/) | MeterChart | `PaymentMeterChart` | New in 0.1 |
+| [Sparkline](/components/sparkline/) | Sparkline | `PaymentSparkline` | New in 0.1 |
 
-See [Chart layout](/patterns/chart-layout/) for `ChartModule` composition.
+## Feedback
 
-## Navigation
-
-| Component | What it is for |
-| --- | --- |
-| [Tabs](/components/tabs/) | `PaymentTabs`: text tabs on a hairline for switching between views of the same content. |
-| [Navigation shell](/components/navigation/) | `AdaptiveNavShell`, `NavSidebar`: a sidebar on wide windows and a modal drawer below a breakpoint. |
+| Component | Stripe Apps name | Kit class | Status |
+| --- | --- | --- | --- |
+| [Accordion](/components/accordion/) | Accordion | `PaymentAccordion` | Stable |
+| [ExpandableSection](/components/accordion/) | — | `ExpandableSection` | Deprecated alias; removed in 0.2.0 |
+| [Badge](/components/badge/) | Badge | `PaymentBadge` | Stable |
+| [StatusBadge](/components/badge/) | — | `StatusBadge` | Deprecated alias; removed in 0.2.0 |
+| [Banner](/components/banner/) | Banner | `PaymentBanner` | Stable |
+| [NoticeBanner](/components/banner/) | — | `NoticeBanner` | Deprecated alias; removed in 0.2.0 |
+| [Divider](/components/divider/) | Divider | `PaymentDivider` | Stable |
+| [Spinner](/components/spinner/) | Spinner | `PaymentSpinner` | Stable |
+| [Toast](/components/toast/) | Toast | `showPaymentToast` | Stable |
+| [showPaymentSnackBar](/components/toast/) | — | `showPaymentSnackBar` | Deprecated alias; removed in 0.2.0 |
+| [Tooltip](/components/tooltip/) | Tooltip | `PaymentTooltip` | Stable |
+| [Loading skeleton](/components/loading-skeleton/) | — | `LoadingSkeleton` | Stable |
+| [State message](/components/state-message/) | — | `StateMessage` | Stable |
+| [Status header](/components/status-header/) | — | `StatusHeader` | Stable |
 
 ## Overlays
 
-| Component | What it is for |
-| --- | --- |
-| [Dialog](/components/dialog/) | `showPaymentConfirmDialog`: yes or no before an action that cannot be undone. |
-| [Capture source sheet](/components/capture-source-sheet/) | `showCaptureSourceSheet`: host source intent before permission. |
-| [Sheet](/components/sheets/) | `PaymentSheet`, `showPaymentSheet`, `showPaymentSideSheet`: bottom sheets and side panels with a fixed footer. |
-
-## Payment flows
-
-Larger pages for the components that make up a whole journey. Each one explains how the pieces fit together.
-
-| Page | What it covers |
-| --- | --- |
-| [Checkout](/components/checkout/) | Order summary, method picker, confirmation with re-approval, host authorization, action bar, merchant header, steps, balance, promo code. |
-| [Status and receipt](/components/status-receipt/) | Payment instructions, the status view for every outcome, refunds and the receipt. |
-| [Transaction history](/components/history/) | Search, filters and the transaction list with its detail sheet. |
-| [Verification (KYC)](/components/verification/) | Optional consent, identity form, document upload, review and status. |
-| [KYC capture](/components/kyc-capture/) | Passive framing, review and host upload states. |
-| [Media](/components/media/) | A video player that works with any media engine you plug in. |
-| [Promotions](/components/promotions/) | Labeled promotions and the slot that loads them. |
-
-## Not in the kit
-
-There is no select or dropdown, free text field, chip or data table. Use Flutter's own widgets with your theme for those. Text fields exist only inside [`IdentityForm`](/components/verification/), [`PaymentCurrencyField`](/components/amount-input/) and the promo-code and history search inputs.
-
-Text field supports persistent labels, validation and controlled local search.
-
-Actions include Icon button, Link and Copy button.
-
-Charts support named series with shared scales and money, percent or number units.
-
-## Layout foundation
-
-Layout primitives: [Box](/components/box/), [Inline](/components/inline/), [Icon](/components/icon/), [Image](/components/image/), [Code](/components/code/).
-
-## Field foundation
-
-Forms: [Text area](/components/text-area/), [Select](/components/select/), [Date field](/components/date-field/), [Form field group](/components/form-field-group/).
-
-## Filter foundation
-
-New forms: [Search field](/components/search-field/), [Date range picker](/components/date-range-picker/), [Chip](/components/chip/).
-
-
-Use [Property list](/components/property-list/) for grouped payment facts and [Table](/components/table/) for fee schedules.
-
-- [Button group](/components/button-group/)
-
-- [Task list](/components/task-list/)
-
-- [Data table](/components/data-table/)
-
-- [Context view](/components/context-view/)
-
-- [Full page view](/components/full-page-view/)
-
-- [Focus view](/components/focus-view/)
-
-- [Settings view](/components/settings-view/)
-
-- [Sign in view](/components/sign-in-view/)
-
-- [Onboarding view](/components/onboarding-view/)
-
+| Component | Stripe Apps name | Kit class | Status |
+| --- | --- | --- | --- |
+| [Focus View](/components/focus-view/) | FocusView | `PaymentFocusView` | New in 0.1 |
+| [Dialog](/components/dialog/) | — | `showPaymentConfirmDialog` | Stable |
+| [Sheet](/components/sheets/) | — | `PaymentSheet` | Stable |
 
 ## Views and pages
 
-The host owns Scaffold and routes; each view owns its body scroll region. Views also support unbounded test and host layouts without adding a scroll region.
+| Component | Stripe Apps name | Kit class | Status |
+| --- | --- | --- | --- |
+| [Context View](/components/context-view/) | ContextView | `PaymentContextView` | New in 0.1 |
+| [Detail Page](/components/detail-page/) | DetailPage | `PaymentDetailPage` | New in 0.1 |
+| [Detail Page Property List](/components/detail-page-property-list/) | DetailPagePropertyList | `PaymentDetailPagePropertyList` | New in 0.1 |
+| [Detail Page Table](/components/detail-page-table/) | DetailPageTable | `PaymentDetailPageTable<T>` | New in 0.1 |
+| [Full Page View](/components/full-page-view/) | FullPageView | `PaymentFullPageView` | New in 0.1 |
+| [Onboarding View](/components/onboarding-view/) | OnboardingView | `PaymentOnboardingView` | New in 0.1 |
+| [Overview Page](/components/overview-page/) | OverviewPage | `PaymentOverviewPage` | New in 0.1 |
+| [Settings View](/components/settings-view/) | SettingsView | `PaymentSettingsView` | New in 0.1 |
+| [Sign In View](/components/sign-in-view/) | SignInView | `PaymentSignInView` | New in 0.1 |
 
-- [Detail page](/components/detail-page/)
+## Choosing a component
 
-- [Overview page](/components/overview-page/)
+- Label/value facts → [Property list](/components/property-list/).
+- Comparing rows with shared columns → [Table](/components/table/) for static content; [Data table](/components/data-table/) for paging, selection and sorting.
+- Action → [Button](/components/button/) for one primary per view; [Link](/components/link/) for inline/navigation; [Icon button](/components/icon-button/) for icon-only actions with a tooltip.
+- Short status → [Badge](/components/badge/). A page message → [Banner](/components/banner/). Action feedback → [Toast](/components/toast/).
 
-- [Detail page property list](/components/detail-page-property-list/)
-
-- [Detail page table](/components/detail-page-table/)
+Colors, spacing, radius and type come only from `PaymentTheme`, `PaymentSpace`, `PaymentRadius` and `PaymentType`; there are no raw values. See [Not in the kit](/reference/not-in-the-kit/) for D28 omissions.

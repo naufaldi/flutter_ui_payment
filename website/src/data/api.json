@@ -21945,7 +21945,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "enableColumnReorder",
-            "doc": "Reserved for Phase 6; must remain false."
+            "doc": "Not supported (D28); must remain false."
           },
           {
             "name": "enableColumnResize",
@@ -21956,7 +21956,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "enableColumnResize",
-            "doc": "Reserved for Phase 6; must remain false."
+            "doc": "Not supported (D28); must remain false."
           },
           {
             "name": "onColumnOrderChanged",
@@ -21967,7 +21967,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onColumnOrderChanged",
-            "doc": "Reserved column order callback."
+            "doc": "Not supported (D28); configure columns through the host."
           },
           {
             "name": "caption",
@@ -22090,21 +22090,21 @@
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "Reserved for Phase 6; must remain false."
+        "doc": "Not supported (D28); must remain false."
       },
       {
         "name": "enableColumnResize",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "Reserved for Phase 6; must remain false."
+        "doc": "Not supported (D28); must remain false."
       },
       {
         "name": "onColumnOrderChanged",
         "kind": "field",
         "static": false,
         "type": "ValueChanged<List<String>>?",
-        "doc": "Reserved column order callback."
+        "doc": "Not supported (D28); configure columns through the host."
       },
       {
         "name": "caption",

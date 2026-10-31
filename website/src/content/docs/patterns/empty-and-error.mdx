@@ -1,0 +1,18 @@
+---
+title: Empty and error
+description: Explain missing payment content and give the customer a recovery action.
+---
+
+| Situation | Presentation | Recovery |
+| --- | --- | --- |
+| No transactions yet | StateMessage with a specific title and explanation | Offer the next payment action when the host allows it. |
+| No matches in a date range | Information banner and Clear all | Widen or remove filters without implying data was deleted. |
+| Empty table/module | PaymentEmptyMessage | Name the missing content and provide a supported action. |
+| Supporting module failed | Warning StateMessage | Retry just that module. |
+| Primary screen content failed | Danger StateMessage | Retry the primary request. |
+| Chart loading/empty/error | ChartState | Host selects state and supplies retry. |
+| Promotion loading/empty/error | PromoSlotState | Keep optional promotion failure separate from payment status. |
+
+Run A01 variants 1 and 2 for no transactions and retry. Run A03 and search for an unknown settlement for no matches. Clear search restores rows; Retry repeats the host request.
+
+D25: danger belongs to failure of primary content. A failed optional module uses warning. Never change an unresolved payment to failed because a supporting request failed.

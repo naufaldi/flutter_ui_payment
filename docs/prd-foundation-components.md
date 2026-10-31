@@ -1592,7 +1592,7 @@ New in revision 3 (parity; for review):
 
 | ID | Decision | Reason |
 | --- | --- | --- |
-| D28 | **Parity rule.** All 48 Stripe entries and their sub-components ship (admission clause (c)). Their props are variants, translated by the §6 conventions table. **Not mirrored**, each with its reason: `TextField type: "password"` (D1a); CurrencyField `fractionDigitOffset` (`Money` is integer minor units); Box and Inline numeric sizes, `margin`/`bleed`, shadows, `zIndex`, `overflow` (B2, §3.5); DOM attributes; the SVG-string `brandIcon` (→ a host widget); DateRangePicker `timeZone` (host-owned dates); OnboardingView's auto-close delay (D44). Every `href` or route is a host callback. | The owner's decision, held inside the constraints that still apply: SDK only, no network, no secrets, host-owned decisions. |
+| D28 | **Parity rule.** All 48 Stripe entries and their sub-components ship (admission clause (c)). Their props are variants, translated by the §6 conventions table. **Not mirrored**, each with its reason: `TextField type: "password"` (D1a); CurrencyField `fractionDigitOffset` (`Money` is integer minor units); Box and Inline numeric sizes, `margin`/`bleed`, shadows, `zIndex`, `overflow` (B2, §3.5); DOM attributes; the SVG-string `brandIcon` (→ a host widget); DateRangePicker `timeZone` (host-owned dates); OnboardingView's auto-close delay (D44); DataTable `enableColumnReorder`/`enableColumnResize` (D30 collapse; host-configured columns). Every `href` or route is a host callback. | The owner's decision, held inside the constraints that still apply: SDK only, no network, no secrets, host-owned decisions. |
 | D29 | **Sizes keep a 48 dp hit area.** `PaymentSize` (`small`, `medium`, `large`) changes the drawn container and padding only. The layout box, which bounds Flutter hit-testing, stays ≥ 48×48 dp, with the visual centered, as Material's padded tap target does. `medium` is today's look and the default everywhere. | Stripe's sizes are visual. Flutter hit-tests within the layout box, so the only way to keep B5 with a 36 dp button is a 48 dp box. The cost is row height, which is accepted. |
 | D30 | **Tables on phones collapse rows into list rows.** Below 600 dp of available width, or at `PaymentType.isLarge`, `PaymentTable` and `PaymentDataTable` render each row as a list row: the pinned or row-header cell is the title, numbers sit end-aligned, other cells become caption lines, and actions become a trailing menu. The wide layout keeps columns and scrolls horizontally, with pinned columns fixed. | Horizontal scrolling with a sticky column fails at 320 dp and 200% text (B4): two-axis scrolling, clipped headers, and cells read without their header. The collapse reuses the list anatomy and its semantics. |
 | D31 | **Views and pages are Scaffold-free bodies** with header, scroll content and footer regions. The host supplies the `Scaffold`, route, tab or sheet. Only FocusView presents itself (`showPaymentFocusView`, through the existing sheet functions). No router, no app bar, no `Navigator.push` otherwise. | PRD §2 keeps routing with the host. One rule for all eleven layouts. It matches `PaymentSheet`, which already lays out header, content and footer. |
@@ -1607,7 +1607,7 @@ New in revision 3 (parity; for review):
 | D40 | **Overlay parity.** `PaymentTooltip` gains 12 placements on `OverlayPortal`, plus `type` (label vs description semantics) and `delay`. `PaymentMenu` gains groups, a custom trigger and `onAction`. `PaymentFocusView` gains `size` and `confirmClose`. | Flutter's `Tooltip` only places above or below; `OverlayPortal` is in the SDK. |
 | D41 | **`PaymentListItem` replaces `ActionTile`** and gains `value`, `image`, `size` (`standard` 48 / `large` 64) and `id`; **`PaymentList` replaces `ActionTileGroup`** and gains `onAction`. Still no compact density, and still separate classes for switch, checkbox and radio rows. Supersedes part of D19 and Q8. | One public action-row class, not two. Stripe's sizes are both ≥ 48 dp. |
 | D42 | **`PaymentImage` takes a host `ImageProvider`.** The kit never constructs a network image. `alt` is required (`''` = decorative). Loading and error states are built in. | B11: no network in `lib`; the D9 error-state gap becomes impossible. |
-| D43 | **`PaymentDataTable` works on host rows.** Local paging, selection, sorting and filtering over host-supplied rows (D43 amended 1 Nov 2026, owner approved). Offset and cursor paging use host callbacks. Column reorder/resize deferred to Phase 6. | Host owns data and queries; nothing the kit computes changes a total. |
+| D43 | **`PaymentDataTable` works on host rows.** Local paging, selection, sorting and filtering over host-supplied rows (D43 amended 1 Nov 2026, owner approved). Offset and cursor paging use host callbacks. Column reorder/resize not mirrored (D28). | Host owns data and queries; nothing the kit computes changes a total. |
 | D44 | **`PaymentOnboardingView.completed`** shows a completion state and calls `onCompleted` once. There is no kit timer. Phone layout: a step header plus a collapsible task list. | B11 (no kit timers that act on their own); the host owns navigation. |
 
 ## 9. Variant governance
@@ -1997,7 +1997,7 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 **Phase 4C: content**
 - [x] PaymentPropertyList + PaymentPropertyListItem
 - [x] PaymentTable (+ row, header cell, cell; narrow collapse) (D30)
-- [x] PaymentDataTable (columns, cell types, row actions, selection, pagination; reorder/resize deferred to Phase 6) (D30, D43)
+- [x] PaymentDataTable (columns, cell types, row actions, selection, pagination; reorder/resize not mirrored (D28)) (D30, D43)
 - [x] PaymentTaskList + PaymentTaskListItem
 - [x] PaymentButtonGroup; migrate status stack and dialog actions (D23)
 - [x] LoadingSkeleton table shape
@@ -2020,13 +2020,13 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] flow_test: sign-in → KYC onboarding → checkout → detail page → report a problem
 
 **Phase 6: docs IA**
-- [ ] Sidebar: Foundations; Components as one alphabetical list (48 Stripe + kit-specific); Patterns; Reference
-- [ ] Components overview: groups + Stripe name → kit class + status
-- [ ] Redirects: expandable-section, status-badge, notice-banner, action-menu, amount-input, action-tile
+- [x] Sidebar: Foundations; Components as one alphabetical list (48 Stripe + kit-specific); Patterns; Reference
+- [x] Components overview: groups + Stripe name → kit class + status
+- [x] Redirects: expandable-section, status-badge, notice-banner, action-menu, amount-input, action-tile
 - [ ] Every component page: Stripe → kit table, closed variant set, which-variant-when, do/don't, example screen
 - [ ] `_Specimen` per component; captures `<component>_variants[_dark|_200]`; rename controls_* (D27)
-- [ ] Patterns: loading, empty and error, forms, views and pages, tables on phones
-- [ ] "Not in the kit": D28 non-mirrored props only
+- [x] Patterns: loading, empty and error, forms, views and pages, tables on phones
+- [x] "Not in the kit": D28 non-mirrored props only
 - [x] PRD.md §16a row updated to full Stripe parity (revision 3)
 ```
 
@@ -2089,3 +2089,7 @@ Sign-in H04, KYC onboarding, history/spending A01 and wide checkout order contex
 ### Phase 5-3 implementation notes
 
 A02–A05 exercise transaction details/reporting, settlement statements, fees and grouped settings. Reports send metadata only; downloads are synthetic preparation. The H04 integration story extends sign-in and KYC through payment, detail and reporting. Verification results are recorded in the PR.
+
+### Phase 6-1 implementation notes
+
+Component and pattern navigation now follows D34 and Q4. Thirteen URL moves preserve existing inbound links through three redirect mechanisms. D28 drops reorder/resize with deprecations instead of adding unused drag controls.
