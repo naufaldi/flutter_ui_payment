@@ -115,7 +115,6 @@ void main() {
       ),
     );
     await tester.tap(find.byTooltip('Hide banner: Total changed'));
-    await tester.pump();
     await tester.tap(find.byTooltip('Hide banner: Total changed'));
     expect(calls, 1);
   });

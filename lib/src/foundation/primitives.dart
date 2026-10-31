@@ -853,6 +853,7 @@ class _PaymentBannerState extends State<PaymentBanner> {
                       onPressed: _reported
                           ? null
                           : () {
+                              if (_reported) return;
                               setState(() => _reported = true);
                               widget.onDismiss!();
                             },
