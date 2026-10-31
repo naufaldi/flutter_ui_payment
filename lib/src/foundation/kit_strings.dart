@@ -367,6 +367,12 @@ extension KitStrings on PaymentLocalizations {
   /// All steps complete.
   String get onboardingDone =>
       _k('All steps complete', 'Semua langkah selesai');
+
+  /// Ancestor navigation label.
+  String backTo(String label) => _k('Back to $label', 'Kembali ke $label');
+
+  /// Create an item.
+  String get create => _k('Create', 'Tambah');
 }
 
 /// Groups used by transaction filters. Defined here so the strings and the
