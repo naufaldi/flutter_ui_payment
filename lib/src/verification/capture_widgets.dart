@@ -1,3 +1,6 @@
+import '../foundation/payment_icons.dart';
+import '../foundation/payment_tokens.dart';
+import '../layout/content.dart';
 import 'package:flutter/material.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
@@ -257,12 +260,14 @@ class KycCaptureGuide extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 if (photo != null)
-                  Image(
+                  PaymentImage(
                     image: photo!,
-                    errorBuilder: (context, error, stackTrace) =>
-                        CaptureFrameOverlay(kind: kind, overPreview: false),
+                    errorFallback: CaptureFrameOverlay(
+                      kind: kind,
+                      overPreview: false,
+                    ),
                     fit: BoxFit.cover,
-                    semanticLabel: l10n.capturePhotoLabel(kind),
+                    alt: l10n.capturePhotoLabel(kind),
                   )
                 else
                   ?preview,
@@ -329,12 +334,17 @@ class KycCaptureGuide extends StatelessWidget {
         ),
         for (final tip in guidance)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: EdgeInsets.symmetric(
+              vertical: theme.space(PaymentSpace.inline),
+            ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info_outline, size: 18, color: theme.textSecondary),
-                const SizedBox(width: 8),
+                const PaymentIcon(
+                  Icons.info_outline,
+                  color: PaymentTextColor.secondary,
+                ),
+                SizedBox(width: theme.space(PaymentSpace.related)),
                 Expanded(
                   child: Text(tip, style: PaymentType.of(context).label),
                 ),

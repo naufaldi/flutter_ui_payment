@@ -290,7 +290,7 @@ for (const {rel, show} of files) {
           fields[`get:${getter[2]}`] = { type: getter[1], doc: docAbove(lines, j) };
         }
         const ctor = l.match(new RegExp(`^  (const |factory )?${name}(\\.\\w+)?\\(`));
-        if (ctor && ctor[2] !== '._') {
+        if (ctor && !(ctor[2] ?? '').startsWith('._')) {
           const sig = collectSignature(lines, j);
           const raw = parenContent(sig, sig.indexOf('('));
           constructors.push({

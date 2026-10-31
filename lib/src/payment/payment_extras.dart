@@ -1,4 +1,5 @@
 import '../foundation/payment_icons.dart';
+import '../foundation/payment_tokens.dart';
 import '../controls/actions.dart';
 import '../controls/text_field.dart';
 import 'dart:math' as math;
@@ -239,10 +240,10 @@ class MerchantHeader extends StatelessWidget {
                             padding: EdgeInsetsDirectional.only(
                               start: theme.spacing * 0.5,
                             ),
-                            child: Icon(
+                            child: PaymentIcon(
                               Icons.verified_outlined,
-                              size: 16,
-                              color: theme.accent,
+                              size: PaymentIconSize.small,
+                              color: PaymentTextColor.accent,
                               semanticLabel: l10n.merchantVerified,
                             ),
                           ),
@@ -495,10 +496,10 @@ class _PromoCodeInputState extends State<PromoCodeInput> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const PaymentIcon(
                 Icons.local_offer_outlined,
-                size: 14,
-                color: theme.textSecondary,
+                size: PaymentIconSize.xsmall,
+                color: PaymentTextColor.secondary,
               ),
               SizedBox(width: theme.spacing),
               Flexible(

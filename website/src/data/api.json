@@ -2347,6 +2347,7 @@
       "navigation",
       "selected",
       "closeSheet",
+      "imageUnavailable",
       "play",
       "pause",
       "replay",
@@ -2994,6 +2995,145 @@
         "type": "IconData",
         "value": "Icons.lock_outline",
         "doc": "Content hidden."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentIcon": {
+    "kind": "class",
+    "file": "lib/src/foundation/payment_icons.dart",
+    "doc": "Material glyph at a semantic size, centered on the first text line.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentIcon",
+        "factory": false,
+        "params": [
+          {
+            "name": "icon",
+            "type": "IconData?",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "icon",
+            "doc": "Custom glyph, or the tone default."
+          },
+          {
+            "name": "size",
+            "type": "PaymentIconSize",
+            "required": false,
+            "default": "PaymentIconSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": "Glyph size."
+          },
+          {
+            "name": "color",
+            "type": "PaymentTextColor?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "color",
+            "doc": "Semantic color, otherwise inherited."
+          },
+          {
+            "name": "semanticLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "semanticLabel",
+            "doc": "Alt text; null makes the icon decorative."
+          }
+        ],
+        "doc": ""
+      },
+      {
+        "name": "PaymentIcon.tone",
+        "factory": false,
+        "params": [
+          {
+            "name": "tone",
+            "type": "StatusTone?",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "tone",
+            "doc": "Status tone."
+          },
+          {
+            "name": "icon",
+            "type": "IconData?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "icon",
+            "doc": "Custom glyph, or the tone default."
+          },
+          {
+            "name": "size",
+            "type": "PaymentIconSize",
+            "required": false,
+            "default": "PaymentIconSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": "Glyph size."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData?",
+        "doc": "Custom glyph, or the tone default."
+      },
+      {
+        "name": "tone",
+        "kind": "field",
+        "static": false,
+        "type": "StatusTone?",
+        "doc": "Status tone."
+      },
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentIconSize",
+        "doc": "Glyph size."
+      },
+      {
+        "name": "color",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentTextColor?",
+        "doc": "Semantic color, otherwise inherited."
+      },
+      {
+        "name": "semanticLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Alt text; null makes the icon decorative."
       }
     ],
     "copyWith": null
@@ -5327,7 +5467,7 @@
   "PaymentRadius": {
     "kind": "enum",
     "file": "lib/src/foundation/payment_tokens.dart",
-    "doc": "Corner roles; resolved internally until layout primitives arrive.",
+    "doc": "Corner roles for PaymentBox and PaymentImage.",
     "values": [
       {
         "name": "none",
@@ -6969,7 +7109,7 @@
   "PaymentListItem": {
     "kind": "class",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "",
+    "doc": "A payment list row with a host action, icon or image.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -6985,7 +7125,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": ""
+            "doc": "Primary row label.."
           },
           {
             "name": "secondaryTitle",
@@ -6996,7 +7136,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "secondaryTitle",
-            "doc": ""
+            "doc": "Supporting row text.."
           },
           {
             "name": "icon",
@@ -7007,7 +7147,18 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "icon",
-            "doc": ""
+            "doc": "Leading decorative glyph.."
+          },
+          {
+            "name": "image",
+            "type": "PaymentImage?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "image",
+            "doc": "Leading host image; mutually exclusive with icon."
           },
           {
             "name": "trailing",
@@ -7029,7 +7180,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "value",
-            "doc": ""
+            "doc": "Trailing value, mutually exclusive with trailing.."
           },
           {
             "name": "id",
@@ -7040,7 +7191,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "id",
-            "doc": ""
+            "doc": "Host action identifier.."
           },
           {
             "name": "size",
@@ -7051,7 +7202,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "size",
-            "doc": ""
+            "doc": "Row size.."
           },
           {
             "name": "onPressed",
@@ -7062,7 +7213,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onPressed",
-            "doc": ""
+            "doc": "Host row action.."
           },
           {
             "name": "destructive",
@@ -7073,7 +7224,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "destructive",
-            "doc": ""
+            "doc": "Use the danger foreground for the action.."
           },
           {
             "name": "disabledReason",
@@ -7084,7 +7235,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "disabledReason",
-            "doc": ""
+            "doc": "Explanation when the action is unavailable.."
           }
         ],
         "doc": ""
@@ -7098,42 +7249,49 @@
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Host action identifier.."
       },
       {
         "name": "value",
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": ""
+        "doc": "Trailing value, mutually exclusive with trailing.."
       },
       {
         "name": "size",
         "kind": "field",
         "static": false,
         "type": "PaymentListItemSize",
-        "doc": ""
+        "doc": "Row size.."
       },
       {
         "name": "title",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "Primary row label.."
       },
       {
         "name": "secondaryTitle",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Supporting row text.."
+      },
+      {
+        "name": "image",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentImage?",
+        "doc": "Leading host image; mutually exclusive with icon."
       },
       {
         "name": "icon",
         "kind": "field",
         "static": false,
         "type": "IconData?",
-        "doc": ""
+        "doc": "Leading decorative glyph.."
       },
       {
         "name": "trailing",
@@ -7147,21 +7305,21 @@
         "kind": "field",
         "static": false,
         "type": "VoidCallback?",
-        "doc": ""
+        "doc": "Host row action.."
       },
       {
         "name": "destructive",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": ""
+        "doc": "Use the danger foreground for the action.."
       },
       {
         "name": "disabledReason",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "Explanation when the action is unavailable.."
       }
     ],
     "copyWith": null
@@ -7963,7 +8121,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": ""
+            "doc": "title for this section."
           },
           {
             "name": "child",
@@ -7974,7 +8132,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "child",
-            "doc": ""
+            "doc": "child for this section."
           },
           {
             "name": "subtitle",
@@ -7985,7 +8143,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "subtitle",
-            "doc": ""
+            "doc": "subtitle for this section."
           },
           {
             "name": "leading",
@@ -7996,7 +8154,18 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "leading",
-            "doc": ""
+            "doc": "Legacy header glyph; use media."
+          },
+          {
+            "name": "media",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "media",
+            "doc": "Header icon or image."
           },
           {
             "name": "expanded",
@@ -8018,7 +8187,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "initiallyExpanded",
-            "doc": ""
+            "doc": "initiallyExpanded for this section."
           },
           {
             "name": "onExpandedChanged",
@@ -8029,7 +8198,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onExpandedChanged",
-            "doc": ""
+            "doc": "onExpandedChanged for this section."
           },
           {
             "name": "actions",
@@ -8040,7 +8209,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "actions",
-            "doc": ""
+            "doc": "actions for this section."
           }
         ],
         "doc": ""
@@ -8054,35 +8223,42 @@
         "kind": "field",
         "static": false,
         "type": "List<Widget>",
-        "doc": ""
+        "doc": "actions for this section."
       },
       {
         "name": "title",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "title for this section."
       },
       {
         "name": "subtitle",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "subtitle for this section."
+      },
+      {
+        "name": "media",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Header icon or image."
       },
       {
         "name": "leading",
         "kind": "field",
         "static": false,
         "type": "IconData?",
-        "doc": ""
+        "doc": "Legacy header glyph; use media."
       },
       {
         "name": "child",
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": ""
+        "doc": "child for this section."
       },
       {
         "name": "expanded",
@@ -8096,14 +8272,14 @@
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": ""
+        "doc": "initiallyExpanded for this section."
       },
       {
         "name": "onExpandedChanged",
         "kind": "field",
         "static": false,
         "type": "ValueChanged<bool>?",
-        "doc": ""
+        "doc": "onExpandedChanged for this section."
       }
     ],
     "copyWith": null
@@ -12906,7 +13082,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "media",
-            "doc": "Optional image or illustration supplied by the host (already loaded or\nwith its own loading state). Decorative: excluded from semantics."
+            "doc": "Optional image or illustration supplied by the host (already loaded or\nwith its own loading state). Decorative: excluded from semantics.\nPrefer PaymentImage with empty alt; the card labels the promotion."
           },
           {
             "name": "terms",
@@ -12980,7 +13156,7 @@
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": "Optional image or illustration supplied by the host (already loaded or\nwith its own loading state). Decorative: excluded from semantics."
+        "doc": "Optional image or illustration supplied by the host (already loaded or\nwith its own loading state). Decorative: excluded from semantics.\nPrefer PaymentImage with empty alt; the card labels the promotion."
       },
       {
         "name": "terms",
@@ -15895,46 +16071,6 @@
           }
         ],
         "doc": "Controlled local list filter, with clear and refocus."
-      },
-      {
-        "name": "PaymentTextField._search",
-        "factory": false,
-        "params": [
-          {
-            "name": "query",
-            "type": "String?",
-            "required": true,
-            "default": null,
-            "named": true,
-            "viaThis": true,
-            "isSuper": false,
-            "fieldName": "query",
-            "doc": "Controlled query used by the search constructor."
-          },
-          {
-            "name": "onChanged",
-            "type": "ValueChanged<String>?",
-            "required": true,
-            "default": null,
-            "named": true,
-            "viaThis": true,
-            "isSuper": false,
-            "fieldName": "onChanged",
-            "doc": "Reports edits immediately; remote debounce belongs to the host."
-          },
-          {
-            "name": "label",
-            "type": "String",
-            "required": true,
-            "default": null,
-            "named": true,
-            "viaThis": true,
-            "isSuper": false,
-            "fieldName": "label",
-            "doc": "Always visible; floats above the value."
-          }
-        ],
-        "doc": ""
       }
     ],
     "getters": [],
@@ -16445,6 +16581,1013 @@
         "static": false,
         "type": "String?",
         "doc": "Spoken label; defaults to the localized copy action."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentStack": {
+    "kind": "enum",
+    "file": "lib/src/layout/layout.dart",
+    "doc": "Layout direction.",
+    "values": [
+      {
+        "name": "horizontal",
+        "doc": "horizontal."
+      },
+      {
+        "name": "vertical",
+        "doc": "vertical."
+      },
+      {
+        "name": "layered",
+        "doc": "layered."
+      }
+    ]
+  },
+  "PaymentDistribute": {
+    "kind": "enum",
+    "file": "lib/src/layout/layout.dart",
+    "doc": "Sibling distribution.",
+    "values": [
+      {
+        "name": "packed",
+        "doc": "packed."
+      },
+      {
+        "name": "spaceBetween",
+        "doc": "spaceBetween."
+      }
+    ]
+  },
+  "PaymentAlign": {
+    "kind": "enum",
+    "file": "lib/src/layout/layout.dart",
+    "doc": "Axis alignment.",
+    "values": [
+      {
+        "name": "start",
+        "doc": "start."
+      },
+      {
+        "name": "center",
+        "doc": "center."
+      },
+      {
+        "name": "end",
+        "doc": "end."
+      },
+      {
+        "name": "stretch",
+        "doc": "stretch."
+      },
+      {
+        "name": "baseline",
+        "doc": "baseline."
+      }
+    ]
+  },
+  "PaymentBoxBackground": {
+    "kind": "enum",
+    "file": "lib/src/layout/layout.dart",
+    "doc": "Semantic surface.",
+    "values": [
+      {
+        "name": "none",
+        "doc": "none."
+      },
+      {
+        "name": "surface",
+        "doc": "surface."
+      },
+      {
+        "name": "muted",
+        "doc": "muted."
+      }
+    ]
+  },
+  "PaymentKeyline": {
+    "kind": "enum",
+    "file": "lib/src/layout/layout.dart",
+    "doc": "Semantic one-pixel edge.",
+    "values": [
+      {
+        "name": "none",
+        "doc": "none."
+      },
+      {
+        "name": "neutral",
+        "doc": "neutral."
+      },
+      {
+        "name": "critical",
+        "doc": "critical."
+      }
+    ]
+  },
+  "PaymentBox": {
+    "kind": "class",
+    "file": "lib/src/layout/layout.dart",
+    "doc": "Token-only layout container. Never merges child semantics.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentBox",
+        "factory": false,
+        "params": [
+          {
+            "name": "children",
+            "type": "List<Widget>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "children",
+            "doc": "children; uses semantic tokens."
+          },
+          {
+            "name": "stack",
+            "type": "PaymentStack",
+            "required": false,
+            "default": "PaymentStack.vertical",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "stack",
+            "doc": "stack; uses semantic tokens."
+          },
+          {
+            "name": "padding",
+            "type": "PaymentSpace",
+            "required": false,
+            "default": "PaymentSpace.none",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "padding",
+            "doc": "padding; uses semantic tokens."
+          },
+          {
+            "name": "paddingX",
+            "type": "PaymentSpace?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "paddingX",
+            "doc": "paddingX; uses semantic tokens."
+          },
+          {
+            "name": "paddingY",
+            "type": "PaymentSpace?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "paddingY",
+            "doc": "paddingY; uses semantic tokens."
+          },
+          {
+            "name": "gap",
+            "type": "PaymentSpace",
+            "required": false,
+            "default": "PaymentSpace.none",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "gap",
+            "doc": "gap; uses semantic tokens."
+          },
+          {
+            "name": "distribute",
+            "type": "PaymentDistribute",
+            "required": false,
+            "default": "PaymentDistribute.packed",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "distribute",
+            "doc": "distribute; uses semantic tokens."
+          },
+          {
+            "name": "alignX",
+            "type": "PaymentAlign",
+            "required": false,
+            "default": "PaymentAlign.stretch",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "alignX",
+            "doc": "alignX; uses semantic tokens."
+          },
+          {
+            "name": "alignY",
+            "type": "PaymentAlign",
+            "required": false,
+            "default": "PaymentAlign.start",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "alignY",
+            "doc": "alignY; uses semantic tokens."
+          },
+          {
+            "name": "wrap",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "wrap",
+            "doc": "wrap; uses semantic tokens."
+          },
+          {
+            "name": "background",
+            "type": "PaymentBoxBackground",
+            "required": false,
+            "default": "PaymentBoxBackground.none",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "background",
+            "doc": "background; uses semantic tokens."
+          },
+          {
+            "name": "radius",
+            "type": "PaymentRadius",
+            "required": false,
+            "default": "PaymentRadius.none",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "radius",
+            "doc": "radius; uses semantic tokens."
+          },
+          {
+            "name": "keyline",
+            "type": "PaymentKeyline",
+            "required": false,
+            "default": "PaymentKeyline.none",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "keyline",
+            "doc": "keyline; uses semantic tokens."
+          },
+          {
+            "name": "width",
+            "type": "PaymentWidth",
+            "required": false,
+            "default": "PaymentWidth.fill",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "width",
+            "doc": "width; uses semantic tokens."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "children",
+        "kind": "field",
+        "static": false,
+        "type": "List<Widget>",
+        "doc": "children; uses semantic tokens."
+      },
+      {
+        "name": "stack",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentStack",
+        "doc": "stack; uses semantic tokens."
+      },
+      {
+        "name": "padding",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSpace",
+        "doc": "padding; uses semantic tokens."
+      },
+      {
+        "name": "gap",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSpace",
+        "doc": "gap; uses semantic tokens."
+      },
+      {
+        "name": "paddingX",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSpace?",
+        "doc": "paddingX; uses semantic tokens."
+      },
+      {
+        "name": "paddingY",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSpace?",
+        "doc": "paddingY; uses semantic tokens."
+      },
+      {
+        "name": "distribute",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentDistribute",
+        "doc": "distribute; uses semantic tokens."
+      },
+      {
+        "name": "alignX",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentAlign",
+        "doc": "alignX; uses semantic tokens."
+      },
+      {
+        "name": "alignY",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentAlign",
+        "doc": "alignY; uses semantic tokens."
+      },
+      {
+        "name": "wrap",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "wrap; uses semantic tokens."
+      },
+      {
+        "name": "background",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentBoxBackground",
+        "doc": "background; uses semantic tokens."
+      },
+      {
+        "name": "radius",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentRadius",
+        "doc": "radius; uses semantic tokens."
+      },
+      {
+        "name": "keyline",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentKeyline",
+        "doc": "keyline; uses semantic tokens."
+      },
+      {
+        "name": "width",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentWidth",
+        "doc": "width; uses semantic tokens."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentSpan": {
+    "kind": "class",
+    "file": "lib/src/layout/layout.dart",
+    "doc": "One styled run in rich inline text.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentSpan",
+        "factory": false,
+        "params": [
+          {
+            "name": "text",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "text",
+            "doc": "Text content."
+          },
+          {
+            "name": "weight",
+            "type": "PaymentFontWeight?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "weight",
+            "doc": "Running emphasis."
+          },
+          {
+            "name": "color",
+            "type": "PaymentTextColor?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "color",
+            "doc": "Semantic color."
+          },
+          {
+            "name": "reference",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "reference",
+            "doc": "Use the reference face."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "text",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Text content."
+      },
+      {
+        "name": "weight",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentFontWeight?",
+        "doc": "Running emphasis."
+      },
+      {
+        "name": "color",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentTextColor?",
+        "doc": "Semantic color."
+      },
+      {
+        "name": "reference",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Use the reference face."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentInline": {
+    "kind": "class",
+    "file": "lib/src/layout/layout.dart",
+    "doc": "Text in one type role.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentInline",
+        "factory": false,
+        "params": [
+          {
+            "name": "text",
+            "type": "String?",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "text",
+            "doc": "text for this text."
+          },
+          {
+            "name": "role",
+            "type": "PaymentTextRole",
+            "required": false,
+            "default": "PaymentTextRole.body",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "role",
+            "doc": "role for this text."
+          },
+          {
+            "name": "weight",
+            "type": "PaymentFontWeight?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "weight",
+            "doc": "weight for this text."
+          },
+          {
+            "name": "color",
+            "type": "PaymentTextColor?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "color",
+            "doc": "color for this text."
+          },
+          {
+            "name": "tabular",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "tabular",
+            "doc": "tabular for this text."
+          },
+          {
+            "name": "reference",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "reference",
+            "doc": "reference for this text."
+          },
+          {
+            "name": "maxLines",
+            "type": "int?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "maxLines",
+            "doc": "maxLines for this text."
+          },
+          {
+            "name": "textAlign",
+            "type": "TextAlign?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "textAlign",
+            "doc": "textAlign for this text."
+          }
+        ],
+        "doc": ""
+      },
+      {
+        "name": "PaymentInline.rich",
+        "factory": false,
+        "params": [
+          {
+            "name": "spans",
+            "type": "List<PaymentSpan>",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "spans",
+            "doc": "spans for this text."
+          },
+          {
+            "name": "role",
+            "type": "PaymentTextRole",
+            "required": false,
+            "default": "PaymentTextRole.body",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "role",
+            "doc": "role for this text."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "text",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "text for this text."
+      },
+      {
+        "name": "spans",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentSpan>",
+        "doc": "spans for this text."
+      },
+      {
+        "name": "role",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentTextRole",
+        "doc": "role for this text."
+      },
+      {
+        "name": "weight",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentFontWeight?",
+        "doc": "weight for this text."
+      },
+      {
+        "name": "color",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentTextColor?",
+        "doc": "color for this text."
+      },
+      {
+        "name": "tabular",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "tabular for this text."
+      },
+      {
+        "name": "reference",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "reference for this text."
+      },
+      {
+        "name": "maxLines",
+        "kind": "field",
+        "static": false,
+        "type": "int?",
+        "doc": "maxLines for this text."
+      },
+      {
+        "name": "textAlign",
+        "kind": "field",
+        "static": false,
+        "type": "TextAlign?",
+        "doc": "textAlign for this text."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentImage": {
+    "kind": "class",
+    "file": "lib/src/layout/content.dart",
+    "doc": "A host-supplied image with alt text, loading and error states.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentImage",
+        "factory": false,
+        "params": [
+          {
+            "name": "image",
+            "type": "ImageProvider",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "image",
+            "doc": "The host supplies the image provider."
+          },
+          {
+            "name": "alt",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "alt",
+            "doc": "Image alternative; empty makes the image decorative."
+          },
+          {
+            "name": "width",
+            "type": "double?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "width",
+            "doc": "Optional width."
+          },
+          {
+            "name": "height",
+            "type": "double?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "height",
+            "doc": "Optional height."
+          },
+          {
+            "name": "fit",
+            "type": "BoxFit",
+            "required": false,
+            "default": "BoxFit.cover",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "fit",
+            "doc": "Image fit."
+          },
+          {
+            "name": "radius",
+            "type": "PaymentRadius",
+            "required": false,
+            "default": "PaymentRadius.none",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "radius",
+            "doc": "Corner role."
+          },
+          {
+            "name": "bordered",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "bordered",
+            "doc": "Draw an outline over the image."
+          },
+          {
+            "name": "placeholder",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "placeholder",
+            "doc": "Host loading content."
+          },
+          {
+            "name": "errorFallback",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorFallback",
+            "doc": "Host failure content, including its own semantics."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "image",
+        "kind": "field",
+        "static": false,
+        "type": "ImageProvider",
+        "doc": "The host supplies the image provider."
+      },
+      {
+        "name": "alt",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Image alternative; empty makes the image decorative."
+      },
+      {
+        "name": "width",
+        "kind": "field",
+        "static": false,
+        "type": "double?",
+        "doc": "Optional width."
+      },
+      {
+        "name": "height",
+        "kind": "field",
+        "static": false,
+        "type": "double?",
+        "doc": "Optional height."
+      },
+      {
+        "name": "fit",
+        "kind": "field",
+        "static": false,
+        "type": "BoxFit",
+        "doc": "Image fit."
+      },
+      {
+        "name": "radius",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentRadius",
+        "doc": "Corner role."
+      },
+      {
+        "name": "bordered",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Draw an outline over the image."
+      },
+      {
+        "name": "placeholder",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Host loading content."
+      },
+      {
+        "name": "errorFallback",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Host failure content, including its own semantics."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentCodeKind": {
+    "kind": "enum",
+    "file": "lib/src/layout/content.dart",
+    "doc": "Code presentation. Nothing else exists.",
+    "values": [
+      {
+        "name": "code",
+        "doc": "Inline reference tag."
+      },
+      {
+        "name": "pre",
+        "doc": "Multiline block."
+      },
+      {
+        "name": "samp",
+        "doc": "Host output without a fill."
+      },
+      {
+        "name": "kbd",
+        "doc": "Nonselectable keyboard key."
+      }
+    ]
+  },
+  "PaymentCode": {
+    "kind": "class",
+    "file": "lib/src/layout/content.dart",
+    "doc": "Monospace, tabular text people read or copy.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentCode",
+        "factory": false,
+        "params": [
+          {
+            "name": "text",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "text",
+            "doc": "Literal value."
+          },
+          {
+            "name": "kind",
+            "type": "PaymentCodeKind",
+            "required": false,
+            "default": "PaymentCodeKind.code",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "kind",
+            "doc": "Presentation kind."
+          },
+          {
+            "name": "multiline",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "multiline",
+            "doc": "Allow multiple lines."
+          },
+          {
+            "name": "noWrap",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "noWrap",
+            "doc": "Scroll long references horizontally."
+          },
+          {
+            "name": "size",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": "Text role size."
+          },
+          {
+            "name": "onCopy",
+            "type": "Future<bool> Function(String value)?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onCopy",
+            "doc": "Host copy callback; adds confirmation and failure feedback."
+          },
+          {
+            "name": "semanticLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "semanticLabel",
+            "doc": "Spoken prefix before the value."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "text",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Literal value."
+      },
+      {
+        "name": "kind",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentCodeKind",
+        "doc": "Presentation kind."
+      },
+      {
+        "name": "multiline",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Allow multiple lines."
+      },
+      {
+        "name": "noWrap",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Scroll long references horizontally."
+      },
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSize",
+        "doc": "Text role size."
+      },
+      {
+        "name": "semanticLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Spoken prefix before the value."
       }
     ],
     "copyWith": null

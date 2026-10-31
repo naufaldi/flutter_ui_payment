@@ -121,3 +121,7 @@ final gutter = EdgeInsets.all(theme.space(PaymentSpace.group));
 Size is small, medium (default), large; width is fill (default) or hug. All labels wrap. Their **New** component consumers arrive later; every layout/hit box remains at least 48×48 dp regardless of visual size. **New** `PaymentBox` is not implemented. Nothing else exists.
 
 <Props names={['PaymentSpace','PaymentRadius','PaymentSize','PaymentWidth']} members />
+
+## Layout foundation
+
+Use PaymentBox gap to space siblings from tokens. Fill needs a bounded parent; use hug inside a Row.

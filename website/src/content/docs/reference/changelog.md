@@ -5,6 +5,14 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Design system Phase 4A (1 Nov 2026)
+
+- Add token-only Box, Inline, Icon, Image and Code primitives.
+- Add list images and accordion media; deprecate leading.
+- VA references have a muted tag and grouped speech. KYC photos retain loading and failure semantics.
+- Medium row glyphs scale with text; KYC tips use the 20 dp glyph.
+- API generation hides all private constructors.
+
 ## Design system Phase 3B (1 Nov 2026)
 
 - Add PaymentIconButton, PaymentLink and PaymentCopyButton with semantic variants, 48 dp targets, focus and press feedback.

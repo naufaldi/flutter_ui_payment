@@ -1,3 +1,4 @@
+import '../layout/content.dart';
 import '../controls/actions.dart';
 import 'dart:async';
 
@@ -33,12 +34,14 @@ enum PaymentListItemSize {
   large,
 }
 
+/// A payment list row with a host action, icon or image.
 class PaymentListItem extends StatelessWidget {
   const PaymentListItem({
     super.key,
     required this.title,
     this.secondaryTitle,
     this.icon,
+    this.image,
     this.trailing,
     this.value,
     this.id,
@@ -48,17 +51,37 @@ class PaymentListItem extends StatelessWidget {
     this.disabledReason,
   });
 
+  /// Host action identifier..
   final String? id;
+
+  /// Trailing value, mutually exclusive with trailing..
   final Widget? value;
+
+  /// Row size..
   final PaymentListItemSize size;
+
+  /// Primary row label..
   final String title;
+
+  /// Supporting row text..
   final String? secondaryTitle;
+
+  /// Leading host image; mutually exclusive with icon.
+  final PaymentImage? image;
+
+  /// Leading decorative glyph..
   final IconData? icon;
 
   /// Defaults to a chevron when [onPressed] is set.
   final Widget? trailing;
+
+  /// Host row action..
   final VoidCallback? onPressed;
+
+  /// Use the danger foreground for the action..
   final bool destructive;
+
+  /// Explanation when the action is unavailable..
   final String? disabledReason;
 
   @override
@@ -69,6 +92,7 @@ class PaymentListItem extends StatelessWidget {
       value == null || trailing == null,
       'PaymentListItem takes value or trailing, not both.',
     );
+    assert(image == null || icon == null);
     final scope = context
         .dependOnInheritedWidgetOfExactType<_PaymentListScope>();
     final handler =
@@ -89,26 +113,38 @@ class PaymentListItem extends StatelessWidget {
         : secondaryTitle;
     // Icon and chevron center on the title's first line, not on the whole
     // block, so multi-line rows at large text keep them beside the title.
-    final scaler = MediaQuery.textScalerOf(context);
     final line = PaymentType.firstLineHeight(context);
-    final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     final row = RowShell(
       onTap: handler,
       minHeight: size == PaymentListItemSize.large ? 64 : 48,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (icon != null) ...[
+          if (image != null) ...[
             SizedBox(
-              width: iconSize,
-              height: line,
+              width: size == PaymentListItemSize.large
+                  ? theme.spacing * 5
+                  : PaymentIconSize.medium.resolve(context),
+              height: size == PaymentListItemSize.large
+                  ? theme.spacing * 5
+                  : line,
               child: Center(
-                child: Icon(
-                  icon,
-                  size: iconSize,
-                  color: danger ? theme.danger.foreground : theme.textSecondary,
+                child: SizedBox.square(
+                  dimension: size == PaymentListItemSize.large
+                      ? theme.spacing * 5
+                      : PaymentIconSize.medium.resolve(context),
+                  child: image,
                 ),
               ),
+            ),
+            SizedBox(width: theme.spacing * 1.5),
+          ],
+          if (icon != null) ...[
+            PaymentIcon(
+              icon,
+              color: danger
+                  ? PaymentTextColor.danger
+                  : PaymentTextColor.secondary,
             ),
             SizedBox(width: theme.spacing * 1.5),
           ],
@@ -155,17 +191,9 @@ class PaymentListItem extends StatelessWidget {
               child: Center(child: trailing),
             )
           else if (enabled)
-            SizedBox(
-              height: line,
-              child: Center(
-                child: ExcludeSemantics(
-                  child: Icon(
-                    PaymentIcons.forward,
-                    size: 20,
-                    color: theme.textSecondary,
-                  ),
-                ),
-              ),
+            const PaymentIcon(
+              PaymentIcons.forward,
+              color: PaymentTextColor.secondary,
             ),
         ],
       ),
@@ -336,12 +364,11 @@ class _PaymentMenuState extends State<PaymentMenu> {
     Widget menuItem(PaymentMenuItem entry) => MenuItemButton(
       leadingIcon: entry.icon == null
           ? null
-          : Icon(
+          : PaymentIcon(
               entry.icon,
-              size: 20,
               color: entry.destructive
-                  ? theme.danger.foreground
-                  : theme.textSecondary,
+                  ? PaymentTextColor.danger
+                  : PaymentTextColor.secondary,
             ),
       style: MenuItemButton.styleFrom(
         minimumSize: const Size(160, 48),
@@ -733,22 +760,40 @@ class PaymentAccordionItem extends StatefulWidget {
     required this.title,
     required this.child,
     this.subtitle,
-    this.leading,
+    @Deprecated('Use media: PaymentIcon(icon). Removed in 0.2.0.') this.leading,
+    this.media,
     this.expanded,
     this.initiallyExpanded = false,
     this.onExpandedChanged,
     this.actions = const [],
   });
 
+  /// actions for this section.
   final List<Widget> actions;
+
+  /// title for this section.
   final String title;
+
+  /// subtitle for this section.
   final String? subtitle;
+
+  /// Header icon or image.
+  final Widget? media;
+
+  /// Legacy header glyph; use media.
+  @Deprecated('Use media: PaymentIcon(icon). Removed in 0.2.0.')
   final IconData? leading;
+
+  /// child for this section.
   final Widget child;
 
   /// Controlled state. When null the section keeps its own state.
   final bool? expanded;
+
+  /// initiallyExpanded for this section.
   final bool initiallyExpanded;
+
+  /// onExpandedChanged for this section.
   final ValueChanged<bool>? onExpandedChanged;
 
   @override
@@ -757,6 +802,13 @@ class PaymentAccordionItem extends StatefulWidget {
 
 class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
   late bool _expanded = widget.initiallyExpanded;
+
+  // ignore: deprecated_member_use_from_same_package
+  Widget? get _media =>
+      widget.media ??
+      (widget.leading == null
+          ? null
+          : PaymentIcon(widget.leading!, color: PaymentTextColor.secondary));
 
   bool get _isExpanded => widget.expanded ?? _expanded;
 
@@ -784,6 +836,13 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
     final l10n = PaymentLocalizations.of(context);
     final motion = PaymentMotion.of(context);
     final type = PaymentType.of(context);
+    // ignore: deprecated_member_use_from_same_package
+    assert(widget.media == null || widget.leading == null);
+    assert(
+      widget.media == null ||
+          widget.media is PaymentIcon ||
+          widget.media is PaymentImage,
+    );
     final open = _isExpanded;
     // Flat: no box, only a hairline under the section, so consecutive
     // sections read as one ruled list.
@@ -802,8 +861,13 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
               padding: EdgeInsets.symmetric(vertical: theme.spacing * 1.5),
               child: Row(
                 children: [
-                  if (widget.leading != null) ...[
-                    Icon(widget.leading, size: 20, color: theme.textSecondary),
+                  if (_media != null) ...[
+                    _media is PaymentImage
+                        ? SizedBox.square(
+                            dimension: theme.spacing * 5,
+                            child: _media,
+                          )
+                        : _media!,
                     SizedBox(width: theme.spacing * 1.5),
                   ],
                   Expanded(
@@ -823,10 +887,9 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
                     turns: open ? 0.5 : 0,
                     duration: motion.quick,
                     curve: PaymentMotion.easeOut,
-                    child: Icon(
+                    child: const PaymentIcon(
                       Icons.expand_more,
-                      size: 20,
-                      color: theme.textSecondary,
+                      color: PaymentTextColor.secondary,
                     ),
                   ),
                 ],
@@ -1022,9 +1085,6 @@ class StateMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
-    final scaler = MediaQuery.textScalerOf(context);
-    final line = PaymentType.firstLineHeight(context);
-    final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     return Semantics(
       container: true,
       liveRegion: tone == StatusTone.danger,
@@ -1034,13 +1094,7 @@ class StateMessage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ExcludeSemantics(
-              child: SizedBox(
-                width: iconSize,
-                height: line,
-                child: Center(
-                  child: Icon(icon, size: iconSize, color: theme.textSecondary),
-                ),
-              ),
+              child: PaymentIcon(icon, color: PaymentTextColor.secondary),
             ),
             SizedBox(width: theme.spacing * 1.5),
             Expanded(

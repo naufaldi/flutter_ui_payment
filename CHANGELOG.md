@@ -1,3 +1,11 @@
+## Design system Phase 4A (1 Nov 2026)
+
+- Add token-only Box, Inline, Icon, Image and Code primitives.
+- Add list images and accordion media; deprecate leading.
+- VA references have a muted tag and grouped speech. KYC photos retain loading and failure semantics.
+- Medium row glyphs scale with text; KYC tips use the 20 dp glyph.
+- API generation hides all private constructors.
+
 ## Design system Phase 3B (1 Nov 2026)
 
 - Add PaymentIconButton, PaymentLink and PaymentCopyButton with semantic variants, 48 dp targets, focus and press feedback.

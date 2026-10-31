@@ -79,3 +79,15 @@ The chevron turns in 150 ms. The body's height eases open in 220 ms and closed i
 Stripe Accordion/AccordionItem map to PaymentAccordion/PaymentAccordionItem. defaultOpen is initiallyExpanded; onChange is onExpandedChanged. Controlled expanded stays host-owned. Actions allow up to two small hug PaymentButtons and one PaymentMenu. They are siblings of the toggle and never expand it. Actions stack below the header under 400 dp or at large text. Keep disabled content readable; disable only its actions. Do not hide fees here. Media arrives in Phase 4A.
 
 Migration: ExpandableSection remains a deprecated alias until 0.2.0; rename the constructor to PaymentAccordionItem.
+
+## Layout foundation
+
+PaymentAccordionItem accepts media: a PaymentIcon or PaymentImage. The leading parameter is deprecated; migrate to media: PaymentIcon(icon).
+
+```dart
+const PaymentAccordionItem(
+  title: 'Transfer details',
+  media: PaymentIcon(Icons.info_outline, color: PaymentTextColor.secondary),
+  child: Text('Use the virtual account before it expires.'),
+);
+```

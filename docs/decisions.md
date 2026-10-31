@@ -325,3 +325,13 @@ Plan correction: currency_field_test inspected InputDecoration.helperText, which
 IconButton retains its Material tooltip for existing consumers, with a local ink TooltipTheme. External links have link role and hint; in-place links use button role. Secondary links are underlined to preserve their affordance. MinTapTarget centers short labels. The policy link removes the old inner indent and uses directional alignment with a trailing glyph. Copy uses pending/copied/failed states and a cancellable 1500 ms timer, with a generation guard for value changes during asynchronous work. Banner dismissal is stateful and once-only. PaymentButton.focusNode supports custom menu focus return. The toast action stays private on its ink surface because the closed link variants have no inverted color. Existing kit/flow captures are not refreshed under the owner's one-catalog-run scope.
 
 Capture harness correction: ensuring the failed copy button was visible scrolled its specimen heading and first row offscreen. Restore the specimen heading after pressing. Only the affected action captures are repeated; the icon captures also explicitly request keyboard focus for the focus specimen.
+
+### Phase 4A implementation decisions
+
+Resolvers remain internal. PaymentIcon medium owns the first-line box; painted selection marks retain their fixed control slots. Tone accepts a custom icon so banners and status headers retain semantic foregrounds. This extends the PRD sketch as planned.
+
+Code uses a muted tag without a second muted container. Copy is supported on code, pre and samp, but not kbd, matching the VA use. Numeric references are spoken in groups of four. A host image fallback replaces image alt semantics, closing the failed-photo deferral. Accordion leading remains a deprecated alias for media. API generation excludes every private named constructor.
+
+Fixed glyph exceptions remain button metrics, badge, spinner, field-message, switch thumb, toast and media scrim controls. Their geometry or foreground is owned by the enclosing control.
+
+At 200% text the list chevron grows 20→32 dp: its LTR left edge moves 340→328 and its RTL right edge 20→32. The glyph vertical bounds move 22–42→16–48. Only these intentional expectations changed in the existing geometry test.

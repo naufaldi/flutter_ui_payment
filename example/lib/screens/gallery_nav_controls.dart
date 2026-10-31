@@ -77,7 +77,10 @@ class _AccordionSpecimen extends StatelessWidget {
         const PaymentAccordionItem(
           title: 'Receipt details',
           subtitle: 'Keep a copy for your records',
-          leading: Icons.receipt_long_outlined,
+          media: PaymentIcon(
+            Icons.receipt_long_outlined,
+            color: PaymentTextColor.secondary,
+          ),
           initiallyExpanded: true,
           child: Text('The reference identifies this payment.'),
         ),

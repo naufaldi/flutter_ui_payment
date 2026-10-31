@@ -2039,3 +2039,7 @@ Measured text-field heights: 48 / 56 / 64 dp (small / medium / large).
 ### Phase 3B implementation notes
 
 Icon buttons retain tooltips and 48 dp targets. External links announce link role and hint, with directional alignment and trailing icons. Menu trigger receives toggle and focusNode and returns a kit button. Copy feedback is inline; success reverts after 1500 ms. Banners report dismissal once.
+
+### Phase 4A implementation notes
+
+Layout primitives use semantic enums and internal resolvers. PaymentIcon.tone accepts an icon override. Image providers and copy operations belong to the host. Accordion leading remains deprecated until 0.2.0.

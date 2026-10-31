@@ -1,4 +1,6 @@
-import '../controls/actions.dart';
+import '../layout/content.dart';
+import '../layout/layout.dart';
+import '../foundation/payment_tokens.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -47,28 +49,19 @@ class PaymentInstructions extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(height: theme.spacing * 0.5),
-          Text(instructions.providerLabel, style: type.caption),
-          SizedBox(height: theme.spacing * 0.5),
-          Row(
+          PaymentBox(
+            gap: PaymentSpace.inline,
             children: [
-              // The number people copy into a banking app: monospace, so 0/O
-              // and 1/l differ, and capped at 1.6× like other large amounts.
-              Expanded(
-                child: MediaQuery.withClampedTextScaling(
-                  maxScaleFactor: 1.6,
-                  child: SelectableText(
-                    instructions.accountNumber,
-                    style: type.amountLarge.reference(theme),
-                    semanticsLabel:
-                        '${l10n.accountNumber} ${instructions.accountNumber.split('').join(' ')}',
-                  ),
-                ),
+              PaymentInline(
+                instructions.providerLabel,
+                role: PaymentTextRole.caption,
               ),
-              if (onCopyNumber != null)
-                PaymentCopyButton(
-                  value: instructions.accountNumber,
-                  onCopy: onCopyNumber!,
-                ),
+              PaymentCode(
+                instructions.accountNumber,
+                size: PaymentSize.large,
+                onCopy: onCopyNumber,
+                semanticLabel: l10n.accountNumber,
+              ),
             ],
           ),
           PaymentDivider(height: theme.spacing * 2),

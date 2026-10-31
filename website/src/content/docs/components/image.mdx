@@ -1,0 +1,52 @@
+---
+title: Image
+description: Host images for KYC photos, bank logos and promotion media.
+---
+
+import Props from '../../../components/Props.astro';
+
+Host images for KYC photos, bank logos and promotion media.
+
+## Usage
+
+```dart
+PaymentImage(image: imageProvider, alt: 'Bank logo', width: 96, height: 64);
+```
+
+## Stripe → kit
+
+| Stripe | Kit |
+| --- | --- |
+| Img | `PaymentImage` |
+| css and numeric styling | Semantic token enums |
+
+Variants: loading, loaded, failed. Nothing else exists.
+
+## Which variant when
+
+The host supplies the image provider. Supply meaningful alt text; use an empty alt for decoration. A host error fallback owns its own semantics.
+
+## States
+
+Layout and inline text are passive. Images preserve a loading surface and recover from decode failures. Copy feedback stays with the value.
+
+## Do and don't
+
+Use semantic tokens and host-owned data. Keep instructions in persistent text. Avoid duplicate surface fills.
+
+## Content guidelines
+
+Use short payment labels and synthetic references in examples.
+
+## Accessibility
+
+Keep reading order aligned with layout. Decorative glyphs are excluded from semantics. Images require alt text; copy actions have labeled targets and confirmation.
+
+## API
+
+<Props names={ ['PaymentImage', 'PaymentRadius'] } />
+
+## See also
+
+- [Spacing](/foundations/spacing/)
+- [Typography](/foundations/typography/)

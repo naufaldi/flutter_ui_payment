@@ -131,8 +131,8 @@ const expected = <String, List<Rect>>{
     Rect.fromLTRB(160.0, 52.0, 316.0, 88.0),
     Rect.fromLTRB(328.0, 12.0, 360.0, 52.0),
     Rect.fromLTRB(328.0, 16.0, 360.0, 48.0),
-    Rect.fromLTRB(0.0, 12.0, 20.0, 52.0),
-    Rect.fromLTRB(0.0, 22.0, 20.0, 42.0),
+    Rect.fromLTRB(0.0, 12.0, 32.0, 52.0),
+    Rect.fromLTRB(0.0, 16.0, 32.0, 48.0),
   ],
   '2.0 rtl 1': [
     Rect.fromLTRB(0.0, 0.0, 360.0, 100.0),
@@ -191,8 +191,8 @@ const expected = <String, List<Rect>>{
     Rect.fromLTRB(44.0, 52.0, 200.0, 88.0),
     Rect.fromLTRB(0.0, 12.0, 32.0, 52.0),
     Rect.fromLTRB(0.0, 16.0, 32.0, 48.0),
-    Rect.fromLTRB(340.0, 12.0, 360.0, 52.0),
-    Rect.fromLTRB(340.0, 22.0, 360.0, 42.0),
+    Rect.fromLTRB(328.0, 12.0, 360.0, 52.0),
+    Rect.fromLTRB(328.0, 16.0, 360.0, 48.0),
   ],
   '2.0 ltr 1': [
     Rect.fromLTRB(0.0, 0.0, 360.0, 100.0),

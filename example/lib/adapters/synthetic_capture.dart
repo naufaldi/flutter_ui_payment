@@ -161,3 +161,23 @@ Future<ImageProvider> renderSyntheticPhoto(
   picture.dispose();
   return MemoryImage(bytes!.buffer.asUint8List());
 }
+
+Future<ImageProvider> renderSyntheticTile(Color color, String letters) async {
+  final recorder = ui.PictureRecorder();
+  final canvas = Canvas(recorder);
+  canvas.drawRect(const Rect.fromLTWH(0, 0, 192, 128), Paint()..color = color);
+  final text = TextPainter(
+    text: TextSpan(
+      text: letters,
+      style: const TextStyle(fontSize: 36, color: Colors.white),
+    ),
+    textDirection: TextDirection.ltr,
+  )..layout();
+  text.paint(canvas, Offset((192 - text.width) / 2, (128 - text.height) / 2));
+  final picture = recorder.endRecording();
+  final image = await picture.toImage(192, 128);
+  final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+  image.dispose();
+  picture.dispose();
+  return MemoryImage(bytes!.buffer.asUint8List());
+}

@@ -88,3 +88,7 @@ Stripe List/ListItem map to PaymentList/PaymentListItem. Standard uses a 48 dp m
 PaymentList.onAction receives a row id unless its own onPressed overrides it. No handler and no reason means read-only. The forward glyph mirrors once in RTL.
 
 Migration: ActionTile remains a wrapper until 0.2.0. Rename subtitle to secondaryTitle and onTap to onPressed. ActionTileGroup is a deprecated PaymentList alias.
+
+## Layout foundation
+
+PaymentListItem accepts a PaymentImage in its image slot instead of an icon. Supply alt text for a bank logo.

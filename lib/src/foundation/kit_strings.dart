@@ -132,6 +132,10 @@ extension KitStrings on PaymentLocalizations {
   // Sheets
   String get closeSheet => _k('Close panel', 'Tutup panel');
 
+  /// Image decode failure.
+  String get imageUnavailable =>
+      _k('Image unavailable', 'Gambar tidak tersedia');
+
   // Media
   String get play => _k('Play', 'Putar');
   String get pause => _k('Pause', 'Jeda');

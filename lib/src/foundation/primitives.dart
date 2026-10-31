@@ -1,3 +1,5 @@
+import '../foundation/payment_icons.dart';
+import '../foundation/payment_tokens.dart';
 import 'dart:math' as math;
 import '../controls/actions.dart';
 import 'dart:async';
@@ -12,9 +14,7 @@ import 'payment_localizations.dart';
 import 'payment_motion.dart';
 import 'payment_theme.dart';
 import 'payment_type.dart';
-import 'payment_icons.dart';
 import 'token_resolvers.dart';
-import 'payment_tokens.dart';
 import 'tap_target.dart';
 
 /// The five amount looks. Nothing else exists.
@@ -775,10 +775,8 @@ class _PaymentBannerState extends State<PaymentBanner> {
     final theme = PaymentTheme.of(context);
     final colors = theme.tone(widget.tone);
     final type = PaymentType.of(context);
-    final scaler = MediaQuery.textScalerOf(context);
     // One line of the 15/20 heading title.
     final line = PaymentType.firstLineHeight(context);
-    final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     return Semantics(
       container: true,
       liveRegion: widget.announce,
@@ -806,17 +804,7 @@ class _PaymentBannerState extends State<PaymentBanner> {
                   padding: EdgeInsets.only(
                     top: widget.onDismiss == null ? 0 : theme.spacing * 1.5,
                   ),
-                  child: SizedBox(
-                    width: iconSize,
-                    height: line,
-                    child: Center(
-                      child: Icon(
-                        widget.icon ?? toneIcon(widget.tone),
-                        color: colors.foreground,
-                        size: iconSize,
-                      ),
-                    ),
-                  ),
+                  child: PaymentIcon.tone(widget.tone, icon: widget.icon),
                 ),
                 SizedBox(width: theme.spacing * 1.5),
                 Expanded(
@@ -958,10 +946,7 @@ class StatusHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final colors = theme.tone(tone);
-    final scaler = MediaQuery.textScalerOf(context);
     // One line of a 15/20 title, so the icon box matches its first line.
-    final line = PaymentType.firstLineHeight(context);
-    final iconSize = scaler.clamp(maxScaleFactor: 1.6).scale(20);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -970,13 +955,7 @@ class StatusHeader extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: iconSize,
-              height: line,
-              child: Center(
-                child: Icon(icon, size: iconSize, color: colors.foreground),
-              ),
-            ),
+            PaymentIcon.tone(tone, icon: icon),
             SizedBox(width: theme.spacing),
             Expanded(
               child: Semantics(
@@ -1080,10 +1059,10 @@ class PrivacyMask extends StatelessWidget {
             child: ColoredBox(
               color: theme.surface,
               child: Center(
-                child: Icon(
+                child: PaymentIcon(
                   Icons.lock_outline,
-                  size: 48,
-                  color: theme.textSecondary,
+                  size: PaymentIconSize.xlarge,
+                  color: PaymentTextColor.secondary,
                   semanticLabel: PaymentLocalizations.of(context).contentHidden,
                 ),
               ),
