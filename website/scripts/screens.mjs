@@ -22,6 +22,14 @@ const sharp = requireFromAstro('sharp');
 
 // name → what it shows (locale noted, because captures mix en and id).
 const screens = {
+  ios_catalog_button_variants: 'ios catalog button variants, English',
+  ios_catalog_button_variants_dark: 'ios catalog button variants dark, English',
+  ios_catalog_button_variants_200: 'ios catalog button variants 200, English',
+  ios_catalog_amount_text_variants: 'ios catalog amount text variants, English',
+  ios_catalog_amount_text_variants_dark: 'ios catalog amount text variants dark, English',
+  ios_catalog_amount_text_variants_200: 'ios catalog amount text variants 200, English',
+  ios_catalog_confirm_dialog_200: 'ios catalog confirm dialog 200, English',
+
   ios_kyc_intro_light: 'ios kyc intro light, Indonesian',
   ios_kyc_intro_dark: 'ios kyc intro dark, Indonesian',
   ios_kyc_intro_light_200: 'ios kyc intro light 200, Indonesian',
@@ -86,8 +94,6 @@ const screens = {
   ios_kit_promo_200: 'Gallery: promotions at 200% text',
   ios_kit_video_ready: 'Gallery: video player',
   // English catalog captures (example/integration_test/catalog_screenshots_test.dart).
-  ios_catalog_controls_buttons: 'Gallery: button variants, busy and disabled, English',
-  ios_catalog_controls_buttons_dark: 'Gallery: button variants, dark, English',
   ios_catalog_controls_choices: 'Gallery: checkbox, radio and switch, English',
   ios_catalog_controls_choices_dark: 'Gallery: checkbox, radio and switch, dark, English',
   ios_catalog_controls_tabs: 'Gallery: tabs, divider, tooltip trigger and spinner, English',

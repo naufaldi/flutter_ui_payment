@@ -79,7 +79,7 @@ class PaymentInstructions extends StatelessWidget {
             emphasis: true,
             value: AmountText(
               instructions.amount,
-              style: const TextStyle(fontWeight: FontWeight.w600),
+              variant: AmountTextVariant.total,
             ),
           ),
           InfoRow(
@@ -360,7 +360,7 @@ class PaymentStatusView extends StatelessWidget {
           SizedBox(height: theme.spacing * 1.5),
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: AmountText(amount!, emphasis: true),
+            child: AmountText(amount!, variant: AmountTextVariant.display),
           ),
         ],
         SizedBox(height: theme.spacing * 1.5),

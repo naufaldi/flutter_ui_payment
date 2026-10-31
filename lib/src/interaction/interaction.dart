@@ -9,6 +9,7 @@ import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
+import '../foundation/payment_tokens.dart';
 import '../foundation/token_resolvers.dart';
 import '../foundation/primitives.dart';
 
@@ -253,11 +254,6 @@ Future<bool> showPaymentConfirmDialog(
       final theme = PaymentTheme.of(context);
       final l10n = PaymentLocalizations.of(context);
       final type = PaymentType.of(context);
-      final shape = RoundedRectangleBorder(
-        borderRadius: theme.controlBorderRadius,
-      );
-      const minimumSize = Size(48, 48);
-      final label = type.heading;
       // One filled button: the confirm action, in the danger tone when it
       // cannot be undone. Cancel stays a quiet text button.
       return AlertDialog(
@@ -269,31 +265,26 @@ Future<bool> showPaymentConfirmDialog(
           message,
           style: type.bodyFor(context).copyWith(color: theme.textSecondary),
         ),
+        actionsPadding: EdgeInsets.all(theme.spacing * 2),
+        buttonPadding: EdgeInsets.symmetric(horizontal: theme.spacing * 0.5),
+        actionsOverflowDirection: VerticalDirection.up,
+        actionsOverflowButtonSpacing: theme.spacing,
         actions: [
-          TextButton(
+          PaymentButton(
+            label: cancelLabel ?? l10n.cancel,
+            variant: PaymentButtonVariant.quiet,
+            width: PaymentWidth.hug,
             autofocus: destructive,
-            style: TextButton.styleFrom(
-              foregroundColor: theme.accent,
-              minimumSize: minimumSize,
-              shape: shape,
-              textStyle: label,
-            ),
             onPressed: () => Navigator.pop(context, false),
-            child: Text(cancelLabel ?? l10n.cancel),
           ),
-          FilledButton(
+          PaymentButton(
+            label: confirmLabel,
+            variant: destructive
+                ? PaymentButtonVariant.destructive
+                : PaymentButtonVariant.primary,
+            width: PaymentWidth.hug,
             autofocus: !destructive,
-            style: FilledButton.styleFrom(
-              backgroundColor: destructive
-                  ? theme.danger.foreground
-                  : theme.accent,
-              foregroundColor: destructive ? theme.surface : theme.onAccent,
-              minimumSize: minimumSize,
-              shape: shape,
-              textStyle: label,
-            ),
             onPressed: () => Navigator.pop(context, true),
-            child: Text(confirmLabel),
           ),
         ],
       );

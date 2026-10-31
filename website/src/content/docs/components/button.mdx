@@ -13,7 +13,8 @@ import HostOwns from '../../../components/HostOwns.astro';
 <HostOwns>what the action does, and deduplicating it on your server. The busy lock is interaction protection, not idempotency.</HostOwns>
 
 <Screens>
-  <Screen name="ios_catalog_controls_buttons" dark="ios_catalog_controls_buttons_dark" alt="Six full-width buttons: a filled primary Pay Rp102.500, an outlined Change method, a text-only Not now, a red filled Remove card with a delete icon, a primary button showing a spinner, and a disabled grey Pay button." caption="Variants, busy and disabled (follows the site theme)" />
+  <Screen name="ios_catalog_button_variants" dark="ios_catalog_button_variants_dark" alt="Button specimen showing primary, secondary, quiet and destructive variants, default, disabled and busy states, small, medium and large sizes, and a focused medium button." caption="Variants, states and sizes (English)" />
+  <Screen name="ios_catalog_button_variants_200" alt="Button specimen at 200% text with wrapping labels and a focus ring around the visual button." caption="Buttons at 200% text (English)" />
 </Screens>
 
 ## Usage
@@ -27,7 +28,7 @@ PaymentButton(
 );
 ```
 
-Buttons fill the width they are given and are at least 48 dp tall. Put one under another with 8 dp between them, or give one a narrower parent, as `StateMessage` does.
+By default buttons fill the width they are given and occupy at least 48 dp of height. Put one under another with 8 dp between them, or give one a narrower parent, as `StateMessage` does.
 
 ## Primary
 
@@ -102,7 +103,7 @@ Pass `onPressed: null`. Every variant uses the `disabled` label color; the fille
 
 ## With an icon
 
-`icon` puts a 20 px icon before the label. Use it when the icon adds meaning (delete, download), not as decoration on every button.
+`icon` puts a 16 px icon in small buttons and a 20 px icon in medium and large buttons before the label. Use it when the icon adds meaning (delete, download), not as decoration on every button.
 
 ## Content guidelines
 
@@ -120,10 +121,35 @@ Pass `onPressed: null`. Every variant uses the `disabled` label color; the fille
 
 ## API
 
-<Props names={['PaymentButton', 'PaymentButtonVariant']} />
+<Props names={['PaymentButton', 'PaymentButtonVariant', 'PaymentSize', 'PaymentWidth']} />
 
 ## See also
 
 - [Dialog](/components/dialog/) to confirm before a destructive action.
 - [Action tile](/components/action-tile/) for rows that open something.
 - [Payment attempt and status](/concepts/payment-attempt/) for why the lock does not replace server-side deduplication.
+
+## Sizes and widths
+
+Variants: primary, secondary, quiet, destructive. Nothing else exists.
+
+| Size | Visual height | Horizontal padding at 100% | Icon / busy spinner |
+| --- | --- | --- | --- |
+| small | 36 dp | 12 dp | 16 dp |
+| medium (default) | 48 dp | Material default: 24 dp; quiet 12 dp | 20 dp |
+| large | 56 dp | 24 dp | 20 dp |
+
+Every size occupies a hit box of at least 48 × 48 dp. The small visual is centered inside it; the keyboard ring follows the visual. Use small for a module-header action such as Add card. Keep the main Pay action medium or large. Material density is pinned to standard, so desktop and web now also draw medium buttons at 48 dp.
+
+`width: PaymentWidth.fill` fills the parent by default. `PaymentWidth.hug` sizes to the label with a 112 dp minimum. Put hug buttons inside an Align or Wrap; a stretching parent overrides hug. Long labels wrap and never truncate.
+
+`autofocus` focuses the action when its route opens. Focus Cancel in a destructive confirmation; focus Confirm for an ordinary confirmation.
+
+| Stripe | Kit |
+| --- | --- |
+| primary | primary for the one next action |
+| secondary | secondary for a supporting action |
+| tertiary | quiet for dismissing or deferring |
+| destructive | destructive only when confirming the named consequence |
+
+The documentation specimen intentionally shows multiple primary states together. Product views keep one primary action.

@@ -24,6 +24,7 @@ class PaymentActionBar extends StatelessWidget {
     this.updating = false,
   });
 
+  /// Main action; pass width: PaymentWidth.hug on PaymentButton.
   final Widget action;
   final Money? total;
   final String? totalLabel;
@@ -76,7 +77,10 @@ class PaymentActionBar extends StatelessWidget {
                       Flexible(
                         child: MediaQuery.withClampedTextScaling(
                           maxScaleFactor: 1.6,
-                          child: AmountText(total!, style: type.amountLarge),
+                          child: AmountText(
+                            total!,
+                            variant: AmountTextVariant.large,
+                          ),
                         ),
                       ),
                     ],
@@ -366,7 +370,7 @@ class BalanceCard extends StatelessWidget {
             // shares a screen with the total, which owns the display size.
             Align(
               alignment: AlignmentDirectional.centerStart,
-              child: AmountText(balance!, style: type.amountLarge),
+              child: AmountText(balance!, variant: AmountTextVariant.large),
             ),
           if (state == BalanceState.insufficient) ...[
             SizedBox(height: theme.spacing),

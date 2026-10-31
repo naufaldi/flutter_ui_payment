@@ -79,6 +79,7 @@ void main() {
 
     for (final (look, settings) in [
       ('', const DemoSettings(locale: Locale('en'))),
+      ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
       (
         '_dark',
         const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
@@ -89,11 +90,29 @@ void main() {
       await settle(tester);
       await open('Controls');
       await top(buttons);
-      await shot('controls_buttons$look');
-      await top(choices);
-      await shot('controls_choices$look');
-      await top(tabs);
-      await shot('controls_tabs$look');
+      FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+      Focus.of(
+        tester.element(
+          find.descendant(
+            of: find.byKey(const ValueKey('button-specimen-focus')),
+            matching: find.text('Edit'),
+          ),
+        ),
+      ).requestFocus();
+      await shot('button_variants$look');
+      FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.automatic;
+      FocusManager.instance.primaryFocus?.unfocus();
+      if (look != '_200') {
+        await top(choices);
+        await shot('controls_choices$look');
+        await top(tabs);
+        await shot('controls_tabs$look');
+      }
+      await open('Foundation');
+      await top('AmountText · variants');
+      await shot('amount_text_variants$look');
     }
 
     for (final dark in [false, true]) {
@@ -175,6 +194,21 @@ void main() {
       alignment: 0,
     );
     await shot('capture_selfie_200');
+    await open('Interaction');
+    await top('ActionTile · ActionMenu · showPaymentConfirmDialog');
+    // A longer host label exercises overflow at 200% on this iPhone width.
+    final confirmation = showPaymentConfirmDialog(
+      tester.element(find.byType(ActionTileGroup).first),
+      title: 'Sign out of all devices?',
+      message:
+          'You will need to sign in again on every device. Payments already sent are not affected.',
+      confirmLabel: 'Sign out everywhere',
+      destructive: true,
+    );
+    await shot('confirm_dialog_200');
+    await tapVisible(tester, find.text('Cancel'));
+    expect(await confirmation, isFalse);
+    await settle(tester);
     app.updateSettings(const DemoSettings(locale: Locale('en')));
     await settle(tester);
     await open('Controls');
@@ -195,6 +229,17 @@ void main() {
     await settle(tester);
 
     await open('Foundation');
+    tester
+        .state<ScrollableState>(
+          find
+              .descendant(
+                of: find.byType(ListView),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        )
+        .position
+        .jumpTo(0);
     await shot('foundation');
 
     await open('Interaction');

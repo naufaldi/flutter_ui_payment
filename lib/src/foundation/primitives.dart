@@ -11,15 +11,48 @@ import 'payment_motion.dart';
 import 'payment_theme.dart';
 import 'payment_type.dart';
 import 'token_resolvers.dart';
+import 'payment_tokens.dart';
+import 'tap_target.dart';
+
+/// The five amount looks. Nothing else exists.
+enum AmountTextVariant {
+  /// 13/18 caption for legends and meta lines.
+  caption,
+
+  /// 15/20 regular label for line items. Default.
+  row,
+
+  /// 15/20 at heading weight for Total values.
+  total,
+
+  /// 20/28 headline amount, capped at 1.6 times text scale.
+  large,
+
+  /// 32/36 display amount, capped at 1.6 times text scale.
+  display,
+}
 
 /// Renders [Money] with the active locale's formatter and a spoken label.
 class AmountText extends StatelessWidget {
-  const AmountText(this.money, {super.key, this.style, this.emphasis = false});
+  const AmountText(
+    this.money, {
+    super.key,
+    this.style,
+    this.variant = AmountTextVariant.row,
+    @Deprecated('Use variant: AmountTextVariant.display. Removed in 0.2.0.')
+    this.emphasis = false,
+  }) : assert(!emphasis || variant == AmountTextVariant.row);
 
   final Money money;
+
+  /// Color and decoration only: muted or struck amounts.
   final TextStyle? style;
 
-  /// Uses the large amount style reserved for the final total.
+  /// Semantic amount role. Default is the regular row label.
+  final AmountTextVariant variant;
+
+  /// Legacy display amount, replaced by the display variant.
+  @Deprecated('Use variant: AmountTextVariant.display. Removed in 0.2.0.')
   final bool emphasis;
 
   @override
@@ -27,16 +60,25 @@ class AmountText extends StatelessWidget {
     final l10n = PaymentLocalizations.of(context);
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
-    // Row amounts are regular weight; only totals are heavy.
-    final base = emphasis
-        ? type.display
-        : type.label.tabular.copyWith(fontFamily: theme.amountFontFamily);
+    final row = type.label.tabular.copyWith(fontFamily: theme.amountFontFamily);
+    // ignore: deprecated_member_use_from_same_package
+    final effective = emphasis ? AmountTextVariant.display : variant;
+    final base = switch (effective) {
+      AmountTextVariant.caption => row.merge(type.caption),
+      AmountTextVariant.row => row,
+      AmountTextVariant.total => row.copyWith(
+        fontWeight: type.heading.fontWeight,
+      ),
+      AmountTextVariant.large => row.merge(type.amountLarge),
+      AmountTextVariant.display => type.display,
+    };
     final merged = base.merge(style);
     // Large amounts (20 px and up) follow text scaling only up to 1.6×, as
     // platform large titles do. Any amount that still does not fit scales
     // down instead of being clipped: a hidden digit is worse than a smaller
     // one.
-    final scaler = emphasis || (merged.fontSize ?? 0) >= 20
+    final scaler =
+        effective == AmountTextVariant.display || (merged.fontSize ?? 0) >= 20
         ? MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.6)
         : null;
     return Semantics(
@@ -266,18 +308,39 @@ class PaymentButton extends StatefulWidget {
     required this.label,
     required this.onPressed,
     this.variant = PaymentButtonVariant.primary,
+    this.size = PaymentSize.medium,
+    this.width = PaymentWidth.fill,
+    this.autofocus = false,
     this.busy = false,
     this.busyLabel,
     this.icon,
   });
 
+  /// Specific outcome of pressing the button. Wraps rather than truncates.
   final String label;
+
+  /// Called once per action; null disables the button. Futures lock repeat presses.
   final FutureOr<void> Function()? onPressed;
+
+  /// Visual priority: one primary action per view.
   final PaymentButtonVariant variant;
+
+  /// Drawn height: small 36, medium 48, large 56 dp. Hit box stays at least 48.
+  final PaymentSize size;
+
+  /// Fill the parent or hug the wrapped label, at least 112 dp wide.
+  final PaymentWidth width;
+
+  /// Initial route focus, useful for the safe choice in destructive dialogs.
+  final bool autofocus;
 
   /// Externally owned busy state, e.g. a submit the coordinator is running.
   final bool busy;
+
+  /// Spoken status while busy, defaulting to the localized working label.
   final String? busyLabel;
+
+  /// Optional leading icon in the label color.
   final IconData? icon;
 
   @override
@@ -314,11 +377,36 @@ class _PaymentButtonState extends State<PaymentButton> {
       PaymentButtonVariant.destructive => theme.surface,
       _ => theme.accent,
     };
+    final s = theme.spacing;
+    final m = MediaQuery.textScalerOf(context).scale(14) / 14;
+    final metrics = switch (widget.size) {
+      PaymentSize.small => (
+        height: 36.0,
+        padding: ButtonStyleButton.scaledPadding(
+          EdgeInsets.symmetric(horizontal: s * 1.5),
+          EdgeInsets.symmetric(horizontal: s),
+          EdgeInsets.symmetric(horizontal: s * 0.5),
+          m,
+        ),
+        icon: PaymentIconSize.small.resolve(context),
+      ),
+      PaymentSize.medium => (height: 48.0, padding: null, icon: 20.0),
+      PaymentSize.large => (
+        height: 56.0,
+        padding: ButtonStyleButton.scaledPadding(
+          EdgeInsets.symmetric(horizontal: s * 3),
+          EdgeInsets.symmetric(horizontal: s * 1.5),
+          EdgeInsets.symmetric(horizontal: s * 0.5),
+          m,
+        ),
+        icon: 20.0,
+      ),
+    };
     final content = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.icon != null) ...[
-          Icon(widget.icon, size: 20),
+          Icon(widget.icon, size: metrics.icon),
           SizedBox(width: theme.spacing),
         ],
         Flexible(child: Text(widget.label, textAlign: TextAlign.center)),
@@ -341,19 +429,25 @@ class _PaymentButtonState extends State<PaymentButton> {
           curve: PaymentMotion.easeOut,
           // The button announces busy through its own value.
           child: _busy
-              ? ExcludeSemantics(child: PaymentSpinner(color: foreground))
-              : const SizedBox.square(dimension: 20),
+              ? ExcludeSemantics(
+                  child: PaymentSpinner(color: foreground, size: metrics.icon),
+                )
+              : SizedBox.square(dimension: metrics.icon),
         ),
       ],
     );
     final radius = theme.controlBorderRadius;
     final shape = RoundedRectangleBorder(borderRadius: radius);
-    const minimumSize = Size(48, 48);
+    final minimumSize = Size(
+      widget.width == PaymentWidth.hug ? 112 : 48,
+      metrics.height,
+    );
     // The heading role carries the host font; a const style would not.
     final label = type.heading;
     final onPressed = enabled ? _handle : null;
     final button = switch (widget.variant) {
       PaymentButtonVariant.primary => FilledButton(
+        autofocus: widget.autofocus,
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
           FilledButton.styleFrom(
@@ -362,6 +456,9 @@ class _PaymentButtonState extends State<PaymentButton> {
             disabledBackgroundColor: theme.surfaceMuted,
             disabledForegroundColor: theme.disabled,
             minimumSize: minimumSize,
+            padding: metrics.padding,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.standard,
             shape: shape,
             textStyle: label,
           ),
@@ -371,6 +468,7 @@ class _PaymentButtonState extends State<PaymentButton> {
       // Same colors as the confirm button of a destructive
       // showPaymentConfirmDialog: surface on the danger foreground.
       PaymentButtonVariant.destructive => FilledButton(
+        autofocus: widget.autofocus,
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
           FilledButton.styleFrom(
@@ -379,6 +477,9 @@ class _PaymentButtonState extends State<PaymentButton> {
             disabledBackgroundColor: theme.surfaceMuted,
             disabledForegroundColor: theme.disabled,
             minimumSize: minimumSize,
+            padding: metrics.padding,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.standard,
             shape: shape,
             textStyle: label,
           ),
@@ -386,6 +487,7 @@ class _PaymentButtonState extends State<PaymentButton> {
         child: child,
       ),
       PaymentButtonVariant.secondary => OutlinedButton(
+        autofocus: widget.autofocus,
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
           OutlinedButton.styleFrom(
@@ -393,6 +495,9 @@ class _PaymentButtonState extends State<PaymentButton> {
             disabledBackgroundColor: theme.surfaceMuted,
             disabledForegroundColor: theme.disabled,
             minimumSize: minimumSize,
+            padding: metrics.padding,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.standard,
             shape: shape,
             textStyle: label,
           ).copyWith(
@@ -408,12 +513,16 @@ class _PaymentButtonState extends State<PaymentButton> {
         child: child,
       ),
       PaymentButtonVariant.quiet => TextButton(
+        autofocus: widget.autofocus,
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
           TextButton.styleFrom(
             foregroundColor: theme.accent,
             disabledForegroundColor: theme.disabled,
             minimumSize: minimumSize,
+            padding: metrics.padding,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.standard,
             shape: shape,
             textStyle: label,
           ),
@@ -425,13 +534,16 @@ class _PaymentButtonState extends State<PaymentButton> {
     // The button is full width, and scaling a 320 dp slab moves its edges by
     // several pixels, which reads as a lurch rather than a press. Keyboard
     // focus is the neutral ring, not Material's fill.
+    final ring = PaymentFocusRing(radius: radius, child: button);
     return Semantics(
       liveRegion: _busy,
       value: _busy ? (widget.busyLabel ?? l10n.working) : null,
-      child: SizedBox(
-        width: double.infinity,
-        child: PaymentFocusRing(radius: radius, child: button),
-      ),
+      child: widget.width == PaymentWidth.fill
+          ? SizedBox(
+              width: double.infinity,
+              child: MinTapTarget(child: ring),
+            )
+          : MinTapTarget(child: ring),
     );
   }
 }
@@ -933,15 +1045,14 @@ class _CountdownTextState extends State<CountdownText> {
   @override
   Widget build(BuildContext context) {
     final l10n = PaymentLocalizations.of(context);
+    final type = PaymentType.of(context);
     final left = _left;
     return Semantics(
       label: l10n.timeRemaining(CountdownText.formatDuration(left)),
       excludeSemantics: true,
       child: Text(
         CountdownText.formatDuration(left),
-        style: (widget.style ?? const TextStyle()).copyWith(
-          fontFeatures: const [FontFeature.tabularFigures()],
-        ),
+        style: type.tabular(type.label.merge(widget.style)),
       ),
     );
   }

@@ -177,7 +177,10 @@ class PaymentSummary extends StatelessWidget {
           if (!large) ...[
             Align(
               alignment: AlignmentDirectional.centerStart,
-              child: AmountText(quote.total, emphasis: true),
+              child: AmountText(
+                quote.total,
+                variant: AmountTextVariant.display,
+              ),
             ),
             SizedBox(height: theme.spacing),
           ],
@@ -209,10 +212,7 @@ class PaymentSummary extends StatelessWidget {
           InfoRow(
             label: l10n.totalLabel,
             emphasis: true,
-            value: AmountText(
-              quote.total,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
+            value: AmountText(quote.total, variant: AmountTextVariant.total),
           ),
         ],
       ),
