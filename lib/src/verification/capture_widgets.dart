@@ -259,6 +259,8 @@ class KycCaptureGuide extends StatelessWidget {
                 if (photo != null)
                   Image(
                     image: photo!,
+                    errorBuilder: (context, error, stackTrace) =>
+                        CaptureFrameOverlay(kind: kind, overPreview: false),
                     fit: BoxFit.cover,
                     semanticLabel: l10n.capturePhotoLabel(kind),
                   )

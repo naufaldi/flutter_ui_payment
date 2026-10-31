@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../foundation/row_shell.dart';
 import '../foundation/focus_ring.dart';
+import '../foundation/radio_mark.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 
@@ -112,14 +114,8 @@ class PaymentRadio<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = PaymentTheme.of(context);
     final enabled = onChanged != null;
     final selected = value == groupValue;
-    final color = !enabled
-        ? theme.disabled
-        : selected
-        ? theme.accent
-        : theme.textSecondary;
     return MergeSemantics(
       child: Semantics(
         checked: selected,
@@ -138,14 +134,7 @@ class PaymentRadio<T> extends StatelessWidget {
                   if (!selected) onChanged!(value);
                 }
               : null,
-          mark: Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: color, width: selected ? 6 : 1.5),
-            ),
-          ),
+          mark: RadioMark(selected: selected, enabled: enabled),
         ),
       ),
     );
@@ -264,60 +253,41 @@ class _ControlRow extends StatelessWidget {
     final painted = ExcludeFocus(
       child: IgnorePointer(child: ExcludeSemantics(child: mark)),
     );
-    return PaymentFocusRing(
-      radius: BorderRadius.zero,
-      child: InkWell(
-        focusColor: Colors.transparent,
-        onTap: onTap,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 48),
-          child: Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: theme.spacing * 1.5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (!markAtEnd) ...[
-                    SizedBox(
-                      width: 20,
-                      height: line,
-                      child: OverflowBox(
-                        maxWidth: 48,
-                        maxHeight: 48,
-                        child: painted,
-                      ),
-                    ),
-                    SizedBox(width: theme.spacing * 1.5),
-                  ],
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          label,
-                          style: type.label.copyWith(
-                            color: enabled
-                                ? theme.textPrimary
-                                : theme.textSecondary,
-                          ),
-                        ),
-                        if (detail != null) Text(detail!, style: type.caption),
-                      ],
-                    ),
+    return RowShell(
+      onTap: onTap,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (!markAtEnd) ...[
+            SizedBox(
+              width: 20,
+              height: line,
+              child: OverflowBox(maxWidth: 48, maxHeight: 48, child: painted),
+            ),
+            SizedBox(width: theme.spacing * 1.5),
+          ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: type.label.copyWith(
+                    color: enabled ? theme.textPrimary : theme.textSecondary,
                   ),
-                  if (markAtEnd) ...[
-                    SizedBox(width: theme.spacing * 2),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: line),
-                      child: Center(child: painted),
-                    ),
-                  ],
-                ],
-              ),
+                ),
+                if (detail != null) Text(detail!, style: type.caption),
+              ],
             ),
           ),
-        ),
+          if (markAtEnd) ...[
+            SizedBox(width: theme.spacing * 2),
+            ConstrainedBox(
+              constraints: BoxConstraints(minHeight: line),
+              child: Center(child: painted),
+            ),
+          ],
+        ],
       ),
     );
   }

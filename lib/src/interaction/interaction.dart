@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../foundation/focus_ring.dart';
+import '../foundation/row_shell.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
@@ -64,77 +65,59 @@ class ActionTile extends StatelessWidget {
     return Semantics(
       button: true,
       enabled: enabled,
-      child: PaymentFocusRing(
-        radius: BorderRadius.zero,
-        child: InkWell(
-          focusColor: Colors.transparent,
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
-            // Keeps a one-line row centered in the 48 dp minimum now that the
-            // row itself aligns to the top.
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: theme.spacing * 1.5),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (icon != null) ...[
-                      SizedBox(
-                        width: iconSize,
-                        height: line,
-                        child: Center(
-                          child: Icon(
-                            icon,
-                            size: iconSize,
-                            color: danger
-                                ? theme.danger.foreground
-                                : theme.textSecondary,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: theme.spacing * 1.5),
-                    ],
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: type.label.copyWith(color: foreground),
-                          ),
-                          if (detail != null) Text(detail, style: type.caption),
-                        ],
-                      ),
-                    ),
-                    if (trailing != null)
-                      // A minimum, never a fixed height, so a switch or a 48 dp
-                      // button keeps its own size.
-                      ConstrainedBox(
-                        constraints: BoxConstraints(minHeight: line),
-                        child: Center(child: trailing),
-                      )
-                    else if (enabled)
-                      SizedBox(
-                        height: line,
-                        child: Center(
-                          child: ExcludeSemantics(
-                            child: Icon(
-                              Directionality.of(context) == TextDirection.rtl
-                                  ? Icons.chevron_left
-                                  : Icons.chevron_right,
-                              size: 20,
-                              color: theme.textSecondary,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
+      child: RowShell(
+        onTap: onTap,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (icon != null) ...[
+              SizedBox(
+                width: iconSize,
+                height: line,
+                child: Center(
+                  child: Icon(
+                    icon,
+                    size: iconSize,
+                    color: danger
+                        ? theme.danger.foreground
+                        : theme.textSecondary,
+                  ),
                 ),
               ),
+              SizedBox(width: theme.spacing * 1.5),
+            ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: type.label.copyWith(color: foreground)),
+                  if (detail != null) Text(detail, style: type.caption),
+                ],
+              ),
             ),
-          ),
+            if (trailing != null)
+              // A minimum, never a fixed height, so a switch or a 48 dp
+              // button keeps its own size.
+              ConstrainedBox(
+                constraints: BoxConstraints(minHeight: line),
+                child: Center(child: trailing),
+              )
+            else if (enabled)
+              SizedBox(
+                height: line,
+                child: Center(
+                  child: ExcludeSemantics(
+                    child: Icon(
+                      Directionality.of(context) == TextDirection.rtl
+                          ? Icons.chevron_left
+                          : Icons.chevron_right,
+                      size: 20,
+                      color: theme.textSecondary,
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -150,12 +133,11 @@ class ActionTileGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = PaymentTheme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (final (i, child) in children.indexed) ...[
-          if (i > 0) Divider(height: 1, thickness: 1, color: theme.outline),
+          if (i > 0) const PaymentDivider(),
           child,
         ],
       ],

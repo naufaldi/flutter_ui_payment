@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
-final expected = <String, List<Rect>>{
+const expected = <String, List<Rect>>{
   '1.0 rtl 0': [
     Rect.fromLTRB(0.0, 0.0, 360.0, 62.0),
     Rect.fromLTRB(0.0, 0.0, 360.0, 62.0),

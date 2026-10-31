@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../foundation/focus_ring.dart';
+import '../foundation/radio_mark.dart';
+import '../controls/controls.dart';
 import '../foundation/money.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
@@ -203,7 +205,7 @@ class PaymentSummary extends StatelessWidget {
               caption: line.detail,
               value: AmountText(line.amount),
             ),
-          Divider(color: theme.outline, height: theme.spacing * 2),
+          PaymentDivider(height: theme.spacing * 2),
           InfoRow(
             label: l10n.totalLabel,
             emphasis: true,
@@ -273,7 +275,7 @@ class PaymentMethodPicker extends StatelessWidget {
           child: Column(
             children: [
               for (final (i, method) in methods.indexed) ...[
-                if (i > 0) Divider(height: 1, color: theme.outline),
+                if (i > 0) const PaymentDivider(),
                 _MethodTile(
                   method: method,
                   selected: method.id == effective,
@@ -343,7 +345,7 @@ class _MethodTile extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      _Radio(selected: selected, enabled: enabled),
+                      RadioMark(selected: selected, enabled: enabled),
                       SizedBox(width: theme.spacing * 1.5),
                       Expanded(
                         child: Column(
@@ -383,33 +385,6 @@ class _MethodTile extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// Radio mark drawn to the theme: the unselected ring uses the secondary text
-/// color so it keeps at least 3:1 against the surface.
-class _Radio extends StatelessWidget {
-  const _Radio({required this.selected, required this.enabled});
-
-  final bool selected;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = PaymentTheme.of(context);
-    if (!enabled) {
-      return Icon(Icons.block, size: 20, color: theme.disabled);
-    }
-    final color = selected ? theme.accent : theme.textSecondary;
-    return Container(
-      width: 20,
-      height: 20,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: color, width: selected ? 6 : 1.5),
       ),
     );
   }
@@ -489,28 +464,13 @@ class _PaymentConfirmationState extends State<PaymentConfirmation> {
         ),
         if (_needsReapproval) ...[
           SizedBox(height: theme.spacing),
-          CheckboxListTile(
+          PaymentCheckbox(
             value: _acceptedChange,
             onChanged: widget.busy
                 ? null
-                : (v) => setState(() => _acceptedChange = v ?? false),
-            controlAffinity: ListTileControlAffinity.leading,
-            contentPadding: EdgeInsets.zero,
-            // The unchecked box is a control edge, so it uses the 3:1 border.
-            side: WidgetStateBorderSide.resolveWith(
-              (states) => states.contains(WidgetState.selected)
-                  ? null
-                  : BorderSide(
-                      color: states.contains(WidgetState.disabled)
-                          ? theme.disabled
-                          : theme.border,
-                      width: 2,
-                    ),
-            ),
-            // The sentence the customer agrees to matches the summary rows.
-            title: Text(
-              l10n.acceptNewTotal(l10n.moneyFormat.format(widget.quote.total)),
-              style: type.body,
+                : (v) => setState(() => _acceptedChange = v),
+            label: l10n.acceptNewTotal(
+              l10n.moneyFormat.format(widget.quote.total),
             ),
           ),
         ],
