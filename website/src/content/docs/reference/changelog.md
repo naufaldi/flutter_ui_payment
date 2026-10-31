@@ -10,6 +10,12 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
 - Delivers the 4C–4D specimen captures: 45 new images and 6 refreshed Code/Tabs images.
 - Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
 
+## Design system Phase 6-1 (2026-11-01)
+
+- Flatten the component sidebar, move payment flows into Patterns and redirect 13 legacy URLs in Astro and hosting configuration.
+- Publish the 48-entry Stripe-to-kit overview, five composition patterns and the D28-only Not in the kit reference.
+- Deprecate unsupported DataTable reorder/resize flags, callback and unused strings under the approved D28 amendment; removal is scheduled for 0.2.0.
+
 ## Design system Phase 5-3 (2026-11-01)
 
 - Add transaction detail with reference copying and attempt history; report problems through a focused task with discard confirmation and safe host metadata.

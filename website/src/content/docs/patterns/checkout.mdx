@@ -93,7 +93,7 @@ AuthorizationPrompt(
 - `PaymentConfirmation` keeps `onConfirm` unreachable until the customer accepts a changed total.
 - `AuthorizationPrompt` never receives a PIN, OTP or biometric result. Your SDK runs the challenge; you set the `AuthorizationPhase`. Canceled and failed have different copy, and neither is shown as a payment.
 - `PaymentActionBar` pins the total and the main action. While `updating` is true it says "Updating total…"; disable the action yourself.
-- For free-form amounts, such as a top-up, use [`PaymentCurrencyField`](/components/amount-input/).
+- For free-form amounts, such as a top-up, use [`PaymentCurrencyField`](/components/currency-field/).
 - `BalanceCard` never compares the balance with the total, and `PromoCodeInput` never computes a discount. A discount reaches the price only as a new host quote with a `QuoteLineKind.discount` line.
 
 ## API

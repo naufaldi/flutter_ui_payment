@@ -262,13 +262,16 @@ class PaymentDataTable<T> extends StatefulWidget {
   /// Query passed to the host predicate.
   final String? filterQuery;
 
-  /// Reserved for Phase 6; must remain false.
+  /// Not supported (D28); must remain false.
+  @Deprecated('Not supported (D28). Removed in 0.2.0.')
   final bool enableColumnReorder;
 
-  /// Reserved for Phase 6; must remain false.
+  /// Not supported (D28); must remain false.
+  @Deprecated('Not supported (D28). Removed in 0.2.0.')
   final bool enableColumnResize;
 
-  /// Reserved column order callback.
+  /// Not supported (D28); configure columns through the host.
+  @Deprecated('Not supported (D28). Removed in 0.2.0.')
   final ValueChanged<List<String>>? onColumnOrderChanged;
 
   /// Spoken description of the data set.
@@ -371,8 +374,9 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
     final theme = PaymentTheme.of(context);
     assert(w.columns.isNotEmpty);
     assert(
+      // ignore: deprecated_member_use_from_same_package
       !w.enableColumnReorder && !w.enableColumnResize,
-      "Column editing is deferred to Phase 6",
+      "Column editing is not supported (D28)",
     );
     assert(w.batchActions.isEmpty || w.selection != null);
     assert(local || w.filter == null);

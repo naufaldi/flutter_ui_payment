@@ -1,0 +1,21 @@
+---
+title: Not in the kit
+description: Stripe props intentionally omitted under D28, with the host or token alternative.
+---
+
+D28 mirrors all 48 Stripe components while keeping the package SDK-only and host-owned. These props are deliberately omitted:
+
+| Stripe prop | Reason / alternative |
+| --- | --- |
+| TextField password type | D1a: the kit never collects secrets; host sign-in is external. |
+| CurrencyField fractionDigitOffset | Money stores integer minor units; formatting follows currency metadata. |
+| Box/Inline numeric sizes | Use semantic layout tokens (B2). |
+| Box/Inline margin and bleed | Parent composition owns spacing. |
+| Box/Inline shadows, zIndex and overflow | Surface and stacking rules stay controlled by the kit. |
+| DOM attributes | Flutter has no DOM contract. |
+| SVG-string brandIcon | Pass a supported host brand widget. |
+| DateRangePicker timeZone | Dates and zone policy belong to the host. |
+| OnboardingView auto-close delay | D44: host completion action decides when to leave. |
+| DataTable enableColumnReorder / enableColumnResize | D30 collapses phone columns into rows; the host configures wide columns. The legacy flags and callback are deprecated until removal in 0.2.0. |
+
+Smaller per-component props that are not mirrored are listed in each component's Stripe → kit table.

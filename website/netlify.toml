@@ -54,3 +54,82 @@
   to = "/foundations/localization/"
   status = 301
   force = true
+
+[[redirects]]
+  from = "/components/expandable-section/*"
+  to = "/components/accordion/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/status-badge/*"
+  to = "/components/badge/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/notice-banner/*"
+  to = "/components/banner/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/action-menu/*"
+  to = "/components/menu/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/amount-input/*"
+  to = "/components/currency-field/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/action-tile/*"
+  to = "/components/list/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/checkout/*"
+  to = "/patterns/checkout/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/status-receipt/*"
+  to = "/patterns/status-receipt/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/history/*"
+  to = "/patterns/history/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/verification/*"
+  to = "/patterns/verification/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/kyc-capture/*"
+  to = "/patterns/kyc-capture/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/promotions/*"
+  to = "/patterns/promotions/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/capture-source-sheet/*"
+  to = "/patterns/kyc-capture/"
+  status = 301
+  force = true
+
