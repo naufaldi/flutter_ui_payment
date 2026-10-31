@@ -20,32 +20,54 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-PaymentList(children: [
-  PaymentListItem(
-    icon: Icons.receipt_long_outlined,
-    title: 'Transaction history',
-    secondaryTitle: 'Last 90 days',
-    onPressed: openHistory,
-  ),
-  const PaymentListItem(
-    icon: Icons.pin_outlined,
-    title: 'Change PIN',
-    disabledReason: 'Managed by your bank app',
-  ),
-]);
+// example/lib/screens/flow_screen.dart
+PaymentList(
+            children: [
+              PaymentListItem(
+                icon: Icons.receipt_long_outlined,
+                title: s.transactions,
+                onPressed: c.openHistory,
+              ),
+              PaymentListItem(
+                icon: Icons.description_outlined,
+                title: s.statement,
+                onPressed: c.openStatement,
+              ),
+              PaymentListItem(
+                icon: Icons.sell_outlined,
+                title: s.fees,
+                onPressed: c.openFees,
+              ),
+              PaymentListItem(
+                icon: Icons.settings_outlined,
+                title: s.accountSettings,
+                onPressed: c.openAccountSettings,
+              ),
+            ],
+          );
 ```
 
-Put consecutive tiles in an `PaymentList`. It draws a 1 px `outline` hairline between rows and no box around them, so the group sits on the page like a [section](/components/section/) and nests inside your own cards without stacking borders.
+## Stripe → kit
 
-## Default
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| children | children | Semantic kit value; see API for the default. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: standard, large. Nothing else exists.
+
+### Default
 
 With `onTap`, the row shows a chevron at the end (mirrored in right-to-left languages). Pass `trailing` to put your own widget there instead, such as a value or a 48 dp button; it keeps its own size.
 
-## Disabled
+### Disabled
 
 A row without `onTap` is disabled. It stays visible with a muted title, but it is not focusable. Pass `disabledReason`; it replaces the subtitle so people know why they cannot use the row.
 
-## Destructive
+### Destructive
 
 `destructive: true` draws the icon and title in the danger tone. Color is never the only signal: the title must already say what happens, such as "Sign out of all devices". Confirm the action with a [dialog](/components/dialog/) before you run it.
 
@@ -58,30 +80,7 @@ PaymentListItem(
 );
 ```
 
-## Content guidelines
-
-- Titles name the destination or the action: "Transaction history", "Change PIN". Use sentence case and no end punctuation.
-- Keep the subtitle to one short line of extra context, such as "Last 90 days".
-- Write disabled reasons as the cause or the way out: "Managed by your bank app", "Verify your identity first".
-- Use an icon on every row of a group or on none, so titles line up.
-
-## Accessibility
-
-- Rows are at least 48 dp tall and announce as buttons; disabled rows announce as disabled.
-- The icon and chevron center on the title's first line, so they stay beside the title when it wraps at large text. The icon grows with text up to 1.6×.
-- Keyboard focus draws the kit's [focus ring](/foundations/focus/).
-
-## API
-
-<Props names={['PaymentList', 'PaymentListItem', 'PaymentListItemSize', 'ActionTile', 'ActionTileGroup']} />
-
-## See also
-
-- [Action menu](/components/menu/) for actions that do not need a row each.
-- [Button](/components/button/) for the main action of a screen.
-- [Switch](/components/switch/) for settings rows that turn something on or off.
-
-## Variants, behavior and migration
+### Variants, behavior and migration
 
 Stripe List/ListItem map to PaymentList/PaymentListItem. Standard uses a 48 dp minimum and label title; large uses 64 dp and heading. Variants: size, value, icon, destructive, disabledReason and trailing. Nothing else exists. Read-only rows keep ink titles without a button role; disabled rows explain why. Do not put selection controls in value or trailing; use their dedicated rows. Values align to the first line before the navigation chevron.
 
@@ -89,6 +88,53 @@ PaymentList.onAction receives a row id unless its own onPressed overrides it. No
 
 Migration: ActionTile remains a wrapper until 0.2.0. Rename subtitle to secondaryTitle and onTap to onPressed. ActionTileGroup is a deprecated PaymentList alias.
 
-## Layout foundation
+### Layout foundation
 
 PaymentListItem accepts a PaymentImage in its image slot instead of an icon. Supply alt text for a bank logo.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Your account navigation | standard | Use large for more descriptive rows; the whole action row is tappable. |
+
+Use Checkbox, Radio or Switch for selected values.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use large for more descriptive rows; the whole action row is tappable.
+
+**Don't**: Make a selection setting look like a navigation row.
+
+## Content guidelines
+
+- Titles name the destination or the action: "Transaction history", "Change PIN". Use sentence case and no end punctuation.
+- Keep the subtitle to one short line of extra context, such as "Last 90 days".
+- Write disabled reasons as the cause or the way out: "Managed by your bank app", "Verify your identity first".
+- Use an icon on every row of a group or on none, so titles line up.
+
+Use large for more descriptive rows; the whole action row is tappable.
+
+## Accessibility
+
+- Rows are at least 48 dp tall and announce as buttons; disabled rows announce as disabled.
+- The icon and chevron center on the title's first line, so they stay beside the title when it wraps at large text. The icon grows with text up to 1.6×.
+- Keyboard focus draws the kit's [focus ring](/foundations/focus/).
+
+## Used in
+
+Overview account list; sign-in disclosure H04. Real composition: `example/lib/screens/flow_screen.dart`.
+
+## API
+
+<Props names={["PaymentList", "PaymentListItem", "PaymentListItemSize", "ActionTile", "ActionTileGroup"]} />
+
+## See also
+
+- [Action menu](/components/menu/) for actions that do not need a row each.
+- [Button](/components/button/) for the main action of a screen.
+- [Switch](/components/switch/) for settings rows that turn something on or off.

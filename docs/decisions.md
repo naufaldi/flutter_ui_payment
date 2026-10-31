@@ -427,3 +427,11 @@ Capture-glance corrections: the harness resets descendant scroll positions befor
 - Components are one flat alphabetical sidebar. Patterns absorb six flow pages; capture source selection folds into KYC capture (D14). All 13 moved paths have Astro, static and hosting redirects, with no deployment performed.
 - Overview rows derive from PRD §5: all 48 Stripe names appear once with kit class and status. D34 aliases have separate deprecated rows. Not in the kit lists only D28 omissions.
 - No Phase 6-1 plan deviations. The three kit-specific sidebar entries wait for their real pages in 6-2, as planned.
+
+### Phase 6-2 implementation decisions
+
+- B12 component pages follow one heading order with a closed variant set, explicit alternative, payment situation and do/don't pair. Existing detailed variant material and migration notes remain available. Usage excerpts come from actual library/example calls; incidental widget keys are omitted because the snippet checker excludes inherited Flutter key parameters.
+- A permanent check:pages lint checks the required page structure without claiming content or visual correctness. All 65 pages pass; actual source/API checks supplement it.
+- Step indicator is admitted for checkout merchant steps and the reusable linear-progress specimen. Action bar is admitted for pinned checkout total/action and its updating/disabled specimen. Chart module is admitted for history spending and reusable pending/empty/error chart composition. None changes host-owned decisions.
+- Placeholder dartdoc is replaced with field meaning; garbled local-variable documentation is removed. No behavior or API delta.
+- No Phase 6-2 plan deviations; example screenshots remain reserved for the final 6-3 commit.

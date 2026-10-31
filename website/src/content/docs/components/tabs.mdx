@@ -21,44 +21,40 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
+// example/lib/screens/gallery_selection.dart
 PaymentTabs(
-  tabs: const [PaymentTab(label: 'Card'), PaymentTab(label: 'Bank transfer')],
-  selectedIndex: tab,
-  onSelected: (i) => setState(() => tab = i),
-);
+          fitted: true,
+          tabs: const [
+            PaymentTab(label: 'Card'),
+            PaymentTab(label: 'Bank transfer'),
+            PaymentTab(label: 'Wallet'),
+          ],
+          selectedIndex: 0,
+          onSelected: (_) {},
+        );
 ```
 
-Tabs are controlled. Keep `selectedIndex` in your state, rebuild with the new index in `onSelected`, and show the matching content under the tabs.
+## Stripe → kit
 
-## Selected
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| size | size | Semantic kit value; see API for the default. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: small, medium, large; fitted or intrinsic. Nothing else exists.
+
+### Selected
 
 The selected tab changes to the accent color and gains a 2 px underline. The weight stays the same so labels do not shift when chosen, and screen readers hear it as selected.
 
-## Many or long labels
+### Many or long labels
 
 The row scrolls sideways instead of wrapping, so long or enlarged labels never stack into a block. The row sits on a 1 px `outline` hairline.
 
-## Content guidelines
-
-- Use short nouns, one or two words each: "All", "Pending", "Refunds".
-- Use sentence case and no end punctuation.
-- Use tabs for views of the same content. To move between screens use the [navigation shell](/components/navigation/); to make a choice that is saved, use [radios](/components/radio/).
-
-## Accessibility
-
-- Each tab is a button at least 48 × 48 dp, marked selected or not.
-- Tabs press to 0.96 like other compact controls, and keyboard focus draws the kit's [focus ring](/foundations/focus/); the row clips only at its sides so the ring stays visible.
-
-## API
-
-<Props names={['PaymentTabs', 'PaymentTab', 'PaymentTabPanels', 'PaymentSize']} />
-
-## See also
-
-- [Transaction history](/patterns/history/), which uses these tabs for its filters.
-- [Radio](/components/radio/) for a choice that is submitted with a form.
-
-## Behavior, states and migration
+### Behavior, states and migration
 
 Stripe TabList is PaymentTabs, Tab is PaymentTab, and TabPanels/TabPanel are PaymentTabPanels. selectedKey maps to selectedIndex, and onSelectionChange to onSelected. Sizes are small (caption, 8 dp sides), medium (label, 12 dp), and large (heading, 16 dp); every target stays at least 48 dp. Fitted divides the available width equally. Arrow keys move focus without selection and skip disabled tabs; Enter or Space selects. A disabledReason is spoken as a hint and shown in a tooltip; explain unavailability in visible content too.
 
@@ -66,5 +62,48 @@ Panels build on first selection and keep state. Offstage, TickerMode and Exclude
 
 Breaking migration: replace labels with tabs, wrapping each string in PaymentTab(label: ...).
 
-
 Fitted tabs use equal widths only when every label fits at the current text scale. Otherwise they scroll horizontally, preserving whole words.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Transaction status filters | intrinsic | Use views of the same records; disabled tabs need a reason. |
+
+Use List for navigation to separate account destinations.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use views of the same records; disabled tabs need a reason.
+
+**Don't**: Use tabs as a sequence of required KYC tasks.
+
+## Content guidelines
+
+- Use short nouns, one or two words each: "All", "Pending", "Refunds".
+- Use sentence case and no end punctuation.
+- Use tabs for views of the same content. To move between screens use the [navigation shell](/components/navigation/); to make a choice that is saved, use [radios](/components/radio/).
+
+Use views of the same records; disabled tabs need a reason.
+
+## Accessibility
+
+- Each tab is a button at least 48 × 48 dp, marked selected or not.
+- Tabs press to 0.96 like other compact controls, and keyboard focus draws the kit's [focus ring](/foundations/focus/); the row clips only at its sides so the ring stays visible.
+
+## Used in
+
+TransactionHistory A01; DateRangePicker. Real composition: `example/lib/screens/gallery_selection.dart`.
+
+## API
+
+<Props names={["PaymentTabs", "PaymentTab", "PaymentTabPanels", "PaymentSize"]} />
+
+## See also
+
+- [Transaction history](/patterns/history/), which uses these tabs for its filters.
+- [Radio](/components/radio/) for a choice that is submitted with a form.

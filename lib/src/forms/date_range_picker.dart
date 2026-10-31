@@ -35,13 +35,13 @@ class PaymentDatePreset {
     required this.end,
   });
 
-  /// label for this component.
+  /// Visible name identifying this value or control.
   final String label;
 
-  /// start for this component.
+  /// First included calendar day in the host zone.
   final DateTime start;
 
-  /// end for this component.
+  /// Last included calendar day in the host zone.
   final DateTime end;
   @override
   bool operator ==(Object other) =>
@@ -62,13 +62,13 @@ class PaymentDateRange {
     : start = preset.start,
       end = preset.end;
 
-  /// start for this component.
+  /// First included calendar day in the host zone.
   final DateTime start;
 
-  /// end for this component.
+  /// Last included calendar day in the host zone.
   final DateTime end;
 
-  /// preset for this component.
+  /// Named host range used for this selection, if any.
   final PaymentDatePreset? preset;
   @override
   bool operator ==(Object other) =>
@@ -98,47 +98,46 @@ class PaymentDateRangePicker extends StatefulWidget {
     this.enabled = true,
   });
 
-  /// label for this component.
+  /// Visible name identifying this value or control.
   final String label;
 
-  /// value for this component.
+  /// Current host-selected range.
   final PaymentDateRange? value;
 
-  /// onChanged for this component.
+  /// Reports the selected range to the host.
   final ValueChanged<PaymentDateRange?> onChanged;
 
-  /// firstDate for this component.
+  /// Earliest selectable day in the host zone.
   final DateTime firstDate;
 
-  /// lastDate for this component.
+  /// Last selectable day in the host zone.
   final DateTime lastDate;
 
-  /// presets for this component.
+  /// Named ranges offered before the custom calendar.
   final List<PaymentDatePreset> presets;
 
-  /// granularity for this component.
+  /// Current host-selected grouping of calendar periods.
   final PaymentDateGranularity? granularity;
 
-  /// onGranularityChanged for this component.
+  /// Reports a grouping choice to the host.
   final ValueChanged<PaymentDateGranularity>? onGranularityChanged;
 
-  /// description for this component.
+  /// Persistent explanation below the heading or label.
   final String? description;
 
-  /// errorText for this component.
+  /// Safe error copy displayed with the affected content.
   final String? errorText;
 
-  /// size for this component.
+  /// Semantic control size; hit targets remain at least 48 dp.
   final PaymentSize size;
 
-  /// enabled for this component.
+  /// Whether the customer can change this control.
   final bool enabled;
   @override
   State<PaymentDateRangePicker> createState() => _PaymentDateRangePickerState();
 }
 
 class _PaymentDateRangePickerState extends State<PaymentDateRangePicker> {
-  /// FocusNode() for this component.
   final _focus = FocusNode();
   @override
   void dispose() {

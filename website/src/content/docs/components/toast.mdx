@@ -20,16 +20,23 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-showPaymentToast(
-  context,
-  message: 'Reference copied',
-  tone: StatusTone.success,
-);
+// example/lib/screens/steps/transaction_detail_step.dart
+showPaymentToast(context, message: s.viewReceipt);
 ```
 
-It needs a `ScaffoldMessenger` above `context`, which `MaterialApp` provides. Any toast already showing is hidden first, so a quick second action never queues behind the first. The function returns a `PaymentToastController`; its closed future completes when it leaves the screen.
+## Stripe → kit
 
-## Tones
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| children | child | Flutter body composition. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: neutral, info, success, warning, danger; pending. Nothing else exists.
+
+### Tones
 
 `tone` selects the icon. Ink tokens provide textPrimary fill and surface text in both themes.
 
@@ -40,7 +47,7 @@ It needs a `ScaffoldMessenger` above `context`, which `MaterialApp` provides. An
 | `warning` | `Icons.warning_amber_outlined` |
 | `danger` | `Icons.error_outline` |
 
-## With undo
+### With undo
 
 Pass both `actionLabel` and `onAction` to add an action. If either is missing, no action is shown.
 
@@ -53,28 +60,7 @@ showPaymentToast(
 );
 ```
 
-## Content guidelines
-
-- Say what happened in the past tense, in a few words: "Reference copied", "Card removed".
-- One message per toast. Do not put instructions or errors that need attention in a toast; it disappears. Use a [notice banner](/components/banner/) instead.
-- Never report a payment result in a toast. Payment status belongs on the [status screen](/patterns/status-receipt/).
-- Action labels are one verb: "Undo", "View".
-
-## Accessibility
-
-- Screen readers announce snack bars automatically.
-- The tone adds an icon, so the message is not carried by color alone. The icon is excluded from semantics; the message is what is read.
-
-## API
-
-<Props names={['showPaymentToast', 'PaymentToastController', 'showPaymentSnackBar']} />
-
-## See also
-
-- [Notice banner](/components/banner/) for messages that must stay.
-- [Dialog](/components/dialog/) to ask before an action instead of offering undo after it.
-
-## Pending and reading time
+### Pending and reading time
 
 Stripe none, success and caution map to neutral, success and warning. Pending uses a small spinner and never times out. A blocking failure belongs in a banner.
 
@@ -85,6 +71,51 @@ toast.update('Balance updated', tone: StatusTone.success);
 
 Short messages last 4 seconds, or 6 with an action. Longer messages get 1 second plus 300 ms per word, capped at 10 seconds. An action remains available during accessible navigation. Ink toasts use textPrimary fill and surface text, with no shadow. Aim for about 30 characters. Updates keep the same toast on screen; dismiss is safe to repeat.
 
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Report sent or downloads prepared | success | Use short outcome copy; pending controllers can update or dismiss host work. |
+
+Use inline error for correcting a field or report.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use short outcome copy; pending controllers can update or dismiss host work.
+
+**Don't**: Replace persistent payment status with a transient toast.
+
+## Content guidelines
+
+- Say what happened in the past tense, in a few words: "Reference copied", "Card removed".
+- One message per toast. Do not put instructions or errors that need attention in a toast; it disappears. Use a [notice banner](/components/banner/) instead.
+- Never report a payment result in a toast. Payment status belongs on the [status screen](/patterns/status-receipt/).
+- Action labels are one verb: "Undo", "View".
+
+Use short outcome copy; pending controllers can update or dismiss host work.
+
+## Accessibility
+
+- Screen readers announce snack bars automatically.
+- The tone adds an icon, so the message is not carried by color alone. The icon is excluded from semantics; the message is what is read.
+
+## Used in
+
+Report A02; statement A03; gallery actions. Real composition: `example/lib/screens/steps/transaction_detail_step.dart`.
+
+## API
+
+<Props names={["showPaymentToast", "PaymentToastController", "showPaymentSnackBar"]} />
+
 ## Migration
 
 `showPaymentSnackBar` remains a deprecated wrapper returning the Material controller until 0.2.0. Use `showPaymentToast` for pending, update and dismiss.
+
+## See also
+
+- [Notice banner](/components/banner/) for messages that must stay.
+- [Dialog](/components/dialog/) to ask before an action instead of offering undo after it.

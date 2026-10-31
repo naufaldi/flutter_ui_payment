@@ -20,23 +20,37 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
+// example/lib/screens/gallery_selection.dart
 PaymentSwitch(
-  value: refundAlerts,
-  onChanged: (v) => setState(() => refundAlerts = v),
-  label: 'Refund alerts',
-  description: 'A notification when a refund settles',
-);
+              value: _sms,
+              onChanged: (v) => setState(() => _sms = v),
+              label: 'SMS receipts',
+            );
 ```
 
-## Switch or checkbox
+## Stripe → kit
+
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| value | value | Semantic kit value; see API for the default. |
+| onChange | onChanged | Host callback owns the effect. |
+| label | label | Semantic kit value; see API for the default. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: off, on. Nothing else exists.
+
+### Switch or checkbox
 
 Use a switch when the change applies the moment it is flipped, like a setting. Use a [checkbox](/components/checkbox/) when the choice is only applied after a button press, such as "Save this card" before paying.
 
-## On and off
+### On and off
 
 When on, the track fills with the accent and the thumb moves to the end and shows a check. When off, the track is the surface with a `border` edge. Position and the check carry the state, so it is never color alone.
 
-## Disabled
+### Disabled
 
 Pass `onChanged: null`. The track turns `surfaceMuted`, the label turns muted, and taps do nothing. Pass `disabledReason`; it replaces `description` while the row is disabled.
 
@@ -49,11 +63,35 @@ const PaymentSwitch(
 );
 ```
 
+### Behavior, states and migration
+
+Stripe error maps to errorText: icon, danger caption and off-track danger edge. Required is spoken, with gating owned by the host. HiddenElements retains hidden text in semantics. Use a switch for an immediate setting, not consent applied after a later submit.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Promotion notifications | off | Use for independent persistent preferences, with the label centered to the mark. |
+
+Use Radio for default method choices.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use for independent persistent preferences, with the label centered to the mark.
+
+**Don't**: Use a switch to start a one-time payment action.
+
 ## Content guidelines
 
 - Name the setting, not the action: "Refund alerts", not "Turn on refund alerts".
 - Use the description for what the setting does when on.
 - If applying the setting can fail, show the switch in its old position and tell people with a [toast](/components/toast/).
+
+Use for independent persistent preferences, with the label centered to the mark.
 
 ## Accessibility
 
@@ -62,15 +100,15 @@ const PaymentSwitch(
 
 The switch mark centers on the first label line; the row retains its minimum touch target.
 
+## Used in
+
+Settings A05. Real composition: `example/lib/screens/gallery_selection.dart`.
+
 ## API
 
-<Props names={['PaymentSwitch', 'PaymentFieldPart']} />
+<Props names={["PaymentSwitch", "PaymentFieldPart"]} />
 
 ## See also
 
 - [Checkbox](/components/checkbox/) for choices applied with a button.
 - [Action tile](/components/list/) for settings rows that open another screen.
-
-## Behavior, states and migration
-
-Stripe error maps to errorText: icon, danger caption and off-track danger edge. Required is spoken, with gating owned by the host. HiddenElements retains hidden text in semantics. Use a switch for an immediate setting, not consent applied after a later submit.

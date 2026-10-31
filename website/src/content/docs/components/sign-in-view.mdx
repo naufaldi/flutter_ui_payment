@@ -11,7 +11,27 @@ Entry point for external bank sign-in. Variants: ready, host error. Nothing else
 ## Usage
 
 ```dart
-PaymentSignInView(primaryAction: PaymentButton(label: 'Continue with bank app', onPressed: () {}));
+// example/lib/screens/gallery_views.dart
+PaymentSignInView(
+        brand: const PaymentIcon(Icons.account_balance_wallet_outlined),
+        description: 'Sign in with your bank app to see payments and refunds.',
+        learnMore: PaymentSignInLearnMore(
+          label: 'What we can see',
+          title: 'Permissions',
+          builder: (_) => const Text('Payment history and refunds.'),
+        ),
+        primaryAction: button(
+          'Continue with bank app',
+          variant: PaymentButtonVariant.primary,
+        ),
+        secondaryAction: button('Use another account'),
+        legalLinks: [
+          PaymentLink(label: 'Terms', external: true, onPressed: () {}),
+          PaymentLink(label: 'Privacy', external: true, onPressed: () {}),
+        ],
+        footnote: 'We never ask for your PIN here.',
+        errorText: state == 1 ? 'Sign-in was canceled. Try again.' : null,
+      );
 ```
 
 ## Stripe → kit
@@ -21,9 +41,37 @@ PaymentSignInView(primaryAction: PaymentButton(label: 'Continue with bank app', 
 | SignInView | `PaymentSignInView` |
 | SignInLearnMore | `PaymentSignInLearnMore` |
 
-## States and content
+## Variants
+
+Variants: ready, busy, host error. Nothing else exists.
+
+### States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Enter the signed-out flow | ready | Continue delegates to host sign-in; learn-more is a disclosure and legal destinations are links. |
+
+Use Onboarding view for working KYC tasks.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Continue delegates to host sign-in; learn-more is a disclosure and legal destinations are links.
+
+**Don't**: Add credential fields or a free content slot.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Continue delegates to host sign-in; learn-more is a disclosure and legal destinations are links.
 
 ## Accessibility
 
@@ -33,14 +81,17 @@ Learn-more is a disclosure row with an information icon and chevron. The brand i
 
 Used in H04: the fake host handles sign-in and cancellation retry; no credential editor exists in the view.
 
+## Used in
+
+H04 signed-out scenario. Real composition: `example/lib/screens/gallery_views.dart`.
+
 ## API
 
-<Props names={['PaymentSignInView', 'PaymentSignInLearnMore']} />
+<Props names={["PaymentSignInView", "PaymentSignInLearnMore"]} />
 
 ## See also
 
 - [Components](/components/)
-
 
 <Screen name="ios_catalog_sign_in_view_variants" alt="sign in view specimen" />
 <Screen name="ios_catalog_sign_in_view_variants_dark" alt="sign in view specimen_dark" />

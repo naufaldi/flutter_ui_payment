@@ -2093,3 +2093,7 @@ A02–A05 exercise transaction details/reporting, settlement statements, fees an
 ### Phase 6-1 implementation notes
 
 Component and pattern navigation now follows D34 and Q4. Thirteen URL moves preserve existing inbound links through three redirect mechanisms. D28 drops reorder/resize with deprecations instead of adding unused drag controls.
+
+### Phase 6-2 implementation notes
+
+The 65 component pages now contain usage from real calls, mapping, closed variants, selection rules, states, do/don't, content, accessibility, example usage and generated API. Three missing kit-specific pages and a small structural lint ship together. The full Phase 6 checklist waits for example screenshots in 6-3.

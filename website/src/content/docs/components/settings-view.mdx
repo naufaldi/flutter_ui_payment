@@ -11,7 +11,62 @@ Group payment preferences with PaymentFormFieldGroup sections such as Notificati
 ## Usage
 
 ```dart
-PaymentSettingsView(title: 'Payment settings', onSave: () async {}, child: const Text('Group settings with PaymentFormFieldGroup'));
+// example/lib/screens/gallery_views.dart
+PaymentSettingsView(
+        title: 'Payment settings',
+        statusMessage: 'Saved',
+        statusTone: StatusTone.success,
+        onSave: () async {
+          await Future<void>.delayed(const Duration(milliseconds: 600));
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: PaymentTheme.of(context).space(PaymentSpace.block),
+          children: [
+            PaymentFormFieldGroup(
+              legend: 'Notifications',
+              children: [
+                PaymentSwitch(
+                  label: 'Refund notifications',
+                  value: refunds,
+                  onChanged: (v) => setState(() => refunds = v),
+                ),
+                PaymentSwitch(
+                  label: 'Promotions',
+                  value: promos,
+                  onChanged: (v) => setState(() => promos = v),
+                ),
+              ],
+            ),
+            PaymentFormFieldGroup(
+              legend: 'Default method',
+              children: [
+                for (final value in ['bank', 'wallet'])
+                  PaymentRadio<String>(
+                    value: value,
+                    groupValue: method,
+                    onChanged: (v) => setState(() => method = v),
+                    label: value == 'bank' ? 'BCA virtual account' : 'Wallet',
+                  ),
+              ],
+            ),
+            PaymentFormFieldGroup(
+              legend: 'Language',
+              children: [
+                PaymentSelect<String>(
+                  label: 'Statement language',
+                  options: const [
+                    PaymentSelectOption(value: 'en', label: 'English'),
+                    PaymentSelectOption(value: 'id', label: 'Bahasa Indonesia'),
+                  ],
+                  value: language,
+                  onChanged: (v) => setState(() => language = v),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
 ```
 
 ## Stripe → kit
@@ -20,9 +75,37 @@ PaymentSettingsView(title: 'Payment settings', onSave: () async {}, child: const
 | --- | --- |
 | SettingsView | `PaymentSettingsView` |
 
-## States and content
+## Variants
+
+Variants: idle, saving, saved, error. Nothing else exists.
+
+### States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Account preferences | idle | Group Notifications, Payments and Language; Save is the only primary action. |
+
+Use Full page view for read-only account facts.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Group Notifications, Payments and Language; Save is the only primary action.
+
+**Don't**: Keep old Saved feedback after the customer edits a setting.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Group Notifications, Payments and Language; Save is the only primary action.
 
 ## Accessibility
 
@@ -32,14 +115,17 @@ Save fills the phone footer and hugs the end on wide layouts. The host supplies 
 
 A05 groups Notifications, Payments and Language. Save is the sole primary action; failure supports retry, and editing clears stale save feedback.
 
+## Used in
+
+Settings A05. Real composition: `example/lib/screens/gallery_views.dart`.
+
 ## API
 
-<Props names={['PaymentSettingsView']} />
+<Props names={["PaymentSettingsView"]} />
 
 ## See also
 
 - [Components](/components/)
-
 
 <Screen name="ios_catalog_settings_view_variants" alt="settings view specimen" />
 <Screen name="ios_catalog_settings_view_variants_dark" alt="settings view specimen_dark" />

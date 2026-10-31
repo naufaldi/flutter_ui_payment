@@ -28,40 +28,40 @@ class PaymentDetailPageTable<T> extends StatelessWidget {
     this.extraActions = const [],
   });
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String title;
 
-  /// Pending supplied by the host.
+  /// Shows placeholders while the host loads content.
   final bool pending;
 
-  /// Columns supplied by the host.
+  /// Columns defining how host row values are rendered.
   final List<PaymentDataColumn<T>> columns;
 
-  /// Rows supplied by the host.
+  /// Host records displayed by the table module.
   final List<T> rows;
 
-  /// Rowkey supplied by the host.
+  /// Stable host identifier for each row.
   final String Function(T row) rowKey;
 
-  /// Onrowpressed supplied by the host.
+  /// Opens a host destination for the chosen row.
   final void Function(T row)? onRowPressed;
 
-  /// Rowactions supplied by the host.
+  /// Host actions offered for each record.
   final List<PaymentRowActionEntry<T>> rowActions;
 
-  /// Oncreate supplied by the host.
+  /// Host action for adding a detail record.
   final VoidCallback? onCreate;
 
-  /// Emptymessage supplied by the host.
+  /// Explanation and optional recovery action for missing content.
   final PaymentEmptyMessage? emptyMessage;
 
-  /// Errortext supplied by the host.
+  /// Safe error copy displayed with the affected content.
   final String? errorText;
 
-  /// Onretry supplied by the host.
+  /// Retries the failed host request.
   final VoidCallback? onRetry;
 
-  /// Extraactions supplied by the host.
+  /// Supporting actions in the module header.
   final List<PaymentLink> extraActions;
   @override
   Widget build(BuildContext context) {

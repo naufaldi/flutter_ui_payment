@@ -18,7 +18,8 @@ Inline actions hug their label with a 48 dp target and no container. Primary use
 ## Usage
 
 ```dart
-PaymentLink(label: 'Edit', onPressed: () {});
+// example/lib/screens/gallery_selection.dart
+PaymentLink(label: 'Edit', onPressed: null);
 ```
 
 ## Stripe → kit
@@ -33,8 +34,49 @@ PaymentLink(label: 'Edit', onPressed: () {});
 
 Width and alignment follow content. Host widgets own keyboard ordering and platform services. Do use a clear action name; avoid unlabeled glyphs and button-like containers for links.
 
+## Variants
+
+Variants: primary, secondary. Nothing else exists.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Merchant support destination | secondary | Use a host callback and external indicator for a destination outside the app. |
+
+Use Button for the main task action.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use a host callback and external indicator for a destination outside the app.
+
+**Don't**: Put navigation or URL-opening implementation inside the kit.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Use a host callback and external indicator for a destination outside the app.
+
 ## Accessibility
 
 Targets are at least 48 dp. Tooltips name icon actions. Links announce their role and external destinations. Copy feedback uses a live region and a check rather than color alone.
 
 <Props names={['PaymentLink', 'PaymentLinkVariant']} />
+
+## Used in
+
+Merchant support A02; sign-in legal links H04. Real composition: `example/lib/screens/gallery_selection.dart`.
+
+## API
+
+<Props names={["PaymentLink", "PaymentLinkVariant"]} />
+
+## See also
+
+- [Components](/components/)
+- [Host-owned decisions](/concepts/host-owned/)

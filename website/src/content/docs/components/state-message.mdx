@@ -20,19 +20,26 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
+// example/lib/screens/gallery_kit.dart
 StateMessage(
-  icon: Icons.cloud_off_outlined,
-  tone: StatusTone.danger,
-  title: 'Couldn’t load billers',
-  message: 'Check your connection.',
-  actionLabel: 'Try again',
-  onAction: host.reloadBillers,
-);
+            icon: Icons.bookmark_border,
+            title: t('No saved billers', 'Belum ada tagihan tersimpan'),
+            message: t(
+              'Save a biller after paying to find it here.',
+              'Simpan tagihan setelah membayar agar muncul di sini.',
+            ),
+          );
 ```
 
-The action is a secondary [`PaymentButton`](/components/button/), at most 280 dp wide. It appears only when both `actionLabel` and `onAction` are set. If `onAction` returns a `Future`, the button is busy until it completes.
+## Stripe → kit
 
-## Empty
+No Stripe equivalent. Admitted because: TransactionHistory A01; DataTable and detail empty states; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: neutral, info, success, warning, danger. Nothing else exists.
+
+### Empty
 
 Nothing exists yet. Say what will appear here and how to get it.
 
@@ -44,13 +51,35 @@ const StateMessage(
 );
 ```
 
-## No match
+### No match
 
 The list has items but none match the search or filter. Offer to clear the filter rather than a retry. `TransactionHistory` shows this state on its own.
 
-## Error
+### Error
 
 Loading failed. Use `tone: StatusTone.danger`: the message is then announced to screen readers when it appears. Offer one way forward, usually "Try again".
+
+### PaymentEmptyMessage
+
+A required title explains missing module content; message adds context and actionLabel/onAction provide recovery. DataTable and detail modules use it for empty results. Do not replace it with an unlabelled icon.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| No transactions or failed history | neutral | Explain why content is empty and offer recovery; danger is for primary-content failure. |
+
+Use Banner when surrounding content remains useful.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Explain why content is empty and offer recovery; danger is for primary-content failure.
+
+**Don't**: Show only No data without context or an available next action.
 
 ## Content guidelines
 
@@ -59,19 +88,24 @@ Loading failed. Use `tone: StatusTone.danger`: the message is then announced to 
 - One action at most. If there is nothing the person can do, leave it out.
 - The headline carries the meaning, so the icon stays muted in every tone.
 
+Explain why content is empty and offer recovery; danger is for primary-content failure.
+
 ## Accessibility
 
 - The message is one semantics container.
 - `tone: StatusTone.danger` makes it a live region, so errors are announced. Other tones are read in place.
 
+## Used in
+
+TransactionHistory A01; DataTable and detail empty states. Real composition: `example/lib/screens/gallery_kit.dart`.
+
 ## API
 
-<Props names={['StateMessage']} />
+<Props names={["StateMessage", "PaymentEmptyMessage"]} />
 
 ## See also
 
 - [Loading skeleton](/components/loading-skeleton/)
 - [Transaction history](/patterns/history/), which uses all three states.
-
 
 Use [Data table](/components/data-table/) for settlement selection, actions and paging. Empty tables accept a host explanation and next action.

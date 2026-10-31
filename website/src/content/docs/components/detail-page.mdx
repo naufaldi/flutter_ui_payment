@@ -11,7 +11,44 @@ Detail of a transaction, with header actions and host breadcrumbs. Do not nest i
 ## Usage
 
 ```dart
-const PaymentDetailPage(title: 'Payment details', primary: [PaymentPageModule(title: 'Payment', child: Text('Rp102.500'))]);
+// example/lib/screens/gallery_views.dart
+PaymentDetailPage(
+        title: 'Rp102.500 to Toko Contoh',
+        description: 'Paid with BCA virtual account · 1 Oct 2026',
+        breadcrumbs: [
+          PaymentBreadcrumb(label: 'Transactions', onPressed: () {}),
+        ],
+        actions: [
+          button('View receipt'),
+          button('Report a problem', variant: PaymentButtonVariant.quiet),
+          button('Request refund', variant: PaymentButtonVariant.destructive),
+        ],
+        primary: [property(), attempts()],
+        secondary: [
+          PaymentDetailPagePropertyList(
+            title: 'Merchant',
+            pending: false,
+            items: [
+              const PaymentDetailProperty(
+                label: 'Name',
+                values: [PaymentDetailValue('Toko Contoh')],
+              ),
+              PaymentDetailProperty(
+                label: 'Support',
+                values: [
+                  PaymentDetailValue.link(
+                    PaymentLink(
+                      label: 'Help centre',
+                      external: true,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
 ```
 
 ## Stripe → kit
@@ -22,9 +59,37 @@ const PaymentDetailPage(title: 'Payment details', primary: [PaymentPageModule(ti
 | PageModule | `PaymentPageModule` |
 | Breadcrumb | `PaymentBreadcrumb` |
 
-## States and content
+## Variants
+
+Variants: primary, primary with secondary modules. Nothing else exists.
+
+### States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| One transaction | primary with secondary modules | Payment and attempts are primary; merchant support is secondary. |
+
+Use Overview page for a non-scrolling dashboard composition.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Payment and attempts are primary; merchant support is secondary.
+
+**Don't**: Nest DetailPage inside FullPageView.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Payment and attempts are primary; merchant support is secondary.
 
 ## Accessibility
 
@@ -34,14 +99,17 @@ Place page modules, detail property lists, detail tables or chart modules direct
 
 Used in A02 and H04. Receipt and report actions are secondary; the payment, attempts and merchant modules have one heading each.
 
+## Used in
+
+Transaction detail A02/H04. Real composition: `example/lib/screens/gallery_views.dart`.
+
 ## API
 
-<Props names={['PaymentDetailPage', 'PaymentPageModule', 'PaymentBreadcrumb']} />
+<Props names={["PaymentDetailPage", "PaymentPageModule", "PaymentBreadcrumb"]} />
 
 ## See also
 
 - [Components](/components/)
-
 
 <Screen name="ios_catalog_detail_page_variants" alt="detail page specimen" />
 <Screen name="ios_catalog_detail_page_variants_dark" alt="detail page specimen_dark" />

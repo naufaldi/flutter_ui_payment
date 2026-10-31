@@ -26,36 +26,33 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-PaymentMeterChart(segments: [
-  MeterSegment(label: 'QRIS', value: const Money.idr(350000)),
-  MeterSegment(label: 'Transfer', value: const Money.idr(450000)),
-]);
+// example/lib/screens/gallery_charts.dart
+PaymentMeterChart(
+        segments: [
+          for (final p in points)
+            if (p.value != null)
+              MeterSegment(label: p.label, value: p.value!, status: p.status),
+        ],
+      );
 ```
 
-Use intrinsic height (`ChartModule(height: null)`) so the wrapping legend has room. Offer at most five categories; group the rest into “Other”. Segment widths use the supplied amounts, while the legend shows amounts, never percentages.
+## Stripe → kit
 
-## States and variants
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| children | child | Flutter body composition. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: money, percentage, number; up to five categories. Nothing else exists.
+
+### States and variants
 
 Settled marks are solid, pending marks are outlined or dashed, and unknown marks are hatched or dotted. A null point is a gap, never zero. Use one currency per chart. Bar and meter amounts must be non-negative; line charts accept negative amounts.
 
-## Content guidelines
-
-Use short period labels and a clear title. Explain what is settled in the headline caption. The host supplies the headline; the kit never adds plotted values to produce a customer total.
-
-## Accessibility
-
-A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. Pointer inspection on line/bar charts is supplemental; it has no keyboard focus target. Status is conveyed by shape and words as well as color.
-
-## API
-
-<Props names={['PaymentMeterChart']} />
-
-## See also
-
-- [Chart layout](/patterns/chart-layout/) for height, state and headline composition.
-- [Money](/foundations/money/) for precise and compact amounts.
-
-## Series, axes and units
+### Series, axes and units
 
 Use named series with identical period labels and ordering. Line and bar charts accept up to three series; sparklines accept two. Series use an accent ramp and distinct dash patterns, never status tones. All series share a scale. `showLegend` controls the legend for multiple series.
 
@@ -76,6 +73,47 @@ Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to 
 
 Parameters: `segments`, `showLegend`, `unit`, `onSegmentPressed`, `semanticLabel`. Nothing else exists.
 
-## Filter foundation
+### Filter foundation
 
 Pressable meter legend rows use a label, optional status caption and end-aligned tabular amount. Their 48 dp target remains unchanged; passive legends keep their compact wrap.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Payment method breakdown | money | Show host-computed totals and category labels in legend rows. |
+
+Use Bar chart to compare periods.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Show host-computed totals and category labels in legend rows.
+
+**Don't**: Use success/danger colors to categorize payment methods.
+
+## Content guidelines
+
+Use short period labels and a clear title. Explain what is settled in the headline caption. The host supplies the headline; the kit never adds plotted values to produce a customer total.
+
+Show host-computed totals and category labels in legend rows.
+
+## Accessibility
+
+A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. Pointer inspection on line/bar charts is supplemental; it has no keyboard focus target. Status is conveyed by shape and words as well as color.
+
+## Used in
+
+Gallery Charts; spending layout pattern. Real composition: `example/lib/screens/gallery_charts.dart`.
+
+## API
+
+<Props names={["PaymentMeterChart"]} />
+
+## See also
+
+- [Chart layout](/patterns/chart-layout/) for height, state and headline composition.
+- [Money](/foundations/money/) for precise and compact amounts.

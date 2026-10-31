@@ -11,7 +11,28 @@ import Props from '../../../components/Props.astro';
 ## Usage
 
 ```dart
-const PaymentTable(head: [PaymentTableHeaderCell('Method'), PaymentTableHeaderCell('Fee', numeric: true)], rows: [PaymentTableRow([PaymentTableCell(Text('QRIS')), PaymentTableCell(Text('Rp0'))])]);
+// example/lib/screens/steps/fees_step.dart
+PaymentTable(
+            caption: s.feesTitle,
+            head: const [
+              PaymentTableHeaderCell('Method', rowHeader: true),
+              PaymentTableHeaderCell('Fee', numeric: true),
+              PaymentTableHeaderCell('Arrives'),
+            ],
+            rows: [
+              for (final (method, fee, arrives) in [
+                ('Virtual account', 2500, 'Within 10 min'),
+                ('QRIS', 0, 'Instant'),
+                ('Ruang Bayar balance', 0, 'Instant'),
+                ('Card', 4000, 'Instant'),
+              ])
+                PaymentTableRow([
+                  PaymentTableCell(Text(method)),
+                  PaymentTableCell(AmountText(Money.idr(fee)), numeric: true),
+                  PaymentTableCell(Text(arrives)),
+                ]),
+            ],
+          );
 ```
 
 ## Stripe → kit
@@ -25,30 +46,58 @@ const PaymentTable(head: [PaymentTableHeaderCell('Method'), PaymentTableHeaderCe
 
 ## Variants
 
-Variants: wide table, narrow list rows. Nothing else exists. Use for fee schedules or host-computed statement summaries. Below 600 dp or at large text, rows become labeled lists. Wide tables pin the row-header column and scroll other columns with an edge fade. Numeric columns align to the end with tabular figures. No stripes. Spans, centered columns, and arbitrary cell widths are not supported.
+Variants: wide table, narrow labeled rows. Nothing else exists.
 
-## States
+Use for fee schedules or host-computed statement summaries. Below 600 dp or at large text, rows become labeled lists. Wide tables pin the row-header column and scroll other columns with an edge fade. Numeric columns align to the end with tabular figures. No stripes. Spans, centered columns, and arbitrary cell widths are not supported.
 
-The host supplies ready values. Use `LoadingSkeleton.table` for loading and `StateMessage` for an empty or failed load. Empty states should explain why and offer a next action.
-
-## Content and accessibility
+### Content and accessibility
 
 Use short, descriptive labels. Labels and narrow values wrap. Do show the currency beside an amount. Do not use color alone to communicate a result. Headings carry header semantics; facts merge their label and value. Wide table cells repeat their column label for assistive technology. Totals are computed by the host.
 
 A04 is a static fee schedule with tabular amounts, phone row collapse and contextual fee help.
 
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Fee comparison | wide table | Keep amounts numeric and method as the row header; phones collapse automatically. |
+
+Use Data table for settlement selection and paging.
+
+## States
+
+Static rows collapse into labeled list rows below 600 dp or at large text. Loading, empty and error presentation belongs to the surrounding host page.
+
+## Do and don't
+
+**Do**: Keep amounts numeric and method as the row header; phones collapse automatically.
+
+**Don't**: Add paging/selection controls around a static fee schedule.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Keep amounts numeric and method as the row header; phones collapse automatically.
+
+## Accessibility
+
+Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+
+## Used in
+
+Fees A04. Real composition: `example/lib/screens/steps/fees_step.dart`.
+
 ## API
 
-<Props names={['PaymentTable', 'PaymentTableRow', 'PaymentTableHeaderCell', 'PaymentTableCell']} />
+<Props names={["PaymentTable", "PaymentTableRow", "PaymentTableHeaderCell", "PaymentTableCell"]} />
 
 ## See also
 
 - [Info row](/components/info-row/)
 - [Loading skeleton](/components/loading-skeleton/)
 
-
 Use [Data table](/components/data-table/) for settlement selection, actions and paging. Empty tables accept a host explanation and next action.
-
 
 <Screen name="ios_catalog_table_variants" alt="table specimen" />
 <Screen name="ios_catalog_table_variants_dark" alt="table specimen_dark" />

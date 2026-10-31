@@ -21,28 +21,28 @@ class PaymentOnboardingView extends StatefulWidget {
     this.onCompleted,
   });
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String title;
 
-  /// Tasks supplied by the host.
+  /// Tasks and progress states decided by the host.
   final List<PaymentTaskListItem> tasks;
 
-  /// Child supplied by the host.
+  /// Content rendered inside this layout body.
   final Widget child;
 
-  /// Description supplied by the host.
+  /// Persistent explanation below the heading or label.
   final String? description;
 
-  /// Pending supplied by the host.
+  /// Shows placeholders while the host loads content.
   final bool pending;
 
-  /// Error supplied by the host.
+  /// Host error banner above the current task content.
   final PaymentBanner? error;
 
-  /// Completed supplied by the host.
+  /// Whether all host work is complete.
   final bool completed;
 
-  /// Oncompleted supplied by the host.
+  /// Host action for leaving the completed onboarding flow.
   final VoidCallback? onCompleted;
   @override
   State<PaymentOnboardingView> createState() => _PaymentOnboardingViewState();
@@ -71,15 +71,12 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
   Widget build(BuildContext context) {
     final w = widget;
 
-    /// L=paymentlocalizations.of(context) supplied by the host.
     final l = PaymentLocalizations.of(context);
 
-    /// Current=w.tasks.indexwhere((t)=>t.status!=paymenttaskstatus.complete) supplied by the host.
     final current = w.tasks.indexWhere(
       (t) => t.status != PaymentTaskStatus.complete,
     );
 
-    /// Paymentspinner(),flexible(child:text(l.loading))])):w.child supplied by the host.
     final content = w.completed
         ? StateMessage(
             icon: Icons.check_circle_outline,
@@ -100,7 +97,6 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
       builder: (context, k) {
         final wide = k.maxWidth >= 840;
 
-        /// Frame=viewframe(header:viewheader(title:w.title,description:w.description,below:wide||current<0?null:text(l.stepof(current+1,w.tasks.length,w.tasks[current].title))),body:column(crossaxisalignment:crossaxisalignment.stretch,children:[if(w.error!=null)w.error!,content,if(!wide)paymentaccordionitem(title:l.allsteps,child:paymenttasklist(items:w.tasks))])) supplied by the host.
         final frame = ViewFrame(
           header: ViewHeader(
             title: w.title,

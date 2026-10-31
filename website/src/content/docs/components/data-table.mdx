@@ -11,7 +11,13 @@ Settlement statements use host data. Variants: text, link, date, id, status, cur
 ## Usage
 
 ```dart
-PaymentDataTable<String>(columns: [PaymentDataColumn<String>(key: "reference", label: "Reference", value: (row) => row)], rows: const ["STL-DEMO-1"], rowKey: (row) => row);
+// example/lib/screens/gallery_content.dart
+PaymentDataTable<int>(
+          columns: columns,
+          rows: const [],
+          rowKey: (r) => '$r',
+          pending: true,
+        );
 ```
 
 ## Stripe → kit
@@ -28,9 +34,53 @@ PaymentDataTable<String>(columns: [PaymentDataColumn<String>(key: "reference", l
 | DataSort | `PaymentDataSort` |
 | EmptyMessage | `PaymentEmptyMessage` |
 
+## Variants
+
+Variants: text, link, date, id, status, currency cells; local, offset, cursor pages. Nothing else exists.
+
+#```text
+Who holds all rows?
+├─ Host supplied the complete list → local paging
+└─ Host fetches a page → numeric page position?
+   ├─ Yes → offset callbacks
+   └─ No → cursor callbacks
+```
+
 ## States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Settlement selection and sort | local pages | Use offset/cursor callbacks for host pages; never reorder those rows locally. |
+
+Use Table for static fees.
+
+```text
+Who holds all rows?
+├─ Host supplied the complete list → local paging
+└─ Host fetches a page → numeric page position?
+   ├─ Yes → offset callbacks
+   └─ No → cursor callbacks
+```
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use offset/cursor callbacks for host pages; never reorder those rows locally.
+
+**Don't**: Enable deprecated column reorder or resize flags.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Use offset/cursor callbacks for host pages; never reorder those rows locally.
 
 ## Accessibility
 
@@ -42,14 +92,17 @@ A03 is a searchable settlement statement: local pages select ten rows, sort summ
 
 Column reorder/resize are not mirrored (D28): phones show a list, and the host configures wide column order and width. The legacy flags and order callback are deprecated and removed in 0.2.0.
 
+## Used in
+
+Statement A03; PaymentDetailPageTable. Real composition: `example/lib/screens/gallery_content.dart`.
+
 ## API
 
-<Props names={['PaymentDataTable', 'PaymentDataColumn', 'PaymentCellType', 'PaymentRowActionEntry', 'PaymentRowAction', 'PaymentRowActionGroup', 'PaymentPagination', 'PaymentDataSort', 'PaymentEmptyMessage']} />
+<Props names={["PaymentDataTable", "PaymentDataColumn", "PaymentCellType", "PaymentRowActionEntry", "PaymentRowAction", "PaymentRowActionGroup", "PaymentPagination", "PaymentDataSort", "PaymentEmptyMessage"]} />
 
 ## See also
 
 - [Components](/components/)
-
 
 <Screen name="ios_catalog_data_table_variants" alt="data table specimen" />
 <Screen name="ios_catalog_data_table_variants_dark" alt="data table specimen_dark" />

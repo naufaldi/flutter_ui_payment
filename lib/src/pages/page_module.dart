@@ -12,16 +12,16 @@ class PaymentPageModule extends StatelessWidget {
     this.extraActions = const [],
   });
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String title;
 
-  /// Child supplied by the host.
+  /// Content rendered inside this layout body.
   final Widget child;
 
-  /// Subtitle supplied by the host.
+  /// Supporting text below the module title.
   final String? subtitle;
 
-  /// Extraactions supplied by the host.
+  /// Supporting actions in the module header.
   final List<PaymentButton> extraActions;
   @override
   Widget build(BuildContext context) => PageModuleFrame(
@@ -37,9 +37,9 @@ class PaymentPageModule extends StatelessWidget {
 class PaymentBreadcrumb {
   const PaymentBreadcrumb({required this.label, required this.onPressed});
 
-  /// Label supplied by the host.
+  /// Visible name identifying this value or control.
   final String label;
 
-  /// Onpressed supplied by the host.
+  /// Runs the host action for this destination.
   final VoidCallback onPressed;
 }

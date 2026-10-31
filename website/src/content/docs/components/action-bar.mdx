@@ -1,0 +1,75 @@
+---
+title: Action bar
+description: Keep the checkout total and its one primary payment action visible.
+---
+
+import Props from '../../../components/Props.astro';
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+
+Pin the payable total beside one primary Pay action. The host computes the amount and controls quote updates; the bar never decides eligibility.
+
+## Usage
+
+```dart
+// example/lib/screens/flow_screen.dart
+PaymentActionBar(
+      total: quote?.total,
+      updating: c.quoting,
+      action: PaymentButton(
+        label: s.reviewAndPay,
+        onPressed: quote != null && c.selectedMethod != null && !c.quoting
+            ? c.reviewOrder
+            : null,
+      ),
+    );
+```
+
+## Stripe → kit
+
+No Stripe equivalent. Admitted because: Checkout H04/H02; Gallery Kit; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: ready, updating, disabled action. Nothing else exists.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Pinned payable total | ready | Use one primary Pay action; updating means the host is recomputing the quote. |
+
+Use Button group for secondary page actions.
+
+## States
+
+Ready shows the host total and action. Updating keeps the total region stable while the quote changes. A disabled action needs a visible explanation in the checkout content.
+
+## Do and don't
+
+**Do**: Use one primary Pay action; updating means the host is recomputing the quote.
+
+**Don't**: Add another primary Pay in supporting order context.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Use one primary Pay action; updating means the host is recomputing the quote.
+
+## Accessibility
+
+Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+
+## Used in
+
+Checkout H04/H02; Gallery Kit. Real composition: `example/lib/screens/flow_screen.dart`.
+
+## API
+
+<Props names={["PaymentActionBar"]} />
+
+## See also
+
+- [Components](/components/)
+- [Host-owned decisions](/concepts/host-owned/)

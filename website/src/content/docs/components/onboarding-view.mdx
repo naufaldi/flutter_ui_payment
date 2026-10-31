@@ -11,7 +11,44 @@ KYC setup gets to current-step value first on phones, with all tasks in a collap
 ## Usage
 
 ```dart
-const PaymentOnboardingView(title: 'Verify your identity', tasks: [PaymentTaskListItem(title: 'Documents')], child: Text('Add identity documents to get started.'));
+// example/lib/screens/gallery_views.dart
+PaymentOnboardingView(
+        title: 'Verify your identity',
+        tasks: const [
+          PaymentTaskListItem(
+            title: 'Identity',
+            status: PaymentTaskStatus.complete,
+          ),
+          PaymentTaskListItem(
+            title: 'Documents',
+            status: PaymentTaskStatus.inProgress,
+            subTasks: [
+              PaymentTaskListItem(
+                title: 'KTP',
+                status: PaymentTaskStatus.complete,
+              ),
+              PaymentTaskListItem(title: 'Selfie'),
+            ],
+          ),
+          PaymentTaskListItem(title: 'Review'),
+        ],
+        pending: state == 1,
+        error: state == 2
+            ? const PaymentBanner(
+                tone: StatusTone.warning,
+                title: 'Documents need attention',
+              )
+            : null,
+        completed: state == 3,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: PaymentTheme.of(context).space(PaymentSpace.block),
+          children: [
+            const Text('Add your identity documents to get started.'),
+            button('Continue', variant: PaymentButtonVariant.primary),
+          ],
+        ),
+      );
 ```
 
 ## Stripe → kit
@@ -20,9 +57,37 @@ const PaymentOnboardingView(title: 'Verify your identity', tasks: [PaymentTaskLi
 | --- | --- |
 | OnboardingView | `PaymentOnboardingView` |
 
-## States and content
+## Variants
+
+Variants: ready, pending, error, completed. Nothing else exists.
+
+### States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| KYC details/documents/review | ready | The host supplies task status and decides completion; current content precedes tasks on phones. |
+
+Use Sign-in view for the external sign-in action.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: The host supplies task status and decides completion; current content precedes tasks on phones.
+
+**Don't**: Treat the status result as another data-entry task.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+The host supplies task status and decides completion; current content precedes tasks on phones.
 
 ## Accessibility
 
@@ -30,14 +95,17 @@ Labels wrap at large text. Controls retain their keyboard and screen-reader beha
 
 Used in H04 and K01 for identity details, document fixtures and review. The host decides task states; consent and verification results remain separate steps.
 
+## Used in
+
+H04/K01 KYC onboarding. Real composition: `example/lib/screens/gallery_views.dart`.
+
 ## API
 
-<Props names={['PaymentOnboardingView']} />
+<Props names={["PaymentOnboardingView"]} />
 
 ## See also
 
 - [Components](/components/)
-
 
 <Screen name="ios_catalog_onboarding_view_variants" alt="onboarding view specimen" />
 <Screen name="ios_catalog_onboarding_view_variants_dark" alt="onboarding view specimen_dark" />

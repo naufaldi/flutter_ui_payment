@@ -20,20 +20,23 @@ import Props from '../../../components/Props.astro';
 ## Usage
 
 ```dart
-Column(
-  children: [
-    receiptRows,
-    const PaymentDivider(height: 24),
-    totalRow,
-  ],
-);
+// example/lib/screens/gallery_layout.dart
+PaymentDivider(height: theme.space(PaymentSpace.section));
 ```
 
-## Between rows
+## Stripe → kit
+
+Divider has no props; `height` is the kit's spacing knob. Nothing else exists.
+
+## Variants
+
+Variants: horizontal, vertical. Nothing else exists.
+
+### Between rows
 
 The default `height` of 1 puts the rule directly between two rows, with no extra space. It is the same rule `PaymentList` draws between action rows.
 
-## Between groups
+### Between groups
 
 Set `height` to `spacing * 3` (24 with the default theme). The rule then sits in the middle of a section gap.
 
@@ -41,24 +44,48 @@ Set `height` to `spacing * 3` (24 with the default theme). The rule then sits in
 PaymentDivider(height: PaymentTheme.of(context).spacing * 3);
 ```
 
+### Pattern adoption
+
+Every horizontal rule in kit patterns uses `PaymentDivider`, including action groups, checkout, receipts, history and video controls. Side-by-side navigation keeps its vertical rule. Thickness is always 1 dp, including Material 2 hosts and hosts with a custom divider thickness.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Separate receipt sections | horizontal | Use the theme outline and spacing from the surrounding composition. |
+
+Use Section for a titled content group.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use the theme outline and spacing from the surrounding composition.
+
+**Don't**: Draw custom raw-color lines beside kit rules.
+
 ## Content guidelines
 
 - Prefer space to separate sections. Add a rule only where space alone does not read as a break, such as before a total.
 - Do not use a divider as a border around content. Sections are flat by design.
 
+Use the theme outline and spacing from the surrounding composition.
+
+## Accessibility
+
+Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+
+## Used in
+
+PaymentReceipt; RefundSection. Real composition: `example/lib/screens/gallery_layout.dart`.
+
 ## API
 
-<Props names={['PaymentDivider']} />
+<Props names={["PaymentDivider"]} />
 
 ## See also
 
 - [Section](/components/section/)
 - [Spacing and radius](/foundations/spacing/)
-
-## Pattern adoption
-
-Every horizontal rule in kit patterns uses `PaymentDivider`, including action groups, checkout, receipts, history and video controls. Side-by-side navigation keeps its vertical rule. Thickness is always 1 dp, including Material 2 hosts and hosts with a custom divider thickness.
-
-## Stripe → kit
-
-Divider has no props; `height` is the kit's spacing knob. Nothing else exists.

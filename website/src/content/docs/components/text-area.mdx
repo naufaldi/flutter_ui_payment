@@ -14,11 +14,14 @@ Several lines of payment support context.
   <Screen name="ios_catalog_text_area_variants_200" alt="text area at 200 percent text" caption="200% text" />
 </Screens>
 
-## Usage and Stripe → kit
+## Usage
 
 ```dart
-const PaymentTextArea(label: 'Describe the problem', maxLength: 300);
+// example/lib/screens/gallery_forms.dart
+PaymentTextArea(label: 'Notes');
 ```
+
+## Stripe → kit
 
 | Stripe | Kit |
 | --- | --- |
@@ -26,12 +29,19 @@ const PaymentTextArea(label: 'Describe the problem', maxLength: 300);
 | resizeable | maxLines: null |
 | onChange | onChanged |
 
-
 minLines and maxLines replace rows. maxLines null allows growth. Enter inserts a newline; Command or Control plus Enter submits. A character counter announces remaining space near the limit. cols, wrap, spellCheck, autoComplete and css width are not mirrored.
+
+## Variants
+
+Variants: small, medium, large; multiline. Nothing else exists.
 
 ## Which variant when
 
-Use these fields for a bounded task. Use the host validator for business rules and persistent descriptions for instructions.
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Problem description | medium | Keep the privacy instruction visible and cap reports at 500 characters. |
+
+Use Text field for a short single-line value.
 
 ## States
 
@@ -39,11 +49,15 @@ Default, focused, disabled and error. Errors include an icon, text and an edge. 
 
 ## Do and don't
 
-Keep labels visible. Avoid placing the only instruction in a hint.
+**Do**: Keep the privacy instruction visible and cap reports at 500 characters.
+
+**Don't**: Log free text or send the report draft to analytics.
 
 ## Content guidelines
 
 Use short, specific labels and explain how to correct an error.
+
+Keep the privacy instruction visible and cap reports at 500 characters.
 
 ## Accessibility
 
@@ -51,9 +65,13 @@ Input text is 16 dp. Legends precede fields in reading order. Labels and errors 
 
 The report example never logs free text. Only category and character count cross the host boundary; the controller is disposed on close.
 
+## Used in
+
+Report A02/H04. Real composition: `example/lib/screens/gallery_forms.dart`.
+
 ## API
 
-<Props names={ ['PaymentTextArea'] } />
+<Props names={["PaymentTextArea"]} />
 
 ## See also
 

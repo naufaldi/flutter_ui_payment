@@ -25,36 +25,27 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-const PaymentSparkline(points: [
-  ChartPoint(label: 'Week 1', value: Money.idr(350000)),
-  ChartPoint(label: 'Week 2', value: Money.idr(450000)),
-]);
+// example/lib/screens/gallery_charts.dart
+PaymentSparkline(points: points);
 ```
 
-The default size is 80 × 24. There are no axes, labels, or pointer inspection. Keep the precise amount next to it.
+## Stripe → kit
 
-## States and variants
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| children | child | Flutter body composition. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: money, percentage, number; optional inspection. Nothing else exists.
+
+### States and variants
 
 Settled marks are solid, pending marks are outlined or dashed, and unknown marks are hatched or dotted. A null point is a gap, never zero. Use one currency per chart. Bar and meter amounts must be non-negative; line charts accept negative amounts.
 
-## Content guidelines
-
-Use short period labels and a clear title. Explain what is settled in the headline caption. The host supplies the headline; the kit never adds plotted values to produce a customer total.
-
-## Accessibility
-
-A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. Pointer inspection on line/bar charts is supplemental; it has no keyboard focus target. Status is conveyed by shape and words as well as color.
-
-## API
-
-<Props names={['PaymentSparkline']} />
-
-## See also
-
-- [Chart layout](/patterns/chart-layout/) for height, state and headline composition.
-- [Money](/foundations/money/) for precise and compact amounts.
-
-## Series, axes and units
+### Series, axes and units
 
 Use named series with identical period labels and ordering. Line and bar charts accept up to three series; sparklines accept two. Series use an accent ramp and distinct dash patterns, never status tones. All series share a scale. `showLegend` controls the legend for multiple series.
 
@@ -74,3 +65,44 @@ Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to 
 <Props names={['PaymentChartSeries', 'PaymentChartAxis', 'PaymentChartUnit', 'ChartPoint', 'MeterSegment']} />
 
 Parameters: `points`, `series`, `width`, `height`, `inspectable`, `unit`, `semanticLabel`. Nothing else exists.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Compact spending trend | money | Use as a supporting trend; put exact values elsewhere when they matter. |
+
+Use Line chart for axes and detailed reading.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use as a supporting trend; put exact values elsewhere when they matter.
+
+**Don't**: Use a sparkline alone to explain an exact payable amount.
+
+## Content guidelines
+
+Use short period labels and a clear title. Explain what is settled in the headline caption. The host supplies the headline; the kit never adds plotted values to produce a customer total.
+
+Use as a supporting trend; put exact values elsewhere when they matter.
+
+## Accessibility
+
+A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. Pointer inspection on line/bar charts is supplemental; it has no keyboard focus target. Status is conveyed by shape and words as well as color.
+
+## Used in
+
+Gallery Charts; compact spending summaries. Real composition: `example/lib/screens/gallery_charts.dart`.
+
+## API
+
+<Props names={["PaymentSparkline"]} />
+
+## See also
+
+- [Chart layout](/patterns/chart-layout/) for height, state and headline composition.
+- [Money](/foundations/money/) for precise and compact amounts.

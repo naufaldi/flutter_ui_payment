@@ -9803,7 +9803,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "message",
@@ -9814,7 +9814,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "message",
-            "doc": "Message supplied by the host."
+            "doc": "Explanation of the consequence before confirmation."
           },
           {
             "name": "exitLabel",
@@ -9825,7 +9825,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "exitLabel",
-            "doc": "Exitlabel supplied by the host."
+            "doc": "Action label naming the consequence of leaving."
           },
           {
             "name": "cancelLabel",
@@ -9836,7 +9836,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "cancelLabel",
-            "doc": "Cancellabel supplied by the host."
+            "doc": "Label for keeping the current task open."
           }
         ],
         "doc": ""
@@ -9850,28 +9850,28 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "message",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Message supplied by the host."
+        "doc": "Explanation of the consequence before confirmation."
       },
       {
         "name": "exitLabel",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Exitlabel supplied by the host."
+        "doc": "Action label naming the consequence of leaving."
       },
       {
         "name": "cancelLabel",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Cancellabel supplied by the host."
+        "doc": "Label for keeping the current task open."
       }
     ],
     "copyWith": null
@@ -9937,7 +9937,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "child",
@@ -9948,7 +9948,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "child",
-            "doc": "Child supplied by the host."
+            "doc": "Content rendered inside this layout body."
           },
           {
             "name": "primaryAction",
@@ -9959,7 +9959,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "primaryAction",
-            "doc": "Primaryaction supplied by the host."
+            "doc": "The single main action in the task footer."
           },
           {
             "name": "secondaryAction",
@@ -9970,7 +9970,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "secondaryAction",
-            "doc": "Secondaryaction supplied by the host."
+            "doc": "Supporting or dismiss action in the task footer."
           },
           {
             "name": "footer",
@@ -9981,7 +9981,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "footer",
-            "doc": "Footer supplied by the host."
+            "doc": "Supporting footer content alongside task actions."
           },
           {
             "name": "confirmClose",
@@ -9992,7 +9992,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "confirmClose",
-            "doc": "Confirmclose supplied by the host."
+            "doc": "Dirty-draft confirmation; null allows immediate close."
           }
         ],
         "doc": ""
@@ -10006,42 +10006,42 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "child",
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": "Child supplied by the host."
+        "doc": "Content rendered inside this layout body."
       },
       {
         "name": "primaryAction",
         "kind": "field",
         "static": false,
         "type": "PaymentButton?",
-        "doc": "Primaryaction supplied by the host."
+        "doc": "The single main action in the task footer."
       },
       {
         "name": "secondaryAction",
         "kind": "field",
         "static": false,
         "type": "PaymentButton?",
-        "doc": "Secondaryaction supplied by the host."
+        "doc": "Supporting or dismiss action in the task footer."
       },
       {
         "name": "footer",
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": "Footer supplied by the host."
+        "doc": "Supporting footer content alongside task actions."
       },
       {
         "name": "confirmClose",
         "kind": "field",
         "static": false,
         "type": "PaymentConfirmClose?",
-        "doc": "Confirmclose supplied by the host."
+        "doc": "Dirty-draft confirmation; null allows immediate close."
       }
     ],
     "copyWith": null
@@ -19347,7 +19347,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": "label for this component."
+            "doc": "Visible name identifying this value or control."
           },
           {
             "name": "value",
@@ -19358,7 +19358,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "value",
-            "doc": "value for this component."
+            "doc": "Current value of this applied filter."
           },
           {
             "name": "values",
@@ -19369,7 +19369,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "values",
-            "doc": "values for this component."
+            "doc": "Multiple values summarized by this applied filter."
           },
           {
             "name": "onClose",
@@ -19380,7 +19380,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onClose",
-            "doc": "onClose for this component."
+            "doc": "Removes this applied value through the host."
           },
           {
             "name": "onDropdown",
@@ -19391,7 +19391,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onDropdown",
-            "doc": "onDropdown for this component."
+            "doc": "Opens host choices for this filter."
           },
           {
             "name": "onAddSuggestion",
@@ -19402,7 +19402,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onAddSuggestion",
-            "doc": "onAddSuggestion for this component."
+            "doc": "Accepts this suggested filter through the host."
           }
         ],
         "doc": ""
@@ -19416,42 +19416,42 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "label for this component."
+        "doc": "Visible name identifying this value or control."
       },
       {
         "name": "value",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "value for this component."
+        "doc": "Current value of this applied filter."
       },
       {
         "name": "values",
         "kind": "field",
         "static": false,
         "type": "List<String>?",
-        "doc": "values for this component."
+        "doc": "Multiple values summarized by this applied filter."
       },
       {
         "name": "onClose",
         "kind": "field",
         "static": false,
         "type": "VoidCallback?",
-        "doc": "onClose for this component."
+        "doc": "Removes this applied value through the host."
       },
       {
         "name": "onDropdown",
         "kind": "field",
         "static": false,
         "type": "VoidCallback?",
-        "doc": "onDropdown for this component."
+        "doc": "Opens host choices for this filter."
       },
       {
         "name": "onAddSuggestion",
         "kind": "field",
         "static": false,
         "type": "VoidCallback?",
-        "doc": "onAddSuggestion for this component."
+        "doc": "Accepts this suggested filter through the host."
       }
     ],
     "copyWith": null
@@ -19475,7 +19475,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "children",
-            "doc": "children for this component."
+            "doc": "Chips in host reading order."
           },
           {
             "name": "reverse",
@@ -19486,7 +19486,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "reverse",
-            "doc": "reverse for this component."
+            "doc": "Places the chip row in reverse reading order."
           }
         ],
         "doc": ""
@@ -19500,14 +19500,14 @@
         "kind": "field",
         "static": false,
         "type": "List<PaymentChip>",
-        "doc": "children for this component."
+        "doc": "Chips in host reading order."
       },
       {
         "name": "reverse",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "reverse for this component."
+        "doc": "Places the chip row in reverse reading order."
       }
     ],
     "copyWith": null
@@ -20032,7 +20032,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": "label for this component."
+            "doc": "Visible name identifying this value or control."
           },
           {
             "name": "start",
@@ -20043,7 +20043,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "start",
-            "doc": "start for this component."
+            "doc": "First included calendar day in the host zone."
           },
           {
             "name": "end",
@@ -20054,7 +20054,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "end",
-            "doc": "end for this component."
+            "doc": "Last included calendar day in the host zone."
           }
         ],
         "doc": ""
@@ -20074,21 +20074,21 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "label for this component."
+        "doc": "Visible name identifying this value or control."
       },
       {
         "name": "start",
         "kind": "field",
         "static": false,
         "type": "DateTime",
-        "doc": "start for this component."
+        "doc": "First included calendar day in the host zone."
       },
       {
         "name": "end",
         "kind": "field",
         "static": false,
         "type": "DateTime",
-        "doc": "end for this component."
+        "doc": "Last included calendar day in the host zone."
       }
     ],
     "copyWith": null
@@ -20112,7 +20112,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "start",
-            "doc": "start for this component."
+            "doc": "First included calendar day in the host zone."
           },
           {
             "name": "end",
@@ -20123,7 +20123,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "end",
-            "doc": "end for this component."
+            "doc": "Last included calendar day in the host zone."
           }
         ],
         "doc": ""
@@ -20141,7 +20141,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "preset",
-            "doc": "preset for this component."
+            "doc": "Named host range used for this selection, if any."
           }
         ],
         "doc": ""
@@ -20161,21 +20161,21 @@
         "kind": "field",
         "static": false,
         "type": "DateTime",
-        "doc": "start for this component."
+        "doc": "First included calendar day in the host zone."
       },
       {
         "name": "end",
         "kind": "field",
         "static": false,
         "type": "DateTime",
-        "doc": "end for this component."
+        "doc": "Last included calendar day in the host zone."
       },
       {
         "name": "preset",
         "kind": "field",
         "static": false,
         "type": "PaymentDatePreset?",
-        "doc": "preset for this component."
+        "doc": "Named host range used for this selection, if any."
       }
     ],
     "copyWith": null
@@ -20199,7 +20199,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": "label for this component."
+            "doc": "Visible name identifying this value or control."
           },
           {
             "name": "value",
@@ -20210,7 +20210,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "value",
-            "doc": "value for this component."
+            "doc": "Current host-selected range."
           },
           {
             "name": "onChanged",
@@ -20221,7 +20221,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onChanged",
-            "doc": "onChanged for this component."
+            "doc": "Reports the selected range to the host."
           },
           {
             "name": "firstDate",
@@ -20232,7 +20232,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "firstDate",
-            "doc": "firstDate for this component."
+            "doc": "Earliest selectable day in the host zone."
           },
           {
             "name": "lastDate",
@@ -20243,7 +20243,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "lastDate",
-            "doc": "lastDate for this component."
+            "doc": "Last selectable day in the host zone."
           },
           {
             "name": "presets",
@@ -20254,7 +20254,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "presets",
-            "doc": "presets for this component."
+            "doc": "Named ranges offered before the custom calendar."
           },
           {
             "name": "granularity",
@@ -20265,7 +20265,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "granularity",
-            "doc": "granularity for this component."
+            "doc": "Current host-selected grouping of calendar periods."
           },
           {
             "name": "onGranularityChanged",
@@ -20276,7 +20276,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onGranularityChanged",
-            "doc": "onGranularityChanged for this component."
+            "doc": "Reports a grouping choice to the host."
           },
           {
             "name": "description",
@@ -20287,7 +20287,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "description",
-            "doc": "description for this component."
+            "doc": "Persistent explanation below the heading or label."
           },
           {
             "name": "errorText",
@@ -20298,7 +20298,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "errorText",
-            "doc": "errorText for this component."
+            "doc": "Safe error copy displayed with the affected content."
           },
           {
             "name": "size",
@@ -20309,7 +20309,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "size",
-            "doc": "size for this component."
+            "doc": "Semantic control size; hit targets remain at least 48 dp."
           },
           {
             "name": "enabled",
@@ -20320,7 +20320,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "enabled",
-            "doc": "enabled for this component."
+            "doc": "Whether the customer can change this control."
           }
         ],
         "doc": ""
@@ -20334,84 +20334,84 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "label for this component."
+        "doc": "Visible name identifying this value or control."
       },
       {
         "name": "value",
         "kind": "field",
         "static": false,
         "type": "PaymentDateRange?",
-        "doc": "value for this component."
+        "doc": "Current host-selected range."
       },
       {
         "name": "onChanged",
         "kind": "field",
         "static": false,
         "type": "ValueChanged<PaymentDateRange?>",
-        "doc": "onChanged for this component."
+        "doc": "Reports the selected range to the host."
       },
       {
         "name": "firstDate",
         "kind": "field",
         "static": false,
         "type": "DateTime",
-        "doc": "firstDate for this component."
+        "doc": "Earliest selectable day in the host zone."
       },
       {
         "name": "lastDate",
         "kind": "field",
         "static": false,
         "type": "DateTime",
-        "doc": "lastDate for this component."
+        "doc": "Last selectable day in the host zone."
       },
       {
         "name": "presets",
         "kind": "field",
         "static": false,
         "type": "List<PaymentDatePreset>",
-        "doc": "presets for this component."
+        "doc": "Named ranges offered before the custom calendar."
       },
       {
         "name": "granularity",
         "kind": "field",
         "static": false,
         "type": "PaymentDateGranularity?",
-        "doc": "granularity for this component."
+        "doc": "Current host-selected grouping of calendar periods."
       },
       {
         "name": "onGranularityChanged",
         "kind": "field",
         "static": false,
         "type": "ValueChanged<PaymentDateGranularity>?",
-        "doc": "onGranularityChanged for this component."
+        "doc": "Reports a grouping choice to the host."
       },
       {
         "name": "description",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "description for this component."
+        "doc": "Persistent explanation below the heading or label."
       },
       {
         "name": "errorText",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "errorText for this component."
+        "doc": "Safe error copy displayed with the affected content."
       },
       {
         "name": "size",
         "kind": "field",
         "static": false,
         "type": "PaymentSize",
-        "doc": "size for this component."
+        "doc": "Semantic control size; hit targets remain at least 48 dp."
       },
       {
         "name": "enabled",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "enabled for this component."
+        "doc": "Whether the customer can change this control."
       }
     ],
     "copyWith": null
@@ -20841,7 +20841,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "child",
-            "doc": "Display value supplied by the host."
+            "doc": "Content rendered inside this layout body."
           },
           {
             "name": "numeric",
@@ -20866,7 +20866,7 @@
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": "Display value supplied by the host."
+        "doc": "Content rendered inside this layout body."
       },
       {
         "name": "numeric",
@@ -22445,7 +22445,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "child",
@@ -22456,7 +22456,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "child",
-            "doc": "Child supplied by the host."
+            "doc": "Content rendered inside this layout body."
           },
           {
             "name": "pageAction",
@@ -22467,7 +22467,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "pageAction",
-            "doc": "Pageaction supplied by the host."
+            "doc": "Supporting action alongside the page heading."
           }
         ],
         "doc": ""
@@ -22481,21 +22481,21 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "child",
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": "Child supplied by the host."
+        "doc": "Content rendered inside this layout body."
       },
       {
         "name": "pageAction",
         "kind": "field",
         "static": false,
         "type": "PaymentButton?",
-        "doc": "Pageaction supplied by the host."
+        "doc": "Supporting action alongside the page heading."
       }
     ],
     "copyWith": null
@@ -22896,7 +22896,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "tasks",
@@ -22907,7 +22907,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "tasks",
-            "doc": "Tasks supplied by the host."
+            "doc": "Tasks and progress states decided by the host."
           },
           {
             "name": "child",
@@ -22918,7 +22918,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "child",
-            "doc": "Child supplied by the host."
+            "doc": "Content rendered inside this layout body."
           },
           {
             "name": "description",
@@ -22929,7 +22929,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "description",
-            "doc": "Description supplied by the host."
+            "doc": "Persistent explanation below the heading or label."
           },
           {
             "name": "pending",
@@ -22940,7 +22940,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "pending",
-            "doc": "Pending supplied by the host."
+            "doc": "Shows placeholders while the host loads content."
           },
           {
             "name": "error",
@@ -22951,7 +22951,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "error",
-            "doc": "Error supplied by the host."
+            "doc": "Host error banner above the current task content."
           },
           {
             "name": "completed",
@@ -22962,7 +22962,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "completed",
-            "doc": "Completed supplied by the host."
+            "doc": "Whether all host work is complete."
           },
           {
             "name": "onCompleted",
@@ -22973,7 +22973,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onCompleted",
-            "doc": "Oncompleted supplied by the host."
+            "doc": "Host action for leaving the completed onboarding flow."
           }
         ],
         "doc": ""
@@ -22987,56 +22987,56 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "tasks",
         "kind": "field",
         "static": false,
         "type": "List<PaymentTaskListItem>",
-        "doc": "Tasks supplied by the host."
+        "doc": "Tasks and progress states decided by the host."
       },
       {
         "name": "child",
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": "Child supplied by the host."
+        "doc": "Content rendered inside this layout body."
       },
       {
         "name": "description",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Description supplied by the host."
+        "doc": "Persistent explanation below the heading or label."
       },
       {
         "name": "pending",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "Pending supplied by the host."
+        "doc": "Shows placeholders while the host loads content."
       },
       {
         "name": "error",
         "kind": "field",
         "static": false,
         "type": "PaymentBanner?",
-        "doc": "Error supplied by the host."
+        "doc": "Host error banner above the current task content."
       },
       {
         "name": "completed",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "Completed supplied by the host."
+        "doc": "Whether all host work is complete."
       },
       {
         "name": "onCompleted",
         "kind": "field",
         "static": false,
         "type": "VoidCallback?",
-        "doc": "Oncompleted supplied by the host."
+        "doc": "Host action for leaving the completed onboarding flow."
       }
     ],
     "copyWith": null
@@ -23060,7 +23060,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "child",
@@ -23071,7 +23071,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "child",
-            "doc": "Child supplied by the host."
+            "doc": "Content rendered inside this layout body."
           },
           {
             "name": "subtitle",
@@ -23082,7 +23082,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "subtitle",
-            "doc": "Subtitle supplied by the host."
+            "doc": "Supporting text below the module title."
           },
           {
             "name": "extraActions",
@@ -23093,7 +23093,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "extraActions",
-            "doc": "Extraactions supplied by the host."
+            "doc": "Supporting actions in the module header."
           }
         ],
         "doc": ""
@@ -23107,28 +23107,28 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "child",
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": "Child supplied by the host."
+        "doc": "Content rendered inside this layout body."
       },
       {
         "name": "subtitle",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Subtitle supplied by the host."
+        "doc": "Supporting text below the module title."
       },
       {
         "name": "extraActions",
         "kind": "field",
         "static": false,
         "type": "List<PaymentButton>",
-        "doc": "Extraactions supplied by the host."
+        "doc": "Supporting actions in the module header."
       }
     ],
     "copyWith": null
@@ -23152,7 +23152,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": "Label supplied by the host."
+            "doc": "Visible name identifying this value or control."
           },
           {
             "name": "onPressed",
@@ -23163,7 +23163,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onPressed",
-            "doc": "Onpressed supplied by the host."
+            "doc": "Runs the host action for this destination."
           }
         ],
         "doc": ""
@@ -23177,14 +23177,14 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Label supplied by the host."
+        "doc": "Visible name identifying this value or control."
       },
       {
         "name": "onPressed",
         "kind": "field",
         "static": false,
         "type": "VoidCallback",
-        "doc": "Onpressed supplied by the host."
+        "doc": "Runs the host action for this destination."
       }
     ],
     "copyWith": null
@@ -23428,7 +23428,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "text",
-            "doc": "Text supplied by the host."
+            "doc": "Plain detail value; absent when a link is used."
           },
           {
             "name": "subText",
@@ -23439,7 +23439,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "subText",
-            "doc": "Subtext supplied by the host."
+            "doc": "Supporting copy below a detail value."
           }
         ],
         "doc": ""
@@ -23457,7 +23457,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "link",
-            "doc": "Link supplied by the host."
+            "doc": "Interactive detail value; absent for plain text."
           },
           {
             "name": "subText",
@@ -23468,7 +23468,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "subText",
-            "doc": "Subtext supplied by the host."
+            "doc": "Supporting copy below a detail value."
           }
         ],
         "doc": ""
@@ -23482,21 +23482,21 @@
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Text supplied by the host."
+        "doc": "Plain detail value; absent when a link is used."
       },
       {
         "name": "link",
         "kind": "field",
         "static": false,
         "type": "PaymentLink?",
-        "doc": "Link supplied by the host."
+        "doc": "Interactive detail value; absent for plain text."
       },
       {
         "name": "subText",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Subtext supplied by the host."
+        "doc": "Supporting copy below a detail value."
       }
     ],
     "copyWith": null
@@ -23520,7 +23520,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": "Label supplied by the host."
+            "doc": "Visible name identifying this value or control."
           },
           {
             "name": "values",
@@ -23531,7 +23531,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "values",
-            "doc": "Values supplied by the host."
+            "doc": "Related values displayed together."
           },
           {
             "name": "description",
@@ -23542,7 +23542,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "description",
-            "doc": "Description supplied by the host."
+            "doc": "Persistent explanation below the heading or label."
           }
         ],
         "doc": ""
@@ -23556,21 +23556,21 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Label supplied by the host."
+        "doc": "Visible name identifying this value or control."
       },
       {
         "name": "values",
         "kind": "field",
         "static": false,
         "type": "List<PaymentDetailValue>",
-        "doc": "Values supplied by the host."
+        "doc": "Related values displayed together."
       },
       {
         "name": "description",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Description supplied by the host."
+        "doc": "Persistent explanation below the heading or label."
       }
     ],
     "copyWith": null
@@ -23594,7 +23594,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "pending",
@@ -23605,7 +23605,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "pending",
-            "doc": "Pending supplied by the host."
+            "doc": "Shows placeholders while the host loads content."
           },
           {
             "name": "items",
@@ -23616,7 +23616,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "items",
-            "doc": "Items supplied by the host."
+            "doc": "Host facts rendered in order."
           },
           {
             "name": "orientation",
@@ -23627,7 +23627,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "orientation",
-            "doc": "Orientation supplied by the host."
+            "doc": "Preferred arrangement of labels and values."
           },
           {
             "name": "onCreate",
@@ -23638,7 +23638,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onCreate",
-            "doc": "Oncreate supplied by the host."
+            "doc": "Host action for adding a detail record."
           },
           {
             "name": "emptyMessage",
@@ -23649,7 +23649,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "emptyMessage",
-            "doc": "Emptymessage supplied by the host."
+            "doc": "Explanation and optional recovery action for missing content."
           },
           {
             "name": "errorText",
@@ -23660,7 +23660,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "errorText",
-            "doc": "Errortext supplied by the host."
+            "doc": "Safe error copy displayed with the affected content."
           },
           {
             "name": "onRetry",
@@ -23671,7 +23671,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onRetry",
-            "doc": "Onretry supplied by the host."
+            "doc": "Retries the failed host request."
           },
           {
             "name": "extraActions",
@@ -23682,7 +23682,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "extraActions",
-            "doc": "Extraactions supplied by the host."
+            "doc": "Supporting actions in the module header."
           }
         ],
         "doc": ""
@@ -23696,63 +23696,63 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "pending",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "Pending supplied by the host."
+        "doc": "Shows placeholders while the host loads content."
       },
       {
         "name": "items",
         "kind": "field",
         "static": false,
         "type": "List<PaymentDetailProperty>",
-        "doc": "Items supplied by the host."
+        "doc": "Host facts rendered in order."
       },
       {
         "name": "orientation",
         "kind": "field",
         "static": false,
         "type": "Axis",
-        "doc": "Orientation supplied by the host."
+        "doc": "Preferred arrangement of labels and values."
       },
       {
         "name": "onCreate",
         "kind": "field",
         "static": false,
         "type": "VoidCallback?",
-        "doc": "Oncreate supplied by the host."
+        "doc": "Host action for adding a detail record."
       },
       {
         "name": "emptyMessage",
         "kind": "field",
         "static": false,
         "type": "PaymentEmptyMessage?",
-        "doc": "Emptymessage supplied by the host."
+        "doc": "Explanation and optional recovery action for missing content."
       },
       {
         "name": "errorText",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Errortext supplied by the host."
+        "doc": "Safe error copy displayed with the affected content."
       },
       {
         "name": "onRetry",
         "kind": "field",
         "static": false,
         "type": "VoidCallback?",
-        "doc": "Onretry supplied by the host."
+        "doc": "Retries the failed host request."
       },
       {
         "name": "extraActions",
         "kind": "field",
         "static": false,
         "type": "List<PaymentLink>",
-        "doc": "Extraactions supplied by the host."
+        "doc": "Supporting actions in the module header."
       }
     ],
     "copyWith": null
@@ -23776,7 +23776,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Title supplied by the host."
+            "doc": "Heading displayed above the content."
           },
           {
             "name": "pending",
@@ -23787,7 +23787,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "pending",
-            "doc": "Pending supplied by the host."
+            "doc": "Shows placeholders while the host loads content."
           },
           {
             "name": "columns",
@@ -23798,7 +23798,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "columns",
-            "doc": "Columns supplied by the host."
+            "doc": "Columns defining how host row values are rendered."
           },
           {
             "name": "rows",
@@ -23809,7 +23809,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "rows",
-            "doc": "Rows supplied by the host."
+            "doc": "Host records displayed by the table module."
           },
           {
             "name": "rowKey",
@@ -23820,7 +23820,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "rowKey",
-            "doc": "Rowkey supplied by the host."
+            "doc": "Stable host identifier for each row."
           },
           {
             "name": "onRowPressed",
@@ -23831,7 +23831,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onRowPressed",
-            "doc": "Onrowpressed supplied by the host."
+            "doc": "Opens a host destination for the chosen row."
           },
           {
             "name": "rowActions",
@@ -23842,7 +23842,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "rowActions",
-            "doc": "Rowactions supplied by the host."
+            "doc": "Host actions offered for each record."
           },
           {
             "name": "onCreate",
@@ -23853,7 +23853,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onCreate",
-            "doc": "Oncreate supplied by the host."
+            "doc": "Host action for adding a detail record."
           },
           {
             "name": "emptyMessage",
@@ -23864,7 +23864,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "emptyMessage",
-            "doc": "Emptymessage supplied by the host."
+            "doc": "Explanation and optional recovery action for missing content."
           },
           {
             "name": "errorText",
@@ -23875,7 +23875,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "errorText",
-            "doc": "Errortext supplied by the host."
+            "doc": "Safe error copy displayed with the affected content."
           },
           {
             "name": "onRetry",
@@ -23886,7 +23886,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onRetry",
-            "doc": "Onretry supplied by the host."
+            "doc": "Retries the failed host request."
           },
           {
             "name": "extraActions",
@@ -23897,7 +23897,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "extraActions",
-            "doc": "Extraactions supplied by the host."
+            "doc": "Supporting actions in the module header."
           }
         ],
         "doc": ""
@@ -23911,70 +23911,70 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Title supplied by the host."
+        "doc": "Heading displayed above the content."
       },
       {
         "name": "pending",
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "Pending supplied by the host."
+        "doc": "Shows placeholders while the host loads content."
       },
       {
         "name": "columns",
         "kind": "field",
         "static": false,
         "type": "List<PaymentDataColumn<T>>",
-        "doc": "Columns supplied by the host."
+        "doc": "Columns defining how host row values are rendered."
       },
       {
         "name": "rows",
         "kind": "field",
         "static": false,
         "type": "List<T>",
-        "doc": "Rows supplied by the host."
+        "doc": "Host records displayed by the table module."
       },
       {
         "name": "rowActions",
         "kind": "field",
         "static": false,
         "type": "List<PaymentRowActionEntry<T>>",
-        "doc": "Rowactions supplied by the host."
+        "doc": "Host actions offered for each record."
       },
       {
         "name": "onCreate",
         "kind": "field",
         "static": false,
         "type": "VoidCallback?",
-        "doc": "Oncreate supplied by the host."
+        "doc": "Host action for adding a detail record."
       },
       {
         "name": "emptyMessage",
         "kind": "field",
         "static": false,
         "type": "PaymentEmptyMessage?",
-        "doc": "Emptymessage supplied by the host."
+        "doc": "Explanation and optional recovery action for missing content."
       },
       {
         "name": "errorText",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Errortext supplied by the host."
+        "doc": "Safe error copy displayed with the affected content."
       },
       {
         "name": "onRetry",
         "kind": "field",
         "static": false,
         "type": "VoidCallback?",
-        "doc": "Onretry supplied by the host."
+        "doc": "Retries the failed host request."
       },
       {
         "name": "extraActions",
         "kind": "field",
         "static": false,
         "type": "List<PaymentLink>",
-        "doc": "Extraactions supplied by the host."
+        "doc": "Supporting actions in the module header."
       }
     ],
     "copyWith": null

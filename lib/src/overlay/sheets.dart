@@ -157,10 +157,8 @@ Future<T?> _showSheet<T>({
   required bool enableDrag,
   required bool showDragHandle,
 }) {
-  /// Paymentmotion.of(context) supplied by the host.
   final motion = PaymentMotion.of(context);
 
-  /// Paymenttheme.of(context) supplied by the host.
   final theme = PaymentTheme.of(context);
   return showModalBottomSheet<T>(
     context: context,
@@ -196,10 +194,8 @@ Future<T?> showPaymentSideSheet<T>({
   bool barrierDismissible = true,
   double maxWidth = 420,
 }) {
-  /// Paymentmotion.of(context) supplied by the host.
   final motion = PaymentMotion.of(context);
 
-  /// Paymentlocalizations.of(context) supplied by the host.
   final l10n = PaymentLocalizations.of(context);
   return showGeneralDialog<T>(
     context: context,
@@ -276,16 +272,16 @@ class PaymentConfirmClose {
     this.cancelLabel,
   });
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String title;
 
-  /// Message supplied by the host.
+  /// Explanation of the consequence before confirmation.
   final String message;
 
-  /// Exitlabel supplied by the host.
+  /// Action label naming the consequence of leaving.
   final String exitLabel;
 
-  /// Cancellabel supplied by the host.
+  /// Label for keeping the current task open.
   final String? cancelLabel;
 }
 
@@ -318,7 +314,7 @@ Future<T?> showPaymentFocusView<T>(
 class _FocusScope extends InheritedWidget {
   const _FocusScope({required this.size, required super.child});
 
-  /// Size supplied by the host.
+  /// Width of the focused task presentation.
   final PaymentFocusViewSize size;
   @override
   bool updateShouldNotify(_FocusScope oldWidget) => size != oldWidget.size;
@@ -336,22 +332,22 @@ class PaymentFocusView extends StatefulWidget {
     this.confirmClose,
   });
 
-  /// Title supplied by the host.
+  /// Heading displayed above the content.
   final String title;
 
-  /// Child supplied by the host.
+  /// Content rendered inside this layout body.
   final Widget child;
 
-  /// Primaryaction supplied by the host.
+  /// The single main action in the task footer.
   final PaymentButton? primaryAction;
 
-  /// Secondaryaction supplied by the host.
+  /// Supporting or dismiss action in the task footer.
   final PaymentButton? secondaryAction;
 
-  /// Footer supplied by the host.
+  /// Supporting footer content alongside task actions.
   final Widget? footer;
 
-  /// Confirmclose supplied by the host.
+  /// Dirty-draft confirmation; null allows immediate close.
   final PaymentConfirmClose? confirmClose;
   @override
   State<PaymentFocusView> createState() => _PaymentFocusViewState();

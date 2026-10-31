@@ -20,23 +20,75 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-const PaymentAccordionItem(
-  leading: Icons.help_outline,
-  title: 'How long does a transfer take?',
-  child: Text(
-    'Most bank transfers are confirmed within minutes. Some banks take '
-    'until the next business day.',
-  ),
-);
+// example/lib/screens/gallery_nav_controls.dart
+PaymentAccordion(
+      children: [
+        const PaymentAccordionItem(
+          title: 'When will my payment arrive?',
+          child: Text('Most transfers arrive within a few minutes.'),
+        ),
+        const PaymentAccordionItem(
+          title: 'Receipt details',
+          subtitle: 'Keep a copy for your records',
+          media: PaymentIcon(
+            Icons.receipt_long_outlined,
+            color: PaymentTextColor.secondary,
+          ),
+          initiallyExpanded: true,
+          child: Text('The reference identifies this payment.'),
+        ),
+        PaymentAccordionItem(
+          title: 'Saved method',
+          actions: [
+            PaymentButton(
+              label: 'Edit',
+              size: PaymentSize.small,
+              width: PaymentWidth.hug,
+              variant: PaymentButtonVariant.secondary,
+              onPressed: () {},
+            ),
+            PaymentMenu(
+              entries: [
+                PaymentMenuGroup(
+                  items: [
+                    PaymentMenuItem(label: 'View details', onSelected: () {}),
+                  ],
+                ),
+                PaymentMenuGroup(
+                  items: [
+                    PaymentMenuItem(
+                      label: 'Remove method',
+                      destructive: true,
+                      onSelected: () {},
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+          child: const Text('Bank Contoh •••• 8890'),
+        ),
+      ],
+    );
 ```
 
-The section is flat: no box, only a hairline underneath, so consecutive sections read as one ruled list.
+## Stripe → kit
 
-## Uncontrolled
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| children | children | Semantic kit value; see API for the default. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: single item, grouped items. Nothing else exists.
+
+### Uncontrolled
 
 The default. The section keeps its own state. `initiallyExpanded: true` starts it open.
 
-## Controlled
+### Controlled
 
 Pass `expanded` with `onExpandedChanged` to own the state, for example to open the section from somewhere else on the screen.
 
@@ -50,37 +102,17 @@ PaymentAccordionItem(
 );
 ```
 
-## Content guidelines
-
-- The title names what is inside, or asks the question it answers: "How to pay", "How long does a transfer take?".
-- Never hide fees, the total or anything the person agrees to. The payment summary keeps every fee visible by design.
-- Keep the body short. If it needs its own headings, it needs its own screen or [sheet](/components/sheets/).
-
-## Motion
+### Motion
 
 The chevron turns in 150 ms. The body's height eases open in 220 ms and closed in 150 ms, so content below does not jump. Under reduced motion both changes are instant.
 
-## Accessibility
-
-- The header is a 48 dp minimum button that reports expanded or collapsed, with a "Show details" or "Hide details" hint.
-- Collapsed content is removed from the tree, so Tab and screen readers never reach it.
-
-## API
-
-<Props names={['PaymentAccordion', 'PaymentAccordionItem', 'ExpandableSection']} />
-
-## See also
-
-- [Section](/components/section/)
-- [Status and receipt](/patterns/status-receipt/), where payment instructions fold into one.
-
-## Variants, behavior and migration
+### Variants, behavior and migration
 
 Stripe Accordion/AccordionItem map to PaymentAccordion/PaymentAccordionItem. defaultOpen is initiallyExpanded; onChange is onExpandedChanged. Controlled expanded stays host-owned. Actions allow up to two small hug PaymentButtons and one PaymentMenu. They are siblings of the toggle and never expand it. Actions stack below the header under 400 dp or at large text. Keep disabled content readable; disable only its actions. Do not hide fees here. Media arrives in Phase 4A.
 
 Migration: ExpandableSection remains a deprecated alias until 0.2.0; rename the constructor to PaymentAccordionItem.
 
-## Layout foundation
+### Layout foundation
 
 PaymentAccordionItem accepts media: a PaymentIcon or PaymentImage. The leading parameter is deprecated; migrate to media: PaymentIcon(icon).
 
@@ -91,3 +123,47 @@ const PaymentAccordionItem(
   child: Text('Use the virtual account before it expires.'),
 );
 ```
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Supporting payment instructions | single item | Keep one optional instruction collapsed under its title. |
+
+Use Task list for progress.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Keep one optional instruction collapsed under its title.
+
+**Don't**: Hide the main Pay action inside a collapsed item.
+
+## Content guidelines
+
+- The title names what is inside, or asks the question it answers: "How to pay", "How long does a transfer take?".
+- Never hide fees, the total or anything the person agrees to. The payment summary keeps every fee visible by design.
+- Keep the body short. If it needs its own headings, it needs its own screen or [sheet](/components/sheets/).
+
+Keep one optional instruction collapsed under its title.
+
+## Accessibility
+
+- The header is a 48 dp minimum button that reports expanded or collapsed, with a "Show details" or "Hide details" hint.
+- Collapsed content is removed from the tree, so Tab and screen readers never reach it.
+
+## Used in
+
+Payment instructions and Gallery Interaction. Real composition: `example/lib/screens/gallery_nav_controls.dart`.
+
+## API
+
+<Props names={["PaymentAccordion", "PaymentAccordionItem", "ExpandableSection"]} />
+
+## See also
+
+- [Section](/components/section/)
+- [Status and receipt](/patterns/status-receipt/), where payment instructions fold into one.

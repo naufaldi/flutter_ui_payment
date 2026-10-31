@@ -20,34 +20,49 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-await showPaymentSheet<void>(
-  context: context,
-  builder: (sheet) => PaymentSheet(
-    header: PaymentSheetHeader(
-      title: 'Pending payment',
-      onClose: () => Navigator.pop(sheet),
-    ),
-    body: const Text('Closing this panel does not cancel the payment.'),
-    footer: PaymentButton(
-      label: 'Request cancellation',
-      variant: PaymentButtonVariant.secondary,
-      // Do not return the Future: PaymentButton would show a spinner while
-      // the confirmation dialog is open.
-      onPressed: () => unawaited(confirmThenAskHost(sheet)),
-    ),
-  ),
-);
+// example/lib/screens/gallery_kit.dart
+PaymentSheet(
+      header: PaymentSheetHeader(
+        title: t('Transaction', 'Transaksi'),
+        onClose: () => Navigator.pop(context),
+      ),
+      body: TransactionDetail(record: r, actions: actions),
+    );
 ```
 
-`unawaited` comes from `dart:async`.
+## Stripe → kit
 
-## Behavior
+No Stripe equivalent. Admitted because: Capture source sheet; PaymentSelect; report presentation; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: bottom sheet, side sheet. Nothing else exists.
+
+### Behavior
 
 - The header's **Close** only closes the panel. Cancelling a payment is a separate footer action, behind `showPaymentConfirmDialog`, and your host decides the result. The payment stays pending until then.
 - `showPaymentSheet` sizes the sheet to its content, up to the full height. Swipe down, the scrim, Back and Escape dismiss it while `isDismissible` is true.
 - `showPaymentSideSheet` takes the same `PaymentSheet`, which then fills the height so the footer sits at the bottom. The scrim, Back and Escape close it, and focus returns to whatever opened it.
 - Pass `isDismissible: false` / `barrierDismissible: false` while a host call that must finish is running.
 - Sheets open in 280 ms and close in 200 ms on the drawer curve; zero under reduced motion.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Supporting source or field choice | bottom sheet | Use the provided presentation functions; close never cancels a payment operation. |
+
+Use Focus view for a focused task with its own footer.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use the provided presentation functions; close never cancels a payment operation.
+
+**Don't**: Attach a destructive payment action to the close affordance.
 
 ## Content guidelines
 
@@ -56,9 +71,19 @@ await showPaymentSheet<void>(
 - Put the actions in the footer, the main one last. Keep the footer to one or two buttons.
 - Never label the close button or any footer action in a way that suggests closing cancels a payment. Write the cancel request as its own action, such as "Request cancellation".
 
+Use the provided presentation functions; close never cancels a payment operation.
+
+## Accessibility
+
+Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+
+## Used in
+
+Capture source sheet; PaymentSelect; report presentation. Real composition: `example/lib/screens/gallery_kit.dart`.
+
 ## API
 
-<Props names={['PaymentSheet', 'PaymentSheetHeader', 'showPaymentSheet', 'showPaymentSideSheet']} />
+<Props names={["PaymentSheet", "PaymentSheetHeader", "showPaymentSheet", "showPaymentSideSheet"]} />
 
 ## See also
 
@@ -67,6 +92,5 @@ await showPaymentSheet<void>(
 - [Transaction history](/patterns/history/), which opens transaction details in a sheet.
 
 Close uses PaymentIconButton with a tooltip and circular focus ring.
-
 
 [Full page view](/components/full-page-view/) is a host scaffold body. [Focus view](/components/focus-view/) composes the existing sheets for a focused task.

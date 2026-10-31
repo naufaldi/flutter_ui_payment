@@ -19,36 +19,64 @@ import HostOwns from '../../../components/HostOwns.astro';
 
 ## Usage
 
-Give every option in the group the same `groupValue` and `onChanged`. The option whose `value` equals `groupValue` is selected.
-
 ```dart
-PaymentSection(
-  title: 'Send receipt by',
-  child: Column(children: [
-    for (final (value, label) in [
-      ('email', 'Email'),
-      ('sms', 'SMS'),
-      ('none', "Don't send"),
-    ])
-      PaymentRadio<String>(
-        value: value,
-        groupValue: receipt,
-        onChanged: (v) => setState(() => receipt = v),
-        label: label,
-      ),
-  ]),
-);
+// example/lib/screens/gallery_selection.dart
+PaymentRadio(
+                value: method,
+                groupValue: null,
+                onChanged: (_) {},
+                label: method,
+                errorText: 'Choose how to get your receipt',
+              );
 ```
 
-Put the group in a [section](/components/section/) whose title asks the question.
+## Stripe → kit
 
-## Selected
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| value | value | Semantic kit value; see API for the default. |
+| onChange | onChanged | Host callback owns the effect. |
+| label | label | Semantic kit value; see API for the default. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: selected, unselected. Nothing else exists.
+
+### Selected
 
 The selected option is a 6 px ring in the accent color; the others are a 1.5 px ring in `textSecondary`. The difference is in the shape, so it does not rely on color. Choosing the selected option again does nothing.
 
-## Disabled
+### Disabled
 
 Pass `onChanged: null` to one option. Its ring uses the `disabled` color and its label turns muted. Pass `disabledReason` so people know why; it replaces `description` while the option is disabled.
+
+### Pattern adoption
+
+The payment method picker shares the same radio mark. An unavailable method has a thin 1.5 dp disabled ring, a muted label and an explicit unavailable reason. The selected mark has a 6 dp accent ring. There is no block glyph.
+
+### Behavior, states and migration
+
+Stripe error maps to errorText: icon, danger caption and unchecked danger ring. Required is semantics-only; hosts own validation and progression. HiddenElements keeps hidden label, description and error text spoken. Keep a group's labels visible when they distinguish choices, and use specific recovery copy.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Default payment method | selected | Use one groupValue for mutually exclusive options; choosing the selected row is a no-op. |
+
+Use Checkbox for independent options.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use one groupValue for mutually exclusive options; choosing the selected row is a no-op.
+
+**Don't**: Allow multiple default methods in one radio group.
 
 ## Content guidelines
 
@@ -58,24 +86,22 @@ Pass `onChanged: null` to one option. Its ring uses the `disabled` color and its
 - For more options than fit on screen, use a list on its own screen or sheet.
 - Payment methods have their own picker with unavailable reasons: use `PaymentMethodPicker` from [Checkout](/patterns/checkout/).
 
+Use one groupValue for mutually exclusive options; choosing the selected row is a no-op.
+
 ## Accessibility
 
 - Each option is one row of at least 48 dp and one screen-reader node, announced as checked or not checked in a group of mutually exclusive options.
 - The selected option stays in the focus order, so Tab reaches every option. Keyboard focus draws the kit's [focus ring](/foundations/focus/).
 
+## Used in
+
+Settings A05; PaymentSelect; checkout. Real composition: `example/lib/screens/gallery_selection.dart`.
+
 ## API
 
-<Props names={['PaymentRadio', 'PaymentFieldPart']} />
+<Props names={["PaymentRadio", "PaymentFieldPart"]} />
 
 ## See also
 
 - [Checkbox](/components/checkbox/) for independent yes-or-no choices.
 - [Tabs](/components/tabs/) to switch between views rather than save a choice.
-
-## Pattern adoption
-
-The payment method picker shares the same radio mark. An unavailable method has a thin 1.5 dp disabled ring, a muted label and an explicit unavailable reason. The selected mark has a 6 dp accent ring. There is no block glyph.
-
-## Behavior, states and migration
-
-Stripe error maps to errorText: icon, danger caption and unchecked danger ring. Required is semantics-only; hosts own validation and progression. HiddenElements keeps hidden label, description and error text spoken. Keep a group's labels visible when they distinguish choices, and use specific recovery copy.

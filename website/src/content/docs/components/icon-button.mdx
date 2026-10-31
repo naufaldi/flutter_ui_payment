@@ -17,7 +17,12 @@ A 48 dp icon action needs a nonempty tooltip. Neutral uses secondary text; accen
 ## Usage
 
 ```dart
-PaymentIconButton(icon: PaymentIcons.close, tooltip: 'Close', onPressed: () {});
+// example/lib/screens/gallery_selection.dart
+PaymentIconButton(
+            icon: PaymentIcons.close,
+            tooltip: 'Close',
+            onPressed: () {},
+          );
 ```
 
 ## Stripe → kit
@@ -32,8 +37,49 @@ PaymentIconButton(icon: PaymentIcons.close, tooltip: 'Close', onPressed: () {});
 
 Width and alignment follow content. Host widgets own keyboard ordering and platform services. Do use a clear action name; avoid unlabeled glyphs and button-like containers for links.
 
+## Variants
+
+Variants: neutral, accent. Nothing else exists.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Fee policy help | neutral | Always provide a tooltip; use accent only for the selected or emphasized action. |
+
+Use Button when a word is needed to explain the action.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Always provide a tooltip; use accent only for the selected or emphasized action.
+
+**Don't**: Ship an unlabeled icon-only control.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Always provide a tooltip; use accent only for the selected or emphasized action.
+
 ## Accessibility
 
 Targets are at least 48 dp. Tooltips name icon actions. Links announce their role and external destinations. Copy feedback uses a live region and a check rather than color alone.
 
 <Props names={['PaymentIconButton', 'PaymentIconButtonVariant']} />
+
+## Used in
+
+Fees A04; capture controls; navigation. Real composition: `example/lib/screens/gallery_selection.dart`.
+
+## API
+
+<Props names={["PaymentIconButton", "PaymentIconButtonVariant"]} />
+
+## See also
+
+- [Components](/components/)
+- [Host-owned decisions](/concepts/host-owned/)

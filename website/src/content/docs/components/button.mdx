@@ -8,7 +8,7 @@ import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
-`PaymentButton` starts an action. When `onPressed` returns a `Future`, the button shows a busy state and ignores more taps until it completes, so a double tap sends one callback.
+`PaymentButton` starts an action. When `onPressed` returns a Future, the button shows a busy state and ignores more taps until it completes, so a double tap sends one callback.
 
 <HostOwns>what the action does, and deduplicating it on your server. The busy lock is interaction protection, not idempotency.</HostOwns>
 
@@ -20,17 +20,25 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-PaymentButton(
-  label: 'Pay Rp102.500',
-  busyLabel: 'Sending payment',
-  // Returning the Future keeps the button busy until it completes.
-  onPressed: () => host.submitPayment(attempt.attemptId),
-);
+// example/lib/screens/gallery_content.dart
+PaymentButton(label: 'Check status', onPressed: () {});
 ```
 
-By default buttons fill the width they are given and occupy at least 48 dp of height. Put one under another with 8 dp between them, or give one a narrower parent, as `StateMessage` does.
+## Stripe → kit
 
-## Primary
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| label | label | Semantic kit value; see API for the default. |
+| onAction | onPressed | Host callback owns the effect. |
+| size | size | Semantic kit value; see API for the default. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: primary, secondary, quiet, destructive. Nothing else exists.
+
+### Primary
 
 The one main action on a screen: pay, continue, confirm. Filled with `accent`. Use one primary per screen.
 
@@ -38,7 +46,7 @@ The one main action on a screen: pay, continue, confirm. Filled with `accent`. U
 PaymentButton(label: 'Continue', onPressed: next);
 ```
 
-## Secondary
+### Secondary
 
 An alternative to the main action, such as "Change method". Outlined with the 3:1 `border` color.
 
@@ -50,7 +58,7 @@ PaymentButton(
 );
 ```
 
-## Quiet
+### Quiet
 
 A low-emphasis action such as "Not now" or "Cancel": text only.
 
@@ -62,7 +70,7 @@ PaymentButton(
 );
 ```
 
-## Destructive
+### Destructive
 
 An action that cannot be undone, such as removing a saved card. Filled in the danger tone with the surface color for the label, the same colors as the confirm button of a destructive [dialog](/components/dialog/). The label must say what happens, so color is never the only signal. Ask first with `showPaymentConfirmDialog` where the action matters, and never use it for the pay button.
 
@@ -84,9 +92,9 @@ PaymentButton(
 );
 ```
 
-## Busy
+### Busy
 
-A button is busy while the `Future` from `onPressed` runs, or while you pass `busy: true` for an action you run elsewhere, such as a submit your coordinator owns. The label keeps its space so the layout does not jump, a [spinner](/components/spinner/) takes its place, and screen readers hear `busyLabel` (default "Working…"). Under reduced motion the spinner is a still hourglass.
+A button is busy while the Future from `onPressed` runs, or while you pass `busy: true` for an action you run elsewhere, such as a submit your coordinator owns. The label keeps its space so the layout does not jump, a [spinner](/components/spinner/) takes its place, and screen readers hear `busyLabel` (default "Working…"). Under reduced motion the spinner is a still hourglass.
 
 ```dart
 PaymentButton(
@@ -97,39 +105,15 @@ PaymentButton(
 );
 ```
 
-## Disabled
+### Disabled
 
 Pass `onPressed: null`. Every variant uses the `disabled` label color; the filled and outlined variants also turn `surfaceMuted`. Tell people why nearby, for example with a caption under the button, because a disabled button cannot explain itself.
 
-## With an icon
+### With an icon
 
 `icon` puts a 16 px icon in small buttons and a 20 px icon in medium and large buttons before the label. Use it when the icon adds meaning (delete, download), not as decoration on every button.
 
-## Content guidelines
-
-- Start with a verb and say what happens: "Pay Rp102.500", "Remove card", "Check status". Avoid "OK" and "Submit".
-- Put the amount in the pay button, formatted with `MoneyFormat`, so the button and the summary agree.
-- Use sentence case and no end punctuation.
-- Keep labels short enough for one line at normal text size. At large text they wrap rather than truncate.
-- A destructive label names the thing it destroys: "Remove card", not "Remove".
-
-## Accessibility
-
-- 48 dp minimum height. Keyboard focus draws the kit's [focus ring](/foundations/focus/), never the brand color.
-- Full-width buttons do not scale on press; Material's pressed layer is the feedback.
-- While busy, the button is a live region that announces `busyLabel`.
-
-## API
-
-<Props names={['PaymentButton', 'PaymentButtonVariant', 'PaymentSize', 'PaymentWidth']} />
-
-## See also
-
-- [Dialog](/components/dialog/) to confirm before a destructive action.
-- [Action tile](/components/list/) for rows that open something.
-- [Payment attempt and status](/concepts/payment-attempt/) for why the lock does not replace server-side deduplication.
-
-## Sizes and widths
+### Sizes and widths
 
 Variants: primary, secondary, quiet, destructive. Nothing else exists.
 
@@ -156,5 +140,60 @@ The documentation specimen intentionally shows multiple primary states together.
 
 focusNode supports host focus return, including custom menu triggers.
 
-
 [Button group](/components/button-group/) now composes related status and dialog actions. Overflow menus wrap long labels at large text.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Continue KYC | primary | One primary per view; supporting receipt/report actions are secondary; Cancel is quiet. |
+
+Use Link for inline destinations.
+
+```text
+Single next action?
+├─ Yes → primary
+└─ No → irreversible consequence?
+   ├─ Yes → destructive, behind confirmation
+   └─ No → visible supporting action? secondary : quiet
+```
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: One primary per view; supporting receipt/report actions are secondary; Cancel is quiet.
+
+**Don't**: Put two primary buttons in one product view.
+
+## Content guidelines
+
+- Start with a verb and say what happens: "Pay Rp102.500", "Remove card", "Check status". Avoid "OK" and "Submit".
+- Put the amount in the pay button, formatted with `MoneyFormat`, so the button and the summary agree.
+- Use sentence case and no end punctuation.
+- Keep labels short enough for one line at normal text size. At large text they wrap rather than truncate.
+- A destructive label names the thing it destroys: "Remove card", not "Remove".
+
+One primary per view; supporting receipt/report actions are secondary; Cancel is quiet.
+
+## Accessibility
+
+- 48 dp minimum height. Keyboard focus draws the kit's [focus ring](/foundations/focus/), never the brand color.
+- Full-width buttons do not scale on press; Material's pressed layer is the feedback.
+- While busy, the button is a live region that announces `busyLabel`.
+
+## Used in
+
+H04 sign-in/KYC; report A02; settings A05. Real composition: `example/lib/screens/gallery_content.dart`.
+
+## API
+
+<Props names={["PaymentButton", "PaymentButtonVariant", "PaymentSize", "PaymentWidth"]} />
+
+## See also
+
+- [Dialog](/components/dialog/) to confirm before a destructive action.
+- [Action tile](/components/list/) for rows that open something.
+- [Payment attempt and status](/concepts/payment-attempt/) for why the lock does not replace server-side deduplication.

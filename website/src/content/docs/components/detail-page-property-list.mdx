@@ -11,7 +11,29 @@ Transaction facts with optional linked values and subText. Variants: vertical, h
 ## Usage
 
 ```dart
-const PaymentDetailPagePropertyList(title: 'Payment details', pending: false, items: [PaymentDetailProperty(label: 'Amount', values: [PaymentDetailValue('Rp102.500', subText: 'Including fee')])]);
+// example/lib/screens/gallery_views.dart
+PaymentDetailPagePropertyList(
+            title: 'Merchant',
+            pending: false,
+            items: [
+              const PaymentDetailProperty(
+                label: 'Name',
+                values: [PaymentDetailValue('Toko Contoh')],
+              ),
+              PaymentDetailProperty(
+                label: 'Support',
+                values: [
+                  PaymentDetailValue.link(
+                    PaymentLink(
+                      label: 'Help centre',
+                      external: true,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
 ```
 
 ## Stripe → kit
@@ -23,9 +45,37 @@ const PaymentDetailPagePropertyList(title: 'Payment details', pending: false, it
 | DetailValue | `PaymentDetailValue` |
 | EmptyMessage | `PaymentEmptyMessage` |
 
-## States and content
+## Variants
+
+Variants: vertical, horizontal; pending, ready, empty, error. Nothing else exists.
+
+### States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Merchant facts | vertical | Use a link-only value for support; place the module directly in DetailPage. |
+
+Use Detail page table for repeated attempts.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use a link-only value for support; place the module directly in DetailPage.
+
+**Don't**: Wrap a titled property module in another titled module.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+Use a link-only value for support; place the module directly in DetailPage.
 
 ## Accessibility
 
@@ -33,14 +83,17 @@ Labels wrap at large text. Controls retain their keyboard and screen-reader beha
 
 A single link-only value centers with its label; at large text it wraps.
 
+## Used in
+
+Transaction detail A02; history summary A01. Real composition: `example/lib/screens/gallery_views.dart`.
+
 ## API
 
-<Props names={['PaymentDetailPagePropertyList', 'PaymentDetailProperty', 'PaymentDetailValue', 'PaymentEmptyMessage']} />
+<Props names={["PaymentDetailPagePropertyList", "PaymentDetailProperty", "PaymentDetailValue", "PaymentEmptyMessage"]} />
 
 ## See also
 
 - [Components](/components/)
-
 
 <Screen name="ios_catalog_detail_page_property_list_variants" alt="detail page property list specimen" />
 <Screen name="ios_catalog_detail_page_property_list_variants_dark" alt="detail page property list specimen_dark" />

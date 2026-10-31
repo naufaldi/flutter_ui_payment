@@ -21,31 +21,73 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-final ok = await showPaymentConfirmDialog(
-  context,
-  title: 'Sign out of all devices?',
-  message: 'Payments already sent are not affected.',
-  confirmLabel: 'Sign out',
-  destructive: true,
-);
-if (ok) await host.signOutEverywhere();
+// example/lib/screens/gallery_kit.dart
+showPaymentConfirmDialog(
+      context,
+      title: _t(
+        context,
+        'Sign out of all devices?',
+        'Keluar dari semua perangkat?',
+      ),
+      message: _t(
+        context,
+        'You will need to sign in again on every device. Payments already sent are not affected.',
+        'Anda perlu masuk lagi di setiap perangkat. Pembayaran yang sudah dikirim tidak terpengaruh.',
+      ),
+      confirmLabel: _t(context, 'Sign out', 'Keluar'),
+      destructive: true,
+    );
 ```
 
-## Result
+## Stripe → kit
+
+No Stripe equivalent. Admitted because: Report A02; Gallery Kit; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: ordinary confirm, destructive confirm. Nothing else exists.
+
+### Result
 
 The future resolves to `true` only when the person presses the confirm button. Cancel, tapping the scrim, Back and Escape all resolve to `false`.
 
-## Default
+### Default
 
 The confirm button is filled with the accent and the cancel button is a quiet text button. The confirm button receives focus first.
 
-## Destructive
+### Destructive
 
 `destructive: true` fills the confirm button in the danger tone, the same colors as a [destructive button](/components/button/#destructive), and moves first focus to the cancel button, so Enter never confirms by accident.
 
-## Custom cancel label
+### Custom cancel label
 
 The cancel button says "Cancel" by default. Pass `cancelLabel` when the safe choice reads better as an action of its own, such as "Keep paying".
+
+### Actions and focus
+
+The dialog uses two hug-width PaymentButtons with a 112 dp minimum. Cancel is quiet; Confirm is primary or destructive. Keyboard focus uses the neutral ring, starting on Cancel for destructive actions and Confirm otherwise. Enter activates that safe initial choice.
+
+At 320 dp the actions stack, including at normal text size. Confirm appears above Cancel with an 8 dp gap. At large text, labels wrap and the dialog content scrolls.
+
+[Button group](/components/button-group/) now composes related status and dialog actions. Overflow menus wrap long labels at large text.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Discard report | destructive confirm | Name the consequence and keep Cancel quiet; focus Cancel for destruction. |
+
+Use Focus view for collecting a report.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Name the consequence and keep Cancel quiet; focus Cancel for destruction.
+
+**Don't**: Ask for confirmation before every reversible interaction.
 
 ## Content guidelines
 
@@ -54,20 +96,21 @@ The cancel button says "Cancel" by default. Pass `cancelLabel` when the safe cho
 - Make `confirmLabel` repeat the action: "Sign out", "Remove card". Never "Yes" or "OK".
 - Do not use a dialog to cancel a payment by itself. A cancel request goes to your host, and the payment stays pending until your host decides; see [Sheet](/components/sheets/).
 
+Name the consequence and keep Cancel quiet; focus Cancel for destruction.
+
+## Accessibility
+
+Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+
+## Used in
+
+Report A02; Gallery Kit. Real composition: `example/lib/screens/gallery_kit.dart`.
+
 ## API
 
-<Props names={['showPaymentConfirmDialog']} />
+<Props names={["showPaymentConfirmDialog"]} />
 
 ## See also
 
 - [Button](/components/button/#destructive) for the destructive variant that usually opens this dialog.
 - [Toast](/components/toast/) for feedback after the action ran.
-
-## Actions and focus
-
-The dialog uses two hug-width PaymentButtons with a 112 dp minimum. Cancel is quiet; Confirm is primary or destructive. Keyboard focus uses the neutral ring, starting on Cancel for destructive actions and Confirm otherwise. Enter activates that safe initial choice.
-
-At 320 dp the actions stack, including at normal text size. Confirm appears above Cancel with an 8 dp gap. At large text, labels wrap and the dialog content scrolls.
-
-
-[Button group](/components/button-group/) now composes related status and dialog actions. Overflow menus wrap long labels at large text.

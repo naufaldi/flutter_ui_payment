@@ -10,7 +10,6 @@ import Screens from '../../../components/Screens.astro';
   <Screen name="ios_catalog_currency_field_variants_200" alt="Currency fields at 200 percent text" />
 </Screens>
 
-
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
@@ -21,26 +20,34 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
+// example/lib/screens/gallery_selection.dart
 PaymentCurrencyField(
-  currency: 'IDR',
-  minimum: const Money.idr(10000),
-  maximum: const Money.idr(5000000),
-  onChanged: (result) => setState(() => amount = result),
-);
-
-PaymentButton(
-  label: 'Continue',
-  onPressed: amount.isValid ? () => host.quote(amount.money!) : null,
-);
+            currency: 'IDR',
+            size: size,
+            label: size.name,
+            onChanged: (_) {},
+          );
 ```
 
-Keep the latest `AmountParseResult` in your state. Exactly one of `money` and `issue` is set, and `isValid` is true when `money` is.
+## Stripe → kit
 
-## Default
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| onChange | onChanged | Host callback owns the effect. |
+| label | label | Semantic kit value; see API for the default. |
+| size | size | Semantic kit value; see API for the default. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: single currency, allowlisted currency switch. Nothing else exists.
+
+### Default
 
 The field shows the label "Amount" (or your `label`), the currency symbol as a prefix, and the entered amount in the 20 px amount style with tabular figures. With a `minimum` or `maximum`, a helper line shows the limits, for example "Min. Rp10,000 · Max. Rp5,000,000" in English. `initialText` fills the field when it first appears.
 
-## Errors
+### Errors
 
 Every change is parsed, but the error text appears only after the field loses focus with text in it, after the keyboard's done action, or when you set `showErrors: true`, for example after a submit attempt. People are not told they are wrong while they are still typing.
 
@@ -54,31 +61,11 @@ Every change is parsed, but the error text appears only after the field loses fo
 | `belowMinimum` | Under `minimum` | Minimum amount is Rp10,000. |
 | `aboveMaximum` | Over `maximum` | Maximum amount is Rp5,000,000. |
 
-## Parsing
+### Parsing
 
 The currency symbol or code, spaces and correctly placed group separators are accepted, so pasted amounts work. Separators follow the locale (see [Money](/foundations/money/)). Currencies without minor units, such as IDR, reject a decimal part as ambiguous rather than reading it as a group separator. The keyboard offers a decimal key only when the currency has minor units.
 
-## Content guidelines
-
-- Keep the default label unless the amount has a specific role, such as "Top-up amount".
-- Always pass the limits you enforce, so people see them before they type.
-- Do not format or rewrite what people type; show the formatted amount elsewhere, for example in the [summary](/patterns/checkout/).
-
-## Accessibility
-
-- The entered amount follows text scaling up to 1.6×, like other large amounts.
-- Error text is shown under the field in the danger tone and wraps up to three lines.
-
-## API
-
-<Props names={['PaymentCurrencyField', 'AmountParseResult', 'AmountIssue', 'AmountInput']} />
-
-## See also
-
-- [Money](/foundations/money/) for `Money`, `MoneyFormat` and strict parsing.
-- [Checkout](/patterns/checkout/) for where an entered amount becomes a quote.
-
-## Behavior, states and migration
+### Behavior, states and migration
 
 Stripe CurrencyField maps to PaymentCurrencyField; description appears above limits. Size keeps the amountLarge style: small subtracts 8 dp from today's default input padding, medium keeps it, large adds 8 dp; even small stays at least 48 dp. Helpers and errors can add height.
 
@@ -90,6 +77,50 @@ The tested fixture with description and minimum helper measures small 92, medium
 
 Host errorText overrides parse issues; hiddenElements keeps hidden subtext spoken. Errors use an icon and danger edge through the shared field treatment.
 
-## Field foundation
+### Field foundation
 
 PaymentCurrencyField.currencies is a host allowlist. Two or more currencies show a select above the amount. onCurrencyChanged reports the choice; the host passes the currency back and receives a reparsed amount after the frame.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Flexible top-up | single currency | Keep currency fixed unless the host explicitly allows switching. |
+
+Use Text field for non-monetary numbers.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Keep currency fixed unless the host explicitly allows switching.
+
+**Don't**: Convert an invalid parse to zero and enable Pay.
+
+## Content guidelines
+
+- Keep the default label unless the amount has a specific role, such as "Top-up amount".
+- Always pass the limits you enforce, so people see them before they type.
+- Do not format or rewrite what people type; show the formatted amount elsewhere, for example in the [summary](/patterns/checkout/).
+
+Keep currency fixed unless the host explicitly allows switching.
+
+## Accessibility
+
+- The entered amount follows text scaling up to 1.6×, like other large amounts.
+- Error text is shown under the field in the danger tone and wraps up to three lines.
+
+## Used in
+
+Top-up scenarios; Gallery Controls. Real composition: `example/lib/screens/gallery_selection.dart`.
+
+## API
+
+<Props names={["PaymentCurrencyField", "AmountParseResult", "AmountIssue", "AmountInput"]} />
+
+## See also
+
+- [Money](/foundations/money/) for `Money`, `MoneyFormat` and strict parsing.
+- [Checkout](/patterns/checkout/) for where an entered amount becomes a quote.

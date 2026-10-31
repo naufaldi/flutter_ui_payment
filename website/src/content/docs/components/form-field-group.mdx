@@ -14,11 +14,21 @@ Related payment or identity fields under one legend.
   <Screen name="ios_catalog_form_field_group_variants_200" alt="form field group at 200 percent text" caption="200% text" />
 </Screens>
 
-## Usage and Stripe → kit
+## Usage
 
 ```dart
-const PaymentFormFieldGroup(legend: 'Identity', children: [PaymentTextField(label: 'Name', required: true), PaymentTextField(label: 'Place of birth')]);
+// example/lib/screens/gallery_forms.dart
+PaymentFormFieldGroup(
+          legend: 'Disabled group',
+          disabled: true,
+          children: [
+            PaymentTextField(label: 'Name'),
+            PaymentTextArea(label: 'Notes'),
+          ],
+        );
 ```
+
+## Stripe → kit
 
 | Stripe | Kit |
 | --- | --- |
@@ -26,12 +36,19 @@ const PaymentFormFieldGroup(legend: 'Identity', children: [PaymentTextField(labe
 | disabled | disabled scope |
 | layout | Axis.vertical / Axis.horizontal |
 
-
 Vertical or horizontal. Nothing else exists. Horizontal falls back below 360 dp or at large text. Disabled scope prevents re-enabling individual fields. Mixed required and optional fields add an optional mark. Group errors belong in a PaymentBanner above the group.
+
+## Variants
+
+Variants: legend, legend with description or error. Nothing else exists.
 
 ## Which variant when
 
-Use these fields for a bounded task. Use the host validator for business rules and persistent descriptions for instructions.
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| KYC identity groups | legend | Group Personal details separately from Work and address, preserving reading order. |
+
+Use Section for non-form content.
 
 ## States
 
@@ -39,19 +56,27 @@ Default, focused, disabled and error. Errors include an icon, text and an edge. 
 
 ## Do and don't
 
-Keep labels visible. Avoid placing the only instruction in a hint.
+**Do**: Group Personal details separately from Work and address, preserving reading order.
+
+**Don't**: Use a visual heading without field-group semantics.
 
 ## Content guidelines
 
 Use short, specific labels and explain how to correct an error.
 
+Group Personal details separately from Work and address, preserving reading order.
+
 ## Accessibility
 
 Input text is 16 dp. Legends precede fields in reading order. Labels and errors stay in semantics when visually hidden. Pickers restore focus.
 
+## Used in
+
+IdentityForm H04; account settings A05. Real composition: `example/lib/screens/gallery_forms.dart`.
+
 ## API
 
-<Props names={ ['PaymentFormFieldGroup'] } />
+<Props names={["PaymentFormFieldGroup"]} />
 
 ## See also
 

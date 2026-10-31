@@ -1,0 +1,80 @@
+---
+title: Chart module
+description: Present host-computed spending with explicit loading, empty and error states.
+---
+
+import Props from '../../../components/Props.astro';
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+
+Show monthly spending with a host-computed headline, a chart and explicit loading, empty and retry states. Put it directly in OverviewPage.
+
+## Usage
+
+```dart
+// example/lib/screens/gallery_charts.dart
+ChartModule(
+            title: 'Spending, this month vs last month',
+            state: ChartState.ready,
+            showHeadline: false,
+            height: kind == 'meter' ? null : 180,
+            chart: chart,
+          );
+```
+
+## Stripe → kit
+
+No Stripe equivalent. Admitted because: History A01; Gallery Charts; this reusable payment composition keeps host state outside presentation.
+
+## Variants
+
+Variants: ready, loading, empty, error. Nothing else exists.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| Monthly spending | ready | The host supplies headline and chart state; retry repeats only the chart request. |
+
+Use Overview page to arrange several modules.
+
+```text
+What does the host know?
+├─ Request pending → loading
+├─ Failed request → error with retry
+├─ No readings → empty with explanation
+└─ Readings available → ready with chart
+```
+
+## States
+
+Loading keeps the module heading and chart shape. Empty explains the absence of readings; error offers host retry. Ready requires a chart and uses only the supplied headline.
+
+## Do and don't
+
+**Do**: The host supplies headline and chart state; retry repeats only the chart request.
+
+**Don't**: Compute ledger totals inside the chart widget.
+
+## Content guidelines
+
+Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
+
+The host supplies headline and chart state; retry repeats only the chart request.
+
+## Accessibility
+
+Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+
+## Used in
+
+History A01; Gallery Charts. Real composition: `example/lib/screens/gallery_charts.dart`.
+
+## API
+
+<Props names={["ChartModule", "ChartState"]} />
+
+## See also
+
+- [Components](/components/)
+- [Host-owned decisions](/concepts/host-owned/)

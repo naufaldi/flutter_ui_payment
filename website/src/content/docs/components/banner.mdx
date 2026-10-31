@@ -20,17 +20,23 @@ import HostOwns from '../../../components/HostOwns.astro';
 ## Usage
 
 ```dart
-const PaymentBanner(
-  tone: StatusTone.warning,
-  title: 'Total changed',
-  message: 'Review the new total before you pay.',
-  announce: true,
-);
+// example/lib/screens/steps/kyc_onboarding_step.dart
+PaymentBanner(tone: StatusTone.warning, title: s.fixHighlighted);
 ```
 
-The banner fills the width it is given. The title is in the tone's foreground color; the message is body text.
+## Stripe → kit
 
-## Tones
+| Stripe prop | Kit | Note |
+| --- | --- | --- |
+| title | title | Semantic kit value; see API for the default. |
+
+DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
+
+## Variants
+
+Variants: neutral, info, success, warning, danger. Nothing else exists.
+
+### Tones
 
 `tone` sets the fill, the title color and the default icon. Pass `icon` to replace the default.
 
@@ -41,7 +47,7 @@ The banner fills the width it is given. The title is in the tone's foreground co
 | `warning` | `Icons.warning_amber_outlined` | Something to review before going on, such as a changed total. |
 | `danger` | `Icons.error_outline` | A failure that blocks the next step. |
 
-## With actions
+### With actions
 
 `actions` takes widgets shown under the text, in a row that wraps. Use one or two buttons that resolve the notice.
 
@@ -62,9 +68,31 @@ PaymentBanner(
 
 A `PaymentButton` fills its width, so give it a narrower parent if it should not span the banner.
 
-## Announcing
+### Announcing
 
 `announce: true` makes the banner a live region, so screen readers read it when it appears. Use it for a banner that appears in response to something, such as a re-quote or a failed request. Leave it off for a banner that is part of the page from the start.
+
+### Stripe mapping and actions
+
+Use onDismiss for a Hide banner action reported once; the host removes the banner. Actions accept PaymentLink or hug secondary/quiet PaymentButton.
+
+## Which variant when
+
+| Situation | Variant / composition | Payment example |
+| --- | --- | --- |
+| History failed to load | danger | Use warning for a supporting module failure; danger when primary content failed. |
+
+Use Toast for feedback after an action.
+
+## States
+
+Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+
+## Do and don't
+
+**Do**: Use warning for a supporting module failure; danger when primary content failed.
+
+**Don't**: Turn an unknown payment into failed because a side request failed.
 
 ## Content guidelines
 
@@ -73,27 +101,27 @@ A `PaymentButton` fills its width, so give it a narrower parent if it should not
 - Do not stack banners. Show the one that matters most.
 - Use a [toast](/components/toast/) for passing feedback that does not need to stay on screen.
 
+Use warning for a supporting module failure; danger when primary content failed.
+
 ## Accessibility
 
 - The tone always comes with an icon and a title, so color is not the only signal.
 - The icon grows with text size up to 1.6× and stays centered on the title's first line however far the title wraps.
 - The banner is one semantics container, so its title and message are read together.
 
+## Used in
+
+History A01; report A02; VerificationIntro. Real composition: `example/lib/screens/steps/kyc_onboarding_step.dart`.
+
 ## API
 
-<Props names={['PaymentBanner', 'NoticeBanner']} />
-
-## See also
-
-- [Status badge](/components/badge/) for a one-word status.
-- [State message](/components/state-message/) for a list that is empty or failed to load.
+<Props names={["PaymentBanner", "NoticeBanner"]} />
 
 ## Migration
 
 `NoticeBanner` remains a deprecated alias until 0.2.0. Replace the constructor name with `PaymentBanner`; existing arguments keep compiling.
 
-## Stripe mapping and actions
+## See also
 
-
-
-Use onDismiss for a Hide banner action reported once; the host removes the banner. Actions accept PaymentLink or hug secondary/quiet PaymentButton.
+- [Status badge](/components/badge/) for a one-word status.
+- [State message](/components/state-message/) for a list that is empty or failed to load.
