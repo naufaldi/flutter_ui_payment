@@ -119,3 +119,20 @@ Public API additions (all optional): `StatusHeader`, `InfoRow.trailing`, `Paymen
 Verification: `flutter analyze` clean (package and example); 89 package tests across 7 files pass when run per file; 12 integration flow tests pass on the iPhone 16 simulator; iOS screenshot suites (including new `status_va_pending`, `requote`, `authorize` captures) pass with no exceptions. Focus and press are verified by widget tests only (static screenshots cannot show them).
 
 Open: the re-quote checkbox sits ~11 dp inside the gutter (Material list-tile tap target); `AmountInput` caps its label/helper at 1.6× along with the amount; Lumen/Contrast preset still close to Hairline.
+
+## Charts and KYC capture (31 Oct 2026)
+
+Charts here are customer-facing spending summaries. PRD §4 excludes operational dashboards; this work does not add one. PRD.md stays unchanged.
+
+- Chart values are Money and each chart uses one currency. Only settled values enter spoken lowest/highest/latest summaries. Pending is outlined/dashed, unknown is hatched/dotted, and missing leaves a gap. Unknown must never look like pending.
+- Host verdicts, not UI math: a ChartModule headline and delta come from the host. The kit never computes a displayed total. Meter widths use amounts, while legends show amounts, never percentages.
+- ChartState mirrors PromoSlot states. Hosts choose loading > error > empty > ready. Plot height stays constant across states; meter height is intrinsic.
+- Meter categories use an accent-to-surface ramp with at most five entries, constrained to 3:1 surface contrast. Status tones are not categories. Hosts group extra categories into Other.
+- Compact money is only for axes: Indonesian rb/jt/M/T with NBSP; English K/M/B/T. Integer rounding promotes a carried suffix and never changes payment confirmation formatting.
+- Line/bar pointer inspection is supplemental and has no keyboard inspection target. Generated summaries expose the same amounts without pointer use. No multi-series chart support.
+- Capture source choice precedes host permission. The kit opens no camera, gallery or file picker and performs no OCR, liveness, face matching or photo scoring. The host owns photos, uploads and verdicts. Uploaded is not verified.
+- Camera previews use a theme-independent black54 scrim and white outline for visibility over arbitrary content. Illustration surfaces use theme tokens. Overlays ignore pointer input.
+- Demo photos use PictureRecorder, a CONTOH / SPECIMEN watermark and a drawn masked NIK. Photo bytes live only in the capture screen. SyntheticIdCard uses PrivacyMask for its NIK row.
+- The foundation specimen adds compact money; the amount, info-row and status-badge alt text changes travel with the refreshed capture.
+
+Implementation details resolved against the repository: PaymentButton has a secondary variant, not a named secondary constructor. MeterSegment is non-const to keep its non-negative Money assertion (Dart disallows property access in a const assertion). Capture geometry lives in a separate internal file so ratio and face/card separation can be tested without rendering. The gallery uses shorter capture viewports; the flow guide retains its portrait default. The Starlight changelog keeps its required frontmatter and mirrors the root changelog body verbatim.

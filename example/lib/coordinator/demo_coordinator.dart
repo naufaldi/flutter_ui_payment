@@ -372,6 +372,18 @@ class DemoCoordinator extends ChangeNotifier {
 
   /// Starts an upload. Selecting another file while one is uploading
   /// replaces it; the older result is ignored by request identity.
+  Future<void> uploadCapture(DocumentRequirement req, CaptureKind kind) =>
+      uploadDocument(
+        req,
+        DocumentFile(
+          name: kind == CaptureKind.idCard
+              ? 'kamera_ktp_demo.jpg'
+              : 'kamera_selfie_ktp_demo.jpg',
+          mimeType: 'image/jpeg',
+          sizeBytes: 1048576,
+        ),
+      );
+
   Future<void> uploadDocument(
     DocumentRequirement requirement,
     DocumentFile file,
@@ -406,12 +418,17 @@ class DemoCoordinator extends ChangeNotifier {
         ...documents,
         slot: DocumentSlotState.uploaded(file, requestId: requestId),
       };
-    } catch (_) {
+    } catch (e) {
       if (documents[slot]?.requestId != requestId) return;
       documents = {
         ...documents,
         slot: DocumentSlotState.failed(
-          const DocumentIssue(DocumentIssueKind.uploadInterrupted),
+          e is HostException && e.error.category == HostErrorCategory.validation
+              ? DocumentIssue(
+                  DocumentIssueKind.rejectedByHost,
+                  safeMessage: e.error.safeMessage,
+                )
+              : const DocumentIssue(DocumentIssueKind.uploadInterrupted),
           file: file,
           requestId: requestId,
         ),

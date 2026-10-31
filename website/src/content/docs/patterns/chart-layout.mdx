@@ -1,0 +1,71 @@
+---
+title: Chart layout
+description: Customer spending summaries with host-owned amounts and stable plot heights.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+Choose the chart from the customer’s question. These are customer-facing spending summaries, not an operational dashboard.
+
+<HostOwns>data loading, the chosen ChartState, every amount, headline, delta and verdict.</HostOwns>
+
+<Screens><Screen name="ios_catalog_chart_in_context" alt="Spending headline above weekly bars, method breakdown and recent transactions" caption="Spending in context" /><Screen name="ios_catalog_chart_in_context_200" alt="Spending summary at 200 percent text" caption="200% text" /></Screens>
+
+## Choose a chart
+
+| Question | Component | Watch out for |
+| --- | --- | --- |
+| Going up or down? | Line | A zoomed axis emphasizes change, so read the tick labels. |
+| How much each? | Bar | Starts at zero; small differences may disappear. |
+| Breakdown of a total? | Meter | One snapshot, up to five categories. |
+| Quick trend? | Sparkline | No precise values or axes. |
+
+## Usage
+
+The container owns height: 180 for compact plots, 320 for featured plots. Meter charts use intrinsic height. Show the host headline first. At most three plots belong in one row, each around 200px or wider; stack them on phones.
+
+```dart
+Row(children: [
+  Expanded(child: ChartModule(
+    title: 'Weekly spending',
+    state: ChartState.ready,
+    headline: const Money.idr(1080000),
+    headlineCaption: 'Settled',
+    chart: PaymentBarChart(points: weeklyPoints),
+  )),
+  const SizedBox(width: 16),
+  Expanded(child: ChartModule(
+    title: 'Trend',
+    state: ChartState.ready,
+    chart: PaymentLineChart(points: weeklyPoints),
+  )),
+]);
+```
+
+## States
+
+Choose loading before error, error before empty, then ready. `ChartModule` keeps the plot height stable across these states; the headline is outside the plot. Error and empty messages scroll at large text so the retry action remains reachable.
+
+## The payment boundary
+
+Pending uses dashed/outlined marks. Unknown uses dotted/hatched marks. Missing data leaves a gap. Only settled values enter the generated lowest/highest/latest summary. Headlines are host-provided Money values; the kit never computes totals. The meter legend lists amounts, not percentages.
+
+## Content guidelines
+
+Give periods short labels and qualify a headline as settled when needed. Keep currencies consistent. Use compact formatting for axes only, never a payment confirmation.
+
+## Accessibility
+
+The chart summary remains available without pointer inspection. At narrow widths, fewer visual axis labels preserve space. Supply a complete `semanticLabel` when your host needs additional context.
+
+## API
+
+<Props names={['ChartModule','ChartState','ChartPoint','ChartPointStatus','MeterSegment']} />
+
+## See also
+
+- [Line chart](/components/line-chart/), [bar chart](/components/bar-chart/), [meter chart](/components/meter-chart/), [sparkline](/components/sparkline/).
+- Layout guidance adapted from [Stripe’s chart layout pattern](https://docs.stripe.com/stripe-apps/patterns/chart-layout).

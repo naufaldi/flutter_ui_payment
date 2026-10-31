@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'focus_ring.dart';
+import 'hatch.dart';
 import 'kit_strings.dart';
 import 'money.dart';
 import 'payment_localizations.dart';
@@ -803,20 +804,12 @@ class _BandPainter extends CustomPainter {
       canvas.drawRect(Offset.zero & size, paint);
       return;
     }
-    canvas.drawRect(Offset.zero & size, Paint()..color = background);
-    // 6 px stripes on a 10 px pitch, leaning like caution tape.
-    const pitch = 10.0;
-    const stripe = 6.0;
-    final h = size.height;
-    for (var x = -h; x < size.width + h; x += pitch) {
-      final path = Path()
-        ..moveTo(x, h)
-        ..lineTo(x + stripe, h)
-        ..lineTo(x + stripe + h, 0)
-        ..lineTo(x + h, 0)
-        ..close();
-      canvas.drawPath(path, paint);
-    }
+    paintHatch(
+      canvas,
+      Offset.zero & size,
+      color: color,
+      background: background,
+    );
   }
 
   @override

@@ -53,6 +53,17 @@ Each page follows the same order: what the component is for, a screenshot from t
 | [Countdown](/components/countdown/) | `CountdownText`: time left until a deadline, from your clock. |
 | [Privacy mask](/components/privacy-mask/) | `PrivacyMask`: covers sensitive content, for example in the app switcher. |
 
+## Charts
+
+| Component | What it is for |
+| --- | --- |
+| [Line chart](/components/line-chart/) | `PaymentLineChart`: ordered money trends. |
+| [Bar chart](/components/bar-chart/) | `PaymentBarChart`: amounts compared from zero. |
+| [Meter chart](/components/meter-chart/) | `PaymentMeterChart`: category amounts in one snapshot. |
+| [Sparkline](/components/sparkline/) | `PaymentSparkline`: a compact trend beside a headline. |
+
+See [Chart layout](/patterns/chart-layout/) for `ChartModule` composition.
+
 ## Navigation
 
 | Component | What it is for |
@@ -65,6 +76,7 @@ Each page follows the same order: what the component is for, a screenshot from t
 | Component | What it is for |
 | --- | --- |
 | [Dialog](/components/dialog/) | `showPaymentConfirmDialog`: yes or no before an action that cannot be undone. |
+| [Capture source sheet](/components/capture-source-sheet/) | `showCaptureSourceSheet`: host source intent before permission. |
 | [Sheet](/components/sheets/) | `PaymentSheet`, `showPaymentSheet`, `showPaymentSideSheet`: bottom sheets and side panels with a fixed footer. |
 
 ## Payment flows
@@ -77,9 +89,10 @@ Larger pages for the components that make up a whole journey. Each one explains 
 | [Status and receipt](/components/status-receipt/) | Payment instructions, the status view for every outcome, refunds and the receipt. |
 | [Transaction history](/components/history/) | Search, filters and the transaction list with its detail sheet. |
 | [Verification (KYC)](/components/verification/) | Optional consent, identity form, document upload, review and status. |
+| [KYC capture](/components/kyc-capture/) | Passive framing, review and host upload states. |
 | [Media](/components/media/) | A video player that works with any media engine you plug in. |
 | [Promotions](/components/promotions/) | Labeled promotions and the slot that loads them. |
 
 ## Not in the kit
 
-There is no select or dropdown, free text field, chip, data table or chart. Use Flutter's own widgets with your theme for those. Text fields exist only inside [`IdentityForm`](/components/verification/), [`AmountInput`](/components/amount-input/) and the promo-code and history search inputs.
+There is no select or dropdown, free text field, chip or data table. Use Flutter's own widgets with your theme for those. Text fields exist only inside [`IdentityForm`](/components/verification/), [`AmountInput`](/components/amount-input/) and the promo-code and history search inputs.

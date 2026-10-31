@@ -74,3 +74,12 @@ An `AmountParseResult` has exactly one of `money` or `issue`. [`AmountInput`](/c
 
 - [Amount text](/components/amount-text/) and [Amount input](/components/amount-input/).
 - [Localization](/foundations/localization/) for separators, dates and strings.
+
+## Compact
+
+Use `MoneyFormat.compact` for chart axes only, never an amount the customer pays or confirms. It rounds to at most three significant digits and promotes the suffix on carry. Indonesian uses rb, jt, M and T with a nonbreaking space; English uses K, M, B and T. Smaller amounts keep the regular currency format.
+
+```dart
+const format = MoneyFormat('id');
+format.compact(const Money.idr(1250000000)); // Rp1,25 M
+```

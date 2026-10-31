@@ -121,6 +121,14 @@ export default defineConfig({
               ],
             },
             {
+              label: 'Charts', items: [
+                {label: 'Line chart', slug: 'components/line-chart'},
+                {label: 'Bar chart', slug: 'components/bar-chart'},
+                {label: 'Meter chart', slug: 'components/meter-chart'},
+                {label: 'Sparkline', slug: 'components/sparkline'},
+              ],
+            },
+            {
               label: 'Navigation',
               items: [
                 { label: 'Tabs', slug: 'components/tabs' },
@@ -132,6 +140,7 @@ export default defineConfig({
               items: [
                 { label: 'Dialog', slug: 'components/dialog' },
                 { label: 'Sheet', slug: 'components/sheets' },
+                {label: 'Capture source sheet', slug: 'components/capture-source-sheet'},
               ],
             },
           ],
@@ -143,9 +152,13 @@ export default defineConfig({
             { label: 'Status and receipt', slug: 'components/status-receipt' },
             { label: 'Transaction history', slug: 'components/history' },
             { label: 'Verification (KYC)', slug: 'components/verification' },
+            {label: 'KYC capture', slug: 'components/kyc-capture'},
             { label: 'Media', slug: 'components/media' },
             { label: 'Promotions', slug: 'components/promotions' },
           ],
+        },
+        {
+          label: 'Patterns', items: [{label: 'Chart layout', slug: 'patterns/chart-layout'}],
         },
         {
           label: 'Reference',

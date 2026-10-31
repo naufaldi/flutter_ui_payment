@@ -5,12 +5,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 
 import '../adapters/fake_host.dart';
+import '../adapters/synthetic_capture.dart';
 import '../adapters/video_adapter.dart';
 import '../demo_strings.dart';
 import '../dev_chrome.dart';
 import 'flow_screen.dart' show documentRequirements, identityFields;
 
 part 'gallery_kit.dart';
+part 'gallery_charts.dart';
+part 'gallery_capture.dart';
 
 void _galleryFeedback(BuildContext context, String en, String id) {
   showPaymentSnackBar(context, message: _t(context, en, id));
@@ -107,6 +110,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
             badge: '2',
           ),
           PaymentNavItem(
+            id: 'charts',
+            label: t('Charts', 'Grafik'),
+            icon: Icons.insert_chart_outlined,
+          ),
+          PaymentNavItem(
             id: 'kyc',
             label: t('Verification (KYC)', 'Verifikasi (KYC)'),
             icon: Icons.badge_outlined,
@@ -147,10 +155,20 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ],
       'status' => const [_StatusDemo(), _InstructionsDemo(), _ReceiptDemo()],
       'history' => const [_HistoryDemo()],
+      'charts' => const [
+        _ChartDemo(kind: 'line'),
+        _ChartDemo(kind: 'bar'),
+        _ChartDemo(kind: 'meter'),
+        _ChartDemo(kind: 'sparkline'),
+        _ChartStatesDemo(),
+        _SpendingInContextDemo(),
+      ],
       'kyc' => const [
         _KycIntroDemo(),
         _IdentityDemo(),
         _DocumentDemo(),
+        _CaptureSourceDemo(),
+        _CaptureGuideDemo(),
         _KycStatusDemo(),
       ],
       _ => const [_Foundation(), _AmountDemo()],
@@ -370,6 +388,14 @@ class _Foundation extends StatelessWidget {
             const InfoRow(
               label: 'USD (2 decimals)',
               value: AmountText(Money(1999, 'USD')),
+            ),
+            InfoRow(
+              label: 'Ringkas (sumbu grafik)',
+              value: Text(
+                PaymentLocalizations.of(
+                  context,
+                ).moneyFormat.compact(const Money.idr(1250000000)),
+              ),
             ),
             const SizedBox(height: 8),
             Wrap(

@@ -1,4 +1,5 @@
 import '../payment/payment_models.dart';
+import '../verification/capture_models.dart';
 import 'payment_localizations.dart';
 
 /// English/Indonesian strings for the interaction, navigation, sheet, media,
@@ -7,6 +8,100 @@ import 'payment_localizations.dart';
 /// [PaymentLocalizations.of] like every other kit string.
 extension KitStrings on PaymentLocalizations {
   String _k(String en, String id) => languageCode == 'id' ? id : en;
+
+  // Charts
+  String get chartLine => _k('Line chart', 'Grafik garis');
+  String get chartBar => _k('Bar chart', 'Grafik batang');
+  String get chartMeter => _k('Breakdown', 'Rincian');
+  String get chartSparkline => _k('Trend', 'Tren');
+  String get chartNoData => _k('No data', 'Tidak ada data');
+  String get chartPendingKey => _k('Pending', 'Menunggu');
+  String get chartUnknownKey => _k('Not confirmed', 'Belum terkonfirmasi');
+  String get chartLoadFailed => _k('Chart didn’t load', 'Grafik gagal dimuat');
+  String get chartEmptyTitle =>
+      _k('No data for this period', 'Belum ada data untuk periode ini');
+  String chartRange(String from, String to, int count) => _k(
+    'From $from to $to, $count period(s).',
+    'Dari $from sampai $to, $count periode.',
+  );
+  String chartLowest(String amount, String label) =>
+      _k('Lowest $amount on $label.', 'Terendah $amount pada $label.');
+  String chartHighest(String amount, String label) =>
+      _k('Highest $amount on $label.', 'Tertinggi $amount pada $label.');
+  String chartLatest(String amount, String label) =>
+      _k('Latest $amount on $label.', 'Terakhir $amount pada $label.');
+  String chartPendingCount(int n) => _k(
+    n == 1
+        ? '1 period is pending and not counted.'
+        : '$n periods are pending and not counted.',
+    '$n periode masih menunggu dan tidak dihitung.',
+  );
+  String chartUnknownCount(int n) => _k(
+    n == 1
+        ? '1 period is not confirmed yet and not counted.'
+        : '$n periods are not confirmed yet and not counted.',
+    '$n periode belum terkonfirmasi dan tidak dihitung.',
+  );
+  String chartMissingCount(int n) => _k(
+    n == 1 ? '1 period has no data.' : '$n periods have no data.',
+    '$n periode tanpa data.',
+  );
+  String meterItem(String label, String amount) => '$label $amount';
+
+  // Capture
+  String get captureSourceTitle => _k('Add a photo', 'Tambah foto');
+  String get captureSourceCamera => _k('Take a photo', 'Ambil foto');
+  String get captureSourceGallery =>
+      _k('Choose from gallery', 'Pilih dari galeri');
+  String get captureSourceFile => _k('Choose a file', 'Pilih file');
+  String get captureTipLight =>
+      _k('Use even light', 'Gunakan cahaya yang merata');
+  String get captureTipGlare =>
+      _k('Avoid glare on the card', 'Hindari pantulan cahaya di kartu');
+  String get captureTipCorners =>
+      _k('Show all four corners', 'Tampilkan keempat sudut kartu');
+  String get captureTipFaceAndCard => _k(
+    'Make sure your face and the card are both visible',
+    'Pastikan wajah dan KTP sama-sama terlihat',
+  );
+  String get captureTipNoCover => _k(
+    'Don’t cover any text with your fingers',
+    'Jangan menutupi tulisan dengan jari',
+  );
+  String get captureTake => _k('Take photo', 'Ambil foto');
+  String get captureRetake => _k('Retake', 'Ulangi');
+  String get captureUse => _k('Use photo', 'Pakai foto');
+  String captureTitle(CaptureKind kind) => switch (kind) {
+    CaptureKind.idCard => _k('Photo of your ID card', 'Foto KTP'),
+    CaptureKind.selfieWithIdCard => _k(
+      'Selfie with your ID card',
+      'Selfie dengan KTP',
+    ),
+  };
+  String captureFramingHint(CaptureKind kind) => switch (kind) {
+    CaptureKind.idCard => _k(
+      'Fit the card inside the frame.',
+      'Posisikan KTP di dalam bingkai.',
+    ),
+    CaptureKind.selfieWithIdCard => _k(
+      'Keep your face in the oval and hold the card below your chin.',
+      'Posisikan wajah di dalam oval dan pegang KTP di bawah dagu.',
+    ),
+  };
+  String capturePhotoLabel(CaptureKind kind) => switch (kind) {
+    CaptureKind.idCard => _k('Your photo: ID card', 'Foto Anda: KTP'),
+    CaptureKind.selfieWithIdCard => _k(
+      'Your photo: selfie with ID card',
+      'Foto Anda: selfie dengan KTP',
+    ),
+  };
+  String captureFrameLabel(CaptureKind kind) => switch (kind) {
+    CaptureKind.idCard => _k('Frame for your ID card', 'Bingkai untuk KTP'),
+    CaptureKind.selfieWithIdCard => _k(
+      'Frame for your face and ID card',
+      'Bingkai untuk wajah dan KTP',
+    ),
+  };
 
   // Interaction
   String get close => _k('Close', 'Tutup');

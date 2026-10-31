@@ -1,0 +1,50 @@
+---
+title: Bar chart
+description: Compares customer spending amounts from a zero baseline.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`PaymentBarChart` compares customer spending amounts from a zero baseline.
+
+<HostOwns>amounts, currency, period labels, settled/pending/unknown status, and every headline or delta.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_chart_bar" alt="Bar chart specimen with synthetic spending amounts in light mode" caption="Bar chart, English" />
+  <Screen name="ios_catalog_chart_bar_dark" alt="Bar chart specimen with synthetic spending amounts in dark mode" caption="Bar chart, dark" />
+</Screens>
+
+## Usage
+
+```dart
+PaymentBarChart(points: const [
+  ChartPoint(label: 'Week 1', value: Money.idr(350000)),
+  ChartPoint(label: 'Week 2', value: Money.idr(450000), status: ChartPointStatus.pending),
+]);
+```
+
+Wrap in `ChartModule` or a `SizedBox(height: 180)` with a bounded height. Use 320 for a featured plot. Below 200px, y labels are hidden and only the first and last x labels remain.
+
+## States and variants
+
+Settled marks are solid, pending marks are outlined or dashed, and unknown marks are hatched or dotted. A null point is a gap, never zero. Use one currency per chart. Bar and meter amounts must be non-negative; line charts accept negative amounts.
+
+## Content guidelines
+
+Use short period labels and a clear title. Explain what is settled in the headline caption. The host supplies the headline; the kit never adds plotted values to produce a customer total.
+
+## Accessibility
+
+A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. Pointer inspection on line/bar charts is supplemental; it has no keyboard focus target. Status is conveyed by shape and words as well as color.
+
+## API
+
+<Props names={['PaymentBarChart']} />
+
+## See also
+
+- [Chart layout](/patterns/chart-layout/) for height, state and headline composition.
+- [Money](/foundations/money/) for precise and compact amounts.

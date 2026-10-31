@@ -2,6 +2,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 
 void main() {
+  test('compact axes use rounded locale suffixes', () {
+    const id = MoneyFormat('id');
+    const en = MoneyFormat('en');
+    final cases = <int, List<String>>{
+      1250000000: ['Rp1,25 M', 'Rp1.25B'],
+      125000000: ['Rp125 jt', 'Rp125M'],
+      850000: ['Rp850 rb', 'Rp850K'],
+      999500: ['Rp1 jt', 'Rp1M'],
+      999: ['Rp999', 'Rp999'],
+      0: ['Rp0', 'Rp0'],
+    };
+    for (final entry in cases.entries) {
+      expect(id.compact(Money.idr(entry.key)), entry.value[0]);
+      expect(en.compact(Money.idr(entry.key)), entry.value[1]);
+    }
+    expect(id.compact(const Money.idr(-1250000000)), startsWith('−'));
+    expect(en.compact(const Money(123456789, 'USD')), r'$1.23M');
+  });
+
   const id = MoneyFormat('id');
   const en = MoneyFormat('en');
 

@@ -61,6 +61,59 @@ Future<void> checkStatusUntil(
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
+  testWidgets('K04 camera photo rejected by host, retaken, uploaded', (
+    tester,
+  ) async {
+    final app = await launch(tester);
+    final c = await runScenario(tester, app, 'K04', variant: 1);
+    await tapVisible(
+      tester,
+      find.descendant(
+        of: find.byKey(const Key('slot-idCard')),
+        matching: find.text('Choose document'),
+      ),
+    );
+    await tapVisible(tester, find.text('Take a photo'));
+    await tapVisible(tester, find.text('Take photo'));
+    await tapVisible(tester, find.text('Use photo'));
+    await pumpUntil(
+      tester,
+      () => c.documents[idCardSlot]?.phase == DocumentSlotPhase.failed,
+    );
+    expect(
+      find.text('The ID photo is blurry. Retake it in good light.'),
+      findsOneWidget,
+    );
+    await tapVisible(tester, find.text('Retake'));
+    await tapVisible(tester, find.text('Take photo'));
+    await tapVisible(tester, find.text('Use photo'));
+    await pumpUntil(
+      tester,
+      () => c.documents[idCardSlot]?.phase == DocumentSlotPhase.uploaded,
+    );
+    await settle(tester);
+    expect(find.text('Choose document'), findsWidgets);
+  });
+  testWidgets('K03 camera denied via source sheet keeps the slot recoverable', (
+    tester,
+  ) async {
+    final app = await launch(tester);
+    final c = await runScenario(tester, app, 'K03', variant: 1);
+    final slot = find.byKey(const Key('slot-idCard'));
+    await tapVisible(
+      tester,
+      find.descendant(of: slot, matching: find.text('Choose document')),
+    );
+    await tapVisible(tester, find.text('Take a photo'));
+    await tapVisible(
+      tester,
+      find.descendant(of: slot, matching: find.text('Open settings')),
+    );
+    await pumpUntil(
+      tester,
+      () => c.documents[idCardSlot]?.phase == DocumentSlotPhase.empty,
+    );
+  });
   testWidgets('H01 happy flow: KYC → checkout → one payment → receipt', (
     tester,
   ) async {
@@ -96,6 +149,7 @@ void main() {
           matching: find.text('Choose document'),
         ),
       );
+      await tapVisible(tester, find.text('Choose a file'));
       await tapVisible(tester, find.byKey(Key('fixture-$fixture')));
       await pumpUntil(
         tester,

@@ -18,6 +18,8 @@ KYC is optional and composes with checkout; not every payment has to pass throug
 
 ## Usage
 
+Use [KYC capture](/components/kyc-capture/) and the [source sheet](/components/capture-source-sheet/) when the host offers camera framing before upload.
+
 The flow is intro → form → documents → review → status. Each widget is independent; your coordinator decides which one to show.
 
 ```dart
@@ -106,3 +108,5 @@ VerificationStatusView(
 ## API
 
 <Props names={['VerificationIntro', 'IdentityForm', 'DocumentUploadTile', 'VerificationReview', 'VerificationStatusView', 'VerificationSnapshot', 'VerificationStatus', 'VerificationAction', 'DataRequirement', 'IdentityFieldSpec', 'DocumentRequirement', 'DocumentFile', 'DocumentSlotState', 'DocumentSlotPhase', 'DocumentIssue', 'DocumentIssueKind', 'checkDocumentLimits']} />
+
+See also [KYC capture](/components/kyc-capture/) and [Capture source sheet](/components/capture-source-sheet/).
