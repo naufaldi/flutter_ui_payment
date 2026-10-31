@@ -1,3 +1,5 @@
+import 'payment_localizations.dart';
+import 'kit_strings.dart';
 import 'package:flutter/material.dart';
 import 'payment_theme.dart';
 import 'payment_type.dart';
@@ -107,3 +109,27 @@ EdgeInsetsGeometry? fieldContentPadding(PaymentTheme theme, PaymentSize size) =>
         theme.spacing * 2,
       ),
     };
+
+class FieldGroupScope extends InheritedWidget {
+  const FieldGroupScope({
+    super.key,
+    required this.disabled,
+    required this.markOptional,
+    required super.child,
+  });
+  final bool disabled;
+  final bool markOptional;
+  static FieldGroupScope? of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<FieldGroupScope>();
+  @override
+  bool updateShouldNotify(FieldGroupScope old) =>
+      disabled != old.disabled || markOptional != old.markOptional;
+}
+
+String fieldLabel(
+  BuildContext context,
+  String label, {
+  required bool required,
+}) => FieldGroupScope.of(context)?.markOptional == true && !required
+    ? '$label (${PaymentLocalizations.of(context).optional})'
+    : label;

@@ -1,3 +1,5 @@
+import '../forms/select.dart';
+import '../foundation/kit_strings.dart';
 import '../foundation/field_decoration.dart';
 import 'dart:async';
 
@@ -25,6 +27,8 @@ class PaymentCurrencyField extends StatefulWidget {
     super.key,
     required this.currency,
     required this.onChanged,
+    this.currencies = const [],
+    this.onCurrencyChanged,
     this.minimum,
     this.maximum,
     this.initialText,
@@ -36,6 +40,12 @@ class PaymentCurrencyField extends StatefulWidget {
     this.errorText,
     this.hiddenElements = const {},
   });
+
+  /// Host allowlist; two or more show a selector above the amount.
+  final List<String> currencies;
+
+  /// Reports currency selection; the host passes the new currency back.
+  final ValueChanged<String>? onCurrencyChanged;
 
   /// Helper text above the host's limits.
   final String? description;
@@ -140,6 +150,17 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
   }
 
   @override
+  void didUpdateWidget(PaymentCurrencyField old) {
+    super.didUpdateWidget(old);
+    if (old.currency != widget.currency) {
+      _result = _parse(_controller.text);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) widget.onChanged(_result);
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     _focus.dispose();
@@ -162,9 +183,10 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
     ].join(' · ');
     // The entered amount is a large amount, so it follows text scaling only
     // up to 1.6×, like the other 20 px amounts.
-    return MediaQuery.withClampedTextScaling(
+    final field = MediaQuery.withClampedTextScaling(
       maxScaleFactor: 1.6,
       child: TextField(
+        enabled: !(FieldGroupScope.of(context)?.disabled ?? false),
         controller: _controller,
         focusNode: _focus,
         onChanged: _onChanged,
@@ -215,6 +237,32 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
                     ),
             ),
       ),
+    );
+    assert(
+      widget.currencies.length < 2 ||
+          (widget.onCurrencyChanged != null &&
+              widget.currencies.contains(widget.currency)),
+    );
+    if (widget.currencies.length < 2) return field;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: theme.space(PaymentSpace.group),
+      children: [
+        PaymentSelect<String>(
+          label: l10n.currencyLabel,
+          options: [
+            for (final c in widget.currencies)
+              PaymentSelectOption(
+                value: c,
+                label: '$c · ${CurrencySpec.of(c).symbol}',
+              ),
+          ],
+          value: widget.currency,
+          onChanged: widget.onCurrencyChanged,
+          size: widget.size,
+        ),
+        field,
+      ],
     );
   }
 }

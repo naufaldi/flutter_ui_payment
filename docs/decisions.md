@@ -335,3 +335,13 @@ Code uses a muted tag without a second muted container. Copy is supported on cod
 Fixed glyph exceptions remain button metrics, badge, spinner, field-message, switch thumb, toast and media scrim controls. Their geometry or foreground is owned by the enclosing control.
 
 At 200% text the list chevron grows 20→32 dp: its LTR left edge moves 340→328 and its RTL right edge 20→32. The glyph vertical bounds move 22–42→16–48. Only these intentional expectations changed in the existing geometry test.
+
+### Phase 4B-1 implementation decisions
+
+Field triggers expose one button node with value, error and description, use existing field decoration and restore focus after sheets. Multiple selection uses a private constructor and stages values until Apply. Select adds validator and focusNode for IdentityForm. Fields fill; Stripe css width is not mirrored. Re-tapping a selected radio does not close its sheet.
+
+Date patterns are app-wide only. The localized pattern remains visible below the field and as a hint. Auto-separators preserve digit-index caret position; the calendar is calendar-only. Identity values use ISO calendar dates. Date and choice correction descriptions use neutral text while text fields retain their warning icon, as planned. Disabled groups do not allow per-field re-enable. Currency changes reparse and report after the frame.
+
+Implementation deviation: PaymentTextArea uses a private stateful controller adapter to submit uncontrolled values accurately with modified Enter, while retaining PaymentTextField decoration and behavior. No dependency or public API change is needed for that ownership boundary.
+
+The multiple-select factory parameters inherit their meaning from the documented public fields. The generated API parser only attaches field docs to initializing formals; the factory remains documented at the constructor level.

@@ -186,6 +186,7 @@ class _CurrencyFieldSpecimen extends StatelessWidget {
     name: 'PaymentCurrencyField · variants',
     child: Column(
       children: [
+        const _CurrencySwitch(),
         for (final size in PaymentSize.values)
           Padding(
             padding: EdgeInsets.only(bottom: PaymentTheme.of(context).spacing),

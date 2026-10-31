@@ -2043,3 +2043,7 @@ Icon buttons retain tooltips and 48 dp targets. External links announce link rol
 ### Phase 4A implementation notes
 
 Layout primitives use semantic enums and internal resolvers. PaymentIcon.tone accepts an icon override. Image providers and copy operations belong to the host. Accordion leading remains deprecated until 0.2.0.
+
+### Phase 4B-1 implementation notes
+
+Fields share labels, disabled scope and errors. Select supports Form validation and focus nodes; date patterns are app-wide. Identity date values are ISO calendar dates. Fields fill their parent; css width is not mirrored. Multiple values use the .multiple factory. Currency changes report reparsed values after a frame.

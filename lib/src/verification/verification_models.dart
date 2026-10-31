@@ -1,3 +1,4 @@
+import '../forms/select.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -58,6 +59,18 @@ class DataRequirement {
   final String purpose;
 }
 
+/// What an identity field collects. Nothing else exists.
+enum IdentityFieldKind {
+  /// Free text.
+  text,
+
+  /// ISO calendar date.
+  date,
+
+  /// Host option value.
+  choice,
+}
+
 /// A host-defined identity field. Validation rules belong to the host; the
 /// form only runs them and shows their messages.
 @immutable
@@ -72,18 +85,48 @@ class IdentityFieldSpec {
     this.textCapitalization = TextCapitalization.none,
     this.autofillHints = const [],
     this.maskInReview = false,
+    this.kind = IdentityFieldKind.text,
+    this.options = const [],
+    this.firstDate,
+    this.lastDate,
   });
 
+  /// Field value kind.
+  final IdentityFieldKind kind;
+
+  /// Allowed choice options.
+  final List<PaymentSelectOption<String>> options;
+
+  /// Earliest calendar date, default 1900-01-01.
+  final DateTime? firstDate;
+
+  /// Latest calendar date, default today.
+  final DateTime? lastDate;
+
+  /// key for this identity field.
   final String key;
+
+  /// label for this identity field.
   final String label;
+
+  /// hint for this identity field.
   final String? hint;
 
   /// Returns an error message, or null when valid. Required-ness is part of
-  /// the host rule.
+  /// the host rule. Date values are ISO yyyy-MM-dd; choices use option values.
+  /// Empty or invalid values are the empty string.
   final String? Function(String value)? validator;
+
+  /// keyboardType for this identity field.
   final TextInputType keyboardType;
+
+  /// inputFormatters for this identity field.
   final List<TextInputFormatter> inputFormatters;
+
+  /// textCapitalization for this identity field.
   final TextCapitalization textCapitalization;
+
+  /// autofillHints for this identity field.
   final List<String> autofillHints;
 
   /// Review screens show only the last four characters.

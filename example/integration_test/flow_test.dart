@@ -150,14 +150,19 @@ void main() {
     final fields = find.byType(TextFormField);
     await tester.enterText(fields.at(0), 'Sari Wulandari (Demo)');
     await tester.enterText(fields.at(1), '3100000000001234');
-    await tester.enterText(fields.at(2), '17-08-1995');
+    await tester.enterText(fields.at(2), '17/08/1995');
     // Let the soft keyboard close before tapping, or the tap lands mid-resize.
     FocusManager.instance.primaryFocus?.unfocus();
     await settle(tester);
     await settle(tester);
+    await tapVisible(tester, find.text('Occupation'));
+    await tapVisible(tester, find.text('Employee'));
+    await settle(tester);
     await tapVisible(tester, find.text('Continue'));
     await pumpUntil(tester, () => c.step == FlowStep.kycDocuments);
     expect(c.step, FlowStep.kycDocuments);
+    expect(c.identity['dob'], '1995-08-17');
+    expect(c.identity['occupation'], 'employee');
 
     for (final (slot, fixture) in [
       ('idCard', 'ktp_demo_sari.jpg'),

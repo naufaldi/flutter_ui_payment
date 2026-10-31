@@ -2334,6 +2334,11 @@
       "captureFrameLabel",
       "opensExternally",
       "hideBanner",
+      "enterValidDate",
+      "chooseDate",
+      "optional",
+      "charactersLeft",
+      "currencyLabel",
       "close",
       "cancel",
       "confirm",
@@ -3168,13 +3173,18 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "dateInputPattern",
-            "doc": "Typed date hint, DD/MM/YYYY in both locales (Q12).\nDD, MM and YYYY each occur once with one repeated /, . or - separator.\nOverride app-wide with a host `LocalizationsDelegate<PaymentLocalizations>`\nreturning `PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY')`.\nPer-field overrides arrive with date fields in Phase 4B."
+            "doc": "Typed date hint, DD/MM/YYYY in both locales (Q12).\nDD, MM and YYYY each occur once with one repeated /, . or - separator.\nOverride app-wide with a host `LocalizationsDelegate<PaymentLocalizations>`\nreturning `PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY')`.\nApplies app-wide; there is no per-field override."
           }
         ],
         "doc": ""
       }
     ],
     "getters": [
+      {
+        "name": "dateInputHint",
+        "type": "String",
+        "doc": "Persistent localized pattern; parsing uses dateInputPattern."
+      },
       {
         "name": "working",
         "type": "String",
@@ -3697,7 +3707,14 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Typed date hint, DD/MM/YYYY in both locales (Q12).\nDD, MM and YYYY each occur once with one repeated /, . or - separator.\nOverride app-wide with a host `LocalizationsDelegate<PaymentLocalizations>`\nreturning `PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY')`.\nPer-field overrides arrive with date fields in Phase 4B."
+        "doc": "Typed date hint, DD/MM/YYYY in both locales (Q12).\nDD, MM and YYYY each occur once with one repeated /, . or - separator.\nOverride app-wide with a host `LocalizationsDelegate<PaymentLocalizations>`\nreturning `PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY')`.\nApplies app-wide; there is no per-field override."
+      },
+      {
+        "name": "dateInputHint",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Persistent localized pattern; parsing uses dateInputPattern."
       },
       {
         "name": "formatDate",
@@ -9696,6 +9713,28 @@
             "doc": "Reports every parse result."
           },
           {
+            "name": "currencies",
+            "type": "List<String>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "currencies",
+            "doc": "Host allowlist; two or more show a selector above the amount."
+          },
+          {
+            "name": "onCurrencyChanged",
+            "type": "ValueChanged<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onCurrencyChanged",
+            "doc": "Reports currency selection; the host passes the new currency back."
+          },
+          {
             "name": "minimum",
             "type": "Money?",
             "required": false,
@@ -9812,6 +9851,20 @@
     "getters": [],
     "statics": [],
     "members": [
+      {
+        "name": "currencies",
+        "kind": "field",
+        "static": false,
+        "type": "List<String>",
+        "doc": "Host allowlist; two or more show a selector above the amount."
+      },
+      {
+        "name": "onCurrencyChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<String>?",
+        "doc": "Reports currency selection; the host passes the new currency back."
+      },
       {
         "name": "description",
         "kind": "field",
@@ -14463,6 +14516,25 @@
     ],
     "copyWith": null
   },
+  "IdentityFieldKind": {
+    "kind": "enum",
+    "file": "lib/src/verification/verification_models.dart",
+    "doc": "What an identity field collects. Nothing else exists.",
+    "values": [
+      {
+        "name": "text",
+        "doc": "Free text."
+      },
+      {
+        "name": "date",
+        "doc": "ISO calendar date."
+      },
+      {
+        "name": "choice",
+        "doc": "Host option value."
+      }
+    ]
+  },
   "IdentityFieldSpec": {
     "kind": "class",
     "file": "lib/src/verification/verification_models.dart",
@@ -14482,7 +14554,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "key",
-            "doc": ""
+            "doc": "key for this identity field."
           },
           {
             "name": "label",
@@ -14493,7 +14565,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": ""
+            "doc": "label for this identity field."
           },
           {
             "name": "hint",
@@ -14504,7 +14576,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "hint",
-            "doc": ""
+            "doc": "hint for this identity field."
           },
           {
             "name": "validator",
@@ -14515,7 +14587,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "validator",
-            "doc": "Returns an error message, or null when valid. Required-ness is part of\nthe host rule."
+            "doc": "Returns an error message, or null when valid. Required-ness is part of\nthe host rule. Date values are ISO yyyy-MM-dd; choices use option values.\nEmpty or invalid values are the empty string."
           },
           {
             "name": "keyboardType",
@@ -14526,7 +14598,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "keyboardType",
-            "doc": ""
+            "doc": "keyboardType for this identity field."
           },
           {
             "name": "inputFormatters",
@@ -14537,7 +14609,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "inputFormatters",
-            "doc": ""
+            "doc": "inputFormatters for this identity field."
           },
           {
             "name": "textCapitalization",
@@ -14548,7 +14620,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "textCapitalization",
-            "doc": ""
+            "doc": "textCapitalization for this identity field."
           },
           {
             "name": "autofillHints",
@@ -14559,7 +14631,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "autofillHints",
-            "doc": ""
+            "doc": "autofillHints for this identity field."
           },
           {
             "name": "maskInReview",
@@ -14571,6 +14643,50 @@
             "isSuper": false,
             "fieldName": "maskInReview",
             "doc": "Review screens show only the last four characters."
+          },
+          {
+            "name": "kind",
+            "type": "IdentityFieldKind",
+            "required": false,
+            "default": "IdentityFieldKind.text",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "kind",
+            "doc": "Field value kind."
+          },
+          {
+            "name": "options",
+            "type": "List<PaymentSelectOption<String>>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "options",
+            "doc": "Allowed choice options."
+          },
+          {
+            "name": "firstDate",
+            "type": "DateTime?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "firstDate",
+            "doc": "Earliest calendar date, default 1900-01-01."
+          },
+          {
+            "name": "lastDate",
+            "type": "DateTime?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "lastDate",
+            "doc": "Latest calendar date, default today."
           }
         ],
         "doc": ""
@@ -14580,53 +14696,81 @@
     "statics": [],
     "members": [
       {
+        "name": "kind",
+        "kind": "field",
+        "static": false,
+        "type": "IdentityFieldKind",
+        "doc": "Field value kind."
+      },
+      {
+        "name": "options",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentSelectOption<String>>",
+        "doc": "Allowed choice options."
+      },
+      {
+        "name": "firstDate",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime?",
+        "doc": "Earliest calendar date, default 1900-01-01."
+      },
+      {
+        "name": "lastDate",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime?",
+        "doc": "Latest calendar date, default today."
+      },
+      {
         "name": "key",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "key for this identity field."
       },
       {
         "name": "label",
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": ""
+        "doc": "label for this identity field."
       },
       {
         "name": "hint",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "hint for this identity field."
       },
       {
         "name": "keyboardType",
         "kind": "field",
         "static": false,
         "type": "TextInputType",
-        "doc": ""
+        "doc": "keyboardType for this identity field."
       },
       {
         "name": "inputFormatters",
         "kind": "field",
         "static": false,
         "type": "List<TextInputFormatter>",
-        "doc": ""
+        "doc": "inputFormatters for this identity field."
       },
       {
         "name": "textCapitalization",
         "kind": "field",
         "static": false,
         "type": "TextCapitalization",
-        "doc": ""
+        "doc": "textCapitalization for this identity field."
       },
       {
         "name": "autofillHints",
         "kind": "field",
         "static": false,
         "type": "List<String>",
-        "doc": ""
+        "doc": "autofillHints for this identity field."
       },
       {
         "name": "maskInReview",
@@ -16268,6 +16412,350 @@
     ],
     "copyWith": null
   },
+  "PaymentTextArea": {
+    "kind": "class",
+    "file": "lib/src/controls/text_field.dart",
+    "doc": "Several lines of free text. Enter inserts a newline; modified Enter submits.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentTextArea",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "label for this field."
+          },
+          {
+            "name": "controller",
+            "type": "TextEditingController?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "controller",
+            "doc": "controller for this field."
+          },
+          {
+            "name": "initialValue",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "initialValue",
+            "doc": "initialValue for this field."
+          },
+          {
+            "name": "focusNode",
+            "type": "FocusNode?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "focusNode",
+            "doc": "focusNode for this field."
+          },
+          {
+            "name": "hint",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hint",
+            "doc": "hint for this field."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "description for this field."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "errorText for this field."
+          },
+          {
+            "name": "validator",
+            "type": "FormFieldValidator<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "validator",
+            "doc": "validator for this field."
+          },
+          {
+            "name": "required",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "required",
+            "doc": "required for this field."
+          },
+          {
+            "name": "hiddenElements",
+            "type": "Set<PaymentFieldPart>",
+            "required": false,
+            "default": "const {}",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hiddenElements",
+            "doc": "hiddenElements for this field."
+          },
+          {
+            "name": "minLines",
+            "type": "int",
+            "required": false,
+            "default": "3",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "minLines",
+            "doc": "minLines for this field."
+          },
+          {
+            "name": "maxLines",
+            "type": "int?",
+            "required": false,
+            "default": "8",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "maxLines",
+            "doc": "maxLines for this field."
+          },
+          {
+            "name": "maxLength",
+            "type": "int?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "maxLength",
+            "doc": "maxLength for this field."
+          },
+          {
+            "name": "size",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": "size for this field."
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onChanged",
+            "doc": "onChanged for this field."
+          },
+          {
+            "name": "onSubmitted",
+            "type": "ValueChanged<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onSubmitted",
+            "doc": "onSubmitted for this field."
+          },
+          {
+            "name": "enabled",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "enabled",
+            "doc": "enabled for this field."
+          },
+          {
+            "name": "readOnly",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "readOnly",
+            "doc": "readOnly for this field."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "label for this field."
+      },
+      {
+        "name": "controller",
+        "kind": "field",
+        "static": false,
+        "type": "TextEditingController?",
+        "doc": "controller for this field."
+      },
+      {
+        "name": "initialValue",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "initialValue for this field."
+      },
+      {
+        "name": "focusNode",
+        "kind": "field",
+        "static": false,
+        "type": "FocusNode?",
+        "doc": "focusNode for this field."
+      },
+      {
+        "name": "hint",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "hint for this field."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "description for this field."
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "errorText for this field."
+      },
+      {
+        "name": "validator",
+        "kind": "field",
+        "static": false,
+        "type": "FormFieldValidator<String>?",
+        "doc": "validator for this field."
+      },
+      {
+        "name": "required",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "required for this field."
+      },
+      {
+        "name": "hiddenElements",
+        "kind": "field",
+        "static": false,
+        "type": "Set<PaymentFieldPart>",
+        "doc": "hiddenElements for this field."
+      },
+      {
+        "name": "minLines",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": "minLines for this field."
+      },
+      {
+        "name": "maxLines",
+        "kind": "field",
+        "static": false,
+        "type": "int?",
+        "doc": "maxLines for this field."
+      },
+      {
+        "name": "maxLength",
+        "kind": "field",
+        "static": false,
+        "type": "int?",
+        "doc": "maxLength for this field."
+      },
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSize",
+        "doc": "size for this field."
+      },
+      {
+        "name": "onChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<String>?",
+        "doc": "onChanged for this field."
+      },
+      {
+        "name": "onSubmitted",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<String>?",
+        "doc": "onSubmitted for this field."
+      },
+      {
+        "name": "enabled",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "enabled for this field."
+      },
+      {
+        "name": "readOnly",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "readOnly for this field."
+      }
+    ],
+    "copyWith": null
+  },
   "PaymentIconButtonVariant": {
     "kind": "enum",
     "file": "lib/src/controls/actions.dart",
@@ -17588,6 +18076,855 @@
         "static": false,
         "type": "String?",
         "doc": "Spoken prefix before the value."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentSelectOption": {
+    "kind": "class",
+    "file": "lib/src/forms/select.dart",
+    "doc": "One option; a disabled reason explains unavailable choices.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentSelectOption",
+        "factory": false,
+        "params": [
+          {
+            "name": "value",
+            "type": "T",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": "Host value."
+          },
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Visible option name."
+          },
+          {
+            "name": "disabledReason",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "disabledReason",
+            "doc": "Disables the option with an explanation."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "T",
+        "doc": "Host value."
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Visible option name."
+      },
+      {
+        "name": "disabledReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Disables the option with an explanation."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentSelect": {
+    "kind": "class",
+    "file": "lib/src/forms/select.dart",
+    "doc": "Field trigger with a radio sheet, or draft checkboxes and Apply.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentSelect",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "label for this field."
+          },
+          {
+            "name": "options",
+            "type": "List<PaymentSelectOption<T>>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "options",
+            "doc": "options for this field."
+          },
+          {
+            "name": "value",
+            "type": "T?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": "value for this field."
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<T>?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onChanged",
+            "doc": "onChanged for this field."
+          },
+          {
+            "name": "hint",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hint",
+            "doc": "hint for this field."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "description for this field."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "errorText for this field."
+          },
+          {
+            "name": "validator",
+            "type": "FormFieldValidator<T>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "validator",
+            "doc": "validator for this field."
+          },
+          {
+            "name": "required",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "required",
+            "doc": "required for this field."
+          },
+          {
+            "name": "hiddenElements",
+            "type": "Set<PaymentFieldPart>",
+            "required": false,
+            "default": "const {}",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hiddenElements",
+            "doc": "hiddenElements for this field."
+          },
+          {
+            "name": "size",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": "size for this field."
+          },
+          {
+            "name": "focusNode",
+            "type": "FocusNode?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "focusNode",
+            "doc": "focusNode for this field."
+          }
+        ],
+        "doc": ""
+      },
+      {
+        "name": "PaymentSelect.multiple",
+        "factory": true,
+        "params": [
+          {
+            "name": "key",
+            "type": "Key?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "options",
+            "type": "List<PaymentSelectOption<T>>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "values",
+            "type": "Set<T>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<Set<T>>?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "hint",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "validator",
+            "type": "FormFieldValidator<Set<T>>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "required",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "hiddenElements",
+            "type": "Set<PaymentFieldPart>",
+            "required": false,
+            "default": "const {}",
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "size",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "focusNode",
+            "type": "FocusNode?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          }
+        ],
+        "doc": "Stages a set of values in a checkbox sheet and reports on Apply.\nonChanged receives the complete selected set; null disables the field."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "label for this field."
+      },
+      {
+        "name": "options",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentSelectOption<T>>",
+        "doc": "options for this field."
+      },
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "T?",
+        "doc": "value for this field."
+      },
+      {
+        "name": "values",
+        "kind": "field",
+        "static": false,
+        "type": "Set<T>",
+        "doc": "values for this field."
+      },
+      {
+        "name": "onChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<T>?",
+        "doc": "onChanged for this field."
+      },
+      {
+        "name": "validator",
+        "kind": "field",
+        "static": false,
+        "type": "FormFieldValidator<T>?",
+        "doc": "validator for this field."
+      },
+      {
+        "name": "hint",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "hint for this field."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "description for this field."
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "errorText for this field."
+      },
+      {
+        "name": "required",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "required for this field."
+      },
+      {
+        "name": "hiddenElements",
+        "kind": "field",
+        "static": false,
+        "type": "Set<PaymentFieldPart>",
+        "doc": "hiddenElements for this field."
+      },
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSize",
+        "doc": "size for this field."
+      },
+      {
+        "name": "focusNode",
+        "kind": "field",
+        "static": false,
+        "type": "FocusNode?",
+        "doc": "focusNode for this field."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentDateField": {
+    "kind": "class",
+    "file": "lib/src/forms/date_field.dart",
+    "doc": "Typed calendar date with a calendar-only picker. Host owns range rules.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentDateField",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "label for this field."
+          },
+          {
+            "name": "value",
+            "type": "DateTime?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": "value for this field."
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<DateTime?>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onChanged",
+            "doc": "onChanged for this field."
+          },
+          {
+            "name": "firstDate",
+            "type": "DateTime",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "firstDate",
+            "doc": "firstDate for this field."
+          },
+          {
+            "name": "lastDate",
+            "type": "DateTime",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "lastDate",
+            "doc": "lastDate for this field."
+          },
+          {
+            "name": "validator",
+            "type": "FormFieldValidator<DateTime>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "validator",
+            "doc": "validator for this field."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "description for this field."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "errorText for this field."
+          },
+          {
+            "name": "required",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "required",
+            "doc": "required for this field."
+          },
+          {
+            "name": "hiddenElements",
+            "type": "Set<PaymentFieldPart>",
+            "required": false,
+            "default": "const {}",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hiddenElements",
+            "doc": "hiddenElements for this field."
+          },
+          {
+            "name": "size",
+            "type": "PaymentSize",
+            "required": false,
+            "default": "PaymentSize.medium",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "size",
+            "doc": "size for this field."
+          },
+          {
+            "name": "enabled",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "enabled",
+            "doc": "enabled for this field."
+          },
+          {
+            "name": "focusNode",
+            "type": "FocusNode?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "focusNode",
+            "doc": "focusNode for this field."
+          },
+          {
+            "name": "textInputAction",
+            "type": "TextInputAction?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "textInputAction",
+            "doc": "textInputAction for this field."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "label for this field."
+      },
+      {
+        "name": "value",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime?",
+        "doc": "value for this field."
+      },
+      {
+        "name": "onChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<DateTime?>",
+        "doc": "onChanged for this field."
+      },
+      {
+        "name": "firstDate",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": "firstDate for this field."
+      },
+      {
+        "name": "lastDate",
+        "kind": "field",
+        "static": false,
+        "type": "DateTime",
+        "doc": "lastDate for this field."
+      },
+      {
+        "name": "validator",
+        "kind": "field",
+        "static": false,
+        "type": "FormFieldValidator<DateTime>?",
+        "doc": "validator for this field."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "description for this field."
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "errorText for this field."
+      },
+      {
+        "name": "required",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "required for this field."
+      },
+      {
+        "name": "hiddenElements",
+        "kind": "field",
+        "static": false,
+        "type": "Set<PaymentFieldPart>",
+        "doc": "hiddenElements for this field."
+      },
+      {
+        "name": "size",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSize",
+        "doc": "size for this field."
+      },
+      {
+        "name": "enabled",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "enabled for this field."
+      },
+      {
+        "name": "focusNode",
+        "kind": "field",
+        "static": false,
+        "type": "FocusNode?",
+        "doc": "focusNode for this field."
+      },
+      {
+        "name": "textInputAction",
+        "kind": "field",
+        "static": false,
+        "type": "TextInputAction?",
+        "doc": "textInputAction for this field."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentFormFieldGroup": {
+    "kind": "class",
+    "file": "lib/src/forms/field_group.dart",
+    "doc": "Related fields under a legend; horizontal falls back below 360 dp or at large text.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentFormFieldGroup",
+        "factory": false,
+        "params": [
+          {
+            "name": "legend",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "legend",
+            "doc": "legend for this field."
+          },
+          {
+            "name": "children",
+            "type": "List<Widget>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "children",
+            "doc": "children for this field."
+          },
+          {
+            "name": "description",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "description",
+            "doc": "description for this field."
+          },
+          {
+            "name": "disabled",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "disabled",
+            "doc": "disabled for this field."
+          },
+          {
+            "name": "layout",
+            "type": "Axis",
+            "required": false,
+            "default": "Axis.vertical",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "layout",
+            "doc": "layout for this field."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "legend",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "legend for this field."
+      },
+      {
+        "name": "children",
+        "kind": "field",
+        "static": false,
+        "type": "List<Widget>",
+        "doc": "children for this field."
+      },
+      {
+        "name": "description",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "description for this field."
+      },
+      {
+        "name": "disabled",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "disabled for this field."
+      },
+      {
+        "name": "layout",
+        "kind": "field",
+        "static": false,
+        "type": "Axis",
+        "doc": "layout for this field."
       }
     ],
     "copyWith": null

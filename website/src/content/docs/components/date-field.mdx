@@ -1,0 +1,41 @@
+---
+title: Date field
+description: Collect date of birth with typed entry or a calendar.
+---
+
+import Props from '../../../components/Props.astro';
+
+Collect date of birth with typed entry or a calendar.
+
+## Usage and Stripe → kit
+
+The app-wide date pattern is a hint and persistent caption. Separators are inserted without moving focus. Invalid input shows on blur or Form validation; correcting it clears the kit error. Host validators own age and range rules. The calendar is calendar-only. Indonesian calendar labels require the host to register GlobalMaterialLocalizations.delegate. No per-field pattern override exists.
+
+## Which variant when
+
+Use these fields for a bounded task. Use the host validator for business rules and persistent descriptions for instructions.
+
+## States
+
+Default, focused, disabled and error. Errors include an icon, text and an edge. Selection controls support hardware keyboards.
+
+## Do and don't
+
+Keep labels visible. Avoid placing the only instruction in a hint.
+
+## Content guidelines
+
+Use short, specific labels and explain how to correct an error.
+
+## Accessibility
+
+Input text is 16 dp. Legends precede fields in reading order. Labels and errors stay in semantics when visually hidden. Pickers restore focus.
+
+## API
+
+<Props names={ ['PaymentDateField'] } />
+
+## See also
+
+- [Text field](/components/text-field/)
+- [Localization](/foundations/localization/)

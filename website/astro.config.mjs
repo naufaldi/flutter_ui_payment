@@ -95,6 +95,11 @@ export default defineConfig({
             {
               label: 'Forms',
               items: [
+                { label: 'Text area', slug: 'components/text-area' },
+                { label: 'Select', slug: 'components/select' },
+                { label: 'Date field', slug: 'components/date-field' },
+                { label: 'Form field group', slug: 'components/form-field-group' },
+
                 { label: 'Checkbox', slug: 'components/checkbox' },
                 { label: 'Radio', slug: 'components/radio' },
                 { label: 'Switch', slug: 'components/switch' },

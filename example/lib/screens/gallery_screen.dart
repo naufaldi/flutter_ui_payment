@@ -13,6 +13,7 @@ import 'flow_screen.dart' show documentRequirements, identityFields;
 
 part 'gallery_kit.dart';
 part 'gallery_layout.dart';
+part 'gallery_forms.dart';
 part 'gallery_charts.dart';
 part 'gallery_capture.dart';
 part 'gallery_feedback.dart';
@@ -76,6 +77,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
             id: 'controls',
             label: t('Controls', 'Kontrol'),
             icon: Icons.toggle_on_outlined,
+          ),
+          PaymentNavItem(
+            id: 'forms',
+            label: t('Forms', 'Formulir'),
+            icon: Icons.edit_note,
           ),
           PaymentNavItem(
             id: 'feedback',
@@ -162,6 +168,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _MenuSpecimen(),
         _AccordionSpecimen(),
         _ListSpecimen(),
+      ],
+      'forms' => const [
+        _FormsSpecimen('PaymentTextArea'),
+        _FormsSpecimen('PaymentSelect'),
+        _FormsSpecimen('PaymentDateField'),
+        _FormsSpecimen('PaymentFormFieldGroup'),
       ],
       'feedback' => const [
         _BadgeSpecimen(),
@@ -908,7 +920,8 @@ class _IdentityDemo extends StatelessWidget {
             values: const {
               'name': 'Đặng Thị Ngọc Ánh (Demo)',
               'nik': '3100000000001234',
-              'dob': '17-08-1995',
+              'dob': '1995-08-17',
+              'occupation': 'employee',
             },
             documents: [
               for (final (i, r) in documentRequirements(

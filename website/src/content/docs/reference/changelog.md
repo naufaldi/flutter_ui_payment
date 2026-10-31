@@ -5,6 +5,14 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Design system Phase 4B-1 (1 Nov 2026)
+
+- Add TextArea, Select (single/multiple), DateField and FormFieldGroup.
+- Identity fields support text, date and choice; reviews localize date and choice labels.
+- Date-kind identity values are ISO calendar dates (yyyy-MM-dd).
+- Add currency allowlists and host currency change callbacks; app-wide localized date hints.
+- The example KYC form adds date and occupation controls; upload glyph is outlined.
+
 ## Design system Phase 4A (1 Nov 2026)
 
 - Add token-only Box, Inline, Icon, Image and Code primitives.

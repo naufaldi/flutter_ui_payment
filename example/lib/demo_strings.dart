@@ -67,7 +67,7 @@ class DemoStrings {
       _t('Full name (as on ID)', 'Nama lengkap (sesuai KTP)');
   String get idNumber => _t('ID number (NIK)', 'Nomor KTP (NIK)');
   String get birthDate => _t('Date of birth', 'Tanggal lahir');
-  String get birthDateHint => _t('DD-MM-YYYY', 'HH-BB-TTTT');
+
   String get nameRequired =>
       _t('Enter your full name.', 'Masukkan nama lengkap.');
   String get nameTooShort =>
@@ -75,12 +75,19 @@ class DemoStrings {
   String get idRequired => _t('Enter your ID number.', 'Masukkan nomor KTP.');
   String get idFormat =>
       _t('NIK must be exactly 16 digits.', 'NIK harus tepat 16 digit.');
+  String get occupation => _t('Occupation', 'Pekerjaan');
+  String get occupationRequired =>
+      _t('Choose your occupation.', 'Pilih pekerjaan Anda.');
+  String get employee => _t('Employee', 'Karyawan');
+  String get entrepreneur => _t('Entrepreneur', 'Wiraswasta');
+  String get student => _t('Student', 'Pelajar atau mahasiswa');
+  String get civilServant => _t('Civil servant', 'PNS');
+  String get homemaker => _t('Homemaker', 'Ibu rumah tangga');
+  String get freelancer => _t('Freelancer', 'Pekerja lepas');
+  String get retired => _t('Retired', 'Pensiunan');
+  String get other => _t('Other', 'Lainnya');
   String get dobRequired =>
       _t('Enter your date of birth.', 'Masukkan tanggal lahir.');
-  String get dobFormat => _t(
-    'Use DD-MM-YYYY, for example 17-08-1995.',
-    'Gunakan HH-BB-TTTT, misalnya 17-08-1995.',
-  );
   String get dobAge => _t('You must be 17 or older.', 'Usia minimal 17 tahun.');
   String get reqIdentityTitle =>
       _t('Name, NIK and date of birth', 'Nama, NIK, dan tanggal lahir');
