@@ -18,7 +18,7 @@ class PaymentLocalizations {
 
   /// Typed date hint, DD/MM/YYYY in both locales (Q12).
   /// DD, MM and YYYY each occur once with one repeated /, . or - separator.
-  /// Override app-wide with a host LocalizationsDelegate<PaymentLocalizations>
+  /// Override app-wide with a host `LocalizationsDelegate<PaymentLocalizations>`
   /// returning `PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY')`.
   /// Per-field overrides arrive with date fields in Phase 4B.
   final String dateInputPattern;

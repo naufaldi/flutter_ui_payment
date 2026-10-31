@@ -1409,6 +1409,30 @@
     "statics": [],
     "copyWith": null
   },
+  "PaymentIcons": {
+    "kind": "class",
+    "file": "lib/src/foundation/payment_icons.dart",
+    "doc": "Fixed meanings for the kit icon vocabulary.",
+    "extends": null,
+    "constructors": [],
+    "getters": [],
+    "statics": [
+      "success",
+      "warning",
+      "danger",
+      "info",
+      "forward",
+      "externalLink",
+      "close",
+      "copy",
+      "copied",
+      "loadFailed",
+      "noMatches",
+      "busy",
+      "hidden"
+    ],
+    "copyWith": null
+  },
   "PaymentLocalizations": {
     "kind": "class",
     "file": "lib/src/foundation/payment_localizations.dart",
@@ -1429,6 +1453,17 @@
             "isSuper": false,
             "fieldName": "languageCode",
             "doc": ""
+          },
+          {
+            "name": "dateInputPattern",
+            "type": "String",
+            "required": false,
+            "default": "'DD/MM/YYYY'",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "dateInputPattern",
+            "doc": "Typed date hint, DD/MM/YYYY in both locales (Q12).\nDD, MM and YYYY each occur once with one repeated /, . or - separator.\nOverride app-wide with a host `LocalizationsDelegate<PaymentLocalizations>`\nreturning `PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY')`.\nPer-field overrides arrive with date fields in Phase 4B."
           }
         ],
         "doc": ""
@@ -2256,7 +2291,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "spacing",
-            "doc": "Base spacing unit; layouts use multiples of it, by role:\n\n* inline, `spacing * 0.5` (4): label → caption, title → meta.\n* related, `spacing` (8): row padding, between stacked actions.\n* block, `spacing * 1.5` (12): band → title, notice padding.\n* group, `spacing * 2` (16): screen and sheet gutter, groups.\n* section, `spacing * 3` (24): content → primary action, ruled gaps.\n* major, `spacing * 4` (32): empty and state message padding only."
+            "doc": "Base spacing unit; use `space` to resolve named roles:\n\n* inline, `spacing * 0.5` (4): label → caption, title → meta.\n* related, `spacing` (8): row padding, between stacked actions.\n* block, `spacing * 1.5` (12): band → title, notice padding.\n* group, `spacing * 2` (16): screen and sheet gutter, groups, state message padding.\n* section, `spacing * 3` (24): content → primary action, ruled gaps.\n* major, `spacing * 4` (32): the largest gap; no kit widget uses it today."
           },
           {
             "name": "amountWeight",
@@ -2401,6 +2436,285 @@
       "disabled",
       "referenceFontFamily"
     ]
+  },
+  "PaymentSize": {
+    "kind": "enum",
+    "file": "lib/src/foundation/payment_tokens.dart",
+    "doc": "Visual size only; layout box and hit area stay at least 48×48 dp. Components document their heights.",
+    "values": [
+      {
+        "name": "small",
+        "doc": "Module headers, table or chip rows; never the main action. Stripe small."
+      },
+      {
+        "name": "medium",
+        "doc": "Default, today's visual size. Stripe medium."
+      },
+      {
+        "name": "large",
+        "doc": "One primary action on a full-screen wide view. Stripe large."
+      }
+    ]
+  },
+  "PaymentWidth": {
+    "kind": "enum",
+    "file": "lib/src/foundation/payment_tokens.dart",
+    "doc": "Width policy; labels wrap and never truncate.",
+    "values": [
+      {
+        "name": "fill",
+        "doc": "Parent width, the default. Stripe fill."
+      },
+      {
+        "name": "hug",
+        "doc": "Content width. Stripe hug."
+      }
+    ]
+  },
+  "PaymentSpace": {
+    "kind": "enum",
+    "file": "lib/src/foundation/payment_tokens.dart",
+    "doc": "Spacing roles resolved by PaymentTheme.space; nothing else exists.",
+    "values": [
+      {
+        "name": "none",
+        "doc": "Zero gap. Stripe has no equivalent."
+      },
+      {
+        "name": "inline",
+        "doc": "spacing × 0.5 (4): label to caption, title to meta, icon to badge. Stripe xxsmall."
+      },
+      {
+        "name": "related",
+        "doc": "spacing (8): row padding and stacked actions. Stripe xsmall."
+      },
+      {
+        "name": "block",
+        "doc": "spacing × 1.5 (12): row padding, icon to text, notices. Stripe small."
+      },
+      {
+        "name": "group",
+        "doc": "spacing × 2 (16): gutters, label to value, state message padding. Stripe medium."
+      },
+      {
+        "name": "section",
+        "doc": "spacing × 3 (24): content to primary action, ruled gaps. Stripe large."
+      },
+      {
+        "name": "major",
+        "doc": "spacing × 4 (32): largest gap; unused by kit widgets today. Stripe xlarge and xxlarge."
+      }
+    ]
+  },
+  "PaymentRadius": {
+    "kind": "enum",
+    "file": "lib/src/foundation/payment_tokens.dart",
+    "doc": "Corner roles; resolved internally until layout primitives arrive.",
+    "values": [
+      {
+        "name": "none",
+        "doc": "BorderRadius.zero. Stripe none."
+      },
+      {
+        "name": "tag",
+        "doc": "tagBorderRadius (4). Stripe xsmall."
+      },
+      {
+        "name": "control",
+        "doc": "controlBorderRadius (6). Stripe small."
+      },
+      {
+        "name": "box",
+        "doc": "borderRadius (8). Stripe medium."
+      },
+      {
+        "name": "sheet",
+        "doc": "sheetBorderRadius (12). Stripe large."
+      },
+      {
+        "name": "circle",
+        "doc": "BorderRadius.circular(999), existing navigation pill. Stripe rounded."
+      }
+    ]
+  },
+  "PaymentTextRole": {
+    "kind": "enum",
+    "file": "lib/src/foundation/payment_tokens.dart",
+    "doc": "The nine PaymentType roles; no additional role exists.",
+    "values": [
+      {
+        "name": "display",
+        "doc": "display: one display amount. Stripe has no equivalent."
+      },
+      {
+        "name": "amountLarge",
+        "doc": "amountLarge: totals and balances. Stripe has no equivalent."
+      },
+      {
+        "name": "title",
+        "doc": "title: sheet and app-bar titles. Stripe title."
+      },
+      {
+        "name": "heading",
+        "doc": "heading: section titles. Stripe subtitle, heading and subheading."
+      },
+      {
+        "name": "body",
+        "doc": "bodyFor(context): paragraphs. Stripe lead, body and bodyEmphasized with semibold."
+      },
+      {
+        "name": "label",
+        "doc": "label: row labels and values. Stripe has no equivalent."
+      },
+      {
+        "name": "caption",
+        "doc": "caption: supporting text. Stripe caption."
+      },
+      {
+        "name": "tag",
+        "doc": "tag: short status words. Stripe kicker."
+      },
+      {
+        "name": "input",
+        "doc": "input: field text. Stripe has no equivalent."
+      }
+    ]
+  },
+  "PaymentTextColor": {
+    "kind": "enum",
+    "file": "lib/src/foundation/payment_tokens.dart",
+    "doc": "Semantic text and icon colors.",
+    "values": [
+      {
+        "name": "primary",
+        "doc": "textPrimary. Stripe primary."
+      },
+      {
+        "name": "secondary",
+        "doc": "textSecondary. Stripe secondary."
+      },
+      {
+        "name": "disabled",
+        "doc": "disabled. Stripe disabled."
+      },
+      {
+        "name": "accent",
+        "doc": "accent. Stripe brand."
+      },
+      {
+        "name": "info",
+        "doc": "info.foreground. Stripe info."
+      },
+      {
+        "name": "success",
+        "doc": "success.foreground. Stripe success."
+      },
+      {
+        "name": "warning",
+        "doc": "warning.foreground. Stripe attention."
+      },
+      {
+        "name": "danger",
+        "doc": "danger.foreground. Stripe critical."
+      }
+    ]
+  },
+  "PaymentFontWeight": {
+    "kind": "enum",
+    "file": "lib/src/foundation/payment_tokens.dart",
+    "doc": "Running-text emphasis only; choose a PaymentType role for hierarchy.",
+    "values": [
+      {
+        "name": "regular",
+        "doc": "FontWeight.w400. Stripe regular."
+      },
+      {
+        "name": "semibold",
+        "doc": "FontWeight.w600. Stripe semibold."
+      },
+      {
+        "name": "bold",
+        "doc": "FontWeight.w700; emphasis inside running text only. Stripe bold."
+      }
+    ]
+  },
+  "PaymentIconSize": {
+    "kind": "enum",
+    "file": "lib/src/foundation/payment_tokens.dart",
+    "doc": "Existing icon sizes; medium scales with text up to 1.6×.",
+    "values": [
+      {
+        "name": "xsmall",
+        "doc": "14, existing badge. Stripe 12."
+      },
+      {
+        "name": "small",
+        "doc": "16, existing merchant mark. Stripe 16."
+      },
+      {
+        "name": "medium",
+        "doc": "20 scaled up to 1.6×, existing rows. Stripe 20."
+      },
+      {
+        "name": "large",
+        "doc": "32, existing video control. Stripe 32."
+      },
+      {
+        "name": "xlarge",
+        "doc": "48, existing state icon. Stripe 64."
+      }
+    ]
+  },
+  "PaymentFieldPart": {
+    "kind": "enum",
+    "file": "lib/src/foundation/payment_tokens.dart",
+    "doc": "A hidden field part stays in semantics; consumers arrive in later phases.",
+    "values": [
+      {
+        "name": "label",
+        "doc": "Label field part. Stripe label."
+      },
+      {
+        "name": "description",
+        "doc": "Description field part. Stripe description."
+      },
+      {
+        "name": "error",
+        "doc": "Error field part. Stripe error."
+      }
+    ]
+  },
+  "PaymentType": {
+    "kind": "class",
+    "file": "lib/src/foundation/payment_type.dart",
+    "doc": "Public type foundation: nine closed roles, seven sizes and two weights.\nEvery role inherits the host font. Choose a role for hierarchy; there is\nno weight modifier. Use `tabular` for numbers and `reference` for IDs.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentType.of",
+        "factory": true,
+        "params": [
+          {
+            "name": "context",
+            "type": "BuildContext",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          }
+        ],
+        "doc": "Resolves the nine roles from the ambient host font and payment theme."
+      }
+    ],
+    "getters": [],
+    "statics": [
+      "isLarge",
+      "firstLineHeight"
+    ],
+    "copyWith": null
   },
   "AmountText": {
     "kind": "class",
@@ -3693,7 +4007,7 @@
   "StateMessage": {
     "kind": "class",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "Empty, error and \"nothing matches\" states: what happened, one line on\nwhy, and at most one way forward. Compact and left-aligned, so it reads\nas part of the list it replaces rather than as an illustration.",
+    "doc": "Empty, error and \"nothing matches\" states: what happened, one line on\nwhy, and at most one way forward. Compact and left-aligned, so it reads\nas part of the list it replaces rather than as an illustration.\nPadded by `group` (16) above and below.",
     "extends": "StatelessWidget",
     "constructors": [
       {

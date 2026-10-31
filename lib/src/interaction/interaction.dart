@@ -566,6 +566,7 @@ class LoadingSkeleton extends StatelessWidget {
 /// Empty, error and "nothing matches" states: what happened, one line on
 /// why, and at most one way forward. Compact and left-aligned, so it reads
 /// as part of the list it replaces rather than as an illustration.
+/// Padded by `group` (16) above and below.
 class StateMessage extends StatelessWidget {
   const StateMessage({
     super.key,

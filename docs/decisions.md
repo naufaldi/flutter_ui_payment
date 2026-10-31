@@ -116,6 +116,8 @@ Orchestrated: an Opus (high) planner wrote [ui-review-plan.md](ui-review-plan.md
 
 Public API additions (all optional): `StatusHeader`, `InfoRow.trailing`, `PaymentStatusView.instructions`, `PaymentTheme.border`/`disabled`/`referenceFontFamily` and radius getters, `PaymentLocalizations.howToPay`. Changed values: `PaymentMotion.press` 100 ms, `pressedScale` 0.96. `PaymentType` stays internal until the owner approves making it public.
 
+Superseded: `PaymentType` exported in Phase 1A (D15, Q6).
+
 Verification: `flutter analyze` clean (package and example); 89 package tests across 7 files pass when run per file; 12 integration flow tests pass on the iPhone 16 simulator; iOS screenshot suites (including new `status_va_pending`, `requote`, `authorize` captures) pass with no exceptions. Focus and press are verified by widget tests only (static screenshots cannot show them).
 
 Open: the re-quote checkbox sits ~11 dp inside the gutter (Material list-tile tap target); `AmountInput` caps its label/helper at 1.6× along with the amount; Lumen/Contrast preset still close to Hairline.
@@ -136,3 +138,89 @@ Charts here are customer-facing spending summaries. PRD §4 excludes operational
 - The foundation specimen adds compact money; the amount, info-row and status-badge alt text changes travel with the refreshed capture.
 
 Implementation details resolved against the repository: PaymentButton has a secondary variant, not a named secondary constructor. MeterSegment is non-const to keep its non-negative Money assertion (Dart disallows property access in a const assertion). Capture geometry lives in a separate internal file so ratio and face/card separation can be tested without rendering. The gallery uses shorter capture viewports; the flow guide retains its portrait default. The Starlight changelog keeps its required frontmatter and mirrors the root changelog body verbatim.
+
+
+## Design system revision 3 and Phase 1A (31 Oct 2026)
+
+Owner answers, accepted for implementation:
+
+| Question | Decision |
+| --- | --- |
+| Q1 | Superseded: field kinds, D36. |
+| Q2 | Keep switches. |
+| Q3 | Internal resolvers. |
+| Q4 | Patterns. |
+| Q5 | onCopyReference. |
+| Q6 | Export PaymentType. |
+| Q7 | PaymentSize + PaymentWidth, D29. |
+| Q8 | PaymentListItemSize standard/large. |
+| Q9 | Remove MeterSegment.color. |
+| Q10 | Restyle toast. |
+| Q11 | Map Stripe text onto nine roles, D35. |
+| Q12 | DD/MM/YYYY in both locales, host-overridable. |
+
+| Decision | Contract | Reason and source |
+| --- | --- | --- |
+| D28 | **Parity rule.** All 48 Stripe entries and their sub-components ship (admission clause (c)). Their props are variants, translated by the §6 conventions table. **Not mirrored**, each with its reason: `TextField type: "password"` (D1a); CurrencyField `fractionDigitOffset` (`Money` is integer minor units); Box and Inline numeric sizes, `margin`/`bleed`, shadows, `zIndex`, `overflow` (B2, §3.5); DOM attributes; the SVG-string `brandIcon` (→ a host widget); DateRangePicker `timeZone` (host-owned dates); OnboardingView's auto-close delay (D44). Every `href` or route is a host callback. | The owner's decision, held inside the constraints that still apply: SDK only, no network, no secrets, host-owned decisions.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D29 | **Sizes keep a 48 dp hit area.** `PaymentSize` (`small`, `medium`, `large`) changes the drawn container and padding only. The layout box, which bounds Flutter hit-testing, stays ≥ 48×48 dp, with the visual centered, as Material's padded tap target does. `medium` is today's look and the default everywhere. | Stripe's sizes are visual. Flutter hit-tests within the layout box, so the only way to keep B5 with a 36 dp button is a 48 dp box. The cost is row height, which is accepted.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D30 | **Tables on phones collapse rows into list rows.** Below 600 dp of available width, or at `PaymentType.isLarge`, `PaymentTable` and `PaymentDataTable` render each row as a list row: the pinned or row-header cell is the title, numbers sit end-aligned, other cells become caption lines, and actions become a trailing menu. The wide layout keeps columns and scrolls horizontally, with pinned columns fixed. | Horizontal scrolling with a sticky column fails at 320 dp and 200% text (B4): two-axis scrolling, clipped headers, and cells read without their header. The collapse reuses the list anatomy and its semantics.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D31 | **Views and pages are Scaffold-free bodies** with header, scroll content and footer regions. The host supplies the `Scaffold`, route, tab or sheet. Only FocusView presents itself (`showPaymentFocusView`, through the existing sheet functions). No router, no app bar, no `Navigator.push` otherwise. | PRD §2 keeps routing with the host. One rule for all eleven layouts. It matches `PaymentSheet`, which already lays out header, content and footer.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D32 | **`PaymentSignInView` has no credential input and no free widget slot.** Actions call the host; the footer takes `PaymentLink`s and a footnote only; a test asserts no `EditableText`. | Stripe's SignInView is itself a redirect-to-sign-in screen. The kit never receives secrets (PRD §7, §11).  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D33 | **Token primitives.** `PaymentBox`, `PaymentInline` and `PaymentIcon` accept only **New** token enums: `PaymentSpace`, `PaymentRadius`, `PaymentTextRole`, `PaymentTextColor`, `PaymentFontWeight`, `PaymentIconSize`, `PaymentKeyline`. Supersedes D16 and D26. `PaymentType` itself gains no roles. | Parity, without opening a raw-value escape hatch that would break B2.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D34 | **Naming.** Stripe entries are `Payment<StripeName>` (Img → `PaymentImage`). Renamed classes on `main` (`ExpandableSection`, `StatusBadge`, `NoticeBanner`, `ActionMenu`/`ActionMenuEntry`, `AmountInput`, `ActionTile`/`ActionTileGroup`, `showPaymentSnackBar`) stay for one minor release: as a `@Deprecated` typedef when the constructor is unchanged, otherwise as a deprecated wrapper. Names only on #1/#4 change freely. Kit-specific names (`InfoRow`, `PaymentSheet` …) stay. Docs slugs follow the Stripe name, with redirects. | One naming scheme that a reader can map to Stripe's sidebar; §9 rule 6 for anything on `main`.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D35 | **Inline roles map onto the nine `PaymentType` roles** (§3.2 table); no new roles. | D15 froze nine roles; `lead` and `kicker` would add looks with no second use. Q11 confirms.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D36 | **Dates.** `PaymentDateField` and `PaymentDateRangePicker` delegate the calendar to Flutter's `showDatePicker` / `showDateRangePicker` and offer typed entry. The kit formats (`formatDate`, en and id) and validates the date's form; the host supplies ranges, presets and rules. No time-zone math. `IdentityFieldSpec` gains **New** `kind` (`text`, `date`, `choice`). Supersedes D4 and Q1. | SDK-only, host-owned business rules; the date of birth gets a real date control.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D37 | **`PaymentSearchField<T>` is Stripe's combobox**: it filters host options locally, or the host searches remotely through `onQueryChanged`. Single and `.multiple` selection. `PaymentTextField.search` stays the list filter. | Stripe's SearchField picks values from a list; the history search filters a visible list. Two jobs, two names.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D38 | **Feedback parity.** Badge `urgent` → `PaymentBadge.urgent` (solid danger), with no new `StatusTone`. Banner types map to tones and gain `onDismiss` (host removes it). Toast gains `pending` and a controller with `update` and `dismiss`; the 30-character limit is guidance. | `StatusTone` stays five values, so every exhaustive switch is untouched. A named constructor makes "urgent but not danger" unrepresentable.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D39 | **Charts parity:** `axis`, `grid`, `showLegend`, `inspectable`, `series` (≤ 3; ramp + dash, never tones), `unit` (+ `ChartPoint.measure`), meter `onSegmentPressed` through the legend rows. | Stripe's chart props; the charts decisions (no tone categories, paint-only) still hold.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D40 | **Overlay parity.** `PaymentTooltip` gains 12 placements on `OverlayPortal`, plus `type` (label vs description semantics) and `delay`. `PaymentMenu` gains groups, a custom trigger and `onAction`. `PaymentFocusView` gains `size` and `confirmClose`. | Flutter's `Tooltip` only places above or below; `OverlayPortal` is in the SDK.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D41 | **`PaymentListItem` replaces `ActionTile`** and gains `value`, `image`, `size` (`standard` 48 / `large` 64) and `id`; **`PaymentList` replaces `ActionTileGroup`** and gains `onAction`. Still no compact density, and still separate classes for switch, checkbox and radio rows. Supersedes part of D19 and Q8. | One public action-row class, not two. Stripe's sizes are both ≥ 48 dp.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D42 | **`PaymentImage` takes a host `ImageProvider`.** The kit never constructs a network image. `alt` is required (`''` = decorative). Loading and error states are built in. | B11: no network in `lib`; the D9 error-state gap becomes impossible.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D43 | **`PaymentDataTable` works on host rows.** Local paging and selection only; offset and cursor paging are host callbacks; no sorting or filtering (not in Stripe's props); column reorder and resize on wide layouts only, with a keyboard menu. | Host owns data and queries; nothing the kit computes changes a total.  [PRD §8](prd-foundation-components.md#8-decisions) |
+| D44 | **`PaymentOnboardingView.completed`** shows a completion state and calls `onCompleted` once. There is no kit timer. Phone layout: a step header plus a collapsible task list. | B11 (no kit timers that act on their own); the host owns navigation.  [PRD §8](prd-foundation-components.md#8-decisions) |
+
+D26 superseded by D33; multiples table and review grep stay.
+
+### Phase 1A implementation decisions
+
+Only `space` is a public resolver; other token resolvers stay internal until 4A.
+Size, Width and FieldPart resolve per component. Circle uses circular(999),
+matching navigation.dart's existing pill. Icon sizes reuse badge 14
+(primitives.dart), merchant 16 (payment_extras.dart), row 20 clamped at 1.6×,
+video 32 and state 48. No sizes are migrated in this phase.
+`formatDate` does not call toLocal: a calendar date belongs to the host zone.
+`dateInputPattern` requires DD, MM, YYYY once each and a repeated /, . or -;
+a host LocalizationsDelegate supplies an app-wide override. Contrast radius
+stays 8; only its inaccurate comment changes. Major spacing remains unused.
+
+### Icon family audit (record only)
+
+Outlined: all `*_outline(d)` glyphs (26). Stroke glyphs kept: check, close,
+chevron_left/right, expand_more, more_vert, menu, search, search_off, remove,
+undo, sync, call_split, open_in_new, edit_note, fingerprint, schedule, block.
+Deferred: copy_rounded → copy_outlined (3B), warning_amber_rounded →
+warning_amber_outlined (2C), hourglass_top → hourglass_top_outlined (2C;
+checkout.dart:566), upload_file → upload_file_outlined (4B).
+Media exception: play_arrow, pause, replay.
+ActionTile manually swaps to chevron_left in RTL even though both SDK glyphs
+have matchTextDirection: a double flip. Fix in 2D with an RTL test.
+
+### Design-principle flags for later phases
+
+| Finding | Follow-up |
+| --- | --- |
+| Rounded copy/warning and filled hourglass/upload glyphs | 2C, 3B, 4B |
+| Double-mirrored RTL chevron | 2D |
+| Literal icon size 18 in capture_widgets.dart:334 | 4A |
+| Badge icon does not scale | 2C |
+| Toast uses SnackBar defaults, D22 | 2C |
+| Chart literal spacing | 2E |
+| Solid outline hex vs alpha hairline preference | Document for owner review |
+| Bold is a third weight | Running-text emphasis only; Contrast amountWeight w700 precedent |
+| Banner icon/title gap 8 vs 12 elsewhere | 2C |
+| hourglass_top means busy and authorization wait | 2C |
+
+### Plan deviations
+
+None. Simulator comparison is optional and omitted; permanent geometry and
+old-glyph tests pass before and after the refactor.

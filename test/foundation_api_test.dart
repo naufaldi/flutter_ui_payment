@@ -14,10 +14,10 @@ class NonlinearScaler extends TextScaler {
 void main() {
   testWidgets('public roles, modifiers and token resolutions', (tester) async {
     for (final scaler in [
-      TextScaler.linear(1),
-      TextScaler.linear(1.3),
-      TextScaler.linear(2),
-      TextScaler.linear(3),
+      const TextScaler.linear(1),
+      const TextScaler.linear(1.3),
+      const TextScaler.linear(2),
+      const TextScaler.linear(3),
       const NonlinearScaler(),
     ]) {
       await tester.pumpWidget(
@@ -32,8 +32,9 @@ void main() {
                   PaymentType.firstLineHeight(context),
                   equals(scaler.scale(15) * 20 / 15),
                 );
-                if (scaler.textScaleFactor == 2)
+                if (scaler.scale(15) == 30) {
                   expect(PaymentType.firstLineHeight(context), 40.0);
+                }
                 expect(
                   type.tabular(const TextStyle(fontSize: 15)).fontFeatures,
                   const [FontFeature.tabularFigures()],
@@ -65,8 +66,9 @@ void main() {
                 for (final role in PaymentTextRole.values) {
                   expect(role.resolve(context), styles[role.index]);
                 }
-                if (PaymentType.isLarge(context))
+                if (PaymentType.isLarge(context)) {
                   expect(type.bodyFor(context).height, 1.3);
+                }
                 expect(PaymentSpace.values.map(theme.space), [
                   0,
                   4,

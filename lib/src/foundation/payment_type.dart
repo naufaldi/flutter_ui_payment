@@ -18,6 +18,7 @@ class PaymentType {
     required this.caption,
     required this.tag,
     required this.input,
+    // ignore: prefer_initializing_formals
   }) : _theme = theme;
 
   final PaymentTheme _theme;
