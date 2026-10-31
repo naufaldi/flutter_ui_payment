@@ -52,6 +52,7 @@ class PaymentSelect<T> extends StatefulWidget {
        _onValues = null,
        _valuesValidator = null,
        _multiple = false;
+
   /// Stages a set of values in a checkbox sheet and reports on Apply.
   /// onChanged receives the complete selected set; null disables the field.
   factory PaymentSelect.multiple({
