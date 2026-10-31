@@ -52,3 +52,6 @@ export 'src/forms/field_group.dart';
 export 'src/forms/chip.dart';
 export 'src/forms/search_field.dart';
 export 'src/forms/date_range_picker.dart';
+
+export 'src/content/property_list.dart';
+export 'src/content/table.dart';

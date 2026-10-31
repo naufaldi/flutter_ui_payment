@@ -1991,12 +1991,12 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] PaymentChip + PaymentChipList; migrate the applied-promo tag
 
 **Phase 4C: content**
-- [ ] PaymentPropertyList + PaymentPropertyListItem
-- [ ] PaymentTable (+ row, header cell, cell; narrow collapse) (D30)
+- [x] PaymentPropertyList + PaymentPropertyListItem
+- [x] PaymentTable (+ row, header cell, cell; narrow collapse) (D30)
 - [ ] PaymentDataTable (columns, cell types, row actions, selection, pagination, reorder/resize) (D30, D43)
 - [ ] PaymentTaskList + PaymentTaskListItem
 - [ ] PaymentButtonGroup; migrate status stack and dialog actions (D23)
-- [ ] LoadingSkeleton table shape
+- [x] LoadingSkeleton table shape
 
 **Phase 4D: views and pages**
 - [ ] PaymentContextView, PaymentFullPageView (D31)
@@ -2051,3 +2051,7 @@ Fields share labels, disabled scope and errors. Select supports Form validation 
 ### Phase 4B implementation notes
 
 Multiple selections use .multiple factories, date ranges use fromPreset, and presets open in a kit sheet. Fields fill rather than mirror css width. Select integrates Form validators and focus nodes. Phase 5 retains history filter integration, identity grouping and province search in the real flow.
+
+### Phase 4C-1 implementation notes
+
+PropertyList, responsive Table and table skeleton are implemented. Tables collapse below 600 dp or at large text; wide cells repeat column labels in semantics.

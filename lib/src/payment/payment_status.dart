@@ -1,3 +1,4 @@
+import '../content/property_list.dart';
 import '../layout/content.dart';
 import '../layout/layout.dart';
 import '../foundation/payment_tokens.dart';
@@ -67,23 +68,27 @@ class PaymentInstructions extends StatelessWidget {
           PaymentDivider(height: theme.spacing * 2),
           // A total row, not a second display amount: the status header
           // already shows the one large figure on this screen.
-          InfoRow(
-            label: l10n.amountToPay,
-            emphasis: true,
-            value: AmountText(
-              instructions.amount,
-              variant: AmountTextVariant.total,
-            ),
-          ),
-          InfoRow(
-            label: l10n.payBefore,
-            caption: l10n.formatDateTime(instructions.expiresAt),
-            value: CountdownText(
-              expiresAt: instructions.expiresAt,
-              clock: clock,
-              onElapsed: onElapsed,
-              style: type.heading.tabular,
-            ),
+          PaymentPropertyList(
+            items: [
+              PaymentPropertyListItem(
+                label: l10n.amountToPay,
+                emphasis: true,
+                value: AmountText(
+                  instructions.amount,
+                  variant: AmountTextVariant.total,
+                ),
+              ),
+              PaymentPropertyListItem(
+                label: l10n.payBefore,
+                caption: l10n.formatDateTime(instructions.expiresAt),
+                value: CountdownText(
+                  expiresAt: instructions.expiresAt,
+                  clock: clock,
+                  onElapsed: onElapsed,
+                  style: type.heading.tabular,
+                ),
+              ),
+            ],
           ),
           if (elapsed) ...[
             SizedBox(height: theme.spacing),
@@ -353,25 +358,29 @@ class PaymentStatusView extends StatelessWidget {
           ),
         if (slot != null && large) ...[SizedBox(height: theme.spacing), slot],
         PaymentDivider(height: theme.spacing * 3),
-        InfoRow(
-          label: l10n.attemptReference,
-          value: MiddleEllipsisText(
-            attempt.attemptId,
-            style: type.label.reference(theme),
-          ),
+        PaymentPropertyList(
+          items: [
+            PaymentPropertyListItem(
+              label: l10n.attemptReference,
+              value: MiddleEllipsisText(
+                attempt.attemptId,
+                style: type.label.reference(theme),
+              ),
+            ),
+            if (snapshot != null) ...[
+              PaymentPropertyListItem(
+                label: l10n.transactionReference,
+                valueText: snapshot.serverReference,
+              ),
+              // Only a real host snapshot has an update time. Without one the
+              // row is left out rather than filled with a status phrase.
+              PaymentPropertyListItem(
+                label: l10n.lastUpdated,
+                valueText: l10n.formatDateTime(snapshot.updatedAt),
+              ),
+            ],
+          ],
         ),
-        if (snapshot != null) ...[
-          InfoRow(
-            label: l10n.transactionReference,
-            valueText: snapshot.serverReference,
-          ),
-          // Only a real host snapshot has an update time. Without one the
-          // row is left out rather than filled with a status phrase.
-          InfoRow(
-            label: l10n.lastUpdated,
-            valueText: l10n.formatDateTime(snapshot.updatedAt),
-          ),
-        ],
         if (snapshot != null &&
             snapshot.refund.status != RefundStatus.none) ...[
           PaymentDivider(height: theme.spacing * 3),
@@ -436,18 +445,22 @@ class RefundSection extends StatelessWidget {
             label: l10n.refundStatusLabel(refund.status),
           ),
           SizedBox(height: theme.spacing),
-          if (amount != null)
-            InfoRow(
-              label: l10n.refundAmount,
-              value: invalidAmount
-                  ? Text(l10n.refundAmountUnavailable)
-                  : AmountText(amount),
-            ),
-          if (refund.updatedAt != null)
-            InfoRow(
-              label: l10n.lastUpdated,
-              valueText: l10n.formatDateTime(refund.updatedAt!),
-            ),
+          PaymentPropertyList(
+            items: [
+              if (amount != null)
+                PaymentPropertyListItem(
+                  label: l10n.refundAmount,
+                  value: invalidAmount
+                      ? Text(l10n.refundAmountUnavailable)
+                      : AmountText(amount),
+                ),
+              if (refund.updatedAt != null)
+                PaymentPropertyListItem(
+                  label: l10n.lastUpdated,
+                  valueText: l10n.formatDateTime(refund.updatedAt!),
+                ),
+            ],
+          ),
           Text(
             refund.safeReason ?? l10n.refundSeparateNote,
             style: PaymentType.of(context).caption,

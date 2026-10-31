@@ -1,3 +1,4 @@
+import '../content/property_list.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -374,28 +375,32 @@ class TransactionDetail extends StatelessWidget {
           action,
         ],
         SizedBox(height: theme.spacing * 2),
-        PaymentSection(
+        PaymentPropertyList(
           title: l10n.detailsTitle,
-          child: Column(
-            children: [
-              if (record.merchant != null)
-                InfoRow(label: l10n.merchantLabel, valueText: record.merchant),
-              InfoRow(
-                label: l10n.dateLabel,
-                valueText: l10n.formatDateTime(record.createdAt),
+          items: [
+            if (record.merchant != null)
+              PaymentPropertyListItem(
+                label: l10n.merchantLabel,
+                valueText: record.merchant,
               ),
-              if (record.methodLabel != null)
-                InfoRow(label: l10n.methodLabel, valueText: record.methodLabel),
-              if (record.reference != null)
-                InfoRow(
-                  label: l10n.transactionReference,
-                  value: MiddleEllipsisText(
-                    record.reference!,
-                    style: type.label.reference(theme),
-                  ),
+            PaymentPropertyListItem(
+              label: l10n.dateLabel,
+              valueText: l10n.formatDateTime(record.createdAt),
+            ),
+            if (record.methodLabel != null)
+              PaymentPropertyListItem(
+                label: l10n.methodLabel,
+                valueText: record.methodLabel,
+              ),
+            if (record.reference != null)
+              PaymentPropertyListItem(
+                label: l10n.transactionReference,
+                value: MiddleEllipsisText(
+                  record.reference!,
+                  style: type.label.reference(theme),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
         // The refund is its own ruled section with its own state; the
         // original payment above keeps its success.

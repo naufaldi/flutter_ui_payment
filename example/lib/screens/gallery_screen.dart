@@ -11,6 +11,7 @@ import '../demo_strings.dart';
 import '../dev_chrome.dart';
 import 'flow_screen.dart' show documentRequirements, identityFields;
 
+part 'gallery_content.dart';
 part 'gallery_kit.dart';
 part 'gallery_layout.dart';
 part 'gallery_forms.dart';
@@ -67,6 +68,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
             id: 'layout',
             label: t('Layout', 'Tata letak'),
             icon: Icons.dashboard_outlined,
+          ),
+          PaymentNavItem(
+            id: 'content',
+            label: t('Content', 'Konten'),
+            icon: Icons.table_chart_outlined,
           ),
           PaymentNavItem(
             id: 'interaction',
@@ -153,6 +159,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ),
     ];
     final List<Widget> entries = switch (_section) {
+      'content' => const [
+        _ContentSpecimen('PaymentPropertyList'),
+        _ContentSpecimen('PaymentTable'),
+        _ContentSpecimen('LoadingSkeleton.table'),
+      ],
       'layout' => const [
         _LayoutSpecimen('PaymentBox'),
         _LayoutSpecimen('PaymentInline'),

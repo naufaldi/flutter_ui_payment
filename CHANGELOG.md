@@ -1,3 +1,8 @@
+## Design system Phase 4C-1 (2026-11-01)
+
+- Add PropertyList, responsive Table and LoadingSkeleton.table.
+- Status, receipt and transaction details compose PropertyList using the existing InfoRow layout.
+
 ## Design system Phase 4B-2 (1 Nov 2026)
 
 - Add Chip, ChipList, SearchField and DateRangePicker, with value/preset/granularity models.

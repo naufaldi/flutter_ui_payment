@@ -359,3 +359,7 @@ Plan deviation proven by the 320 dp/200% chip test: an unconstrained body Row ov
 Final functional proof: the single iPhone 16/iOS 18.1 flow_test run passed all 17 tests, including H01 date and occupation and its ISO/value assertions. One label-finder tap emitted a Flutter hit-test warning but activated the trigger and the story completed; it was not suppressed. Functional proof uses the integration runner; no screenshot baseline or timing claim is made.
 
 Capture-proven plan deviation: a width-only test for image fallback captions overflows a 96×64 tile at 200% text. The fallback now requires enough height for its caption and scales its glyph down in smaller boxes; the complete alt/error label remains in semantics. The initial capture run produced the complete set but reported this offscreen layout error during the 200% switch. Only the affected 200% portion is rerun after the fix, using CAPTURE_PHASE4_LOOK; light/dark evidence is reused.
+
+### Phase 4C-1 implementation decisions
+
+PropertyList and Table never scroll vertically. Tables collapse below 600 dp or at large text. Wide rows use fixed heights and single-line cells to align pinned and scrolling regions; each data cell repeats its header in semantics instead of invalid split table roles. Horizontal overflow has edge fades. Numeric columns use end-aligned tabular figures, without stripes. Cell spans, centered alignment, arbitrary sizes and nested PropertyLists are not mirrored because they undermine responsive label/value relationships. TransactionDetail.actions remains host widgets.
