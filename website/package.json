@@ -1,0 +1,18 @@
+{
+  "name": "flutter-ui-payment-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen:api": "node scripts/gen-api.mjs",
+    "dev": "node scripts/gen-api.mjs && astro dev",
+    "build": "node scripts/gen-api.mjs && astro build",
+    "preview": "astro preview",
+    "check:links": "node scripts/check-links.mjs",
+    "check:snippets": "node scripts/gen-api.mjs && node scripts/check-snippets.mjs",
+    "screens": "node scripts/screens.mjs"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.42.8",
+    "astro": "^7.4.4"
+  }
+}

@@ -1,0 +1,11 @@
+---
+import { REPO_URL, REPO_IS_PLACEHOLDER, REPO_PLACEHOLDER_NOTE } from '../consts';
+---
+
+{
+  REPO_IS_PLACEHOLDER && (
+    <p class="fup-placeholder">
+      {REPO_PLACEHOLDER_NOTE} Current value: <code>{REPO_URL}</code>
+    </p>
+  )
+}

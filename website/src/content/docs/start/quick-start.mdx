@@ -1,0 +1,374 @@
+---
+title: Quick start
+description: From dependency to receipt. Build a checkout, hand authorization to your auth SDK, track one payment attempt, and show status, instructions and the receipt.
+---
+
+import { Code, Aside } from '@astrojs/starlight/components';
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import RepoNote from '../../../components/RepoNote.astro';
+import { REPO_URL } from '../../../consts';
+
+This walkthrough builds one checkout from start to finish. The `host` object in the snippets stands for your own code: the adapter that talks to your backend, your auth SDK, your clipboard and share helpers. Every kit class and parameter shown is the real API.
+
+The example app's `example/lib/screens/flow_screen.dart` and `example/lib/coordinator/demo_coordinator.dart` show the same composition in full, with a fake host.
+
+## 1. Add the dependency
+
+<Code
+  lang="yaml"
+  title="pubspec.yaml"
+  code={`dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_ui_payment:
+    git:
+      url: ${REPO_URL}
+    # or, from a local checkout:
+    # path: ../flutter-ui-payment`}
+/>
+
+<RepoNote />
+
+The package is not on pub.dev yet. [Installation](/start/installation/) has both options and the SDK requirements.
+
+## 2. Localization and theme
+
+Register `PaymentLocalizations.delegate` next to Flutter's own delegates. The kit ships English (`en`) and Indonesian (`id`). Without a `PaymentTheme` extension the kit derives every token from your `ColorScheme`; add one to set your brand.
+
+```dart title="lib/main.dart"
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+
+void main() => runApp(const ShopApp());
+
+class ShopApp extends StatelessWidget {
+  const ShopApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = ColorScheme.fromSeed(seedColor: const Color(0xFF1A1F36));
+    return MaterialApp(
+      localizationsDelegates: const [
+        PaymentLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('id'), Locale('en')],
+      theme: ThemeData(
+        colorScheme: scheme,
+        // Optional. Without it the kit derives its tokens from the scheme.
+        extensions: [PaymentTheme.fromColorScheme(scheme).copyWith(radius: 8)],
+      ),
+      home: const CheckoutPage(),
+    );
+  }
+}
+```
+
+[Theming](/concepts/theming/) lists every token; [Localization](/concepts/localization/) covers formats and fallbacks.
+
+## 3. Render the summary and the method picker
+
+Map your backend's quote and payment methods into the kit's models. The kit renders `total` as given and never recomputes it.
+
+```dart
+final quote = PaymentQuote(
+  id: 'q-118',
+  revision: 1,
+  lines: const [
+    QuoteLine(
+      label: 'Paket Belajar',
+      detail: '1 × 1 month',
+      amount: Money.idr(100000),
+    ),
+    QuoteLine(
+      label: 'Service fee',
+      amount: Money.idr(2500),
+      kind: QuoteLineKind.fee,
+    ),
+  ],
+  total: const Money.idr(102500),
+  expiresAt: serverQuote.expiresAt, // from your backend
+);
+
+const methods = [
+  PaymentMethod(
+    id: 'balance',
+    label: 'Ruang Bayar balance',
+    kind: PaymentMethodKind.balance,
+    detail: 'Balance Rp350,000',
+  ),
+  PaymentMethod(
+    id: 'va',
+    label: 'Virtual account (Bank Contoh)',
+    kind: PaymentMethodKind.virtualAccount,
+    detail: 'Pay by bank transfer',
+    feeNote: '+ Rp1,500 transfer fee',
+  ),
+];
+```
+
+Lay out the page with the total and the main action pinned at the bottom:
+
+```dart
+Scaffold(
+  body: ListView(
+    padding: const EdgeInsets.all(16),
+    children: [
+      PaymentSummary(quote: quote, previousQuote: previousQuote),
+      const SizedBox(height: 24),
+      PaymentMethodPicker(
+        methods: methods,
+        selectedId: selectedId,
+        // A method change can change the price: ask your backend for a new
+        // quote and keep the old one as previousQuote.
+        onChanged: (method) => requote(method.id),
+      ),
+    ],
+  ),
+  bottomNavigationBar: PaymentActionBar(
+    total: quote.total,
+    updating: requoting, // shows "Updating total…" and you disable the action
+    action: PaymentButton(
+      label: 'Review payment',
+      onPressed: requoting ? null : openReview,
+    ),
+  ),
+);
+```
+
+<Screens>
+  <Screen name="ios_refined_checkout_light" dark="ios_refined_checkout_dark" alt="Checkout: order summary led by the total, fee line, bordered method list with the selected row outlined, and a pinned bar with total and Review payment." caption="Summary, method list and pinned action bar" />
+  <Screen name="ios_refined_checkout_light_200" alt="The checkout in Indonesian at 200% text size; rows reflow, amounts stay on one line and the total and Tinjau pembayaran stay pinned." caption="The same checkout at 200% text (Indonesian)" />
+</Screens>
+
+## 4. Confirm
+
+`PaymentConfirmation` is the review step. After a re-quote, pass the old quote as `previousQuote`: the customer must accept the new total before `onConfirm` becomes reachable.
+
+```dart
+PaymentConfirmation(
+  quote: quote,
+  method: selectedMethod,
+  previousQuote: previousQuote,
+  onConfirm: () async {
+    // Ask your backend whether this quote revision is still valid before
+    // authorizing. If it changed, show the new quote instead.
+    await host.revalidateQuote(quote.id, quote.revision);
+    setState(() => step = CheckoutStep.authorize);
+  },
+);
+```
+
+`onConfirm` returns a `Future`; the button stays locked while it runs, so a double tap sends one callback.
+
+<Screens>
+  <Screen name="ios_requote_light" alt="Review screen in Indonesian: a notice that the total changed from Rp102.500 to Rp103.500, an unchecked box to accept the new total, and a disabled pay button." caption="A changed total must be accepted first (Indonesian)" />
+</Screens>
+
+## 5. Hand authorization to the host
+
+PIN, OTP and biometrics belong to your auth SDK. `AuthorizationPrompt` shows the challenge state and never receives the secret.
+
+```dart
+AuthorizationPrompt(
+  phase: authPhase, // ready, inProgress, approved, canceled, failed, expired
+  methodLabel: selectedMethod.label,
+  onStart: () async {
+    setState(() => authPhase = AuthorizationPhase.inProgress);
+    final result = await host.authorize(quote.id); // your PIN/OTP/biometric flow
+    setState(() => authPhase = result);
+    if (result == AuthorizationPhase.approved) await submit();
+  },
+  onBackToReview: () => setState(() => step = CheckoutStep.review),
+);
+```
+
+A canceled or failed challenge returns to review with the same quote. It is never shown as a payment.
+
+## 6. Create one attempt and reconcile snapshots
+
+A `PaymentAttempt` is your local record of one payment. Create it once per legitimate attempt. Its `attemptId` is your idempotency key and stays the same for every retry and status check of that attempt.
+
+```dart
+import 'dart:async';
+
+late PaymentAttempt attempt;
+
+Future<void> submit() async {
+  attempt = PaymentAttempt(
+    attemptId: host.newAttemptId(), // persist it: you need it after a restart
+    quoteId: quote.id,
+    quoteRevision: quote.revision,
+    methodId: selectedMethod.id,
+    submission: SubmissionState.sending,
+  );
+  setState(() {});
+  try {
+    final snapshot = await host.submitPayment(attempt.attemptId);
+    setState(() => attempt = attempt.reconcile(snapshot).attempt);
+  } on TimeoutException {
+    // The server may have charged. Keep the attempt and say so.
+    setState(() {
+      attempt = attempt.copyWith(submission: SubmissionState.outcomeUnknown);
+    });
+  }
+}
+```
+
+Your adapter turns each backend response into a `PaymentStatusSnapshot`. Reject anything you cannot trust instead of guessing:
+
+```dart
+PaymentStatusSnapshot? parseStatus(Map<String, Object?> json) {
+  final status = PaymentStatus.tryParse(json['status'] as String?);
+  if (status == null) return null; // unknown value: reject, never invent a result
+  return PaymentStatusSnapshot(
+    attemptId: json['attempt_id']! as String,
+    serverReference: json['reference']! as String,
+    status: status,
+    revision: json['revision']! as int, // monotonic, orders snapshots
+    updatedAt: DateTime.parse(json['updated_at']! as String),
+    allowedActions: {
+      for (final action in PaymentAction.values)
+        if ((json['actions'] as List? ?? const []).contains(action.name)) action,
+    },
+    safeReason: json['safe_reason'] as String?,
+  );
+}
+```
+
+Every status response then goes through `reconcile`:
+
+```dart
+final result = attempt.reconcile(snapshot);
+if (!result.applied) {
+  // wrongAttempt, referenceMismatch, stale or successDowngrade.
+  debugPrint('ignored snapshot: ${result.rejection}');
+}
+setState(() => attempt = result.attempt);
+```
+
+[Payment attempt and status](/concepts/payment-attempt/) explains each rule.
+
+## 7. Render the status
+
+`PaymentStatusView` offers only `attempt.availableActions`. While the outcome is unknown that is `checkStatus` alone. Manual payment instructions, such as a virtual account, go in the `instructions` slot; the view hides them while the outcome is unknown, because an account to pay into must not appear then.
+
+```dart
+final va = attempt.snapshot?.instructions;
+
+PaymentStatusView(
+  attempt: attempt,
+  amount: quote.total,
+  busyAction: refreshing ? PaymentAction.checkStatus : null,
+  instructions: va == null
+      ? null
+      : PaymentInstructions(
+          instructions: va,
+          clock: host.clock, // the host's clock, not the device's
+          onCopyNumber: copyToClipboard,
+          onElapsed: refreshStatus, // zero on the countdown is not "unpaid"
+        ),
+  onAction: (action) => switch (action) {
+    PaymentAction.checkStatus => refreshStatus(),
+    PaymentAction.viewReceipt => openReceipt(),
+    _ => host.handle(attempt.attemptId, action),
+  },
+);
+```
+
+Checking status is host work. Refresh with the same attempt reference, never stack refreshes, and keep the last-known state when a refresh fails:
+
+```dart
+bool refreshing = false;
+
+Future<void> refreshStatus() async {
+  if (refreshing) return;
+  setState(() {
+    refreshing = true;
+    attempt = attempt.copyWith(observation: Observation.refreshing);
+  });
+  try {
+    final snapshot = await host.fetchStatus(attempt.attemptId);
+    final next = attempt.reconcile(snapshot).attempt;
+    attempt = next.copyWith(
+      observation: Observation.fresh,
+      lastCheckedAt: host.clock(),
+    );
+  } catch (_) {
+    // Offline is not "failed": keep the last snapshot, mark it unavailable.
+    attempt = attempt.copyWith(observation: Observation.unavailable);
+  } finally {
+    setState(() => refreshing = false);
+  }
+}
+```
+
+<Screens>
+  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="Unknown outcome: hatched band, Result not confirmed yet, amount, Don't pay again, and the single Check status action." caption="outcomeUnknown: one action, no pay-again" />
+  <Screen name="ios_status_pending_light" alt="Pending payment in Indonesian with a solid amber band, amount, explanation and a Cek status action." caption="pending: solid band (Indonesian)" />
+  <Screen name="ios_status_va_pending_light" dark="ios_status_va_pending_dark" alt="Virtual account pending in Indonesian: monospace account number with copy, amount to pay, countdown, folded steps, Cek status and Minta pembatalan." caption="Virtual account instructions (Indonesian)" />
+</Screens>
+
+## 8. Show the receipt
+
+Show `PaymentReceipt` only for a payment your host has confirmed as succeeded. Sharing passes an allowlisted `ReceiptShareData` (merchant, transaction ID, time, total and the masked method), never a screenshot of the page.
+
+```dart
+PaymentReceipt(
+  data: PaymentReceiptData(
+    transactionId: receipt.transactionId,
+    merchantName: 'Ruang Bayar Akademi',
+    paidAt: receipt.paidAt,
+    lines: quote.lines,
+    total: quote.total,
+    methodLabel: 'Saldo Ruang Bayar •••• 2190', // already masked by the host
+  ),
+  onShare: (share) => host.share(share.title, share.text), // Future<ShareOutcome>
+  onCopyTransactionId: copyToClipboard, // Future<bool>
+);
+```
+
+A clipboard helper that reports failure honestly:
+
+```dart
+import 'package:flutter/services.dart';
+
+Future<bool> copyToClipboard(String value) async {
+  try {
+    await Clipboard.setData(ClipboardData(text: value));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+```
+
+<Screens>
+  <Screen name="ios_receipt_light" dark="ios_receipt_dark" alt="Receipt in Indonesian: success band, merchant, amount and date, line items, total, masked method, transaction ID with copy, Bagikan struk and an allowlist note." caption="Receipt (Indonesian)" />
+</Screens>
+
+## 9. Done: what your app must implement
+
+The widgets keep the screen honest. These parts are yours, and a checkout is not finished until each one exists:
+
+- **Idempotency on the server.** Send `attemptId` with every submit and status check of an attempt, and deduplicate on it in your backend. `PaymentButton` locking is interaction protection only.
+- **A new key only for a new legitimate attempt.** Create a new `PaymentAttempt` only when `attempt.allowsNewAttempt` is true: your backend allowed it and the previous result is final and not a success.
+- **Quote revalidation.** Check the quote revision before authorizing; a changed total or method needs review and a new authorization.
+- **Authorization.** Your auth SDK runs PIN, OTP or biometrics and maps the result to `AuthorizationPhase`.
+- **Status polling.** One owner (a coordinator, not a widget) refreshes status with the same attempt reference, stops when the result is final or the screen is gone, and never stacks calls.
+- **Snapshot parsing.** Map backend data to `PaymentStatusSnapshot`, reject unknown statuses (`PaymentStatus.tryParse` returns `null`), and send every snapshot through `reconcile`.
+- **Recovery.** Store the opaque attempt reference; after a restart or resume, restore the attempt and check its status. Never submit again automatically.
+- **Account switches.** Discard responses that belong to the previous account.
+- **Refunds.** Refund processing is your backend's. Report it as `RefundInfo` on the snapshot (or `TransactionRecord`); the kit shows it in its own section and never rewrites the original payment.
+- **Cancellation.** "Close" only closes UI. A cancel request goes to your backend behind `showPaymentConfirmDialog`, and the payment stays pending until your host confirms.
+- **Sensitive screens.** Wrap content in `PrivacyMask` for the app switcher; OS-level screenshot protection remains your job.
+
+<Aside>
+Optional KYC composes the same way: `VerificationIntro`, `IdentityForm`, `DocumentUploadTile`, `VerificationReview` and `VerificationStatusView`. See [Verification (KYC)](/components/verification/).
+</Aside>

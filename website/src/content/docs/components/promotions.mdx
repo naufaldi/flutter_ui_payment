@@ -1,0 +1,48 @@
+---
+title: Promotions
+description: Labeled promotions and sponsored placements with a CTA, dismiss and "Why this?". No ad SDK, no tracking, no price changes.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`PromoCard` shows one promotion; `PromoSlot` places it with loading, ready, empty and error states. Every promotion is labeled.
+
+<HostOwns>campaigns and how they load, what the CTA, dismiss and "Why this?" do, whether a dismissed offer stays hidden, and any tracking.</HostOwns>
+
+<Screens>
+  <Screen name="ios_kit_promo" alt="Gallery promotions in Indonesian: a sponsored card labeled Bersponsor · Bank Contoh with a Kenapa ini? link, title, terms and a Lihat penawaran button, and an own promo labeled Promo with a dismiss button." caption="Sponsored and own promotions (Indonesian)" />
+  <Screen name="ios_kit_promo_200" alt="The same promotions at 200% text; the sponsor label wraps onto a second line." caption="At 200% the label wraps, never truncates" />
+</Screens>
+
+## Usage
+
+```dart
+PromoSlot(
+  state: offersState, // loading / ready / empty / error
+  content: const PromoContent(
+    id: 'cb-10',
+    kind: PromoKind.sponsored,
+    advertiser: 'Bank Contoh',
+    title: 'Cashback 10% on bills',
+    ctaLabel: 'See offer',
+  ),
+  onAction: (promo) => host.openOffer(promo.id),
+  onDismiss: (promo) => host.hidePromo(promo.id),
+  onAbout: (promo) => host.explainPlacement(promo.id),
+);
+```
+
+## Behavior
+
+- Every promotion is labeled "Sponsored · advertiser" or "Promo", and the label wraps rather than truncates: who paid for a placement must always be visible.
+- Empty and failed slots collapse by default (`collapseWhenEmpty`).
+- The kit never fetches campaigns, counts impressions, applies discounts or changes a quote. To use an ad network, load its content in your app and pass it in; native-ad SDK views and their policies remain your integration.
+- Keep promotions out of the path between the total and the pay button.
+- `PromoContent.icon` is accepted but not drawn in the current design.
+
+## API
+
+<Props names={['PromoSlot', 'PromoSlotState', 'PromoCard', 'PromoContent', 'PromoKind', 'PromoLayout']} />

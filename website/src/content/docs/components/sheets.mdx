@@ -1,0 +1,54 @@
+---
+title: Sheets
+description: Bottom sheets and end-edge side panels with a header, scrolling body and fixed footer. Close only closes; cancelling a payment is a separate host request.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`PaymentSheet` lays out a header, a scrolling body and a fixed footer, with safe-area and keyboard insets handled. Open it as a bottom sheet or as a side panel from the end edge.
+
+<HostOwns>the content and actions, whether the sheet may be dismissed while a host call runs, and the result of any cancel request.</HostOwns>
+
+<Screens>
+  <Screen name="ios_kit_sheets" alt="Gallery sheet section in Indonesian listing three demos: a bottom sheet with a form, close versus cancel payment, and a side panel." caption="Sheet demos in the gallery (Indonesian)" />
+  <Screen name="ios_kit_sheet_pending" alt="A pending-payment sheet in Indonesian: title with close button, reference, total, a note that closing the panel does not cancel the payment, and a secondary Minta pembatalan action in the footer." caption="Close is not cancel (Indonesian)" />
+</Screens>
+
+## Usage
+
+```dart
+await showPaymentSheet<void>(
+  context: context,
+  builder: (sheet) => PaymentSheet(
+    header: PaymentSheetHeader(
+      title: 'Pending payment',
+      onClose: () => Navigator.pop(sheet),
+    ),
+    body: const Text('Closing this panel does not cancel the payment.'),
+    footer: PaymentButton(
+      label: 'Request cancellation',
+      variant: PaymentButtonVariant.secondary,
+      // Do not return the Future: PaymentButton would show a spinner while
+      // the confirmation dialog is open.
+      onPressed: () => unawaited(confirmThenAskHost(sheet)),
+    ),
+  ),
+);
+```
+
+`unawaited` comes from `dart:async`.
+
+## Behavior
+
+- The header's **Close** only closes the panel. Cancelling a payment is a separate footer action, behind `showPaymentConfirmDialog`, and your host decides the result. The payment stays pending until then.
+- `showPaymentSheet` sizes the sheet to its content, up to the full height. Swipe down, the scrim, Back and Escape dismiss it while `isDismissible` is true.
+- `showPaymentSideSheet` takes the same `PaymentSheet`, which then fills the height so the footer sits at the bottom. The scrim, Back and Escape close it, and focus returns to whatever opened it.
+- Pass `isDismissible: false` / `barrierDismissible: false` while a host call that must finish is running.
+- Sheets open in 280 ms and close in 200 ms on the drawer curve; zero under reduced motion.
+
+## API
+
+<Props names={['PaymentSheet', 'PaymentSheetHeader', 'showPaymentSheet', 'showPaymentSideSheet']} />

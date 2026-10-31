@@ -1,0 +1,24 @@
+---
+// The repository URL, always followed by the placeholder note while the public
+// repository does not exist. `path` links to a file on the main branch.
+import { REPO_URL, REPO_IS_PLACEHOLDER, REPO_PLACEHOLDER_NOTE, repoFile } from '../consts';
+
+interface Props {
+  path?: string;
+  label?: string;
+}
+
+const { path, label } = Astro.props;
+const href = path ? repoFile(path) : REPO_URL;
+---
+
+<span class="fup-repo-link"
+  ><a href={href} rel="nofollow">{label ?? (path ?? REPO_URL)}</a>{
+    REPO_IS_PLACEHOLDER && (
+      <>
+        {' '}
+        <span class="fup-placeholder">({REPO_PLACEHOLDER_NOTE})</span>
+      </>
+    )
+  }</span
+>

@@ -1,0 +1,70 @@
+---
+title: Status and receipt
+description: PaymentStatusView, manual payment instructions, the separate refund section, and a receipt that shares only allowlisted fields.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+Renders one payment attempt from host-authoritative data. It never infers success, never polls, and never offers paying again while the outcome is unresolved.
+
+<HostOwns>the status snapshots, idempotency, polling, the virtual account and its expiry, cancellation and refunds, and the share and clipboard implementations.</HostOwns>
+
+<Screens>
+  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="Unknown outcome: hatched band, Result not confirmed yet, amount, Don't pay again, Check status, payment reference." caption="Unknown outcome" />
+  <Screen name="ios_status_pending_light" alt="Pending in Indonesian: solid amber band, Menunggu, amount and explanation, Cek status." caption="Pending (Indonesian)" />
+  <Screen name="ios_status_va_pending_light" dark="ios_status_va_pending_dark" alt="Virtual account instructions in Indonesian inside the status view: monospace number with copy, amount, countdown, folded steps." caption="PaymentInstructions in the instructions slot (Indonesian)" />
+  <Screen name="ios_receipt_light" dark="ios_receipt_dark" alt="Receipt in Indonesian with success band, merchant, amount, lines, total, masked method, transaction ID with copy and Bagikan struk." caption="PaymentReceipt (Indonesian)" />
+</Screens>
+
+## Usage
+
+```dart
+final va = attempt.snapshot?.instructions;
+
+PaymentStatusView(
+  attempt: attempt,
+  amount: quote.total,
+  busyAction: checking ? PaymentAction.checkStatus : null,
+  instructions: va == null
+      ? null
+      : PaymentInstructions(
+          instructions: va,
+          clock: host.clock,
+          onCopyNumber: copyToClipboard, // Future<bool> Function(String)
+          onElapsed: refreshStatus,
+        ),
+  onAction: (action) => switch (action) {
+    PaymentAction.checkStatus => refreshStatus(),
+    PaymentAction.viewReceipt => openReceipt(),
+    _ => host.handle(attempt.attemptId, action),
+  },
+);
+
+RefundSection(refund: snapshot.refund, paidAmount: quote.total);
+
+PaymentReceipt(
+  data: receiptData, // only for a payment your host confirmed as succeeded
+  onShare: (share) => host.share(share.title, share.text), // Future<ShareOutcome>
+  onCopyTransactionId: copyToClipboard,
+);
+```
+
+The full sequence, including `PaymentAttempt` and `reconcile`, is in the [Quick start](/start/quick-start/#6-create-one-attempt-and-reconcile-snapshots).
+
+## Behavior
+
+- **Actions** come only from `attempt.availableActions`. While the outcome is unknown that is `checkStatus` alone. `startNewAttempt` appears only when your host allows it and the previous attempt is final and not a success.
+- **Unknown** reads "Don't pay again." first, with a hatched band. The "last updated" row appears only once a host snapshot exists.
+- **Instructions** sit after the explanation and before the actions, so the account to pay into comes before Check status. Above 1.5× text they move after the actions. They are not shown while the outcome is unknown, where an account to pay into would read as an invitation to pay again.
+- **Countdown** uses the host clock and stops at zero; the widget only reports `onElapsed` and keeps the status check available. The virtual account number is set in the reference (monospace) font and steps fold under "How to pay".
+- **Refunds** appear in `RefundSection`, beside the original payment, never instead of it. A refund above `paidAmount` is treated as invalid host data.
+- **Receipt sharing** hands your callback only `ReceiptShareData`: merchant, transaction ID, time, total and the masked method. Line items and account identifiers are excluded. A failed or dismissed share never changes the receipt or the payment.
+
+## API
+
+<Props names={['PaymentStatusView', 'PaymentInstructions', 'VirtualAccountInstructions', 'RefundSection', 'PaymentReceipt', 'PaymentReceiptData', 'ReceiptShareData', 'ShareOutcome']} />
+
+`PaymentAttempt`, `PaymentStatusSnapshot` and the status enums are on [Payment attempt and status](/concepts/payment-attempt/#api).

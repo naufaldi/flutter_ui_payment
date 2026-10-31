@@ -1,0 +1,50 @@
+---
+// One native screenshot from public/screens, with its real size so the page
+// does not shift while it loads. `dark` pairs a dark capture that replaces the
+// light one when the site is in dark mode.
+import screens from '../data/screens.json';
+
+interface Props {
+  name: string;
+  dark?: string;
+  alt: string;
+  caption?: string;
+  eager?: boolean;
+}
+
+const { name, dark, alt, caption, eager = false } = Astro.props;
+const all = screens as Record<string, { width: number; height: number; caption: string }>;
+for (const n of [name, dark].filter(Boolean) as string[]) {
+  if (!all[n]) throw new Error(`Unknown screenshot "${n}". Add it to scripts/screens.mjs.`);
+}
+const light = all[name];
+const darkInfo = dark ? all[dark] : undefined;
+const loading = eager ? 'eager' : 'lazy';
+const text = caption ?? light.caption;
+---
+
+<figure class="fup-screen not-content">
+  <img
+    class={dark ? 'fup-only-light' : undefined}
+    src={`/screens/${name}.webp`}
+    width={light.width}
+    height={light.height}
+    alt={alt}
+    loading={loading}
+    decoding="async"
+  />
+  {
+    dark && darkInfo && (
+      <img
+        class="fup-only-dark"
+        src={`/screens/${dark}.webp`}
+        width={darkInfo.width}
+        height={darkInfo.height}
+        alt={alt}
+        loading={loading}
+        decoding="async"
+      />
+    )
+  }
+  {text && <figcaption>{text}</figcaption>}
+</figure>

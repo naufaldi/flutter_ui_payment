@@ -1,0 +1,59 @@
+---
+title: Navigation
+description: A grouped sidebar on wide windows and a modal drawer below the breakpoint, with disabled-with-reason items, badges and focus return.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+An app frame for payment apps: a sidebar at or above a breakpoint, a modal drawer below it.
+
+<HostOwns>the selected id, routing and the pages themselves.</HostOwns>
+
+<Screens>
+  <Screen name="ios_kit_navigation_drawer" alt="The modal navigation drawer in Indonesian: two labeled groups, the selected item on a muted fill, a badge with a count, and a disabled item with its reason shown underneath." caption="AdaptiveNavShell below the breakpoint (Indonesian)" />
+</Screens>
+
+## Usage
+
+```dart
+AdaptiveNavShell(
+  title: const Text('Ruang Bayar'),
+  selectedId: current,
+  onSelected: (item) => setState(() => current = item.id),
+  breakpoint: 840, // sidebar at or above this width, drawer below
+  sections: const [
+    PaymentNavSection(items: [
+      PaymentNavItem(id: 'home', label: 'Home', icon: Icons.home_outlined),
+      PaymentNavItem(
+        id: 'history',
+        label: 'History',
+        icon: Icons.history,
+        badge: '2',
+      ),
+      PaymentNavItem(
+        id: 'limits',
+        label: 'Limits',
+        icon: Icons.speed,
+        enabled: false,
+        disabledReason: 'Verify first',
+      ),
+    ]),
+  ],
+  body: pages[current]!,
+);
+```
+
+Use `NavSidebar` alone if you already have a shell.
+
+## Behavior
+
+- Selection is instant, with no animation, because navigation is used constantly. The selected item gets the selected color plus a muted fill.
+- Disabled items are visible with their reason but not focusable.
+- Opening the drawer moves focus into it. The scrim, Back and Escape close it, and focus returns to the menu button. Closed items are not in the focus order.
+
+## API
+
+<Props names={['AdaptiveNavShell', 'NavSidebar', 'PaymentNavSection', 'PaymentNavItem']} />

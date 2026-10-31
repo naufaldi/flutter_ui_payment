@@ -1,0 +1,15 @@
+# Netlify headers, shipped inside dist/ so they apply to API deploys too.
+# Mirrors netlify.toml.
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/screens/*
+  Cache-Control: public, max-age=86400
+
+/pagefind/*
+  Cache-Control: public, max-age=3600
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

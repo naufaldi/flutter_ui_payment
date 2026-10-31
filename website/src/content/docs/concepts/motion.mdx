@@ -1,0 +1,51 @@
+---
+title: Motion
+description: Motion is feedback only. PaymentMotion holds the tokens, and everything collapses to zero under reduced motion.
+---
+
+import Props from '../../../components/Props.astro';
+
+Motion in the kit is feedback: a press was heard, a status changed, a step moved forward. Durations stay under 300 ms, exits are faster than enters, and nothing moves on its own.
+
+## Tokens
+
+`PaymentMotion.of(context)` returns the tokens for the current context. Every duration is `Duration.zero` when the platform or host asks for reduced motion (`MediaQueryData.disableAnimations`).
+
+| Token | Value | Used for |
+| --- | --- | --- |
+| `press` | 100 ms | Press feedback and color changes |
+| `quick` | 150 ms | Selection and border changes |
+| `enter` | 220 ms | A status or content swap entering |
+| `exit` | 150 ms | The matching exit |
+| `sheetEnter` | 280 ms | Bottom sheets and side panels opening |
+| `sheetExit` | 200 ms | The matching close |
+| `pressedScale` | 0.96 | Compact controls while held (1 under reduced motion) |
+
+Curves are static: `PaymentMotion.easeOut` (strong ease-out, `Cubic(0.23, 1, 0.32, 1)`), `easeInOut` for elements already on screen, and `drawer` (`Cubic(0.32, 0.72, 0, 1)`) for sheets.
+
+```dart
+final motion = PaymentMotion.of(context);
+
+AnimatedSwitcher(
+  duration: motion.enter,
+  reverseDuration: motion.exit,
+  switchInCurve: PaymentMotion.easeOut,
+  transitionBuilder: PaymentMotion.fadeScale,
+  child: statusWidget,
+);
+```
+
+## Rules the kit follows
+
+- Status swaps fade and scale in from 0.95, never from nothing.
+- Compact controls press to 0.96 over 100 ms. Full-width buttons do not scale: scaling a wide slab moves its edges several pixels and reads as a lurch, so they rely on Material's pressed state.
+- Navigation selection, drawer items, menus and anything keyboard-driven are instant. They are used constantly, and animation would only add delay.
+- Sheets take 280 ms in and 200 ms out on the drawer curve; disclosures 220/150 ms.
+- Implicit animations retarget when interrupted.
+- The countdown, which ticks every second, is never animated. Amounts are never animated.
+- `LoadingSkeleton` is static: a shimmer repaints every frame and adds no information.
+- Video never autoplays unless `autoPlay: true`, and never under reduced motion.
+
+## API
+
+<Props names={['PaymentMotion']} />

@@ -1,0 +1,57 @@
+---
+title: Media
+description: An accessible video player driven by your own media engine through a small controller contract. No autoplay, pauses when hidden.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`PaymentVideoPlayer` plays a how-to clip with play/pause, seek, mute, retry and loading, buffering, ended and error states. The package has no media dependency: you adapt your player once by extending `PaymentVideoController`.
+
+<HostOwns>the media engine (plugin), the source, and the controller's lifetime. You create and dispose the controller; the widget never disposes it.</HostOwns>
+
+<Screens>
+  <Screen name="ios_kit_video_ready" alt="Gallery video section in Indonesian: a synthetic clip with a play button, a seek slider at 0:00 of 0:08 and mute below the picture, and a note that nothing autoplays." caption="PaymentVideoPlayer with the example's video_player adapter (Indonesian)" />
+</Screens>
+
+## Usage
+
+```dart
+class MyVideo extends PaymentVideoController {
+  @override
+  Future<void> initialize() async {
+    await engine.load(source);
+    value = value.copyWith(phase: VideoPhase.ready, duration: engine.duration);
+  }
+
+  @override
+  Future<void> play() => engine.play();
+  @override
+  Future<void> pause() => engine.pause();
+  @override
+  Future<void> seekTo(Duration position) => engine.seekTo(position);
+  @override
+  Future<void> setMuted(bool muted) => engine.setVolume(muted ? 0 : 1);
+  @override
+  Future<void> retry() => initialize();
+  @override
+  Widget buildSurface(BuildContext context) => engine.view();
+}
+
+PaymentVideoPlayer(controller: myVideo, title: 'How to pay with QRIS');
+```
+
+`engine` stands for your player. A complete adapter for the official `video_player` plugin is in `example/lib/adapters/video_adapter.dart` (about 100 lines). Report only safe `errorMessage` text; never show raw player errors.
+
+## Behavior
+
+- No autoplay unless `autoPlay: true`, and never under reduced motion.
+- Pauses when the app goes to the background, inside an inactive `IndexedStack` tab, under a covering route, inside `TickerMode(false)`, and on dispose. It does not resume by itself: people press play again.
+- Controls sit below the picture, not over it, so they never hide content, keep their contrast on any frame and stay usable at 200% text.
+- Every control has a label, the seek slider speaks "0:04 of 0:08", and loading, buffering and finished states are announced.
+
+## API
+
+<Props names={['PaymentVideoPlayer', 'PaymentVideoController', 'VideoPlaybackValue', 'VideoPhase']} />

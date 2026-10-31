@@ -1,0 +1,30 @@
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
+# Astro 7 needs Node >= 22.23.4; built locally with Node 24.
+[build.environment]
+  NODE_VERSION = "24"
+
+# Hashed build assets never change under the same name.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Screenshots keep their names across captures, so revalidate daily.
+[[headers]]
+  for = "/screens/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/pagefind/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

@@ -1,0 +1,152 @@
+{
+  "ios_refined_checkout_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Checkout, light, English"
+  },
+  "ios_refined_checkout_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Checkout, dark, Indonesian"
+  },
+  "ios_refined_checkout_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Checkout at 200% text, Indonesian"
+  },
+  "ios_refined_status_unknown_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Unknown outcome, light, English"
+  },
+  "ios_refined_status_unknown_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Unknown outcome, dark, Indonesian"
+  },
+  "ios_refined_status_unknown_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Unknown outcome at 200% text, Indonesian"
+  },
+  "ios_refined_kyc_review_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "KYC review, light, English"
+  },
+  "ios_refined_kyc_review_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "KYC review, dark"
+  },
+  "ios_status_pending_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Pending payment, Indonesian"
+  },
+  "ios_status_va_pending_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Virtual account pending, Indonesian"
+  },
+  "ios_status_va_pending_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Virtual account pending, dark, Indonesian"
+  },
+  "ios_receipt_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Receipt, Indonesian"
+  },
+  "ios_receipt_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Receipt, dark, Indonesian"
+  },
+  "ios_authorize_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Host authorization, Indonesian"
+  },
+  "ios_requote_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Changed total needs re-approval, Indonesian"
+  },
+  "ios_kit_checkout": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: checkout components, Indonesian"
+  },
+  "ios_kit_checkout_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: checkout components, dark"
+  },
+  "ios_kit_checkout_lumen": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: checkout in the Lumen brand"
+  },
+  "ios_kit_history": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: transaction history, Indonesian"
+  },
+  "ios_kit_history_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: transaction history, dark"
+  },
+  "ios_kit_history_detail_unknown": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: transaction detail, unknown outcome"
+  },
+  "ios_kit_interaction": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: interaction components, Indonesian"
+  },
+  "ios_kit_interaction_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: interaction at 200% text"
+  },
+  "ios_kit_navigation_drawer": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: navigation drawer"
+  },
+  "ios_kit_sheets": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: sheets"
+  },
+  "ios_kit_sheet_pending": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: pending-payment sheet"
+  },
+  "ios_kit_sheet_confirm": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: destructive confirmation"
+  },
+  "ios_kit_promo": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: promotions, Indonesian"
+  },
+  "ios_kit_promo_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: promotions at 200% text"
+  },
+  "ios_kit_video_ready": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Gallery: video player"
+  }
+}

@@ -1,0 +1,61 @@
+---
+title: Transaction history
+description: Searchable, filterable transaction list and detail. An unknown outcome stays "in progress", and refunds stay separate.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+A fully controlled list of past payments with search, filter tabs, loading, error, empty and no-match states, plus a detail view with a separate refund section.
+
+<HostOwns>the records, the query and filter state, server-side search if you have it, and what each detail action does.</HostOwns>
+
+<Screens>
+  <Screen name="ios_kit_history" dark="ios_kit_history_dark" alt="Transaction history in Indonesian: search field, text-tab filters with an underline, and rows with status tags." caption="TransactionHistory (Indonesian)" />
+  <Screen name="ios_kit_history_detail_unknown" alt="Transaction detail in a sheet, in Indonesian: hatched band, Hasil belum terkonfirmasi, Jangan bayar lagi, Cek status and details." caption="TransactionDetail for an unconfirmed payment (Indonesian)" />
+</Screens>
+
+## Usage
+
+```dart
+TransactionHistory(
+  records: TransactionRecord.where(all, query: query, filter: filter),
+  query: query,
+  filter: filter,
+  loading: loading,
+  error: loadError,
+  onRetry: reload,
+  onQueryChanged: (q) => setState(() => query = q),
+  onFilterChanged: (f) => setState(() => filter = f),
+  onOpen: (record) => showPaymentSheet<void>(
+    context: context,
+    builder: (_) => PaymentSheet(
+      body: TransactionDetail(
+        record: record,
+        actions: [
+          if (record.status == null || !record.status!.isTerminal)
+            PaymentButton(
+              label: 'Check status',
+              onPressed: () => host.checkStatus(record.id),
+            ),
+        ],
+      ),
+    ),
+  ),
+);
+```
+
+`TransactionRecord.where` is a local search and filter for hosts that already hold the records (it matches title, merchant and reference). If you search on the server, pass your results straight to `records`.
+
+## Behavior
+
+- A record with `status: null` is "not confirmed yet". It falls under **In progress**, never **Unsuccessful**, and its detail should offer a status check, never paying again.
+- Failed and canceled amounts are struck through; refunded amounts are not. Refunds appear as their own section next to the original payment.
+- Filters are text tabs with a 2 px underline. Pending and unknown share the amber tag in the list and differ by icon and word; the hatched band appears only on the detail.
+- `TransactionHistory` lays records out in a column. For long lists, build `TransactionListItem`s in a `ListView.builder` yourself.
+
+## API
+
+<Props names={['TransactionHistory', 'TransactionListItem', 'TransactionDetail', 'TransactionRecord', 'TransactionFilter']} />

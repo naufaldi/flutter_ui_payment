@@ -1,0 +1,57 @@
+---
+title: Host-owned decisions
+description: The kit renders state and reports intent. Every decision about money, identity and authorization stays with your app and backend.
+---
+
+A payment screen and a payment are different things. A request timeout is a network fact; a failed payment is a decision by your backend or provider. The kit keeps that line by never deciding anything about money itself: it renders the data you give it and reports what the customer did through callbacks.
+
+The data flow is always the same:
+
+```text
+provider response → your adapter (parses, validates) → kit models → widgets
+```
+
+Widgets never trust raw JSON. Your adapter maps unknown values to a safe "unavailable" state instead of inventing a transaction result.
+
+## Who owns what
+
+| Area | Owner | What the kit does |
+| --- | --- | --- |
+| Input value, focus, expanded details | Widget | Interaction and presentation-level validation |
+| Identity requirements, consent policy, payment permission | Host/backend | Shows the policy it is given; sets no universal rule |
+| Document upload and KYC decision | Host adapter/backend | Shows progress, structured errors and the result |
+| Price, fees, limits, quote expiry | Host/backend | Renders the full snapshot; asks for re-approval when it changes |
+| Authorization challenge and credentials | Host auth SDK/backend | Shows the state and delegates the action; no raw PIN/OTP in public models |
+| Payment status, idempotency, refund | Host/backend/provider | Renders authoritative state; does not claim the UI alone prevents a double charge |
+| Status polling, recovery, lifecycle | Host coordinator | Offers events and callbacks; widgets start no hidden polling |
+
+## Host verdicts, not UI math
+
+Where a widget could be tempted to compute something, it takes your verdict instead:
+
+- `BalanceCard` takes a `BalanceState` (`sufficient`, `insufficient`, `unavailable`) and an optional `shortfall`. It never compares the balance with the total.
+- `PromoCodeInput` takes a `PromoCodeStatus` (`idle`, `checking`, `applied`, `rejected`). A discount reaches the total only as a new host quote with a `QuoteLineKind.discount` line.
+- `PaymentSummary` renders `PaymentQuote.total` as given. It never adds the lines up.
+- `PaymentStatusView` shows a status only from a `PaymentStatusSnapshot` you produced; it never infers success.
+- `VerificationStatusView` shows `verified` only when your snapshot says so, never because an upload finished.
+
+## Errors
+
+Your adapter maps provider failures into a `HostError` with a `HostErrorCategory` (`network`, `timeout`, `validation`, `sessionExpired`, `notAllowed`, `conflict`, `invalidResponse`, `unavailable`, `unknown`) and an optional `safeMessage` you approved for end users. Raw exceptions and provider payloads never reach the widgets.
+
+`timeout` is its own category on purpose: the request was sent but no answer arrived, so its outcome is unknown. See [Payment attempt and status](/concepts/payment-attempt/).
+
+## No dependencies to adopt
+
+The package does not pick a state manager, router, camera, media engine or payment provider for you. Its only dependency is the Flutter SDK. The example app uses a plain Dart coordinator (`example/lib/coordinator/demo_coordinator.dart`) as the single owner of payment state, and a fake host (`example/lib/adapters/fake_host.dart`) that simulates the backend, provider, idempotency and device capabilities.
+
+The fake host proves the UI and coordinator contract against a fake host only, not against a real provider.
+
+## Privacy boundary
+
+- Demo identities, documents, payment references and money are synthetic.
+- Status and error models carry no raw provider payload. Identity data is shown only as far as review needs it.
+- The core package makes no network calls and has no analytics.
+- Your host owns auth and sessions, authorization of each transaction, server-side upload validation, idempotency, rate limits, and document retention and deletion.
+- `PrivacyMask` hides sensitive content (for example in the app switcher). Platform screenshot protection is your app's responsibility.
+- Sharing a receipt passes only allowlisted fields (`ReceiptShareData`), never a screenshot of KYC pages or app state.

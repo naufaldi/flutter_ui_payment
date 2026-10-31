@@ -1,0 +1,62 @@
+---
+title: Introduction
+description: What flutter_ui_payment is, what your app keeps, and where the package stands today.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+
+`flutter_ui_payment` is a Flutter package of composable widgets for optional identity verification (KYC), checkout, host-owned authorization, manual payment instructions, payment status and receipts. It stays clear when a payment is pending, failed, or its result is not known yet.
+
+Around that core it ships the pieces a payment app is built from: action rows and menus, confirmations and feedback, a responsive sidebar/drawer shell, sheets, a host-driven video player, labeled promotions, and transaction history.
+
+<Screens>
+  <Screen name="ios_refined_checkout_light" dark="ios_refined_checkout_dark" alt="Checkout with the order summary led by the total, a fee line, the method list and a pinned total with the Review payment action." caption="Checkout (light: English, dark: Indonesian)" />
+  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="Payment result not confirmed yet: hatched band, amount, Don't pay again, and Check status." caption="Unknown outcome (light: English, dark: Indonesian)" />
+  <Screen name="ios_refined_kyc_review_light" dark="ios_refined_kyc_review_dark" alt="KYC review screen with masked identity details, document file names and Edit actions in the section headers." caption="KYC review (optional module)" />
+</Screens>
+
+## What the kit owns, and what you keep
+
+The package renders structured data from your app and reports user intent through callbacks. It does not process money, make network calls, or need a router, state manager, camera or payment SDK.
+
+| Concern | Owner | What the kit does |
+| --- | --- | --- |
+| Input, focus, local validation | Widget | Interaction and presentation-level validation |
+| Identity rules, consent policy | Host | Renders the host's fields, validators and reasons |
+| KYC decision, document validation | Host/backend | Shows progress, structured errors and the result |
+| Price, fees, limits, quote expiry | Host/backend | Renders the snapshot; asks for re-approval when terms change |
+| PIN/OTP/biometric challenge | Host auth SDK | Shows the challenge state; never receives the secret |
+| Payment status, idempotency, refund | Host/backend/provider | Renders authoritative snapshots; never infers success |
+| Polling, recovery, lifecycle | Host coordinator | Exposes callbacks; widgets never poll on their own |
+
+"Host" means your app and the backend behind it. [Host-owned decisions](/concepts/host-owned/) explains each row.
+
+## Invariants the kit helps keep
+
+- `verified` comes only from the host, never from a finished upload.
+- One active submit per attempt. `PaymentButton` locks while its callback runs; this is interaction protection, not a replacement for server-side deduplication.
+- Timeouts, offline refreshes and an elapsed countdown never become "failed" or "paid".
+- Older or duplicate snapshots cannot overwrite newer ones; a success changes only through an official provider correction.
+- A changed total or method requires review and a new authorization.
+- Refunds are a separate lifecycle shown beside the original payment.
+- No KYC documents, PINs or credentials in public models; the host stores only an opaque attempt reference for recovery.
+
+## Status
+
+**`0.1.0`, not yet published.** The package is local only: it is not on pub.dev, there is no public repository yet, and the package name has not been checked for availability. All data in the example app is synthetic.
+
+Checked so far (30 October 2026, Flutter 3.44.6): formatter and analyzer are clean, the 89 package tests pass when run file by file, the 12 integration flow tests pass on the iPhone 16 simulator, and native screenshots were captured and inspected on an iPhone 16 simulator (iOS 18.1) and an Android 11 emulator. [Compatibility](/reference/compatibility/) has the details.
+
+Not done yet:
+
+- An external developer integrating a checkout from these docs (the 30-minute goal is unproven).
+- A browser check of the web gallery.
+- Android 7–10 runtime tests.
+- Package name availability, `flutter pub publish --dry-run`, and a public repository.
+
+## Where to go next
+
+1. [Installation](/start/installation/): add the dependency.
+2. [Quick start](/start/quick-start/): build a checkout from quote to receipt, including the states that go wrong.
+3. [Payment attempt and status](/concepts/payment-attempt/): the rules behind "unknown is not failure".

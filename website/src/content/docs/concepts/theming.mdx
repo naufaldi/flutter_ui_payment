@@ -1,0 +1,86 @@
+---
+title: Theming
+description: PaymentTheme is a ThemeExtension. Without it the kit follows your ColorScheme; with it you set the brand, light and dark.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+
+Every widget takes its colors, radius, spacing and amount style from `PaymentTheme`, a `ThemeExtension`. Register it on `ThemeData.extensions`. When no extension is installed, widgets fall back to `PaymentTheme.fromColorScheme`, so the kit follows your `ColorScheme` by default and a full brand is opt-in.
+
+## Follow your scheme, then adjust
+
+```dart
+final scheme = ColorScheme.fromSeed(seedColor: brandColor);
+
+ThemeData(
+  colorScheme: scheme,
+  extensions: [
+    PaymentTheme.fromColorScheme(scheme).copyWith(accent: brandColor, radius: 12),
+  ],
+);
+```
+
+Status tones (`info`, `success`, `warning`, `danger`) are fixed, contrast-checked values in `fromColorScheme`: at least 5.8:1 on white in light mode and 7.6:1 on `#131417` in dark mode, so status text stays readable whatever your seed color is. `neutral` follows the scheme.
+
+## Light and dark
+
+Build one `PaymentTheme` per brightness. This is the example app's default brand, "Hairline" (white page, navy-black ink, rules instead of cards), copied from `example/lib/themes.dart`:
+
+```dart
+ThemeData buildTheme(Brightness brightness) {
+  final dark = brightness == Brightness.dark;
+  final ink = dark ? const Color(0xFFECEDF0) : const Color(0xFF1A1F36);
+  final surface = dark ? const Color(0xFF131417) : Colors.white;
+  final scheme = ColorScheme.fromSeed(
+    seedColor: const Color(0xFF1A1F36),
+    brightness: brightness,
+    dynamicSchemeVariant: DynamicSchemeVariant.monochrome,
+    primary: ink,
+    onPrimary: surface,
+    surface: surface,
+    onSurface: ink,
+  );
+  final payment = PaymentTheme.fromColorScheme(scheme).copyWith(
+    accent: ink,
+    onAccent: surface,
+    surface: surface,
+    surfaceMuted: dark ? const Color(0xFF1C1E23) : const Color(0xFFF5F6F8),
+    outline: dark ? const Color(0xFF2C2E35) : const Color(0xFFE3E6EC),
+    textPrimary: ink,
+    textSecondary: dark ? const Color(0xFFA2A8B5) : const Color(0xFF5E6678),
+    // Control edge 3.37:1 light, 4.85:1 dark.
+    border: dark ? const Color(0xFF7E838E) : const Color(0xFF868C9A),
+    disabled: dark ? const Color(0xFF62656E) : const Color(0xFFA6ABB5),
+  );
+  return ThemeData(colorScheme: scheme, extensions: [payment]);
+}
+```
+
+Pass `theme: buildTheme(Brightness.light)` and `darkTheme: buildTheme(Brightness.dark)` to `MaterialApp`.
+
+<Screens>
+  <Screen name="ios_kit_checkout" dark="ios_kit_checkout_dark" alt="Gallery checkout specimens in the Hairline brand: merchant header, step indicator and order summary." caption="Hairline (follows the site theme)" />
+  <Screen name="ios_kit_checkout_lumen" alt="The same checkout specimens in the Lumen brand: pure black and white, heavier amounts." caption="Lumen: the same widgets, other tokens" />
+</Screens>
+
+The second brand, Lumen, is also in `example/lib/themes.dart`: pure black and white, `amountWeight: FontWeight.w700`, its own muted and outline colors. Both brands are applied from outside the package without forking it.
+
+## Tokens worth knowing
+
+- **`outline`** is the decorative hairline: dividers, the method-group edge, the action-bar top. It may sit below 3:1.
+- **`border`** is the edge of a control (inputs, secondary buttons, unselected checkboxes) and must reach 3:1 against `surface`. It defaults to `textSecondary` a quarter of the way to `surface`.
+- **`disabled`** is the label and icon color of a disabled control on `surfaceMuted`.
+- **`radius`** is the corner radius of selectable boxes such as the method list. Buttons and inputs use three quarters of it.
+- **`spacing`** is the base unit (default 8). Layouts use multiples by role: inline 4, related 8, block 12, group 16, section 24, major 32.
+- **`amountWeight`** and **`amountFontFamily`** style money. Amounts use tabular figures.
+- **`referenceFontFamily`** is for things people copy or compare digit by digit: virtual account numbers, transaction IDs, promo codes. It defaults to the platform monospace.
+
+The package bundles no fonts. Use your app's text theme for everything else.
+
+## API
+
+<Props names={['PaymentTheme', 'ToneColors', 'StatusTone']} />
+
+`PaymentTheme.copyWith` accepts every constructor parameter, including `border`, `disabled` and `referenceFontFamily`.

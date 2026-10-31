@@ -1,0 +1,90 @@
+---
+title: Payment attempt and status
+description: Unknown is not failure, there is no pay-again while a payment is unresolved, and refunds are a separate lifecycle.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+
+The kit separates three things that payment screens tend to blur:
+
+1. **What the client knows about its own submit** (`SubmissionState`): was it sent, did an answer arrive?
+2. **The business status the server reports** (`PaymentStatus` inside a `PaymentStatusSnapshot`).
+3. **How fresh the last observation is** (`Observation`: `fresh`, `refreshing`, `unavailable`).
+
+`PaymentAttempt` holds all three for one payment.
+
+## Unknown is not failure
+
+When a submit times out before a server reference arrives, the attempt keeps going as `SubmissionState.outcomeUnknown`. The server may already have charged. Only a host status check with the same attempt reference can resolve it.
+
+"Unknown" is not a provider status; it is the client admitting it has no answer yet. The screen leads with "Don't pay again.", shows a hatched band so it never looks like an ordinary pending state, and offers exactly one action: check status.
+
+<Screens>
+  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="Unknown outcome: hatched amber band, Result not confirmed yet, the amount, Don't pay again, Check status." caption="Unknown: hatched band" />
+  <Screen name="ios_status_pending_light" alt="Pending in Indonesian: solid amber band, Menunggu, the amount and an explanation." caption="Pending: solid band (Indonesian)" />
+  <Screen name="ios_kit_history_detail_unknown" alt="Transaction detail sheet in Indonesian for an unconfirmed payment: hatched band, Jangan bayar lagi, and Cek status." caption="The same rule in transaction history (Indonesian)" />
+</Screens>
+
+The same rule holds everywhere: a timeout, an offline refresh or an elapsed countdown never becomes "failed" or "paid". In transaction history a record with `status: null` is "not confirmed yet" and falls under **In progress**, never **Unsuccessful**.
+
+## Business statuses
+
+| Status | Meaning |
+| --- | --- |
+| `requiresAction` | The customer must act on host instructions |
+| `processing` | The request is being executed |
+| `pending` | The transaction is known but waits for payment, review or settlement; the host supplies the reason and actions |
+| `succeeded`, `failed`, `canceled`, `expired` | Final (`PaymentStatus.isTerminal`) |
+
+None of `requiresAction`, `processing` or `pending` allows the UI to infer success or to send a new payment automatically. Unknown wire values parse to `null` with `PaymentStatus.tryParse`, so your adapter can reject the snapshot instead of guessing.
+
+## Reconciling snapshots
+
+Send every status response through `attempt.reconcile(snapshot)`. It returns a `ReconcileResult`: either the updated attempt, or the unchanged attempt plus a `ReconcileRejection`.
+
+| Rejection | When |
+| --- | --- |
+| `wrongAttempt` | The snapshot belongs to another attempt |
+| `referenceMismatch` | The server reference differs from the one already known |
+| `stale` | Its `revision` is not newer than the current one (late or duplicate) |
+| `successDowngrade` | A `succeeded` payment would change to another status without `isCorrection: true` (an official provider correction) |
+
+```dart
+final result = attempt.reconcile(snapshot);
+attempt = result.attempt;
+if (!result.applied) debugPrint('ignored: ${result.rejection}');
+```
+
+## No pay-again while unresolved
+
+`attempt.availableActions` decides what `PaymentStatusView` can offer:
+
+- Nothing was sent (`notSent`): no actions.
+- The outcome is unknown, or no snapshot has arrived yet: `checkStatus` only.
+- Otherwise: the snapshot's `allowedActions`, minus `startNewAttempt` unless `attempt.allowsNewAttempt` is true.
+
+`allowsNewAttempt` is true only when the submit was accepted, the status is final, it is not `succeeded`, and your host listed `PaymentAction.startNewAttempt`. So a new attempt appears only after a confirmed failure, cancellation or expiry, and only if you allow it. It never appears while the payment is pending or unknown.
+
+Disabling buttons is interaction protection. It does not replace deduplication on your server: keep the same idempotency key (`attemptId`) for every retry and status check of an attempt, and create a new key only for a new legitimate attempt.
+
+## Changed terms need new consent
+
+`PaymentQuote.termsDifferFrom(other)` is true when the total, the method or any line differs. Pass the previous quote to `PaymentSummary` and `PaymentConfirmation` as `previousQuote`: the summary shows a notice with both totals, and the confirmation keeps its action unreachable until the customer accepts the new total. A quote or method that changes after authorization needs review and a new authorization.
+
+## Countdowns use the host clock
+
+`PaymentInstructions` and `CountdownText` take a `clock` function from your host. The countdown stops at zero without going negative and calls `onElapsed` once. Reaching zero is not proof that the customer did not pay: check status before any final decision.
+
+## Refunds are separate
+
+A refund never rewrites the original payment. `RefundInfo` (`RefundStatus`: `none`, `pending`, `partial`, `refunded`, `failed`) travels on the snapshot, the receipt data and `TransactionRecord`, and `RefundSection` shows it in its own section beside the original payment. A refunded payment keeps its original amount, unstruck, and its success state. Refund processing itself is your backend's; the kit has no refund button.
+
+## Leaving is not cancelling
+
+Closing a screen does not cancel a transaction. A sheet's **Close** only closes the UI. Requesting cancellation (`PaymentAction.requestCancel`) is a separate host call, behind a confirmation, and the UI says "canceled" only after your host confirms it.
+
+## API
+
+<Props names={['PaymentAttempt', 'SubmissionState', 'Observation', 'PaymentStatusSnapshot', 'PaymentStatus', 'PaymentAction', 'ReconcileResult', 'ReconcileRejection', 'RefundInfo', 'RefundStatus']} />

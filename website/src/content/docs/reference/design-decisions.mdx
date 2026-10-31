@@ -1,0 +1,68 @@
+---
+title: Design decisions
+description: Why the kit looks and behaves the way it does. A summary of the design research and the decision record, with links to the full documents.
+---
+
+import RepoLink from '../../../components/RepoLink.astro';
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+
+The full records live in the repository: <RepoLink path="docs/design-research.md" label="docs/design-research.md" /> (research and art direction) and <RepoLink path="docs/decisions.md" label="docs/decisions.md" /> (engineering and design tradeoffs, performance findings). This page summarizes them.
+
+## Visual direction: Stripe-calm · Hairline
+
+The first version looked like stock Material 3: every section a large rounded card, tinted icon circles on every screen. The owner chose a Stripe-like base on 30 October 2026, and of three options, **Hairline** became the kit default.
+
+What it takes from Stripe Checkout:
+
+- The order summary has no card: label left, amount right, a hairline only between the items and the total.
+- The amount sits near the top, so the customer sees what they pay before the details.
+- Payment methods are one bordered list with a 2 px ink outline on the selected row.
+- White surface, corners of 6–8 px, amounts in the system sans with tabular figures.
+
+What it keeps from the earlier "Statement" direction, because Stripe shows no public screen for these states:
+
+- A hatched band means unknown; a solid band means pending.
+- "Don't pay again." comes first on an unknown result.
+- One primary action, and never a pay-again on pending or unknown.
+- Monospace only for references and virtual account numbers.
+
+Why not all of Stripe: it is the most imitated payment look, its finish depends on Stripe's own font and brand tuning (the kit ships no fonts), and it has no pattern for the unknown outcome, which is this kit's main job.
+
+<Screens>
+  <Screen name="ios_refined_checkout_light" dark="ios_refined_checkout_dark" alt="Hairline checkout: flat summary, bordered method list, pinned total and action." caption="Hairline checkout" />
+  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="Hatched band and Don't pay again on the unknown outcome." caption="The hatched band for unknown" />
+</Screens>
+
+## Design constraints
+
+1. No card by default. A container needs a reason: it is selectable, copyable or dismissible.
+2. One display-size amount per screen.
+3. Status uses several signals together: band pattern, tone color, words and an explanation. Strike-through only for failed or canceled.
+4. Left-align everything in end-user UI.
+5. One primary action per view, in ink. A 2 px focus outline on keyboard focus, never brand-colored.
+6. Radii from the scale only: 6 for controls, 8 for a selectable box, 12 for a sheet top.
+7. Motion only for feedback and state change, zero under reduced motion.
+
+This site follows the same rules: white surface, ink accent, rules instead of cards, small radii, system fonts, monospace for code and references.
+
+## Engineering decisions
+
+- **Composition over configuration.** `PaymentSheet(header:, body:, footer:)` takes widgets, not a config object.
+- **Controlled where the host owns state.** `TransactionHistory` and navigation selection are fully controlled; `ExpandableSection` supports both modes.
+- **Host verdicts, not UI math.** `BalanceCard` takes `BalanceState`, `PromoCodeInput` takes `PromoCodeStatus`, and a discount reaches the total only as a new host quote.
+- **Media through an adapter.** `PaymentVideoController` keeps the package free of native plugins.
+- **One package.** New modules live in the same package; splitting pays off only once a consumer needs part of it without the rest.
+- **Out of scope on purpose:** real wallets, PIN entry, card storage, ledgers, ad SDKs, real campaigns and tracking.
+
+## Large-text pass
+
+At 200% text the status screen's only action used to fall below the bottom bar. Now the status header grows with text, actions come before the reference rows, and virtual account instructions move after the actions above 1.5× text. The summary headline is dropped above 1.5× because the Total row and the pinned bar already show the total. Label/value rows share a line when they fit.
+
+## Performance
+
+The PRD budget is p95 build and raster each under 16.7 ms on a recorded 60 Hz target. On an Android 11 arm64 emulator (profile mode, Impeller on OpenGL ES), checkout at 200% text measured a p95 build of 2.02 ms and a p95 raster of 20.41 ms. A plain Material list with no kit widgets also missed the raster budget in the same session (20.66 ms), which suggests a substantial environment effect but does not prove the kit has no rendering cost. **The raster budget is not met in this environment.** No physical device was profiled, and there are no iOS performance numbers.
+
+## Open items
+
+From the decision record, still to confirm with the owner: whether expired amounts should be struck through, `BalanceCard`'s 20 px balance, side padding of rows listed edge to edge, and making the internal type scale public. Hairline and the Lumen/Contrast preset are still close to each other.

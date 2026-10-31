@@ -1,0 +1,71 @@
+---
+title: flutter_ui_payment
+description: Composable Flutter UI for checkout, payment status, receipts and optional KYC that stays honest when a payment result is not known yet.
+template: splash
+hero:
+  title: 'Payment UI that stays honest <span>when the result is not known yet.</span>'
+  tagline: 'Composable Flutter widgets for checkout, payment status, receipts and optional KYC. Your backend decides money, identity and authorization. The kit renders its answers and never moves money.'
+  actions:
+    - text: Get started
+      link: /start/quick-start/
+    - text: Components
+      link: /components/foundation/
+pagefind: true
+---
+
+import { Code } from '@astrojs/starlight/components';
+import Screen from '../../components/Screen.astro';
+import Screens from '../../components/Screens.astro';
+
+## The hard states are the product
+
+Most payment UIs are happy-path screenshots. Real flows have to answer harder questions, and this kit makes each answer part of the widget, not a convention you remember to follow.
+
+**The submit timed out after the server accepted it.** The screen says "Don't pay again." first, shows a hatched band that never looks like an ordinary pending state, and offers one action: check status, using the same attempt reference.
+
+**An older status arrives after a newer one.** `PaymentAttempt.reconcile` rejects stale revisions, another attempt's data, a mismatched server reference, and a success that turns into anything else without an official provider correction.
+
+**The total changed after the customer chose a method.** `PaymentConfirmation` shows the old and new total and keeps the confirm action unreachable until the customer accepts the new terms.
+
+**Can the customer pay twice?** Not from this UI while a payment is pending or unknown. A new attempt is offered only when the host allows it and the previous attempt is final and not a success.
+
+```dart
+// Every status response goes through reconcile. Rejected snapshots leave the
+// attempt as it was and tell you why.
+final result = attempt.reconcile(snapshotFromYourAdapter);
+if (!result.applied) debugPrint('ignored: ${result.rejection}');
+attempt = result.attempt;
+
+PaymentStatusView(
+  attempt: attempt,
+  amount: quote.total,
+  onAction: (action) => host.handle(action), // only attempt.availableActions
+);
+```
+
+<Screens>
+  <Screen name="ios_requote_light" alt="Checkout notice in Indonesian saying the total changed, with old and new totals and a checkbox to accept the new total before confirming." caption="A changed total needs re-approval (Indonesian)" />
+  <Screen name="ios_status_va_pending_light" dark="ios_status_va_pending_dark" alt="Pending virtual-account payment in Indonesian: solid amber band, amount, a monospace account number with a copy button, a countdown, folded steps and a Check status button." caption="Virtual account waiting for transfer (Indonesian)" />
+  <Screen name="ios_refined_status_unknown_light_200" alt="The unknown-outcome screen in Indonesian at 200% text size; the Cek status button is still on the first screen." caption="Unknown outcome at 200% text; the action stays reachable (Indonesian)" />
+  <Screen name="ios_receipt_light" dark="ios_receipt_dark" alt="Receipt in Indonesian with a solid green band, merchant, amount, line items, masked method, transaction ID with copy, and a share button." caption="Receipt, shared from an allowlist (Indonesian)" />
+</Screens>
+
+## Who decides what
+
+The widgets render data the host gives them and report what the customer did through callbacks. They make no network calls and need no router, state manager, camera or payment SDK.
+
+| Concern | Owner | What the kit does |
+| --- | --- | --- |
+| Price, fees, limits, quote expiry | Host/backend | Renders the snapshot; asks for re-approval when terms change |
+| PIN/OTP/biometric challenge | Host auth SDK | Shows the challenge state; never receives the secret |
+| Payment status, idempotency, refund | Host/backend/provider | Renders authoritative snapshots; never infers success |
+| Polling, recovery, lifecycle | Host coordinator | Exposes callbacks; widgets never poll on their own |
+| KYC decision, document validation | Host/backend | Shows progress, structured errors and the result |
+
+The full table, including input and consent, is on [Host-owned decisions](/concepts/host-owned/).
+
+## Status
+
+Version `0.1.0`, local only. It is not published to pub.dev and has no public repository yet, and the package name has not been checked for availability. Tested with Flutter 3.44.6 on an iPhone 16 simulator (iOS 18.1) and an Android 11 emulator; [Compatibility](/reference/compatibility/) lists exactly what was run and what was not. MIT licensed.
+
+[Install it](/start/installation/) · [Walk through a checkout](/start/quick-start/) · [Browse components](/components/foundation/)

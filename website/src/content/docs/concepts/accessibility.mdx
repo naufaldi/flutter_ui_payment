@@ -1,0 +1,51 @@
+---
+title: Accessibility
+description: Status never relies on color, layouts survive 200% text, focus is visible and returns where it came from, and reduced motion is respected.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+
+## Status is never color alone
+
+Every status carries an icon, a label and a sentence; color only supports them. The unknown outcome adds a fourth signal, a hatched `StatusBand`, so it cannot be confused with the solid band of an ordinary pending payment. Strike-through is reserved for failed and canceled amounts.
+
+## 200% text
+
+Text scales fully up to 200%, and layouts reflow instead of clipping:
+
+- Label/value rows share a line when they fit (value at the end edge); otherwise the value wraps flush left.
+- Amounts never break across lines. Headline amounts scale down rather than hide a digit, and headline totals are capped at 1.6× scale.
+- Above 1.5× text the summary headline is omitted, because the Total row and the pinned bar already show the total.
+- On the status screen the one action that resolves an unknown payment stays on the first screen at 200%. Virtual account instructions move after the actions above 1.5× text.
+- Long file names keep their start and extension (`ktp_demo_ret…ake.png`) instead of breaking mid-word.
+
+<Screens>
+  <Screen name="ios_refined_checkout_light_200" alt="Checkout in Indonesian at 200% text: rows reflow and the total and action stay pinned at the bottom." caption="Checkout at 200% (Indonesian)" />
+  <Screen name="ios_refined_status_unknown_light_200" alt="Unknown outcome in Indonesian at 200% text with the Cek status action on the first screen." caption="Unknown outcome at 200% (Indonesian)" />
+  <Screen name="ios_kit_interaction_200" alt="Gallery interaction components in Indonesian at 200% text: action rows with wrapped subtitles." caption="Action rows at 200% (Indonesian)" />
+  <Screen name="ios_kit_promo_200" alt="A sponsored promotion at 200% text; the sponsor label wraps to a second line instead of truncating." caption="Sponsor label wraps, never truncates" />
+</Screens>
+
+## Targets, labels and announcements
+
+- Touch targets are at least 48 logical pixels.
+- Controls have semantic labels. Amounts are spoken as plain digits ("102500 IDR") through `MoneyFormat.spoken`.
+- Status changes are announced through live regions; video loading, buffering and finished states are announced too, and the seek slider speaks "0:04 of 0:08".
+- Two "Edit" buttons on the KYC review are spoken as "Edit: Your details" and so on, so screen-reader users can tell them apart.
+- `PrivacyMask` hides sensitive content and excludes it from semantics while obscured.
+
+## Focus
+
+- A neutral 2 px focus ring appears on keyboard focus only, on the core and secondary controls. It is never brand-colored. This is verified by widget tests; static screenshots cannot show it.
+- Drawers and sheets close with the scrim, Back or Escape and return focus to what opened them. Opening the drawer moves focus into it; hidden navigation is not in the focus order.
+- Destructive confirmations put initial focus on the safe choice (Cancel).
+- Disabled navigation items and action rows stay visible with their reason, but are not focusable.
+
+## Reduced motion
+
+Under `MediaQuery.disableAnimations` every kit duration collapses to zero, the busy state stays a static icon, and video autoplay is blocked. See [Motion](/concepts/motion/).
+
+## What is still yours
+
+The PRD's edge matrix (X02, X03) is exercised in the example's scenario picker, but your app owns its own screens around the kit: safe areas, keyboard insets in your layouts, and OS-level screenshot protection on sensitive pages.

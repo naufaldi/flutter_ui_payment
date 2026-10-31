@@ -1,0 +1,108 @@
+---
+title: Verification (KYC)
+description: Optional identity verification UI. Consent, a host-driven identity form, document slots, review with masking, and a status view with no bypass.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+KYC is optional and composes with checkout; not every payment has to pass through it. The widgets show what you ask for and why, collect it, and display your decision.
+
+<HostOwns>the identity rules and consent policy, field validators, document limits, the picker or camera, uploads, server-side document validation, and the verification decision itself. `verified` comes only from your snapshot, never from a finished upload.</HostOwns>
+
+<Screens>
+  <Screen name="ios_refined_kyc_review_light" dark="ios_refined_kyc_review_dark" alt="KYC review: identity details with masked values, document slots with file names shortened in the middle, and Edit actions in the section headers." caption="VerificationReview" />
+</Screens>
+
+## Usage
+
+The flow is intro → form → documents → review → status. Each widget is independent; your coordinator decides which one to show.
+
+```dart
+VerificationIntro(
+  requirements: const [
+    DataRequirement(
+      title: 'Full name and ID number',
+      purpose: 'To confirm the account belongs to you.',
+    ),
+    DataRequirement(
+      title: 'Photo of your ID card',
+      purpose: 'Required by our payment partner for top-ups above the limit.',
+    ),
+  ],
+  onOpenPolicy: host.openPrivacyPolicy,
+  onContinue: () => setState(() => step = KycStep.form),
+);
+
+IdentityForm(
+  fields: [
+    const IdentityFieldSpec(key: 'name', label: 'Full name'),
+    IdentityFieldSpec(
+      key: 'nik',
+      label: 'ID number (NIK)',
+      keyboardType: TextInputType.number,
+      validator: host.validateNik, // String? Function(String value)
+      maskInReview: true,
+    ),
+  ],
+  initialValues: draft,
+  serverErrors: host.fieldErrors, // keyed by IdentityFieldSpec.key
+  onSubmit: (values) => setState(() {
+    draft = values;
+    step = KycStep.documents;
+  }),
+);
+
+DocumentUploadTile(
+  requirement: const DocumentRequirement(
+    key: 'ktp',
+    label: 'ID card (KTP)',
+    acceptedTypes: {'image/jpeg', 'image/png'},
+    acceptedTypesLabel: 'JPG or PNG',
+    maxBytes: 5 * 1024 * 1024,
+  ),
+  state: ktpSlot, // DocumentSlotState.empty() / uploading / uploaded / failed
+  onPick: host.pickKtp, // your picker or camera; also replaces a file mid-upload
+  onOpenSettings: host.openAppSettings,
+);
+```
+
+Before uploading, `checkDocumentLimits(requirement: …, file: …)` returns a `DocumentIssue` when a file breaks your limits. Passing it does not mean the document is genuine.
+
+Each `DocumentSlotState` carries a `requestId`. When the customer replaces a file while the previous one is still uploading, ignore results whose `requestId` no longer matches the slot, so review shows only the latest file.
+
+```dart
+VerificationReview(
+  fields: fields,
+  values: draft,
+  documents: [(ktpRequirement, ktpSlot)],
+  onEditDetails: () => setState(() => step = KycStep.form),
+  onEditDocuments: () => setState(() => step = KycStep.documents),
+  onSubmit: () => host.submitVerification(draft), // disabled until every slot is uploaded
+);
+
+VerificationStatusView(
+  snapshot: kycSnapshot, // from your host
+  outcomeUnknown: submitTimedOut,
+  onAction: (action) => switch (action) {
+    VerificationAction.fixDetails => setState(() => step = KycStep.form),
+    VerificationAction.continueToPayment => openCheckout(),
+    _ => host.handleKyc(action),
+  },
+);
+```
+
+## Behavior
+
+- Consent always starts unchecked, and `onContinue` is unreachable without it.
+- The form validates every field on submit, shows errors on the relevant fields and moves focus to the first invalid one. Names accept any script; nothing limits them to ASCII.
+- Fields the host asks to correct (`highlightFields`, or `fieldsToFix` on the snapshot) are highlighted, and still-valid data does not have to be entered again.
+- Review shows only the last four characters of fields marked `maskInReview`. "Edit" sits in each section header and is spoken with its section name.
+- The status view offers only `allowedActions` from your `VerificationSnapshot`. There is never a bypass action, and a network failure never turns into "rejected".
+- A submit that timed out (`outcomeUnknown: true`) is shown as not confirmed yet; hold new submits until your host has checked the previous request.
+
+## API
+
+<Props names={['VerificationIntro', 'IdentityForm', 'DocumentUploadTile', 'VerificationReview', 'VerificationStatusView', 'VerificationSnapshot', 'VerificationStatus', 'VerificationAction', 'DataRequirement', 'IdentityFieldSpec', 'DocumentRequirement', 'DocumentFile', 'DocumentSlotState', 'DocumentSlotPhase', 'DocumentIssue', 'DocumentIssueKind', 'checkDocumentLimits']} />

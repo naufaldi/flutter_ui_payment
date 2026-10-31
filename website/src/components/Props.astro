@@ -1,0 +1,144 @@
+---
+// API tables generated from the Dart source (scripts/gen-api.mjs →
+// src/data/api.json). Never hand-edit a props table; change the source.
+import api from '../data/api.json';
+
+interface Props {
+  names: string[];
+  /** Heading level for each declaration. */
+  level?: 3 | 4;
+}
+
+type Param = {
+  name: string;
+  type: string | null;
+  required: boolean;
+  default: string | null;
+  named: boolean;
+  doc: string;
+};
+type Entry = {
+  kind: string;
+  file: string;
+  doc: string;
+  extends?: string | null;
+  constructors?: { name: string; factory: boolean; params: Param[]; doc: string }[];
+  values?: { name: string; doc: string }[];
+  params?: Param[];
+  returns?: string;
+  typeParams?: string;
+  on?: string;
+  members?: string[];
+};
+
+const { names, level = 3 } = Astro.props;
+const all = api as Record<string, Entry>;
+for (const n of names) {
+  if (!all[n]) throw new Error(`Props: "${n}" is not a public declaration of flutter_ui_payment`);
+}
+
+const escape = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// Doc comments use Markdown backticks; render them as code, everything else as text.
+const doc = (s: string) =>
+  escape(s)
+    .split(/\n\s*\n/)
+    .map((p) => p.replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n/g, ' '))
+    .join('</p><p>');
+const H = level === 3 ? 'h3' : 'h4';
+
+function signature(e: Entry, name: string) {
+  if (e.kind === 'enum') return `enum ${name}`;
+  if (e.kind === 'function') return `${e.returns} ${name}${e.typeParams ?? ''}(…)`;
+  if (e.kind === 'extension') return `extension ${name} on ${e.on}`;
+  return `${e.kind} ${name}${e.extends ? ` extends ${e.extends}` : ''}`;
+}
+---
+
+<div class="fup-api">
+  {
+    names.map((name) => {
+      const e = all[name];
+      const ctors = (e.constructors ?? []).filter((c) => c.params.length > 0 || c.name === name);
+      return (
+        <section>
+          <H id={`api-${name.toLowerCase()}`}>
+            <code>{name}</code>
+          </H>
+          <p class="fup-source">
+            {signature(e, name)} · {e.file}
+          </p>
+          {e.doc && <p set:html={doc(e.doc)} />}
+          {e.kind === 'enum' && (
+            <table>
+              <thead>
+                <tr>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {e.values!.map((v) => (
+                  <tr>
+                    <td>
+                      <code>{v.name}</code>
+                    </td>
+                    <td set:html={v.doc ? doc(v.doc) : '—'} />
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          {e.kind === 'extension' && e.members && e.members.length > 0 && (
+            <p>
+              Members:{' '}
+              {e.members.map((m, i) => (
+                <>
+                  {i > 0 && ', '}
+                  <code>{m}</code>
+                </>
+              ))}
+            </p>
+          )}
+          {(e.kind === 'function' ? [{ name, params: e.params ?? [], doc: '' }] : ctors).map(
+            (c) =>
+              c.params.length > 0 && (
+                <>
+                  {c.name !== name && (
+                    <p>
+                      <code>{c.name}(…)</code>
+                      {c.doc && <span set:html={' — ' + doc(c.doc)} />}
+                    </p>
+                  )}
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {c.params.map((p) => (
+                        <tr>
+                          <td>
+                            <code>{p.named ? `${p.name}:` : p.name}</code>
+                            {p.required && <span class="fup-required">required</span>}
+                            {!p.named && <span class="fup-required">positional</span>}
+                          </td>
+                          <td class="fup-type">{p.type ?? '—'}</td>
+                          <td class="fup-default">{p.default ?? '—'}</td>
+                          <td set:html={p.doc ? doc(p.doc) : '—'} />
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              ),
+          )}
+        </section>
+      );
+    })
+  }
+</div>

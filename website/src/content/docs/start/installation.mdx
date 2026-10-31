@@ -1,0 +1,77 @@
+---
+title: Installation
+description: Add flutter_ui_payment to a Flutter app as a git or path dependency. It is not on pub.dev yet.
+---
+
+import { Code, Aside } from '@astrojs/starlight/components';
+import RepoNote from '../../../components/RepoNote.astro';
+import { REPO_URL } from '../../../consts';
+
+<Aside type="caution" title="Not on pub.dev yet">
+`flutter_ui_payment` 0.1.0 has not been published to pub.dev, and the package name has not been checked for availability. Until it is published, depend on it from git or from a local path.
+</Aside>
+
+## Requirements
+
+- Dart `^3.12.0` and Flutter `>=3.44.0`. Tested with Flutter 3.44.6 stable.
+- The only dependency is the Flutter SDK. The package adds no network, analytics, media, camera, ad or payment SDK.
+- `flutter_localizations` from the Flutter SDK, for the Material and Cupertino delegates you register next to `PaymentLocalizations.delegate`.
+
+## Option A: git dependency
+
+<Code
+  lang="yaml"
+  title="pubspec.yaml"
+  code={`dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_ui_payment:
+    git:
+      url: ${REPO_URL}
+      ref: main`}
+/>
+
+<RepoNote />
+
+## Option B: path dependency
+
+Use this when the package sits next to your app on disk, for example while evaluating it.
+
+```yaml title="pubspec.yaml"
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_ui_payment:
+    path: ../flutter-ui-payment
+```
+
+Then fetch packages:
+
+```sh
+flutter pub get
+```
+
+## Import
+
+Everything is exported from one library:
+
+```dart
+import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+```
+
+## Optional: video
+
+`PaymentVideoPlayer` needs a media engine, and the package ships none. If you use it, add a player such as the official `video_player` plugin to your app and adapt it (see [Media](/components/media/)). The example app uses:
+
+```yaml title="pubspec.yaml"
+dependencies:
+  video_player: ^2.11.1 # Android minSdk 24, iOS 13
+```
+
+## Next
+
+Continue with the [Quick start](/start/quick-start/): localization, theme, and a full checkout.

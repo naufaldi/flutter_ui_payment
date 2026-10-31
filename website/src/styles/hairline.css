@@ -1,0 +1,339 @@
+/*
+  Hairline: the kit's own visual language (docs/design-research.md, section 0)
+  applied to Starlight through its custom properties. White surface, navy-black
+  ink, 1 px rules instead of cards, ink as the only accent, radii 6–8, system
+  fonts, monospace only for code and references.
+
+  Starlight's dark theme lives on :root and its light theme on
+  :root[data-theme='light']; its gray scale inverts between them, and
+  --sl-color-white is always the strongest text color.
+*/
+
+:root {
+  /* Dark */
+  --fup-surface: #131417;
+  --fup-surface-muted: #1c1e23;
+  --fup-ink: #ecedf0;
+  --fup-muted: #a2a8b5;
+  --fup-rule: #2c2e35;
+  --fup-border: #7e838e;
+  --fup-warning: #e3a64c;
+
+  --sl-color-white: var(--fup-ink);
+  --sl-color-gray-1: #ecedf0;
+  --sl-color-gray-2: #d6d8de;
+  --sl-color-gray-3: var(--fup-muted);
+  --sl-color-gray-4: #7e838e;
+  --sl-color-gray-5: #3a3d45;
+  --sl-color-gray-6: var(--fup-rule);
+  --sl-color-gray-7: var(--fup-surface-muted);
+  --sl-color-black: var(--fup-surface);
+
+  --sl-color-accent-low: #2c2e35;
+  --sl-color-accent: var(--fup-ink);
+  --sl-color-accent-high: var(--fup-ink);
+  --sl-color-text-accent: var(--fup-ink);
+  --sl-color-text-invert: var(--fup-surface);
+  --sl-color-bg: var(--fup-surface);
+  --sl-color-bg-nav: var(--fup-surface);
+  --sl-color-bg-sidebar: var(--fup-surface);
+  --sl-color-bg-inline-code: var(--fup-surface-muted);
+  --sl-color-hairline-light: var(--fup-rule);
+  --sl-color-hairline: var(--fup-rule);
+  --sl-color-hairline-shade: var(--fup-rule);
+
+  /* Asides: neutral note and tip, amber caution, red danger. No purple. */
+  --sl-color-blue-low: #1c1e23;
+  --sl-color-blue: #7e838e;
+  --sl-color-blue-high: #ecedf0;
+  --sl-color-purple-low: #1c1e23;
+  --sl-color-purple: #7e838e;
+  --sl-color-purple-high: #ecedf0;
+  --sl-color-orange-low: #2a2214;
+  --sl-color-orange: #e3a64c;
+  --sl-color-orange-high: #f0cf9c;
+  --sl-color-green-low: #14241c;
+  --sl-color-green: #6fc79b;
+  --sl-color-green-high: #b5e3cb;
+  --sl-color-red-low: #2b1716;
+  --sl-color-red: #f2897f;
+  --sl-color-red-high: #f8c3bd;
+
+  --sl-shadow-sm: none;
+  --sl-shadow-md: 0 0 0 1px var(--fup-rule);
+  --sl-shadow-lg: 0 0 0 1px var(--fup-rule), 0 8px 24px rgb(0 0 0 / 0.35);
+
+  --sl-text-h1: 2rem;
+  --sl-text-h2: 1.5rem;
+  --sl-text-h3: 1.1875rem;
+  --sl-text-h4: 1.0625rem;
+  --sl-line-height-headings: 1.25;
+
+  --fup-radius-control: 6px;
+  --fup-radius-box: 8px;
+}
+
+:root[data-theme='light'] {
+  --fup-surface: #ffffff;
+  --fup-surface-muted: #f5f6f8;
+  --fup-ink: #1a1f36;
+  --fup-muted: #5e6678;
+  --fup-rule: #e3e6ec;
+  --fup-border: #868c9a;
+  --fup-warning: #8a5300;
+
+  --sl-color-white: var(--fup-ink);
+  --sl-color-gray-1: #1a1f36;
+  --sl-color-gray-2: #2a3046;
+  --sl-color-gray-3: var(--fup-muted);
+  --sl-color-gray-4: #7a8396;
+  --sl-color-gray-5: #c9ced8;
+  --sl-color-gray-6: var(--fup-rule);
+  --sl-color-gray-7: var(--fup-surface-muted);
+  --sl-color-black: var(--fup-surface);
+
+  --sl-color-accent-low: #e3e6ec;
+  --sl-color-accent: var(--fup-ink);
+  --sl-color-accent-high: var(--fup-ink);
+  --sl-color-text-accent: var(--fup-ink);
+  --sl-color-text-invert: var(--fup-surface);
+  --sl-color-bg: var(--fup-surface);
+  --sl-color-bg-nav: var(--fup-surface);
+  --sl-color-bg-sidebar: var(--fup-surface);
+  --sl-color-bg-inline-code: var(--fup-surface-muted);
+  --sl-color-bg-accent: var(--fup-ink);
+  --sl-color-hairline-light: var(--fup-rule);
+  --sl-color-hairline: var(--fup-rule);
+  --sl-color-hairline-shade: var(--fup-rule);
+
+  --sl-color-blue-low: #f5f6f8;
+  --sl-color-blue: #868c9a;
+  --sl-color-blue-high: #1a1f36;
+  --sl-color-purple-low: #f5f6f8;
+  --sl-color-purple: #868c9a;
+  --sl-color-purple-high: #1a1f36;
+  --sl-color-orange-low: #fbf4e8;
+  --sl-color-orange: #8a5300;
+  --sl-color-orange-high: #6b4000;
+  --sl-color-green-low: #eaf4ee;
+  --sl-color-green: #1d6b45;
+  --sl-color-green-high: #155235;
+  --sl-color-red-low: #fbecea;
+  --sl-color-red: #a8231c;
+  --sl-color-red-high: #861c16;
+
+  --sl-shadow-sm: none;
+  --sl-shadow-md: 0 0 0 1px var(--fup-rule);
+  --sl-shadow-lg: 0 0 0 1px var(--fup-rule), 0 8px 24px rgb(26 31 54 / 0.08);
+}
+
+:root[data-has-sidebar] {
+  --sl-content-width: 46rem;
+}
+
+body {
+  background-color: var(--fup-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Headings: one weight, no tracking tricks, balanced wrapping. */
+.sl-markdown-content :is(h1, h2, h3, h4),
+h1#_top {
+  font-weight: 600;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+/* Sections are separated by a rule. Starlight wraps each heading (which is
+   inline) in .sl-heading-wrapper, so the rule goes on the wrapper. */
+.sl-markdown-content .sl-heading-wrapper.level-h2 {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--fup-rule);
+}
+.sl-markdown-content > .sl-heading-wrapper.level-h2:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+/* Links are ink with an underline; color alone never marks them. */
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--fup-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--fup-border);
+  text-underline-offset: 0.2em;
+}
+.sl-markdown-content a:not(:where(.not-content *)):hover {
+  text-decoration-color: currentColor;
+}
+
+/* Inline code reads as a reference: monospace on the muted fill. */
+.sl-markdown-content code:not(:where(.not-content *, pre *)) {
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-size: 0.875em;
+}
+
+/* Tables: rules between rows, no zebra, no outer box. */
+.sl-markdown-content table {
+  border-collapse: collapse;
+  font-size: var(--sl-text-sm);
+}
+.sl-markdown-content :is(th, td) {
+  border: 0;
+  border-bottom: 1px solid var(--fup-rule);
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  vertical-align: top;
+}
+.sl-markdown-content th {
+  color: var(--fup-muted);
+  font-weight: 600;
+  text-align: start;
+}
+.sl-markdown-content tr:nth-child(2n) {
+  background: none;
+}
+
+/* Sidebar: the current page gets a muted fill and ink text, no inverted pill. */
+.sidebar-content a[aria-current='page'],
+.sidebar-content a[aria-current='page']:hover,
+.sidebar-content a[aria-current='page']:focus {
+  background-color: var(--fup-surface-muted);
+  color: var(--fup-ink);
+  font-weight: 600;
+}
+.sidebar-content a {
+  border-radius: var(--fup-radius-control);
+}
+.sidebar-content .large {
+  font-size: var(--sl-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fup-muted);
+  font-weight: 600;
+}
+
+/* Header: flat, separated by one rule. */
+header.header {
+  border-bottom: 1px solid var(--fup-rule);
+}
+.site-title {
+  font-family: var(--__sl-font-mono);
+  font-size: var(--sl-text-base);
+  font-weight: 600;
+  color: var(--fup-ink);
+}
+
+/* Search trigger and selects: control radius, control border. */
+site-search button[data-open-modal],
+starlight-theme-select select {
+  border-radius: var(--fup-radius-control);
+}
+
+/* Asides: hairline instead of a heavy left bar. */
+.starlight-aside {
+  border-inline-start-width: 2px;
+  border-radius: 0 var(--fup-radius-box) var(--fup-radius-box) 0;
+}
+
+/* Keyboard focus: 2 px ink outline at a 2 px offset, never brand-colored. */
+:focus-visible {
+  outline: 2px solid var(--fup-ink);
+  outline-offset: 2px;
+}
+
+/* Pagination cards become plain ruled links. */
+.pagination-links a {
+  border-radius: var(--fup-radius-box);
+  box-shadow: none;
+  border: 1px solid var(--fup-rule);
+}
+
+/* Screens and screen pairs used across pages. */
+.fup-screens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-block: 1.5rem;
+}
+.fup-screen {
+  margin: 0;
+  flex: 0 1 15rem;
+  min-width: 0;
+}
+.fup-screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--fup-rule);
+  border-radius: var(--fup-radius-box);
+  background: var(--fup-surface-muted);
+}
+.fup-screen figcaption {
+  margin-top: 0.5rem;
+  font-size: var(--sl-text-xs);
+  line-height: 1.4;
+  color: var(--fup-muted);
+}
+/* Theme-paired images: show the one that matches the active theme.
+   !important because component-scoped rules set `display: block` on images
+   with higher specificity; hiding the other theme's capture must always win. */
+:root[data-theme='light'] .fup-only-dark,
+:root:not([data-theme='light']) .fup-only-light {
+  display: none !important;
+}
+
+/* Small "the host owns" note at the top of component pages. */
+.fup-owns {
+  border-inline-start: 2px solid var(--fup-ink);
+  padding: 0.25rem 0 0.25rem 1rem;
+  color: var(--fup-ink);
+}
+.fup-owns strong {
+  font-weight: 600;
+}
+
+/* Placeholder note next to the repository URL. */
+.fup-placeholder {
+  font-size: var(--sl-text-xs);
+  color: var(--fup-warning);
+  margin-top: 0.25rem;
+}
+
+/* Generated props tables. */
+.fup-api h3 code,
+.fup-api h4 code {
+  font-size: 0.95em;
+  background: none;
+  padding: 0;
+}
+.fup-api .fup-type,
+.fup-api .fup-default {
+  font-family: var(--__sl-font-mono);
+  font-size: var(--sl-text-xs);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.fup-api .fup-required {
+  font-family: var(--__sl-font-mono);
+  font-size: var(--sl-text-2xs);
+  color: var(--fup-muted);
+  display: block;
+}
+.fup-api .fup-source {
+  font-family: var(--__sl-font-mono);
+  font-size: var(--sl-text-2xs);
+  color: var(--fup-muted);
+}
+.fup-api td:first-child {
+  white-space: nowrap;
+}
+
+@media (max-width: 50rem) {
+  .fup-api td:first-child {
+    white-space: normal;
+  }
+  .fup-screen {
+    flex-basis: calc(50% - 0.5rem);
+  }
+}

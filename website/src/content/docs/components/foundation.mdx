@@ -1,0 +1,66 @@
+---
+title: Foundation
+description: Money, amounts, rows, buttons, badges, banners, sections, status bands, privacy mask and countdown. The primitives every other module is built from.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+Primitives with idle, busy and disabled states. Every other module is built from them, and you can use them in your own screens so they match.
+
+<HostOwns>brand values (see [Theming](/concepts/theming/)), the locale, currencies and amounts, and what every callback does.</HostOwns>
+
+<Screens>
+  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="StatusBand hatched in amber, a StatusHeader with icon and title, an AmountText and an InfoRow with a monospace payment reference." caption="StatusBand, StatusHeader, AmountText, InfoRow" />
+  <Screen name="ios_status_va_pending_light" dark="ios_status_va_pending_dark" alt="Virtual account pending in Indonesian: monospace reference with copy, a countdown, InfoRows, and primary and secondary PaymentButtons." caption="CountdownText, references, PaymentButton variants (Indonesian)" />
+</Screens>
+
+## Usage
+
+```dart
+PaymentSection(
+  title: 'Payment details',
+  trailing: TextButton(onPressed: editDetails, child: const Text('Edit')),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const InfoRow(label: 'Amount', value: AmountText(Money.idr(102500))),
+      InfoRow(label: 'Reference', valueText: attempt.attemptId),
+      InfoRow(
+        label: 'Pay before',
+        value: CountdownText(expiresAt: va.expiresAt, clock: host.clock),
+      ),
+    ],
+  ),
+);
+
+PaymentButton(
+  label: 'Pay Rp102.500',
+  busyLabel: 'Sending…',
+  // Locks while the Future runs, so a double tap sends one callback.
+  onPressed: () => host.submitPayment(attempt.attemptId),
+);
+
+const NoticeBanner(
+  tone: StatusTone.warning,
+  title: 'Total changed',
+  message: 'Review the new total before you pay.',
+  announce: true, // live region for screen readers
+);
+```
+
+- `PaymentButton` has three variants (`primary`, `secondary`, `quiet`). While its callback's `Future` runs it shows a busy state and ignores more taps; this is interaction protection, not server-side deduplication. Full-width buttons are 48 dp and do not scale on press.
+- `StatusBand` is solid for settled or waiting states and hatched (`hatched: true`) for an unknown outcome. `StatusHeader` puts an icon and title together; its icon grows with text up to 1.6×.
+- `AmountText` formats through `MoneyFormat`, uses tabular figures, and scales down instead of clipping a digit.
+- `InfoRow` keeps values up to 60% of the row; `MiddleEllipsisText` shortens long names in the middle (`ktp_demo_ret…ake.png`).
+- `CountdownText` uses your host clock, stops at zero without going negative, and calls `onElapsed` once. Zero is not proof of non-payment.
+- `PrivacyMask` covers content while `obscured` is true, for example in the app switcher. OS-level screenshot protection remains yours.
+- `HostError` is what your adapter maps provider failures into: a `HostErrorCategory` plus an optional `safeMessage`.
+
+## API
+
+<Props names={['PaymentButton', 'PaymentButtonVariant', 'AmountText', 'InfoRow', 'MiddleEllipsisText', 'PaymentSection', 'StatusBadge', 'NoticeBanner', 'StatusHeader', 'StatusBand', 'PrivacyMask', 'CountdownText', 'HostError', 'HostErrorCategory']} />
+
+`PaymentTheme`, `PaymentLocalizations`, `PaymentMotion` and `Money` are documented under [Theming](/concepts/theming/), [Localization](/concepts/localization/) and [Motion](/concepts/motion/).
