@@ -264,7 +264,11 @@ class _ChartVariants extends StatelessWidget {
                 grid: PaymentChartAxis.none,
               ),
             ),
-          if (kind == 'meter')
+          if (kind == 'meter') ...[
+            SizedBox(
+              height: PaymentTheme.of(context).space(PaymentSpace.group),
+            ),
+            const PaymentInline('Budget used', role: PaymentTextRole.heading),
             PaymentMeterChart(
               unit: PaymentChartUnit.percent,
               segments: [
@@ -273,8 +277,9 @@ class _ChartVariants extends StatelessWidget {
                 MeterSegment(label: 'Card', measure: 10),
               ],
             ),
-          if (kind == 'sparkline')
-            PaymentSparkline(points: _chartFixture('typical')),
+            if (kind == 'sparkline')
+              PaymentSparkline(points: _chartFixture('typical')),
+          ],
         ],
       ),
     );

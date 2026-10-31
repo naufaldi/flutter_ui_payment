@@ -174,6 +174,9 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _FormsSpecimen('PaymentSelect'),
         _FormsSpecimen('PaymentDateField'),
         _FormsSpecimen('PaymentFormFieldGroup'),
+        _SearchFieldSpecimen(),
+        _DateRangeSpecimen(),
+        _ChipSpecimen(),
       ],
       'feedback' => const [
         _BadgeSpecimen(),

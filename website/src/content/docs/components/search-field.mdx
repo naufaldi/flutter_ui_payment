@@ -4,10 +4,29 @@ description: Pick provinces or banks from an inline listbox.
 ---
 
 import Props from '../../../components/Props.astro';
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 
 Pick provinces or banks from an inline listbox.
 
+<Screens>
+  <Screen name="ios_catalog_search_field_variants" dark="ios_catalog_search_field_variants_dark" alt="search field payment component specimens" caption="Light and dark variants" />
+  <Screen name="ios_catalog_search_field_variants_200" alt="search field at 200 percent text" caption="200% text" />
+</Screens>
+
 ## Usage and Stripe → kit
+
+```dart
+PaymentSearchField<String>(label: 'Province', options: const [PaymentSearchOption(value: 'aceh', label: 'Aceh')], selected: province, onSelected: onProvinceChanged);
+```
+
+| Stripe | Kit |
+| --- | --- |
+| data | options |
+| defaultValue | initialQuery |
+| multiple | PaymentSearchField.multiple |
+| onSearch | onQueryChanged |
+
 
 Use the combobox for selecting values; PaymentTextField.search filters a host list. Local filtering folds common Latin diacritics. onQueryChanged delegates searching to the host and accepts replacement options. Any edit clears a single selection; clearing the text clears multiple selections. Arrow keys navigate, Enter selects, Escape closes. Counts announce through a live region. Multiple selections render removable chips.
 

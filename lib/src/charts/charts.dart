@@ -522,22 +522,37 @@ class PaymentMeterChart extends StatelessWidget {
         '${s.label}, ${spokenChartValue(l10n, meterReading(s, unit), unit, currency: s.value?.currency ?? 'IDR')}${s.status == ChartPointStatus.settled ? '' : ', ${s.status == ChartPointStatus.pending ? l10n.chartPendingKey : l10n.chartUnknownKey}'}';
     Widget entry(int i) {
       final s = segments[i];
-      final child = Row(
-        mainAxisSize: onSegmentPressed == null
-            ? MainAxisSize.min
-            : MainAxisSize.max,
-        children: [
-          Container(
-            width: theme.spacing * 1.5,
-            height: theme.spacing * 1.5,
-            color: colors[i],
-          ),
-          SizedBox(width: theme.spacing * .5),
-          Flexible(
-            child: Wrap(
-              spacing: theme.spacing * .5,
+      final child = onSegmentPressed != null
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(s.label, style: type.caption),
+                SizedBox(
+                  height: PaymentType.firstLineHeight(context),
+                  child: Center(
+                    child: Container(
+                      width: theme.space(PaymentSpace.block),
+                      height: theme.space(PaymentSpace.block),
+                      color: colors[i],
+                    ),
+                  ),
+                ),
+                SizedBox(width: theme.space(PaymentSpace.block)),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(s.label, style: type.label),
+                      if (s.status != ChartPointStatus.settled)
+                        Text(
+                          s.status == ChartPointStatus.pending
+                              ? l10n.chartPendingKey
+                              : l10n.chartUnknownKey,
+                          style: type.caption,
+                        ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: theme.space(PaymentSpace.group)),
                 Text(
                   formatChartValue(
                     l10n,
@@ -545,20 +560,47 @@ class PaymentMeterChart extends StatelessWidget {
                     unit,
                     currency: s.value?.currency ?? 'IDR',
                   ),
-                  style: type.caption,
+                  style: type.label.tabular,
                 ),
-                if (s.status != ChartPointStatus.settled)
-                  Text(
-                    s.status == ChartPointStatus.pending
-                        ? l10n.chartPendingKey
-                        : l10n.chartUnknownKey,
-                    style: type.caption,
-                  ),
               ],
-            ),
-          ),
-        ],
-      );
+            )
+          : Row(
+              mainAxisSize: onSegmentPressed == null
+                  ? MainAxisSize.min
+                  : MainAxisSize.max,
+              children: [
+                Container(
+                  width: theme.spacing * 1.5,
+                  height: theme.spacing * 1.5,
+                  color: colors[i],
+                ),
+                SizedBox(width: theme.spacing * .5),
+                Flexible(
+                  child: Wrap(
+                    spacing: theme.spacing * .5,
+                    children: [
+                      Text(s.label, style: type.caption),
+                      Text(
+                        formatChartValue(
+                          l10n,
+                          meterReading(s, unit),
+                          unit,
+                          currency: s.value?.currency ?? 'IDR',
+                        ),
+                        style: type.caption,
+                      ),
+                      if (s.status != ChartPointStatus.settled)
+                        Text(
+                          s.status == ChartPointStatus.pending
+                              ? l10n.chartPendingKey
+                              : l10n.chartUnknownKey,
+                          style: type.caption,
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            );
       return onSegmentPressed == null
           ? child
           : Semantics(

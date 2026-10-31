@@ -113,11 +113,31 @@ class PaymentImage extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const PaymentIcon(
-                            Icons.broken_image_outlined,
-                            color: PaymentTextColor.secondary,
+                          SizedBox(
+                            height: PaymentType.firstLineHeight(
+                              context,
+                            ).clamp(0, constraints.maxHeight),
+                            child: const FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: PaymentIcon(
+                                Icons.broken_image_outlined,
+                                color: PaymentTextColor.secondary,
+                              ),
+                            ),
                           ),
-                          if (alt.isNotEmpty && constraints.maxWidth >= 96)
+                          if (alt.isNotEmpty &&
+                              constraints.maxWidth >= 96 &&
+                              constraints.maxHeight >=
+                                  PaymentType.firstLineHeight(context) +
+                                      MediaQuery.textScalerOf(context).scale(
+                                            PaymentType.of(
+                                              context,
+                                            ).caption.fontSize!,
+                                          ) *
+                                          PaymentType.of(
+                                            context,
+                                          ).caption.height! *
+                                          2)
                             PaymentInline(
                               alt,
                               role: PaymentTextRole.caption,

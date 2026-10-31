@@ -4,10 +4,29 @@ description: A complete calendar range for payment history filters.
 ---
 
 import Props from '../../../components/Props.astro';
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 
 A complete calendar range for payment history filters.
 
+<Screens>
+  <Screen name="ios_catalog_date_range_picker_variants" dark="ios_catalog_date_range_picker_variants_dark" alt="date range picker payment component specimens" caption="Light and dark variants" />
+  <Screen name="ios_catalog_date_range_picker_variants_200" alt="date range picker at 200 percent text" caption="200% text" />
+</Screens>
+
 ## Usage and Stripe → kit
+
+```dart
+PaymentDateRangePicker(label: 'Date range', value: range, onChanged: onRangeChanged, firstDate: DateTime(2020), lastDate: DateTime(2030));
+```
+
+| Stripe | Kit |
+| --- | --- |
+| value | PaymentDateRange |
+| presets | PaymentDatePreset in a sheet |
+| granularity | PaymentDateGranularity tabs |
+| timeZone / PartialDateRange | host zone / complete ranges only |
+
 
 Presets live in a kit sheet before the calendar, since the Flutter calendar cannot embed kit rows. Partial ranges and timeZone are not mirrored. The host owns zone interpretation. Granularity tabs remain below the trigger. fromPreset preserves the named range. formatDateRange produces shared localized text for fields and chips. History filter integration arrives in Phase 5.
 
