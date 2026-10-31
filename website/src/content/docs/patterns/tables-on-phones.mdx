@@ -3,6 +3,8 @@ title: Tables on phones
 description: Turn settlement and fee columns into labeled rows on narrow screens.
 ---
 
+import Screen from '../../../components/Screen.astro';
+
 D30: below 600 dp of available width or at large text, Table and DataTable collapse columns into list rows. The pinned or row-header value becomes the title, amounts align at the end and supporting cells keep their header context in semantics. Wide tables retain horizontally scrollable columns and pinned context.
 
 Run A03 for the settlement statement and A04 for the fee schedule. Use Table for static comparison; use DataTable for selection, sorting, paging and filtering of host rows. Do not add horizontal scrolling around the phone list.
@@ -10,3 +12,7 @@ Run A03 for the settlement statement and A04 for the fee schedule. Use Table for
 The phone DataTable header shows Select all on this page as visible text, followed by selection count and batch actions when selected. Sort names the column and typed direction, for example Date, newest first; Default order restores host order. Select-all preserves selections from other pages.
 
 Reorder and resize are not mirrored (D28). Configure wide column order and width in the host; there are no phone columns to drag.
+
+<Screen name="ios_statement_light" dark="ios_statement_dark" alt="Example statement with synthetic data" />
+
+<Screen name="ios_fees_light" dark="ios_fees_dark" alt="Example fees with synthetic data" />

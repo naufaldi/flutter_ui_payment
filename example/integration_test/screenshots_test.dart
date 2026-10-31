@@ -105,6 +105,50 @@ void main() {
       await c.paymentAction(PaymentAction.viewReceipt);
       await pumpUntil(tester, () => c.receipt != null);
       await shot('receipt', look);
+      c = await runScenario(tester, app, 'H04');
+      await shot('sign_in', look);
+      c = await runScenario(tester, app, 'K01');
+      if (c.step == FlowStep.kycIntro) {
+        c.acceptConsent();
+        await settle(tester);
+      }
+      await shot('kyc_onboarding', look);
+      c = await runScenario(tester, app, 'A01');
+      await pumpUntil(tester, () => !c.historyLoading);
+      await shot('history', look);
+      c = await runScenario(tester, app, 'A02');
+      await pumpUntil(tester, () => !c.detailLoading);
+      await shot('transaction_detail', look);
+      final report = find.byKey(const Key('report-problem')).hitTestable();
+      if (report.evaluate().isNotEmpty) {
+        await tapVisible(tester, report);
+      } else {
+        final label = PaymentLocalizations.of(
+          tester.element(find.byType(PaymentDetailPage)),
+        ).moreActions;
+        await tapVisible(tester, find.byTooltip(label));
+        // Menu labels are host-owned and localized; read the page action label.
+        final page = tester.widget<PaymentDetailPage>(
+          find.byType(PaymentDetailPage),
+        );
+        await tapVisible(
+          tester,
+          find.descendant(
+            of: find.byType(MenuItemButton),
+            matching: find.text(page.actions.last.label),
+          ),
+        );
+      }
+      await shot('report_problem', look);
+      await tapVisible(tester, find.byKey(const Key('report-cancel')));
+      await settle(tester);
+      c = await runScenario(tester, app, 'A03');
+      await pumpUntil(tester, () => c.settlements.isNotEmpty);
+      await shot('statement', look);
+      await runScenario(tester, app, 'A04');
+      await shot('fees', look);
+      await runScenario(tester, app, 'A05');
+      await shot('account_settings', look);
     }
   });
 }

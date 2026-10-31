@@ -3,6 +3,8 @@ title: Empty and error
 description: Explain missing payment content and give the customer a recovery action.
 ---
 
+import Screen from '../../../components/Screen.astro';
+
 | Situation | Presentation | Recovery |
 | --- | --- | --- |
 | No transactions yet | StateMessage with a specific title and explanation | Offer the next payment action when the host allows it. |
@@ -16,3 +18,5 @@ description: Explain missing payment content and give the customer a recovery ac
 Run A01 variants 1 and 2 for no transactions and retry. Run A03 and search for an unknown settlement for no matches. Clear search restores rows; Retry repeats the host request.
 
 D25: danger belongs to failure of primary content. A failed optional module uses warning. Never change an unresolved payment to failed because a supporting request failed.
+
+<Screen name="ios_history_light" dark="ios_history_dark" alt="Example history with synthetic data" />

@@ -12,10 +12,11 @@ import HostOwns from '../../../components/HostOwns.astro';
 
 <HostOwns>the action itself, which you run only after the dialog resolves to true.</HostOwns>
 
+
+
 <Screens>
-  <Screen name="ios_catalog_confirm_dialog" alt="A dialog titled Sign out of all devices? with a muted explanation, a text Cancel button and a red filled Sign out button." caption="Destructive confirmation" />
-  <Screen name="ios_kit_sheet_confirm" alt="A destructive confirmation in Indonesian, Minta pembatalan?, over a pending-payment sheet: the safe choice Tetap bayar and a red Kirim permintaan action." caption="Over a sheet, with a custom cancel label (Indonesian)" />
-  <Screen name="ios_catalog_confirm_dialog_200" alt="Destructive confirmation at 200% text with filled Sign out everywhere above quiet Cancel, separated by an 8 dp gap." caption="Stacked actions at 200% text (English)" />
+  <Screen name="ios_catalog_dialog_variants" dark="ios_catalog_dialog_variants_dark" alt="showPaymentConfirmDialog specimens with synthetic payment data" caption="Light and dark variants" />
+  <Screen name="ios_catalog_dialog_variants_200" alt="showPaymentConfirmDialog at 200 percent text" caption="200% text" />
 </Screens>
 
 ## Usage
@@ -105,6 +106,8 @@ Preserve reading order, visible labels and semantic descriptions. Interactive ta
 ## Used in
 
 Report A02; Gallery Kit. Real composition: `example/lib/screens/gallery_kit.dart`.
+
+<Screen name="ios_report_problem_light" dark="ios_report_problem_dark" alt="Example report problem screen with synthetic data" caption="Example: report problem" />
 
 ## API
 

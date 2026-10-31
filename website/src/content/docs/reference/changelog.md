@@ -10,6 +10,13 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
 - Delivers the 4C–4D specimen captures: 45 new images and 6 refreshed Code/Tabs images.
 - Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
 
+## Design system Phase 6-3 (2026-11-01)
+
+- Add 14 named kit specimens, including empty/error messages, loading, contextual layouts and all chart-module states.
+- Refresh the full native capture catalog and add sign-in, KYC onboarding, history, transaction detail, report, statement, fees and settings screenshots to component/pattern documentation.
+- Replace legacy component captures with named specimens; deprecated D34 aliases remain until 0.2.0.
+- Preserve horizontal detail-property composition while keeping vertical link values centered.
+
 ## Design system Phase 6-2 (2026-11-01)
 
 - Give all 65 component pages a closed variant set, payment-specific selection rules, do/don't guidance, real source usage and example/story references.

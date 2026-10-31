@@ -3,12 +3,20 @@ title: Privacy mask
 description: PrivacyMask covers sensitive content with a lock while obscured is true, for example in the app switcher. OS screenshot protection stays with your app.
 ---
 
+import Screens from '../../../components/Screens.astro';
+
+import Screen from '../../../components/Screen.astro';
+
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
 `PrivacyMask` hides what it wraps behind a plain surface and a lock icon while `obscured` is true. Use it for account numbers, identity details and balances that should not show in the app switcher or on a shared screen.
 
 <HostOwns>when to obscure (usually from the app lifecycle) and platform screenshot protection. The mask covers the Flutter content; it does not stop the operating system from capturing the screen.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_privacy_mask_variants" dark="ios_catalog_privacy_mask_variants_dark" alt="PrivacyMask specimens with synthetic payment data" caption="Light and dark variants" />
+</Screens>
 
 ## Usage
 

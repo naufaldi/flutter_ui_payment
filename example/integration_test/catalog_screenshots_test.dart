@@ -127,6 +127,102 @@ void main() {
     app.updateSettings(const DemoSettings(locale: Locale('en')));
     app.selectTab(2);
     await settle(tester);
+    if (const bool.fromEnvironment('CAPTURE_PHASE6_ONLY')) {
+      const onlyEntry = String.fromEnvironment('CAPTURE_PHASE6_ENTRY');
+      const onlyLook = String.fromEnvironment('CAPTURE_PHASE6_LOOK');
+      for (final (look, settings) in [
+        ('', const DemoSettings(locale: Locale('en'))),
+        (
+          '_dark',
+          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+        ),
+        ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
+      ]) {
+        if (onlyLook.isNotEmpty &&
+            (onlyLook == '_light' ? look.isNotEmpty : onlyLook != look)) {
+          continue;
+        }
+        app.updateSettings(settings);
+        await settle(tester);
+        await open('Kit components');
+        if ((onlyEntry.isEmpty || onlyEntry.split(',').contains('dialog'))) {
+          await top('showPaymentConfirmDialog · variants');
+          await tapVisible(tester, find.byKey(const Key('phase6-dialog-open')));
+          await shot('dialog_variants$look');
+          await tapVisible(tester, find.text('Cancel'));
+          await settle(tester);
+        }
+        if ((onlyEntry.isEmpty || onlyEntry.split(',').contains('sheets'))) {
+          await top('PaymentSheet · variants');
+          await shot('sheets_variants$look');
+        }
+        if ((onlyEntry.isEmpty || onlyEntry.split(',').contains('section')) &&
+            look != '_200') {
+          await top('PaymentSection · variants');
+          await shot('section_variants$look');
+        }
+        if ((onlyEntry.isEmpty ||
+                onlyEntry.split(',').contains('navigation')) &&
+            look != '_200') {
+          await top('AdaptiveNavShell · variants');
+          await shot('navigation_variants$look');
+        }
+        if ((onlyEntry.isEmpty ||
+                onlyEntry.split(',').contains('step_indicator')) &&
+            look != '_200') {
+          await top('PaymentStepIndicator · variants');
+          await shot('step_indicator_variants$look');
+        }
+        if ((onlyEntry.isEmpty || onlyEntry.split(',').contains('info_row'))) {
+          await top('InfoRow · variants');
+          await shot('info_row_variants$look');
+        }
+        if ((onlyEntry.isEmpty || onlyEntry.split(',').contains('countdown')) &&
+            look != '_200') {
+          await top('CountdownText · variants');
+          await shot('countdown_variants$look');
+        }
+        if ((onlyEntry.isEmpty ||
+                onlyEntry.split(',').contains('privacy_mask')) &&
+            look != '_200') {
+          await top('PrivacyMask · variants');
+          await shot('privacy_mask_variants$look');
+        }
+        if ((onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('action_bar'))) {
+          await top('PaymentActionBar · variants');
+          await shot('action_bar_variants$look');
+        }
+        if ((onlyEntry.isEmpty || onlyEntry.split(',').contains('media')) &&
+            look != '_200') {
+          await top('PaymentVideoPlayer · variants');
+          await shot('media_variants$look');
+        }
+        if ((onlyEntry.isEmpty ||
+                onlyEntry.split(',').contains('status_header')) &&
+            look != '_200') {
+          await top('StatusHeader · variants');
+          await shot('status_header_variants$look');
+        }
+        if ((onlyEntry.isEmpty ||
+                onlyEntry.split(',').contains('loading_skeleton')) &&
+            look != '_200') {
+          await top('LoadingSkeleton · variants');
+          await shot('loading_skeleton_variants$look');
+        }
+        if ((onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('state_message'))) {
+          await top('StateMessage · PaymentEmptyMessage · variants');
+          await shot('state_message_variants$look');
+        }
+        if ((onlyEntry.isEmpty ||
+            onlyEntry.split(',').contains('chart_module'))) {
+          await top('ChartModule · variants');
+          await shot('chart_module_variants$look');
+        }
+      }
+      return;
+    }
     if (const bool.fromEnvironment('CAPTURE_ACTIONS_ONLY')) {
       for (final (look, settings) in [
         ('', const DemoSettings(locale: Locale('en'))),
@@ -563,21 +659,6 @@ void main() {
       );
       await shot('capture_selfie_200');
     }
-    await open('Interaction');
-    await top('PaymentList · PaymentMenu · showPaymentConfirmDialog');
-    // A longer host label exercises overflow at 200% on this iPhone width.
-    final confirmation = showPaymentConfirmDialog(
-      tester.element(find.byType(PaymentList).first),
-      title: 'Sign out of all devices?',
-      message:
-          'You will need to sign in again on every device. Payments already sent are not affected.',
-      confirmLabel: 'Sign out everywhere',
-      destructive: true,
-    );
-    await shot('confirm_dialog_200');
-    await tapVisible(tester, find.text('Cancel'));
-    expect(await confirmation, isFalse);
-    await settle(tester);
     app.updateSettings(const DemoSettings(locale: Locale('en')));
     await settle(tester);
     await open('Feedback');
@@ -634,17 +715,10 @@ void main() {
       await open('Interaction');
       await top('PaymentList · PaymentMenu · showPaymentConfirmDialog');
     }
-    await shot('actions');
     await tester.tap(find.byTooltip('More actions').first);
     await settle(tester);
     await shot('menu_open');
-    await tester.tap(find.text('Sign out everywhere'));
-    await settle(tester);
-    await shot('confirm_dialog');
-    await tester.tap(find.text('Cancel'));
-    await settle(tester);
-    await shot('snackbar');
-    clearSnackBars();
+    await tester.tapAt(const Offset(8, 8));
     await settle(tester);
 
     await open('Video');
@@ -652,17 +726,5 @@ void main() {
     await tapVisible(tester, find.text('Loading'));
     await top('PaymentVideoPlayer + video_player adapter');
     await shot('video_loading');
-    await open('Interaction');
-    await top('PaymentAccordionItem');
-    await shot('expandable');
-    // The last entries cannot scroll to the top, so this frame also shows
-    // the expandable section; the picker switches the fixture state.
-    await top('LoadingSkeleton · StateMessage');
-    await shot('states');
-    for (final state in ['empty', 'error']) {
-      await tester.tap(find.text(state));
-      await settle(tester);
-      await shot('states_$state');
-    }
   });
 }

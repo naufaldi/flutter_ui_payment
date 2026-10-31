@@ -9,7 +9,10 @@ for (const file of readdirSync(dir)) {
   if (!file.endsWith('.mdx') || file === 'index.mdx') continue;
   pages++;
   const text = readFileSync(new URL(file, dir), 'utf8');
-  const missing = required.filter((part) => !text.includes(part));
+  const prose = text.replace(/^```[^\n]*\n[\s\S]*?^```[ \t]*$/gm, '');
+  const headings = new Set(prose.split('\n').filter((line) => line.startsWith('## ')));
+  const missing = required.filter((part) => part.startsWith('## ')
+    ? !headings.has(part) : !prose.includes(part));
   if (missing.length) {
     problems++;
     console.error(`${file}: missing ${missing.join(', ')}`);

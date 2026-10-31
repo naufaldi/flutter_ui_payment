@@ -2023,8 +2023,8 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Sidebar: Foundations; Components as one alphabetical list (48 Stripe + kit-specific); Patterns; Reference
 - [x] Components overview: groups + Stripe name → kit class + status
 - [x] Redirects: expandable-section, status-badge, notice-banner, action-menu, amount-input, action-tile
-- [ ] Every component page: Stripe → kit table, closed variant set, which-variant-when, do/don't, example screen
-- [ ] `_Specimen` per component; captures `<component>_variants[_dark|_200]`; rename controls_* (D27)
+- [x] Every component page: Stripe → kit table, closed variant set, which-variant-when, do/don't, example screen
+- [x] `_Specimen` per component; captures `<component>_variants[_dark|_200]`; rename controls_* (D27)
 - [x] Patterns: loading, empty and error, forms, views and pages, tables on phones
 - [x] "Not in the kit": D28 non-mirrored props only
 - [x] PRD.md §16a row updated to full Stripe parity (revision 3)
@@ -2097,3 +2097,7 @@ Component and pattern navigation now follows D34 and Q4. Thirteen URL moves pres
 ### Phase 6-2 implementation notes
 
 The 65 component pages now contain usage from real calls, mapping, closed variants, selection rules, states, do/don't, content, accessibility, example usage and generated API. Three missing kit-specific pages and a small structural lint ship together. The full Phase 6 checklist waits for example screenshots in 6-3.
+
+### Phase 6 implementation notes
+
+The final phase adds named kit specimens, refreshes captures in one sequential simulator session, and connects eight example screen compositions to component and pattern pages. Existing capture modes are retained and extended rather than restructured. Synthetic identities remain masked in review, and no real KTP is used.

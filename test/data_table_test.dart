@@ -16,14 +16,20 @@ void main() {
           builder: (context, update) => PaymentDataTable<int>(
             columns: [
               PaymentDataColumn<int>(
-                key: 'amount',
-                label: 'Amount',
-                value: (r) => Money.idr(r),
-                cell: PaymentCellType.currency,
+                key: 'reference',
+                label: 'Reference',
+                value: (r) => 'DEMO-$r',
+                pinned: true,
+              ),
+              PaymentDataColumn<int>(
+                key: 'date',
+                label: 'Date',
+                value: (r) => DateTime(2026, 11, r),
+                cell: PaymentCellType.date,
                 sortable: true,
               ),
             ],
-            rows: const [2, 1],
+            rows: const [1, 2],
             rowKey: (r) => '$r',
             selection: selected,
             onSelectionChanged: (v) => update(() => selected = v),
@@ -46,13 +52,20 @@ void main() {
     await t.tap(
       find.descendant(
         of: find.byType(MenuItemButton),
-        matching: find.text('Amount, highest first'),
+        matching: find.text('Date, newest first'),
       ),
     );
     await t.pumpAndSettle();
     expect(changed?.ascending, isFalse);
-    expect(find.text('Sort: Amount, highest first'), findsOneWidget);
-    await t.tap(find.text('Sort: Amount, highest first'));
+    expect(
+      t
+          .widgetList<Text>(find.textContaining('DEMO-'))
+          .map((w) => w.data)
+          .toList(),
+      ['DEMO-2', 'DEMO-1'],
+    );
+    expect(find.text('Sort: Date, newest first'), findsOneWidget);
+    await t.tap(find.text('Sort: Date, newest first'));
     await t.pumpAndSettle();
     await t.tap(
       find.descendant(
@@ -62,6 +75,13 @@ void main() {
     );
     await t.pumpAndSettle();
     expect(changed, isNull);
+    expect(
+      t
+          .widgetList<Text>(find.textContaining('DEMO-'))
+          .map((w) => w.data)
+          .toList(),
+      ['DEMO-1', 'DEMO-2'],
+    );
     expect(find.text('Sort'), findsOneWidget);
   });
 

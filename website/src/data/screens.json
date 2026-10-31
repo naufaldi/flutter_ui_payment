@@ -1,4 +1,294 @@
 {
+  "ios_catalog_dialog_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "showPaymentConfirmDialog specimen, English"
+  },
+  "ios_catalog_dialog_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "showPaymentConfirmDialog specimen_dark, English"
+  },
+  "ios_catalog_dialog_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "showPaymentConfirmDialog specimen_200, English"
+  },
+  "ios_catalog_sheets_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentSheet specimen, English"
+  },
+  "ios_catalog_sheets_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentSheet specimen_dark, English"
+  },
+  "ios_catalog_sheets_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentSheet specimen_200, English"
+  },
+  "ios_catalog_section_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentSection specimen, English"
+  },
+  "ios_catalog_section_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentSection specimen_dark, English"
+  },
+  "ios_catalog_navigation_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "AdaptiveNavShell specimen, English"
+  },
+  "ios_catalog_navigation_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "AdaptiveNavShell specimen_dark, English"
+  },
+  "ios_catalog_step_indicator_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentStepIndicator specimen, English"
+  },
+  "ios_catalog_step_indicator_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentStepIndicator specimen_dark, English"
+  },
+  "ios_catalog_info_row_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "InfoRow specimen, English"
+  },
+  "ios_catalog_info_row_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "InfoRow specimen_dark, English"
+  },
+  "ios_catalog_info_row_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "InfoRow specimen_200, English"
+  },
+  "ios_catalog_countdown_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "CountdownText specimen, English"
+  },
+  "ios_catalog_countdown_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "CountdownText specimen_dark, English"
+  },
+  "ios_catalog_privacy_mask_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PrivacyMask specimen, English"
+  },
+  "ios_catalog_privacy_mask_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PrivacyMask specimen_dark, English"
+  },
+  "ios_catalog_action_bar_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentActionBar specimen, English"
+  },
+  "ios_catalog_action_bar_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentActionBar specimen_dark, English"
+  },
+  "ios_catalog_action_bar_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentActionBar specimen_200, English"
+  },
+  "ios_catalog_media_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentVideoPlayer specimen, English"
+  },
+  "ios_catalog_media_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "PaymentVideoPlayer specimen_dark, English"
+  },
+  "ios_catalog_status_header_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "StatusHeader specimen, English"
+  },
+  "ios_catalog_status_header_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "StatusHeader specimen_dark, English"
+  },
+  "ios_catalog_loading_skeleton_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "LoadingSkeleton specimen, English"
+  },
+  "ios_catalog_loading_skeleton_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "LoadingSkeleton specimen_dark, English"
+  },
+  "ios_catalog_state_message_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "StateMessage · PaymentEmptyMessage specimen, English"
+  },
+  "ios_catalog_state_message_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "StateMessage · PaymentEmptyMessage specimen_dark, English"
+  },
+  "ios_catalog_state_message_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "StateMessage · PaymentEmptyMessage specimen_200, English"
+  },
+  "ios_catalog_chart_module_variants": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ChartModule specimen, English"
+  },
+  "ios_catalog_chart_module_variants_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ChartModule specimen_dark, English"
+  },
+  "ios_catalog_chart_module_variants_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "ChartModule specimen_200, English"
+  },
+  "ios_sign_in_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example sign in light, Indonesian"
+  },
+  "ios_sign_in_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example sign in dark, Indonesian"
+  },
+  "ios_sign_in_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example sign in light_200, Indonesian"
+  },
+  "ios_kyc_onboarding_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example kyc onboarding light, Indonesian"
+  },
+  "ios_kyc_onboarding_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example kyc onboarding dark, Indonesian"
+  },
+  "ios_kyc_onboarding_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example kyc onboarding light_200, Indonesian"
+  },
+  "ios_history_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example history light, Indonesian"
+  },
+  "ios_history_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example history dark, Indonesian"
+  },
+  "ios_history_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example history light_200, Indonesian"
+  },
+  "ios_transaction_detail_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example transaction detail light, Indonesian"
+  },
+  "ios_transaction_detail_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example transaction detail dark, Indonesian"
+  },
+  "ios_transaction_detail_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example transaction detail light_200, Indonesian"
+  },
+  "ios_report_problem_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example report problem light, Indonesian"
+  },
+  "ios_report_problem_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example report problem dark, Indonesian"
+  },
+  "ios_report_problem_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example report problem light_200, Indonesian"
+  },
+  "ios_statement_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example statement light, Indonesian"
+  },
+  "ios_statement_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example statement dark, Indonesian"
+  },
+  "ios_statement_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example statement light_200, Indonesian"
+  },
+  "ios_fees_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example fees light, Indonesian"
+  },
+  "ios_fees_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example fees dark, Indonesian"
+  },
+  "ios_fees_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example fees light_200, Indonesian"
+  },
+  "ios_account_settings_light": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example account settings light, Indonesian"
+  },
+  "ios_account_settings_dark": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example account settings dark, Indonesian"
+  },
+  "ios_account_settings_light_200": {
+    "width": 640,
+    "height": 1387,
+    "caption": "Example account settings light_200, Indonesian"
+  },
   "ios_catalog_property_list_variants": {
     "width": 640,
     "height": 1387,
@@ -734,11 +1024,6 @@
     "height": 1387,
     "caption": "ios catalog amount text variants 200, English"
   },
-  "ios_catalog_confirm_dialog_200": {
-    "width": 640,
-    "height": 1387,
-    "caption": "ios catalog confirm dialog 200, English"
-  },
   "ios_kyc_intro_light": {
     "width": 640,
     "height": 1387,
@@ -1054,44 +1339,9 @@
     "height": 1387,
     "caption": "Gallery: foundation specimen (English formatting, Indonesian row labels)"
   },
-  "ios_catalog_actions": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: action tiles and the menu button, English"
-  },
   "ios_catalog_menu_open": {
     "width": 640,
     "height": 1387,
     "caption": "Gallery: action menu open, English"
-  },
-  "ios_catalog_confirm_dialog": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: destructive confirmation, English"
-  },
-  "ios_catalog_snackbar": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: neutral toast, English"
-  },
-  "ios_catalog_expandable": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: expandable sections, English"
-  },
-  "ios_catalog_states": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: loading skeleton, English"
-  },
-  "ios_catalog_states_empty": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: empty state message, English"
-  },
-  "ios_catalog_states_error": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: error state message with retry, English"
   }
 }

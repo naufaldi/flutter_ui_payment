@@ -6,7 +6,7 @@ description: Add responsive DataTable with typed cells, paging, selection, actio
 import Screen from '../../../components/Screen.astro';
 import Props from '../../../components/Props.astro';
 
-Settlement statements use host data. Variants: text, link, date, id, status, currency cells; local, offset, cursor pagination. Nothing else exists. Under local paging or no pagination, a host predicate filters rows and sortable columns reorder copies. Under offset/cursor paging, rows are displayed as supplied and sort/page changes call the host. Selection is controlled, and select-all covers the current page. Narrow and large-text layouts collapse to labeled rows. Column reorder/resize are deferred to Phase 6 and their flags must remain false. Stripe batchable maps to selection/onSelectionChanged; loading maps to pending; linkMap maps to column callbacks. No network or destination handling is performed.
+Settlement statements use host data. Variants: text, link, date, id, status, currency cells; local, offset, cursor pagination. Nothing else exists. Under local paging or no pagination, a host predicate filters rows and sortable columns reorder copies. Under offset/cursor paging, rows are displayed as supplied and sort/page changes call the host. Selection is controlled, and select-all covers the current page. Narrow and large-text layouts collapse to labeled rows. Column reorder/resize are not mirrored (D28); legacy flags must remain false and are deprecated until 0.2.0. Stripe batchable maps to selection/onSelectionChanged; loading maps to pending; linkMap maps to column callbacks. No network or destination handling is performed.
 
 ## Usage
 
@@ -38,15 +38,7 @@ PaymentDataTable<int>(
 
 Variants: text, link, date, id, status, currency cells; local, offset, cursor pages. Nothing else exists.
 
-#```text
-Who holds all rows?
-├─ Host supplied the complete list → local paging
-└─ Host fetches a page → numeric page position?
-   ├─ Yes → offset callbacks
-   └─ No → cursor callbacks
-```
-
-## States and content
+### States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
 
@@ -95,6 +87,8 @@ Column reorder/resize are not mirrored (D28): phones show a list, and the host c
 ## Used in
 
 Statement A03; PaymentDetailPageTable. Real composition: `example/lib/screens/gallery_content.dart`.
+
+<Screen name="ios_statement_light" dark="ios_statement_dark" alt="Example statement screen with synthetic data" caption="Example: statement" />
 
 ## API
 

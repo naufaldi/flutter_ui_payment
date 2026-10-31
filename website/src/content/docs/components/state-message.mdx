@@ -12,9 +12,11 @@ import HostOwns from '../../../components/HostOwns.astro';
 
 <HostOwns>which state applies, its words, and what the action does (usually retry).</HostOwns>
 
+
+
 <Screens>
-  <Screen name="ios_catalog_states_empty" alt="A Saved billers section showing an empty state: a bookmark icon, the title No saved billers, and the line Save a biller after paying to find it here." caption="Empty, with no action" />
-  <Screen name="ios_catalog_states_error" alt="A Saved billers section showing an error state: a cloud-off icon, the title Couldn't load billers, the line Check your connection, and an outlined Try again button." caption="Error, with one retry action" />
+  <Screen name="ios_catalog_state_message_variants" dark="ios_catalog_state_message_variants_dark" alt="StateMessage · PaymentEmptyMessage specimens with synthetic payment data" caption="Light and dark variants" />
+  <Screen name="ios_catalog_state_message_variants_200" alt="StateMessage · PaymentEmptyMessage at 200 percent text" caption="200% text" />
 </Screens>
 
 ## Usage
@@ -98,6 +100,8 @@ Explain why content is empty and offer recovery; danger is for primary-content f
 ## Used in
 
 TransactionHistory A01; DataTable and detail empty states. Real composition: `example/lib/screens/gallery_kit.dart`.
+
+<Screen name="ios_history_light" dark="ios_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 
 ## API
 

@@ -3,6 +3,8 @@ title: Views and pages
 description: Mount bounded payment bodies with a single scroll region and host-owned routing.
 ---
 
+import Screen from '../../../components/Screen.astro';
+
 D31: views and pages are Scaffold-free bodies. The host supplies the Scaffold, tab, route or sheet. Mount a view in a bounded body so its content owns one scroll region. Only showPaymentFocusView presents a focused task itself.
 
 ```dart
@@ -23,3 +25,7 @@ Use DetailPage at the top level, never inside FullPageView. Put non-scrolling Ov
 | Report (A02) | FocusView → facts, category, message, Send and Cancel |
 
 The phone footer stacks full-width primary then secondary actions. Supporting context beside wide checkout carries no second Pay action.
+
+<Screen name="ios_transaction_detail_light" dark="ios_transaction_detail_dark" alt="Example transaction detail with synthetic data" />
+
+<Screen name="ios_account_settings_light" dark="ios_account_settings_dark" alt="Example account settings with synthetic data" />
