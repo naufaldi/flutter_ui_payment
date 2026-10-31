@@ -98,9 +98,7 @@ class TableGrid extends StatelessWidget {
                             maxLines: 1,
                             softWrap: false,
                             child: heading
-                                ? (col.hideLabel
-                                      ? const SizedBox.shrink()
-                                      : header[i])
+                                ? header[i]
                                 : row == rows.length
                                 ? footer![i]
                                 : rows[row][i],

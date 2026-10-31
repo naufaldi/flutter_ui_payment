@@ -33,7 +33,11 @@ class PaymentTable extends StatelessWidget {
     assert([...rows, ?footer].every((r) => r.cells.length == head.length));
     final index = head.indexWhere((h) => h.rowHeader);
     final title = index < 0 ? 0 : index;
-    final numeric = head.indexWhere((h) => h.numeric);
+    bool isNumeric(int i) =>
+        head[i].numeric ||
+        rows.any((row) => row.cells[i].numeric) ||
+        (footer?.cells[i].numeric ?? false);
+    final numeric = List.generate(head.length, (i) => i).indexWhere(isNumeric);
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     return LayoutBuilder(
@@ -45,7 +49,7 @@ class PaymentTable extends StatelessWidget {
               for (var i = 0; i < head.length; i++)
                 TableGridColumn(
                   label: head[i].label,
-                  numeric: head[i].numeric,
+                  numeric: isNumeric(i),
                   pin: i == title ? TablePin.start : TablePin.none,
                 ),
             ],

@@ -4,6 +4,28 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'content_host.dart';
 
 void main() {
+  testWidgets('cell numeric flag selects tabular column figures', (t) async {
+    await setSurface(t, const Size(800, 1000));
+    await t.pumpWidget(
+      contentHost(
+        const PaymentTable(
+          head: [
+            PaymentTableHeaderCell('Method'),
+            PaymentTableHeaderCell('Fee'),
+          ],
+          rows: [
+            PaymentTableRow([
+              PaymentTableCell(Text('QRIS')),
+              PaymentTableCell(Text('2500'), numeric: true),
+            ]),
+          ],
+        ),
+      ),
+    );
+    final style = DefaultTextStyle.of(t.element(find.text('2500'))).style;
+    expect(style.fontFeatures, isNotEmpty);
+  });
+
   const table = PaymentTable(
     head: [
       PaymentTableHeaderCell('Method', rowHeader: true),
