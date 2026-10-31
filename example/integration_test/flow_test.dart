@@ -114,6 +114,27 @@ void main() {
       () => c.documents[idCardSlot]?.phase == DocumentSlotPhase.empty,
     );
   });
+  testWidgets('P12 VA number copies with inline confirmation', (tester) async {
+    final app = await launch(tester);
+    final c = await runScenario(tester, app, 'P12');
+    await pumpUntil(tester, () => c.attempt?.status == PaymentStatus.pending);
+    await tapVisible(tester, find.byTooltip('Copy'));
+    await pumpUntilFound(tester, find.byIcon(PaymentIcons.copied));
+    await tester.pump(const Duration(seconds: 2));
+    expect(find.byIcon(PaymentIcons.copy), findsOneWidget);
+  });
+  testWidgets('P15 receipt copy failure stays inline', (tester) async {
+    final app = await launch(tester);
+    final c = await runScenario(tester, app, 'P15', variant: 2);
+    await checkStatusUntil(tester, c, PaymentStatus.succeeded);
+    await tapVisible(tester, find.text(l10n.pay(PaymentAction.viewReceipt)));
+    await pumpUntilFound(tester, find.text('Share receipt'));
+    final total = c.receipt!.total;
+    await tapVisible(tester, find.byTooltip('Copy'));
+    await pumpUntilFound(tester, find.text('Copy failed'));
+    expect(c.receipt!.total, total);
+    expect(find.byType(PaymentBanner), findsNothing);
+  });
   testWidgets('H01 happy flow: KYC → checkout → one payment → receipt', (
     tester,
   ) async {
@@ -188,6 +209,9 @@ void main() {
     await tapVisible(tester, find.text(l10n.pay(PaymentAction.viewReceipt)));
     await pumpUntilFound(tester, find.text('Share receipt'));
     expect(find.text('TRX-004071'), findsWidgets);
+    await tapVisible(tester, find.byTooltip('Copy'));
+    await pumpUntilFound(tester, find.byIcon(PaymentIcons.copied));
+    expect(find.byType(PaymentBanner), findsNothing);
 
     expect(c.submitEvents, 1);
     expect(c.host.attemptCount, 1);

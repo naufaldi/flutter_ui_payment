@@ -258,3 +258,95 @@ class _TextFieldSpecimenState extends State<_TextFieldSpecimen> {
     ),
   );
 }
+
+class _ActionSpecimen extends StatelessWidget {
+  const _ActionSpecimen(this.kind);
+  final String kind;
+  @override
+  Widget build(BuildContext context) => _Entry(
+    name: '$kind · variants',
+    child: switch (kind) {
+      'PaymentIconButton' => Wrap(
+        children: [
+          PaymentIconButton(
+            icon: PaymentIcons.close,
+            tooltip: 'Close',
+            onPressed: () {},
+          ),
+          PaymentIconButton(
+            icon: Icons.more_vert,
+            tooltip: 'More actions',
+            onPressed: () {},
+          ),
+          PaymentIconButton(
+            icon: PaymentIcons.copy,
+            tooltip: 'Copy',
+            variant: PaymentIconButtonVariant.accent,
+            onPressed: () {},
+          ),
+          const PaymentIconButton(
+            icon: PaymentIcons.close,
+            tooltip: 'Disabled close',
+            onPressed: null,
+          ),
+          PaymentIconButton(
+            key: const Key('icon-button-focus'),
+            icon: PaymentIcons.close,
+            tooltip: 'Focused close',
+            onPressed: () {},
+          ),
+        ],
+      ),
+      'PaymentLink' => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PaymentLink(label: 'Edit', onPressed: () {}),
+          PaymentLink(
+            label: 'Read the privacy policy',
+            external: true,
+            onPressed: () {},
+          ),
+          PaymentLink(
+            label: 'Why this?',
+            variant: PaymentLinkVariant.secondary,
+            onPressed: () {},
+          ),
+          const PaymentLink(label: 'Edit', onPressed: null),
+          PaymentLink(
+            label: 'View payment instructions for virtual account',
+            onPressed: () {},
+          ),
+          PaymentBanner(
+            tone: StatusTone.warning,
+            title: 'Total changed',
+            onDismiss: () {},
+            actions: [PaymentLink(label: 'Review total', onPressed: () {})],
+          ),
+        ],
+      ),
+      _ => Column(
+        children: [
+          const Row(
+            children: [
+              Expanded(child: Text('8808 1234 5678 9012')),
+              PaymentCopyButton(
+                value: '8808 1234 5678 9012',
+                onCopy: _copyGalleryValue,
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              const Expanded(child: Text('TRX-DEMO-42')),
+              PaymentCopyButton(
+                key: const Key('copy-failed'),
+                value: 'TRX-DEMO-42',
+                onCopy: (_) async => false,
+              ),
+            ],
+          ),
+        ],
+      ),
+    },
+  );
+}
