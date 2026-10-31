@@ -155,6 +155,82 @@ class DemoHost {
   Future<void> _latency([int ms = 600]) =>
       Future.delayed(Duration(milliseconds: (ms * latencyScale).round()));
 
+  bool _signInCanceled = false, _historyFailed = false;
+  Future<bool> signIn() async {
+    await _latency();
+    if (config.signInCancelsOnce && !_signInCanceled) {
+      _signInCanceled = true;
+      record('Sign-in canceled');
+      return false;
+    }
+    record('Signed in');
+    return true;
+  }
+
+  Future<List<TransactionRecord>> history(String account) async {
+    await _latency();
+    if (config.historyFailsOnce && !_historyFailed) {
+      _historyFailed = true;
+      throw const HostException(HostError(HostErrorCategory.unavailable));
+    }
+    final now = clock();
+    final rows = <TransactionRecord>[
+      if (!config.historyEmpty) ...[
+        for (final r in _attempts.values.where(
+          (r) => r.account == account && r.status == PaymentStatus.succeeded,
+        ))
+          TransactionRecord(
+            id: r.attemptId,
+            title: 'Paket Belajar',
+            amount: r.quote.total,
+            createdAt: r.createdAt,
+            status: r.status,
+            merchant: 'Ruang Bayar Akademi',
+            methodLabel: r.methodId,
+            reference: r.reference,
+          ),
+        for (var i = 0; i < 14; i++)
+          TransactionRecord(
+            id: 'TRX-DEMO-${(i + 42).toString().padLeft(4, '0')}',
+            title: [
+              'Toko Contoh',
+              'Ruang Bayar Akademi',
+              'Kopi Demo',
+              'Pasar Demo',
+            ][i % 4],
+            merchant: [
+              'Toko Contoh',
+              'Ruang Bayar Akademi',
+              'Kopi Demo',
+              'Pasar Demo',
+            ][i % 4],
+            amount: Money.idr((i + 1) * 12500),
+            createdAt: now.subtract(Duration(days: i * 3)),
+            status: [
+              PaymentStatus.succeeded,
+              PaymentStatus.pending,
+              PaymentStatus.failed,
+              null,
+            ][i % 4],
+            methodLabel: [
+              'BCA virtual account',
+              'QRIS',
+              'Ruang Bayar balance',
+            ][i % 3],
+            reference: 'TRX-DEMO-${(i + 42).toString().padLeft(4, '0')}',
+            refund: i == 0
+                ? const RefundInfo(
+                    status: RefundStatus.refunded,
+                    amount: Money.idr(25000),
+                  )
+                : const RefundInfo(status: RefundStatus.none),
+          ),
+      ],
+    ];
+    record('[$account] History loaded (${rows.length})');
+    return rows;
+  }
+
   void dispose() {
     _late.close();
     log.dispose();
@@ -372,7 +448,7 @@ class DemoHost {
       _quoteFailed = true;
       throw HostException(
         HostError(
-          HostErrorCategory.unavailable,
+          HostErrorCategory.network,
           safeMessage: _t(
             'Prices couldn’t be loaded. Try again.',
             'Harga belum bisa dimuat. Coba lagi.',

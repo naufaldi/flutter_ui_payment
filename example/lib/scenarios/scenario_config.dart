@@ -60,6 +60,10 @@ class ServerStep {
 class ScenarioConfig {
   const ScenarioConfig({
     this.kycRequired = true,
+    this.signedOut = false,
+    this.signInCancelsOnce = false,
+    this.historyEmpty = false,
+    this.historyFailsOnce = false,
     this.initialKyc = VerificationStatus.notStarted,
     this.kycReason,
     this.kycFieldsToFix = const {},
@@ -96,6 +100,7 @@ class ScenarioConfig {
   });
 
   final bool kycRequired;
+  final bool signedOut, signInCancelsOnce, historyEmpty, historyFailsOnce;
   final VerificationStatus initialKyc;
   final Bi? kycReason;
   final Set<String> kycFieldsToFix;

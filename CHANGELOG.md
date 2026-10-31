@@ -3,6 +3,12 @@
 - Delivers the 4C–4D specimen captures: 45 new images and 6 refreshed Code/Tabs images.
 - Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
 
+## Design system Phase 5-2 (2026-11-01)
+
+- Add external sign-in with cancellation retry, KYC onboarding with grouped identity fields and province search, and transaction history with spending, date presets and removable filters.
+- Show order context beside wide checkout; keep one primary payment action.
+- Add H04 and A01 scenarios, including empty and failed history states. Example-only changes; no public package API delta.
+
 ## Design system Phase 5-1 (2026-11-01)
 
 - Label phone table selection, show the current sort and allow restoring host order.

@@ -10,6 +10,12 @@ import '../scenarios/scenario_config.dart';
 
 enum FlowStep {
   overview,
+  signIn,
+  history,
+  transactionDetail,
+  statement,
+  fees,
+  accountSettings,
   kycIntro,
   kycIdentity,
   kycDocuments,
@@ -32,6 +38,7 @@ const demoIdentity = {
   'nik': '3100000000001234',
   'dob': '1995-08-17',
   'occupation': 'employee',
+  'province': 'jawa-barat',
 };
 
 /// The one owner of demo state. Widgets render its fields and call its
@@ -40,7 +47,8 @@ const demoIdentity = {
 /// Every async call captures [_epoch]. An account switch or restart bumps it,
 /// so responses for the previous context are discarded instead of rendered.
 class DemoCoordinator extends ChangeNotifier {
-  DemoCoordinator(this.host, {this.account = 'A'});
+  DemoCoordinator(this.host, {this.account = 'A'})
+    : signedIn = !host.config.signedOut;
 
   final DemoHost host;
   ScenarioConfig get config => host.config;
@@ -50,6 +58,86 @@ class DemoCoordinator extends ChangeNotifier {
   bool _disposed = false;
   FlowStep step = FlowStep.overview;
   bool starting = true;
+  bool signedIn;
+  bool signingIn = false, signInError = false;
+  List<TransactionRecord> history = [];
+  bool historyLoading = false;
+  HostError? historyError;
+  String historyQuery = '';
+  TransactionFilter historyFilter = TransactionFilter.all;
+  PaymentDateRange? historyRange;
+
+  List<TransactionRecord> get visibleHistory => TransactionRecord.where(
+    history
+        .where(
+          (r) =>
+              historyRange == null ||
+              (!r.createdAt.isBefore(historyRange!.start) &&
+                  r.createdAt.isBefore(
+                    historyRange!.end.add(const Duration(days: 1)),
+                  )),
+        )
+        .toList(),
+    query: historyQuery,
+    filter: historyFilter,
+  );
+  void setHistoryQuery(String v) {
+    historyQuery = v;
+    notifyListeners();
+  }
+
+  void setHistoryFilter(TransactionFilter v) {
+    historyFilter = v;
+    notifyListeners();
+  }
+
+  void setHistoryRange(PaymentDateRange? v) {
+    historyRange = v;
+    notifyListeners();
+  }
+
+  void clearHistoryFilters() {
+    historyQuery = '';
+    historyFilter = TransactionFilter.all;
+    historyRange = null;
+    notifyListeners();
+  }
+
+  Future<void> openHistory() async {
+    _go(FlowStep.history);
+    historyLoading = true;
+    historyError = null;
+    notifyListeners();
+    final epoch = _epoch;
+    try {
+      final rows = await _guard(() => host.history(account));
+      if (rows != null) history = rows;
+    } on HostException catch (e) {
+      if (epoch == _epoch) historyError = e.error;
+    }
+    if (epoch != _epoch) return;
+    historyLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> retryHistory() => openHistory();
+  Future<void> signIn() async {
+    if (signingIn) return;
+    final epoch = _epoch;
+    signingIn = true;
+    signInError = false;
+    notifyListeners();
+    final ok = await _guard(host.signIn);
+    if (epoch != _epoch || ok == null) return;
+    signingIn = false;
+    signInError = !ok;
+    if (ok) {
+      signedIn = true;
+      _go(FlowStep.overview);
+      await _afterSignIn();
+    }
+    notifyListeners();
+  }
 
   /// Covers sensitive content while the app is in the app switcher.
   bool obscured = false;
@@ -167,6 +255,15 @@ class DemoCoordinator extends ChangeNotifier {
     starting = true;
     notifyListeners();
     _lateSub = host.lateDeliveries.listen(_onLateDelivery);
+    if (!signedIn) {
+      starting = false;
+      _go(FlowStep.signIn);
+      return;
+    }
+    await _afterSignIn();
+  }
+
+  Future<void> _afterSignIn() async {
     if (config.seedAttempt && host.recovery.load(account) == null) {
       host.seedAttempt(account);
     }
@@ -216,7 +313,9 @@ class DemoCoordinator extends ChangeNotifier {
         ),
       };
     }
-    if (start == FlowStep.checkout) {
+    if (start == FlowStep.history) {
+      await openHistory();
+    } else if (start == FlowStep.checkout) {
       await openCheckout();
     } else {
       _go(start);
@@ -261,6 +360,15 @@ class DemoCoordinator extends ChangeNotifier {
   }
 
   void _resetSensitive() {
+    history = [];
+    historyLoading = false;
+    historyError = null;
+    historyQuery = '';
+    historyFilter = TransactionFilter.all;
+    historyRange = null;
+    signedIn = !config.signedOut;
+    signingIn = false;
+    signInError = false;
     identity = {};
     documents = {
       idCardSlot: const DocumentSlotState.empty(),
