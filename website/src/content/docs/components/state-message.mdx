@@ -3,12 +3,19 @@ title: State message
 description: "StateMessage covers empty, error and no-match states: what happened, one line on why, and at most one way forward."
 ---
 
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
 `StateMessage` replaces a list when there is nothing to show: no items yet, nothing matches a search, or the list failed to load. It is compact and left-aligned, so it reads as part of the list it replaces rather than as an illustration.
 
 <HostOwns>which state applies, its words, and what the action does (usually retry).</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_states_empty" alt="A Saved billers section showing an empty state: a bookmark icon, the title No saved billers, and the line Save a biller after paying to find it here." caption="Empty, with no action" />
+  <Screen name="ios_catalog_states_error" alt="A Saved billers section showing an error state: a cloud-off icon, the title Couldn't load billers, the line Check your connection, and an outlined Try again button." caption="Error, with one retry action" />
+</Screens>
 
 ## Usage
 
