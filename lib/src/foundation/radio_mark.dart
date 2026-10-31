@@ -3,9 +3,15 @@ import 'payment_theme.dart';
 
 /// Internal radio look shared by selection controls and the method picker.
 class RadioMark extends StatelessWidget {
-  const RadioMark({super.key, required this.selected, required this.enabled});
+  const RadioMark({
+    super.key,
+    required this.selected,
+    required this.enabled,
+    this.error = false,
+  });
   final bool selected;
   final bool enabled;
+  final bool error;
   @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
@@ -13,6 +19,8 @@ class RadioMark extends StatelessWidget {
         ? theme.disabled
         : selected
         ? theme.accent
+        : error
+        ? theme.danger.foreground
         : theme.textSecondary;
     return Container(
       width: 20,

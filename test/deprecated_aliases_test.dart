@@ -72,4 +72,11 @@ void main() {
     );
     expect(find.byType(PaymentAccordionItem), findsOneWidget);
   });
+  testWidgets('currency alias preserves the old constructor', (tester) async {
+    expect(AmountInput, PaymentCurrencyField);
+    await tester.pumpWidget(
+      host(AmountInput(currency: 'IDR', onChanged: (_) {}), 1),
+    );
+    expect(find.byType(PaymentCurrencyField), findsOneWidget);
+  });
 }

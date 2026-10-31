@@ -961,15 +961,15 @@ It is not a `PaymentListItem`, because its layout (an amount column and tags) is
 
 ### 6.5 Forms
 
-All fields take `size: PaymentSize` (D29). The visual heights are 40, 48 (default, today's look) and 56. The layout box is ≥ 48 dp at every size, and the input text stays `input` 16/24 at every size, which avoids iOS zoom. Stripe's `hiddenElements` becomes `hiddenElements: Set<PaymentFieldPart>`: a hidden part is not drawn but stays in semantics. `error` becomes `errorText`, and `invalid` is `errorText != null`.
+All fields take `size: PaymentSize` (D29). CurrencyField is the exception to the following visual-height table: medium retains its existing amountLarge layout, small subtracts 8 dp and large adds 8 dp. Description and limit helpers add their natural height. The visual heights are 40, 48 (default, today's look) and 56. The layout box is ≥ 48 dp at every size, and the input text stays `input` 16/24 at every size, which avoids iOS zoom. Stripe's `hiddenElements` becomes `hiddenElements: Set<PaymentFieldPart>`: a hidden part is not drawn but stays in semantics. `error` becomes `errorText`, and `invalid` is `errorText != null`.
 
 | Component | Variants (closed; Stripe → kit) | States | Tokens | Gap → change |
 | --- | --- | --- | --- | --- |
-| `PaymentCheckbox` (`controls.dart:13`) | `description`, `disabledReason` (kit); **New** `indeterminate` (Stripe; mixed mark, spoken "mixed"; a tap sets checked), `errorText`, `required`, `hiddenElements` | unchecked, checked, indeterminate, error, disabled + reason, focused | Checked and indeterminate fill `accent`, mark `onAccent`; unchecked edge 2 px `border`; error caption `danger.foreground` | Adopt in `verification_widgets.dart:111`, `checkout.dart:492`. "No tristate" superseded; first use: the select-all header of `PaymentDataTable` |
+| `PaymentCheckbox` (`controls.dart:13`) | `description`, `disabledReason` (kit); **New** `indeterminate` (Stripe; mixed mark, spoken "mixed"; a tap sets checked), `errorText`, `required`, `hiddenElements` | unchecked, checked, indeterminate, error, disabled + reason, focused | Checked and indeterminate fill `accent`, mark `onAccent`; unchecked edge 2 px `border`; error icon + caption + unchecked/off edge `danger.foreground` | Adopt in `verification_widgets.dart:111`, `checkout.dart:492`. "No tristate" superseded; first use: the select-all header of `PaymentDataTable` |
 | `PaymentRadio<T>` (`:91`) | same slots; **New** `errorText`, `required`, `hiddenElements` | unselected, selected, error, disabled + reason | as today | Adopt its mark in `PaymentMethodPicker` (D12) |
 | `PaymentSwitch` (`:162`) | same slots; **New** `errorText`, `required`, `hiddenElements` | off, on (thumb check), error, disabled + reason | as today | Real use: `PaymentSettingsView` example (Q2) |
 | **New** `PaymentTextField` (D1) | `size: PaymentSize`; **New** `type: PaymentTextFieldType` (`text`, `number`, `tel`, `url`, `email`, `search`), which sets keyboard, autofill and autocorrect. **No `password`** (D1a, the one refused Stripe value); `label`, `hint` (Stripe `placeholder`), `description` (was `helper`), `errorText`, `required` (spoken, plus an "(optional)" mark on optional fields when a group mixes them), `hiddenElements`, `width: PaymentWidth`, `readOnly`, `enabled`; kit `reference: bool`; named constructor `.search` (list filter, D2 kept) | empty, filled, focused (2 px `accent`), error, description (tone), read-only, disabled | Text `input`; label `label` in `textSecondary`; edge `border`; radius `control` | Sketch in §11 Phase 3A. The unimplemented `PaymentTextFieldSize.body/.amount` is dropped; the amount look is internal to `PaymentCurrencyField` |
-| **New** `PaymentCurrencyField` (was `AmountInput`, `checkout.dart:19`) | `size`, `description`, `errorText`, `hiddenElements`; `currency` (kept); **New** `currencies: List<String>?` (Stripe `currencyAllowlist`, host-owned) + `onCurrencyChanged`, which adds a currency `PaymentSelect` before the amount; **New** `padFractionDigits` (Stripe `padAllFractionDigits`). Stripe `fractionDigitOffset` is refused (D28): `Money` is integer minor units | as text field + parse issues (`AmountIssue`) | `amountLarge`, clamped 1.6× | Rebuilt on `PaymentTextField`; `AmountInput` stays a deprecated wrapper (D34) |
+| **New** `PaymentCurrencyField` (was `AmountInput`, `checkout.dart:19`) | `size`, `description`, `errorText`, `hiddenElements`; `currency` (kept); **New** `currencies: List<String>?` (Stripe `currencyAllowlist`, host-owned) + `onCurrencyChanged`, which adds a currency `PaymentSelect` before the amount; **New** `padFractionDigits` (Stripe `padAllFractionDigits`). Stripe `fractionDigitOffset` is refused (D28): `Money` is integer minor units | as text field + parse issues (`AmountIssue`) | `amountLarge`, clamped 1.6× | Rebuilt on `PaymentTextField`; `AmountInput` stays a deprecated typedef (D34) |
 | **New** `PaymentCopyButton` (D3) | none (built on `PaymentIconButton` `accent`) | idle, pending (single call), copied (check + live "Copied"), failed (words under the icon) | Feedback `tag` in `success`/`danger` foreground | Sketch in §11 Phase 3B |
 
 Which text-field variant:
@@ -1955,13 +1955,13 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] ActionMenu → PaymentMenu (+ PaymentMenuItem, PaymentMenuGroup, onAction)
 - [x] ExpandableSection → PaymentAccordionItem (+ actions) + PaymentAccordion
 - [x] ActionTile/ActionTileGroup → PaymentListItem/PaymentList (+ value, size, id, onAction) (D41)
-- [ ] PaymentTabs (tabs: PaymentTab, size, fitted) + PaymentTabPanels
-- [ ] Checkbox indeterminate; Checkbox/Radio/Switch errorText, required, hiddenElements
-- [ ] AmountInput → PaymentCurrencyField (+ size, description, padFractionDigits)
+- [x] PaymentTabs (tabs: PaymentTab, size, fitted) + PaymentTabPanels
+- [x] Checkbox indeterminate; Checkbox/Radio/Switch errorText, required, hiddenElements
+- [x] AmountInput → PaymentCurrencyField (+ size, description, padFractionDigits)
 
 **Phase 2E: chart parity**
-- [ ] axis, grid, showLegend, series (≤3), unit + ChartPoint.measure; sparkline inspectable; meter onSegmentPressed (D39)
-- [ ] Chart dartdoc (B1), token spacing (B2), remove MeterSegment.color (Q9)
+- [x] axis, grid, showLegend, series (≤3), unit + ChartPoint.measure; sparkline inspectable; meter onSegmentPressed (D39)
+- [x] Chart dartdoc (B1), token spacing (B2), remove MeterSegment.color (Q9)
 
 **Phase 3A: text fields**
 - [ ] PaymentTextField (size, type without password, description, required, hiddenElements) + .search; docs, tests, specimen

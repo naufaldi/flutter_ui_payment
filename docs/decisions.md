@@ -287,3 +287,21 @@ Use typedefs for constructor supersets and a wrapper for ActionTile's renamed ar
 Accordion actions are siblings of the header toggle. A LayoutBuilder exists only when actions exist; widths below 400 dp or large text stack actions. Leading-slot unification remains deferred to Phase 4A because painted marks and list icons have different established metrics.
 
 Plan correction: give PaymentMenu an owned trigger FocusNode and MenuAnchor.childFocusNode, so closing restores focus to the actual trigger. The previous stateless implementation had not supplied that return target. Behavioral tests exercise grouped actions and Escape from an active item. Geometry-only new guards are omitted under the owner's revised scope.
+
+### Phase 2D-2 implementation decisions
+
+Tab-bar roles sit inside the scroll view. Tabs own FocusNodes for manual arrow navigation; Enter/Space activate. This requires StatefulWidget rather than the plan's stateless sketch, with nodes synchronized to tab count and disposed. A disabled tab's outer semantics wraps its tooltip so the direct child retains role, enabled=false and the reason hint; nesting the role inside the tooltip lost those properties at the merge boundary in the behavioral test.
+
+Panels lazily build visited children and use Offstage, TickerMode and ExcludeFocus, not IndexedStack, so short panels do not inherit the tallest height. Selection errors use icon + text + danger edge. Mixed follows Material tristate semantics; required is semantics-only. Hidden text remains spoken.
+
+Currency field small/default/large retain amountLarge typography and use padding changes of minus/default/plus 8 dp. Helper content adds height. padFractionDigits appends locale-specific missing minor digits on blur or submit without reporting a new amount. This is formatting, not a value change. The owner removed new geometry-only guards; behavioral size tests cover the relative height steps instead.
+
+The behavioral currency-size fixture with description and minimum helper measures 92/100/108 dp at 1×. Helpers contribute to total InputDecorator height; the medium input padding remains unchanged and each adjacent size differs by 8 dp.
+
+Native runner deviation: flutter test built and started flow_test but stalled before the VM-service handshake. Its shutdown also terminated the app, so attaching with use-existing-app could not connect. The normal flutter drive command with the same flow_test target then passed all stories, including payment deduplication, lost responses, re-quotes, recovery and account isolation. No application assertion was relaxed.
+
+Plan correction: key each outer Offstage by panel index, not only the nested KeyedSubtree. Starting at panel 1 and later inserting panel 0 would otherwise reconcile unkeyed wrappers by position and replace visited state. A focused regression covers that ordering. This does not change the independently verified payment flow or captured default panel visuals.
+
+Capture harness corrections: the appended menu specimens made the old global More actions finder ambiguous; scope it to the first account-menu trigger. A tail-only mode rechecks that failed portion without repeating the specimen matrix. Tooltip captures now assert the message and settled opacity before saving and offer a tooltip-only mode. The full pass produced all 40 new assets; focused reruns repair the harness outputs instead of repeating regression matrices. An intermediate tooltip harness compile error was discarded rather than accepting Flutter's stale-app fallback.
+
+The final tooltip-only native run used a successful fresh build, asserted opacity 1, passed all four captures and produced visible bubbles in light/dark/200% and edge-flip screenshots. The stale paused app was closed through agent-device before this run.

@@ -58,7 +58,7 @@ if (result.isValid) {
 }
 ```
 
-An `AmountParseResult` has exactly one of `money` or `issue`. [`AmountInput`](/components/amount-input/) does all of this for you and shows localized errors after the field loses focus or on submit.
+An `AmountParseResult` has exactly one of `money` or `issue`. [`PaymentCurrencyField`](/components/amount-input/) does all of this for you and shows localized errors after the field loses focus or on submit.
 
 ## Content guidelines
 
@@ -101,7 +101,7 @@ Timestamp? → formatDateTime
 | `format(money, {withSymbol})` (`:109`) | `Rp102.500` / `$1,025.00` | Every displayed amount | Format by hand |
 | `spoken(money)` (`:171`) | Words for screen readers | `AmountText` semantics, chart summaries | Show it |
 | `compact(money)` (`:133`) | `1,2 jt` / `1.2M` (NBSP) | **Chart axes only** (decisions.md, charts) | Totals, buttons, confirmations |
-| `AmountParseResult` / `AmountIssue` (`:263-276`) | Strict parse | `AmountInput` | Accept floats |
+| `AmountParseResult` / `AmountIssue` (`:263-276`) | Strict parse | `PaymentCurrencyField` | Accept floats |
 
 Do: `format.format` for checkout amounts, as in the existing AmountText. Don't: compact a confirmation total. The supported formatting choices are closed. Nothing else exists.
 

@@ -13,7 +13,8 @@ import HostOwns from '../../../components/HostOwns.astro';
 <HostOwns>the selected value and what each option means.</HostOwns>
 
 <Screens>
-  <Screen name="ios_catalog_controls_choices" dark="ios_catalog_controls_choices_dark" alt="A Send receipt by section with three radio options, Email selected with a thick ring and SMS and Don't send with thin rings, between a checkbox and two switches." caption="A radio group in a section (follows the site theme)" />
+  <Screen name="ios_catalog_radio_variants" dark="ios_catalog_radio_variants_dark" alt="radio variants in the native gallery" caption="Radio variants" />
+  <Screen name="ios_catalog_radio_variants_200" alt="radio at 200 percent text" caption="200% text" />
 </Screens>
 
 ## Usage
@@ -64,7 +65,7 @@ Pass `onChanged: null` to one option. Its ring uses the `disabled` color and its
 
 ## API
 
-<Props names={['PaymentRadio']} />
+<Props names={['PaymentRadio', 'PaymentFieldPart']} />
 
 ## See also
 
@@ -74,3 +75,7 @@ Pass `onChanged: null` to one option. Its ring uses the `disabled` color and its
 ## Pattern adoption
 
 The payment method picker shares the same radio mark. An unavailable method has a thin 1.5 dp disabled ring, a muted label and an explicit unavailable reason. The selected mark has a 6 dp accent ring. There is no block glyph.
+
+## Behavior, states and migration
+
+Stripe error maps to errorText: icon, danger caption and unchecked danger ring. Required is semantics-only; hosts own validation and progression. HiddenElements keeps hidden label, description and error text spoken. Keep a group's labels visible when they distinguish choices, and use specific recovery copy.

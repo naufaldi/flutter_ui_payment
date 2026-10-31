@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../foundation/focus_ring.dart';
+import '../foundation/payment_tokens.dart';
 import '../foundation/radio_mark.dart';
 import '../controls/controls.dart';
 import '../foundation/money.dart';
@@ -18,8 +19,8 @@ import 'payment_models.dart';
 /// Every change reports an [AmountParseResult]; hosts enable confirmation
 /// only for valid results. Errors appear after the field loses focus, after
 /// submit, or when [showErrors] is set.
-class AmountInput extends StatefulWidget {
-  const AmountInput({
+class PaymentCurrencyField extends StatefulWidget {
+  const PaymentCurrencyField({
     super.key,
     required this.currency,
     required this.onChanged,
@@ -28,8 +29,19 @@ class AmountInput extends StatefulWidget {
     this.initialText,
     this.label,
     this.showErrors = false,
+    this.description,
+    this.size = PaymentSize.medium,
+    this.padFractionDigits = false,
   });
 
+  /// Helper text above the host's limits.
+  final String? description;
+
+  /// Medium retains the default height; small is 8 dp shorter, large 8 taller.
+  final PaymentSize size;
+
+  /// Pads missing minor digits on blur/submit without reporting a new value.
+  final bool padFractionDigits;
   final String currency;
   final ValueChanged<AmountParseResult> onChanged;
   final Money? minimum;
@@ -39,10 +51,10 @@ class AmountInput extends StatefulWidget {
   final bool showErrors;
 
   @override
-  State<AmountInput> createState() => _AmountInputState();
+  State<PaymentCurrencyField> createState() => _PaymentCurrencyFieldState();
 }
 
-class _AmountInputState extends State<AmountInput> {
+class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
   late final TextEditingController _controller = TextEditingController(
     text: widget.initialText,
   );
@@ -55,6 +67,7 @@ class _AmountInputState extends State<AmountInput> {
     super.initState();
     _focus.addListener(() {
       if (!_focus.hasFocus && _controller.text.isNotEmpty) {
+        _pad();
         setState(() => _touched = true);
       }
     });
@@ -70,6 +83,33 @@ class _AmountInputState extends State<AmountInput> {
       .moneyFormat
       .parse(text, widget.currency)
       .withinLimits(minimum: widget.minimum, maximum: widget.maximum);
+
+  void _pad() {
+    final spec = CurrencySpec.of(widget.currency);
+    if (!widget.padFractionDigits ||
+        _result.issue != null ||
+        spec.minorDigits == 0) {
+      return;
+    }
+    final separator = PaymentLocalizations.of(
+      context,
+    ).moneyFormat.decimalSeparator;
+    final text = _controller.text;
+    final index = text.indexOf(separator);
+    final existing = index < 0 ? 0 : text.length - index - separator.length;
+    if (index >= 0 && existing >= spec.minorDigits) return;
+    final padded =
+        text +
+        (index < 0 ? separator : '') +
+        List.filled(spec.minorDigits - existing, '0').join();
+    final previous = _result.money;
+    _controller.value = TextEditingValue(
+      text: padded,
+      selection: TextSelection.collapsed(offset: padded.length),
+    );
+    _result = _parse(padded);
+    assert(_result.money == previous);
+  }
 
   void _onChanged(String text) {
     setState(() => _result = _parse(text));
@@ -105,20 +145,40 @@ class _AmountInputState extends State<AmountInput> {
         controller: _controller,
         focusNode: _focus,
         onChanged: _onChanged,
-        onSubmitted: (_) => setState(() => _touched = true),
+        onSubmitted: (_) {
+          _pad();
+          setState(() => _touched = true);
+        },
         keyboardType: TextInputType.numberWithOptions(
           decimal: spec.minorDigits > 0,
         ),
         textInputAction: TextInputAction.done,
         style: type.amountLarge,
         decoration: InputDecoration(
+          contentPadding: switch (widget.size) {
+            PaymentSize.small => EdgeInsetsDirectional.fromSTEB(
+              theme.spacing * 1.5,
+              theme.spacing * 2,
+              theme.spacing * 1.5,
+              theme.spacing,
+            ),
+            PaymentSize.medium => null,
+            PaymentSize.large => EdgeInsetsDirectional.fromSTEB(
+              theme.spacing * 1.5,
+              theme.spacing * 3,
+              theme.spacing * 1.5,
+              theme.spacing * 2,
+            ),
+          },
           labelText: widget.label ?? l10n.amountLabel,
           labelStyle: type.label.copyWith(color: theme.textSecondary),
           prefixText: '${spec.symbol} ',
           prefixStyle: type.amountLarge.copyWith(color: theme.textSecondary),
-          helperText: limits.isEmpty ? null : limits,
+          helperText: widget.description == null && limits.isEmpty
+              ? null
+              : [?widget.description, if (limits.isNotEmpty) limits].join('\n'),
           helperStyle: type.caption,
-          helperMaxLines: 3,
+          helperMaxLines: 4,
           errorStyle: type.caption.copyWith(color: theme.danger.foreground),
           errorMaxLines: 3,
           errorText: showError
@@ -142,6 +202,10 @@ class _AmountInputState extends State<AmountInput> {
     );
   }
 }
+
+/// Deprecated alias of [PaymentCurrencyField].
+@Deprecated('Use PaymentCurrencyField. Removed in 0.2.0.')
+typedef AmountInput = PaymentCurrencyField;
 
 /// Items, every fee and the host total. Fees are never collapsed.
 ///

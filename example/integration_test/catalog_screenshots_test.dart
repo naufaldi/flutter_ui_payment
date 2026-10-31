@@ -72,128 +72,228 @@ void main() {
         .state<ScaffoldMessengerState>(find.byType(ScaffoldMessenger).first)
         .clearSnackBars();
 
-    const buttons = 'PaymentButton · variants';
-    const choices = 'PaymentCheckbox · PaymentRadio · PaymentSwitch';
-    const tabs =
-        'PaymentTabs · PaymentTooltip · PaymentSpinner · PaymentDivider';
-
-    for (final (look, settings) in [
-      ('', const DemoSettings(locale: Locale('en'))),
-      ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
-      (
-        '_dark',
-        const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
-      ),
-    ]) {
-      app.updateSettings(settings);
-      app.selectTab(2);
+    Future<void> hoverShot(String key, String message, String name) async {
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      await mouse.moveTo(tester.getCenter(find.byKey(Key(key))));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 700)),
+      );
+      await tester.pump();
+      expect(find.text(message), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 400));
       await settle(tester);
-      await open('Controls');
-      await top(buttons);
-      FocusManager.instance.highlightStrategy =
-          FocusHighlightStrategy.alwaysTraditional;
-      Focus.of(
-        tester.element(
-          find.descendant(
-            of: find.byKey(const ValueKey('button-specimen-focus')),
-            matching: find.text('Edit'),
-          ),
-        ),
-      ).requestFocus();
-      await shot('button_variants$look');
-      FocusManager.instance.highlightStrategy =
-          FocusHighlightStrategy.automatic;
-      FocusManager.instance.primaryFocus?.unfocus();
-      if (look != '_200') {
-        await top(choices);
-        await shot('controls_choices$look');
-        await top(tabs);
-        await shot('controls_tabs$look');
-      }
-      await open('Foundation');
-      await top('AmountText · variants');
-      await shot('amount_text_variants$look');
+      final bubble = find.text(message);
+      final opacity = tester
+          .widget<Opacity>(
+            find.ancestor(of: bubble, matching: find.byType(Opacity)).first,
+          )
+          .opacity;
+      debugPrint(
+        'Tooltip proof $name rect=${tester.getRect(bubble)} opacity=$opacity',
+      );
+      expect(opacity, 1);
+      await binding.takeScreenshot('${platform}_catalog_$name');
+      await mouse.removePointer();
+      await tester.pump(const Duration(seconds: 2));
+      await settle(tester);
     }
 
-    for (final dark in [false, true]) {
-      final suffix = dark ? '_dark' : '';
-      app.updateSettings(
-        DemoSettings(
-          locale: const Locale('en'),
-          themeMode: dark ? ThemeMode.dark : ThemeMode.light,
+    app.updateSettings(const DemoSettings(locale: Locale('en')));
+    app.selectTab(2);
+    await settle(tester);
+    if (const bool.fromEnvironment('CAPTURE_TOOLTIP_ONLY')) {
+      for (final (look, settings) in [
+        ('', const DemoSettings(locale: Locale('en'))),
+        (
+          '_dark',
+          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
         ),
+        ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
+      ]) {
+        app.updateSettings(settings);
+        await settle(tester);
+        await open('Feedback');
+        await top('PaymentTooltip · variants');
+        await hoverShot(
+          'tooltip-label',
+          'Payment time: 29 Oct 2026, 14:05',
+          'tooltip_variants$look',
+        );
+      }
+      app.updateSettings(const DemoSettings(locale: Locale('en')));
+      await settle(tester);
+      await open('Feedback');
+      await top('PaymentTooltip · variants');
+      await hoverShot(
+        'tooltip-flip',
+        'Flips to the start when there is no room',
+        'tooltip_flip',
+      );
+      return;
+    }
+    if (!const bool.fromEnvironment('CAPTURE_TAIL_ONLY')) {
+      const buttons = 'PaymentButton · variants';
+      for (final (look, settings) in [
+        ('', const DemoSettings(locale: Locale('en'))),
+        ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
+        (
+          '_dark',
+          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+        ),
+      ]) {
+        app.updateSettings(settings);
+        app.selectTab(2);
+        await settle(tester);
+        await open('Controls');
+        await top(buttons);
+        FocusManager.instance.highlightStrategy =
+            FocusHighlightStrategy.alwaysTraditional;
+        Focus.of(
+          tester.element(
+            find.descendant(
+              of: find.byKey(const ValueKey('button-specimen-focus')),
+              matching: find.text('Edit'),
+            ),
+          ),
+        ).requestFocus();
+        await shot('button_variants$look');
+        FocusManager.instance.highlightStrategy =
+            FocusHighlightStrategy.automatic;
+        FocusManager.instance.primaryFocus?.unfocus();
+        for (final (entry, name) in [
+          ('PaymentTabs', 'tabs'),
+          ('PaymentCheckbox', 'checkbox'),
+          ('PaymentRadio', 'radio'),
+          ('PaymentSwitch', 'switch'),
+          ('PaymentCurrencyField', 'currency_field'),
+        ]) {
+          await top('$entry · variants');
+          await shot('${name}_variants$look');
+        }
+        await open('Foundation');
+        await top('AmountText · variants');
+        await shot('amount_text_variants$look');
+        await open('Feedback');
+        await top('PaymentBadge · variants');
+        await shot('badge_variants$look');
+        await top('PaymentBanner · variants');
+        await shot('banner_variants$look');
+        if (look != '_200') {
+          await top('PaymentSpinner · variants');
+          await shot('spinner_variants$look');
+        }
+        await top('showPaymentToast · variants');
+        await tapVisible(tester, find.widgetWithText(PaymentButton, 'Pending'));
+        await shot('toast_variants$look');
+        clearSnackBars();
+        await settle(tester);
+        await top('PaymentTooltip · variants');
+        await hoverShot(
+          'tooltip-label',
+          'Payment time: 29 Oct 2026, 14:05',
+          'tooltip_variants$look',
+        );
+        await open('Interaction');
+        await top('PaymentMenu · variants');
+        await tester.tap(
+          find.descendant(
+            of: find.byKey(const Key('menu-specimen')),
+            matching: find.byType(IconButton),
+          ),
+        );
+        await settle(tester);
+        await shot('menu_variants$look');
+        await tester.tapAt(const Offset(10, 10));
+        await settle(tester);
+        await top('PaymentAccordion · variants');
+        await shot('accordion_variants$look');
+        await top('PaymentList · variants');
+        await shot('list_variants$look');
+      }
+
+      for (final dark in [false, true]) {
+        final suffix = dark ? '_dark' : '';
+        app.updateSettings(
+          DemoSettings(
+            locale: const Locale('en'),
+            themeMode: dark ? ThemeMode.dark : ThemeMode.light,
+          ),
+        );
+        await settle(tester);
+        await open('Charts');
+        for (final (entry, name) in [
+          ('PaymentLineChart', 'chart_line'),
+          ('PaymentBarChart', 'chart_bar'),
+          ('PaymentMeterChart', 'chart_meter'),
+          ('PaymentSparkline · beside a KPI', 'chart_sparkline'),
+          ('In context: spending above history', 'chart_in_context'),
+        ]) {
+          await top(entry);
+          await shot('$name$suffix');
+        }
+        await open('Verification (KYC)');
+        await top('showCaptureSourceSheet');
+        await tapVisible(tester, find.text('Add a photo'));
+        await shot('capture_source_sheet$suffix');
+        await tester.tap(find.byTooltip('Close panel'));
+        await settle(tester);
+        clearSnackBars();
+        await top('KycCaptureGuide');
+        await shot('capture_ktp$suffix');
+        await tapVisible(tester, find.text('selfie'));
+        await top('KycCaptureGuide');
+        await shot('capture_selfie$suffix');
+      }
+      app.updateSettings(const DemoSettings(locale: Locale('en')));
+      await settle(tester);
+      await open('Charts');
+      await top('ChartModule · states');
+      await shot('chart_states');
+      for (final state in ['error', 'empty']) {
+        await tapVisible(tester, find.text(state));
+        await top('ChartModule · states');
+        await shot('chart_states_$state');
+      }
+      await top('PaymentLineChart');
+      final inspectMouse = await tester.createGesture(
+        kind: PointerDeviceKind.mouse,
+      );
+      await inspectMouse.addPointer(location: Offset.zero);
+      await inspectMouse.moveTo(
+        tester.getCenter(find.byType(PaymentLineChart).first),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+      await shot('chart_line_inspect');
+      await inspectMouse.removePointer();
+      await open('Verification (KYC)');
+      await top('KycCaptureGuide');
+      for (final state in ['review', 'rejected', 'permission']) {
+        await tapVisible(tester, find.text(state));
+        await top('KycCaptureGuide');
+        await shot('capture_$state');
+      }
+      app.updateSettings(
+        const DemoSettings(locale: Locale('en'), textScale: 2),
       );
       await settle(tester);
       await open('Charts');
-      for (final (entry, name) in [
-        ('PaymentLineChart', 'chart_line'),
-        ('PaymentBarChart', 'chart_bar'),
-        ('PaymentMeterChart', 'chart_meter'),
-        ('PaymentSparkline · beside a KPI', 'chart_sparkline'),
-        ('In context: spending above history', 'chart_in_context'),
-      ]) {
-        await top(entry);
-        await shot('$name$suffix');
-      }
+      await top('In context: spending above history');
+      await shot('chart_in_context_200');
       await open('Verification (KYC)');
-      await top('showCaptureSourceSheet');
-      await tapVisible(tester, find.text('Add a photo'));
-      await shot('capture_source_sheet$suffix');
-      await tester.tap(find.byTooltip('Close panel'));
-      await settle(tester);
-      clearSnackBars();
       await top('KycCaptureGuide');
-      await shot('capture_ktp$suffix');
       await tapVisible(tester, find.text('selfie'));
       await top('KycCaptureGuide');
-      await shot('capture_selfie$suffix');
-    }
-    app.updateSettings(const DemoSettings(locale: Locale('en')));
-    await settle(tester);
-    await open('Charts');
-    await top('ChartModule · states');
-    await shot('chart_states');
-    for (final state in ['error', 'empty']) {
-      await tapVisible(tester, find.text(state));
-      await top('ChartModule · states');
-      await shot('chart_states_$state');
-    }
-    await top('PaymentLineChart');
-    final inspectMouse = await tester.createGesture(
-      kind: PointerDeviceKind.mouse,
-    );
-    await inspectMouse.addPointer(location: Offset.zero);
-    await inspectMouse.moveTo(
-      tester.getCenter(find.byType(PaymentLineChart).first),
-    );
-    await tester.pump(const Duration(milliseconds: 400));
-    await shot('chart_line_inspect');
-    await inspectMouse.removePointer();
-    await open('Verification (KYC)');
-    await top('KycCaptureGuide');
-    for (final state in ['review', 'rejected', 'permission']) {
-      await tapVisible(tester, find.text(state));
-      await top('KycCaptureGuide');
-      await shot('capture_$state');
-    }
-    app.updateSettings(const DemoSettings(locale: Locale('en'), textScale: 2));
-    await settle(tester);
-    await open('Charts');
-    await top('In context: spending above history');
-    await shot('chart_in_context_200');
-    await open('Verification (KYC)');
-    await top('KycCaptureGuide');
-    await tapVisible(tester, find.text('selfie'));
-    await top('KycCaptureGuide');
-    await Scrollable.ensureVisible(
-      tester.element(
-        find.text(
-          'Keep your face in the oval and hold the card below your chin.',
+      await Scrollable.ensureVisible(
+        tester.element(
+          find.text(
+            'Keep your face in the oval and hold the card below your chin.',
+          ),
         ),
-      ),
-      alignment: 0,
-    );
-    await shot('capture_selfie_200');
+        alignment: 0,
+      );
+      await shot('capture_selfie_200');
+    }
     await open('Interaction');
     await top('PaymentList · PaymentMenu · showPaymentConfirmDialog');
     // A longer host label exercises overflow at 200% on this iPhone width.
@@ -211,22 +311,19 @@ void main() {
     await settle(tester);
     app.updateSettings(const DemoSettings(locale: Locale('en')));
     await settle(tester);
-    await open('Controls');
-    // Tooltip, light.
-    app.updateSettings(const DemoSettings(locale: Locale('en')));
+    await open('Feedback');
+    await top('showPaymentToast · variants');
+    await tapVisible(tester, find.widgetWithText(PaymentButton, 'Pending'));
+    await tester.pump(const Duration(seconds: 2));
+    await shot('toast_updated');
+    clearSnackBars();
     await settle(tester);
-    await top(tabs);
-    // A mouse hover keeps the tooltip open without drawing a test pointer,
-    // which a held touch would put into the capture.
-    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await mouse.addPointer(location: Offset.zero);
-    await mouse.moveTo(tester.getCenter(find.byIcon(Icons.info_outline)));
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pump(const Duration(milliseconds: 400));
-    await binding.takeScreenshot('${platform}_catalog_controls_tooltip');
-    await mouse.removePointer();
-    await tester.pump(const Duration(seconds: 3));
-    await settle(tester);
+    await top('PaymentTooltip · variants');
+    await hoverShot(
+      'tooltip-flip',
+      'Flips to the start when there is no room',
+      'tooltip_flip',
+    );
 
     await open('Foundation');
     tester
@@ -244,8 +341,32 @@ void main() {
 
     await open('Interaction');
     await top('PaymentList · PaymentMenu · showPaymentConfirmDialog');
+    if (const bool.fromEnvironment('CAPTURE_TAIL_ONLY')) {
+      for (final (look, settings) in [
+        ('', const DemoSettings(locale: Locale('en'))),
+        (
+          '_dark',
+          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+        ),
+        ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
+      ]) {
+        app.updateSettings(settings);
+        await settle(tester);
+        await open('Feedback');
+        await top('PaymentTooltip · variants');
+        await hoverShot(
+          'tooltip-label',
+          'Payment time: 29 Oct 2026, 14:05',
+          'tooltip_variants$look',
+        );
+      }
+      app.updateSettings(const DemoSettings(locale: Locale('en')));
+      await settle(tester);
+      await open('Interaction');
+      await top('PaymentList · PaymentMenu · showPaymentConfirmDialog');
+    }
     await shot('actions');
-    await tester.tap(find.byTooltip('More actions'));
+    await tester.tap(find.byTooltip('More actions').first);
     await settle(tester);
     await shot('menu_open');
     await tester.tap(find.text('Sign out everywhere'));

@@ -75,8 +75,20 @@ class _AccordionSpecimen extends StatelessWidget {
             ),
             PaymentMenu(
               entries: [
-                PaymentMenuItem(label: 'Remove method', onSelected: () {}),
-                PaymentMenuItem(label: 'View details', onSelected: () {}),
+                PaymentMenuGroup(
+                  items: [
+                    PaymentMenuItem(label: 'View details', onSelected: () {}),
+                  ],
+                ),
+                PaymentMenuGroup(
+                  items: [
+                    PaymentMenuItem(
+                      label: 'Remove method',
+                      destructive: true,
+                      onSelected: () {},
+                    ),
+                  ],
+                ),
               ],
             ),
           ],

@@ -587,7 +587,7 @@ class _Checkout extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                AmountInput(
+                PaymentCurrencyField(
                   key: const Key('amount'),
                   currency: 'IDR',
                   minimum: const Money.idr(10000),

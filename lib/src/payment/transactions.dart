@@ -348,8 +348,9 @@ class _TransactionHistoryState extends State<TransactionHistory> {
         ),
         SizedBox(height: theme.spacing),
         PaymentTabs(
-          labels: [
-            for (final f in widget.filters) l10n.transactionFilterLabel(f),
+          tabs: [
+            for (final f in widget.filters)
+              PaymentTab(label: l10n.transactionFilterLabel(f)),
           ],
           selectedIndex: widget.filters.indexOf(widget.filter),
           onSelected: (i) => widget.onFilterChanged(widget.filters[i]),

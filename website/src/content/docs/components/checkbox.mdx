@@ -13,8 +13,9 @@ import HostOwns from '../../../components/HostOwns.astro';
 <HostOwns>the value, what checking it means, and why the row is disabled.</HostOwns>
 
 <Screens>
-  <Screen name="ios_catalog_controls_choices" dark="ios_catalog_controls_choices_dark" alt="A checked Save this card for next time with the description Stored by your payment provider, a disabled unchecked Use as default card with the reason Save the card first, then a Send receipt by radio group and two switches." caption="Checked and disabled checkboxes, above radios and switches (follows the site theme)" />
+  <Screen name="ios_catalog_checkbox_variants" dark="ios_catalog_checkbox_variants_dark" alt="checkbox variants in the native gallery" caption="Checkbox variants" />
   <Screen name="ios_kyc_intro_light" alt="Indonesian verification consent with its checkbox aligned to the content gutter and Continue disabled until consent." caption="VerificationIntro consent (Indonesian)" />
+  <Screen name="ios_catalog_checkbox_variants_200" alt="checkbox at 200 percent text" caption="200% text" />
 </Screens>
 
 ## Usage
@@ -62,7 +63,7 @@ const PaymentCheckbox(
 
 ## API
 
-<Props names={['PaymentCheckbox']} />
+<Props names={['PaymentCheckbox', 'PaymentFieldPart']} />
 
 ## See also
 
@@ -72,3 +73,7 @@ const PaymentCheckbox(
 ## Pattern adoption
 
 Used in `VerificationIntro` for consent and `PaymentConfirmation` for changed-total approval. Both use the same 48 dp row and 20 dp mark slot, aligned with the section gutter. The consent sentence uses the label role and wraps at large text.
+
+## Behavior, states and migration
+
+Stripe indeterminate paints a dash and announces mixed. It ignores value and reports true when tapped, supporting select-all controls. Error text adds a danger icon, text and an unchecked danger edge. Required is spoken; the host still gates submission. HiddenElements hides label, description or error visually while retaining them in semantics. Do not rely on color alone or hide the only visible recovery instruction.
