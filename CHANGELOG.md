@@ -1,3 +1,7 @@
+## Design system Phase 4C-3 (2026-11-01)
+
+- Add responsive DataTable with typed cells, paging, selection, actions and local sort/filter. Closes #17.
+
 ## Design system Phase 4C-2 (2026-11-01)
 
 - Add responsive ButtonGroup and host-owned TaskList; migrate status and dialog actions.

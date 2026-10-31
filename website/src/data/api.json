@@ -2409,7 +2409,24 @@
       "methodLabel",
       "merchantLabel",
       "taskStatus",
-      "subTasksComplete"
+      "subTasksComplete",
+      "selectAllOnPage",
+      "previousPage",
+      "nextPage",
+      "emptyTitle",
+      "sort",
+      "moveLeft",
+      "moveRight",
+      "wider",
+      "narrower",
+      "selectRow",
+      "rowsSelected",
+      "pageRange",
+      "pageNumber",
+      "rowActions",
+      "sortedAscending",
+      "sortedDescending",
+      "columnOptions"
     ]
   },
   "TransactionFilter": {
@@ -20762,6 +20779,1101 @@
         "static": false,
         "type": "List<PaymentTaskListItem>",
         "doc": "One level of child tasks; hidden when complete."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentCellType": {
+    "kind": "enum",
+    "file": "lib/src/content/data_table.dart",
+    "doc": "Supported host value presentations.",
+    "values": [
+      {
+        "name": "text",
+        "doc": "Text value."
+      },
+      {
+        "name": "link",
+        "doc": "Link value."
+      },
+      {
+        "name": "date",
+        "doc": "Date value."
+      },
+      {
+        "name": "id",
+        "doc": "Id value."
+      },
+      {
+        "name": "status",
+        "doc": "Status value."
+      },
+      {
+        "name": "currency",
+        "doc": "Currency value."
+      }
+    ]
+  },
+  "PaymentDataColumn": {
+    "kind": "class",
+    "file": "lib/src/content/data_table.dart",
+    "doc": "One host-owned data column.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentDataColumn",
+        "factory": false,
+        "params": [
+          {
+            "name": "key",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "key",
+            "doc": "Stable column identifier."
+          },
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Visible and spoken label."
+          },
+          {
+            "name": "value",
+            "type": "Object? Function(T row)",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": "Extracts a display value from a host row."
+          },
+          {
+            "name": "cell",
+            "type": "PaymentCellType",
+            "required": false,
+            "default": "PaymentCellType.text",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "cell",
+            "doc": "Presentation for the extracted value."
+          },
+          {
+            "name": "statusMap",
+            "type": "Map<String, StatusTone>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "statusMap",
+            "doc": "Maps status text to semantic tones."
+          },
+          {
+            "name": "onPressed",
+            "type": "void Function(T row)?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onPressed",
+            "doc": "Host action for this row."
+          },
+          {
+            "name": "hideHeaderLabel",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hideHeaderLabel",
+            "doc": "Hides the visual heading while retaining its spoken label."
+          },
+          {
+            "name": "pinned",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pinned",
+            "doc": "Keeps this column fixed during horizontal scrolling."
+          },
+          {
+            "name": "sortable",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "sortable",
+            "doc": "Enables the ascending, descending, host-order cycle."
+          },
+          {
+            "name": "compare",
+            "type": "int Function(T a, T b)?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "compare",
+            "doc": "Optional comparison of host rows for local sorting."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "key",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Stable column identifier."
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Visible and spoken label."
+      },
+      {
+        "name": "cell",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentCellType",
+        "doc": "Presentation for the extracted value."
+      },
+      {
+        "name": "hideHeaderLabel",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Hides the visual heading while retaining its spoken label."
+      },
+      {
+        "name": "pinned",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Keeps this column fixed during horizontal scrolling."
+      },
+      {
+        "name": "sortable",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Enables the ascending, descending, host-order cycle."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentDataSort": {
+    "kind": "class",
+    "file": "lib/src/content/data_table.dart",
+    "doc": "Current column sort; null restores host order.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentDataSort",
+        "factory": false,
+        "params": [
+          {
+            "name": "columnKey",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "columnKey",
+            "doc": "Identifier of the sorted column."
+          },
+          {
+            "name": "ascending",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "ascending",
+            "doc": "Whether values sort in ascending order."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "columnKey",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Identifier of the sorted column."
+      },
+      {
+        "name": "ascending",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Whether values sort in ascending order."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentPagination": {
+    "kind": "class",
+    "file": "lib/src/content/data_table.dart",
+    "doc": "Page delivery strategy. Pages start at one.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentPagination.local",
+        "factory": false,
+        "params": [
+          {
+            "name": "pageSize",
+            "type": "int",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pageSize",
+            "doc": "Maximum rows per local page."
+          },
+          {
+            "name": "onPageChanged",
+            "type": "ValueChanged<int>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onPageChanged",
+            "doc": "Reports the requested page to the host."
+          }
+        ],
+        "doc": ""
+      },
+      {
+        "name": "PaymentPagination.offset",
+        "factory": false,
+        "params": [
+          {
+            "name": "page",
+            "type": "int?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "page",
+            "doc": "Host-controlled page number, starting at one."
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pageSize",
+            "doc": "Maximum rows per local page."
+          },
+          {
+            "name": "totalItems",
+            "type": "int?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "totalItems",
+            "doc": "Total host row count for offset paging."
+          },
+          {
+            "name": "onPageChanged",
+            "type": "ValueChanged<int>?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onPageChanged",
+            "doc": "Reports the requested page to the host."
+          }
+        ],
+        "doc": ""
+      },
+      {
+        "name": "PaymentPagination.cursor",
+        "factory": false,
+        "params": [
+          {
+            "name": "page",
+            "type": "int?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "page",
+            "doc": "Host-controlled page number, starting at one."
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pageSize",
+            "doc": "Maximum rows per local page."
+          },
+          {
+            "name": "hasMore",
+            "type": "bool?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hasMore",
+            "doc": "Whether cursor paging can request a next page."
+          },
+          {
+            "name": "onPageChanged",
+            "type": "ValueChanged<int>?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onPageChanged",
+            "doc": "Reports the requested page to the host."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "pageSize",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": "Maximum rows per local page."
+      },
+      {
+        "name": "page",
+        "kind": "field",
+        "static": false,
+        "type": "int?",
+        "doc": "Host-controlled page number, starting at one."
+      },
+      {
+        "name": "totalItems",
+        "kind": "field",
+        "static": false,
+        "type": "int?",
+        "doc": "Total host row count for offset paging."
+      },
+      {
+        "name": "hasMore",
+        "kind": "field",
+        "static": false,
+        "type": "bool?",
+        "doc": "Whether cursor paging can request a next page."
+      },
+      {
+        "name": "onPageChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<int>?",
+        "doc": "Reports the requested page to the host."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentRowActionEntry": {
+    "kind": "abstract class",
+    "file": "lib/src/content/data_table.dart",
+    "doc": "Closed family of row actions.",
+    "extends": null,
+    "constructors": [],
+    "getters": [],
+    "statics": [],
+    "members": [],
+    "copyWith": null
+  },
+  "PaymentRowAction": {
+    "kind": "class",
+    "file": "lib/src/content/data_table.dart",
+    "doc": "An action on a host row.",
+    "extends": "PaymentRowActionEntry<T>",
+    "constructors": [
+      {
+        "name": "PaymentRowAction",
+        "factory": false,
+        "params": [
+          {
+            "name": "id",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "id",
+            "doc": "Stable host action identifier."
+          },
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Visible and spoken label."
+          },
+          {
+            "name": "onPressed",
+            "type": "void Function(T row)",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onPressed",
+            "doc": "Host action for this row."
+          },
+          {
+            "name": "destructive",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "destructive",
+            "doc": "Places this action in the separate destructive menu group."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "id",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Stable host action identifier."
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Visible and spoken label."
+      },
+      {
+        "name": "destructive",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Places this action in the separate destructive menu group."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentRowActionGroup": {
+    "kind": "class",
+    "file": "lib/src/content/data_table.dart",
+    "doc": "A named action group.",
+    "extends": "PaymentRowActionEntry<T>",
+    "constructors": [
+      {
+        "name": "PaymentRowActionGroup",
+        "factory": false,
+        "params": [
+          {
+            "name": "id",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "id",
+            "doc": "Stable host action identifier."
+          },
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Visible and spoken label."
+          },
+          {
+            "name": "actions",
+            "type": "List<PaymentRowAction<T>>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "actions",
+            "doc": "Actions in this named group."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "id",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Stable host action identifier."
+      },
+      {
+        "name": "label",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Visible and spoken label."
+      },
+      {
+        "name": "actions",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentRowAction<T>>",
+        "doc": "Actions in this named group."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentDataTable": {
+    "kind": "class",
+    "file": "lib/src/content/data_table.dart",
+    "doc": "Responsive host data with page-scoped selection and local sort/filter.",
+    "extends": "StatefulWidget",
+    "constructors": [
+      {
+        "name": "PaymentDataTable",
+        "factory": false,
+        "params": [
+          {
+            "name": "columns",
+            "type": "List<PaymentDataColumn<T>>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "columns",
+            "doc": "Column definitions in initial reading order."
+          },
+          {
+            "name": "rows",
+            "type": "List<T>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rows",
+            "doc": "Host data; a complete local set or one host-controlled page."
+          },
+          {
+            "name": "rowKey",
+            "type": "String Function(T row)",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rowKey",
+            "doc": "Returns a stable unique selection key for a row."
+          },
+          {
+            "name": "pagination",
+            "type": "PaymentPagination?",
+            "required": false,
+            "default": "const PaymentPagination.local(pageSize: 25)",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pagination",
+            "doc": "Page strategy; null displays all supplied rows."
+          },
+          {
+            "name": "onRowPressed",
+            "type": "void Function(T row)?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onRowPressed",
+            "doc": "Optional host action when a data row is pressed."
+          },
+          {
+            "name": "rowActions",
+            "type": "List<PaymentRowActionEntry<T>>",
+            "required": false,
+            "default": "const <Never>[]",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rowActions",
+            "doc": "Per-row actions and named groups."
+          },
+          {
+            "name": "selection",
+            "type": "Set<String>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "selection",
+            "doc": "Host-controlled selected row keys; null hides selection."
+          },
+          {
+            "name": "onSelectionChanged",
+            "type": "ValueChanged<Set<String>>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onSelectionChanged",
+            "doc": "Reports the complete new selection to the host."
+          },
+          {
+            "name": "batchActions",
+            "type": "List<PaymentButton>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "batchActions",
+            "doc": "Host actions displayed while rows are selected."
+          },
+          {
+            "name": "pending",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pending",
+            "doc": "Replaces data with a static table skeleton."
+          },
+          {
+            "name": "emptyMessage",
+            "type": "PaymentEmptyMessage?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "emptyMessage",
+            "doc": "Host explanation and optional next action for an empty table."
+          },
+          {
+            "name": "errorText",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "errorText",
+            "doc": "Host load error shown with danger tone."
+          },
+          {
+            "name": "onRetry",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onRetry",
+            "doc": "Host retry action."
+          },
+          {
+            "name": "initialSort",
+            "type": "PaymentDataSort?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "initialSort",
+            "doc": "Initial sort state for this table instance."
+          },
+          {
+            "name": "onSortChanged",
+            "type": "ValueChanged<PaymentDataSort?>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onSortChanged",
+            "doc": "Reports sort intent, including null for host order."
+          },
+          {
+            "name": "filter",
+            "type": "bool Function(T row, String query)?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "filter",
+            "doc": "Host predicate, permitted only for local data."
+          },
+          {
+            "name": "filterQuery",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "filterQuery",
+            "doc": "Query passed to the host predicate."
+          },
+          {
+            "name": "enableColumnReorder",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "enableColumnReorder",
+            "doc": "Reserved for Phase 6; must remain false."
+          },
+          {
+            "name": "enableColumnResize",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "enableColumnResize",
+            "doc": "Reserved for Phase 6; must remain false."
+          },
+          {
+            "name": "onColumnOrderChanged",
+            "type": "ValueChanged<List<String>>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onColumnOrderChanged",
+            "doc": "Reserved column order callback."
+          },
+          {
+            "name": "caption",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "caption",
+            "doc": "Spoken description of the data set."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "columns",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentDataColumn<T>>",
+        "doc": "Column definitions in initial reading order."
+      },
+      {
+        "name": "rows",
+        "kind": "field",
+        "static": false,
+        "type": "List<T>",
+        "doc": "Host data; a complete local set or one host-controlled page."
+      },
+      {
+        "name": "pagination",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentPagination?",
+        "doc": "Page strategy; null displays all supplied rows."
+      },
+      {
+        "name": "rowActions",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentRowActionEntry<T>>",
+        "doc": "Per-row actions and named groups."
+      },
+      {
+        "name": "selection",
+        "kind": "field",
+        "static": false,
+        "type": "Set<String>?",
+        "doc": "Host-controlled selected row keys; null hides selection."
+      },
+      {
+        "name": "onSelectionChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<Set<String>>?",
+        "doc": "Reports the complete new selection to the host."
+      },
+      {
+        "name": "batchActions",
+        "kind": "field",
+        "static": false,
+        "type": "List<PaymentButton>",
+        "doc": "Host actions displayed while rows are selected."
+      },
+      {
+        "name": "pending",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Replaces data with a static table skeleton."
+      },
+      {
+        "name": "emptyMessage",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentEmptyMessage?",
+        "doc": "Host explanation and optional next action for an empty table."
+      },
+      {
+        "name": "errorText",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Host load error shown with danger tone."
+      },
+      {
+        "name": "onRetry",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Host retry action."
+      },
+      {
+        "name": "initialSort",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentDataSort?",
+        "doc": "Initial sort state for this table instance."
+      },
+      {
+        "name": "onSortChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<PaymentDataSort?>?",
+        "doc": "Reports sort intent, including null for host order."
+      },
+      {
+        "name": "filterQuery",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Query passed to the host predicate."
+      },
+      {
+        "name": "enableColumnReorder",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Reserved for Phase 6; must remain false."
+      },
+      {
+        "name": "enableColumnResize",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Reserved for Phase 6; must remain false."
+      },
+      {
+        "name": "onColumnOrderChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<List<String>>?",
+        "doc": "Reserved column order callback."
+      },
+      {
+        "name": "caption",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Spoken description of the data set."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentEmptyMessage": {
+    "kind": "class",
+    "file": "lib/src/content/empty_message.dart",
+    "doc": "Empty-state explanation and an optional next action.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentEmptyMessage",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": false,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "What is empty."
+          },
+          {
+            "name": "message",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "message",
+            "doc": "Why it is empty."
+          },
+          {
+            "name": "actionLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "actionLabel",
+            "doc": "Next action label."
+          },
+          {
+            "name": "onAction",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onAction",
+            "doc": "Host action, supplied together with its label."
+          },
+          {
+            "name": "icon",
+            "type": "IconData",
+            "required": false,
+            "default": "Icons.inbox_outlined",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "icon",
+            "doc": "Supporting visual cue."
+          }
+        ],
+        "doc": "Creates host-authored empty-state copy."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "What is empty."
+      },
+      {
+        "name": "message",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Why it is empty."
+      },
+      {
+        "name": "actionLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Next action label."
+      },
+      {
+        "name": "onAction",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Host action, supplied together with its label."
+      },
+      {
+        "name": "icon",
+        "kind": "field",
+        "static": false,
+        "type": "IconData",
+        "doc": "Supporting visual cue."
       }
     ],
     "copyWith": null

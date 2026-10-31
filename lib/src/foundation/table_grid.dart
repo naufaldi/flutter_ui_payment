@@ -77,7 +77,9 @@ class TableGrid extends StatelessWidget {
                       height: h,
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: theme.space(PaymentSpace.block),
+                          horizontal: col.width == 48
+                              ? 0
+                              : theme.space(PaymentSpace.block),
                         ),
                         child: Align(
                           alignment: col.numeric

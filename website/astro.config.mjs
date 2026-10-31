@@ -126,6 +126,7 @@ export default defineConfig({
             {
               label: 'Content',
               items: [
+              'components/data-table',
               'components/task-list',
               'components/button-group',
               'components/property-list',
