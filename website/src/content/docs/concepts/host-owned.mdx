@@ -3,6 +3,8 @@ title: Host-owned decisions
 description: The kit renders state and reports intent. Every decision about money, identity and authorization stays with your app and backend.
 ---
 
+import Props from '../../../components/Props.astro';
+
 A payment screen and a payment are different things. A request timeout is a network fact; a failed payment is a decision by your backend or provider. The kit keeps that line by never deciding anything about money itself: it renders the data you give it and reports what the customer did through callbacks.
 
 The data flow is always the same:
@@ -40,6 +42,17 @@ Where a widget could be tempted to compute something, it takes your verdict inst
 Your adapter maps provider failures into a `HostError` with a `HostErrorCategory` (`network`, `timeout`, `validation`, `sessionExpired`, `notAllowed`, `conflict`, `invalidResponse`, `unavailable`, `unknown`) and an optional `safeMessage` you approved for end users. Raw exceptions and provider payloads never reach the widgets.
 
 `timeout` is its own category on purpose: the request was sent but no answer arrived, so its outcome is unknown. See [Payment attempt and status](/concepts/payment-attempt/).
+
+```dart
+const HostError(
+  HostErrorCategory.network,
+  safeMessage: 'Check your connection and try again.',
+);
+```
+
+`retryable` defaults to `true`; set it to `false` when trying again cannot help. `outcomeUnknown` is `true` for `timeout`, and callers must not treat those errors as failures.
+
+<Props names={['HostError', 'HostErrorCategory']} />
 
 ## No dependencies to adopt
 

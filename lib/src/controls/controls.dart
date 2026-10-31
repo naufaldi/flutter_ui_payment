@@ -440,8 +440,9 @@ class _SidesClipper extends CustomClipper<Rect> {
   bool shouldReclip(_SidesClipper oldClipper) => false;
 }
 
-/// A short hint shown on long press, hover or keyboard focus, in ink on the
-/// page with the caption type.
+/// A short hint shown on long press or hover, in ink on the page with the
+/// caption type. Keyboard focus does not open it; screen readers read
+/// [message] as the child's tooltip.
 ///
 /// A tooltip is easy to miss on touch screens, so it may only repeat or name
 /// something: an icon button's label, a full date behind "2d ago". Never put

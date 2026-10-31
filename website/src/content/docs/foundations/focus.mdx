@@ -1,0 +1,44 @@
+---
+title: Focus and press
+description: One keyboard focus ring for every control, and a small press scale for compact controls only.
+---
+
+Every kit control shows keyboard focus the same way, and compact controls answer a press the same way. Both are built in: you get them by using the widgets, with nothing to configure.
+
+## Focus ring
+
+When a control has keyboard focus, the kit draws an outline around it:
+
+- **2 px wide, 2 px outside the control**, following its corner radius.
+- **Ink on light, paper on dark.** The ring uses `textPrimary`, never the accent or brand color, so it reads as focus and not as selection. Over a picture, such as the video player's play button, it is white.
+- **Keyboard only.** It shows only when the platform is in keyboard (traditional) highlight mode, Flutter's equivalent of the web's `:focus-visible`. A tap never draws it.
+- **Painted, not laid out.** The ring is drawn over the control and outside its bounds, so focusing never moves anything on screen.
+- **Replaces Material's focus fill.** Buttons, rows and tabs do not also tint their background on focus. Their pressed and hovered states are unchanged.
+
+Because the ring sits outside the control, leave at least 4 px between a kit control and any ancestor that clips, such as a `ClipRRect` or a scroll view with clipping. Otherwise the ring is cut off. Rows that run edge to edge, like `PaymentTabs`, clip only at their sides, so their rings still show above and below.
+
+## Which widgets draw it
+
+Buttons, action rows, the action menu button, checkbox, radio and switch rows, tabs, payment method rows, navigation items, the expandable section header, copy buttons, the sheet close button, promotion actions, the video controls, and the edit actions on the verification review. Text fields show focus their own way: a 2 px `accent` border.
+
+## Press scale
+
+Compact controls shrink to 0.96 while held and return to full size on release, over 100 ms (`PaymentMotion.press`). It says the press was heard.
+
+- **Compact only.** Copy buttons, the sheet close button, tabs, promotion actions, the video controls and the review's edit actions scale.
+- **Full-width buttons and rows do not.** Scaling a 320 dp slab moves its edges by several pixels, which reads as a lurch rather than a press. They use Material's pressed layer instead.
+- **Reduced motion turns it off.** Under reduced motion `pressedScale` is 1.
+
+## In your own screens
+
+The ring and press widgets are internal to the package. To match them on your own controls:
+
+- Keep Material's default focus handling, or draw a 2 px outline in your ink color 2 px outside the control. Never use the brand color for focus.
+- Do not scale full-width controls on press.
+- Test with a hardware keyboard: Tab through the screen and check every control shows the ring and nothing moves.
+
+## See also
+
+- [Motion](/foundations/motion/) for the press duration and reduced motion.
+- [Accessibility](/concepts/accessibility/) for keyboard and screen-reader behavior.
+- [Color](/foundations/color/) for `textPrimary`.

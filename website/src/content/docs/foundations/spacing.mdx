@@ -1,0 +1,62 @@
+---
+title: Spacing and radius
+description: One spacing unit used in multiples by role, three corner radii derived from one token, and 48 dp targets.
+---
+
+Two `PaymentTheme` tokens set the kit's layout: `spacing`, the base unit (default 8), and `radius`, the corner radius of selectable boxes (default 8). Everything else is a multiple of them, so changing one token keeps every screen in proportion.
+
+```dart
+final theme = PaymentTheme.of(context);
+
+Padding(
+  padding: EdgeInsets.all(theme.spacing * 2), // group: 16
+  child: DecoratedBox(
+    decoration: BoxDecoration(
+      border: Border.all(color: theme.border),
+      borderRadius: theme.controlBorderRadius, // 6
+    ),
+    child: child,
+  ),
+);
+```
+
+## Spacing
+
+Layouts use multiples of `spacing` by role, not by eye:
+
+| Role | Value | Multiple | Used for |
+| --- | --- | --- | --- |
+| inline | 4 | `spacing * 0.5` | Label to caption, title to meta line, icon to badge text. |
+| related | 8 | `spacing` | Row padding, between stacked actions. |
+| block | 12 | `spacing * 1.5` | Band to title, notice padding, icon to row text. |
+| group | 16 | `spacing * 2` | Screen and sheet gutter, between groups. |
+| section | 24 | `spacing * 3` | Content to the primary action, ruled gaps between sections. |
+| major | 32 | `spacing * 4` | Empty and state message padding only. |
+
+Sections are separated by space, not boxes. When a rule is needed between sections, a [divider](/components/divider/) sits in the middle of a 24 dp gap.
+
+## Radius
+
+| Getter | Value at `radius: 8` | Used for |
+| --- | --- | --- |
+| `tagBorderRadius` | 4 | Badges, tags and skeleton blocks. |
+| `controlBorderRadius` | 6 | Buttons, inputs, notices and menus. |
+| `borderRadius` | 8 | Selectable boxes such as the method list. |
+| `sheetBorderRadius` | 12 | The top of a sheet, and dialogs. |
+
+When you nest a rounded element inside another, give the inner one the smaller radius so the corners stay concentric.
+
+## Targets
+
+Everything people tap is at least 48 by 48 dp: buttons, rows, tabs, checkbox, radio and switch rows, and icon buttons. Rows grow taller at large text; they never shrink below 48.
+
+## Content guidelines
+
+- Use the roles above in your own screens instead of new values. A layout of 4, 8, 12, 16, 24 and 32 reads as one system.
+- Keep the 16 dp gutter at every width. On a 320 dp phone it still leaves 288 dp for content.
+- Put the most space before the primary action (24), so it reads as the end of the screen.
+
+## See also
+
+- [Color](/foundations/color/) and [Typography](/foundations/typography/).
+- [Section](/components/section/) for flat, titled groups.

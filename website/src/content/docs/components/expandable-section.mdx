@@ -1,0 +1,74 @@
+---
+title: Expandable section
+description: ExpandableSection is a titled section whose body can be shown or hidden, controlled or uncontrolled. Never use it to hide fees.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`ExpandableSection` hides secondary detail behind its title: how long a transfer takes, step-by-step payment instructions, buyer protection terms.
+
+<HostOwns>the content, and the open state when you control it.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_expandable" alt="Two collapsed expandable sections: How long does a transfer take? with a help icon, and Buyer protection with a shield icon and the subtitle Provided by the merchant, each with a chevron and a hairline underneath; between them a switch labelled Controlled: open from outside." caption="Collapsed, with and without a subtitle" />
+</Screens>
+
+## Usage
+
+```dart
+const ExpandableSection(
+  leading: Icons.help_outline,
+  title: 'How long does a transfer take?',
+  child: Text(
+    'Most bank transfers are confirmed within minutes. Some banks take '
+    'until the next business day.',
+  ),
+);
+```
+
+The section is flat: no box, only a hairline underneath, so consecutive sections read as one ruled list.
+
+## Uncontrolled
+
+The default. The section keeps its own state. `initiallyExpanded: true` starts it open.
+
+## Controlled
+
+Pass `expanded` with `onExpandedChanged` to own the state, for example to open the section from somewhere else on the screen.
+
+```dart
+ExpandableSection(
+  title: 'Buyer protection',
+  subtitle: 'Provided by the merchant',
+  expanded: showProtection,
+  onExpandedChanged: (open) => setState(() => showProtection = open),
+  child: const Text('Refunds are requested from the merchant.'),
+);
+```
+
+## Content guidelines
+
+- The title names what is inside, or asks the question it answers: "How to pay", "How long does a transfer take?".
+- Never hide fees, the total or anything the person agrees to. The payment summary keeps every fee visible by design.
+- Keep the body short. If it needs its own headings, it needs its own screen or [sheet](/components/sheets/).
+
+## Motion
+
+The chevron turns in 150 ms. The body's height eases open in 220 ms and closed in 150 ms, so content below does not jump. Under reduced motion both changes are instant.
+
+## Accessibility
+
+- The header is a 48 dp minimum button that reports expanded or collapsed, with a "Show details" or "Hide details" hint.
+- Collapsed content is removed from the tree, so Tab and screen readers never reach it.
+
+## API
+
+<Props names={['ExpandableSection']} />
+
+## See also
+
+- [Section](/components/section/)
+- [Status and receipt](/components/status-receipt/), where payment instructions fold into one.

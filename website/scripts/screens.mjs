@@ -7,7 +7,7 @@
 // example/build/screenshots (the rejected earlier design).
 
 import { createRequire } from 'node:module';
-import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -52,13 +52,39 @@ const screens = {
   ios_kit_promo: 'Gallery: promotions, Indonesian',
   ios_kit_promo_200: 'Gallery: promotions at 200% text',
   ios_kit_video_ready: 'Gallery: video player',
+  // English catalog captures (example/integration_test/catalog_screenshots_test.dart).
+  ios_catalog_controls_buttons: 'Gallery: button variants, busy and disabled, English',
+  ios_catalog_controls_buttons_dark: 'Gallery: button variants, dark, English',
+  ios_catalog_controls_choices: 'Gallery: checkbox, radio and switch, English',
+  ios_catalog_controls_choices_dark: 'Gallery: checkbox, radio and switch, dark, English',
+  ios_catalog_controls_tabs: 'Gallery: tabs, divider, tooltip trigger and spinner, English',
+  ios_catalog_controls_tabs_dark: 'Gallery: tabs, divider, tooltip trigger and spinner, dark, English',
+  ios_catalog_controls_tooltip: 'Gallery: tooltip shown, English',
+  ios_catalog_foundation: 'Gallery: foundation specimen (English formatting, Indonesian row labels)',
+  ios_catalog_actions: 'Gallery: action tiles and the menu button, English',
+  ios_catalog_menu_open: 'Gallery: action menu open, English',
+  ios_catalog_confirm_dialog: 'Gallery: destructive confirmation, English',
+  ios_catalog_snackbar: 'Gallery: neutral toast, English',
+  ios_catalog_expandable: 'Gallery: expandable sections, English',
+  ios_catalog_states: 'Gallery: loading skeleton, English',
+  ios_catalog_states_empty: 'Gallery: empty state message, English',
+  ios_catalog_states_error: 'Gallery: error state message with retry, English',
 };
 
 mkdirSync(target, { recursive: true });
+// Captures are gitignored build output. When one is gone but its WebP is
+// already committed, keep the committed image and its recorded size.
+const previous = existsSync(manifest) ? JSON.parse(readFileSync(manifest, 'utf8')) : {};
 const sizes = {};
 for (const [name, caption] of Object.entries(screens)) {
   const input = join(source, `${name}.png`);
-  if (!existsSync(input)) throw new Error(`Missing screenshot ${input}`);
+  if (!existsSync(input)) {
+    if (previous[name] && existsSync(join(target, `${name}.webp`))) {
+      sizes[name] = { ...previous[name], caption };
+      continue;
+    }
+    throw new Error(`Missing screenshot ${input}`);
+  }
   const info = await sharp(input)
     .resize({ width: 640 })
     .webp({ quality: 82 })

@@ -1,0 +1,49 @@
+---
+// A token table with light and dark swatches. Values are written out as hex
+// next to each swatch, so the color is never the only way to read the row.
+interface Row {
+  token: string;
+  light?: string;
+  dark?: string;
+  note: string;
+}
+
+interface Props {
+  rows: Row[];
+}
+
+const { rows } = Astro.props;
+---
+
+<div class="fup-swatches not-content">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Token</th>
+        <th scope="col">Light</th>
+        <th scope="col">Dark</th>
+        <th scope="col">Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr>
+            <td><code>{row.token}</code></td>
+            {[row.light, row.dark].map((value) =>
+              value ? (
+                <td class="fup-swatch-cell">
+                  <span class="fup-swatch" style={`background:${value}`} aria-hidden="true" />
+                  <code>{value}</code>
+                </td>
+              ) : (
+                <td class="fup-swatch-cell">—</td>
+              ),
+            )}
+            <td>{row.note}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

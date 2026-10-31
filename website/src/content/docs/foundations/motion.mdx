@@ -44,8 +44,15 @@ AnimatedSwitcher(
 - Implicit animations retarget when interrupted.
 - The countdown, which ticks every second, is never animated. Amounts are never animated.
 - `LoadingSkeleton` is static: a shimmer repaints every frame and adds no information.
+- `PaymentSpinner`, and the busy state of `PaymentButton`, become a still hourglass under reduced motion.
 - Video never autoplays unless `autoPlay: true`, and never under reduced motion.
 
 ## API
 
 <Props names={['PaymentMotion']} />
+
+## See also
+
+- [Focus and press](/foundations/focus/) for the 0.96 press scale.
+- [Spinner](/components/spinner/) and [Loading skeleton](/components/loading-skeleton/) for waiting states.
+- [Accessibility](/concepts/accessibility/) for reduced motion.

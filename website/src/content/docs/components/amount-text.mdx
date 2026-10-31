@@ -1,0 +1,77 @@
+---
+title: Amount text
+description: AmountText formats Money for the active locale with tabular figures and a spoken label, and scales down instead of clipping a digit.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`AmountText` shows a `Money` value. It formats through the active locale's `MoneyFormat`, uses tabular figures so digits line up, and gives screen readers the amount in words.
+
+<HostOwns>the amount and its currency. The widget formats; it never adds, rounds or converts.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_foundation" alt="Gallery foundation specimen in English formatting: a large right-aligned total Rp102,500, then rows Biaya layanan Rp2,500, Nominal besar Rp1,250,000,000 and USD (2 decimals) $19.99." caption="The emphasis total and row amounts; row labels are hard-coded Indonesian" />
+</Screens>
+
+## Usage
+
+```dart
+const InfoRow(
+  label: 'Service fee',
+  value: AmountText(Money.idr(2500)),
+);
+```
+
+`Money` is an integer number of minor units plus a currency code; see [Money](/foundations/money/). The same value reads `Rp2.500` in Indonesian and `Rp2,500` in English.
+
+## Row amount
+
+The default: the 15/20 label size, regular weight, aligned to the end. Use it inside rows.
+
+## Emphasis
+
+`emphasis: true` uses the 32/36 display style with `PaymentTheme.amountWeight`. Use it for the one total per screen.
+
+```dart
+AmountText(quote.total, emphasis: true);
+```
+
+## Custom style
+
+`style` is merged over the base style, for example to strike through an amount, as the transaction list does for failed and canceled payments.
+
+```dart
+AmountText(
+  record.amount,
+  style: const TextStyle(decoration: TextDecoration.lineThrough),
+);
+```
+
+## Large text and long amounts
+
+- Amounts 20 px and larger, and every `emphasis` amount, follow text scaling only up to 1.6×, as platform large titles do.
+- An amount that still does not fit scales down instead of being clipped. A hidden digit is worse than a smaller one.
+- It never wraps: an amount is always one line.
+
+## Content guidelines
+
+- Show the currency the host charges in. Do not convert in the UI.
+- One emphasis amount per screen. Two totals that look equal compete.
+- Never animate an amount changing. Show the new value, and explain the change with a [notice banner](/components/notice-banner/) when it matters.
+
+## Accessibility
+
+- Screen readers hear `MoneyFormat.spoken`, not the symbol-and-digits string.
+
+## API
+
+<Props names={['AmountText']} />
+
+## See also
+
+- [Info row](/components/info-row/)
+- [Money](/foundations/money/)
+- [Typography](/foundations/typography/)

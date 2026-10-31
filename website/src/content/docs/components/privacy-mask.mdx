@@ -1,0 +1,44 @@
+---
+title: Privacy mask
+description: PrivacyMask covers sensitive content with a lock while obscured is true, for example in the app switcher. OS screenshot protection stays with your app.
+---
+
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`PrivacyMask` hides what it wraps behind a plain surface and a lock icon while `obscured` is true. Use it for account numbers, identity details and balances that should not show in the app switcher or on a shared screen.
+
+<HostOwns>when to obscure (usually from the app lifecycle) and platform screenshot protection. The mask covers the Flutter content; it does not stop the operating system from capturing the screen.</HostOwns>
+
+## Usage
+
+```dart
+PrivacyMask(
+  obscured: lifecycle != AppLifecycleState.resumed,
+  child: accountDetails,
+);
+```
+
+`lifecycle` is your own state, kept from an `AppLifecycleListener` or `WidgetsBindingObserver`; `accountDetails` is the content to hide.
+
+## Obscured
+
+The child stays laid out underneath, so nothing jumps when the mask lifts. The cover uses `PaymentTheme.surface` with a 48 px lock icon in `textSecondary`.
+
+## Content guidelines
+
+- Mask whole blocks, not single digits. A half-covered number still leaks.
+- Unmask as soon as the app is active again. The mask is not a lock screen; it asks for nothing.
+
+## Accessibility
+
+- While obscured, the child is excluded from semantics and screen readers hear "Content hidden" instead.
+
+## API
+
+<Props names={['PrivacyMask']} />
+
+## See also
+
+- [Host-owned decisions](/concepts/host-owned/), privacy boundary.
+- [Verification (KYC)](/components/verification/)

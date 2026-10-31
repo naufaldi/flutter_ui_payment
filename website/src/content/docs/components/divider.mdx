@@ -1,0 +1,52 @@
+---
+title: Divider
+description: PaymentDivider is a 1 px hairline in the outline color that separates rows or groups. Screen readers skip it.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+
+`PaymentDivider` draws the kit's hairline: 1 px in [`PaymentTheme.outline`](/foundations/color/). It is decorative.
+
+<Screens>
+  <Screen name="ios_catalog_controls_tabs" dark="ios_catalog_controls_tabs_dark" alt="Gallery controls specimen with hairlines between the tab content, a Paid 2 days ago row and a Checking payment status row." caption="Dividers between groups (follows the site theme)" />
+</Screens>
+
+## Usage
+
+```dart
+Column(
+  children: [
+    receiptRows,
+    const PaymentDivider(height: 24),
+    totalRow,
+  ],
+);
+```
+
+## Between rows
+
+The default `height` of 1 puts the rule directly between two rows, with no extra space. It is the same rule `ActionTileGroup` draws between action rows.
+
+## Between groups
+
+Set `height` to `spacing * 3` (24 with the default theme). The rule then sits in the middle of a section gap.
+
+```dart
+PaymentDivider(height: PaymentTheme.of(context).spacing * 3);
+```
+
+## Content guidelines
+
+- Prefer space to separate sections. Add a rule only where space alone does not read as a break, such as before a total.
+- Do not use a divider as a border around content. Sections are flat by design.
+
+## API
+
+<Props names={['PaymentDivider']} />
+
+## See also
+
+- [Section](/components/section/)
+- [Spacing and radius](/foundations/spacing/)

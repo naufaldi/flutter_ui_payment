@@ -1,0 +1,74 @@
+---
+title: Toast
+description: showPaymentSnackBar shows short feedback after an action, with a toned icon and an optional undo. It replaces any toast already showing.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`showPaymentSnackBar` confirms that something happened: "Reference copied", "Share canceled". It floats at the bottom of the screen and goes away on its own.
+
+<HostOwns>the message and what its action does, for example restoring something the person hid.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_snackbar" alt="The gallery interaction section with a dark floating toast at the bottom reading Nothing changed, with an info icon, shown after the sign-out confirmation was canceled." caption="Neutral toast after a canceled confirmation" />
+</Screens>
+
+## Usage
+
+```dart
+showPaymentSnackBar(
+  context,
+  message: 'Reference copied',
+  tone: StatusTone.success,
+);
+```
+
+It needs a `ScaffoldMessenger` above `context`, which `MaterialApp` provides. Any toast already showing is hidden first, so a quick second action never queues behind the first. The function returns the `ScaffoldFeatureController` from `showSnackBar` if you need to know when it closed.
+
+## Tones
+
+`tone` only adds an icon. The toast keeps Material's snack bar colors.
+
+| Tone | Icon |
+| --- | --- |
+| `neutral` (default), `info` | `Icons.info_outline` |
+| `success` | `Icons.check_circle_outline` |
+| `warning` | `Icons.warning_amber_rounded` |
+| `danger` | `Icons.error_outline` |
+
+## With undo
+
+Pass both `actionLabel` and `onAction` to add an action. If either is missing, no action is shown.
+
+```dart
+showPaymentSnackBar(
+  context,
+  message: 'Promo hidden',
+  actionLabel: 'Undo',
+  onAction: () => host.restorePromo(promo.id),
+);
+```
+
+## Content guidelines
+
+- Say what happened in the past tense, in a few words: "Reference copied", "Card removed".
+- One message per toast. Do not put instructions or errors that need attention in a toast; it disappears. Use a [notice banner](/components/notice-banner/) instead.
+- Never report a payment result in a toast. Payment status belongs on the [status screen](/components/status-receipt/).
+- Action labels are one verb: "Undo", "View".
+
+## Accessibility
+
+- Screen readers announce snack bars automatically.
+- The tone adds an icon, so the message is not carried by color alone. The icon is excluded from semantics; the message is what is read.
+
+## API
+
+<Props names={['showPaymentSnackBar']} />
+
+## See also
+
+- [Notice banner](/components/notice-banner/) for messages that must stay.
+- [Dialog](/components/dialog/) to ask before an action instead of offering undo after it.

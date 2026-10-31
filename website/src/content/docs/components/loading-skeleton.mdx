@@ -1,0 +1,64 @@
+---
+title: Loading skeleton
+description: LoadingSkeleton shows still placeholder rows shaped like the content that is loading, announced once as Loading.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`LoadingSkeleton` stands in for a list while it loads: a few muted bars where the rows will be, with an optional square where each row's icon goes.
+
+<HostOwns>loading the data and deciding when to swap the skeleton for the content, an empty state or an error.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_states" alt="A Saved billers section showing three placeholder rows, each a light square followed by a long and a short bar, under an ExpandableSection specimen." caption="Three rows with leading squares, in the gallery's loading state" />
+</Screens>
+
+## Usage
+
+```dart
+PaymentSection(
+  title: 'Saved billers',
+  child: switch (state) {
+    LoadState.loading => const LoadingSkeleton(),
+    LoadState.empty => const StateMessage(
+      icon: Icons.bookmark_border,
+      title: 'No saved billers',
+    ),
+    LoadState.ready => billerList,
+  },
+);
+```
+
+`LoadState` here is your own enum.
+
+## Rows
+
+`rows` sets how many placeholder rows are drawn (default 3). Match roughly how many rows usually appear, so the page does not jump much when the content arrives.
+
+## Without leading squares
+
+`leading: false` drops the square before each row, for content without icons.
+
+```dart
+const LoadingSkeleton(rows: 2, leading: false);
+```
+
+## Why it does not shimmer
+
+The skeleton is static on purpose. A shimmer repaints every frame for as long as the load takes and says nothing a still placeholder does not.
+
+## Accessibility
+
+- Screen readers hear one "Loading" (or `semanticLabel`) instead of a series of empty boxes.
+
+## API
+
+<Props names={['LoadingSkeleton']} />
+
+## See also
+
+- [State message](/components/state-message/) for what replaces the skeleton when there is nothing to show.
+- [Spinner](/components/spinner/) for a wait with no known shape.

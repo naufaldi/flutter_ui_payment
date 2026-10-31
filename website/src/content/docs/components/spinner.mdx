@@ -1,0 +1,55 @@
+---
+title: Spinner
+description: PaymentSpinner shows indeterminate progress for a wait with no known length. It stands still under reduced motion.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+
+`PaymentSpinner` is a thin ring that shows something is happening when you cannot say how long it will take, such as a status check.
+
+<Screens>
+  <Screen name="ios_catalog_controls_tabs" dark="ios_catalog_controls_tabs_dark" alt="Gallery controls specimen: tabs Card and Bank transfer, a paragraph, a row Paid 2 days ago with an info icon, and at the bottom a small muted spinner beside Checking payment status." caption="A spinner beside its label, last row (follows the site theme)" />
+</Screens>
+
+## Usage
+
+```dart
+Row(
+  children: [
+    const PaymentSpinner(),
+    const SizedBox(width: 12),
+    Text('Checking payment status'),
+  ],
+);
+```
+
+Put words beside the spinner that say what is happening. A spinner on its own says only "wait".
+
+## When to use something else
+
+- **Content loading into a known shape**, such as a list: use a [loading skeleton](/components/loading-skeleton/). It shows where content will appear.
+- **An action the person started**, such as paying: use [`PaymentButton`](/components/button/)'s busy state. The button already shows a spinner and blocks a second tap.
+- **A payment whose result is not known**: say so in words on the [status screen](/components/status-header/). A spinner suggests the answer is coming, which may not be true.
+
+## Size and color
+
+`size` sets the width and height (default 20); the ring's stroke is 12% of it. `color` defaults to `textSecondary`, because waiting is not a brand moment. Pass the label color when the spinner sits on a filled surface, as the busy button does.
+
+## Reduced motion
+
+When the platform or host asks for reduced motion, the ring is replaced by a still hourglass icon of the same size.
+
+## Accessibility
+
+- Screen readers hear `semanticLabel`, "Loading" by default (or the Indonesian equivalent). Set a more specific label when the words beside it do not already say what is loading, or wrap the spinner in `ExcludeSemantics` when they do.
+
+## API
+
+<Props names={['PaymentSpinner']} />
+
+## See also
+
+- [Loading skeleton](/components/loading-skeleton/)
+- [Motion](/foundations/motion/)

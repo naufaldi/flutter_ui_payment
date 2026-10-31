@@ -4,6 +4,14 @@ import starlight from '@astrojs/starlight';
 
 export default defineConfig({
   site: 'https://flutter-ui-payment.netlify.app',
+  // Pages that moved or were split into the component catalog. Astro writes a
+  // redirect page for each; public/_redirects makes them real 301s on Netlify.
+  redirects: {
+    '/components/foundation': '/components/',
+    '/components/interaction': '/components/',
+    '/concepts/motion': '/foundations/motion/',
+    '/concepts/localization': '/foundations/localization/',
+  },
   integrations: [
     starlight({
       title: 'flutter_ui_payment',
@@ -51,22 +59,90 @@ export default defineConfig({
             { label: 'Host-owned decisions', slug: 'concepts/host-owned' },
             { label: 'Payment attempt and status', slug: 'concepts/payment-attempt' },
             { label: 'Theming', slug: 'concepts/theming' },
-            { label: 'Localization', slug: 'concepts/localization' },
             { label: 'Accessibility', slug: 'concepts/accessibility' },
-            { label: 'Motion', slug: 'concepts/motion' },
+          ],
+        },
+        {
+          label: 'Foundations',
+          items: [
+            { label: 'Color', slug: 'foundations/color' },
+            { label: 'Typography', slug: 'foundations/typography' },
+            { label: 'Spacing and radius', slug: 'foundations/spacing' },
+            { label: 'Motion', slug: 'foundations/motion' },
+            { label: 'Focus and press', slug: 'foundations/focus' },
+            { label: 'Money', slug: 'foundations/money' },
+            { label: 'Localization', slug: 'foundations/localization' },
           ],
         },
         {
           label: 'Components',
           items: [
-            { label: 'Foundation', slug: 'components/foundation' },
+            { label: 'Overview', slug: 'components' },
+            {
+              label: 'Actions',
+              items: [
+                { label: 'Button', slug: 'components/button' },
+                { label: 'Action tile', slug: 'components/action-tile' },
+                { label: 'Action menu', slug: 'components/action-menu' },
+              ],
+            },
+            {
+              label: 'Forms',
+              items: [
+                { label: 'Checkbox', slug: 'components/checkbox' },
+                { label: 'Radio', slug: 'components/radio' },
+                { label: 'Switch', slug: 'components/switch' },
+                { label: 'Amount input', slug: 'components/amount-input' },
+              ],
+            },
+            {
+              label: 'Feedback',
+              items: [
+                { label: 'Status badge', slug: 'components/status-badge' },
+                { label: 'Notice banner', slug: 'components/notice-banner' },
+                { label: 'Toast', slug: 'components/toast' },
+                { label: 'Status header', slug: 'components/status-header' },
+                { label: 'Spinner', slug: 'components/spinner' },
+                { label: 'Loading skeleton', slug: 'components/loading-skeleton' },
+                { label: 'State message', slug: 'components/state-message' },
+              ],
+            },
+            {
+              label: 'Content',
+              items: [
+                { label: 'Amount text', slug: 'components/amount-text' },
+                { label: 'Info row', slug: 'components/info-row' },
+                { label: 'Section', slug: 'components/section' },
+                { label: 'Expandable section', slug: 'components/expandable-section' },
+                { label: 'Divider', slug: 'components/divider' },
+                { label: 'Tooltip', slug: 'components/tooltip' },
+                { label: 'Countdown', slug: 'components/countdown' },
+                { label: 'Privacy mask', slug: 'components/privacy-mask' },
+              ],
+            },
+            {
+              label: 'Navigation',
+              items: [
+                { label: 'Tabs', slug: 'components/tabs' },
+                { label: 'Navigation shell', slug: 'components/navigation' },
+              ],
+            },
+            {
+              label: 'Overlays',
+              items: [
+                { label: 'Dialog', slug: 'components/dialog' },
+                { label: 'Sheet', slug: 'components/sheets' },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Payment flows',
+          items: [
             { label: 'Checkout', slug: 'components/checkout' },
             { label: 'Status and receipt', slug: 'components/status-receipt' },
             { label: 'Transaction history', slug: 'components/history' },
             { label: 'Verification (KYC)', slug: 'components/verification' },
-            { label: 'Interaction', slug: 'components/interaction' },
-            { label: 'Navigation', slug: 'components/navigation' },
-            { label: 'Sheets', slug: 'components/sheets' },
             { label: 'Media', slug: 'components/media' },
             { label: 'Promotions', slug: 'components/promotions' },
           ],

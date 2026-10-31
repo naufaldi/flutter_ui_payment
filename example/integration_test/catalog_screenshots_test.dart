@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment_example/main.dart';
@@ -84,9 +85,15 @@ void main() {
     app.updateSettings(const DemoSettings(locale: Locale('en')));
     await settle(tester);
     await top(tabs);
-    await tester.longPress(find.byIcon(Icons.info_outline));
-    await tester.pump(const Duration(milliseconds: 300));
+    // A mouse hover keeps the tooltip open without drawing a test pointer,
+    // which a held touch would put into the capture.
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(find.byIcon(Icons.info_outline)));
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pump(const Duration(milliseconds: 400));
     await binding.takeScreenshot('${platform}_catalog_controls_tooltip');
+    await mouse.removePointer();
     await tester.pump(const Duration(seconds: 3));
     await settle(tester);
 
@@ -110,7 +117,14 @@ void main() {
 
     await top('ExpandableSection');
     await shot('expandable');
+    // The last entries cannot scroll to the top, so this frame also shows
+    // the expandable section; the picker switches the fixture state.
     await top('LoadingSkeleton · StateMessage');
     await shot('states');
+    for (final state in ['empty', 'error']) {
+      await tester.tap(find.text(state));
+      await settle(tester);
+      await shot('states_$state');
+    }
   });
 }

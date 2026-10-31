@@ -1,0 +1,72 @@
+---
+title: Radio
+description: PaymentRadio is one option of a single choice. The selected option shows a thick ring, not only a color.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`PaymentRadio` is one option of a single choice. Use radios for two to about five options that all fit on screen.
+
+<HostOwns>the selected value and what each option means.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_controls_choices" dark="ios_catalog_controls_choices_dark" alt="A Send receipt by section with three radio options, Email selected with a thick ring and SMS and Don't send with thin rings, between a checkbox and two switches." caption="A radio group in a section (follows the site theme)" />
+</Screens>
+
+## Usage
+
+Give every option in the group the same `groupValue` and `onChanged`. The option whose `value` equals `groupValue` is selected.
+
+```dart
+PaymentSection(
+  title: 'Send receipt by',
+  child: Column(children: [
+    for (final (value, label) in [
+      ('email', 'Email'),
+      ('sms', 'SMS'),
+      ('none', "Don't send"),
+    ])
+      PaymentRadio<String>(
+        value: value,
+        groupValue: receipt,
+        onChanged: (v) => setState(() => receipt = v),
+        label: label,
+      ),
+  ]),
+);
+```
+
+Put the group in a [section](/components/section/) whose title asks the question.
+
+## Selected
+
+The selected option is a 6 px ring in the accent color; the others are a 1.5 px ring in `textSecondary`. The difference is in the shape, so it does not rely on color. Choosing the selected option again does nothing.
+
+## Disabled
+
+Pass `onChanged: null` to one option. Its ring uses the `disabled` color and its label turns muted. Pass `disabledReason` so people know why; it replaces `description` while the option is disabled.
+
+## Content guidelines
+
+- Title the group with the question or the setting: "Send receipt by".
+- Keep option labels short and parallel: "Email", "SMS", "Don't send".
+- Preselect the safest or most common option, and offer an explicit "none" option rather than leaving the group empty.
+- For more options than fit on screen, use a list on its own screen or sheet.
+- Payment methods have their own picker with unavailable reasons: use `PaymentMethodPicker` from [Checkout](/components/checkout/).
+
+## Accessibility
+
+- Each option is one row of at least 48 dp and one screen-reader node, announced as checked or not checked in a group of mutually exclusive options.
+- The selected option stays in the focus order, so Tab reaches every option. Keyboard focus draws the kit's [focus ring](/foundations/focus/).
+
+## API
+
+<Props names={['PaymentRadio']} />
+
+## See also
+
+- [Checkbox](/components/checkbox/) for independent yes-or-no choices.
+- [Tabs](/components/tabs/) to switch between views rather than save a choice.

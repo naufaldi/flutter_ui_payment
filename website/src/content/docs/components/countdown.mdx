@@ -1,0 +1,67 @@
+---
+title: Countdown
+description: CountdownText counts down to a deadline using your clock, stops at zero and calls onElapsed once. Zero is not proof that nobody paid.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`CountdownText` shows the time left until a deadline, such as when a virtual account expires: `14:59`, or `1:04:09` when there is an hour or more.
+
+<HostOwns>the deadline, the clock, and what happens when it passes. A countdown reaching zero is not proof of non-payment; ask your backend for the status.</HostOwns>
+
+<Screens>
+  <Screen name="ios_status_va_pending_light" dark="ios_status_va_pending_dark" alt="A virtual account status screen in Indonesian with a Bayar sebelum row: the deadline date under the label and a countdown 00:18 as the value." caption="CountdownText as an InfoRow value (Indonesian)" />
+</Screens>
+
+## Usage
+
+```dart
+InfoRow(
+  label: 'Pay before',
+  value: CountdownText(
+    expiresAt: va.expiresAt,
+    clock: host.clock,
+    onElapsed: coordinator.checkStatus,
+  ),
+);
+```
+
+`clock` returns the current time. Pass your host's clock, so the countdown agrees with the rest of your app and tests can fake it.
+
+## When the deadline passes
+
+The countdown stops at `00:00` and never goes negative. `onElapsed` is called once, after the frame, including when the deadline has already passed the first time the widget builds. Changing `expiresAt` starts a new countdown, and `onElapsed` can fire again for the new deadline.
+
+Use `onElapsed` to ask your host for the status, not to show "expired". A transfer made in the last second may still arrive.
+
+## Formatting outside the widget
+
+The static helpers do the same arithmetic without a widget:
+
+```dart
+final left = CountdownText.remaining(va.expiresAt, host.clock());
+final text = CountdownText.formatDuration(left); // "14:59"
+```
+
+## Content guidelines
+
+- Pair the countdown with the deadline itself (a date and time) so the person can plan, as the virtual account instructions do.
+- Label it with what the deadline is for: "Pay before", not "Timer".
+
+## Accessibility
+
+- Digits are tabular, so the width does not change as they tick.
+- Screen readers hear "Time remaining 14:59" (or the Indonesian equivalent).
+- The countdown is never animated beyond its once-a-second text change.
+
+## API
+
+<Props names={['CountdownText']} />
+
+## See also
+
+- [Status and receipt](/components/status-receipt/)
+- [Payment attempt and status](/concepts/payment-attempt/)

@@ -1,0 +1,67 @@
+---
+title: Status header
+description: StatusHeader and StatusBand open a status screen. The band is solid for settled or waiting states and hatched when the outcome is not known yet.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`StatusHeader` is the top of a status screen: a thin band, then an icon beside the state in words. Band shape, tone, icon and words are four signals, so a hatched band (the outcome is not known yet) never reads as a plain "pending".
+
+<HostOwns>the status, from a snapshot your host produced. The header never infers it.</HostOwns>
+
+<Screens>
+  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="A payment status screen opening with an amber hatched band, a question-mark icon and the title Result not confirmed yet, then the amount Rp102,500 and the line Don't pay again." caption="Hatched: the outcome is not known yet (dark capture is Indonesian)" />
+  <Screen name="ios_status_va_pending_light" dark="ios_status_va_pending_dark" alt="A virtual account status screen in Indonesian opening with a solid amber band, a clock icon and the title Menunggu." caption="Solid: waiting for payment (Indonesian)" />
+</Screens>
+
+## Usage
+
+```dart
+const StatusHeader(
+  tone: StatusTone.warning,
+  icon: Icons.help_outline,
+  title: 'Result not confirmed yet',
+  hatched: true,
+);
+```
+
+`PaymentStatusView`, `PaymentReceipt` and `TransactionDetail` already use it. Use it directly for your own status screens so they match.
+
+## Solid
+
+The default. A solid band marks a settled state (success, failed) or one that is waiting on something known, such as a transfer the person still has to make.
+
+## Hatched
+
+`hatched: true` draws diagonal stripes, like caution tape. Use it only when the payment was sent and no result has arrived: the outcome is unknown, and the person must not pay again. The difference from "waiting" is in shape and words as well as in color.
+
+## Band only
+
+`StatusBand` is the 6 px band on its own, for a layout that puts the title elsewhere. It takes the same `tone` and `hatched`.
+
+```dart
+const StatusBand(tone: StatusTone.success);
+```
+
+## Content guidelines
+
+- The title is the state in plain words: "Payment received", "Payment failed", "Result not confirmed yet".
+- Do not use "Processing" for an unknown outcome. Say that the result is not confirmed, and say what to do (see [Payment attempt and status](/concepts/payment-attempt/)).
+- Pick an icon that agrees with the title.
+
+## Accessibility
+
+- The title is marked as a header for screen readers. The band is decorative and excluded from semantics.
+- The title scales with the text and wraps. The icon grows up to 1.6× and stays centered on the title's first line.
+
+## API
+
+<Props names={['StatusHeader', 'StatusBand']} />
+
+## See also
+
+- [Status and receipt](/components/status-receipt/) for the full status view.
+- [Status badge](/components/status-badge/) for a status inside a row.

@@ -20,6 +20,13 @@ Visual redesign, "Stripe-calm · Hairline" (owner-approved, 30 Oct 2026; researc
 * Large text and foundation pass: `StatusHeader`, `InfoRow.trailing`, `PaymentStatusView.instructions`; `PaymentTheme.border`, `disabled`, `referenceFontFamily` and radius getters; internal role-based type scale; keyboard focus ring and 0.96 press on compact controls (`PaymentMotion.press` 100 ms, `pressedScale` 0.96); summary headline hidden and bar total capped at 1.6× above 1.5× text; one display amount on VA pending with a monospace VA number and folded steps.
 * Example: Hairline and Contrast brands, gallery workbench with framed specimens and a separate fixture-state selector, fixture amounts formatted through `MoneyFormat`.
 
+Controls (owner-approved catalog work, 31 Oct 2026):
+
+* New `PaymentCheckbox`, `PaymentRadio`, `PaymentSwitch`: label rows with one 48 dp target and one screen-reader node each, a `disabledReason` line, state shown by shape as well as color.
+* New `PaymentTabs` (the history filter tabs, made public; `TransactionHistory` now uses it), `PaymentTooltip`, `PaymentSpinner` (still hourglass under reduced motion; `PaymentButton`'s busy state uses it) and `PaymentDivider`.
+* `PaymentButtonVariant.destructive`: surface label on the danger fill, the colors of a destructive `showPaymentConfirmDialog`. Exhaustive `switch`es over `PaymentButtonVariant` need the new case.
+* Example: a Controls gallery section and `catalog_screenshots_test.dart` (English captures for the docs catalog).
+
 Component foundation (user-authorized expansion, 30 Oct 2026):
 
 * Interaction: `ActionTile`, `ActionMenu`, `showPaymentConfirmDialog`, `showPaymentSnackBar`, `ExpandableSection`, `LoadingSkeleton`, `StateMessage`.

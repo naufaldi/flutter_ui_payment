@@ -1,0 +1,71 @@
+---
+title: Amount input
+description: AmountInput is free-form money entry with strict, locale-aware parsing. Every change reports an AmountParseResult.
+---
+
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`AmountInput` lets people type an amount, for a top-up or a transfer. It parses strictly for the current locale and reports the result on every change; it never guesses what an unclear amount means.
+
+<HostOwns>the currency, the minimum and maximum, and whether a valid amount may be paid. Enable your confirm action only for a valid result.</HostOwns>
+
+## Usage
+
+```dart
+AmountInput(
+  currency: 'IDR',
+  minimum: const Money.idr(10000),
+  maximum: const Money.idr(5000000),
+  onChanged: (result) => setState(() => amount = result),
+);
+
+PaymentButton(
+  label: 'Continue',
+  onPressed: amount.isValid ? () => host.quote(amount.money!) : null,
+);
+```
+
+Keep the latest `AmountParseResult` in your state. Exactly one of `money` and `issue` is set, and `isValid` is true when `money` is.
+
+## Default
+
+The field shows the label "Amount" (or your `label`), the currency symbol as a prefix, and the entered amount in the 20 px amount style with tabular figures. With a `minimum` or `maximum`, a helper line shows the limits, for example "Min. Rp10,000 · Max. Rp5,000,000" in English. `initialText` fills the field when it first appears.
+
+## Errors
+
+Every change is parsed, but the error text appears only after the field loses focus with text in it, after the keyboard's done action, or when you set `showErrors: true`, for example after a submit attempt. People are not told they are wrong while they are still typing.
+
+| `AmountIssue` | When | Message (English) |
+| --- | --- | --- |
+| `empty` | Nothing entered | Enter an amount. |
+| `invalidFormat` | Letters or misplaced separators | Use digits only, for example 150000. |
+| `ambiguous` | Text that could be read two ways, such as `100,000` for IDR in Indonesian | This format can be read two ways. Remove separators and try again. |
+| `negative` | A minus sign | Amount can’t be negative. |
+| `zero` | Zero | Amount must be more than 0. |
+| `belowMinimum` | Under `minimum` | Minimum amount is Rp10,000. |
+| `aboveMaximum` | Over `maximum` | Maximum amount is Rp5,000,000. |
+
+## Parsing
+
+The currency symbol or code, spaces and correctly placed group separators are accepted, so pasted amounts work. Separators follow the locale (see [Money](/foundations/money/)). Currencies without minor units, such as IDR, reject a decimal part as ambiguous rather than reading it as a group separator. The keyboard offers a decimal key only when the currency has minor units.
+
+## Content guidelines
+
+- Keep the default label unless the amount has a specific role, such as "Top-up amount".
+- Always pass the limits you enforce, so people see them before they type.
+- Do not format or rewrite what people type; show the formatted amount elsewhere, for example in the [summary](/components/checkout/).
+
+## Accessibility
+
+- The entered amount follows text scaling up to 1.6×, like other large amounts.
+- Error text is shown under the field in the danger tone and wraps up to three lines.
+
+## API
+
+<Props names={['AmountInput', 'AmountParseResult', 'AmountIssue']} />
+
+## See also
+
+- [Money](/foundations/money/) for `Money`, `MoneyFormat` and strict parsing.
+- [Checkout](/components/checkout/) for where an entered amount becomes a quote.

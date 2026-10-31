@@ -1,0 +1,50 @@
+---
+title: Localization
+description: English and Indonesian strings, locale-aware money separators and dates, and how to register the delegate.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+
+The kit ships two languages: English (`en`) and Indonesian (`id`). Every widget reads its strings from `PaymentLocalizations`.
+
+## Register the delegate
+
+```dart
+MaterialApp(
+  localizationsDelegates: const [
+    PaymentLocalizations.delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ],
+  supportedLocales: const [Locale('id'), Locale('en')],
+);
+```
+
+The `Global…` delegates come from `flutter_localizations` (add it to your `pubspec.yaml`). Without `PaymentLocalizations.delegate`, widgets still pick a language from the ambient locale: Indonesian for `id`, English otherwise. `PaymentLocalizations.supportedLanguages` is `['en', 'id']`.
+
+The strings for the interaction, navigation, sheet, media, promotion and transaction components live in the `KitStrings` extension on `PaymentLocalizations`, so you keep one delegate.
+
+## Money
+
+Amounts follow the language too: `id` groups with `.` and uses `,` for decimals, `en` does the opposite. `PaymentLocalizations.of(context).moneyFormat` is the active `MoneyFormat`. [Money](/foundations/money/) covers the type, formatting, currencies and strict parsing.
+
+## Dates
+
+`PaymentLocalizations.formatDateTime` prints "30 Oct 2026, 14:05" in English and "30 Okt 2026, 14.05" in Indonesian, in the device time zone.
+
+<Screens>
+  <Screen name="ios_refined_checkout_light" alt="Checkout in English: Rp102,500 with comma grouping." caption="English: Rp102,500" />
+  <Screen name="ios_receipt_light" alt="Receipt in Indonesian: Rp102.500 with dot grouping and the date 31 Okt 2026, 00.15." caption="Indonesian: Rp102.500, 31 Okt 2026, 00.15" />
+</Screens>
+
+## API
+
+<Props names={['PaymentLocalizations', 'KitStrings']} />
+
+## See also
+
+- [Money](/foundations/money/) for amounts and parsing.
+- [Accessibility](/concepts/accessibility/) for spoken amounts and labels.

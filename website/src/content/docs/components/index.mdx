@@ -1,0 +1,85 @@
+---
+title: Components
+description: Every widget in flutter_ui_payment, grouped by job, with a page each for usage, states, content guidelines and API.
+---
+
+Every widget is exported from one library and takes its colors from [`PaymentTheme`](/foundations/color/), its strings from [`PaymentLocalizations`](/foundations/localization/) and its motion from [`PaymentMotion`](/foundations/motion/).
+
+```dart
+import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+```
+
+Each page follows the same order: what the component is for, a screenshot from the example app when one exists, usage, its variants and states, content guidelines, and the API table generated from the Dart source.
+
+## Actions
+
+| Component | What it is for |
+| --- | --- |
+| [Button](/components/button/) | `PaymentButton`: primary, secondary, quiet and destructive actions, with a busy state that locks while your callback runs. |
+| [Action tile](/components/action-tile/) | `ActionTile`, `ActionTileGroup`: flat rows that open something or run an action, in groups separated by hairlines. |
+| [Action menu](/components/action-menu/) | `ActionMenu`: an overflow menu behind an icon button, with keyboard support. |
+
+## Forms
+
+| Component | What it is for |
+| --- | --- |
+| [Checkbox](/components/checkbox/) | `PaymentCheckbox`: consent and opt-in choices, with the whole row as the target. |
+| [Radio](/components/radio/) | `PaymentRadio`: one choice out of a few visible options. |
+| [Switch](/components/switch/) | `PaymentSwitch`: an on/off setting that takes effect at once. |
+| [Amount input](/components/amount-input/) | `AmountInput`: free-form money entry with strict, locale-aware parsing. |
+
+## Feedback
+
+| Component | What it is for |
+| --- | --- |
+| [Status badge](/components/status-badge/) | `StatusBadge`: a small tag with an icon and a word for a status. |
+| [Notice banner](/components/notice-banner/) | `NoticeBanner`: an inline message for errors, warnings and explanations, with optional actions. |
+| [Toast](/components/toast/) | `showPaymentSnackBar`: short feedback after an action, with an optional undo. |
+| [Status header](/components/status-header/) | `StatusHeader`, `StatusBand`: the top of a status screen; hatched when the outcome is not known yet. |
+| [Spinner](/components/spinner/) | `PaymentSpinner`: indeterminate progress, still under reduced motion. |
+| [Loading skeleton](/components/loading-skeleton/) | `LoadingSkeleton`: static placeholders shaped like the content that is loading. |
+| [State message](/components/state-message/) | `StateMessage`: empty, error and "nothing matches" states with one way forward. |
+
+## Content
+
+| Component | What it is for |
+| --- | --- |
+| [Amount text](/components/amount-text/) | `AmountText`: money formatted for the locale, with a spoken label, that scales down instead of clipping. |
+| [Info row](/components/info-row/) | `InfoRow`, `MiddleEllipsisText`: label and value rows that wrap well at large text. |
+| [Section](/components/section/) | `PaymentSection`: a titled group of content, flat on the page, with an optional header action. |
+| [Expandable section](/components/expandable-section/) | `ExpandableSection`: a titled section whose body can be shown or hidden. |
+| [Divider](/components/divider/) | `PaymentDivider`: a 1 px hairline between rows or groups. |
+| [Tooltip](/components/tooltip/) | `PaymentTooltip`: a short hint on long press or hover. |
+| [Countdown](/components/countdown/) | `CountdownText`: time left until a deadline, from your clock. |
+| [Privacy mask](/components/privacy-mask/) | `PrivacyMask`: covers sensitive content, for example in the app switcher. |
+
+## Navigation
+
+| Component | What it is for |
+| --- | --- |
+| [Tabs](/components/tabs/) | `PaymentTabs`: text tabs on a hairline for switching between views of the same content. |
+| [Navigation shell](/components/navigation/) | `AdaptiveNavShell`, `NavSidebar`: a sidebar on wide windows and a modal drawer below a breakpoint. |
+
+## Overlays
+
+| Component | What it is for |
+| --- | --- |
+| [Dialog](/components/dialog/) | `showPaymentConfirmDialog`: yes or no before an action that cannot be undone. |
+| [Sheet](/components/sheets/) | `PaymentSheet`, `showPaymentSheet`, `showPaymentSideSheet`: bottom sheets and side panels with a fixed footer. |
+
+## Payment flows
+
+Larger pages for the components that make up a whole journey. Each one explains how the pieces fit together.
+
+| Page | What it covers |
+| --- | --- |
+| [Checkout](/components/checkout/) | Order summary, method picker, confirmation with re-approval, host authorization, action bar, merchant header, steps, balance, promo code. |
+| [Status and receipt](/components/status-receipt/) | Payment instructions, the status view for every outcome, refunds and the receipt. |
+| [Transaction history](/components/history/) | Search, filters and the transaction list with its detail sheet. |
+| [Verification (KYC)](/components/verification/) | Optional consent, identity form, document upload, review and status. |
+| [Media](/components/media/) | A video player that works with any media engine you plug in. |
+| [Promotions](/components/promotions/) | Labeled promotions and the slot that loads them. |
+
+## Not in the kit
+
+There is no select or dropdown, free text field, chip, data table or chart. Use Flutter's own widgets with your theme for those. Text fields exist only inside [`IdentityForm`](/components/verification/), [`AmountInput`](/components/amount-input/) and the promo-code and history search inputs.

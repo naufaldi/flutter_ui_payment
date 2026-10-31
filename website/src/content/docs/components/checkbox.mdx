@@ -1,0 +1,69 @@
+---
+title: Checkbox
+description: PaymentCheckbox is a checkbox with its label, for consent and opt-in choices. The whole row is one target and one screen-reader node.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`PaymentCheckbox` lets people agree to something or opt in, such as saving a card. The box, the label and the description form one row that toggles on a tap anywhere.
+
+<HostOwns>the value, what checking it means, and why the row is disabled.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_controls_choices" dark="ios_catalog_controls_choices_dark" alt="A checked Save this card for next time with the description Stored by your payment provider, a disabled unchecked Use as default card with the reason Save the card first, then a Send receipt by radio group and two switches." caption="Checked and disabled checkboxes, above radios and switches (follows the site theme)" />
+</Screens>
+
+## Usage
+
+```dart
+PaymentCheckbox(
+  value: saveCard,
+  onChanged: (v) => setState(() => saveCard = v),
+  label: 'Save this card for next time',
+  description: 'Stored by your payment provider',
+);
+```
+
+The checkbox is controlled: keep `value` in your state and rebuild with the new value in `onChanged`.
+
+## Checked and unchecked
+
+A checked box is filled with the accent and shows a check mark in `onAccent`. An unchecked box has a 2 px edge in the 3:1 `border` color, so it stays visible on any surface.
+
+## Disabled
+
+Pass `onChanged: null`. The label turns muted, the box uses the `disabled` color, and taps do nothing. Pass `disabledReason`; it replaces `description` while the row is disabled.
+
+```dart
+const PaymentCheckbox(
+  value: false,
+  onChanged: null,
+  label: 'Use as default card',
+  disabledReason: 'Save the card first',
+);
+```
+
+## Content guidelines
+
+- Write the label as the full thing people agree to: "Save this card for next time", not "Save".
+- Write it so checking means yes. Avoid negatives such as "Don't send receipts".
+- Use the description for a consequence or a detail, not for terms that must be read; link those separately.
+- For a setting that takes effect at once, use a [switch](/components/switch/) instead.
+
+## Accessibility
+
+- The whole row is one target of at least 48 dp and one screen-reader node that reads the label, the description and the checked state together.
+- The painted box takes no focus of its own, so one Tab reaches the row and Space toggles it. Keyboard focus draws the kit's [focus ring](/foundations/focus/).
+- The box centers on the label's first line, so it stays beside the label when the label wraps at large text.
+
+## API
+
+<Props names={['PaymentCheckbox']} />
+
+## See also
+
+- [Switch](/components/switch/) for settings that apply immediately.
+- [Radio](/components/radio/) for one choice out of several.

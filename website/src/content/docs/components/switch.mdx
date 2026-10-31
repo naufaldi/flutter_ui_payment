@@ -1,0 +1,69 @@
+---
+title: Switch
+description: PaymentSwitch is an on/off setting that takes effect at once. The thumb moves and shows a check when on.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import Props from '../../../components/Props.astro';
+import HostOwns from '../../../components/HostOwns.astro';
+
+`PaymentSwitch` turns a setting on or off immediately, such as "Refund alerts". The switch sits at the end of the row, and the whole row is the target.
+
+<HostOwns>the value, applying the setting, and why the row is disabled.</HostOwns>
+
+<Screens>
+  <Screen name="ios_catalog_controls_choices" dark="ios_catalog_controls_choices_dark" alt="Below a checkbox and a radio group, an on Refund alerts switch with the description A notification when a refund settles, and a disabled off Weekly summary switch with the reason Turn on notifications in Settings." caption="On and disabled switches, below a checkbox and radios (follows the site theme)" />
+</Screens>
+
+## Usage
+
+```dart
+PaymentSwitch(
+  value: refundAlerts,
+  onChanged: (v) => setState(() => refundAlerts = v),
+  label: 'Refund alerts',
+  description: 'A notification when a refund settles',
+);
+```
+
+## Switch or checkbox
+
+Use a switch when the change applies the moment it is flipped, like a setting. Use a [checkbox](/components/checkbox/) when the choice is only applied after a button press, such as "Save this card" before paying.
+
+## On and off
+
+When on, the track fills with the accent and the thumb moves to the end and shows a check. When off, the track is the surface with a `border` edge. Position and the check carry the state, so it is never color alone.
+
+## Disabled
+
+Pass `onChanged: null`. The track turns `surfaceMuted`, the label turns muted, and taps do nothing. Pass `disabledReason`; it replaces `description` while the row is disabled.
+
+```dart
+const PaymentSwitch(
+  value: false,
+  onChanged: null,
+  label: 'Weekly summary',
+  disabledReason: 'Turn on notifications in Settings',
+);
+```
+
+## Content guidelines
+
+- Name the setting, not the action: "Refund alerts", not "Turn on refund alerts".
+- Use the description for what the setting does when on.
+- If applying the setting can fail, show the switch in its old position and tell people with a [toast](/components/toast/).
+
+## Accessibility
+
+- The whole row is one target and one screen-reader node, announced as a toggle that is on or off.
+- The painted switch takes no focus of its own; one Tab reaches the row. Keyboard focus draws the kit's [focus ring](/foundations/focus/).
+
+## API
+
+<Props names={['PaymentSwitch']} />
+
+## See also
+
+- [Checkbox](/components/checkbox/) for choices applied with a button.
+- [Action tile](/components/action-tile/) for settings rows that open another screen.
