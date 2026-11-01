@@ -4,6 +4,8 @@ Composable Flutter UI for optional identity verification (KYC), checkout, host-o
 
 > **Ringkasan.** Library komponen UI Flutter untuk KYC opsional dan pembayaran. Komponen hanya merender data terstruktur dari host dan melaporkan aksi lewat callback. Host/backend tetap memutuskan KYC, harga, otorisasi, idempotency, status, dan refund. Library tidak memproses uang, tidak melakukan network call, dan tidak memerlukan router, state manager, kamera, atau SDK payment. Keputusan produk ada di [PRD.md](PRD.md).
 
+Targets iOS and Android, phones and tablets. The web build is a documentation preview.
+
 **Docs:** https://flutter-ui-payment.netlify.app
 
 **Status:** `0.1.0`. Install from this GitHub repository; it is not published to pub.dev yet, and the package name is unverified. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
@@ -192,7 +194,7 @@ The expandable **Host tools** panel on the demo screen shows the fake host log, 
 ```sh
 cd example
 flutter run                       # Android emulator/device (API 24+) or iOS simulator
-flutter run -d chrome             # web gallery
+flutter run -d chrome             # web gallery (documentation preview)
 flutter build web --release       # static build in example/build/web
 ```
 
@@ -229,7 +231,7 @@ Checked on 30 October 2026 with Flutter 3.44.6:
 - Web: `flutter build web --release` succeeds and serves locally. No browser check was done (the only automation-capable Chrome belonged to the user/another task).
 - Performance (Android emulator, profile, Impeller/OpenGL ES, 30 s warm-up + 30 s measured): the last profile run reported checkout p95 build 2.02 ms and raster 20.41 ms. The plain Material control also missed the raster budget. This suggests a substantial environment effect; it does not prove that kit rendering has no cost. The raster requirement remains unmet. Measurement and artifact limitations are in [decisions](docs/decisions.md#performance). Earlier: status updates p95 build 2.55 / raster 6.15 ms; 10 document replace cycles left 2 slots and 10 stale uploads ignored, RSS 236–249 MB. No physical device was profiled.
 
-Not done yet: an external developer integrating a checkout from this README (the ≤30 minute goal is unproven), a browser check of the web gallery, Android 7–10 runtime tests, package name availability, `flutter pub publish --dry-run`, and a public repository. Publication remains deferred.
+Not done yet: an external developer integrating a checkout from this README (the ≤30 minute goal is unproven), a browser check of the web gallery, Android 7–10 runtime tests, the Android phone and tablet UI review pass (D64), package name availability, `flutter pub publish --dry-run`, and a public repository. Publication remains deferred.
 
 ## License
 

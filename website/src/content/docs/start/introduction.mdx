@@ -48,11 +48,14 @@ The package renders structured data from your app and reports user intent throug
 
 Checked so far (30 October 2026, Flutter 3.44.6): formatter and analyzer are clean, the 89 package tests pass when run file by file, the 12 integration flow tests pass on the iPhone 16 simulator, and native screenshots were captured and inspected on an iPhone 16 simulator (iOS 18.1) and an Android 11 emulator. [Compatibility](/reference/compatibility/) has the details.
 
+Targets iOS and Android, phones and tablets ([D64](/reference/design-decisions/)). The web build is a documentation preview, not a product target; desktop is out of scope.
+
 Not done yet:
 
 - An external developer integrating a checkout from these docs (the 30-minute goal is unproven).
 - A browser check of the web gallery.
 - Android 7–10 runtime tests.
+- The Android phone and tablet capture and review pass (D64); the 1 November UI review was done on iOS.
 - Package name availability and `flutter pub publish --dry-run`.
 
 ## Where to go next

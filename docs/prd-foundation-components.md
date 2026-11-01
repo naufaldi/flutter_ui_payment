@@ -143,6 +143,8 @@ Fase baru menambah Phase 4 (pembangunan paritas: 4A primitif layout, 4B form, 4C
 - Every variant name in the docs traces to code. Proposed ones are marked **New** until they ship.
 - All 48 Stripe entries ship. The docs overview maps each Stripe name to its kit class. The only Stripe props not mirrored are the web-only ones and the constraint conflicts in D28.
 
+**Platforms (D64).** Phase 1 platform targets are iOS on iPhone and iPad, and Android phones and tablets. Web is documentation only (the docs site and its Flutter gallery preview at `/play/`), not a product target, so it gets no web-specific design or fixes. Desktop (macOS, Windows, Linux) is out of scope. "Phase 1" here is the first platform phase, not §11 Phase 1.
+
 **PRD.md §16a amendment** (revision 2 row added 31 Oct 2026; revision 3 updates it in `PRD.md`):
 
 | Kelompok | Komponen | Batas |
@@ -1641,6 +1643,7 @@ New in revision 3 (parity; for review):
 | D62 | **The priority action sits at the bottom.** On phones, any screen with a primary or priority action pins it in a bottom footer: full width (D59), at most one quiet secondary under it, bottom safe area included. Payment-path screens (checkout, authorize, status, KYC, receipt) and detail screens (transaction detail: "Lihat struk" primary, "Laporkan masalah" quiet) follow it. Inside the payment flow the app's tab bar is hidden. Owner decision, UI review 1 Nov 2026 (issue #64). | Thumb reach: the confirm button sat ~40% from the top over an empty half screen, and the main action jumped between bottom and middle within one payment. Hiding the tab bar returns the space small phones lose (#58). |
 | D63 | **History leads with the list.** On the history screen the transaction list comes first at every text size and locale: header, then filters (date range, chips), then the list, then the spending chart and the month's figures. No large-text mode and no chart toggle. Owner decision (delegated), UI review 1 Nov 2026 (issue #58). | The screen's job is finding a payment. Folding the chart behind a "Show chart" toggle at large text adds a mode that hides content; a first row that only peeks still leaves no transaction on the first screen at 200% on an iPhone SE; moving search and date range below the list puts the filters below what they filter. Cost: at normal text the chart is no longer the first thing seen; the full report stays one tap away via "Laporan ›". |
 | D63a | **History filters on one line** (refines D63). At every text size and locale the date range is a calendar `PaymentIconButton` at the end of the search line (`PaymentDateRangePicker.button` in `TransactionHistory.searchActions`), not a labelled field above the search. Its tooltip and spoken name is the date-range label ("Rentang tanggal" / "Date range"); it fills with the accent and reads as selected while a range is set, and opens the kit's presets and range sheet (D51, D52a). The range shows as the active-filter chip ("Tanggal: …" with ×). With the button beside it, the search shows its label as the placeholder at every size, not above the box; the label stays its spoken name. No large-text mode. Orchestrator decision, UI review 1 Nov 2026 (issue #58). | D63 alone left no whole row on the first screen of an iPhone SE at 200% (row from 532 pt en, 476 pt id, tab bar at 603); the button alone still cut the English row's badge at 603, so the label became the placeholder (the one further step the decision allowed). Filters stay above the list in one row; the field's value repeated the chip; search with a filter button beside it is a common payment-app history pattern; it saves about 140 pt at 200% (less at 100%). Cost: an icon is less discoverable than a labelled field (tooltip, semantics and the chip mitigate it); a placeholder is gone once the customer types (the magnifier, the query and the search chip remain); it needs an additive kit slot. |
+| D64 | **Platform scope.** Phase 1 platform targets: iOS on iPhone and iPad, Android phones and Android tablets. Web is documentation only (the docs site and its Flutter gallery preview at `/play/`); it is not a product target, so it gets no web-specific design or fixes. Desktop (macOS, Windows, Linux) is out of scope. Tablets use the wide-screen rules already here: the centred 640 dp column (D53), the ≥ 600 dp dialog (D45), the anchored menu (D55) and the hug footer (D59, D62). The UI review so far (D45–D63a) was verified on iOS (iPhone 16 Pro, iPhone SE, iPad mini); phase 1 is complete only after Android phones and an Android tablet get the same capture, review and fix pass, planned next. Owner decision, 1 Nov 2026. | The PRD never stated target platforms. The kit is pure Flutter, so it can run anywhere, which made "can run on" easy to mistake for "we design and verify for". |
 
 ## 9. Variant governance
 
@@ -1906,6 +1909,7 @@ These are local commands; the repo has no CI.
 - New dependencies, network calls, camera or clipboard access inside `lib`.
 - Bundled fonts, an icon package or an SVG renderer.
 - Exporting `PaymentFocusRing` or `PaymentPressScale` without owner approval.
+- Web as a product target (web-specific design or fixes) and desktop (macOS, Windows, Linux) (D64). The web build is a documentation preview.
 
 ### Risks
 
@@ -2129,6 +2133,9 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] iPad mini KYC details, documents and review captures (#64)
 - [x] Copy failure label under the glyph (#46 follow-up); document tile badge under the limits at large text; documents scenarios start with the details done
 - [x] Design decisions page: "UI review, 1 November 2026" with D45–D62, after captures and issue links; Surfaces shows the phone menu sheet
+
+**Platform scope** (D64; phase 1 targets iOS and Android, phones and tablets)
+- [ ] Android phone and tablet capture/review pass (D64)
 ```
 
 ### Phase 2E implementation notes

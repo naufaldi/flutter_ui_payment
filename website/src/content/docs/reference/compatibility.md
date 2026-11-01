@@ -7,6 +7,8 @@ Copied from `docs/compatibility.md`. These are the only platform claims the proj
 
 What each platform needs, where the number comes from, and what was actually run. Checked on 30 October 2026 with Flutter 3.44.6 (stable).
 
+**Scope (D64, owner decision 1 Nov 2026).** Phase 1 targets iOS on iPhone and iPad, and Android phones and tablets. Web is documentation only, not a product target. Desktop (macOS, Windows, Linux) is out of scope.
+
 ## Android
 
 | Question | Answer | Source |
@@ -23,6 +25,7 @@ What that means:
 - **Declared and built for Android 7.0+.** Nothing in the package raises the floor; it has no Android dependency at all. Only the example's video adapter adds one, at the same floor.
 - **Tested on Android 11 only.** No API 24–29 image is installed, and none was downloaded for this pass. Android 7–10 behavior is unverified, not proven broken.
 - **32-bit ARM is built, not run.** The release APK contains `armeabi-v7a` code, but every run used an arm64 emulator. Old 32-bit phones, their GPUs and Impeller's OpenGL ES path on them are untested.
+- **Android tablets are a target (D64), not verified yet.** No Android tablet run is recorded here, and the 1 Nov 2026 UI review (D45–D63a) was captured on iOS only. The Android phone and tablet capture, review and fix pass is planned next.
 - **Video:** the bundled clip is H.264 Constrained Baseline 640×360 plus AAC, the most widely decodable combination on old Android. The decoders of specific old devices are not verified.
 
 To check an older version, first list available system images and choose one supported by the host architecture. An API 24 arm64 image must not be assumed to exist; older x86 images may need an Intel test host. Installing an image is a separate, potentially large download. After preparing a suitable emulator, run sequentially:
@@ -47,7 +50,7 @@ flutter drive --driver=test_driver/integration_driver.dart \
 - `flutter build web --release` succeeds. The build served locally returns the page, `main.dart.js`, CanvasKit and the video asset.
 - The gallery has not been checked in a browser in this pass. The only automation-capable Chrome on this machine belonged to the user and another task, so it was left alone.
 - `video_player_web` plays the bundled MP4 through an HTML video element. Browser autoplay rules don't matter because nothing autoplays.
-- Web is a component preview. It does not prove camera capture, native share or screen protection.
+- Web is documentation only (D64): the build is the docs site's gallery preview, not a product target, so web-specific layout and behaviour are not designed or fixed. It does not prove camera capture, native share or screen protection.
 
 ## Package
 
