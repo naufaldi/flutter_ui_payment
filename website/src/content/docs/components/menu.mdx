@@ -1,6 +1,6 @@
 ---
 title: Menu
-description: PaymentMenu is an overflow menu behind an icon button, built on MenuAnchor, with disabled and destructive entries.
+description: PaymentMenu is an overflow menu behind an icon button, a bottom action sheet on phones and an anchored menu on wide windows, with disabled and destructive entries.
 ---
 
 import Screen from '../../../components/Screen.astro';
@@ -13,8 +13,9 @@ import HostOwns from '../../../components/HostOwns.astro';
 <HostOwns>the entries and what each one does.</HostOwns>
 
 <Screens>
-  <Screen name="ios_catalog_menu_variants" dark="ios_catalog_menu_variants_dark" alt="menu variants in the native gallery" caption="Menu variants" />
-  <Screen name="ios_catalog_menu_variants_200" alt="menu at 200 percent text" caption="200% text" />
+  <Screen name="ios_catalog_menu_sheet" alt="The menu as a bottom action sheet on a phone: group caption, full-width rows, the destructive item last after a divider, and Cancel at the bottom" caption="Phone: action sheet" />
+  <Screen name="ios_catalog_menu_sheet_id" alt="The menu action sheet in Indonesian" caption="Phone: Indonesian" />
+  <Screen name="ios_catalog_menu_variants" dark="ios_catalog_menu_variants_dark" alt="menu triggers at rest in the native gallery" caption="Triggers at rest" />
 </Screens>
 
 ## Usage
@@ -54,11 +55,20 @@ An entry with `onSelected: null` is shown disabled. Keep it in the menu when peo
 
 `destructive: true` draws the entry's icon and label in the danger tone. Put destructive entries last and confirm them with a [dialog](/components/dialog/).
 
-### Behavior
+### Phone: action sheet
 
-- Built on MenuAnchor: arrow keys move between entries, Escape closes the menu and focus returns to the button.
-- The menu opens instantly. A menu used many times a day should not make people wait for it.
-- Entries are at least 48 dp tall.
+Below 600 dp the trigger opens a bottom action sheet instead of an anchored menu (D55):
+
+- every entry is a full-width row at least 48 dp tall; when any entry has an icon, every entry keeps the icon column so labels share one edge;
+- group titles become captions, and groups are separated by a divider;
+- destructive entries move last, after a divider;
+- a full-width quiet Cancel sits at the bottom, above the safe area.
+
+The sheet closes first. Then the menu runs the entry's `onSelected` or reports its `id` to `onAction`, once, and focus returns to the trigger. Cancel, the scrim, swipe down and Escape close it without running anything.
+
+### Wide: anchored menu
+
+At 600 dp and wider the menu is built on MenuAnchor. Arrow keys move between entries, Escape closes the menu and focus returns to the button. The panel keeps 16 dp from the window edges. Entries without an icon keep the icon column when a sibling has one. The menu opens instantly: a menu used many times a day should not make people wait for it.
 
 ### Variants, behavior and migration
 
@@ -67,6 +77,8 @@ Migration: ActionMenu and ActionMenuEntry remain deprecated aliases until 0.2.0;
 Use trigger: (toggle, focusNode) to return PaymentButton or PaymentIconButton. Pass both the toggle callback and focus node so closing restores focus.
 
 [Button group](/components/button-group/) now composes related status and dialog actions. Overflow menus wrap long labels at large text.
+
+**Migration (UI review P2):** on a phone, the callback runs after the sheet closes. A widget test that taps a phone menu entry and checks the callback after a single `pump()` needs `pumpAndSettle()`.
 
 ## Which variant when
 

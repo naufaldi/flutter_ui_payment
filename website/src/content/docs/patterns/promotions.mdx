@@ -43,6 +43,25 @@ PromoSlot(
 - Keep promotions out of the path between the total and the pay button.
 - `PromoContent.icon` is accepted but not drawn in the current design.
 
+## "Why this?" opens a sheet
+
+The explanation behind "Why this?" / "Kenapa ini?" is longer than a tooltip's one line, so `onAbout` opens a [sheet](/components/sheets/) (D49). The sheet has a title, the text and one full-width primary Close, its completion action (D54):
+
+```dart
+// example/lib/screens/gallery_kit.dart
+onAbout: (promo) => showPaymentSheet<void>(
+  context: context,
+  builder: (sheet) => PaymentSheet(
+    header: PaymentSheetHeader(title: 'Why you see this'),
+    body: Text('Bank Contoh paid for this placement. …'),
+    footer: PaymentButton(
+      label: 'Close',
+      onPressed: () => Navigator.pop(sheet),
+    ),
+  ),
+),
+```
+
 ## API
 
 <Props names={['PromoSlot', 'PromoSlotState', 'PromoCard', 'PromoContent', 'PromoKind', 'PromoLayout']} />

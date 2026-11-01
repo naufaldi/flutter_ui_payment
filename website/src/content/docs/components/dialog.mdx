@@ -14,9 +14,13 @@ import HostOwns from '../../../components/HostOwns.astro';
 
 
 
+On a phone the confirmation is a bottom sheet; on a wider window it is a centred dialog (D45). The page keeps the name "Dialog".
+
 <Screens>
-  <Screen name="ios_catalog_dialog_variants" dark="ios_catalog_dialog_variants_dark" alt="showPaymentConfirmDialog specimens with synthetic payment data" caption="Light and dark variants" />
-  <Screen name="ios_catalog_dialog_variants_200" alt="showPaymentConfirmDialog at 200 percent text" caption="200% text" />
+  <Screen name="ios_catalog_dialog_variants" dark="ios_catalog_dialog_variants_dark" alt="The confirm sheet on a phone: title, message, then Remove card above Cancel at full width" caption="Phone: light and dark" />
+  <Screen name="ios_catalog_dialog_variants_200" alt="The confirm sheet at 200 percent text with the same stacked layout" caption="200% text" />
+  <Screen name="ios_catalog_dialog_variants_id" alt="The confirm sheet in Indonesian with the same stacked layout" caption="Indonesian" />
+  <Screen name="ios_catalog_dialog_variants_id_200" alt="The confirm sheet in Indonesian at 200 percent text" caption="Indonesian, 200% text" />
 </Screens>
 
 ## Usage
@@ -64,13 +68,29 @@ The confirm button is filled with the accent and the cancel button is a quiet te
 
 The cancel button says "Cancel" by default. Pass `cancelLabel` when the safe choice reads better as an action of its own, such as "Keep paying".
 
+### Phone: confirm sheet
+
+Below 600 dp the confirmation slides up as a bottom sheet with no drag handle: the title, then the message, then the actions. The actions are stacked top-down at full width with centred labels, the confirm action on top and a quiet Cancel below. One 16 dp inset holds on every edge at every text scale, plus the bottom safe area. Language and text size never change the layout, so English, Indonesian and 200% text all look the same. At large text the title and message scroll, and the actions stay on screen.
+
+### Wide: centred dialog
+
+At 600 dp and wider the confirmation is a centred dialog, at most 400 dp wide, with the same 16 dp edges. The actions are one row of equal-width buttons with Cancel first and the confirm action trailing.
+
+### Dismiss paths
+
+| Path | Phone sheet | Wide dialog | Result |
+| --- | --- | --- | --- |
+| Confirm button | yes | yes | `true` |
+| Cancel button | yes | yes | `false` |
+| Scrim tap | yes | yes | `false` |
+| Swipe down | yes | — | `false` |
+| Back | yes | yes | `false` |
+| Escape | yes | yes | `false` |
+| Enter | activates the focused button | activates the focused button | `true` only when the confirm action has focus |
+
 ### Actions and focus
 
-The dialog uses two hug-width PaymentButtons with a 112 dp minimum. Cancel is quiet; Confirm is primary or destructive. Keyboard focus uses the neutral ring, starting on Cancel for destructive actions and Confirm otherwise. Enter activates that safe initial choice.
-
-At 320 dp the actions stack, including at normal text size. Confirm appears above Cancel with an 8 dp gap. At large text, labels wrap and the dialog content scrolls.
-
-[Button group](/components/button-group/) now composes related status and dialog actions. Overflow menus wrap long labels at large text.
+Cancel is quiet; Confirm is primary or destructive. Keyboard focus uses the neutral ring, starting on Cancel for destructive actions and on Confirm otherwise. Enter activates that safe initial choice. Opening a confirmation from inside a sheet, such as the focus view's discard question, stacks a sheet on the sheet. That is expected.
 
 ## Which variant when
 

@@ -92,6 +92,14 @@ PaymentButton(
 );
 ```
 
+### One primary per surface
+
+A screen, sheet or dialog has at most one primary button: its completion action (D54). A button that only opens another surface, such as "Open sheet", is secondary, and the sheet's own "Done" is primary. Use equal-weight secondaries only for peer alternatives with no default, such as Share and Download.
+
+### No warning button
+
+There is no warning variant (D47). A warning is a state, so show it with a [banner](/components/banner/), a [badge](/components/badge/) or a [toast](/components/toast/) next to the action. The button's label says what happens.
+
 ### Busy
 
 A button is busy while the Future from `onPressed` runs, or while you pass `busy: true` for an action you run elsewhere, such as a submit your coordinator owns. The label keeps its space so the layout does not jump, a [spinner](/components/spinner/) takes its place, and screen readers hear `busyLabel` (default "Working…"). Under reduced motion the spinner is a still hourglass.

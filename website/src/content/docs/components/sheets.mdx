@@ -47,6 +47,12 @@ Variants: bottom sheet, side sheet. Nothing else exists.
 - `showPaymentSideSheet` takes the same `PaymentSheet`, which then fills the height so the footer sits at the bottom. The scrim, Back and Escape close it, and focus returns to whatever opened it.
 - Pass `isDismissible: false` / `barrierDismissible: false` while a host call that must finish is running.
 - Sheets open in 280 ms and close in 200 ms on the drawer curve; zero under reduced motion.
+- The header's title centres its first line on the 48 dp close button at every text scale. The header keeps that height while `onClose` is null, so hiding Close during a host call does not move the title.
+- On phones, `showPaymentConfirmDialog` and `PaymentMenu` open as sheets too (D45, D55). A confirmation opened from a sheet stacks on top of it.
+
+### Footer: one primary
+
+The footer's completion action is the sheet's one primary button ("Done", "Apply"). The button that opened the sheet stays secondary (D54). Use a quiet button for "Cancel" or "Not now".
 
 ## Which variant when
 
@@ -70,7 +76,7 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 - Title the sheet with what it shows or asks: "Pending payment", "Filter transactions".
 - Use `subtitle` for one line of context, such as a reference or a date.
-- Put the actions in the footer, the main one last. Keep the footer to one or two buttons.
+- Put the actions in the footer, the main one as the primary. Keep the footer to one or two buttons.
 - Never label the close button or any footer action in a way that suggests closing cancels a payment. Write the cancel request as its own action, such as "Request cancellation".
 
 Use the provided presentation functions; close never cancels a payment operation.

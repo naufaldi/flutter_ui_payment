@@ -2058,6 +2058,15 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Stable action bar, skeleton, copy failure, countdown and chart figures
 - [x] Link text on the column edge (#65, part)
 - [x] Gallery and flow screens bilingual; `_id` / `_id_200` captures
+
+**UI review P2: feedback and overlays** (D45, D47, D48, D48a, D49, D54, D55; #45, #52, #53, #61, #65)
+- [x] Confirm: phone bottom sheet with stacked full-width actions; wide centred dialog with one equal-width row (D45)
+- [x] Menu: phone action sheet; wide panel 16 dp from the edges with a reserved icon column (D55, #61-1)
+- [x] Tooltip opens on tap; `trigger` builder for interactive info buttons; fees ⓘ toggles its hint (D49)
+- [x] Banner anatomy: first-line icon and close, one text column, at most one small button plus one link; changed amounts state old → new without dismiss (D48, D48a)
+- [x] `PaymentButtonGroup(collapse: none)` stacks at full width, emphasized on top (#65, part)
+- [x] Sheet header first-line alignment; hug state-message action; padded privacy-mask lock (#61)
+- [x] One primary per surface in the example; promo "Why this?" sheet (D54, D49); D47 documented
 ```
 
 ### Phase 2E implementation notes
