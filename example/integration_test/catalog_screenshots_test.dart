@@ -289,8 +289,8 @@ void main() {
             'meter_chart': ('Charts', 'PaymentMeterChart', null, null),
             'sparkline': ('Charts', 'PaymentSparkline', null, null),
           };
-      // State captures named `<slug><suffix>` rather than `_variants`.
-      final states = <String, (String, Future<void> Function())>{
+      // Chart states captured after steps, named `<slug><suffix>` too.
+      final chartStates = <String, (String, Future<void> Function())>{
         // D58: the latest value is labelled with no pointer at all.
         'chart_line_rest': ('Charts', () => top('PaymentLineChart')),
         'chart_bar_selected': (
@@ -321,7 +321,7 @@ void main() {
         final suffix = look == 'light' ? '' : '_$look';
         final wanted = [
           ...specimens.keys.where((slug) => want(slug, look)),
-          ...states.keys.where((slug) => want(slug, look)),
+          ...chartStates.keys.where((slug) => want(slug, look)),
           if (want('tooltip', look)) 'tooltip',
         ];
         if (wanted.isEmpty) continue;
@@ -369,7 +369,7 @@ void main() {
             );
             continue;
           }
-          if (states[slug] case (final page, final steps)?) {
+          if (chartStates[slug] case (final page, final steps)?) {
             await openPage(page);
             await steps();
             await shot('$slug$suffix');
