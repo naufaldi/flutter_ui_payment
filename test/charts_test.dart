@@ -680,6 +680,55 @@ void main() {
       expect(fresh, isNot(before));
       expect(band, fresh);
     });
+    testWidgets('a measure changed in place from 0.0 to -0.0', (tester) async {
+      // Growable lists, so the test can change a point in place.
+      final now = [const ChartPoint(label: 'W1', measure: 0.0)];
+      final then = [const ChartPoint(label: 'W1', measure: 1)];
+      final series = [
+        PaymentChartSeries(label: 'Now', points: now),
+        PaymentChartSeries(label: 'Then', points: then),
+      ];
+      Widget measures() => host(
+        SizedBox(
+          height: 240,
+          child: PaymentLineChart(
+            series: series,
+            unit: PaymentChartUnit.number,
+          ),
+        ),
+        width: 211,
+      );
+      await tester.pumpWidget(measures());
+      final before = chartPainter(tester).band;
+      series[0].points[0] = const ChartPoint(label: 'W1', measure: -0.0);
+      await tester.pumpWidget(measures());
+      final band = chartPainter(tester).band;
+      final fresh = await freshBand(tester, measures());
+      expect(fresh, isNot(before));
+      expect(band, fresh);
+    });
+    testWidgets('an unused NaN measure keeps the cache', (tester) async {
+      final series = [
+        PaymentChartSeries(
+          label: 'Now',
+          points: [
+            for (final p in readings([9500, 10000, 10500]))
+              ChartPoint(label: p.label, value: p.value, measure: double.nan),
+          ],
+        ),
+        PaymentChartSeries(
+          label: 'Then',
+          points: readings([9500, 10000, 10500]),
+        ),
+      ];
+      await tester.pumpWidget(chart(series));
+      final measured = debugReadoutMeasures;
+      final plot = tester.getRect(find.byType(GestureDetector).last);
+      await tester.tapAt(Offset(plot.left + 20, plot.center.dy));
+      await tester.pump();
+      expect(chartPainter(tester).selected, 0);
+      expect(debugReadoutMeasures, measured);
+    });
     testWidgets('bold text', (tester) async {
       final series = pair();
       await tester.pumpWidget(chart(series));

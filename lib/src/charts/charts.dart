@@ -450,7 +450,12 @@ class _PointChartState extends State<_PointChart> {
     final readoutData = [
       for (final s in series) ...[
         s.label,
-        for (final p in s.points) ...[p.label, p.value, p.measure, p.status],
+        for (final p in s.points) ...[
+          p.label,
+          p.value,
+          _ExactNumber(p.measure),
+          p.status,
+        ],
       ],
     ];
     if (readoutKey != _readoutKey || !listEquals(readoutData, _readoutData)) {
@@ -1077,6 +1082,30 @@ class ChartModule extends StatelessWidget {
       ),
     );
   }
+}
+
+/// A measure in the readout snapshot, equal only to the exact same value:
+/// 0.0 and -0.0 format differently, and NaN must not invalidate the cache
+/// on every build (#78).
+@immutable
+class _ExactNumber {
+  const _ExactNumber(this.value);
+  final num? value;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! _ExactNumber) return false;
+    final a = value, b = other.value;
+    if (a == null || b == null) return a == b;
+    return (a == b && a.isNegative == b.isNegative) || (a.isNaN && b.isNaN);
+  }
+
+  @override
+  int get hashCode => switch (value) {
+    null => 0,
+    final v when v.isNaN => 1,
+    final v => Object.hash(v, v.isNegative),
+  };
 }
 
 /// The height a chart in a [ChartModule] adds to the plot slot: the lines
