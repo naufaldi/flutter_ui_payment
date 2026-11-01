@@ -17,8 +17,9 @@ const _minFieldWidth = 140.0;
 /// Related fields under a legend. A horizontal group stacks when its fields
 /// would be narrower than 140 dp each, or at large text. Hosts put 24 dp
 /// (`PaymentSpace.section`) between groups; fields inside sit 16 apart.
-/// The legend sits 8 dp (`related`) above the first control's visible top:
-/// a field's edge, or a checkbox, radio or switch row's label (#66).
+/// The legend sits 16 dp (`group`) above the first control's visible top:
+/// a field's edge, or a checkbox, radio or switch row's label (#66). A row's
+/// 48 dp target reaches into that gap but never onto the legend.
 class PaymentFormFieldGroup extends StatelessWidget {
   const PaymentFormFieldGroup({
     super.key,
@@ -76,7 +77,7 @@ class PaymentFormFieldGroup extends StatelessWidget {
     final type = PaymentType.of(context);
     final flags = children.map(_required).nonNulls.toList();
     // A selection row's target slack overhangs the legend gap, so the label
-    // sits `related` below the legend like a field's edge (#66). Side by
+    // sits `group` below the legend like a field's edge (#66). Side by
     // side, the shallowest child sets it.
     final slack = children.isEmpty
         ? 0.0
@@ -97,7 +98,7 @@ class PaymentFormFieldGroup extends StatelessWidget {
             padding: EdgeInsets.only(top: t.space(PaymentSpace.inline)),
             child: Text(description!, style: type.caption),
           ),
-        SizedBox(height: t.space(PaymentSpace.related)),
+        SizedBox(height: t.space(PaymentSpace.group)),
         _LeadingOverhang(
           overhang: slack,
           child: FieldGroupScope(

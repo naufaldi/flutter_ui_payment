@@ -64,7 +64,7 @@ void main() {
   });
 
   for (final scale in [1.0, 2.0]) {
-    testWidgets('legend → first control is one 8 dp gap at $scale (#66)', (
+    testWidgets('legend → first control is one 16 dp gap at $scale (#66)', (
       tester,
     ) async {
       Future<double> gap(Widget first, Finder visibleTop) async {
@@ -81,14 +81,15 @@ void main() {
             tester.getRect(find.text('Legend')).bottom;
       }
 
-      // A field's edge and a selection row's label sit the same 8 dp below
-      // the legend; the row's 48 dp target overhangs the gap instead.
+      // A field's edge and a selection row's label sit the same 16 dp below
+      // the legend; the row's 48 dp target reaches into the gap but not onto
+      // the legend.
       expect(
         await gap(
           const PaymentTextField(label: 'Name'),
           find.byType(InputDecorator),
         ),
-        8,
+        16,
       );
       var toggled = false;
       expect(
@@ -100,16 +101,19 @@ void main() {
           ),
           find.text('Refunds'),
         ),
-        8,
+        16,
       );
       final row = tester.getRect(find.byType(InkWell));
       expect(row.height, greaterThanOrEqualTo(48));
-      // The overhanging strip above the label still takes the tap.
-      await tester.tapAt(
-        Offset(row.center.dx, tester.getRect(find.text('Legend')).bottom + 1),
+      // The target never covers the legend, and its strip above the label
+      // still takes the tap.
+      expect(
+        row.top,
+        greaterThanOrEqualTo(tester.getRect(find.text('Legend')).bottom),
       );
+      await tester.tapAt(Offset(row.center.dx, row.top + 1));
       expect(toggled, isTrue);
-      // The legend still comes before the row it overlaps.
+      // The legend still comes before the row.
       final order = tester.semantics.simulatedAccessibilityTraversal().toList();
       final legendAt = order.indexWhere((n) => n.label == 'Legend');
       expect(legendAt, isNonNegative);
@@ -127,7 +131,7 @@ void main() {
           ),
           find.text('Bank'),
         ),
-        8,
+        16,
       );
       expect(
         await gap(
@@ -139,7 +143,7 @@ void main() {
           ),
           find.text('Save card'),
         ),
-        8,
+        16,
       );
     });
   }
