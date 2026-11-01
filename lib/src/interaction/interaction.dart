@@ -1030,8 +1030,11 @@ class LoadingSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
+    final type = PaymentType.of(context);
     final l10n = PaymentLocalizations.of(context);
-    final fill = theme.surfaceMuted;
+    // The outline tone stays visible on the page surface in light and dark
+    // (#61-4).
+    final fill = theme.outline;
     Widget bar(double widthFactor, double height) => FractionallySizedBox(
       widthFactor: widthFactor,
       alignment: AlignmentDirectional.centerStart,
@@ -1098,34 +1101,44 @@ class LoadingSkeleton extends StatelessWidget {
         child: Column(
           children: [
             for (var i = 0; i < rows; i++)
+              // The geometry of a two-line PaymentListItem: block padding,
+              // a 20 dp icon on the first line, bars centred in the label
+              // and caption lines, so text does not move on load (#46).
               Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: theme.space(PaymentSpace.related),
+                  vertical: theme.space(PaymentSpace.block),
                 ),
-                child: Row(
-                  children: [
-                    if (leading) ...[
-                      Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          color: fill,
-                          borderRadius: theme.tagBorderRadius,
+                child: FirstLineRow(
+                  leading: leading
+                      ? Container(
+                          width: PaymentIconSize.medium.resolve(context),
+                          height: PaymentIconSize.medium.resolve(context),
+                          decoration: BoxDecoration(
+                            color: fill,
+                            borderRadius: theme.tagBorderRadius,
+                          ),
+                        )
+                      : null,
+                  gap: theme.space(PaymentSpace.block),
+                  text: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: lineHeightOf(context, type.label),
+                        child: Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: bar(i.isEven ? 0.7 : 0.55, 14),
                         ),
                       ),
-                      SizedBox(width: theme.space(PaymentSpace.block)),
-                    ],
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          bar(i.isEven ? 0.7 : 0.55, 14),
-                          SizedBox(height: theme.space(PaymentSpace.related)),
-                          bar(0.4, 10),
-                        ],
+                      SizedBox(
+                        height: lineHeightOf(context, type.caption),
+                        child: Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: bar(0.4, 10),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
           ],
