@@ -2462,7 +2462,9 @@
       "allSteps",
       "onboardingDone",
       "backTo",
-      "create"
+      "create",
+      "signInCan",
+      "signInCannot"
     ]
   },
   "TransactionFilter": {
@@ -10815,7 +10817,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "action",
-            "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton."
+            "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton. With no\n`total` the action fills the bar, so pass a full-width button."
           },
           {
             "name": "total",
@@ -10862,7 +10864,7 @@
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton."
+        "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton. With no\n`total` the action fills the bar, so pass a full-width button."
       },
       {
         "name": "total",
@@ -19310,7 +19312,7 @@
   "PaymentFormFieldGroup": {
     "kind": "class",
     "file": "lib/src/forms/field_group.dart",
-    "doc": "Related fields under a legend. A horizontal group stacks when its fields\nwould be narrower than 140 dp each, or at large text. Hosts put 24 dp\n(`PaymentSpace.section`) between groups; fields inside sit 16 apart.",
+    "doc": "Related fields under a legend. A horizontal group stacks when its fields\nwould be narrower than 140 dp each, or at large text. Hosts put 24 dp\n(`PaymentSpace.section`) between groups; fields inside sit 16 apart.\nThe legend sits 8 dp (`related`) above the first control's visible top:\na field's edge, or a checkbox, radio or switch row's label (#66).",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -22396,7 +22398,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "actions",
-            "doc": "Host actions displayed in the page header."
+            "doc": "Header actions: on phones one shows as a title-row link and more go\nbehind ⋮ (D59a). The task's own step belongs in `primaryAction`."
           },
           {
             "name": "banner",
@@ -22493,7 +22495,7 @@
         "kind": "field",
         "static": false,
         "type": "List<PaymentButton>",
-        "doc": "Host actions displayed in the page header."
+        "doc": "Header actions: on phones one shows as a title-row link and more go\nbehind ⋮ (D59a). The task's own step belongs in `primaryAction`."
       },
       {
         "name": "banner",
@@ -22536,7 +22538,7 @@
   "PaymentFullPageView": {
     "kind": "class",
     "file": "lib/src/views/full_page_view.dart",
-    "doc": "Full-page body; the host supplies its scaffold and navigation.",
+    "doc": "Full-page body; the host supplies its scaffold and navigation.\n\nAt 600 dp and wider the content sits in a centred column up to 640 dp;\na `PaymentOverviewPage` child with a secondary column keeps two columns\nup to 1040 dp from 840 dp (D53). The header holds navigation only\n(`pageLink`); the screen's priority action pins to the footer (D62).",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -22574,7 +22576,40 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "pageAction",
-            "doc": "Supporting action alongside the page heading."
+            "doc": ""
+          },
+          {
+            "name": "pageLink",
+            "type": "PaymentLink?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pageLink",
+            "doc": "Navigation on the title row, shown as \"Label ›\" (D59a)."
+          },
+          {
+            "name": "primaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "primaryAction",
+            "doc": "The screen's priority action, pinned in the footer (D62)."
+          },
+          {
+            "name": "secondaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "secondaryAction",
+            "doc": "At most one quiet action under the primary."
           }
         ],
         "doc": ""
@@ -22602,7 +22637,28 @@
         "kind": "field",
         "static": false,
         "type": "PaymentButton?",
-        "doc": "Supporting action alongside the page heading."
+        "doc": ""
+      },
+      {
+        "name": "pageLink",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentLink?",
+        "doc": "Navigation on the title row, shown as \"Label ›\" (D59a)."
+      },
+      {
+        "name": "primaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "The screen's priority action, pinned in the footer (D62)."
+      },
+      {
+        "name": "secondaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "At most one quiet action under the primary."
       }
     ],
     "copyWith": null
@@ -22805,7 +22861,7 @@
   "PaymentSignInView": {
     "kind": "class",
     "file": "lib/src/views/sign_in_view.dart",
-    "doc": "External sign-in entry point with no credential input or free content slot.",
+    "doc": "External sign-in entry point with no credential input or free content slot.\n\nAn account-linking screen (D61): both app tiles, one specific headline,\nwhat the connecting app can and can never do in plain view, and a pinned\nfooter with one legal sentence, a short primary and a quiet cancel, so\nthe action is on the first screen at any text size.",
     "extends": "StatefulWidget",
     "constructors": [
       {
@@ -22821,7 +22877,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "primaryAction",
-            "doc": "The single primary action that starts host sign-in."
+            "doc": "The single primary action that starts host sign-in, such as \"Continue\"."
           },
           {
             "name": "title",
@@ -22832,7 +22888,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "title",
-            "doc": "Heading displayed above the content."
+            "doc": "Heading displayed above the content, such as \"Sign in with Ruang Bayar\"."
           },
           {
             "name": "description",
@@ -22854,7 +22910,51 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "brand",
-            "doc": "Host brand icon or image."
+            "doc": "Host brand icon or image: the account being signed in to."
+          },
+          {
+            "name": "requesterBrand",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "requesterBrand",
+            "doc": "The connecting app's icon or image, shown before `brand`."
+          },
+          {
+            "name": "canDo",
+            "type": "List<String>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "canDo",
+            "doc": "What the connecting app can do, shown with ✓."
+          },
+          {
+            "name": "cannotDo",
+            "type": "List<String>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "cannotDo",
+            "doc": "What the connecting app can never do, shown with ✕."
+          },
+          {
+            "name": "legalNotice",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "legalNotice",
+            "doc": "One legal sentence above the actions. `{0}`, `{1}` … become inline\nlinks to the matching `legalLinks`. Without it, `legalLinks` show as a\nrow of links."
           },
           {
             "name": "learnMore",
@@ -22865,7 +22965,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "learnMore",
-            "doc": "Disclosure that opens a supplemental explanation."
+            "doc": ""
           },
           {
             "name": "secondaryAction",
@@ -22876,7 +22976,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "secondaryAction",
-            "doc": "Optional supporting action below the primary action."
+            "doc": "Optional quiet action under the primary, such as \"Cancel\"."
           },
           {
             "name": "legalLinks",
@@ -22898,7 +22998,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "footnote",
-            "doc": "Short reassurance below the actions."
+            "doc": ""
           },
           {
             "name": "errorText",
@@ -22923,14 +23023,14 @@
         "kind": "field",
         "static": false,
         "type": "PaymentButton",
-        "doc": "The single primary action that starts host sign-in."
+        "doc": "The single primary action that starts host sign-in, such as \"Continue\"."
       },
       {
         "name": "title",
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Heading displayed above the content."
+        "doc": "Heading displayed above the content, such as \"Sign in with Ruang Bayar\"."
       },
       {
         "name": "description",
@@ -22944,21 +23044,49 @@
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": "Host brand icon or image."
+        "doc": "Host brand icon or image: the account being signed in to."
+      },
+      {
+        "name": "requesterBrand",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "The connecting app's icon or image, shown before `brand`."
+      },
+      {
+        "name": "canDo",
+        "kind": "field",
+        "static": false,
+        "type": "List<String>",
+        "doc": "What the connecting app can do, shown with ✓."
+      },
+      {
+        "name": "cannotDo",
+        "kind": "field",
+        "static": false,
+        "type": "List<String>",
+        "doc": "What the connecting app can never do, shown with ✕."
+      },
+      {
+        "name": "legalNotice",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "One legal sentence above the actions. `{0}`, `{1}` … become inline\nlinks to the matching `legalLinks`. Without it, `legalLinks` show as a\nrow of links."
       },
       {
         "name": "learnMore",
         "kind": "field",
         "static": false,
         "type": "PaymentSignInLearnMore?",
-        "doc": "Disclosure that opens a supplemental explanation."
+        "doc": ""
       },
       {
         "name": "secondaryAction",
         "kind": "field",
         "static": false,
         "type": "PaymentButton?",
-        "doc": "Optional supporting action below the primary action."
+        "doc": "Optional quiet action under the primary, such as \"Cancel\"."
       },
       {
         "name": "legalLinks",
@@ -22972,7 +23100,7 @@
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Short reassurance below the actions."
+        "doc": ""
       },
       {
         "name": "errorText",
@@ -23370,7 +23498,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "actions",
-            "doc": "Host actions displayed in the page header."
+            "doc": "Header actions: on phones one shows as a title-row link and more go\nbehind ⋮ (D59a). Put the page's priority action in `primaryAction`."
           },
           {
             "name": "pending",
@@ -23382,6 +23510,28 @@
             "isSuper": false,
             "fieldName": "pending",
             "doc": "Shows placeholders while the host loads content."
+          },
+          {
+            "name": "primaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "primaryAction",
+            "doc": "The page's priority action, pinned in the footer (D62)."
+          },
+          {
+            "name": "secondaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "secondaryAction",
+            "doc": "At most one quiet action under the primary."
           }
         ],
         "doc": ""
@@ -23430,7 +23580,7 @@
         "kind": "field",
         "static": false,
         "type": "List<PaymentButton>",
-        "doc": "Host actions displayed in the page header."
+        "doc": "Header actions: on phones one shows as a title-row link and more go\nbehind ⋮ (D59a). Put the page's priority action in `primaryAction`."
       },
       {
         "name": "pending",
@@ -23438,6 +23588,20 @@
         "static": false,
         "type": "bool",
         "doc": "Shows placeholders while the host loads content."
+      },
+      {
+        "name": "primaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "The page's priority action, pinned in the footer (D62)."
+      },
+      {
+        "name": "secondaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "At most one quiet action under the primary."
       }
     ],
     "copyWith": null
