@@ -39,8 +39,9 @@ Variants: code, pre, samp, kbd. Nothing else exists.
 | Situation | Variant / composition | Payment example |
 | --- | --- | --- |
 | Virtual account number | code | Use a reference display with a host copy action; pre preserves line breaks. |
+| Transaction ID in a row | not `PaymentCode` | Use `InfoRow` or a property list item with `reference: true` and a copy button (D57). |
 
-Use Amount text for money.
+Use Amount text for money. `PaymentCode`'s filled block is for multi-line technical text such as webhook payloads and debug output, plus the large VA number with its emphasis. A reference or ID inside a row uses `reference: true` on the row instead (D57).
 
 ## States
 

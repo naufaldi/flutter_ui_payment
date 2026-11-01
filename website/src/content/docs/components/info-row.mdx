@@ -45,19 +45,22 @@ InfoRow(
 
 ### With a trailing action
 
-`trailing` puts an action after the value, such as a 48 dp copy button. Label and value keep the top line, and the action centers against them.
+`trailing` puts an action after the value, such as a 48 dp copy button. The action centres on the first line (D56). A `PaymentIconButton` or `PaymentCopyButton` there puts its glyph on the value edge, in line with the other rows' values, and keeps its 48 dp target inside the row.
+
+### References and IDs
+
+Set `reference: true` for a transaction ID, VA number or order reference (D57). The value becomes monospace tabular text on the value edge with no fill, and a copy button follows it. Keep [`PaymentCode`](/components/code/) for multi-line technical text; its grey block reads as a disabled field inside a row.
 
 ```dart
 InfoRow(
   label: 'Reference',
   valueText: attempt.attemptId,
-  trailing: IconButton(
-    tooltip: 'Copy',
-    icon: const Icon(Icons.copy_outlined),
-    onPressed: () => copy(attempt.attemptId),
-  ),
+  reference: true,
+  trailing: PaymentCopyButton(value: attempt.attemptId, onCopy: copy),
 );
 ```
+
+The same flag exists on `PaymentPropertyListItem.reference` and `PaymentDetailValue.reference`; `PaymentDetailValue.onCopy` adds the copy button.
 
 ### Long values
 

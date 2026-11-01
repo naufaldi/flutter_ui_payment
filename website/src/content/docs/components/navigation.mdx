@@ -69,7 +69,8 @@ Variants: sidebar, phone drawer. Nothing else exists.
 
 ### Behavior
 
-- Selection is instant, with no animation, because navigation is used constantly. The selected item gets the selected color plus a muted fill.
+- Selection is instant, with no animation, because navigation is used constantly. The selected item gets the accent color, heading weight, a muted fill and a 2 dp accent indicator on its start edge, so it never depends on the fill alone; in a dark theme whose accent matches the text, the fill is nearly invisible.
+- Items are 48 dp apart.
 - Disabled items are visible with their reason but not focusable.
 - Opening the drawer moves focus into it. The scrim, Back and Escape close it, and focus returns to the menu button. Closed items are not in the focus order.
 

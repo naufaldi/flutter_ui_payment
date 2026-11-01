@@ -5,7 +5,11 @@ description: Turn settlement and fee columns into labeled rows on narrow screens
 
 import Screen from '../../../components/Screen.astro';
 
-D30: below 600 dp of available width or at large text, Table and DataTable collapse columns into list rows. The pinned or row-header value becomes the title, amounts align at the end and supporting cells keep their header context in semantics. Wide tables retain horizontally scrollable columns and pinned context.
+D30: below 600 dp of available width or at large text, Table and DataTable collapse columns into list rows. The pinned or row-header value becomes the title, amounts align at the end and supporting cells keep their header context in semantics.
+
+D60: each phone row reads like a property list. The title takes the first line; a DataTable's checkbox and row ⋮ centre on it (D56). Every other column, the amount included, is an [info row](/components/info-row/): its header as the label on the start edge, its value on the one value edge, money in tabular figures. There is no "Label: value" text and no amount floating in its own column, and the row ⋮ ends on the same edge as the page header's ⋮. A Table's Total footer sits under a divider. An ID title keeps its hyphens from breaking (U+2011) while screen readers hear the original.
+
+<Screen name="ios_catalog_data_table_variants_id_200" alt="Data table rows on a phone at 200 percent text in Indonesian, each column as a label and value row" caption="Data table, Indonesian, 200%" /> Wide tables retain horizontally scrollable columns and pinned context.
 
 Run A03 for the settlement statement and A04 for the fee schedule. Use Table for static comparison; use DataTable for selection, sorting, paging and filtering of host rows. Do not add horizontal scrolling around the phone list.
 

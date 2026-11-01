@@ -49,6 +49,10 @@ Row(children: [
 
 Choose loading before error, error before empty, then ready. `ChartModule` keeps the plot height stable across these states; the headline is outside the plot. Error and empty messages scroll at large text so the retry action remains reachable.
 
+## Reading the exact amount
+
+Line and bar charts show one exact value at rest: the latest settled period is selected, with a guide line up to a label above the plot ("29 Okt · Rp420.000"). Tap or drag to read another period (D58). The y-axis gutter grows with its scaled labels, so "Rp600K" never touches the plot at 200%. Above 1.5× text the module caps the plot at `ChartModule.compactHeight`, so the rows under a chart stay on the first screen of a small phone.
+
 ## The payment boundary
 
 Pending uses dashed/outlined marks. Unknown uses dotted/hatched marks. Missing data leaves a gap. Only settled values enter the generated lowest/highest/latest summary. Headlines are host-provided Money values; the kit never computes totals. The meter legend formats the selected unit: money, percent or number.
@@ -59,7 +63,7 @@ Give periods short labels and qualify a headline as settled when needed. Keep cu
 
 ## Accessibility
 
-The chart summary remains available without pointer inspection. At narrow widths, fewer visual axis labels preserve space. Supply a complete `semanticLabel` when your host needs additional context.
+The chart summary announces the same latest amount the label shows, so nothing depends on selection. At narrow widths, fewer visual axis labels preserve space. Supply a complete `semanticLabel` when your host needs additional context.
 
 ## API
 

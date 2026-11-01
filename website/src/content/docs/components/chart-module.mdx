@@ -53,7 +53,7 @@ What does the host know?
 
 ## States
 
-Loading keeps the module heading and chart shape. Empty explains the absence of readings; error offers host retry. Ready requires a chart and uses only the supplied headline.
+The headline block reserves a caption line only when you pass `headlineCaption` or `delta`, so a bare amount sits right above the chart's value band. Above 1.5× text the plot height is capped at `compactHeight`; heights stay identical across loading, error, empty and ready. Loading keeps the module heading and chart shape. Empty explains the absence of readings; error offers host retry. Ready requires a chart and uses only the supplied headline.
 
 ## Do and don't
 

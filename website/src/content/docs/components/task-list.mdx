@@ -49,6 +49,10 @@ PaymentTaskList(
 
 Variants: notStarted, inProgress, blocked, complete. Nothing else exists.
 
+### The connector
+
+A thin line joins each top-level task's mark to the next. It says only that the tasks run in this order. It looks the same whatever the status, so read progress from the marks and their spoken status, never from the line. Sub-tasks have no connector.
+
 ### States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
