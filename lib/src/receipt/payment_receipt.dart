@@ -155,10 +155,16 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
         ],
         if (widget.onShare != null) ...[
           SizedBox(height: theme.space(PaymentSpace.group)),
-          PaymentButton(
-            label: l10n.shareReceipt,
-            variant: PaymentButtonVariant.secondary,
-            onPressed: _share,
+          // An inline action hugs its label (D59), so it never reads as a
+          // second footer action under a screen's pinned primary (D62).
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: PaymentButton(
+              label: l10n.shareReceipt,
+              variant: PaymentButtonVariant.secondary,
+              width: PaymentWidth.hug,
+              onPressed: _share,
+            ),
           ),
           SizedBox(height: theme.space(PaymentSpace.related)),
           Text(l10n.shareAllowlistNote, style: type.caption),
