@@ -81,13 +81,13 @@ void main() {
             tester.getRect(find.text('Legend')).bottom;
       }
 
-      // A field's edge and a selection row's label sit the same 16 dp below
-      // the legend; the row's 48 dp target reaches into the gap but not onto
-      // the legend.
+      // A field's edge (at large text, its label above the box, #73) and a
+      // selection row's label sit the same 16 dp below the legend; the
+      // row's 48 dp target reaches into the gap but not onto the legend.
       expect(
         await gap(
           const PaymentTextField(label: 'Name'),
-          find.byType(InputDecorator),
+          scale == 1 ? find.byType(InputDecorator) : find.text('Name'),
         ),
         16,
       );

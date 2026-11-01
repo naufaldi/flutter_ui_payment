@@ -154,7 +154,8 @@ class PaymentTextField extends StatefulWidget {
   final int? _maxLines;
   final int? _maxLength;
 
-  /// Always visible; floats above the value.
+  /// Always visible; floats above the value, or sits above the box and
+  /// wraps when text is scaled above 1.5×.
   final String label;
 
   /// Host-owned editing controller.
@@ -309,8 +310,10 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
     };
     final hidden = widget.hiddenElements;
     final error = _hideHostError ? null : widget.errorText;
-    final field = Semantics(
-      label: hidden.contains(PaymentFieldPart.label) ? label : null,
+    final above =
+        !hidden.contains(PaymentFieldPart.label) && fieldLabelAbove(context);
+    final input = Semantics(
+      label: hidden.contains(PaymentFieldPart.label) || above ? label : null,
       isRequired: widget.required ? true : null,
       validationResult: error != null
           ? SemanticsValidationResult.invalid
@@ -389,9 +392,14 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
           context,
           label: label,
           hideLabel: hidden.contains(PaymentFieldPart.label),
+          labelAbove: above,
           hint: widget.hint,
           enabled: enabled,
-          contentPadding: fieldContentPadding(theme, widget.size),
+          contentPadding: fieldContentPadding(
+            theme,
+            widget.size,
+            labelAbove: above,
+          ),
           helper: widget.description == null
               ? null
               : FieldMessage(
@@ -423,6 +431,14 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
         ).copyWith(alignLabelWithHint: widget._multiline),
       ),
     );
+    final field = above
+        ? FieldLabelAbove(
+            label: label,
+            enabled: enabled,
+            onTap: _focus.requestFocus,
+            child: input,
+          )
+        : input;
     if (!widget._multiline || widget.onSubmitted == null) return field;
     void submit() => widget.onSubmitted!(widget.controller?.text ?? '');
     return CallbackShortcuts(
