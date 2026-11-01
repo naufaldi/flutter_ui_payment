@@ -2120,7 +2120,7 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Example KYC details, documents and review pin their submit
 - [x] Header title never breaks inside a word; a link that doesn't fit beside it takes its own start-aligned line
 - [x] History lists transactions before the month's figures; "Demo tools" folded into the settings sheet
-- [x] History at SE 200% shows a transaction row on the first screen (D63, P7d)
+- [ ] History at SE 200% shows a transaction row on the first screen (needs an owner choice, see `docs/decisions.md`)
 ```
 
 ### Phase 2E implementation notes
