@@ -448,3 +448,21 @@ Capture-glance corrections: the harness resets descendant scroll positions befor
 - Capture harness correction: Indonesian/large-text detail headers can collapse Report into More actions while the unpainted button remains in the widget tree. Test hit-testability before using the keyed button; otherwise open the localized overflow menu. The first screenshots drive failed waiting for report-cancel after tapping that hidden button; only that suite is rerun, retaining the same session freshness stamp.
 
 - Browser rendering correction: flowchart insertion had matched a subsection heading and emitted a malformed fence, hiding Which variant when on DataTable. Remove malformed duplicate fences, preserve subsection depth and check required headings outside fenced blocks in check:pages. Also replace the stale DataTable intro sentence with the approved D28 decision.
+
+## UI review, 1 November 2026
+
+Review of every component and flow against the 8 pt grid and the emil-ui-review bar (captures from `main` @ c6cf131). Findings are tracked in issues #45–#50, each with annotated screenshots.
+
+**Decided** (do not reopen without a new reason):
+
+- **D45 — confirm on phones is a bottom sheet** with top-down, full-width actions (issue #45). See the PRD decision table.
+- **D46 — the spacing scale keeps 12** (8 pt grid with 4 pt half-steps); one value per role, everything through `PaymentSpace` (issue #50).
+
+**Open, under discussion** (proposals only; nothing changes until the owner decides):
+
+1. **Button "warning" variant.** Proposal: none. The variants stay primary / secondary / quiet / destructive (Stripe has the same set). A warning is a state, shown by `PaymentBanner`, `PaymentBadge` or a toast next to the action, not a button colour.
+2. **Banner with a dismiss button and an action** ("Total changed" / "Review total"). The 48 dp dismiss target sets the title row height and the action starts at the icon column, leaving a large gap. Proposal: actions align to the text column; the dismiss target overlaps padding instead of growing the row; a total-changed warning states old → new and is not dismissible before payment.
+3. **Tooltip vs sheet for explanations.** `PaymentTooltip` opens on hover, long press or focus, so on a phone a tap on an info icon does nothing (fees screen). Proposal: info icons open on tap; tooltips only for one-line hints; longer explanations such as "Why this?" open a bottom sheet.
+4. **Search field on phones.** The suggestion list renders inline with a hairline outline, no fill change and no elevation, and pushes content down; the keyboard can cover it. Proposal: on phones, open a full-height search sheet (consistent with `PaymentSelect` and D45); keep an anchored, elevated list on wide screens.
+5. **Date range picker.** Presets open a kit sheet; "Custom range" opens Flutter's Material range calendar. Review pending the first capture of the open states.
+
