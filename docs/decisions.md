@@ -467,11 +467,9 @@ Review of every component and flow against the 8 pt grid and the emil-ui-review 
 - **D53 — at ≥ 600 dp app pages sit in a centered content column about 600–640 dp wide** (issue #57).
 - **Demo text is bilingual.** Every gallery specimen string goes through the en/id helper so the Indonesian pass tests real lengths (example app only; issue #59).
 
-**Proposed, pending owner decision** (do not implement until decided):
-
-- **D54 — one primary per surface.** On a screen, sheet or dialog, the completion action is the one primary; a trigger that opens a surface is secondary; equal-weight secondaries only for peer alternatives with no default. Source: the sheet specimen's "Done" and "Open sheet" share one weight (issue #61).
-- **D55 — `PaymentMenu` on phones is a bottom action sheet** (full-width 48 dp rows, destructive item last and separated, Cancel at the bottom); wide screens keep the anchored menu. Source: the menu runs to the screen edge and misaligns items without icons (issue #61).
-- **D48 amendment — one banner anatomy:** icon centred on the title's first line; title, message and actions on one text column; close centred on the first line without adding height; at most one small secondary button plus one link (comment on issue #52).
-- **D52 amendment — picker by purpose:** far dates (date of birth, card expiry) use an iOS-style scrolling wheel; near dates use the calendar grid; ranges use D51's scrolling month calendar (issue #56).
+- **D54 — one primary per surface;** a trigger that opens a surface is secondary (issue #61).
+- **D55 — `PaymentMenu` on phones is a bottom action sheet;** wide screens keep the anchored menu (issue #61).
+- **D48a — one banner anatomy:** icon on the title's first line, one text column for title, message and actions, close without extra height, at most one small button plus one link (issue #52).
+- **D52a — picker by purpose:** typed entry plus an iOS-style wheel for far dates, calendar grid for near dates, scrolling month calendar for ranges (issue #56).
 
 Problems found in the review are recorded as issues before any work: #45–#50, #52–#61.
