@@ -76,4 +76,38 @@ void main() {
     await tester.tap(find.byTooltip('Remove Promo code'));
     expect(removed, isTrue);
   });
+  testWidgets('a long chip at 2x wraps inside a rounded box', (tester) async {
+    tester.view.physicalSize = const Size(320, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      host(
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: PaymentChip(
+            label: 'Method',
+            value: 'Transfer from a bank account',
+            onClose: () {},
+          ),
+        ),
+        2,
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    final close = find.byType(PaymentIconButton);
+    expect(tester.getSize(close).width, greaterThanOrEqualTo(48));
+    expect(tester.getSize(close).height, greaterThanOrEqualTo(48));
+    final shapes = tester
+        .widgetList<DecoratedBox>(
+          find.descendant(
+            of: find.byType(PaymentChip),
+            matching: find.byType(DecoratedBox),
+          ),
+        )
+        .map((b) => b.decoration)
+        .whereType<ShapeDecoration>()
+        .map((d) => d.shape);
+    expect(shapes.whereType<StadiumBorder>(), isEmpty);
+    expect(shapes.whereType<RoundedRectangleBorder>(), isNotEmpty);
+  });
 }
