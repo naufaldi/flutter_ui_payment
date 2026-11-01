@@ -303,6 +303,9 @@ class _PaymentCopyButtonState extends State<PaymentCopyButton> {
       controller: _failure,
       overlayChildBuilder: (context) => CompositedTransformFollower(
         link: _link,
+        // Scrolled out of paint, the label hides instead of jumping to the
+        // overlay's corner.
+        showWhenUnlinked: false,
         targetAnchor: rtl ? Alignment.bottomLeft : Alignment.bottomRight,
         followerAnchor: rtl ? Alignment.topLeft : Alignment.topRight,
         child: Align(
