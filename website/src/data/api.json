@@ -10853,7 +10853,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "action",
-            "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton. With no\n`total` the action fills the bar, so pass a full-width button."
+            "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton. With no\n`total` the action fills the bar on phones and at large text, so pass\na full-width button; from 600 dp it hugs at the end edge, like other\npinned footers (D59, D62)."
           },
           {
             "name": "total",
@@ -10900,7 +10900,7 @@
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton. With no\n`total` the action fills the bar, so pass a full-width button."
+        "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton. With no\n`total` the action fills the bar on phones and at large text, so pass\na full-width button; from 600 dp it hugs at the end edge, like other\npinned footers (D59, D62)."
       },
       {
         "name": "total",
