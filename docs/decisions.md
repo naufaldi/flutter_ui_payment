@@ -448,3 +448,45 @@ Capture-glance corrections: the harness resets descendant scroll positions befor
 - Capture harness correction: Indonesian/large-text detail headers can collapse Report into More actions while the unpainted button remains in the widget tree. Test hit-testability before using the keyed button; otherwise open the localized overflow menu. The first screenshots drive failed waiting for report-cancel after tapping that hidden button; only that suite is rerun, retaining the same session freshness stamp.
 
 - Browser rendering correction: flowchart insertion had matched a subsection heading and emitted a malformed fence, hiding Which variant when on DataTable. Remove malformed duplicate fences, preserve subsection depth and check required headings outside fenced blocks in check:pages. Also replace the stale DataTable intro sentence with the approved D28 decision.
+
+## UI review, 1 November 2026
+
+Review of every component and flow against the 8 pt grid and the emil-ui-review bar (captures from `main` @ c6cf131). Findings are tracked in issues #45–#50 and #52–#55, each with annotated screenshots.
+
+**Decided** (do not reopen without a new reason; details in the PRD decision table):
+
+- **D45 — confirm on phones is a bottom sheet** with top-down, full-width actions (issue #45).
+- **D46 — the spacing scale keeps 12** (8 pt grid with 4 pt half-steps); one value per role, everything through `PaymentSpace` (issue #50).
+- **D47 — no warning button.** Warnings are states shown by banner, badge or toast.
+- **D48 — banner actions on the text column; no dismiss before paying on a changed total, which states old → new** (issue #52).
+- **D49 — tooltips open on tap and hold one line; longer explanations ("Why this?") open a sheet** (issue #53).
+- **D50 — search on phones is a full-height sheet; an elevated anchored list on wide screens** (issue #54).
+- **D51 — custom date range is a kit calendar sheet with an Apply footer** (issue #55).
+
+- **D52 — the single date field uses a kit date sheet; date of birth opens with typed entry first** (issue #56).
+- **D53 — at ≥ 600 dp app pages sit in a centered content column about 600–640 dp wide** (issue #57).
+- **Demo text is bilingual.** Every gallery specimen string goes through the en/id helper so the Indonesian pass tests real lengths (example app only; issue #59).
+
+- **D54 — one primary per surface;** a trigger that opens a surface is secondary (issue #61).
+- **D55 — `PaymentMenu` on phones is a bottom action sheet;** wide screens keep the anchored menu (issue #61).
+- **D48a — one banner anatomy:** icon on the title's first line, one text column for title, message and actions, close without extra height, at most one small button plus one link (issue #52).
+- **D52a — picker by purpose:** typed entry plus an iOS-style wheel for far dates, calendar grid for near dates, scrolling month calendar for ranges (issue #56).
+
+- **D56 — row alignment:** one centre line for single-line rows; first-line alignment for multi-line rows (issue #62).
+- **D57 — references and IDs in rows** are end-aligned monospace text without a fill, with a copy action (issue #62).
+
+- **D58 — exact chart values:** the latest point or bar is selected at rest with a guide line to one exact-amount label; tap or drag moves it; markers on series of ≤ 12 points; line and bar charts (issues #62, #63).
+
+- **D59 — button width:** full width only for finishing or advancing actions in footers, sheets and dialogs on phones; everything else hugs (issue #63).
+- **D60 — table rows on phones** render like a property list (issue #63).
+- **D61 — sign-in is an account-linking screen** with a visible can / cannot list and a pinned "Lanjutkan" (issue #63).
+
+**Evidence method.** Annotated review images are real simulator captures with guide lines and boxes drawn on top at measured coordinates (±2 pt); mocks are HTML drawings of a proposal, not app screens. The red / orange / green thumb-zone bands (issue #64) are an illustration chosen by the reviewer, not a rule from any skill: three equal horizontal strips following the common thumb-zone convention (Hoober; Clark, *Designing for Touch*). Real reach is arc-shaped and depends on hand and phone size, so the bands show direction, not measurement. All images live on the image-only `ui-review-evidence` branch.
+
+- **D59a — the header holds navigation, not the priority action:** one action is a title-row link with ›; more go behind ⋮ (issue #64).
+- **D62 — the priority action sits at the bottom** of every phone screen that has one, full width with at most one quiet secondary; the tab bar is hidden inside the payment flow (issue #64).
+- **D46 confirmed again (1 Nov 2026):** 12 stays; the strict-8 swaps stay optional.
+
+**What "spacing note: optional" on the review cards means.** D46 keeps 12 on the scale. On 36 of the 76 review cards, suggestions written before D46 changed 12 → 8 or 16, 36 → 40, 52 → 56 or 60 → 64 purely to fit a strict 8 pt grid; with 12 kept, those *value swaps alone* are not required. Everything else on those cards stays required: one value per role (#50), alignment and edge fixes, layout shifts, clipping and every non-spacing finding. Values that are not multiples of 4 (7, 22, 62) are still fixed. If the owner wants the strict-8 swaps anyway, D46 is reopened and the swaps join #50.
+
+Problems found in the review are recorded as issues before any work: #45–#50, #52–#64.
