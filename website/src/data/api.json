@@ -13433,7 +13433,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "searchActions",
-            "doc": "Host filter controls on the search line, after the box, such as\n`PaymentDateRangePicker.button`. Show the active filter as a chip too."
+            "doc": "Host filter controls on the search line, after the box, such as\n`PaymentDateRangePicker.button`. Show the active filter as a chip too.\n\nWith actions the search line is one compact row at every text size\n(D63a): the search label shows as the placeholder, not above the box,\nand stays the field's spoken name."
           }
         ],
         "doc": ""
@@ -13510,7 +13510,7 @@
         "kind": "field",
         "static": false,
         "type": "List<Widget>",
-        "doc": "Host filter controls on the search line, after the box, such as\n`PaymentDateRangePicker.button`. Show the active filter as a chip too."
+        "doc": "Host filter controls on the search line, after the box, such as\n`PaymentDateRangePicker.button`. Show the active filter as a chip too.\n\nWith actions the search line is one compact row at every text size\n(D63a): the search label shows as the placeholder, not above the box,\nand stays the field's spoken name."
       }
     ],
     "copyWith": null
@@ -16945,9 +16945,20 @@
             "isSuper": false,
             "fieldName": null,
             "doc": ""
+          },
+          {
+            "name": "hiddenElements",
+            "type": "Set<PaymentFieldPart>",
+            "required": false,
+            "default": "const {}",
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
           }
         ],
-        "doc": "Controlled local list filter, with clear and refocus.\n\n`actions` sit after the box on the same line, centred on it, such as a\nfilter `PaymentIconButton`; a label above the box spans them."
+        "doc": "Controlled local list filter, with clear and refocus.\n\n`actions` sit after the box on the same line, centred on it, such as a\nfilter `PaymentIconButton`; a label above the box spans them. A hidden\nlabel (`hiddenElements`) shows as the placeholder instead and stays the\nfield's spoken name."
       }
     ],
     "getters": [],

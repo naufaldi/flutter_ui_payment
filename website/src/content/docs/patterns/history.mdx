@@ -57,7 +57,7 @@ History is for finding a payment, so the list leads at every text size and local
 
 ## Filters on one line
 
-The date range is a calendar button at the end of the search line, not a labelled field above it (D63a): pass `PaymentDateRangePicker.button` in `searchActions`. It opens the same presets and range calendar, reads "Rentang tanggal" / "Date range" as its tooltip and spoken name, and fills with the accent while a range is set. The chosen range shows as the "Tanggal: …" chip with ×, so nothing is hidden. The labelled field repeated the chip's value and took about 139 pt at 200%.
+The date range is a calendar button at the end of the search line, not a labelled field above it (D63a): pass `PaymentDateRangePicker.button` in `searchActions`. It opens the same presets and range calendar, reads "Rentang tanggal" / "Date range" as its tooltip and spoken name, and fills with the accent while a range is set. The chosen range shows as the "Tanggal: …" chip with ×, so nothing is hidden. With actions on the line, the search shows its label as the placeholder, and the label stays its spoken name. The labelled field repeated the chip's value and took about 140 pt at 200%; with the placeholder too, a whole first row (title, amount, date and status) sits above the tab bar at 200% on an iPhone SE in English and Indonesian.
 
 <Screen name="ios_se_history_light_200" alt="History on iPhone SE at 200% text: the search line with its calendar button, the tabs and a whole first transaction row above the tab bar" caption="iPhone SE, 200%, Indonesian" />
 
