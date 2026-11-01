@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter_ui_payment/src/charts/chart_geometry.dart';
@@ -11,6 +12,7 @@ Widget host(
   String locale = 'en',
   double scale = 1,
   bool dark = false,
+  double width = 320,
 }) => MaterialApp(
   locale: Locale(locale),
   supportedLocales: const [Locale('en'), Locale('id')],
@@ -22,7 +24,9 @@ Widget host(
   home: MediaQuery(
     data: MediaQueryData(textScaler: TextScaler.linear(scale)),
     child: Scaffold(
-      body: SingleChildScrollView(child: SizedBox(width: 320, child: child)),
+      body: SingleChildScrollView(
+        child: SizedBox(width: width, child: child),
+      ),
     ),
   ),
 );
@@ -394,43 +398,160 @@ void main() {
     // The gutter follows the labels instead of a fixed 76.
     expect(gutters.last, greaterThan(gutters.first));
   });
-  testWidgets('multi-series charts give each series one label line', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      host(
-        const SizedBox(
-          height: 180,
-          child: PaymentBarChart(
-            series: [
-              PaymentChartSeries(label: 'This month', points: weeks),
-              PaymentChartSeries(label: 'Last month', points: weeks),
-            ],
-          ),
+  // Two series, the latest week pending, so the module shows the legend and
+  // the pending key under the plot, as in the gallery.
+  const twoSeries = [
+    PaymentChartSeries(
+      label: 'This month',
+      points: [
+        ...weeks,
+        ChartPoint(
+          label: 'W5',
+          value: Money.idr(90000),
+          status: ChartPointStatus.pending,
         ),
-        scale: 2,
+      ],
+    ),
+    PaymentChartSeries(
+      label: 'Last month',
+      points: [
+        ...weeks,
+        ChartPoint(label: 'W5', value: Money.idr(80000)),
+      ],
+    ),
+  ];
+  ChartPainter chartPainter(WidgetTester tester) => tester
+      .widgetList<CustomPaint>(find.byType(CustomPaint))
+      .map((p) => p.painter)
+      .whereType<ChartPainter>()
+      .single;
+  for (final bars in [false, true]) {
+    final kind = bars ? 'bar' : 'line';
+    Widget module(double scale, double width) => host(
+      ChartModule(
+        title: 'Spending',
+        state: ChartState.ready,
+        showHeadline: false,
+        chart: bars
+            ? const PaymentBarChart(series: twoSeries)
+            : const PaymentLineChart(series: twoSeries),
       ),
+      scale: scale,
+      width: width,
     );
-    final rows = find.descendant(
-      of: find.byKey(const ValueKey('payment-chart-value')),
-      matching: find.byType(Row),
-    );
-    String line(int i) => tester
-        .widgetList<Text>(
-          find.descendant(of: rows.at(i), matching: find.byType(Text)),
-        )
-        .map((t) => t.data)
-        .join();
-    expect(rows, findsNWidgets(2));
-    expect(line(0), 'W4 · This month · Rp420,000');
-    expect(line(1), 'Last month · Rp420,000');
-    // The series name gives way before the amount does.
-    expect(
-      find.descendant(of: rows.at(0), matching: find.byType(Flexible)),
-      findsOneWidget,
-    );
-    expect(tester.takeException(), isNull);
-  });
+    testWidgets('$kind readout stacks full series names at 200% (#78)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(module(2, 393));
+      final readout = find.byKey(const ValueKey('payment-chart-value'));
+      // Name over value, no one-line rows; the period stays on the first.
+      expect(
+        find.descendant(of: readout, matching: find.byType(Row)),
+        findsNothing,
+      );
+      for (final name in ['W4 · This month', 'Last month']) {
+        final text = find.descendant(of: readout, matching: find.text(name));
+        expect(text, findsOneWidget);
+        expect(
+          tester.renderObject<RenderParagraph>(text).didExceedMaxLines,
+          isFalse,
+        );
+      }
+      expect(
+        find.descendant(of: readout, matching: find.text('Rp420,000')),
+        findsNWidgets(2),
+      );
+      // The readout stays inside the chart.
+      final chart = tester.getRect(
+        find.byType(bars ? PaymentBarChart : PaymentLineChart),
+      );
+      final label = tester.getRect(readout);
+      expect(label.left, greaterThanOrEqualTo(chart.left));
+      expect(label.right, lessThanOrEqualTo(chart.right));
+      expect(label.top, greaterThanOrEqualTo(chart.top));
+      // Lines are the worst case over every period: "W4 · This month" and
+      // "W5 · This month" wrap to two, so the band holds 2 + 1 + 1 + 1.
+      final line = 13 * 1.5 * 18 / 13;
+      final painter = chartPainter(tester);
+      expect(painter.band, closeTo(5 * line, .01));
+      // The module grows by the added lines, so the plot keeps the height
+      // a one-line-per-series band leaves it.
+      final slot = tester.getSize(
+        find.byKey(const ValueKey('payment-chart-plot')),
+      );
+      expect(slot.height, closeTo(180 + 3 * line, .01));
+      // Selection keeps the band and the plot where they are.
+      final plot = tester.getRect(find.byType(GestureDetector).last);
+      await tester.tapAt(Offset(plot.left + 140, plot.bottom - 40));
+      await tester.pump();
+      expect(chartPainter(tester).selected, isNot(3));
+      expect(chartPainter(tester).band, painter.band);
+      expect(tester.getRect(readout).bottom, label.bottom);
+      expect(
+        tester.getSize(find.byKey(const ValueKey('payment-chart-plot'))),
+        slot,
+      );
+      expect(tester.takeException(), isNull);
+      // Where the legend fits one row, the grown slot gives the plot the
+      // height a one-line-per-series band leaves it in 180.
+      await tester.pumpWidget(module(2, 600));
+      final grown = chartPainter(tester);
+      expect(grown.band, closeTo(4 * line, .01));
+      final size = tester.getSize(
+        find.byWidgetPredicate(
+          (w) => w is CustomPaint && w.painter is ChartPainter,
+        ),
+      );
+      final oneLine = ChartPainter(
+        series: grown.series,
+        unit: grown.unit,
+        colors: grown.colors,
+        showX: grown.showX,
+        showY: grown.showY,
+        gridX: grown.gridX,
+        gridY: grown.gridY,
+        theme: grown.theme,
+        l10n: grown.l10n,
+        style: grown.style,
+        scaler: grown.scaler,
+        bars: grown.bars,
+      );
+      final height = grown.plot(size).height;
+      expect(height, greaterThan(20));
+      expect(
+        height,
+        closeTo(
+          oneLine.plot(Size(size.width, size.height - 2 * line)).height,
+          .01,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+    });
+    testWidgets('$kind readout keeps one line per series where it fits', (
+      tester,
+    ) async {
+      await tester.pumpWidget(module(1, 600));
+      final rows = find.descendant(
+        of: find.byKey(const ValueKey('payment-chart-value')),
+        matching: find.byType(Row),
+      );
+      String text(int i) => tester
+          .widgetList<Text>(
+            find.descendant(of: rows.at(i), matching: find.byType(Text)),
+          )
+          .map((t) => t.data)
+          .join();
+      expect(rows, findsNWidgets(2));
+      expect(text(0), 'W4 · This month · Rp420,000');
+      expect(text(1), 'Last month · Rp420,000');
+      expect(chartPainter(tester).band, 2 * 18);
+      expect(
+        tester.getSize(find.byKey(const ValueKey('payment-chart-plot'))).height,
+        180,
+      );
+      expect(tester.takeException(), isNull);
+    });
+  }
   testWidgets('new periods return to rest; the same periods keep a pick', (
     tester,
   ) async {
