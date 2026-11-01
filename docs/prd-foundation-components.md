@@ -1951,10 +1951,10 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Owner answers Q1–Q10 (31 Oct 2026)
 - [x] Owner decision: full Stripe Apps parity, 48 components (31 Oct 2026)
 - [x] Owner reviews revision 3 (D28–D44) and answers Q11–Q12
-- [ ] Merge PR #1 (docs/component-catalog) to main (owner)
-- [ ] Merge PR #4 (feat/charts-kyc-capture, stacked on #1) to main (owner)
-- [ ] Merge PR #5 (docs/design-system-prd) to main (owner)
-- [ ] Record Q1–Q12 and D28–D44 in docs/decisions.md
+- [x] Merge PR #1 (docs/component-catalog) to main (owner)
+- [x] Merge PR #4 (feat/charts-kyc-capture, stacked on #1) to main (owner)
+- [x] Merge PR #5 (docs/design-system-prd) to main (owner)
+- [x] Record Q1–Q12 and D28–D44 in docs/decisions.md
 
 **Phase 1A: type and token API**
 - [x] Export PaymentType; firstLineHeight (replace 8 copies); tabular/reference; deprecate amountStyle(large:) (D15)
