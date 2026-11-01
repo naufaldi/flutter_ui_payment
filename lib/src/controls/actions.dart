@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../foundation/first_line.dart';
 import '../foundation/focus_ring.dart';
 import '../foundation/token_resolvers.dart';
 import '../foundation/payment_theme.dart';
@@ -61,6 +62,7 @@ class PaymentIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
+    final edge = EdgeAlignedIcon.of(context);
     final color = onPressed == null
         ? theme.disabled
         : _danger
@@ -91,6 +93,9 @@ class PaymentIconButton extends StatelessWidget {
             tooltip: tooltip,
             onPressed: onPressed,
             visualDensity: VisualDensity.standard,
+            // In a row's trailing slot the glyph sits on the value edge (D57).
+            alignment: edge ? AlignmentDirectional.centerEnd : null,
+            padding: edge ? const EdgeInsetsDirectional.only(start: 8) : null,
             style: PaymentFocusRing.withoutFocusFill(
               IconButton.styleFrom(minimumSize: const Size(48, 48)),
             ),

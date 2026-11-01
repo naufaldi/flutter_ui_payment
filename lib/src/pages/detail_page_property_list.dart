@@ -6,6 +6,7 @@ import '../foundation/payment_tokens.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/page_module_frame.dart';
+import '../foundation/first_line.dart';
 import '../controls/actions.dart';
 import '../foundation/tap_target.dart';
 import '../interaction/interaction.dart';
@@ -15,9 +16,16 @@ import '../content/property_list.dart';
 /// One displayed detail value with optional secondary copy.
 @immutable
 class PaymentDetailValue {
-  const PaymentDetailValue(String this.text, {this.subText}) : link = null;
+  const PaymentDetailValue(
+    String this.text, {
+    this.subText,
+    this.reference = false,
+    this.onCopy,
+  }) : link = null;
   const PaymentDetailValue.link(PaymentLink this.link, {this.subText})
-    : text = null;
+    : text = null,
+      reference = false,
+      onCopy = null;
 
   /// Plain detail value; absent when a link is used.
   final String? text;
@@ -27,6 +35,14 @@ class PaymentDetailValue {
 
   /// Supporting copy below a detail value.
   final String? subText;
+
+  /// Shows [text] as a reference or ID: monospace tabular text on the value
+  /// edge, without a fill (D57).
+  final bool reference;
+
+  /// Host copy for [text]; adds a [PaymentCopyButton] whose glyph sits on
+  /// the value edge.
+  final Future<bool> Function(String value)? onCopy;
 }
 
 /// A labeled set of related values.
@@ -95,25 +111,56 @@ class PaymentDetailPagePropertyList extends StatelessWidget {
 
     final type = PaymentType.of(context);
 
+    Widget copy(PaymentDetailValue v) => EdgeAlignedIcon(
+      child: PaymentCopyButton(value: v.text!, onCopy: v.onCopy!),
+    );
+    Widget text(PaymentDetailValue v) => Text(
+      v.text!,
+      style: v.reference ? type.reference(type.label) : type.label,
+    );
     Widget facts(List<PaymentDetailProperty> properties) => PaymentPropertyList(
       orientation: orientation,
       items: [
         for (final p in properties)
-          PaymentPropertyListItem(
-            label: p.label,
-            caption: p.description,
-            value: Column(
-              crossAxisAlignment: PaymentType.isLarge(context)
-                  ? CrossAxisAlignment.start
-                  : CrossAxisAlignment.end,
-              children: [
-                for (final v in p.values) ...[
-                  v.link ?? Text(v.text!, style: type.label),
-                  if (v.subText != null) Text(v.subText!, style: type.caption),
+          // One copyable value keeps InfoRow's first-line copy button.
+          if (p.values.length == 1 &&
+              p.values.single.onCopy != null &&
+              p.values.single.subText == null)
+            PaymentPropertyListItem(
+              label: p.label,
+              caption: p.description,
+              valueText: p.values.single.text,
+              reference: p.values.single.reference,
+              trailing: copy(p.values.single),
+            )
+          else
+            PaymentPropertyListItem(
+              label: p.label,
+              caption: p.description,
+              value: Column(
+                crossAxisAlignment: PaymentType.isLarge(context)
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.end,
+                children: [
+                  for (final v in p.values) ...[
+                    if (v.link != null)
+                      v.link!
+                    else if (v.onCopy != null)
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(child: text(v)),
+                          copy(v),
+                        ],
+                      )
+                    else
+                      text(v),
+                    if (v.subText != null)
+                      Text(v.subText!, style: type.caption),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
       ],
     );
 

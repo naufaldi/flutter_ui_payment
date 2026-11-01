@@ -24,7 +24,13 @@ class _ContentSpecimen extends StatelessWidget {
       ),
       PaymentPropertyListItem(
         label: t('Reference', 'Referensi'),
-        value: const PaymentCode('TRX-DEMO-42'),
+        valueText: 'TRX-DEMO-42',
+        reference: true,
+        trailing: PaymentCopyButton(
+          value: 'TRX-DEMO-42',
+          onCopy: _copyGalleryValue,
+          tooltip: t('Copy reference', 'Salin referensi'),
+        ),
         caption: t(
           'Copy to quote it to support',
           'Salin untuk disebutkan ke bantuan',

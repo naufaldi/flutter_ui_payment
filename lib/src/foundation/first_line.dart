@@ -282,3 +282,16 @@ class RenderFirstLineRow extends RenderBox
     return false;
   }
 }
+
+/// Internal scope that puts a [PaymentIconButton]'s glyph on the end edge of
+/// its 48 dp target instead of its centre, so a trailing copy glyph lines up
+/// with the row's value edge while the target stays inside the row (D57).
+class EdgeAlignedIcon extends InheritedWidget {
+  const EdgeAlignedIcon({super.key, required super.child});
+
+  static bool of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<EdgeAlignedIcon>() != null;
+
+  @override
+  bool updateShouldNotify(EdgeAlignedIcon oldWidget) => false;
+}

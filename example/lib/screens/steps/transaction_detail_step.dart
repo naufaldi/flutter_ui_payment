@@ -99,7 +99,9 @@ class TransactionDetailStep extends StatelessWidget {
             ),
             PaymentDetailProperty(
               label: s.propertyOrder,
-              values: const [PaymentDetailValue('DEMO-42')],
+              values: [
+                PaymentDetailValue('DEMO-42', reference: true, onCopy: c.copy),
+              ],
             ),
             PaymentDetailProperty(
               label: s.propertySupport,

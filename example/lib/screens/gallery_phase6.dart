@@ -192,6 +192,7 @@ class _KitSpecimenState extends State<_KitSpecimen> {
           InfoRow(
             label: tr('Reference', 'Referensi'),
             valueText: 'TRX-DEMO-0042',
+            reference: true,
             trailing: const PaymentCopyButton(
               value: 'TRX-DEMO-0042',
               onCopy: _copyGalleryValue,
