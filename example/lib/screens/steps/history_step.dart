@@ -58,9 +58,11 @@ class HistoryStep extends StatelessWidget {
         c.historyQuery.isNotEmpty;
     return PaymentFullPageView(
       title: s.transactions,
-      pageAction: PaymentButton(
+      // "Laporan ›" opens another screen: navigation on the title row
+      // (D59a), not a button under the title.
+      pageLink: PaymentLink(
+        key: const Key('statement'),
         label: s.statement,
-        variant: PaymentButtonVariant.secondary,
         onPressed: c.openStatement,
       ),
       child: Column(

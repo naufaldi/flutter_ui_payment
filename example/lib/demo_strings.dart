@@ -18,20 +18,32 @@ class DemoStrings {
   String get statement => _t("Statement", "Laporan");
   String get fees => _t("Fees", "Biaya");
   String get accountSettings => _t("Settings", "Pengaturan");
-  String get signInContinue =>
-      _t("Continue with Ruang Bayar", "Lanjut dengan Ruang Bayar");
+  // Sign-in as account linking (D61): Toko Belajar asks to use Ruang Bayar.
+  String get signInRequester => 'Toko Belajar';
+  String get signInTitle =>
+      _t("Sign in with Ruang Bayar", "Masuk dengan Ruang Bayar");
+  String get signInContinue => _t("Continue", "Lanjutkan");
+  String get signInCancel => _t("Cancel", "Batal");
   String get signInDescription => _t(
-    "Sign in to pay, verify your identity and see your payments.",
-    "Masuk untuk membayar, memverifikasi identitas, dan melihat pembayaran Anda.",
+    "To pay and see your payments in Toko Belajar.",
+    "Untuk membayar dan melihat pembayaran Anda di Toko Belajar.",
   );
-  String get signInLearnMore =>
-      _t("What this app can see", "Yang bisa dilihat aplikasi ini");
+  List<String> get signInCanDo => [
+    _t("See your name and account number", "Melihat nama dan nomor akun Anda"),
+    _t(
+      "Request payments, always with your confirmation",
+      "Meminta pembayaran, selalu dengan konfirmasi Anda",
+    ),
+  ];
+  List<String> get signInCannotDo => [
+    _t("See your PIN or balance", "Melihat PIN atau saldo Anda"),
+  ];
+  String get signInLegal => _t(
+    "By continuing you agree to Ruang Bayar’s {0} and {1}.",
+    "Dengan melanjutkan, Anda menyetujui {0} dan {1} Ruang Bayar.",
+  );
   String get signInCanceled =>
       _t("Sign-in was canceled. Try again.", "Masuk dibatalkan. Coba lagi.");
-  String get signInFootnote => _t(
-    "Ruang Bayar never asks for your PIN in this app.",
-    "Ruang Bayar tidak pernah meminta PIN Anda di aplikasi ini.",
-  );
   String get terms => _t("Terms", "Ketentuan");
   String get privacy => _t("Privacy", "Privasi");
   String get verifyTitle =>

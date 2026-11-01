@@ -83,7 +83,15 @@ class FlowScreen extends StatelessWidget {
                         )
                       : ListView(
                           key: ValueKey('flow-list-${c.step.name}'),
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                          // At 600 dp and wider the steps sit in a centred
+                          // 640 dp column; the scrollbar stays at the
+                          // window edge (D53).
+                          padding: EdgeInsets.fromLTRB(
+                            16 + listInset(context, c.step),
+                            8,
+                            16 + listInset(context, c.step),
+                            24,
+                          ),
                           children: [
                             if (c.notice == 'support') ...[
                               PaymentBanner(
@@ -846,6 +854,15 @@ class _HostTools extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Side inset that centres the content column in the window (D53): 640 dp,
+/// or 1040 dp for checkout's two columns from 840 dp (Q1).
+double listInset(BuildContext context, FlowStep step) {
+  final content = MediaQuery.sizeOf(context).width - 32;
+  if (content < 600 - 32) return 0;
+  final cap = step == FlowStep.checkout && content >= 840 ? 1040 : 640;
+  return ((content - cap) / 2).clamp(0, double.infinity);
 }
 
 bool _isViewStep(FlowStep step) => switch (step) {

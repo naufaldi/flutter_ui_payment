@@ -633,6 +633,12 @@ void main() {
 }
 
 Future<void> openReport(WidgetTester tester) async {
+  // A "Report sent" toast floats over the pinned footer (D62); dismiss it
+  // as a person would before reopening the report.
+  tester
+      .state<ScaffoldMessengerState>(find.byType(ScaffoldMessenger).first)
+      .clearSnackBars();
+  await settle(tester);
   final button = find.byKey(const Key('report-problem'));
   if (button.evaluate().isNotEmpty) {
     await tapVisible(tester, button);
