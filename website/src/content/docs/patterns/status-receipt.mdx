@@ -14,9 +14,9 @@ Renders one payment attempt from host-authoritative data. It never infers succes
 
 <Screens>
   <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="Unknown outcome: hatched band, Result not confirmed yet, amount, Don't pay again, Check status, payment reference." caption="Unknown outcome" />
-  <Screen name="ios_status_pending_light" alt="Pending in Indonesian: solid amber band, Menunggu, amount and explanation, Cek status." caption="Pending (Indonesian)" />
+  <Screen name="ios_status_pending_light" alt="Pending in Indonesian: solid amber band, Menunggu, amount and explanation, the payment reference, and Cek status pinned at the bottom with a quiet Hubungi bantuan under it." caption="Pending (Indonesian)" />
   <Screen name="ios_status_va_pending_light" dark="ios_status_va_pending_dark" alt="Virtual account instructions in Indonesian inside the status view: monospace number with copy, amount, countdown, folded steps." caption="PaymentInstructions in the instructions slot (Indonesian)" />
-  <Screen name="ios_receipt_light" dark="ios_receipt_dark" alt="Receipt in Indonesian with success band, merchant, amount, lines, total, masked method, transaction ID with copy and Bagikan struk." caption="PaymentReceipt (Indonesian)" />
+  <Screen name="ios_receipt_light" dark="ios_receipt_dark" alt="Receipt in Indonesian with success band, merchant, amount, lines, total, masked method, transaction ID with copy and Bagikan struk, and a pinned Selesai with a quiet Lihat detail under it." caption="PaymentReceipt (Indonesian)" />
 </Screens>
 
 ## Usage
@@ -45,10 +45,20 @@ PaymentStatusView(
 
 RefundSection(refund: snapshot.refund, paidAmount: quote.total);
 
-PaymentReceipt(
-  data: receiptData, // only for a payment your host confirmed as succeeded
-  onShare: (share) => host.share(share.title, share.text), // Future<ShareOutcome>
-  onCopyTransactionId: copyToClipboard,
+// A screen's body: the receipt scrolls and Done pins to the footer (D62).
+PaymentFullPageView(
+  title: 'Receipt',
+  primaryAction: PaymentButton(label: 'Done', onPressed: finish),
+  secondaryAction: PaymentButton(
+    label: 'View details',
+    variant: PaymentButtonVariant.quiet,
+    onPressed: openDetail,
+  ),
+  child: PaymentReceipt(
+    data: receiptData, // only for a payment your host confirmed as succeeded
+    onShare: (share) => host.share(share.title, share.text), // Future<ShareOutcome>
+    onCopyTransactionId: copyToClipboard,
+  ),
 );
 ```
 
@@ -56,9 +66,10 @@ The full sequence, including `PaymentAttempt` and `reconcile`, is in the [Quick 
 
 ## Behavior
 
+- **Pinned action (D62).** Given a bounded height, for example as a `Scaffold` body, the status scrolls and the first action pins to a footer at the bottom. Under it goes one quiet action: your `secondaryAction` (such as "Done" once the attempt is final), otherwise "Contact support". The other actions stay in the content as hug buttons, after the instructions. Pass a banner, such as "Cancellation requested", as `header` so it scrolls with the status. Inside a scroll view every action follows the status as before.
 - **Actions** come only from `attempt.availableActions`. While the outcome is unknown that is `checkStatus` alone. `startNewAttempt` appears only when your host allows it and the previous attempt is final and not a success.
 - **Unknown** reads "Don't pay again." first, with a hatched band. The "last updated" row appears only once a host snapshot exists.
-- **Instructions** sit after the explanation and before the actions, so the account to pay into comes before Check status. Above 1.5× text they move after the actions. They are not shown while the outcome is unknown, where an account to pay into would read as an invitation to pay again.
+- **Instructions** sit after the explanation and before the actions, so the account to pay into comes before Check status. Above 1.5× text, when the actions are inline, they move after the actions; with a pinned footer they keep their place. They are not shown while the outcome is unknown, where an account to pay into would read as an invitation to pay again.
 - **Countdown** uses the host clock and stops at zero; the widget only reports `onElapsed` and keeps the status check available. The virtual account number is set in the reference (monospace) font and steps fold under "How to pay".
 - **Refunds** appear in `RefundSection`, beside the original payment, never instead of it. A refund above `paidAmount` is treated as invalid host data.
 - **Receipt sharing** hands your callback only `ReceiptShareData`: merchant, transaction ID, time, total and the masked method. Line items and account identifiers are excluded. A failed or dismissed share never changes the receipt or the payment.

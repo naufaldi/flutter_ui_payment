@@ -18,11 +18,12 @@ Pin the payable total beside one primary Pay action. The host computes the amoun
 
 ```dart
 // example/lib/screens/flow_screen.dart
+// The summary already shows the total, so the bar holds only the action.
 PaymentActionBar(
-      total: quote?.total,
-      updating: c.quoting,
       action: PaymentButton(
         label: s.reviewAndPay,
+        busy: c.quoting,
+        busyLabel: PaymentLocalizations.of(context).updatingTotal,
         onPressed: quote != null && c.selectedMethod != null && !c.quoting
             ? c.reviewOrder
             : null,
@@ -43,8 +44,9 @@ Variants: ready, updating, disabled action. Nothing else exists.
 | Situation | Variant / composition | Payment example |
 | --- | --- | --- |
 | Pinned payable total | ready | Use one primary Pay action; updating means the host is recomputing the quote. |
+| Total already on screen (checkout summary) | action only, no `total` | The example's checkout: a full-width "Review payment", busy with "Updating total…" during a re-quote, so the total isn't shown three times and the bar stays compact at 200% (D62, #64). |
 
-Use Button group for secondary page actions.
+Use Button group for secondary page actions. Later payment-path screens (confirm, authorize, status, KYC) pin their own action when given a bounded height, so they don't need this bar (D62).
 
 ## States
 

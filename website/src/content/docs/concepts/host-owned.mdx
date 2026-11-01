@@ -37,6 +37,15 @@ Where a widget could be tempted to compute something, it takes your verdict inst
 - `PaymentStatusView` shows a status only from a `PaymentStatusSnapshot` you produced; it never infers success.
 - `VerificationStatusView` shows `verified` only when your snapshot says so, never because an upload finished.
 
+## Layout: the height you give opts into the pinned action
+
+You also own the screen's layout. `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentStatusView`, `VerificationIntro` and `VerificationStatusView` read the height you give them (D62):
+
+- **Bounded** (a `Scaffold` body, an `Expanded`, a `SizedBox`): the content scrolls and the priority action pins to a footer at the bottom, inside the safe area, with at most one quiet action under it.
+- **Unbounded** (inside your `ListView` or `SingleChildScrollView`): the actions follow the content, as before.
+
+Put a banner or summary that belongs above the widget in its `header`, so it scrolls with the content; wrapping both in a `Column` makes the height unbounded. In a payment flow, hide your app's tab bar so the pinned action is the only thing at the bottom. If you already gave one of these widgets a bounded height and want the old inline layout, put it in a scroll view.
+
 ## Errors
 
 Your adapter maps provider failures into a `HostError` with a `HostErrorCategory` (`network`, `timeout`, `validation`, `sessionExpired`, `notAllowed`, `conflict`, `invalidResponse`, `unavailable`, `unknown`) and an optional `safeMessage` you approved for end users. Raw exceptions and provider payloads never reach the widgets.

@@ -13,9 +13,9 @@ Everything between "what am I paying for" and "send it": every fee shown before 
 <HostOwns>the quote (lines, fees, discounts, total, expiry), the available methods and why some are unavailable, the balance and promo-code verdicts, and the authorization challenge.</HostOwns>
 
 <Screens>
-  <Screen name="ios_refined_checkout_light" dark="ios_refined_checkout_dark" alt="Checkout: summary led by the total, fee line, bordered method list with radios and an outlined selected row, pinned total and Review payment." caption="PaymentSummary, PaymentMethodPicker, PaymentActionBar" />
+  <Screen name="ios_refined_checkout_light" dark="ios_refined_checkout_dark" alt="Checkout: summary led by the total, fee line, bordered method list with radios and an outlined selected row, and a pinned full-width Review payment with no tab bar under it." caption="PaymentSummary, PaymentMethodPicker, PaymentActionBar" />
   <Screen name="ios_requote_light" alt="Review in Indonesian after a re-quote: a total-changed notice, an acceptance checkbox aligned to the content gutter and a disabled pay button." caption="PaymentConfirmation after a re-quote (Indonesian)" />
-  <Screen name="ios_authorize_light" alt="Host authorization step in Indonesian with a plain title, muted message and a button to start the host challenge." caption="AuthorizationPrompt (Indonesian)" />
+  <Screen name="ios_authorize_light" alt="Host authorization step in Indonesian: the total and method, a plain title and muted message, and the confirm button pinned at the bottom with a quiet back-to-review under it." caption="AuthorizationPrompt (Indonesian)" />
   <Screen name="ios_kit_checkout" dark="ios_kit_checkout_dark" alt="Gallery checkout section in Indonesian: MerchantHeader with a verified badge, PaymentStepIndicator at step 2 of 4, and the order summary." caption="MerchantHeader, PaymentStepIndicator (Indonesian)" />
   <Screen name="ios_methods_unavailable_light" dark="ios_methods_unavailable_dark" alt="Payment methods in Indonesian: the unavailable card has a thin muted radio ring and a danger-colored reason; the selected method retains its thick ring and outline." caption="Unavailable method (Indonesian)" />
 </Screens>
@@ -58,42 +58,54 @@ Scaffold(
       ),
     ],
   ),
+  // The summary already shows the total, so the bar holds only the action.
   bottomNavigationBar: PaymentActionBar(
-    total: quote.total,
-    updating: requoting,
     action: PaymentButton(
       label: 'Review payment',
+      busy: requoting,
+      busyLabel: 'Updating total…',
       onPressed: requoting ? null : review,
     ),
   ),
 );
 ```
 
-Then the review and the host challenge:
+Then the review and the host challenge, each as a screen's body. Given that bounded height, the content scrolls and the action pins to the bottom (D62):
 
 ```dart
-PaymentConfirmation(
-  quote: quote,
-  method: selectedMethod,
-  previousQuote: previousQuote, // after a re-quote: forces re-approval
-  onConfirm: () => host.revalidateAndAuthorize(quote), // returns a Future
+Scaffold(
+  appBar: AppBar(title: const Text('Review payment')),
+  body: SafeArea(
+    bottom: false, // the pinned footer pads the bottom inset itself
+    child: PaymentConfirmation(
+      header: sessionBanner, // optional: scrolls with the review
+      quote: quote,
+      method: selectedMethod,
+      previousQuote: previousQuote, // after a re-quote: forces re-approval
+      onConfirm: () => host.revalidateAndAuthorize(quote), // returns a Future
+    ),
+  ),
 );
 
 AuthorizationPrompt(
+  header: totalSection, // the amount being authorized
   phase: authPhase,
   onStart: host.startChallenge,
   onBackToReview: backToReview,
 );
 ```
 
+Inside a `ListView` or `SingleChildScrollView` the height is unbounded, and the button follows the content as before. Pass a banner or summary as `header` rather than wrapping it and the widget in a `Column`, which would make the height unbounded.
+
 ## Behavior
 
 - `PaymentSummary` leads with the total, then items, then every fee, discount and tax. Fees are never collapsed. With `previousQuote` it shows a notice with both totals.
 - `PaymentMethodPicker` shows unavailable methods disabled with your `unavailableReason`. `PaymentMethodPicker.validSelection(methods, id)` returns `null` when a selected method disappeared or became unavailable, so you can clear it.
 - `PaymentConfirmation` keeps `onConfirm` unreachable until the customer accepts a changed total.
+- **Pinned action (D62).** With a bounded height, `PaymentConfirmation` pins pay and `AuthorizationPrompt` pins its confirm button, with the quiet "Back to review" under it, in a footer inside the bottom safe area: full width on phones, hug buttons at the end edge from 600 dp. An approved authorization has no footer. Hide your app's tab bar on these screens so the action is the only thing at the bottom.
 - After a re-quote, `PaymentSummary` shows a warning [banner](/components/banner/) that states old → new ("Was Rp102.500, now Rp104.000"). It has no close button while the payment is open (D48), so the only cue that the total changed cannot be hidden before paying.
 - `AuthorizationPrompt` never receives a PIN, OTP or biometric result. Your SDK runs the challenge; you set the `AuthorizationPhase`. Canceled and failed have different copy, and neither is shown as a payment.
-- `PaymentActionBar` pins the total and the main action. While `updating` is true it says "Updating total…"; disable the action yourself.
+- `PaymentActionBar` pins the main action, with an optional total. While `updating` is true it says "Updating total…"; disable the action yourself. When the summary above already shows the total, leave `total` out and show the update on the button (`busy` with a `busyLabel`), so the total isn't on the screen three times.
 - For free-form amounts, such as a top-up, use [`PaymentCurrencyField`](/components/currency-field/).
 - `BalanceCard` never compares the balance with the total, and `PromoCodeInput` never computes a discount. A discount reaches the price only as a new host quote with a `QuoteLineKind.discount` line.
 
