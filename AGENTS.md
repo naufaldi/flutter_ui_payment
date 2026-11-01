@@ -14,7 +14,7 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
 
 - Host ownership (B11): no network, no clipboard or platform-channel call, no URL launching, no polling timers, no secrets in `lib/`. Check with the boundary grep in PRD §12.
 - Dependencies in `pubspec.yaml` stay `flutter` only (B11).
-- Semantic tokens only (B2, §3.0): spacing via `PaymentTheme.space(PaymentSpace.<role>)` (§3.3, D33, D46), colors and type from theme tokens, never literals.
+- Use semantic tokens per B2 and §3.0, including their documented raw-value exceptions (such as the scrims). Spacing follows §3.3, D33 and D46: `PaymentTheme.space(PaymentSpace.<role>)`.
 - Design every state that applies, from the PRD §4 states vocabulary.
 - Accessibility floor: 48 dp targets (B5) and 200% text at 320 dp with nothing clipped (B4).
 
@@ -35,8 +35,11 @@ flutter analyze                       # root
 (cd example && flutter analyze)
 flutter test                          # package tests
 (cd example && flutter test test/)
+(cd example && flutter test --no-pub integration_test/flow_test.dart -d <device>)
 cd website && pnpm build && pnpm check:pages && pnpm check:links && pnpm check:snippets
 ```
+
+The flow test runs on a simulator: take the simulator lock (Screenshots) first and follow the owner's global device rules.
 
 On this Mac a full `flutter test` sometimes fails to load a file with "Unable to connect to flutter_tester process: WebSocketException". Re-run that file alone (`flutter test --no-pub test/<file>.dart`) and report both results.
 
@@ -48,7 +51,7 @@ On this Mac a full `flutter test` sometimes fails to load a file with "Unable to
 - Selective runs: `--dart-define=CAPTURE_ONLY=…` with a matching `--dart-define=CAPTURE_LOOKS=…`, one session per look group. `node scripts/catalog-entries.mjs light,dark` (in `website/`) prints the entries for those looks.
 - Convert with `pnpm screens` in `website/` (`scripts/screens.mjs`): WebP into `website/public/screens`, registry in `website/src/data/screens.json`.
 - Names: `ios_catalog_<component>_variants{,_dark,_200,_id,_id_200}`, plus flow captures such as `ios_se_*_200` and `ios_ipad_*`.
-- Simulator lock: one simulator at a time across all agents. Every agent uses the same path, `SIM_LOCK=${SIM_LOCK:-/tmp/flutter-ui-payment-sim.lock}`. Take it with `mkdir "$SIM_LOCK"`; if that fails, retry every 60 s. Release it with `rmdir "$SIM_LOCK"` when done, including on failure.
+- Simulator lock: every agent uses the one path `/tmp/flutter-ui-payment-sim.lock`. Take it with `mkdir /tmp/flutter-ui-payment-sim.lock`; if that fails, retry every 60 s. Release it with `rmdir /tmp/flutter-ui-payment-sim.lock` when done, including on failure. Machine-wide simulator capacity is set by the owner's global instructions.
 - Open and look at every capture before claiming a visual result.
 
 ## Don'ts
