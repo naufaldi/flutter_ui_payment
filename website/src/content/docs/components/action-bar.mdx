@@ -44,7 +44,7 @@ Variants: ready, updating, disabled action. Nothing else exists.
 | Situation | Variant / composition | Payment example |
 | --- | --- | --- |
 | Pinned payable total | ready | Use one primary Pay action; updating means the host is recomputing the quote. |
-| Total already on screen (checkout summary) | action only, no `total` | The example's checkout: "Review payment", busy with "Updating total…" during a re-quote, so the total isn't shown three times and the bar stays compact at 200% (D62, #64). Full width on phones; from 600 dp it hugs at the end edge (#79). |
+| Total already on screen (checkout summary) | action only, no `total` | The example's checkout: "Review payment", busy with "Updating total…" during a re-quote, so the total isn't shown three times and the bar stays compact at 200% (D62, #64). Full width on phones; from 600 dp of available footer width (about 632 dp of window with the default gutters) it hugs at the end edge (#79). |
 
 Use Button group for secondary page actions. Later payment-path screens (confirm, authorize, status, KYC) pin their own action when given a bounded height, so they don't need this bar (D62).
 
@@ -54,7 +54,7 @@ Ready shows the host total and action. Updating keeps the total region stable wh
 
 **Layout.** The total stays laid out under the "Updating total" caption, so the bar keeps one height while the total refreshes, at every text scale.
 
-**Width.** From 600 dp the bar's content keeps the page's 640 dp column. An action alone follows the footer rule of views and the payment path (D59, D62): full width below 600 dp and at large text, a hug button at the end edge wider. With a total, the total takes the start side and the action hugs at the end.
+**Width.** From 600 dp the bar's content keeps the page's 640 dp column. An action alone follows the footer rule of views and the payment path (D59, D62): full width below 600 dp of available footer width and at large text, a hug button at the end edge wider. The width is measured inside the bar's padding, so with the default 16 dp gutters hugging starts at a window about 632 dp wide. With a total, the total takes the start side and the action hugs at the end.
 
 ## Do and don't
 

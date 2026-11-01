@@ -32,8 +32,9 @@ class PaymentActionBar extends StatelessWidget {
 
   /// Main action; pass width: PaymentWidth.hug on PaymentButton. With no
   /// [total] the action fills the bar on phones and at large text, so pass
-  /// a full-width button; from 600 dp it hugs at the end edge, like other
-  /// pinned footers (D59, D62).
+  /// a full-width button. From 600 dp of available footer width (about
+  /// 632 dp of window with the default gutters) it hugs at the end edge,
+  /// like other pinned footers (D59, D62).
   final Widget action;
   final Money? total;
   final String? totalLabel;
@@ -120,7 +121,8 @@ class PaymentActionBar extends StatelessWidget {
           theme.space(PaymentSpace.block),
         ),
         // An action alone follows ViewFooter's rule: full width below 600 dp
-        // and at large text, hugging at the end edge wider (#79). With a
+        // of footer width (inside the padding) and at large text, hugging at
+        // the end edge wider (#79). With a
         // total: side by side at normal text sizes; stacked when text is
         // large so the amount never shrinks to fit beside the button.
         child: totalBlock == null
