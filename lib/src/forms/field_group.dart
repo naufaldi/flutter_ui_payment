@@ -172,6 +172,27 @@ class _RenderLeadingOverhang extends RenderProxyBox {
   }
 
   @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final child = this.child!.getDryLayout(
+      constraints.copyWith(
+        minHeight: 0,
+        maxHeight: constraints.maxHeight + _overhang,
+      ),
+    );
+    return constraints.constrain(
+      Size(child.width, math.max(0, child.height - _overhang)),
+    );
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) =>
+      math.max(0, super.computeMinIntrinsicHeight(width) - _overhang);
+
+  @override
+  double computeMaxIntrinsicHeight(double width) =>
+      math.max(0, super.computeMaxIntrinsicHeight(width) - _overhang);
+
+  @override
   void paint(PaintingContext context, Offset offset) =>
       context.paintChild(child!, offset.translate(0, -_overhang));
 

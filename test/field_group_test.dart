@@ -109,6 +109,14 @@ void main() {
         Offset(row.center.dx, tester.getRect(find.text('Legend')).bottom + 1),
       );
       expect(toggled, isTrue);
+      // The legend still comes before the row it overlaps.
+      final order = tester.semantics.simulatedAccessibilityTraversal().toList();
+      final legendAt = order.indexWhere((n) => n.label == 'Legend');
+      expect(legendAt, isNonNegative);
+      expect(
+        legendAt,
+        lessThan(order.indexWhere((n) => n.label.contains('Refunds'))),
+      );
       expect(
         await gap(
           PaymentRadio<int>(
