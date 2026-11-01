@@ -13,6 +13,7 @@ Widget host(
   double scale = 1,
   bool dark = false,
   double width = 320,
+  bool bold = false,
 }) => MaterialApp(
   locale: Locale(locale),
   supportedLocales: const [Locale('en'), Locale('id')],
@@ -22,7 +23,7 @@ Widget host(
   ],
   theme: ThemeData(brightness: dark ? Brightness.dark : Brightness.light),
   home: MediaQuery(
-    data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+    data: MediaQueryData(textScaler: TextScaler.linear(scale), boldText: bold),
     child: Scaffold(
       body: SingleChildScrollView(
         child: SizedBox(width: width, child: child),
@@ -612,6 +613,85 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+  group('readout cache measures again when its inputs change (#78)', () {
+    List<ChartPoint> readings(List<int> values) => [
+      for (final (i, v) in values.indexed)
+        ChartPoint(label: 'W${i + 1}', value: Money.idr(v)),
+    ];
+    List<PaymentChartSeries> pair() => [
+      PaymentChartSeries(label: 'Now', points: readings([9500, 10000, 10500])),
+      PaymentChartSeries(label: 'Then', points: readings([9500, 10000, 10500])),
+    ];
+    Widget chart(
+      List<PaymentChartSeries> series, {
+      bool zeroBased = true,
+      double width = 393,
+      bool bold = false,
+    }) => host(
+      SizedBox(
+        height: 240,
+        child: PaymentLineChart(series: series, zeroBased: zeroBased),
+      ),
+      width: width,
+      bold: bold,
+    );
+    // The band a chart with no earlier state measures for [widget].
+    Future<double> freshBand(WidgetTester tester, Widget widget) async {
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpWidget(widget);
+      return chartPainter(tester).band;
+    }
+
+    testWidgets('zeroBased changes the ticks and the gutter', (tester) async {
+      final series = pair();
+      await tester.pumpWidget(chart(series, zeroBased: false, width: 330));
+      final before = chartPainter(tester).band;
+      await tester.pumpWidget(chart(series, width: 330));
+      final band = chartPainter(tester).band;
+      final fresh = await freshBand(tester, chart(series, width: 330));
+      expect(fresh, isNot(before));
+      expect(band, fresh);
+    });
+    testWidgets('a series replaced in the same list', (tester) async {
+      final series = pair();
+      await tester.pumpWidget(chart(series));
+      final before = chartPainter(tester).band;
+      series[0] = PaymentChartSeries(
+        label: 'This month so far',
+        points: series[0].points,
+      );
+      await tester.pumpWidget(chart(series));
+      final band = chartPainter(tester).band;
+      final fresh = await freshBand(tester, chart(series));
+      expect(fresh, isNot(before));
+      expect(band, fresh);
+    });
+    testWidgets('a point value changed in its list', (tester) async {
+      final series = pair();
+      await tester.pumpWidget(chart(series));
+      final before = chartPainter(tester).band;
+      series[0].points[2] = const ChartPoint(
+        label: 'W3',
+        value: Money.idr(10500000000),
+      );
+      await tester.pumpWidget(chart(series));
+      final band = chartPainter(tester).band;
+      final fresh = await freshBand(tester, chart(series));
+      expect(fresh, isNot(before));
+      expect(band, fresh);
+    });
+    testWidgets('bold text', (tester) async {
+      final series = pair();
+      await tester.pumpWidget(chart(series));
+      final measured = debugReadoutMeasures;
+      await tester.pumpWidget(chart(series, bold: true));
+      // The test font has the same advance in bold, so the band can't
+      // differ here; the measurement must still run again.
+      expect(debugReadoutMeasures, greaterThan(measured));
+      final band = chartPainter(tester).band;
+      expect(band, await freshBand(tester, chart(series, bold: true)));
+    });
+  });
   testWidgets('new periods return to rest; the same periods keep a pick', (
     tester,
   ) async {

@@ -245,9 +245,11 @@ class _PointChartState extends State<_PointChart> {
   /// The period a tap, drag or hover picked; null is the rest state.
   int? selected;
 
-  // Readout layouts by width, measured for [_readoutKey]. A tap, drag or
-  // hover only changes the selection, so it reuses them (#78).
+  // Readout layouts by width, measured for [_readoutKey] and
+  // [_readoutData]. A tap, drag or hover only changes the selection, so it
+  // reuses them (#78).
   Object? _readoutKey;
+  List<Object?>? _readoutData;
   final _readoutLayouts = <double, ({bool stacked, int lines})>{};
 
   static List<String> _periods(_PointChart chart) => [
@@ -326,6 +328,14 @@ class _PointChartState extends State<_PointChart> {
     final style = type.caption.tabular;
     final scaler = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.5);
     final direction = Directionality.of(context);
+    // The readout's own Text style: the band's merged caption, bold when the
+    // platform asks for bold text.
+    var readoutStyle = DefaultTextStyle.of(context).style.merge(style);
+    if (MediaQuery.boldTextOf(context)) {
+      readoutStyle = readoutStyle.merge(
+        const TextStyle(fontWeight: FontWeight.bold),
+      );
+    }
     ChartPainter painterFor(int? shown, [int? bandLines]) => ChartPainter(
       series: series,
       unit: widget.unit,
@@ -375,11 +385,14 @@ class _PointChartState extends State<_PointChart> {
     ({bool stacked, int lines}) measureReadout(double width) {
       final oneLine = (stacked: false, lines: series.length);
       if (widget.spark || series.length < 2 || points.isEmpty) return oneLine;
-      debugReadoutMeasures++;
+      assert(() {
+        debugReadoutMeasures++;
+        return true;
+      }());
       final room = math.max(0.0, painterFor(null).plot(Size(width, 0)).width);
       double measure(String text, {bool lines = false}) {
         final painter = TextPainter(
-          text: TextSpan(text: text, style: style),
+          text: TextSpan(text: text, style: readoutStyle),
           textDirection: direction,
           textScaler: scaler,
           maxLines: 2,
@@ -419,21 +432,30 @@ class _PointChartState extends State<_PointChart> {
       );
     }
 
-    // Everything the readout's text and the plot width depend on. Lists
-    // compare by identity, so new series data measures again.
+    // Everything the readout's text, the ticks and the y gutter depend on.
+    // The data is a value snapshot, not list identity, because a host can
+    // change the lists in place.
     final readoutKey = (
-      widget.series,
-      widget.points,
       widget.unit,
       widget.spark,
+      widget.bars,
+      widget.zeroBased,
       widget.axis,
       Localizations.maybeLocaleOf(context),
       direction,
       style,
+      readoutStyle,
       scaler,
     );
-    if (readoutKey != _readoutKey) {
+    final readoutData = [
+      for (final s in series) ...[
+        s.label,
+        for (final p in s.points) ...[p.label, p.value, p.measure, p.status],
+      ],
+    ];
+    if (readoutKey != _readoutKey || !listEquals(readoutData, _readoutData)) {
       _readoutKey = readoutKey;
+      _readoutData = readoutData;
       _readoutLayouts.clear();
     }
     ({bool stacked, int lines}) readoutLayout(double width) {
