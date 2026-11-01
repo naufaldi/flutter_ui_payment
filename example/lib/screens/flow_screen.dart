@@ -37,108 +37,115 @@ class FlowScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: coordinator,
-      builder: (context, _) {
-        final c = coordinator;
-        final s = DemoStrings.of(context);
-        final atRoot = c.step == FlowStep.overview || c.step == FlowStep.signIn;
-        final view = _isViewStep(c.step) && !c.starting;
-        final title = _ownHeader(c) ? null : _title(s, c.step);
-        final titleLines = title == null
-            ? 1
-            : _appBarTitleLines(
-                context,
-                title,
-                leading: !atRoot,
-                actions: c.signedIn ? 2 : 1,
-              );
-        return PopScope(
-          canPop: atRoot,
-          onPopInvokedWithResult: (didPop, _) {
-            if (!didPop) _handleBack(context, c);
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              // A title that doesn't fit on one line wraps to two in a
-              // taller bar instead of ending in "…" (#80).
-              toolbarHeight: titleLines == 1
-                  ? null
-                  : kToolbarHeight + _appBarTitleLine(context),
-              leading: atRoot
-                  ? null
-                  : BackButton(onPressed: () => _handleBack(context, c)),
-              title: title == null
-                  ? null
-                  : Text(title, maxLines: titleLines, softWrap: true),
-              actions: [
-                if (c.signedIn) _AccountMenu(coordinator: c),
-                IconButton(
-                  key: const Key('settings'),
-                  tooltip: s.settings,
-                  icon: const Icon(Icons.tune),
-                  onPressed: () => onOpenSettings(
-                    () => _showDemoTools(
-                      context,
-                      coordinator: c,
-                      scenarioLabel: scenarioLabel,
-                      onRestart: onRestart,
-                      onBackground: onBackground,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            // Checkout pins its action under the list; the other payment
-            // steps pin theirs inside the step (D62).
-            bottomNavigationBar:
-                c.step == FlowStep.checkout && !c.starting && !c.obscured
-                ? _CheckoutBar(c)
-                : null,
-            // A view step's pinned footer pads the bottom inset itself.
-            body: SafeArea(
-              bottom: !view,
-              child: PrivacyMask(
-                obscured: c.obscured,
-                // Each step enters with a short fade and 8 px rise; the
-                // previous step leaves faster. Collapses under reduced motion.
-                child: AnimatedSwitcher(
-                  duration: PaymentMotion.of(context).enter,
-                  reverseDuration: PaymentMotion.of(context).exit,
-                  transitionBuilder: PaymentMotion.fadeRise,
-                  layoutBuilder: PaymentMotion.topLayout,
-                  child: view
-                      ? SizedBox.expand(
-                          key: ValueKey('flow-view-${c.step.name}'),
-                          child: _StepBody(coordinator: c),
-                        )
-                      : ListView(
-                          key: ValueKey('flow-list-${c.step.name}'),
-                          // At 600 dp and wider the steps sit in a centred
-                          // 640 dp column; the scrollbar stays at the
-                          // window edge (D53).
-                          padding: EdgeInsets.fromLTRB(
-                            16 + listInset(context, c.step),
-                            8,
-                            16 + listInset(context, c.step),
-                            24,
-                          ),
-                          children: [
-                            if (c.starting)
-                              Padding(
-                                padding: const EdgeInsets.all(32),
-                                child: Center(child: Text(s.loading)),
-                              )
-                            else
-                              _StepBody(coordinator: c),
-                          ],
-                        ),
+    // The column is measured from the width this screen gets, not the
+    // window: from 840 dp the app's side rail takes part of the window
+    // (#84). The list and the checkout bar share it.
+    return LayoutBuilder(
+      builder: (context, k) => ListenableBuilder(
+        listenable: coordinator,
+        builder: (context, _) => _build(context, k.maxWidth),
+      ),
+    );
+  }
+
+  Widget _build(BuildContext context, double width) {
+    final c = coordinator;
+    final s = DemoStrings.of(context);
+    final atRoot = c.step == FlowStep.overview || c.step == FlowStep.signIn;
+    final view = _isViewStep(c.step) && !c.starting;
+    final title = _ownHeader(c) ? null : _title(s, c.step);
+    final titleLines = title == null
+        ? 1
+        : _appBarTitleLines(
+            context,
+            title,
+            leading: !atRoot,
+            actions: c.signedIn ? 2 : 1,
+          );
+    return PopScope(
+      canPop: atRoot,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _handleBack(context, c);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          // A title that doesn't fit on one line wraps to two in a
+          // taller bar instead of ending in "…" (#80).
+          toolbarHeight: titleLines == 1
+              ? null
+              : kToolbarHeight + _appBarTitleLine(context),
+          leading: atRoot
+              ? null
+              : BackButton(onPressed: () => _handleBack(context, c)),
+          title: title == null
+              ? null
+              : Text(title, maxLines: titleLines, softWrap: true),
+          actions: [
+            if (c.signedIn) _AccountMenu(coordinator: c),
+            IconButton(
+              key: const Key('settings'),
+              tooltip: s.settings,
+              icon: const Icon(Icons.tune),
+              onPressed: () => onOpenSettings(
+                () => _showDemoTools(
+                  context,
+                  coordinator: c,
+                  scenarioLabel: scenarioLabel,
+                  onRestart: onRestart,
+                  onBackground: onBackground,
                 ),
               ),
             ),
+          ],
+        ),
+        // Checkout pins its action under the list; the other payment
+        // steps pin theirs inside the step (D62).
+        bottomNavigationBar:
+            c.step == FlowStep.checkout && !c.starting && !c.obscured
+            ? _CheckoutBar(c, maxContentWidth: contentCap(width, c.step))
+            : null,
+        // A view step's pinned footer pads the bottom inset itself.
+        body: SafeArea(
+          bottom: !view,
+          child: PrivacyMask(
+            obscured: c.obscured,
+            // Each step enters with a short fade and 8 px rise; the
+            // previous step leaves faster. Collapses under reduced motion.
+            child: AnimatedSwitcher(
+              duration: PaymentMotion.of(context).enter,
+              reverseDuration: PaymentMotion.of(context).exit,
+              transitionBuilder: PaymentMotion.fadeRise,
+              layoutBuilder: PaymentMotion.topLayout,
+              child: view
+                  ? SizedBox.expand(
+                      key: ValueKey('flow-view-${c.step.name}'),
+                      child: _StepBody(coordinator: c),
+                    )
+                  : ListView(
+                      key: ValueKey('flow-list-${c.step.name}'),
+                      // At 600 dp and wider the steps sit in a centred
+                      // 640 dp column; the scrollbar stays at the
+                      // window edge (D53).
+                      padding: EdgeInsets.fromLTRB(
+                        16 + listInset(width, c.step),
+                        8,
+                        16 + listInset(width, c.step),
+                        24,
+                      ),
+                      children: [
+                        if (c.starting)
+                          Padding(
+                            padding: const EdgeInsets.all(32),
+                            child: Center(child: Text(s.loading)),
+                          )
+                        else
+                          _StepBody(coordinator: c),
+                      ],
+                    ),
+            ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -544,8 +551,11 @@ class _Checkout extends StatelessWidget {
 }
 
 class _CheckoutBar extends StatelessWidget {
-  const _CheckoutBar(this.c);
+  const _CheckoutBar(this.c, {required this.maxContentWidth});
   final DemoCoordinator c;
+
+  /// The content's column cap, so the action ends where the content does.
+  final double maxContentWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -554,6 +564,7 @@ class _CheckoutBar extends StatelessWidget {
     // The summary already shows the total twice, so the bar holds only the
     // action: compact at 200% text on a small phone (#64, #58).
     return PaymentActionBar(
+      maxContentWidth: maxContentWidth,
       action: PaymentButton(
         key: const Key('review-order'),
         label: s.reviewAndPay,
@@ -890,13 +901,18 @@ class _HostTools extends StatelessWidget {
   }
 }
 
-/// Side inset that centres the content column in the window (D53): 640 dp,
-/// or 1040 dp for checkout's two columns from 840 dp (Q1).
-double listInset(BuildContext context, FlowStep step) {
-  final content = MediaQuery.sizeOf(context).width - 32;
+/// Widest content column for [step] in a flow screen [width] wide (D53):
+/// 640 dp, or 1040 dp for checkout's two columns from 840 dp of content
+/// (Q1). The checkout bar takes the same cap, so its action ends where the
+/// content does (#84).
+double contentCap(double width, FlowStep step) =>
+    step == FlowStep.checkout && width - 32 >= 840 ? 1040 : 640;
+
+/// Side inset that centres the content column in the flow screen (D53).
+double listInset(double width, FlowStep step) {
+  final content = width - 32;
   if (content < 600 - 32) return 0;
-  final cap = step == FlowStep.checkout && content >= 840 ? 1040 : 640;
-  return ((content - cap) / 2).clamp(0, double.infinity);
+  return ((content - contentCap(width, step)) / 2).clamp(0, double.infinity);
 }
 
 /// AppBar caps its title at 1.34x text (Material's limit), on one line.

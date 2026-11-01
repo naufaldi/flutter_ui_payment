@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -6,6 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter_ui_payment_example/coordinator/demo_coordinator.dart';
 import 'package:flutter_ui_payment_example/main.dart';
+import 'package:flutter_ui_payment_example/screens/flow_screen.dart';
+import 'package:flutter_ui_payment_example/screens/steps/order_context.dart';
 import '../integration_test/support.dart';
 
 // D62: on the payment path the priority action pins to the bottom and the
@@ -190,6 +193,107 @@ void main() {
       await drain(t);
     });
   }
+
+  // #84: the checkout bar takes the content's column. From 840 dp of
+  // content the checkout shows the order context beside the form, capped at
+  // 1040 dp, and the bar's column and its action's end edge follow; below
+  // that both keep the 640 dp column. Widths are the flow screen's, not the
+  // window's: from an 840 dp window the app's side rail takes its share.
+  group('checkout bar column follows the content (#84)', () {
+    Future<({double screen, Rect content, Rect column, Rect action})>
+    checkoutAt(WidgetTester t, Size size) async {
+      surface(t, size);
+      final app = await launch(
+        t,
+        settings: const DemoSettings(locale: Locale('en')),
+      );
+      final c = await runScenario(t, app, 'H02');
+      await pumpUntil(t, () => c.quote != null && !c.quoting);
+      await settle(t);
+      expect(c.step, FlowStep.checkout);
+      // Two columns: the row that holds the order context. One column: the
+      // method picker, which spans the column.
+      final twoColumns = find.byType(OrderContext).evaluate().isNotEmpty;
+      final content = t.getRect(
+        twoColumns
+            ? find
+                  .ancestor(
+                    of: find.byType(OrderContext),
+                    matching: find.byType(Row),
+                  )
+                  .first
+            : find.byType(PaymentMethodPicker),
+      );
+      return (
+        screen: t.getSize(find.byType(FlowScreen)).width,
+        content: content,
+        // The bar's LayoutBuilder fills its capped column.
+        column: t.getRect(
+          find
+              .descendant(
+                of: find.byType(PaymentActionBar),
+                matching: find.byType(LayoutBuilder),
+              )
+              .first,
+        ),
+        action: t.getRect(find.byKey(const Key('review-order'))),
+      );
+    }
+
+    void expectShared(
+      ({double screen, Rect content, Rect column, Rect action}) r,
+    ) {
+      expect(r.column.width, moreOrLessEquals(r.content.width, epsilon: 1));
+      expect(r.column.left, moreOrLessEquals(r.content.left, epsilon: 1));
+      // The action hugs at the end edge of the content (D59, #79).
+      expect(r.action.right, moreOrLessEquals(r.content.right, epsilon: 1));
+      expect(r.action.width, lessThan(r.content.width / 2));
+    }
+
+    // iPad landscape sizes, then either side of 840 dp of content: the test
+    // font's rail is about 130 dp, so 1001 and 1003 straddle it.
+    for (final (size, twoColumns) in [
+      (const Size(1024, 768), true),
+      (const Size(1194, 834), true),
+      (const Size(1003, 834), true),
+      (const Size(1001, 834), false),
+      (const Size(871, 1000), false),
+      (const Size(744, 1133), false),
+    ]) {
+      testWidgets('${size.width.toInt()}dp: the bar takes the content column', (
+        t,
+      ) async {
+        final r = await checkoutAt(t, size);
+        // Guard: the window lands on the intended side of the rule.
+        expect(r.screen - 32 >= 840, twoColumns);
+        expect(
+          find.byType(OrderContext),
+          twoColumns ? findsOneWidget : findsNothing,
+        );
+        final width = twoColumns
+            ? math.min(r.screen - 32, 1040.0)
+            : math.min(r.screen - 32, 640.0);
+        expect(r.content.width, moreOrLessEquals(width, epsilon: 1));
+        // Centred in the flow screen.
+        final screenLeft = size.width - r.screen;
+        expect(
+          r.content.left - screenLeft,
+          moreOrLessEquals(size.width - r.content.right, epsilon: 1),
+        );
+        expectShared(r);
+        await drain(t);
+      });
+    }
+
+    testWidgets('393dp phone: the action is full width', (t) async {
+      final r = await checkoutAt(t, const Size(393, 852));
+      expect(r.column.width, 393 - 32);
+      expect(r.action.left, 16);
+      expect(r.action.width, 393 - 32);
+      expect(r.content.width, moreOrLessEquals(393 - 32, epsilon: 1));
+      await drain(t);
+    });
+  });
 
   testWidgets('status: the quiet Done joins the pinned primary', (t) async {
     surface(t, const Size(393, 852));

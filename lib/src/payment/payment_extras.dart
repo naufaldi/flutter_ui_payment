@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../foundation/button_copy.dart';
 import '../foundation/kit_strings.dart';
+import '../foundation/layout_rules.dart';
 import '../foundation/money.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
@@ -28,17 +29,23 @@ class PaymentActionBar extends StatelessWidget {
     this.total,
     this.totalLabel,
     this.updating = false,
+    this.maxContentWidth = kContentMaxWidth,
   });
 
   /// Main action; pass width: PaymentWidth.hug on PaymentButton. With no
   /// [total] the action fills the bar on phones and at large text, so pass
   /// a full-width button. From 600 dp of available footer width (about
-  /// 632 dp of window with the default gutters) it hugs at the end edge,
-  /// like other pinned footers (D59, D62).
+  /// 632 dp of window with the default gutters) it hugs at the end edge of
+  /// the [maxContentWidth] column, like other pinned footers (D59, D62).
   final Widget action;
   final Money? total;
   final String? totalLabel;
   final bool updating;
+
+  /// Widest column for the bar's content, centred like the page's (D53).
+  /// Pass the cap of the content above the bar, e.g. 1040 when it shows two
+  /// columns, so the action's end edge lines up with the content's (#84).
+  final double maxContentWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -111,9 +118,10 @@ class PaymentActionBar extends StatelessWidget {
     }
     return Material(
       color: theme.surface,
-      // At 600 dp and wider the bar's content keeps the page's 640 dp
-      // column while the hairline spans the window (D53).
+      // At 600 dp and wider the bar's content keeps the page's column
+      // while the hairline spans the window (D53).
       child: PinnedFooter(
+        maxContentWidth: maxContentWidth,
         padding: EdgeInsets.fromLTRB(
           theme.space(PaymentSpace.group),
           theme.space(PaymentSpace.block),
