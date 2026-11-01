@@ -1182,23 +1182,22 @@ class _CountdownTextState extends State<CountdownText> {
     final type = PaymentType.of(context);
     final left = _left;
     final style = type.tabular(type.label.merge(widget.style));
+    final painter = TextPainter(
+      text: TextSpan(text: _widest, style: style),
+      textScaler: MediaQuery.textScalerOf(context),
+      textDirection: Directionality.of(context),
+      maxLines: 1,
+    )..layout();
+    final widest = painter.width;
+    painter.dispose();
     return Semantics(
       label: l10n.timeRemaining(CountdownText.formatDuration(left)),
       excludeSemantics: true,
       // Reserves the widest format, so 1:00:00 → 59:59 keeps one width
       // (#46).
-      child: Stack(
-        alignment: AlignmentDirectional.centerStart,
-        children: [
-          Visibility(
-            visible: false,
-            maintainSize: true,
-            maintainAnimation: true,
-            maintainState: true,
-            child: Text(_widest, style: style),
-          ),
-          Text(CountdownText.formatDuration(left), style: style),
-        ],
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: widest),
+        child: Text(CountdownText.formatDuration(left), style: style),
       ),
     );
   }
