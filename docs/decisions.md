@@ -477,10 +477,10 @@ Review of every component and flow against the 8 pt grid and the emil-ui-review 
 
 - **D58 — exact chart values:** the latest point or bar is selected at rest with a guide line to one exact-amount label; tap or drag moves it; markers on series of ≤ 12 points; line and bar charts (issues #62, #63).
 
-**Proposed, pending owner decision** (do not implement until decided):
+- **D59 — button width:** full width only for finishing or advancing actions in footers, sheets and dialogs on phones; everything else hugs (issue #63).
+- **D60 — table rows on phones** render like a property list (issue #63).
+- **D61 — sign-in is an account-linking screen** with a visible can / cannot list and a pinned "Lanjutkan" (issue #63).
 
-- **D59 — button width:** full width on phones only for actions that finish or advance the task in a footer, sheet or dialog; hug for page-header actions and actions inside rows, cards, banners, state messages and tables (issue #63).
-- **D60 — table rows on phones** render like a property list: label left, value on the one value edge, tabular money; the row title and its ⋮ share the first line (issue #63).
-- **D61 — sign-in as account linking:** app tiles, one specific headline, a visible can / cannot list, one legal sentence, and a pinned footer with a short "Lanjutkan" and a quiet "Batal" (issue #63; mock on the issue).
+**Evidence method.** Annotated review images are real simulator captures with guide lines and boxes drawn on top at measured coordinates (±2 pt); mocks are HTML drawings of a proposal, not app screens. All images live on the image-only `ui-review-evidence` branch.
 
 Problems found in the review are recorded as issues before any work: #45–#50, #52–#63.
