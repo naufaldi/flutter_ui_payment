@@ -296,6 +296,25 @@ const screens = {
   // English catalog captures (example/integration_test/catalog_screenshots_test.dart).
   ios_catalog_foundation: 'Gallery: foundation specimen (English formatting, Indonesian row labels)',
   ios_catalog_menu_open: 'Gallery: action menu open, English',
+  // Indonesian catalog looks (UI review P1, #59): real Indonesian lengths.
+  ios_catalog_banner_variants_id: 'banner specimen, Indonesian',
+  ios_catalog_banner_variants_id_200: 'banner specimen at 200% text, Indonesian',
+  ios_catalog_list_variants_id: 'list specimen, Indonesian',
+  ios_catalog_list_variants_id_200: 'list specimen at 200% text, Indonesian',
+  ios_catalog_menu_variants_id: 'menu specimen, Indonesian',
+  ios_catalog_menu_variants_id_200: 'menu specimen at 200% text, Indonesian',
+  ios_catalog_toast_variants_id: 'toast specimen, Indonesian',
+  ios_catalog_toast_variants_id_200: 'toast specimen at 200% text, Indonesian',
+  ios_catalog_dialog_variants_id: 'showPaymentConfirmDialog specimen, Indonesian',
+  ios_catalog_dialog_variants_id_200: 'showPaymentConfirmDialog specimen at 200% text, Indonesian',
+  ios_catalog_tabs_variants_id: 'tabs specimen, Indonesian',
+  ios_catalog_tabs_variants_id_200: 'tabs specimen at 200% text, Indonesian',
+  ios_catalog_chip_variants_id: 'chip specimen, Indonesian',
+  ios_catalog_chip_variants_id_200: 'chip specimen at 200% text, Indonesian',
+  ios_catalog_button_group_variants_id: 'button group specimen, Indonesian',
+  ios_catalog_button_group_variants_id_200: 'button group specimen at 200% text, Indonesian',
+  ios_catalog_tooltip_variants_id: 'tooltip specimen, Indonesian',
+  ios_catalog_tooltip_variants_id_200: 'tooltip specimen at 200% text, Indonesian',
 };
 
 mkdirSync(target, { recursive: true });

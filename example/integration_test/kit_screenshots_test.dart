@@ -19,7 +19,12 @@ void main() {
   testWidgets('capture refined flow and gallery sections', (tester) async {
     if (Platform.isAndroid) await binding.convertFlutterSurfaceToImage();
     final app = await launch(tester);
-    final platform = Platform.isIOS ? 'ios' : 'android';
+    // CAPTURE_DEVICE (se, ipad) names a device set: ios_<device>_<screen>.
+    const device = String.fromEnvironment('CAPTURE_DEVICE');
+    final platform = [
+      Platform.isIOS ? 'ios' : 'android',
+      if (device.isNotEmpty) device,
+    ].join('_');
 
     Future<void> shot(String name) async {
       await settle(tester);

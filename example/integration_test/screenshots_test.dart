@@ -23,7 +23,12 @@ void main() {
   testWidgets('capture key screens', (tester) async {
     if (Platform.isAndroid) await binding.convertFlutterSurfaceToImage();
     final app = await launch(tester);
-    final platform = Platform.isIOS ? 'ios' : 'android';
+    // CAPTURE_DEVICE (se, ipad) names a device set: ios_<device>_<screen>.
+    const device = String.fromEnvironment('CAPTURE_DEVICE');
+    final platform = [
+      Platform.isIOS ? 'ios' : 'android',
+      if (device.isNotEmpty) device,
+    ].join('_');
 
     Future<void> shot(String screen, String look) async {
       await settle(tester);
