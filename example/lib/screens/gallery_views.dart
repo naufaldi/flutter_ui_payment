@@ -26,27 +26,36 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
     bool error = false,
     bool horizontal = false,
   }) => PaymentDetailPagePropertyList(
-    title: 'Payment details',
+    title: _t(context, 'Payment details', 'Rincian pembayaran'),
     pending: pending,
     orientation: horizontal ? Axis.horizontal : Axis.vertical,
-    errorText: error ? 'Details didn’t load' : null,
+    errorText: error
+        ? _t(context, 'Details didn’t load', 'Rincian gagal dimuat')
+        : null,
     onRetry: () {},
     onCreate: empty ? () {} : null,
-    emptyMessage: const PaymentEmptyMessage(
-      'No details yet',
-      message: 'Add a payment detail to get started.',
+    emptyMessage: PaymentEmptyMessage(
+      _t(context, 'No details yet', 'Belum ada rincian'),
+      message: _t(
+        context,
+        'Add a payment detail to get started.',
+        'Tambahkan rincian pembayaran untuk memulai.',
+      ),
     ),
     items: empty
         ? const []
         : [
-            const PaymentDetailProperty(
-              label: 'Amount',
+            PaymentDetailProperty(
+              label: _t(context, 'Amount', 'Jumlah'),
               values: [
-                PaymentDetailValue('Rp102.500', subText: 'Including fee'),
+                PaymentDetailValue(
+                  'Rp102.500',
+                  subText: _t(context, 'Including fee', 'Termasuk biaya'),
+                ),
               ],
             ),
             PaymentDetailProperty(
-              label: 'Merchant',
+              label: _t(context, 'Merchant', 'Merchant'),
               values: [
                 PaymentDetailValue.link(
                   PaymentLink(label: 'Toko Contoh', onPressed: () {}),
@@ -60,33 +69,40 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
     bool empty = false,
     bool error = false,
   }) => PaymentDetailPageTable<int>(
-    title: 'Attempts',
+    title: _t(context, 'Attempts', 'Percobaan'),
     pending: pending,
-    errorText: error ? 'Attempts didn’t load' : null,
+    errorText: error
+        ? _t(context, 'Attempts didn’t load', 'Percobaan gagal dimuat')
+        : null,
     onRetry: () {},
     columns: [
       PaymentDataColumn<int>(
         key: 'time',
-        label: 'Time',
+        label: _t(context, 'Time', 'Waktu'),
         value: (r) => DateTime(2026, 10, 1, 10, r),
         cell: PaymentCellType.date,
       ),
       PaymentDataColumn<int>(
         key: 'method',
-        label: 'Method',
-        value: (r) => 'BCA virtual account',
+        label: _t(context, 'Method', 'Metode'),
+        value: (r) => _t(context, 'BCA virtual account', 'Virtual account BCA'),
         pinned: true,
       ),
       PaymentDataColumn<int>(
         key: 'status',
-        label: 'Status',
-        value: (r) => r == 3 ? 'Paid' : 'Pending',
+        label: _t(context, 'Status', 'Status'),
+        value: (r) => r == 3
+            ? _t(context, 'Paid', 'Dibayar')
+            : _t(context, 'Pending', 'Tertunda'),
         cell: PaymentCellType.status,
-        statusMap: {'Paid': StatusTone.success, 'Pending': StatusTone.warning},
+        statusMap: {
+          _t(context, 'Paid', 'Dibayar'): StatusTone.success,
+          _t(context, 'Pending', 'Tertunda'): StatusTone.warning,
+        },
       ),
       PaymentDataColumn<int>(
         key: 'amount',
-        label: 'Amount',
+        label: _t(context, 'Amount', 'Jumlah'),
         value: (r) => const Money.idr(102500),
         cell: PaymentCellType.currency,
       ),
@@ -96,83 +112,114 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
     rowActions: [
       PaymentRowAction<int>(
         id: 'view',
-        label: 'View attempt',
+        label: _t(context, 'View attempt', 'Lihat percobaan'),
         onPressed: (_) {},
       ),
     ],
   );
   @override
   Widget build(BuildContext context) {
-    const facts = [
-      PaymentPropertyListItem(label: 'Items', valueText: '2 items'),
-      PaymentPropertyListItem(label: 'Subtotal', valueText: 'Rp100.000'),
-      PaymentPropertyListItem(label: 'Fee', valueText: 'Rp2.500'),
+    final facts = [
       PaymentPropertyListItem(
-        label: 'Total',
+        label: _t(context, 'Items', 'Barang'),
+        valueText: _t(context, '2 items', '2 barang'),
+      ),
+      PaymentPropertyListItem(
+        label: _t(context, 'Subtotal', 'Subtotal'),
+        valueText: 'Rp100.000',
+      ),
+      PaymentPropertyListItem(
+        label: _t(context, 'Fee', 'Biaya'),
+        valueText: 'Rp2.500',
+      ),
+      PaymentPropertyListItem(
+        label: _t(context, 'Total', 'Total'),
         valueText: 'Rp102.500',
         emphasis: true,
       ),
     ];
     final view = switch (widget.name) {
       'PaymentContextView' => PaymentContextView(
-        title: 'Order context',
-        description: 'Toko Contoh · Order DEMO-42',
+        title: _t(context, 'Order context', 'Konteks pesanan'),
+        description: _t(
+          context,
+          'Toko Contoh · Order DEMO-42',
+          'Toko Contoh · Pesanan DEMO-42',
+        ),
         brand: const PaymentIcon(Icons.storefront_outlined),
-        actions: [button('Copy order ID')],
+        actions: [button(_t(context, 'Copy order ID', 'Salin ID pesanan'))],
         externalLink: PaymentLink(
-          label: 'Merchant help',
+          label: _t(context, 'Merchant help', 'Bantuan merchant'),
           external: true,
           onPressed: () {},
         ),
-        secondaryAction: button('Close'),
+        secondaryAction: button(_t(context, 'Close', 'Tutup')),
         primaryAction: button(
-          'Continue to payment',
+          _t(context, 'Continue to payment', 'Lanjut ke pembayaran'),
           variant: PaymentButtonVariant.primary,
         ),
-        child: const PaymentPropertyList(items: facts),
+        child: PaymentPropertyList(items: facts),
       ),
       'PaymentFullPageView' => PaymentFullPageView(
-        title: 'Transactions',
-        pageAction: button('Download statement'),
+        title: _t(context, 'Transactions', 'Transaksi'),
+        pageAction: button(_t(context, 'Download statement', 'Unduh laporan')),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: PaymentTheme.of(context).space(PaymentSpace.block),
           children: [
             PaymentTabs(
-              tabs: const [
-                PaymentTab(label: 'All'),
-                PaymentTab(label: 'In progress'),
-                PaymentTab(label: 'Refunds'),
+              tabs: [
+                PaymentTab(label: _t(context, 'All', 'Semua')),
+                PaymentTab(label: _t(context, 'In progress', 'Diproses')),
+                PaymentTab(label: _t(context, 'Refunds', 'Refund')),
               ],
               selectedIndex: state,
               onSelected: (v) => setState(() => state = v),
             ),
-            const PaymentPropertyList(items: facts),
+            PaymentPropertyList(items: facts),
           ],
         ),
       ),
       'PaymentFocusView' => PaymentFocusView(
-        title: 'Report a problem',
-        secondaryAction: button('Cancel', variant: PaymentButtonVariant.quiet),
-        primaryAction: button('Send', variant: PaymentButtonVariant.primary),
+        title: _t(context, 'Report a problem', 'Laporkan masalah'),
+        secondaryAction: button(
+          _t(context, 'Cancel', 'Batal'),
+          variant: PaymentButtonVariant.quiet,
+        ),
+        primaryAction: button(
+          _t(context, 'Send', 'Kirim'),
+          variant: PaymentButtonVariant.primary,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: PaymentTheme.of(context).space(PaymentSpace.block),
           children: [
-            const PaymentTextArea(label: 'What went wrong?'),
+            PaymentTextArea(
+              label: _t(context, 'What went wrong?', 'Apa yang salah?'),
+            ),
             PaymentButton(
-              label: 'Open report a problem',
+              label: _t(
+                context,
+                'Open report a problem',
+                'Buka laporkan masalah',
+              ),
               variant: PaymentButtonVariant.secondary,
               onPressed: () => showPaymentFocusView<void>(
                 context,
-                builder: (_) => const PaymentFocusView(
-                  title: 'Report a problem',
+                builder: (_) => PaymentFocusView(
+                  title: _t(context, 'Report a problem', 'Laporkan masalah'),
                   confirmClose: PaymentConfirmClose(
-                    title: 'Discard report?',
-                    message: 'Your changes will be lost.',
-                    exitLabel: 'Discard',
+                    title: _t(context, 'Discard report?', 'Buang laporan?'),
+                    message: _t(
+                      context,
+                      'Your changes will be lost.',
+                      'Perubahan Anda akan hilang.',
+                    ),
+                    exitLabel: _t(context, 'Discard', 'Buang'),
                   ),
-                  child: PaymentTextArea(label: 'What went wrong?'),
+                  child: PaymentTextArea(
+                    label: _t(context, 'What went wrong?', 'Apa yang salah?'),
+                  ),
                 ),
               ),
             ),
@@ -180,8 +227,8 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
         ),
       ),
       'PaymentSettingsView' => PaymentSettingsView(
-        title: 'Payment settings',
-        statusMessage: 'Saved',
+        title: _t(context, 'Payment settings', 'Pengaturan pembayaran'),
+        statusMessage: _t(context, 'Saved', 'Tersimpan'),
         statusTone: StatusTone.success,
         onSave: () async {
           await Future<void>.delayed(const Duration(milliseconds: 600));
@@ -191,37 +238,47 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
           spacing: PaymentTheme.of(context).space(PaymentSpace.block),
           children: [
             PaymentFormFieldGroup(
-              legend: 'Notifications',
+              legend: _t(context, 'Notifications', 'Notifikasi'),
               children: [
                 PaymentSwitch(
-                  label: 'Refund notifications',
+                  label: _t(
+                    context,
+                    'Refund notifications',
+                    'Notifikasi refund',
+                  ),
                   value: refunds,
                   onChanged: (v) => setState(() => refunds = v),
                 ),
                 PaymentSwitch(
-                  label: 'Promotions',
+                  label: _t(context, 'Promotions', 'Promosi'),
                   value: promos,
                   onChanged: (v) => setState(() => promos = v),
                 ),
               ],
             ),
             PaymentFormFieldGroup(
-              legend: 'Default method',
+              legend: _t(context, 'Default method', 'Metode utama'),
               children: [
                 for (final value in ['bank', 'wallet'])
                   PaymentRadio<String>(
                     value: value,
                     groupValue: method,
                     onChanged: (v) => setState(() => method = v),
-                    label: value == 'bank' ? 'BCA virtual account' : 'Wallet',
+                    label: value == 'bank'
+                        ? _t(
+                            context,
+                            'BCA virtual account',
+                            'Virtual account BCA',
+                          )
+                        : _t(context, 'Wallet', 'Dompet digital'),
                   ),
               ],
             ),
             PaymentFormFieldGroup(
-              legend: 'Language',
+              legend: _t(context, 'Language', 'Bahasa'),
               children: [
                 PaymentSelect<String>(
-                  label: 'Statement language',
+                  label: _t(context, 'Statement language', 'Bahasa laporan'),
                   options: const [
                     PaymentSelectOption(value: 'en', label: 'English'),
                     PaymentSelectOption(value: 'id', label: 'Bahasa Indonesia'),
@@ -236,49 +293,83 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
       ),
       'PaymentSignInView' => PaymentSignInView(
         brand: const PaymentIcon(Icons.account_balance_wallet_outlined),
-        description: 'Sign in with your bank app to see payments and refunds.',
+        description: _t(
+          context,
+          'Sign in with your bank app to see payments and refunds.',
+          'Masuk dengan aplikasi bank untuk melihat pembayaran dan refund.',
+        ),
         learnMore: PaymentSignInLearnMore(
-          label: 'What we can see',
-          title: 'Permissions',
-          builder: (_) => const Text('Payment history and refunds.'),
+          label: _t(context, 'What we can see', 'Yang bisa kami lihat'),
+          title: _t(context, 'Permissions', 'Izin'),
+          builder: (_) => Text(
+            _t(
+              context,
+              'Payment history and refunds.',
+              'Riwayat pembayaran dan refund.',
+            ),
+          ),
         ),
         primaryAction: button(
-          'Continue with bank app',
+          _t(context, 'Continue with bank app', 'Lanjut dengan aplikasi bank'),
           variant: PaymentButtonVariant.primary,
         ),
-        secondaryAction: button('Use another account'),
+        secondaryAction: button(
+          _t(context, 'Use another account', 'Gunakan akun lain'),
+        ),
         legalLinks: [
-          PaymentLink(label: 'Terms', external: true, onPressed: () {}),
-          PaymentLink(label: 'Privacy', external: true, onPressed: () {}),
+          PaymentLink(
+            label: _t(context, 'Terms', 'Ketentuan'),
+            external: true,
+            onPressed: () {},
+          ),
+          PaymentLink(
+            label: _t(context, 'Privacy', 'Privasi'),
+            external: true,
+            onPressed: () {},
+          ),
         ],
-        footnote: 'We never ask for your PIN here.',
-        errorText: state == 1 ? 'Sign-in was canceled. Try again.' : null,
+        footnote: _t(
+          context,
+          'We never ask for your PIN here.',
+          'Kami tidak pernah meminta PIN Anda di sini.',
+        ),
+        errorText: state == 1
+            ? _t(
+                context,
+                'Sign-in was canceled. Try again.',
+                'Masuk dibatalkan. Coba lagi.',
+              )
+            : null,
       ),
       'PaymentOnboardingView' => PaymentOnboardingView(
-        title: 'Verify your identity',
-        tasks: const [
+        title: _t(context, 'Verify your identity', 'Verifikasi identitas Anda'),
+        tasks: [
           PaymentTaskListItem(
-            title: 'Identity',
+            title: _t(context, 'Identity', 'Identitas'),
             status: PaymentTaskStatus.complete,
           ),
           PaymentTaskListItem(
-            title: 'Documents',
+            title: _t(context, 'Documents', 'Dokumen'),
             status: PaymentTaskStatus.inProgress,
             subTasks: [
-              PaymentTaskListItem(
+              const PaymentTaskListItem(
                 title: 'KTP',
                 status: PaymentTaskStatus.complete,
               ),
-              PaymentTaskListItem(title: 'Selfie'),
+              PaymentTaskListItem(title: _t(context, 'Selfie', 'Swafoto')),
             ],
           ),
-          PaymentTaskListItem(title: 'Review'),
+          PaymentTaskListItem(title: _t(context, 'Review', 'Tinjauan')),
         ],
         pending: state == 1,
         error: state == 2
-            ? const PaymentBanner(
+            ? PaymentBanner(
                 tone: StatusTone.warning,
-                title: 'Documents need attention',
+                title: _t(
+                  context,
+                  'Documents need attention',
+                  'Dokumen perlu diperiksa',
+                ),
               )
             : null,
         completed: state == 3,
@@ -286,38 +377,64 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: PaymentTheme.of(context).space(PaymentSpace.block),
           children: [
-            const Text('Add your identity documents to get started.'),
-            button('Continue', variant: PaymentButtonVariant.primary),
+            Text(
+              _t(
+                context,
+                'Add your identity documents to get started.',
+                'Tambahkan dokumen identitas untuk memulai.',
+              ),
+            ),
+            button(
+              _t(context, 'Continue', 'Lanjutkan'),
+              variant: PaymentButtonVariant.primary,
+            ),
           ],
         ),
       ),
       'PaymentDetailPage' => PaymentDetailPage(
-        title: 'Rp102.500 to Toko Contoh',
-        description: 'Paid with BCA virtual account · 1 Oct 2026',
+        title: _t(
+          context,
+          'Rp102.500 to Toko Contoh',
+          'Rp102.500 ke Toko Contoh',
+        ),
+        description: _t(
+          context,
+          'Paid with BCA virtual account · 1 Oct 2026',
+          'Dibayar dengan virtual account BCA · 1 Okt 2026',
+        ),
         breadcrumbs: [
-          PaymentBreadcrumb(label: 'Transactions', onPressed: () {}),
+          PaymentBreadcrumb(
+            label: _t(context, 'Transactions', 'Transaksi'),
+            onPressed: () {},
+          ),
         ],
         actions: [
-          button('View receipt'),
-          button('Report a problem', variant: PaymentButtonVariant.quiet),
-          button('Request refund', variant: PaymentButtonVariant.destructive),
+          button(_t(context, 'View receipt', 'Lihat struk')),
+          button(
+            _t(context, 'Report a problem', 'Laporkan masalah'),
+            variant: PaymentButtonVariant.quiet,
+          ),
+          button(
+            _t(context, 'Request refund', 'Ajukan refund'),
+            variant: PaymentButtonVariant.destructive,
+          ),
         ],
         primary: [property(), attempts()],
         secondary: [
           PaymentDetailPagePropertyList(
-            title: 'Merchant',
+            title: _t(context, 'Merchant', 'Merchant'),
             pending: false,
             items: [
-              const PaymentDetailProperty(
-                label: 'Name',
-                values: [PaymentDetailValue('Toko Contoh')],
+              PaymentDetailProperty(
+                label: _t(context, 'Name', 'Nama'),
+                values: [const PaymentDetailValue('Toko Contoh')],
               ),
               PaymentDetailProperty(
-                label: 'Support',
+                label: _t(context, 'Support', 'Bantuan'),
                 values: [
                   PaymentDetailValue.link(
                     PaymentLink(
-                      label: 'Help centre',
+                      label: _t(context, 'Help centre', 'Pusat bantuan'),
                       external: true,
                       onPressed: () {},
                     ),
@@ -329,44 +446,46 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
         ],
       ),
       'PaymentOverviewPage' => PaymentFullPageView(
-        title: 'Spending',
+        title: _t(context, 'Spending', 'Pengeluaran'),
         child: PaymentOverviewPage(
           primary: [
             ChartModule(
-              title: 'This month',
+              title: _t(context, 'This month', 'Bulan ini'),
               state: ChartState.ready,
               chart: SizedBox(
                 height: 240,
-                child: PaymentBarChart(points: _chartFixture('typical')),
+                child: PaymentBarChart(
+                  points: _chartFixture('typical', _t(context, 'Oct', 'Okt')),
+                ),
               ),
             ),
-            const PaymentPageModule(
-              title: 'Recent transactions',
+            PaymentPageModule(
+              title: _t(context, 'Recent transactions', 'Transaksi terbaru'),
               child: PaymentPropertyList(
                 items: [
-                  PaymentPropertyListItem(
+                  const PaymentPropertyListItem(
                     label: 'Toko Contoh',
                     valueText: 'Rp102.500',
                   ),
                   PaymentPropertyListItem(
-                    label: 'Groceries',
+                    label: _t(context, 'Groceries', 'Belanja harian'),
                     valueText: 'Rp75.000',
                   ),
                   PaymentPropertyListItem(
-                    label: 'Coffee',
+                    label: _t(context, 'Coffee', 'Kopi'),
                     valueText: 'Rp25.000',
                   ),
                 ],
               ),
             ),
           ],
-          secondary: const [
+          secondary: [
             PaymentPageModule(
-              title: 'Balance',
+              title: _t(context, 'Balance', 'Saldo'),
               child: PaymentPropertyList(
                 items: [
                   PaymentPropertyListItem(
-                    label: 'Available',
+                    label: _t(context, 'Available', 'Tersedia'),
                     valueText: 'Rp500.000',
                   ),
                 ],
@@ -408,7 +527,14 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
                 )
                   TextButton(
                     onPressed: () => setState(() => state = i),
-                    child: Text(['Ready', 'Pending', 'Error', 'Complete'][i]),
+                    child: Text(
+                      [
+                        'Ready',
+                        _t(context, 'Pending', 'Tertunda'),
+                        'Error',
+                        'Complete',
+                      ][i],
+                    ),
                   ),
               ],
             )

@@ -8,29 +8,38 @@ class _LayoutSpecimen extends StatelessWidget {
     final theme = PaymentTheme.of(context);
     final examples = switch (name) {
       'PaymentBox' => <Widget>[
-        const PaymentBox(
+        PaymentBox(
           gap: PaymentSpace.block,
           padding: PaymentSpace.group,
           background: PaymentBoxBackground.muted,
           radius: PaymentRadius.control,
           children: [
-            PaymentInline('Transfer details'),
-            PaymentInline('Use this account number'),
+            PaymentInline(_t(context, 'Transfer details', 'Rincian transfer')),
+            PaymentInline(
+              _t(
+                context,
+                'Use this account number',
+                'Gunakan nomor rekening ini',
+              ),
+            ),
           ],
         ),
-        const PaymentBox(
+        PaymentBox(
           stack: PaymentStack.horizontal,
           distribute: PaymentDistribute.spaceBetween,
           alignY: PaymentAlign.center,
-          children: [PaymentInline('Total'), PaymentInline('IDR 50.000')],
+          children: [
+            PaymentInline(_t(context, 'Total', 'Total')),
+            const PaymentInline('IDR 50.000'),
+          ],
         ),
-        const PaymentBox(
+        PaymentBox(
           keyline: PaymentKeyline.critical,
           radius: PaymentRadius.box,
           padding: PaymentSpace.block,
           children: [
             PaymentInline(
-              '2 fields need attention',
+              _t(context, '2 fields need attention', '2 kolom perlu diperiksa'),
               color: PaymentTextColor.danger,
             ),
           ],
@@ -40,7 +49,13 @@ class _LayoutSpecimen extends StatelessWidget {
           wrap: true,
           gap: PaymentSpace.related,
           children: [
-            for (final label in ['Transfer', 'QRIS', 'Card', 'Wallet', 'Cash'])
+            for (final label in [
+              'Transfer',
+              'QRIS',
+              _t(context, 'Card', 'Kartu'),
+              _t(context, 'Wallet', 'Dompet digital'),
+              _t(context, 'Cash', 'Tunai'),
+            ])
               PaymentBadge(label: label, tone: StatusTone.neutral),
           ],
         ),
@@ -67,10 +82,15 @@ class _LayoutSpecimen extends StatelessWidget {
         for (final color in PaymentTextColor.values)
           PaymentInline(color.name, color: color),
         const PaymentInline('TRX-DEMO-42', reference: true),
-        const PaymentInline.rich([
-          PaymentSpan('Pay '),
-          PaymentSpan('before 14:05', weight: PaymentFontWeight.bold),
-          PaymentSpan(' to keep this price'),
+        PaymentInline.rich([
+          PaymentSpan(_t(context, 'Pay ', 'Bayar ')),
+          PaymentSpan(
+            _t(context, 'before 14:05', 'sebelum 14.05'),
+            weight: PaymentFontWeight.bold,
+          ),
+          PaymentSpan(
+            _t(context, ' to keep this price', ' agar harga ini tetap berlaku'),
+          ),
         ]),
       ],
       'PaymentIcon' => <Widget>[
@@ -95,11 +115,15 @@ class _LayoutSpecimen extends StatelessWidget {
       ],
       'PaymentImage' => <Widget>[const _ImageTiles()],
       'PaymentCode' => <Widget>[
-        const PaymentCode(
+        PaymentCode(
           '8808 0012 3456 7890',
           size: PaymentSize.large,
           onCopy: _copyGalleryValue,
-          semanticLabel: 'Virtual account number',
+          semanticLabel: _t(
+            context,
+            'Virtual account number',
+            'Nomor virtual account',
+          ),
         ),
         const PaymentCode('TRX-DEMO-42'),
         const PaymentCode('Tab', kind: PaymentCodeKind.kbd),
@@ -112,9 +136,9 @@ class _LayoutSpecimen extends StatelessWidget {
         PaymentCode('DEMO-${'0123456789' * 6}'),
       ],
       _ => <Widget>[
-        const PaymentInline('Subtotal'),
+        PaymentInline(_t(context, 'Subtotal', 'Subtotal')),
         const PaymentDivider(),
-        const PaymentInline('Total'),
+        PaymentInline(_t(context, 'Total', 'Total')),
         PaymentDivider(height: theme.space(PaymentSpace.section)),
       ],
     };
@@ -163,15 +187,15 @@ class _ImageTilesState extends State<_ImageTiles> {
                   radius: PaymentRadius.control,
                   bordered: true,
                 ),
-              const PaymentImage(
-                image: _PendingTile(),
-                alt: 'Loading bank logo',
+              PaymentImage(
+                image: const _PendingTile(),
+                alt: _t(context, 'Loading bank logo', 'Memuat logo bank'),
                 width: 96,
                 height: 64,
               ),
               PaymentImage(
                 image: MemoryImage(Uint8List.fromList([0, 1, 2])),
-                alt: 'Bank Contoh logo',
+                alt: _t(context, 'Bank Contoh logo', 'Logo Bank Contoh'),
                 width: 96,
                 height: 64,
               ),
@@ -182,15 +206,17 @@ class _ImageTilesState extends State<_ImageTiles> {
           if (provider != null)
             PaymentListItem(
               title: 'Bank Contoh',
-              secondaryTitle: 'Virtual account',
+              secondaryTitle: _t(context, 'Virtual account', 'Virtual account'),
               size: PaymentListItemSize.large,
               image: PaymentImage(image: provider, alt: 'Bank Contoh'),
             ),
           if (provider != null)
             PaymentAccordionItem(
-              title: 'Bank information',
+              title: _t(context, 'Bank information', 'Informasi bank'),
               media: PaymentImage(image: provider, alt: 'Bank Contoh'),
-              child: const PaymentInline('Virtual account'),
+              child: PaymentInline(
+                _t(context, 'Virtual account', 'Virtual account'),
+              ),
             ),
         ],
       );

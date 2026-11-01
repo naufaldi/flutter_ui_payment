@@ -89,11 +89,11 @@ class _ReportProblemState extends State<_ReportProblem> {
           PaymentPropertyList(
             items: [
               PaymentPropertyListItem(
-                label: 'Reference',
+                label: s.propertyReference,
                 valueText: widget.record.reference,
               ),
               PaymentPropertyListItem(
-                label: 'Amount',
+                label: s.columnAmount,
                 value: AmountText(widget.record.amount),
               ),
             ],

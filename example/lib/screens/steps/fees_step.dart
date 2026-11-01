@@ -30,17 +30,17 @@ class FeesStep extends StatelessWidget {
           ),
           PaymentTable(
             caption: s.feesTitle,
-            head: const [
-              PaymentTableHeaderCell('Method', rowHeader: true),
-              PaymentTableHeaderCell('Fee', numeric: true),
-              PaymentTableHeaderCell('Arrives'),
+            head: [
+              PaymentTableHeaderCell(s.columnMethod, rowHeader: true),
+              PaymentTableHeaderCell(s.columnFee, numeric: true),
+              PaymentTableHeaderCell(s.columnArrives),
             ],
             rows: [
               for (final (method, fee, arrives) in [
-                ('Virtual account', 2500, 'Within 10 min'),
-                ('QRIS', 0, 'Instant'),
-                ('Ruang Bayar balance', 0, 'Instant'),
-                ('Card', 4000, 'Instant'),
+                (s.methodVirtualAccount, 2500, s.arrivesWithin10),
+                ('QRIS', 0, s.arrivesInstant),
+                (s.methodBalance, 0, s.arrivesInstant),
+                (s.methodCard, 4000, s.arrivesInstant),
               ])
                 PaymentTableRow([
                   PaymentTableCell(Text(method)),

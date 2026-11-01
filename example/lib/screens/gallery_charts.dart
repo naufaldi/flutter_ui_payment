@@ -1,13 +1,13 @@
 part of 'gallery_screen.dart';
 
-List<ChartPoint> _chartFixture(String state) {
+List<ChartPoint> _chartFixture(String state, [String month = 'Oct']) {
   if (state == 'single') {
-    return const [ChartPoint(label: '1 Oct', value: Money.idr(450000))];
+    return [ChartPoint(label: '1 $month', value: const Money.idr(450000))];
   }
   return List.generate(
     5,
     (i) => ChartPoint(
-      label: '${1 + i * 7} Oct',
+      label: '${1 + i * 7} $month',
       value: state == 'missing' && i == 2
           ? null
           : Money.idr(
@@ -39,7 +39,7 @@ class _ChartDemoState extends State<_ChartDemo> {
   String state = 'typical';
   @override
   Widget build(BuildContext context) {
-    final points = _chartFixture(state);
+    final points = _chartFixture(state, _t(context, 'Oct', 'Okt'));
     final chart = switch (widget.kind) {
       'bar' => PaymentBarChart(points: points),
       'meter' => PaymentMeterChart(
@@ -117,9 +117,11 @@ class _ChartStatesDemoState extends State<_ChartStatesDemo> {
       label: (value) => value.name,
     ),
     child: ChartModule(
-      title: 'Spending',
+      title: _t(context, 'Spending', 'Pengeluaran'),
       state: state,
-      chart: PaymentBarChart(points: _chartFixture('typical')),
+      chart: PaymentBarChart(
+        points: _chartFixture('typical', _t(context, 'Oct', 'Okt')),
+      ),
       onRetry: () => _galleryFeedback(
         context,
         'Host: reload requested',
@@ -142,7 +144,9 @@ class _SpendingInContextDemo extends StatelessWidget {
           state: ChartState.ready,
           headline: const Money.idr(1080000),
           headlineCaption: _t(context, 'Settled', 'Selesai'),
-          chart: PaymentBarChart(points: _chartFixture('pending')),
+          chart: PaymentBarChart(
+            points: _chartFixture('pending', _t(context, 'Oct', 'Okt')),
+          ),
         ),
         PaymentMeterChart(
           segments: [
@@ -191,18 +195,31 @@ class _ChartVariants extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final series = [
-      PaymentChartSeries(label: 'This month', points: _chartFixture('pending')),
-      PaymentChartSeries(label: 'Last month', points: _chartFixture('typical')),
+      PaymentChartSeries(
+        label: _t(context, 'This month', 'Bulan ini'),
+        points: _chartFixture('pending', _t(context, 'Oct', 'Okt')),
+      ),
+      PaymentChartSeries(
+        label: _t(context, 'Last month', 'Bulan lalu'),
+        points: _chartFixture('typical', _t(context, 'Oct', 'Okt')),
+      ),
     ];
     final measures = List.generate(
       5,
-      (i) => ChartPoint(label: 'W${i + 1}', measure: [92, 95, 88, 97, 99][i]),
+      (i) => ChartPoint(
+        label: _t(context, 'W${i + 1}', 'M${i + 1}'),
+        measure: [92, 95, 88, 97, 99][i],
+      ),
     );
     final chart = switch (kind) {
       'bar' => PaymentBarChart(series: series),
       'meter' => PaymentMeterChart(
         segments: [
-          for (final label in ['Transfer', 'QRIS', 'Card'])
+          for (final label in [
+            'Transfer',
+            'QRIS',
+            _t(context, 'Card', 'Kartu'),
+          ])
             MeterSegment(label: label, value: const Money.idr(250000)),
         ],
         onSegmentPressed: (s) => _galleryFeedback(
@@ -213,7 +230,9 @@ class _ChartVariants extends StatelessWidget {
       ),
       'sparkline' => Row(
         children: [
-          const Expanded(child: Text('Spending trend')),
+          Expanded(
+            child: Text(_t(context, 'Spending trend', 'Tren pengeluaran')),
+          ),
           PaymentSparkline(
             key: const Key('sparkline-inspect'),
             series: series,
@@ -234,7 +253,11 @@ class _ChartVariants extends StatelessWidget {
       child: Column(
         children: [
           ChartModule(
-            title: 'Spending, this month vs last month',
+            title: _t(
+              context,
+              'Spending, this month vs last month',
+              'Pengeluaran, bulan ini vs bulan lalu',
+            ),
             state: ChartState.ready,
             showHeadline: false,
             height: kind == 'meter' ? null : 180,
@@ -259,7 +282,7 @@ class _ChartVariants extends StatelessWidget {
             SizedBox(
               height: 120,
               child: PaymentLineChart(
-                points: _chartFixture('typical'),
+                points: _chartFixture('typical', _t(context, 'Oct', 'Okt')),
                 axis: PaymentChartAxis.none,
                 grid: PaymentChartAxis.none,
               ),
@@ -268,17 +291,22 @@ class _ChartVariants extends StatelessWidget {
             SizedBox(
               height: PaymentTheme.of(context).space(PaymentSpace.group),
             ),
-            const PaymentInline('Budget used', role: PaymentTextRole.heading),
+            PaymentInline(
+              _t(context, 'Budget used', 'Anggaran terpakai'),
+              role: PaymentTextRole.heading,
+            ),
             PaymentMeterChart(
               unit: PaymentChartUnit.percent,
               segments: [
                 MeterSegment(label: 'Transfer', measure: 40),
                 MeterSegment(label: 'QRIS', measure: 25),
-                MeterSegment(label: 'Card', measure: 10),
+                MeterSegment(label: _t(context, 'Card', 'Kartu'), measure: 10),
               ],
             ),
             if (kind == 'sparkline')
-              PaymentSparkline(points: _chartFixture('typical')),
+              PaymentSparkline(
+                points: _chartFixture('typical', _t(context, 'Oct', 'Okt')),
+              ),
           ],
         ],
       ),
