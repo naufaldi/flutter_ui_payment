@@ -250,11 +250,13 @@ void main() {
       expect(r.action.width, lessThan(r.content.width / 2));
     }
 
-    // iPad landscape sizes, then either side of 840 dp of content: the test
-    // font's rail is about 130 dp, so 1001 and 1003 straddle it.
+    // iPad landscape sizes (1366: the content reaches the 1040 cap beside
+    // the rail), then either side of 840 dp of content: the test font's
+    // rail is about 130 dp, so 1001 and 1003 straddle it.
     for (final (size, twoColumns) in [
       (const Size(1024, 768), true),
       (const Size(1194, 834), true),
+      (const Size(1366, 1024), true),
       (const Size(1003, 834), true),
       (const Size(1001, 834), false),
       (const Size(871, 1000), false),
@@ -274,6 +276,7 @@ void main() {
             ? math.min(r.screen - 32, 1040.0)
             : math.min(r.screen - 32, 640.0);
         expect(r.content.width, moreOrLessEquals(width, epsilon: 1));
+        if (size.width == 1366) expect(r.content.width, 1040);
         // Centred in the flow screen.
         final screenLeft = size.width - r.screen;
         expect(
