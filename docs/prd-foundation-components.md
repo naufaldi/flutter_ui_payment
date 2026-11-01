@@ -2099,7 +2099,8 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Account-linking sign-in: tiles, can / cannot, legal sentence and pinned Continue / Cancel; `learnMore` and `footnote` deprecated (D61)
 - [x] Breadcrumb chevron hangs at the title edge; one breadcrumb → title gap; table outer cells on the content edge
 - [x] Transaction detail: "Lihat struk" primary, quiet "Laporkan masalah", no phone breadcrumb; history "Laporan ›"
-- [ ] Settings legend → first control gap (#66, belongs with `forms/*`)
+- [x] Settings legend → first control: one 8 dp gap for fields and selection rows (#66)
+- [x] One pinned footer for views, the action bar and sheets (P4's `KitSheetFooter` merged into `PinnedFooter`)
 ```
 
 ### Phase 2E implementation notes
