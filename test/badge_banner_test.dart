@@ -125,16 +125,19 @@ void main() {
     );
     expect(tester.takeException(), isNull);
     // The button draws small (36 dp) inside its 48 dp target.
+    final drawn = tester.getRect(
+      find.descendant(
+        of: find.byType(PaymentButton),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(drawn.height, 36);
+    // The drawn button sits 8 under the title and 12 above the edge; its
+    // 48 dp target overlaps the gap and the padding.
+    expect(drawn.top - tester.getBottomLeft(find.text('Payment failed')).dy, 8);
     expect(
-      tester
-          .getSize(
-            find.descendant(
-              of: find.byType(PaymentButton),
-              matching: find.byType(OutlinedButton),
-            ),
-          )
-          .height,
-      36,
+      tester.getRect(find.byType(PaymentBanner)).bottom - drawn.bottom,
+      12,
     );
   });
   for (final scale in [1.0, 2.0]) {

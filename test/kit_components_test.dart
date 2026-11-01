@@ -767,5 +767,18 @@ void main() {
     final lock = tester.getRect(find.byIcon(Icons.lock_outline));
     expect(lock.top - mask.top, greaterThanOrEqualTo(16));
     expect(mask.bottom - lock.bottom, greaterThanOrEqualTo(16));
+    // Smaller, but still a legible lock rather than a dot.
+    expect(lock.height, 16);
+    await tester.pumpWidget(
+      host(
+        const SizedBox(
+          height: 120,
+          width: 300,
+          child: PrivacyMask(obscured: true, child: Text('8808 1234')),
+        ),
+        1,
+      ),
+    );
+    expect(tester.getSize(find.byIcon(Icons.lock_outline)).height, 48);
   });
 }

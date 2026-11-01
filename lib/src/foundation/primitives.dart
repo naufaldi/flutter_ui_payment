@@ -799,6 +799,10 @@ class _PaymentBannerState extends State<PaymentBanner> {
     // One line of the 15/20 heading title.
     final line = PaymentType.firstLineHeight(context);
     final dismissible = widget.onDismiss != null;
+    // The action row's 48 dp targets overlap the gap above and the padding
+    // below by 6, so the small (36 dp) button sits 8 under the message and
+    // 12 above the edge, like the close target (D48a).
+    final overlap = widget.actions.isEmpty ? 0.0 : (48 - 36) / 2;
     return Semantics(
       container: true,
       liveRegion: widget.announce,
@@ -816,7 +820,7 @@ class _PaymentBannerState extends State<PaymentBanner> {
                 pad,
                 pad,
                 dismissible ? pad + 36 : pad,
-                pad,
+                pad - overlap,
               ),
               child: FirstLineRow(
                 // The icon scales with the text up to 1.6× and centres on
@@ -836,7 +840,9 @@ class _PaymentBannerState extends State<PaymentBanner> {
                       Text(widget.message!, style: type.bodyFor(context)),
                     ],
                     if (widget.actions.isNotEmpty) ...[
-                      SizedBox(height: theme.space(PaymentSpace.related)),
+                      SizedBox(
+                        height: theme.space(PaymentSpace.related) - overlap,
+                      ),
                       Wrap(
                         spacing: theme.space(PaymentSpace.related),
                         runSpacing: theme.space(PaymentSpace.inline),
@@ -1070,23 +1076,33 @@ class PrivacyMask extends StatelessWidget {
           Positioned.fill(
             child: ColoredBox(
               color: theme.surface,
-              // The lock keeps 16 dp from the mask's edges and scales down
-              // in a short strip instead of filling it (#61-6).
-              child: Padding(
-                padding: EdgeInsets.all(theme.space(PaymentSpace.group)),
-                child: Center(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
+              // The lock keeps 16 dp from the mask's edges: the largest icon
+              // size that fits the strip, never one that fills it (#61-6).
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final room =
+                      constraints.maxHeight -
+                      2 * theme.space(PaymentSpace.group);
+                  final size =
+                      [
+                        PaymentIconSize.xlarge,
+                        PaymentIconSize.large,
+                        PaymentIconSize.medium,
+                      ].firstWhere(
+                        (s) => s.resolve(context) <= room,
+                        orElse: () => PaymentIconSize.small,
+                      );
+                  return Center(
                     child: PaymentIcon(
                       Icons.lock_outline,
-                      size: PaymentIconSize.xlarge,
+                      size: size,
                       color: PaymentTextColor.secondary,
                       semanticLabel: PaymentLocalizations.of(
                         context,
                       ).contentHidden,
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
           ),
