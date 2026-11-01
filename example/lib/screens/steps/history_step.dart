@@ -69,31 +69,6 @@ class HistoryStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: t.space(PaymentSpace.group),
         children: [
-          PaymentOverviewPage(
-            primary: [
-              ChartModule(
-                title: s.spendingTitle,
-                state: c.historyLoading ? ChartState.loading : ChartState.ready,
-                headline: total,
-                headlineCaption: s.thisMonth,
-                chart: SizedBox(
-                  height: 200,
-                  child: PaymentBarChart(
-                    series: [
-                      PaymentChartSeries(
-                        label: s.thisMonth,
-                        points: weekly(month),
-                      ),
-                      PaymentChartSeries(
-                        label: s.lastMonth,
-                        points: weekly(previous),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
           PaymentDateRangePicker(
             label: s.dateRange,
             value: c.historyRange,
@@ -182,9 +157,34 @@ class HistoryStep extends StatelessWidget {
                 : c.historyError!.safeMessage ?? s.historyFailed,
             onRetry: c.retryHistory,
           ),
-          // The month's figures follow the list, so the first screen
-          // reaches a transaction row (#58-3); the headline above already
-          // carries the month's total.
+          // History is for finding a payment, so the list leads at every
+          // text size and the spending chart and the month's figures follow
+          // it (D63, #58-3).
+          PaymentOverviewPage(
+            primary: [
+              ChartModule(
+                title: s.spendingTitle,
+                state: c.historyLoading ? ChartState.loading : ChartState.ready,
+                headline: total,
+                headlineCaption: s.thisMonth,
+                chart: SizedBox(
+                  height: 200,
+                  child: PaymentBarChart(
+                    series: [
+                      PaymentChartSeries(
+                        label: s.thisMonth,
+                        points: weekly(month),
+                      ),
+                      PaymentChartSeries(
+                        label: s.lastMonth,
+                        points: weekly(previous),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
           PaymentDetailPagePropertyList(
             title: s.thisMonth,
             pending: c.historyLoading,

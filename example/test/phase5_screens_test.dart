@@ -308,6 +308,24 @@ void main() {
     expect(c.history, isNotEmpty);
     await drain(t);
   });
+  testWidgets('A01 list leads, chart and figures follow (D63)', (t) async {
+    surface(t, const Size(375, 667));
+    final app = await launch(t);
+    final c = await runScenario(t, app, 'A01');
+    await pumpUntil(t, () => !c.historyLoading);
+    await settle(t);
+    // The test font runs far larger than the platform font at 200%, so the
+    // small-phone large-text budget is checked on the simulator captures.
+    final row = find.byType(TransactionListItem).first;
+    expect(row.hitTestable(), findsOneWidget);
+    final chart = t.getRect(find.byType(ChartModule));
+    expect(chart.top, greaterThan(t.getRect(row).bottom));
+    expect(
+      t.getRect(find.byType(PaymentDetailPagePropertyList)).top,
+      greaterThan(chart.bottom),
+    );
+    await drain(t);
+  });
   testWidgets('wide checkout adds order context only when it fits', (t) async {
     surface(t, const Size(1280, 900));
     final app = await launch(t);
