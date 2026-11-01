@@ -1,5 +1,11 @@
 part of 'gallery_screen.dart';
 
+String _unavailable(BuildContext context) => _t(
+  context,
+  'Not available for this merchant',
+  'Tidak tersedia untuk merchant ini',
+);
+
 class _TabsSpecimen extends StatefulWidget {
   const _TabsSpecimen();
   @override
@@ -9,7 +15,19 @@ class _TabsSpecimen extends StatefulWidget {
 class _TabsSpecimenState extends State<_TabsSpecimen> {
   int _selected = 0;
   @override
-  Widget build(BuildContext context) => _Entry(
+  Widget build(BuildContext context) {
+    final card = _t(context, 'Card', 'Kartu');
+    final bankTransfer = _t(context, 'Bank transfer', 'Transfer bank');
+    final wallet = _t(context, 'Wallet', 'Dompet digital');
+    return _build(context, card, bankTransfer, wallet);
+  }
+
+  Widget _build(
+    BuildContext context,
+    String card,
+    String bankTransfer,
+    String wallet,
+  ) => _Entry(
     name: 'PaymentTabs · variants',
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -17,9 +35,9 @@ class _TabsSpecimenState extends State<_TabsSpecimen> {
         for (final size in PaymentSize.values) ...[
           PaymentTabs(
             size: size,
-            tabs: const [
-              PaymentTab(label: 'Card'),
-              PaymentTab(label: 'Bank transfer'),
+            tabs: [
+              PaymentTab(label: card),
+              PaymentTab(label: bankTransfer),
             ],
             selectedIndex: _selected,
             onSelected: (i) => setState(() => _selected = i),
@@ -32,34 +50,43 @@ class _TabsSpecimenState extends State<_TabsSpecimen> {
                   padding: EdgeInsets.symmetric(
                     vertical: PaymentTheme.of(context).spacing,
                   ),
-                  child: const Text('Pay with your saved card.'),
+                  child: Text(
+                    _t(
+                      context,
+                      'Pay with your saved card.',
+                      'Bayar dengan kartu tersimpan Anda.',
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: PaymentTheme.of(context).spacing,
                   ),
-                  child: const Text('Use your bank transfer reference.'),
+                  child: Text(
+                    _t(
+                      context,
+                      'Use your bank transfer reference.',
+                      'Gunakan referensi transfer bank Anda.',
+                    ),
+                  ),
                 ),
               ],
             ),
         ],
         PaymentTabs(
           fitted: true,
-          tabs: const [
-            PaymentTab(label: 'Card'),
-            PaymentTab(label: 'Bank transfer'),
-            PaymentTab(label: 'Wallet'),
+          tabs: [
+            PaymentTab(label: card),
+            PaymentTab(label: bankTransfer),
+            PaymentTab(label: wallet),
           ],
           selectedIndex: 0,
           onSelected: (_) {},
         ),
         PaymentTabs(
-          tabs: const [
-            PaymentTab(label: 'Card'),
-            PaymentTab(
-              label: 'Wallet',
-              disabledReason: 'Not available for this merchant',
-            ),
+          tabs: [
+            PaymentTab(label: card),
+            PaymentTab(label: wallet, disabledReason: _unavailable(context)),
           ],
           selectedIndex: 0,
           onSelected: (_) {},
@@ -82,6 +109,7 @@ class _SelectionSpecimenState extends State<_SelectionSpecimen> {
   String? _receipt;
   @override
   Widget build(BuildContext context) {
+    String t(String en, String id) => _t(context, en, id);
     final kind = widget.kind;
     return _Entry(
       name: '$kind · variants',
@@ -96,31 +124,37 @@ class _SelectionSpecimenState extends State<_SelectionSpecimen> {
                 _email = v;
                 _sms = v;
               }),
-              label: 'Select all receipts',
+              label: t('Select all receipts', 'Pilih semua struk'),
             ),
             PaymentCheckbox(
               value: _email,
               onChanged: (v) => setState(() => _email = v),
-              label: 'Email receipt',
-              description: 'Send a copy to your saved email',
+              label: t('Email receipt', 'Struk lewat email'),
+              description: t(
+                'Send a copy to your saved email',
+                'Kirim salinan ke email tersimpan Anda',
+              ),
             ),
             PaymentCheckbox(
               value: _sms,
               onChanged: (v) => setState(() => _sms = v),
-              label: 'SMS receipt',
+              label: t('SMS receipt', 'Struk lewat SMS'),
             ),
             PaymentCheckbox(
               value: false,
               onChanged: (_) {},
-              label: 'Accept the terms',
-              errorText: 'Accept the terms to continue',
+              label: t('Accept the terms', 'Setujui ketentuan'),
+              errorText: t(
+                'Accept the terms to continue',
+                'Setujui ketentuan untuk melanjutkan',
+              ),
               required: true,
             ),
-            const PaymentCheckbox(
+            PaymentCheckbox(
               value: false,
               onChanged: null,
-              label: 'Paper receipt',
-              disabledReason: 'Not available for this merchant',
+              label: t('Paper receipt', 'Struk kertas'),
+              disabledReason: _unavailable(context),
             ),
           ],
           'PaymentRadio' => [
@@ -130,7 +164,10 @@ class _SelectionSpecimenState extends State<_SelectionSpecimen> {
                 groupValue: _receipt,
                 onChanged: (v) => setState(() => _receipt = v),
                 label: method,
-                description: 'Send receipt by ${method.toLowerCase()}',
+                description: t(
+                  'Send receipt by ${method.toLowerCase()}',
+                  'Kirim struk lewat ${method == 'SMS' ? 'SMS' : 'email'}',
+                ),
               ),
             for (final method in ['Email', 'SMS'])
               PaymentRadio(
@@ -138,39 +175,48 @@ class _SelectionSpecimenState extends State<_SelectionSpecimen> {
                 groupValue: null,
                 onChanged: (_) {},
                 label: method,
-                errorText: 'Choose how to get your receipt',
+                errorText: t(
+                  'Choose how to get your receipt',
+                  'Pilih cara menerima struk',
+                ),
               ),
-            const PaymentRadio(
+            PaymentRadio(
               value: 'Paper',
               groupValue: null,
               onChanged: null,
-              label: 'Paper receipt',
-              disabledReason: 'Not available for this merchant',
+              label: t('Paper receipt', 'Struk kertas'),
+              disabledReason: _unavailable(context),
             ),
           ],
           _ => [
             PaymentSwitch(
               value: _email,
               onChanged: (v) => setState(() => _email = v),
-              label: 'Email receipts',
-              description: 'Send a copy after each payment',
+              label: t('Email receipts', 'Struk lewat email'),
+              description: t(
+                'Send a copy after each payment',
+                'Kirim salinan setiap selesai membayar',
+              ),
             ),
             PaymentSwitch(
               value: _sms,
               onChanged: (v) => setState(() => _sms = v),
-              label: 'SMS receipts',
+              label: t('SMS receipts', 'Struk lewat SMS'),
             ),
             PaymentSwitch(
               value: false,
               onChanged: (_) {},
-              label: 'Payment notifications',
-              errorText: 'Allow notifications in settings',
+              label: t('Payment notifications', 'Notifikasi pembayaran'),
+              errorText: t(
+                'Allow notifications in settings',
+                'Izinkan notifikasi di pengaturan',
+              ),
             ),
-            const PaymentSwitch(
+            PaymentSwitch(
               value: false,
               onChanged: null,
-              label: 'Paper receipts',
-              disabledReason: 'Not available for this merchant',
+              label: t('Paper receipts', 'Struk kertas'),
+              disabledReason: _unavailable(context),
             ),
           ],
         },
@@ -193,12 +239,16 @@ class _CurrencyFieldSpecimen extends StatelessWidget {
           PaymentCurrencyField(
             currency: 'IDR',
             size: size,
-            label: size.name,
+            label: _sizeLabel(context, size),
             onChanged: (_) {},
           ),
         PaymentCurrencyField(
           currency: 'IDR',
-          description: 'Use your available balance',
+          description: _t(
+            context,
+            'Use your available balance',
+            'Gunakan saldo yang tersedia',
+          ),
           minimum: const Money.idr(10000),
           onChanged: (_) {},
         ),
@@ -222,36 +272,47 @@ class _TextFieldSpecimen extends StatefulWidget {
 class _TextFieldSpecimenState extends State<_TextFieldSpecimen> {
   String query = 'kopi';
   @override
-  Widget build(BuildContext context) => _Entry(
+  Widget build(BuildContext context) {
+    String t(String en, String id) => _t(context, en, id);
+    return _build(context, t);
+  }
+
+  Widget _build(
+    BuildContext context,
+    String Function(String, String) t,
+  ) => _Entry(
     name: 'PaymentTextField · variants',
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: PaymentTheme.of(context).space(PaymentSpace.group),
       children: [
         for (final size in PaymentSize.values)
-          PaymentTextField(label: 'Full name', size: size),
-        const PaymentTextField(
-          label: 'Email for receipt',
+          PaymentTextField(label: t('Full name', 'Nama lengkap'), size: size),
+        PaymentTextField(
+          label: t('Email for receipt', 'Email untuk struk'),
           type: PaymentTextFieldType.email,
-          description: 'We send the receipt here.',
+          description: t('We send the receipt here.', 'Struk dikirim ke sini.'),
         ),
-        const PaymentTextField(
-          label: 'Phone number',
+        PaymentTextField(
+          label: t('Phone number', 'Nomor ponsel'),
           type: PaymentTextFieldType.tel,
           required: true,
-          errorText: 'Enter a phone number',
+          errorText: t('Enter a phone number', 'Masukkan nomor ponsel'),
         ),
-        const PaymentTextField(
-          label: 'Promo code',
+        PaymentTextField(
+          label: t('Promo code', 'Kode promo'),
           reference: true,
           initialValue: 'HEMAT10',
         ),
-        const PaymentTextField(
-          label: 'Order ID',
+        PaymentTextField(
+          label: t('Order ID', 'ID pesanan'),
           readOnly: true,
           initialValue: 'ORD-2026-0042',
         ),
-        const PaymentTextField(label: 'Company name', enabled: false),
+        PaymentTextField(
+          label: t('Company name', 'Nama perusahaan'),
+          enabled: false,
+        ),
         PaymentTextField.search(
           query: query,
           onChanged: (v) => setState(() => query = v),
@@ -272,29 +333,29 @@ class _ActionSpecimen extends StatelessWidget {
         children: [
           PaymentIconButton(
             icon: PaymentIcons.close,
-            tooltip: 'Close',
+            tooltip: _t(context, 'Close', 'Tutup'),
             onPressed: () {},
           ),
           PaymentIconButton(
             icon: Icons.more_vert,
-            tooltip: 'More actions',
+            tooltip: _t(context, 'More actions', 'Tindakan lain'),
             onPressed: () {},
           ),
           PaymentIconButton(
             icon: PaymentIcons.copy,
-            tooltip: 'Copy',
+            tooltip: _t(context, 'Copy', 'Salin'),
             variant: PaymentIconButtonVariant.accent,
             onPressed: () {},
           ),
-          const PaymentIconButton(
+          PaymentIconButton(
             icon: PaymentIcons.close,
-            tooltip: 'Disabled close',
+            tooltip: _t(context, 'Disabled close', 'Tutup nonaktif'),
             onPressed: null,
           ),
           PaymentIconButton(
             key: const Key('icon-button-focus'),
             icon: PaymentIcons.close,
-            tooltip: 'Focused close',
+            tooltip: _t(context, 'Focused close', 'Tutup terfokus'),
             onPressed: () {},
           ),
         ],
@@ -302,27 +363,40 @@ class _ActionSpecimen extends StatelessWidget {
       'PaymentLink' => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PaymentLink(label: 'Edit', onPressed: () {}),
+          PaymentLink(label: _t(context, 'Edit', 'Ubah'), onPressed: () {}),
           PaymentLink(
-            label: 'Read the privacy policy',
+            label: _t(
+              context,
+              'Read the privacy policy',
+              'Baca kebijakan privasi',
+            ),
             external: true,
             onPressed: () {},
           ),
           PaymentLink(
-            label: 'Why this?',
+            label: _t(context, 'Why this?', 'Kenapa ini?'),
             variant: PaymentLinkVariant.secondary,
             onPressed: () {},
           ),
-          const PaymentLink(label: 'Edit', onPressed: null),
+          PaymentLink(label: _t(context, 'Edit', 'Ubah'), onPressed: null),
           PaymentLink(
-            label: 'View payment instructions for virtual account',
+            label: _t(
+              context,
+              'View payment instructions for virtual account',
+              'Lihat petunjuk pembayaran virtual account',
+            ),
             onPressed: () {},
           ),
           PaymentBanner(
             tone: StatusTone.warning,
-            title: 'Total changed',
+            title: _t(context, 'Total changed', 'Total berubah'),
             onDismiss: () {},
-            actions: [PaymentLink(label: 'Review total', onPressed: () {})],
+            actions: [
+              PaymentLink(
+                label: _t(context, 'Review total', 'Periksa total'),
+                onPressed: () {},
+              ),
+            ],
           ),
         ],
       ),

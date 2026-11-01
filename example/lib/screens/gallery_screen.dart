@@ -329,6 +329,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
 String _t(BuildContext context, String en, String id) =>
     Localizations.localeOf(context).languageCode == 'id' ? id : en;
 
+String _sizeLabel(BuildContext context, PaymentSize size) => switch (size) {
+  PaymentSize.small => _t(context, 'small', 'kecil'),
+  PaymentSize.medium => _t(context, 'medium', 'sedang'),
+  PaymentSize.large => _t(context, 'large', 'besar'),
+};
+
 // Gallery chrome uses its own quieter voice (see dev_chrome.dart) so it is
 // never mistaken for the product: a grey workbench, class names as a small
 // monospace caption, the fixture state selector outside the frame, and the

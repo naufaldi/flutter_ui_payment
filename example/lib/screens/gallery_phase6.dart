@@ -32,23 +32,36 @@ class _KitSpecimenState extends State<_KitSpecimen> {
       onPressed: onPressed,
     );
     final now = DateTime(2026, 11, 1, 12);
+    String tr(String en, String id) => _t(context, en, id);
+    final l10n = PaymentLocalizations.of(context);
+    final pay = l10n.payAmount(
+      l10n.moneyFormat.format(const Money.idr(102500)),
+    );
+    // One name for the action on the button and in its confirmation.
+    final removeCard = tr('Remove card', 'Hapus kartu');
     final (caption, children) = switch (widget.kind) {
       'dialog' => (
         'showPaymentConfirmDialog · variants',
         <Widget>[
-          const Text(
-            'Confirm the named consequence before removing a saved card.',
+          Text(
+            tr(
+              'Confirm the named consequence before removing a saved card.',
+              'Konfirmasi akibatnya sebelum menghapus kartu tersimpan.',
+            ),
           ),
           PaymentButton(
             key: const Key('phase6-dialog-open'),
-            label: 'Remove card',
+            label: removeCard,
             variant: PaymentButtonVariant.destructive,
             onPressed: () => showPaymentConfirmDialog(
               context,
-              title: 'Remove card?',
-              message: 'You can add this demo card again later.',
-              confirmLabel: 'Remove card',
-              cancelLabel: 'Cancel',
+              title: tr('Remove card?', 'Hapus kartu?'),
+              message: tr(
+                'You can add this demo card again later.',
+                'Anda bisa menambahkan kartu demo ini lagi nanti.',
+              ),
+              confirmLabel: removeCard,
+              cancelLabel: tr('Cancel', 'Batal'),
               destructive: true,
             ),
           ),
@@ -60,18 +73,32 @@ class _KitSpecimenState extends State<_KitSpecimen> {
           SizedBox(
             height: 420,
             child: PaymentSheet(
-              header: const PaymentSheetHeader(title: 'Payment options'),
-              body: const Text('Choose a method for this demo payment.'),
-              footer: action('Done', onPressed: () {}),
+              header: PaymentSheetHeader(
+                title: tr('Payment options', 'Opsi pembayaran'),
+              ),
+              body: Text(
+                tr(
+                  'Choose a method for this demo payment.',
+                  'Pilih metode untuk pembayaran demo ini.',
+                ),
+              ),
+              footer: action(tr('Done', 'Selesai'), onPressed: () {}),
             ),
           ),
           action(
-            'Open sheet',
+            tr('Open sheet', 'Buka sheet'),
             onPressed: () => showPaymentSheet<void>(
               context: context,
-              builder: (_) => const PaymentSheet(
-                header: PaymentSheetHeader(title: 'Demo sheet'),
-                body: Text('Supporting payment information.'),
+              builder: (_) => PaymentSheet(
+                header: PaymentSheetHeader(
+                  title: tr('Demo sheet', 'Sheet demo'),
+                ),
+                body: Text(
+                  tr(
+                    'Supporting payment information.',
+                    'Informasi pendukung pembayaran.',
+                  ),
+                ),
               ),
             ),
           ),
@@ -81,11 +108,16 @@ class _KitSpecimenState extends State<_KitSpecimen> {
         'PaymentSection · variants',
         <Widget>[
           PaymentSection(
-            title: 'Payment method',
-            trailing: PaymentLink(label: 'Change', onPressed: () {}),
-            child: const Text('QRIS · Instant'),
+            title: tr('Payment method', 'Metode pembayaran'),
+            trailing: PaymentLink(
+              label: tr('Change', 'Ganti'),
+              onPressed: () {},
+            ),
+            child: Text(tr('QRIS · Instant', 'QRIS · Instan')),
           ),
-          const PaymentSection(child: Text('Fees include VAT.')),
+          PaymentSection(
+            child: Text(tr('Fees include VAT.', 'Biaya sudah termasuk PPN.')),
+          ),
         ],
       ),
       'navigation' => (
@@ -97,23 +129,23 @@ class _KitSpecimenState extends State<_KitSpecimen> {
             child: NavSidebar(
               selectedId: _selected,
               onSelected: (item) => setState(() => _selected = item.id),
-              sections: const [
+              sections: [
                 PaymentNavSection(
-                  title: 'Payments',
+                  title: tr('Payments', 'Pembayaran'),
                   items: [
                     PaymentNavItem(
                       id: 'payments',
-                      label: 'Transactions',
+                      label: tr('Transactions', 'Transaksi'),
                       icon: Icons.receipt_long_outlined,
                     ),
                   ],
                 ),
                 PaymentNavSection(
-                  title: 'Account',
+                  title: tr('Account', 'Akun'),
                   items: [
                     PaymentNavItem(
                       id: 'settings',
-                      label: 'Settings',
+                      label: tr('Settings', 'Pengaturan'),
                       icon: Icons.settings_outlined,
                     ),
                   ],
@@ -128,7 +160,11 @@ class _KitSpecimenState extends State<_KitSpecimen> {
         <Widget>[
           for (var i = 0; i < 3; i++)
             PaymentStepIndicator(
-              steps: const ['Order', 'Review', 'Pay'],
+              steps: [
+                tr('Order', 'Pesanan'),
+                tr('Review', 'Tinjau'),
+                tr('Pay', 'Bayar'),
+              ],
               current: i,
             ),
         ],
@@ -136,28 +172,28 @@ class _KitSpecimenState extends State<_KitSpecimen> {
       'info_row' => (
         'InfoRow · variants',
         <Widget>[
-          const InfoRow(label: 'Method', valueText: 'QRIS'),
-          const InfoRow(
-            label: 'Total',
-            value: AmountText(Money.idr(102500)),
+          InfoRow(label: tr('Method', 'Metode'), valueText: 'QRIS'),
+          InfoRow(
+            label: tr('Total', 'Total'),
+            value: const AmountText(Money.idr(102500)),
             emphasis: true,
           ),
-          const InfoRow(
-            label: 'Fee',
+          InfoRow(
+            label: tr('Fee', 'Biaya'),
             valueText: 'Rp2.500',
-            caption: 'Includes VAT',
+            caption: tr('Includes VAT', 'Termasuk PPN'),
           ),
-          const InfoRow(
-            label: 'Reference',
+          InfoRow(
+            label: tr('Reference', 'Referensi'),
             valueText: 'TRX-DEMO-0042',
-            trailing: PaymentCopyButton(
+            trailing: const PaymentCopyButton(
               value: 'TRX-DEMO-0042',
               onCopy: _copyGalleryValue,
             ),
           ),
-          const InfoRow(
-            label: 'Order',
-            value: MiddleEllipsisText(
+          InfoRow(
+            label: tr('Order', 'Pesanan'),
+            value: const MiddleEllipsisText(
               'DEMO-ORDER-2026-VERY-LONG-REFERENCE-0042',
             ),
           ),
@@ -179,10 +215,10 @@ class _KitSpecimenState extends State<_KitSpecimen> {
           for (final obscured in [false, true])
             PrivacyMask(
               obscured: obscured,
-              child: const PaymentPropertyList(
+              child: PaymentPropertyList(
                 items: [
                   PaymentPropertyListItem(
-                    label: 'Virtual account',
+                    label: tr('Virtual account', 'Virtual account'),
                     valueText: 'DEMO-VA-0042',
                   ),
                 ],
@@ -195,17 +231,22 @@ class _KitSpecimenState extends State<_KitSpecimen> {
         <Widget>[
           PaymentActionBar(
             total: const Money.idr(102500),
-            action: action('Pay Rp102.500', onPressed: () {}, primary: true),
+            action: action(pay, onPressed: () {}, primary: true),
           ),
           PaymentActionBar(
             total: const Money.idr(102500),
             updating: true,
-            action: action('Updating total', primary: true),
+            action: action(l10n.updatingTotal, primary: true),
           ),
-          const Text('Choose a payment method to continue.'),
+          Text(
+            tr(
+              'Choose a payment method to continue.',
+              'Pilih metode pembayaran untuk melanjutkan.',
+            ),
+          ),
           PaymentActionBar(
             total: const Money.idr(102500),
-            action: action('Pay Rp102.500', primary: true),
+            action: action(pay, primary: true),
           ),
         ],
       ),
@@ -214,32 +255,35 @@ class _KitSpecimenState extends State<_KitSpecimen> {
         <Widget>[
           PaymentVideoPlayer(
             controller: _video,
-            title: 'How to pay (demo, loading only)',
+            title: tr(
+              'How to pay (demo, loading only)',
+              'Cara membayar (demo, hanya memuat)',
+            ),
           ),
         ],
       ),
       'status_header' => (
         'StatusHeader · variants',
         <Widget>[
-          const StatusHeader(
+          StatusHeader(
             tone: StatusTone.success,
             icon: PaymentIcons.success,
-            title: 'Paid',
+            title: tr('Paid', 'Dibayar'),
           ),
-          const StatusHeader(
+          StatusHeader(
             tone: StatusTone.warning,
             icon: Icons.schedule,
-            title: 'Pending',
+            title: tr('Pending', 'Tertunda'),
           ),
-          const StatusHeader(
+          StatusHeader(
             tone: StatusTone.danger,
             icon: Icons.error_outline,
-            title: 'Failed',
+            title: tr('Failed', 'Gagal'),
           ),
-          const StatusHeader(
+          StatusHeader(
             tone: StatusTone.neutral,
             icon: Icons.help_outline,
-            title: 'Not confirmed',
+            title: tr('Not confirmed', 'Belum dikonfirmasi'),
             hatched: true,
           ),
         ],
@@ -257,34 +301,49 @@ class _KitSpecimenState extends State<_KitSpecimen> {
         <Widget>[
           StateMessage(
             icon: Icons.receipt_long_outlined,
-            title: 'No transactions yet',
-            message: 'Your first payment will appear here.',
-            actionLabel: 'Make a payment',
+            title: tr('No transactions yet', 'Belum ada transaksi'),
+            message: tr(
+              'Your first payment will appear here.',
+              'Pembayaran pertama Anda akan muncul di sini.',
+            ),
+            actionLabel: tr('Make a payment', 'Lakukan pembayaran'),
             onAction: () {},
           ),
           StateMessage(
             icon: Icons.warning_amber,
-            title: 'Spending did not load',
-            message: 'Payments are still available.',
+            title: tr('Spending did not load', 'Pengeluaran gagal dimuat'),
+            message: tr(
+              'Payments are still available.',
+              'Pembayaran tetap bisa dilakukan.',
+            ),
             tone: StatusTone.warning,
-            actionLabel: 'Retry',
+            actionLabel: tr('Retry', 'Coba lagi'),
             onAction: () {},
           ),
           StateMessage(
             icon: Icons.error_outline,
-            title: 'Transactions did not load',
-            message: 'Retry to see your payment history.',
+            title: tr('Transactions did not load', 'Transaksi gagal dimuat'),
+            message: tr(
+              'Retry to see your payment history.',
+              'Coba lagi untuk melihat riwayat pembayaran.',
+            ),
             tone: StatusTone.danger,
-            actionLabel: 'Retry',
+            actionLabel: tr('Retry', 'Coba lagi'),
             onAction: () {},
           ),
           PaymentDetailPagePropertyList(
-            title: 'No matches',
+            title: tr('No matches', 'Tidak ada yang cocok'),
             pending: false,
             emptyMessage: PaymentEmptyMessage(
-              'No matching settlements',
-              message: 'Clear the search to see all records.',
-              actionLabel: 'Clear search',
+              tr(
+                'No matching settlements',
+                'Tidak ada penyelesaian yang cocok',
+              ),
+              message: tr(
+                'Clear the search to see all records.',
+                'Hapus pencarian untuk melihat semua catatan.',
+              ),
+              actionLabel: tr('Clear search', 'Hapus pencarian'),
               onAction: () {},
             ),
           ),
@@ -300,17 +359,29 @@ class _KitSpecimenState extends State<_KitSpecimen> {
             ChartState.error,
           ])
             ChartModule(
-              title: 'Weekly spending · ${state.name}',
+              title:
+                  '${tr('Weekly spending', 'Pengeluaran mingguan')} · ${switch (state) {
+                    ChartState.ready => tr('ready', 'siap'),
+                    ChartState.loading => tr('loading', 'memuat'),
+                    ChartState.empty => tr('empty', 'kosong'),
+                    ChartState.error => tr('error', 'galat'),
+                  }}',
               state: state,
               height: 200,
               headline: state == ChartState.ready
                   ? const Money.idr(102500)
                   : null,
               chart: state == ChartState.ready
-                  ? const PaymentBarChart(
+                  ? PaymentBarChart(
                       points: [
-                        ChartPoint(label: 'W1', value: Money.idr(25000)),
-                        ChartPoint(label: 'W2', value: Money.idr(77500)),
+                        ChartPoint(
+                          label: tr('W1', 'M1'),
+                          value: const Money.idr(25000),
+                        ),
+                        ChartPoint(
+                          label: tr('W2', 'M2'),
+                          value: const Money.idr(77500),
+                        ),
                       ],
                     )
                   : null,

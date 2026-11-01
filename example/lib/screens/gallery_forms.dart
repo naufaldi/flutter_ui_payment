@@ -1,19 +1,37 @@
 part of 'gallery_screen.dart';
 
-const _occupations = [
-  PaymentSelectOption(value: 'employee', label: 'Employee'),
-  PaymentSelectOption(value: 'entrepreneur', label: 'Entrepreneur'),
-  PaymentSelectOption(value: 'student', label: 'Student'),
-  PaymentSelectOption(value: 'civilServant', label: 'Civil servant'),
-  PaymentSelectOption(value: 'homemaker', label: 'Homemaker'),
-  PaymentSelectOption(value: 'freelancer', label: 'Freelancer'),
-  PaymentSelectOption(value: 'retired', label: 'Retired'),
-  PaymentSelectOption(
-    value: 'other',
-    label: 'Other',
-    disabledReason: 'Not available for this account',
-  ),
-];
+List<PaymentSelectOption<String>> _occupations(BuildContext context) {
+  String t(String en, String id) => _t(context, en, id);
+  return [
+    PaymentSelectOption(value: 'employee', label: t('Employee', 'Karyawan')),
+    PaymentSelectOption(
+      value: 'entrepreneur',
+      label: t('Entrepreneur', 'Wiraswasta'),
+    ),
+    PaymentSelectOption(value: 'student', label: t('Student', 'Pelajar')),
+    PaymentSelectOption(
+      value: 'civilServant',
+      label: t('Civil servant', 'Pegawai negeri'),
+    ),
+    PaymentSelectOption(
+      value: 'homemaker',
+      label: t('Homemaker', 'Ibu rumah tangga'),
+    ),
+    PaymentSelectOption(
+      value: 'freelancer',
+      label: t('Freelancer', 'Pekerja lepas'),
+    ),
+    PaymentSelectOption(value: 'retired', label: t('Retired', 'Pensiunan')),
+    PaymentSelectOption(
+      value: 'other',
+      label: t('Other', 'Lainnya'),
+      disabledReason: t(
+        'Not available for this account',
+        'Tidak tersedia untuk akun ini',
+      ),
+    ),
+  ];
+}
 
 class _FormsSpecimen extends StatefulWidget {
   const _FormsSpecimen(this.name);
@@ -28,56 +46,70 @@ class _FormsSpecimenState extends State<_FormsSpecimen> {
   DateTime? date;
   @override
   Widget build(BuildContext context) {
+    String t(String en, String id) => _t(context, en, id);
+    final occupations = _occupations(context);
+    final occupationLabel = t('Occupation', 'Pekerjaan');
+    final dateOfBirth = t('Date of birth', 'Tanggal lahir');
     final children = switch (widget.name) {
       'PaymentTextArea' => <Widget>[
-        const PaymentTextArea(
-          label: 'Describe the problem',
+        PaymentTextArea(
+          label: t('Describe the problem', 'Jelaskan masalahnya'),
           maxLength: 300,
-          description: 'Include the payment reference.',
+          description: t(
+            'Include the payment reference.',
+            'Sertakan referensi pembayaran.',
+          ),
         ),
-        const PaymentTextArea(
-          label: 'Description',
-          errorText: 'Describe what happened',
+        PaymentTextArea(
+          label: t('Description', 'Deskripsi'),
+          errorText: t('Describe what happened', 'Jelaskan apa yang terjadi'),
         ),
-        const PaymentTextArea(
-          label: 'Notes',
-          initialValue: 'Payment received',
+        PaymentTextArea(
+          label: t('Notes', 'Catatan'),
+          initialValue: t('Payment received', 'Pembayaran diterima'),
           readOnly: true,
         ),
-        const PaymentTextArea(label: 'Internal notes', enabled: false),
+        PaymentTextArea(
+          label: t('Internal notes', 'Catatan internal'),
+          enabled: false,
+        ),
       ],
       'PaymentSelect' => <Widget>[
         PaymentSelect<String>(
-          label: 'Occupation',
-          hint: 'Choose your occupation',
-          options: _occupations,
+          label: occupationLabel,
+          hint: t('Choose your occupation', 'Pilih pekerjaan Anda'),
+          options: occupations,
           value: occupation,
           onChanged: (v) => setState(() => occupation = v),
         ),
         PaymentSelect<String>(
-          label: 'Occupation',
-          options: _occupations,
+          label: occupationLabel,
+          options: occupations,
           value: 'employee',
           onChanged: (_) {},
         ),
         PaymentSelect<String>(
-          label: 'Occupation',
-          options: _occupations,
+          label: occupationLabel,
+          options: occupations,
           value: null,
-          errorText: 'Choose your occupation',
+          errorText: t('Choose your occupation', 'Pilih pekerjaan Anda'),
           onChanged: (_) {},
         ),
-        const PaymentSelect<String>(
-          label: 'Occupation',
-          options: _occupations,
+        PaymentSelect<String>(
+          label: occupationLabel,
+          options: occupations,
           value: null,
           onChanged: null,
         ),
         PaymentSelect<String>.multiple(
-          label: 'Payment methods',
+          label: t('Payment methods', 'Metode pembayaran'),
           options: [
-            for (final m in ['Transfer', 'QRIS', 'Card'])
-              PaymentSelectOption(value: m, label: m),
+            for (final (m, label) in [
+              ('Transfer', 'Transfer'),
+              ('QRIS', 'QRIS'),
+              ('Card', t('Card', 'Kartu')),
+            ])
+              PaymentSelectOption(value: m, label: label),
           ],
           values: methods,
           onChanged: (v) => setState(() => methods = v),
@@ -85,29 +117,29 @@ class _FormsSpecimenState extends State<_FormsSpecimen> {
       ],
       'PaymentDateField' => <Widget>[
         PaymentDateField(
-          label: 'Date of birth',
+          label: dateOfBirth,
           value: date,
           onChanged: (v) => setState(() => date = v),
           firstDate: DateTime(1900),
           lastDate: DateTime(2030),
         ),
         PaymentDateField(
-          label: 'Date of birth',
+          label: dateOfBirth,
           value: DateTime(1995, 8, 17),
           onChanged: (_) {},
           firstDate: DateTime(1900),
           lastDate: DateTime(2030),
         ),
         PaymentDateField(
-          label: 'Date of birth',
+          label: dateOfBirth,
           value: null,
-          errorText: 'You must be 17 or older.',
+          errorText: t('You must be 17 or older.', 'Usia minimal 17 tahun.'),
           onChanged: (_) {},
           firstDate: DateTime(1900),
           lastDate: DateTime(2030),
         ),
         PaymentDateField(
-          label: 'Date of birth',
+          label: dateOfBirth,
           value: null,
           enabled: false,
           onChanged: (_) {},
@@ -117,11 +149,14 @@ class _FormsSpecimenState extends State<_FormsSpecimen> {
       ],
       _ => <Widget>[
         PaymentFormFieldGroup(
-          legend: 'Place and date of birth',
+          legend: t('Place and date of birth', 'Tempat dan tanggal lahir'),
           children: [
-            const PaymentTextField(label: 'Place of birth', required: true),
+            PaymentTextField(
+              label: t('Place of birth', 'Tempat lahir'),
+              required: true,
+            ),
             PaymentDateField(
-              label: 'Date of birth',
+              label: dateOfBirth,
               value: date,
               onChanged: (v) => setState(() => date = v),
               firstDate: DateTime(1900),
@@ -129,20 +164,26 @@ class _FormsSpecimenState extends State<_FormsSpecimen> {
             ),
           ],
         ),
-        const PaymentFormFieldGroup(
-          legend: 'Card expiry',
+        PaymentFormFieldGroup(
+          legend: t('Card expiry', 'Masa berlaku kartu'),
           layout: Axis.horizontal,
           children: [
-            PaymentTextField(label: 'Month', type: PaymentTextFieldType.number),
-            PaymentTextField(label: 'Year', type: PaymentTextFieldType.number),
+            PaymentTextField(
+              label: t('Month', 'Bulan'),
+              type: PaymentTextFieldType.number,
+            ),
+            PaymentTextField(
+              label: t('Year', 'Tahun'),
+              type: PaymentTextFieldType.number,
+            ),
           ],
         ),
-        const PaymentFormFieldGroup(
-          legend: 'Disabled group',
+        PaymentFormFieldGroup(
+          legend: t('Disabled group', 'Grup nonaktif'),
           disabled: true,
           children: [
-            PaymentTextField(label: 'Name'),
-            PaymentTextArea(label: 'Notes'),
+            PaymentTextField(label: t('Name', 'Nama')),
+            PaymentTextArea(label: t('Notes', 'Catatan')),
           ],
         ),
       ],
@@ -234,7 +275,7 @@ class _SearchFieldSpecimenState extends State<_SearchFieldSpecimen> {
       children: [
         PaymentSearchField<String>(
           key: const Key('search-province'),
-          label: 'Province',
+          label: _t(context, 'Province', 'Provinsi'),
           options: [
             for (final p in _provinces) PaymentSearchOption(value: p, label: p),
           ],
@@ -242,7 +283,7 @@ class _SearchFieldSpecimenState extends State<_SearchFieldSpecimen> {
           onSelected: (v) => setState(() => province = v),
         ),
         PaymentSearchField<String>.multiple(
-          label: 'Banks',
+          label: _t(context, 'Banks', 'Bank'),
           options: [
             for (final p in ['Bank Contoh', 'Bank Demo', 'Bank Nusantara'])
               PaymentSearchOption(value: p, label: p),
@@ -251,14 +292,14 @@ class _SearchFieldSpecimenState extends State<_SearchFieldSpecimen> {
           onSelectionChanged: (v) => setState(() => banks = v),
         ),
         PaymentSearchField<String>(
-          label: 'Province',
+          label: _t(context, 'Province', 'Provinsi'),
           options: const [],
           selected: null,
           onSelected: (_) {},
-          errorText: 'Choose a province',
+          errorText: _t(context, 'Choose a province', 'Pilih provinsi'),
         ),
         PaymentSearchField<String>(
-          label: 'Remote search',
+          label: _t(context, 'Remote search', 'Pencarian jarak jauh'),
           options: const [],
           selected: null,
           onSelected: (_) {},
@@ -279,69 +320,75 @@ class _DateRangeSpecimen extends StatefulWidget {
 class _DateRangeSpecimenState extends State<_DateRangeSpecimen> {
   PaymentDateRange? value;
   PaymentDateGranularity granularity = PaymentDateGranularity.week;
-  late final presets = [
+  List<PaymentDatePreset> _presets(BuildContext context) => [
     PaymentDatePreset(
-      label: 'Last 7 days',
+      label: _t(context, 'Last 7 days', '7 hari terakhir'),
       start: DateTime(2026, 10, 25),
       end: DateTime(2026, 10, 31),
     ),
     PaymentDatePreset(
-      label: 'Last 30 days',
+      label: _t(context, 'Last 30 days', '30 hari terakhir'),
       start: DateTime(2026, 10, 2),
       end: DateTime(2026, 10, 31),
     ),
     PaymentDatePreset(
-      label: 'This month',
+      label: _t(context, 'This month', 'Bulan ini'),
       start: DateTime(2026, 10),
       end: DateTime(2026, 10, 31),
     ),
   ];
   @override
-  Widget build(BuildContext context) => _Entry(
-    name: 'PaymentDateRangePicker · variants',
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: PaymentTheme.of(context).space(PaymentSpace.group),
-      children: [
-        PaymentDateRangePicker(
-          label: 'Date range',
-          value: value,
-          onChanged: (v) => setState(() => value = v),
-          firstDate: DateTime(2020),
-          lastDate: DateTime(2030),
-          presets: presets,
+  Widget build(BuildContext context) {
+    final presets = _presets(context);
+    return _build(context, presets);
+  }
+
+  Widget _build(BuildContext context, List<PaymentDatePreset> presets) =>
+      _Entry(
+        name: 'PaymentDateRangePicker · variants',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: PaymentTheme.of(context).space(PaymentSpace.group),
+          children: [
+            PaymentDateRangePicker(
+              label: _t(context, 'Date range', 'Rentang tanggal'),
+              value: value,
+              onChanged: (v) => setState(() => value = v),
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2030),
+              presets: presets,
+            ),
+            PaymentDateRangePicker(
+              label: _t(context, 'Payment history', 'Riwayat pembayaran'),
+              value: PaymentDateRange(
+                start: DateTime(2026, 10),
+                end: DateTime(2026, 10, 31),
+              ),
+              onChanged: (_) {},
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2030),
+              granularity: granularity,
+              onGranularityChanged: (v) => setState(() => granularity = v),
+            ),
+            PaymentDateRangePicker(
+              label: _t(context, 'Recent payments', 'Pembayaran terbaru'),
+              value: PaymentDateRange.fromPreset(presets[1]),
+              onChanged: (_) {},
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2030),
+              presets: presets,
+            ),
+            PaymentDateRangePicker(
+              label: _t(context, 'Date range', 'Rentang tanggal'),
+              value: null,
+              enabled: false,
+              onChanged: (_) {},
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2030),
+            ),
+          ],
         ),
-        PaymentDateRangePicker(
-          label: 'Payment history',
-          value: PaymentDateRange(
-            start: DateTime(2026, 10),
-            end: DateTime(2026, 10, 31),
-          ),
-          onChanged: (_) {},
-          firstDate: DateTime(2020),
-          lastDate: DateTime(2030),
-          granularity: granularity,
-          onGranularityChanged: (v) => setState(() => granularity = v),
-        ),
-        PaymentDateRangePicker(
-          label: 'Recent payments',
-          value: PaymentDateRange.fromPreset(presets[1]),
-          onChanged: (_) {},
-          firstDate: DateTime(2020),
-          lastDate: DateTime(2030),
-          presets: presets,
-        ),
-        PaymentDateRangePicker(
-          label: 'Date range',
-          value: null,
-          enabled: false,
-          onChanged: (_) {},
-          firstDate: DateTime(2020),
-          lastDate: DateTime(2030),
-        ),
-      ],
-    ),
-  );
+      );
 }
 
 class _ChipSpecimen extends StatelessWidget {
@@ -355,14 +402,26 @@ class _ChipSpecimen extends StatelessWidget {
       children: [
         PaymentChipList(
           children: [
-            PaymentChip(label: 'Date', value: '1–31 Oct', onClose: () {}),
             PaymentChip(
-              label: 'Method',
-              values: const ['Transfer', 'QRIS', 'Card'],
+              label: _t(context, 'Date', 'Tanggal'),
+              value: PaymentLocalizations.of(
+                context,
+              ).formatDateRange(DateTime(2026, 10), DateTime(2026, 10, 31)),
+              onClose: () {},
+            ),
+            PaymentChip(
+              label: _t(context, 'Method', 'Metode'),
+              values: ['Transfer', 'QRIS', _t(context, 'Card', 'Kartu')],
               onDropdown: () {},
             ),
-            PaymentChip(label: 'Add status', onAddSuggestion: () {}),
-            const PaymentChip(label: 'Currency', value: 'IDR'),
+            PaymentChip(
+              label: _t(context, 'Add status', 'Tambah status'),
+              onAddSuggestion: () {},
+            ),
+            PaymentChip(
+              label: _t(context, 'Currency', 'Mata uang'),
+              value: 'IDR',
+            ),
           ],
         ),
         PromoCodeInput(
