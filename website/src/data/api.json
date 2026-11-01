@@ -13423,6 +13423,17 @@
             "isSuper": false,
             "fieldName": "filters",
             "doc": ""
+          },
+          {
+            "name": "searchActions",
+            "type": "List<Widget>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "searchActions",
+            "doc": "Host filter controls on the search line, after the box, such as\n`PaymentDateRangePicker.button`. Show the active filter as a chip too.\n\nWith actions the search line is one compact row at every text size\n(D63a): the search label shows as the placeholder, not above the box,\nand stays the field's spoken name."
           }
         ],
         "doc": ""
@@ -13493,6 +13504,13 @@
         "static": false,
         "type": "List<TransactionFilter>",
         "doc": ""
+      },
+      {
+        "name": "searchActions",
+        "kind": "field",
+        "static": false,
+        "type": "List<Widget>",
+        "doc": "Host filter controls on the search line, after the box, such as\n`PaymentDateRangePicker.button`. Show the active filter as a chip too.\n\nWith actions the search line is one compact row at every text size\n(D63a): the search label shows as the placeholder, not above the box,\nand stays the field's spoken name."
       }
     ],
     "copyWith": null
@@ -16916,9 +16934,31 @@
             "isSuper": false,
             "fieldName": null,
             "doc": ""
+          },
+          {
+            "name": "actions",
+            "type": "List<Widget>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
+          },
+          {
+            "name": "hiddenElements",
+            "type": "Set<PaymentFieldPart>",
+            "required": false,
+            "default": "const {}",
+            "named": true,
+            "viaThis": false,
+            "isSuper": false,
+            "fieldName": null,
+            "doc": ""
           }
         ],
-        "doc": "Controlled local list filter, with clear and refocus."
+        "doc": "Controlled local list filter, with clear and refocus.\n\n`actions` sit after the box on the same line, centred on it, such as a\nfilter `PaymentIconButton`; a label above the box spans them. A hidden\nlabel (`hiddenElements`) shows as the placeholder instead and stays the\nfield's spoken name."
       }
     ],
     "getters": [],
@@ -17112,6 +17152,13 @@
         "static": false,
         "type": "String?",
         "doc": "Controlled query used by the search constructor."
+      },
+      {
+        "name": "actions",
+        "kind": "field",
+        "static": false,
+        "type": "List<Widget>",
+        "doc": "Controls after the search box, centred on it (search constructor only)."
       }
     ],
     "copyWith": null
@@ -20629,6 +20676,90 @@
           }
         ],
         "doc": ""
+      },
+      {
+        "name": "PaymentDateRangePicker.button",
+        "factory": false,
+        "params": [
+          {
+            "name": "label",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "label",
+            "doc": "Visible name identifying this value or control."
+          },
+          {
+            "name": "value",
+            "type": "PaymentDateRange?",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "value",
+            "doc": "Current host-selected range."
+          },
+          {
+            "name": "onChanged",
+            "type": "ValueChanged<PaymentDateRange?>",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onChanged",
+            "doc": "Reports the selected range to the host."
+          },
+          {
+            "name": "firstDate",
+            "type": "DateTime",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "firstDate",
+            "doc": "Earliest selectable day in the host zone."
+          },
+          {
+            "name": "lastDate",
+            "type": "DateTime",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "lastDate",
+            "doc": "Last selectable day in the host zone."
+          },
+          {
+            "name": "presets",
+            "type": "List<PaymentDatePreset>",
+            "required": false,
+            "default": "const []",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "presets",
+            "doc": "Named ranges offered before the custom calendar."
+          },
+          {
+            "name": "enabled",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "enabled",
+            "doc": "Whether the customer can change this control."
+          }
+        ],
+        "doc": "A calendar icon button that opens the same presets and range sheet,\nfor a filter line such as `TransactionHistory.searchActions`.\n\n`label` is its tooltip and spoken name. While a range is set the glyph\nfills, takes the accent and reads as selected; show the range itself\nas an active-filter chip, since the button has no visible value."
       }
     ],
     "getters": [],

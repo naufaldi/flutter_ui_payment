@@ -54,7 +54,7 @@ Variants: `type` × `size`, `reference`, `.search`. Nothing else exists.
 
 ### Content and accessibility
 
-Keep a persistent label. Never put the only instruction in `hint`. Explain how to fix an error. Every size uses 16 px input text; padding varies without shrinking text. Hidden labels, descriptions and errors remain spoken. Required is semantic; the host must enforce it. Clearing search reports an empty query and refocuses the field.
+Keep a persistent label. Never put the only instruction in `hint`. Explain how to fix an error. Every size uses 16 px input text; padding varies without shrinking text. Hidden labels, descriptions and errors remain spoken. Required is semantic; the host must enforce it. Clearing search reports an empty query and refocuses the field. `.search(actions: …)` puts filter controls, such as a calendar `PaymentIconButton`, after the box on the same line, centred on the box; at large text the label above spans them. `.search(hiddenElements: {PaymentFieldPart.label})` shows the label as the placeholder instead, and the label stays the field's spoken name (`TransactionHistory` does this when it has `searchActions`, D63a).
 
 <Props names={['PaymentTextField', 'PaymentTextFieldType', 'PaymentSize', 'PaymentFieldPart']} />
 

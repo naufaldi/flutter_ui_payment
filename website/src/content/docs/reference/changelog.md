@@ -5,6 +5,16 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## UI review P7d (2026-11-01)
+
+- **Added: filter controls on the search line (D63a, #58).** `TransactionHistory.searchActions` and `PaymentTextField.search(actions:)` put host controls after the search box on the same line, centred on the box at every text size. With `searchActions`, the history search shows its label as the placeholder instead of above the box, and the label stays the field's spoken name; `PaymentTextField.search(hiddenElements: {PaymentFieldPart.label})` does the same for any search. New `PaymentDateRangePicker.button`: a 48 dp calendar icon button that opens the same presets sheet and range calendar, with the picker's label as its tooltip and spoken name; while a range is set its glyph fills, takes the accent and reads as selected. It shows no value, so show the range as an active-filter chip. All additive: without `searchActions` the history search is unchanged.
+
+  ```dart
+  TransactionHistory(records: records, query: query, filter: filter, onQueryChanged: setQuery, onFilterChanged: setFilter, onOpen: openDetail, searchActions: [PaymentDateRangePicker.button(label: 'Date range', value: range, onChanged: setRange, firstDate: DateTime(2026), lastDate: today, presets: presets)])
+  ```
+
+- **Changed: example history leads with the list (D63, D63a, #58).** The history page is the header, the active-filter chips, then search with the date-range button, the tabs and the rows, then the spending chart and the month's figures. The labelled date-range field is gone; the chosen range still shows as the "Tanggal: …" chip with ×. At 200% on an iPhone SE a whole first row (title, amount, date and status) is on the first screen in English and Indonesian.
+
 ## UI review P7c (2026-11-01)
 
 - **Copy failure label under the glyph (#46).** `PaymentCopyButton`'s persistent "Copy failed" label now starts under the 20 dp glyph instead of under the 48 dp tap box, so it overhangs the box by 2 dp at 1× instead of 16 dp. On a container's last row it no longer crosses the container's border. The button still keeps its size, and nothing moves. No API change.
@@ -23,7 +33,7 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
   ```
 
 - **Header title never breaks inside a word (D59a, P5 regression).** When a header's title on one line and its "Label ›" link don't fit side by side, the link takes its own line under the header text, start-aligned with its 48 dp target, instead of taking half the row and breaking the title mid-word ("Transacti / ons" at 200% on a small phone). A ⋮ menu stays on the title row. No API change.
-- **History: list before the month's figures (#58).** The example's history page shows the month's payments, refunds and most-used method after the transaction list, so at 100% on an iPhone 16 Pro the first row's title, amount and date are on the first screen. At 200% on an iPhone SE the first screen still ends before the first row (see #58).
+- **History: list before the month's figures (#58).** The example's history page shows the month's payments, refunds and most-used method after the transaction list, so at 100% on an iPhone 16 Pro the first row's title, amount and date are on the first screen. At 200% on an iPhone SE the first screen still ended before the first row; P7d fixes that (D63, D63a, #58).
 - **Example app bar.** "Demo tools" moved from its own app-bar icon into the settings sheet, so the bar keeps at most two trailing actions and step titles such as "Konfirmasi pembayaran" fit at 100%.
 
 ## UI review P7b (2026-11-01)

@@ -53,9 +53,13 @@ TransactionHistory(
 
 The history page opens the statement from its title row: `PaymentFullPageView(pageLink: PaymentLink(label: 'Laporan', …))` shows "Laporan ›" beside the title (D59a). The title has priority and never breaks inside a word: when the title on one line and the link don't fit side by side, as with "Transactions" and "Statement ›" on a small phone at 200%, the link takes its own line under the title, start-aligned in its 48 dp target. History has no priority action, so it has no footer.
 
-The month's figures (payments, refunds, most-used method) follow the transaction list, so the list starts on the first screen of a phone; the chart's headline already carries the month's total.
+History is for finding a payment, so the list leads at every text size and locale (D63): the header, the active-filter chips, then search, the tabs and the rows, then the spending chart and the month's figures (payments, refunds, most-used method). There is no large-text mode and no chart toggle. The full report stays one tap away through "Laporan ›".
 
-<Screen name="ios_se_history_light_200" alt="History on iPhone SE at 200% text with Laporan › on the title row" caption="iPhone SE, 200%, Indonesian" />
+## Filters on one line
+
+The date range is a calendar button at the end of the search line, not a labelled field above it (D63a): pass `PaymentDateRangePicker.button` in `searchActions`. It opens the same presets and range calendar, reads "Rentang tanggal" / "Date range" as its tooltip and spoken name, and fills with the accent while a range is set. The chosen range shows as the "Tanggal: …" chip with ×, so nothing is hidden. With actions on the line, the search shows its label as the placeholder, and the label stays its spoken name. The labelled field repeated the chip's value and took about 140 pt at 200%; with the placeholder too, a whole first row (title, amount, date and status) sits above the tab bar at 200% on an iPhone SE in English and Indonesian.
+
+<Screen name="ios_se_history_light_200" alt="History on iPhone SE at 200% text: the search line with its calendar button, the tabs and a whole first transaction row above the tab bar" caption="iPhone SE, 200%, Indonesian" />
 
 ## Behavior
 
@@ -66,7 +70,7 @@ The month's figures (payments, refunds, most-used method) follow the transaction
 
 Pass `onCopyReference` to TransactionDetail to show reference copying; the host performs the copy and reports success.
 
-Run A01 for a full-page history with spending, date presets and active-filter chips. The host filters records and computes every total. Remove a date, status or search chip independently, or Clear all. Empty and failed history variants offer recovery.
+Run A01 for a full-page history with spending, the date-range button with presets and active-filter chips. The host filters records and computes every total. Remove a date, status or search chip independently, or Clear all. Empty and failed history variants offer recovery.
 
 Transaction details compose a PaymentPageModule around TransactionDetail with onCopyReference, a direct PaymentDetailPageTable for attempts and a direct merchant property module. Run A02.
 

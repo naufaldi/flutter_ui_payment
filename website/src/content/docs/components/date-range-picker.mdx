@@ -49,7 +49,7 @@ Presets live in a kit sheet before the calendar; "Custom range" is a radio row o
 
 ## Variants
 
-Variants: preset, custom range; day, week, month, year granularity. Nothing else exists.
+Variants: preset, custom range; day, week, month, year granularity; field or `.button`. Nothing else exists.
 
 ## Which variant when
 
@@ -58,6 +58,22 @@ Variants: preset, custom range; day, week, month, year granularity. Nothing else
 | History period | preset | Offer last seven days and month presets; custom range handles other periods. |
 
 Use Date field for a single birthday.
+
+**Icon button (D63a).** `PaymentDateRangePicker.button` opens the same presets sheet and range calendar from a 48 dp calendar icon instead of a labelled field, for a filter line such as `TransactionHistory.searchActions`. `label` is its tooltip and spoken name. While a range is set the glyph fills, takes the accent and reads as selected, with the range as its spoken value. It shows no value on screen, so show the range as an active-filter `PaymentChip` with a close button.
+
+```dart
+TransactionHistory(
+  records: records,
+  query: query,
+  filter: filter,
+  onQueryChanged: setQuery,
+  onFilterChanged: setFilter,
+  onOpen: openDetail,
+  searchActions: [
+    PaymentDateRangePicker.button(label: 'Date range', value: range, onChanged: setRange, firstDate: DateTime(2026), lastDate: today, presets: presets),
+  ],
+)
+```
 
 ## States
 
