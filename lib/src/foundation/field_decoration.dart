@@ -42,7 +42,7 @@ class FieldMessage extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(width: theme.spacing * .5),
+        SizedBox(width: theme.space(PaymentSpace.inline)),
         Expanded(child: label),
       ],
     );
@@ -96,17 +96,17 @@ InputDecoration paymentFieldDecoration(
 EdgeInsetsGeometry? fieldContentPadding(PaymentTheme theme, PaymentSize size) =>
     switch (size) {
       PaymentSize.small => EdgeInsetsDirectional.fromSTEB(
-        theme.spacing * 1.5,
-        theme.spacing * 2,
-        theme.spacing * 1.5,
-        theme.spacing,
+        theme.space(PaymentSpace.block),
+        theme.space(PaymentSpace.group),
+        theme.space(PaymentSpace.block),
+        theme.space(PaymentSpace.related),
       ),
       PaymentSize.medium => null,
       PaymentSize.large => EdgeInsetsDirectional.fromSTEB(
-        theme.spacing * 1.5,
-        theme.spacing * 3,
-        theme.spacing * 1.5,
-        theme.spacing * 2,
+        theme.space(PaymentSpace.block),
+        theme.space(PaymentSpace.section),
+        theme.space(PaymentSpace.block),
+        theme.space(PaymentSpace.group),
       ),
     };
 

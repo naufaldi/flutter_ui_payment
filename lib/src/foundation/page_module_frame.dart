@@ -44,12 +44,12 @@ class PageModuleFrame extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.only(
-          top: theme.spacing * 2,
-          bottom: theme.spacing * 3,
+          top: theme.space(PaymentSpace.group),
+          bottom: theme.space(PaymentSpace.section),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: theme.spacing * 1.5,
+          spacing: theme.space(PaymentSpace.block),
           children: [
             LayoutBuilder(
               builder: (context, k) {

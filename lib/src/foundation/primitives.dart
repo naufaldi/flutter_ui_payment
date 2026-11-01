@@ -239,8 +239,8 @@ class InfoRow extends StatelessWidget {
             child: Wrap(
               alignment: WrapAlignment.spaceBetween,
               crossAxisAlignment: WrapCrossAlignment.start,
-              spacing: theme.spacing * 2,
-              runSpacing: theme.spacing * 0.5,
+              spacing: theme.space(PaymentSpace.group),
+              runSpacing: theme.space(PaymentSpace.inline),
               children: [labelWidget, valueWidget],
             ),
           )
@@ -249,7 +249,7 @@ class InfoRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: labelWidget),
-                SizedBox(width: theme.spacing * 2),
+                SizedBox(width: theme.space(PaymentSpace.group)),
                 // The value keeps its natural width up to 60% of the row
                 // and the label wraps in what is left, so a short label
                 // never squeezes a file name or reference into breaking
@@ -267,7 +267,9 @@ class InfoRow extends StatelessWidget {
             ),
           );
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: theme.spacing),
+      padding: EdgeInsets.symmetric(
+        vertical: theme.space(PaymentSpace.related),
+      ),
       child: MergeSemantics(
         child: trailing == null
             ? row
@@ -384,15 +386,14 @@ class _PaymentButtonState extends State<PaymentButton> {
       PaymentButtonVariant.destructive => theme.surface,
       _ => theme.accent,
     };
-    final s = theme.spacing;
     final m = MediaQuery.textScalerOf(context).scale(14) / 14;
     final metrics = switch (widget.size) {
       PaymentSize.small => (
         height: 36.0,
         padding: ButtonStyleButton.scaledPadding(
-          EdgeInsets.symmetric(horizontal: s * 1.5),
-          EdgeInsets.symmetric(horizontal: s),
-          EdgeInsets.symmetric(horizontal: s * 0.5),
+          EdgeInsets.symmetric(horizontal: theme.space(PaymentSpace.block)),
+          EdgeInsets.symmetric(horizontal: theme.space(PaymentSpace.related)),
+          EdgeInsets.symmetric(horizontal: theme.space(PaymentSpace.inline)),
           m,
         ),
         icon: PaymentIconSize.small.resolve(context),
@@ -401,9 +402,9 @@ class _PaymentButtonState extends State<PaymentButton> {
       PaymentSize.large => (
         height: 56.0,
         padding: ButtonStyleButton.scaledPadding(
-          EdgeInsets.symmetric(horizontal: s * 3),
-          EdgeInsets.symmetric(horizontal: s * 1.5),
-          EdgeInsets.symmetric(horizontal: s * 0.5),
+          EdgeInsets.symmetric(horizontal: theme.space(PaymentSpace.section)),
+          EdgeInsets.symmetric(horizontal: theme.space(PaymentSpace.block)),
+          EdgeInsets.symmetric(horizontal: theme.space(PaymentSpace.inline)),
           m,
         ),
         icon: 20.0,
@@ -414,7 +415,7 @@ class _PaymentButtonState extends State<PaymentButton> {
       children: [
         if (widget.icon != null) ...[
           Icon(widget.icon, size: metrics.icon),
-          SizedBox(width: theme.spacing),
+          SizedBox(width: theme.space(PaymentSpace.related)),
         ],
         Flexible(child: Text(widget.label, textAlign: TextAlign.center)),
       ],
@@ -644,7 +645,7 @@ class _PaymentSpinnerState extends State<PaymentSpinner> {
 /// Decorative: screen readers skip it.
 ///
 /// Between rows of a list use the default [height] of 1, as
-/// [PaymentList] does. Between sections use `spacing * 3` so the rule
+/// [PaymentList] does. Between sections use the `section` gap (24) so the rule
 /// sits in the middle of a section gap.
 class PaymentDivider extends StatelessWidget {
   const PaymentDivider({super.key, this.height = 1});
@@ -685,8 +686,8 @@ class PaymentBadge extends StatelessWidget {
     final colors = theme.tone(tone);
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: theme.spacing,
-        vertical: theme.spacing * 0.5,
+        horizontal: theme.space(PaymentSpace.related),
+        vertical: theme.space(PaymentSpace.inline),
       ),
       decoration: BoxDecoration(
         color: _urgent ? colors.foreground : colors.container,
@@ -702,7 +703,7 @@ class PaymentBadge extends StatelessWidget {
             ).clamp(maxScaleFactor: 1.6).scale(14),
             color: _urgent ? theme.surface : colors.foreground,
           ),
-          SizedBox(width: theme.spacing * 0.5),
+          SizedBox(width: theme.space(PaymentSpace.inline)),
           Flexible(
             child: Text(
               label,
@@ -784,10 +785,10 @@ class _PaymentBannerState extends State<PaymentBanner> {
       child: Container(
         width: double.infinity,
         padding: widget.onDismiss == null
-            ? EdgeInsets.all(theme.spacing * 1.5)
+            ? EdgeInsets.all(theme.space(PaymentSpace.block))
             : EdgeInsetsDirectional.only(
-                start: theme.spacing * 1.5,
-                bottom: theme.spacing * 1.5,
+                start: theme.space(PaymentSpace.block),
+                bottom: theme.space(PaymentSpace.block),
               ),
         decoration: BoxDecoration(
           color: colors.container,
@@ -803,15 +804,19 @@ class _PaymentBannerState extends State<PaymentBanner> {
                 // the title's first line, however many lines it wraps to.
                 Padding(
                   padding: EdgeInsets.only(
-                    top: widget.onDismiss == null ? 0 : theme.spacing * 1.5,
+                    top: widget.onDismiss == null
+                        ? 0
+                        : theme.space(PaymentSpace.block),
                   ),
                   child: PaymentIcon.tone(widget.tone, icon: widget.icon),
                 ),
-                SizedBox(width: theme.spacing * 1.5),
+                SizedBox(width: theme.space(PaymentSpace.block)),
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(
-                      top: widget.onDismiss == null ? 0 : theme.spacing * 1.5,
+                      top: widget.onDismiss == null
+                          ? 0
+                          : theme.space(PaymentSpace.block),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -823,7 +828,7 @@ class _PaymentBannerState extends State<PaymentBanner> {
                           ),
                         ),
                         if (widget.message != null) ...[
-                          SizedBox(height: theme.spacing * 0.5),
+                          SizedBox(height: theme.space(PaymentSpace.inline)),
                           Text(widget.message!, style: type.bodyFor(context)),
                         ],
                       ],
@@ -833,7 +838,10 @@ class _PaymentBannerState extends State<PaymentBanner> {
                 if (widget.onDismiss != null)
                   Padding(
                     padding: EdgeInsets.only(
-                      top: math.max(0, theme.spacing * 1.5 + line / 2 - 24),
+                      top: math.max(
+                        0,
+                        theme.space(PaymentSpace.block) + line / 2 - 24,
+                      ),
                     ),
                     child: PaymentIconButton(
                       icon: PaymentIcons.close,
@@ -851,14 +859,16 @@ class _PaymentBannerState extends State<PaymentBanner> {
               ],
             ),
             if (widget.actions.isNotEmpty) ...[
-              SizedBox(height: theme.spacing),
+              SizedBox(height: theme.space(PaymentSpace.related)),
               Padding(
                 padding: EdgeInsetsDirectional.only(
-                  end: widget.onDismiss == null ? 0 : theme.spacing * 1.5,
+                  end: widget.onDismiss == null
+                      ? 0
+                      : theme.space(PaymentSpace.block),
                 ),
                 child: Wrap(
-                  spacing: theme.spacing,
-                  runSpacing: theme.spacing * 0.5,
+                  spacing: theme.space(PaymentSpace.related),
+                  runSpacing: theme.space(PaymentSpace.inline),
                   children: widget.actions,
                 ),
               ),
@@ -896,7 +906,9 @@ class PaymentSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: theme.spacing),
+      padding: EdgeInsets.symmetric(
+        vertical: theme.space(PaymentSpace.related),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -912,7 +924,11 @@ class PaymentSection extends StatelessWidget {
                 ?trailing,
               ],
             ),
-            SizedBox(height: trailing == null ? theme.spacing * 0.5 : 0),
+            SizedBox(
+              height: trailing == null
+                  ? theme.space(PaymentSpace.related) * 0.5
+                  : 0,
+            ),
           ],
           child,
         ],
@@ -952,12 +968,12 @@ class StatusHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         StatusBand(tone: tone, hatched: hatched),
-        SizedBox(height: theme.spacing * 1.5),
+        SizedBox(height: theme.space(PaymentSpace.block)),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PaymentIcon.tone(tone, icon: icon),
-            SizedBox(width: theme.spacing),
+            SizedBox(width: theme.space(PaymentSpace.related)),
             Expanded(
               child: Semantics(
                 header: true,

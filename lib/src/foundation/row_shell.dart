@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'focus_ring.dart';
 import 'payment_theme.dart';
+import 'payment_tokens.dart';
 
 /// Internal list-row container. Content and semantics stay with each row.
 class RowShell extends StatelessWidget {
@@ -19,7 +20,7 @@ class RowShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final padded = Padding(
       padding: EdgeInsets.symmetric(
-        vertical: PaymentTheme.of(context).spacing * 1.5,
+        vertical: PaymentTheme.of(context).space(PaymentSpace.block),
       ),
       child: child,
     );
