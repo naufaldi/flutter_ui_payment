@@ -310,4 +310,38 @@ class DemoStrings {
   String get groupCross => _t('Cross-cutting', 'Lintas fitur');
   String activeScenario(String id) =>
       _t('Scenario $id active', 'Skenario $id aktif');
+
+  // Flow screens: column, property and table labels
+  String get columnId => _t('ID', 'ID');
+  String get columnDate => _t('Date', 'Tanggal');
+  String get columnMethod => _t('Method', 'Metode');
+  String get columnStatus => _t('Status', 'Status');
+  String get columnAmount => _t('Amount', 'Jumlah');
+  String get columnDescription => _t('Description', 'Deskripsi');
+  String get columnFee => _t('Fee', 'Biaya');
+  String get columnArrives => _t('Arrives', 'Masuk');
+  String get propertyName => _t('Name', 'Nama');
+  String get propertyOrder => _t('Order', 'Pesanan');
+  String get propertySupport => _t('Support', 'Bantuan');
+  String get propertyReference => _t('Reference', 'Referensi');
+  String get helpCentre => _t('Help centre', 'Pusat bantuan');
+  String detailTitle(String amount, String? merchant) =>
+      _t('$amount to $merchant', '$amount ke $merchant');
+  String get historyPayments => _t('Payments', 'Pembayaran');
+  String get historyRefunds => _t('Refunds', 'Refund');
+  String get historyMostUsed => _t('Most used', 'Paling sering');
+  String weekLabel(int week) => _t('W$week', 'M$week');
+  String get methodVirtualAccount => _t('Virtual account', 'Virtual account');
+  String get methodBalance => _t('Ruang Bayar balance', 'Saldo Ruang Bayar');
+  String get methodCard => _t('Card', 'Kartu');
+  String get arrivesWithin10 => _t('Within 10 min', 'Dalam 10 menit');
+  String get arrivesInstant => _t('Instant', 'Instan');
+
+  /// Settlement status from the host fixtures, shown in the active language.
+  String settlementStatus(String status) => switch (status) {
+    'Paid' => _t('Paid', 'Dibayar'),
+    'Pending' => _t('Pending', 'Tertunda'),
+    'Failed' => _t('Failed', 'Gagal'),
+    _ => status,
+  };
 }
