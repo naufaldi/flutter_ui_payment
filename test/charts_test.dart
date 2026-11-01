@@ -47,8 +47,14 @@ const weeks = [
   ChartPoint(label: 'W4', value: Money.idr(420000)),
 ];
 String valueText(WidgetTester tester) => tester
-    .widget<Text>(find.byKey(const ValueKey('payment-chart-value')))
-    .data!;
+    .widgetList<Text>(
+      find.descendant(
+        of: find.byKey(const ValueKey('payment-chart-value')),
+        matching: find.byType(Text),
+      ),
+    )
+    .map((t) => t.data)
+    .join();
 void main() {
   test('geometry handles zero, missing, outliers and frame bounds', () {
     final rects = barRects(const [
@@ -341,5 +347,42 @@ void main() {
     }
     // The gutter follows the labels instead of a fixed 76.
     expect(gutters.last, greaterThan(gutters.first));
+  });
+  testWidgets('multi-series charts give each series one label line', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        const SizedBox(
+          height: 180,
+          child: PaymentBarChart(
+            series: [
+              PaymentChartSeries(label: 'This month', points: weeks),
+              PaymentChartSeries(label: 'Last month', points: weeks),
+            ],
+          ),
+        ),
+        scale: 2,
+      ),
+    );
+    final rows = find.descendant(
+      of: find.byKey(const ValueKey('payment-chart-value')),
+      matching: find.byType(Row),
+    );
+    String line(int i) => tester
+        .widgetList<Text>(
+          find.descendant(of: rows.at(i), matching: find.byType(Text)),
+        )
+        .map((t) => t.data)
+        .join();
+    expect(rows, findsNWidgets(2));
+    expect(line(0), 'W4 · This month · Rp420,000');
+    expect(line(1), 'Last month · Rp420,000');
+    // The series name gives way before the amount does.
+    expect(
+      find.descendant(of: rows.at(0), matching: find.byType(Flexible)),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
   });
 }

@@ -383,13 +383,22 @@ class _PointChartState extends State<_PointChart> {
                       final message = index < 0
                           ? l10n.chartNoData
                           : '${points[index].label} · ${formatChartValue(l10n, chartReading(points[index], widget.unit) ?? 0, widget.unit, currency: points[index].value?.currency ?? 'IDR')}';
-                      String readout(int i) => series
-                          .map((s) {
-                            final p = s.points[i];
-                            final reading = chartReading(p, widget.unit);
-                            return '${p.label} · ${series.length > 1 ? '${s.label} ' : ''}${reading == null ? l10n.chartNoData : formatChartValue(l10n, reading, widget.unit, currency: p.value?.currency ?? 'IDR')}${p.status == ChartPointStatus.settled ? '' : ' · ${p.status == ChartPointStatus.pending ? l10n.chartPendingKey : l10n.chartUnknownKey}'}';
-                          })
-                          .join('\n');
+                      // One line per series: the period and series name
+                      // may truncate, the amount never does. Only the first
+                      // line repeats the period.
+                      List<(String, String)> readout(int i) => [
+                        for (final (j, s) in series.indexed)
+                          (
+                            [
+                              if (j == 0) s.points[i].label,
+                              if (series.length > 1) s.label,
+                            ].join(' · '),
+                            '${switch (chartReading(s.points[i], widget.unit)) {
+                              null => l10n.chartNoData,
+                              final reading => formatChartValue(l10n, reading, widget.unit, currency: s.points[i].value?.currency ?? 'IDR'),
+                            }}${s.points[i].status == ChartPointStatus.settled ? '' : ' · ${s.points[i].status == ChartPointStatus.pending ? l10n.chartPendingKey : l10n.chartUnknownKey}'}',
+                          ),
+                      ];
                       if (widget.spark) {
                         final plot = MouseRegion(
                           onHover: (event) =>
@@ -435,22 +444,61 @@ class _PointChartState extends State<_PointChart> {
                                 right: area.right,
                                 centred: shown != null,
                               ),
-                              child: Text(
-                                shown == null
-                                    ? l10n.chartNoData
-                                    : readout(shown),
-                                key: const ValueKey('payment-chart-value'),
+                              child: DefaultTextStyle.merge(
                                 style: type.caption.tabular.copyWith(
                                   color: shown == null
                                       ? theme.textSecondary
                                       : theme.textPrimary,
                                 ),
-                                textScaler: MediaQuery.textScalerOf(
-                                  context,
-                                ).clamp(maxScaleFactor: 1.5),
-                                maxLines: series.length,
-                                softWrap: false,
-                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                child: MediaQuery.withClampedTextScaling(
+                                  maxScaleFactor: 1.5,
+                                  child: Column(
+                                    key: const ValueKey('payment-chart-value'),
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (shown == null)
+                                        Text(l10n.chartNoData)
+                                      else
+                                        for (final (name, value) in readout(
+                                          shown,
+                                        ))
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              if (name.isNotEmpty)
+                                                Flexible(
+                                                  child: Text(
+                                                    '$name · ',
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    softWrap: false,
+                                                  ),
+                                                ),
+                                              // Truncates only when the
+                                              // amount alone is wider than
+                                              // the plot.
+                                              ConstrainedBox(
+                                                constraints: BoxConstraints(
+                                                  maxWidth: math.max(
+                                                    0,
+                                                    area.width,
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  value,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  softWrap: false,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),

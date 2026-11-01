@@ -297,7 +297,9 @@ void main() {
           'Charts',
           () async {
             await top('PaymentBarChart');
-            final bar = tester.getRect(find.byType(PaymentBarChart).first);
+            final bar = tester.getRect(
+              find.byType(PaymentBarChart).hitTestable().first,
+            );
             await tester.tapAt(
               Offset(bar.left + bar.width * .45, bar.center.dy),
             );
@@ -346,7 +348,9 @@ void main() {
                 )
                 .first,
           );
-          await tester.ensureVisible(item);
+          // Centre the item: one at the drawer's bottom edge misses the tap.
+          await Scrollable.ensureVisible(tester.element(item), alignment: .5);
+          await settle(tester);
           await tester.tap(item);
           await settle(tester);
           current = page;
@@ -925,7 +929,9 @@ void main() {
       await top('PaymentLineChart');
       await shot('chart_line_rest');
       await top('PaymentBarChart');
-      final bar = tester.getRect(find.byType(PaymentBarChart).first);
+      final bar = tester.getRect(
+        find.byType(PaymentBarChart).hitTestable().first,
+      );
       await tester.tapAt(Offset(bar.left + bar.width * .45, bar.center.dy));
       await settle(tester);
       await shot('chart_bar_selected');

@@ -653,18 +653,25 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
                                         w.onSelectionChanged!(next);
                                       },
                                     ),
-                              text: Text(
-                                // An ID title wraps as a whole, never at
-                                // its hyphens (U+2011); speech keeps the
-                                // original text.
-                                titleColumn.cell == PaymentCellType.id
-                                    ? title(row).replaceAll('-', '\u2011')
-                                    : title(row),
-                                semanticsLabel: title(row),
-                                style: titleColumn.cell == PaymentCellType.id
-                                    ? type.reference(type.heading)
-                                    : type.heading,
-                              ),
+                              text: titleColumn.cell == PaymentCellType.id
+                                  // An ID title stays on one line with
+                                  // non-breaking hyphens (U+2011) and scales
+                                  // down only when it does not fit, as
+                                  // AmountText does; speech keeps the
+                                  // original text.
+                                  ? FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment:
+                                          AlignmentDirectional.centerStart,
+                                      child: Text(
+                                        title(row).replaceAll('-', '\u2011'),
+                                        semanticsLabel: title(row),
+                                        maxLines: 1,
+                                        softWrap: false,
+                                        style: type.reference(type.heading),
+                                      ),
+                                    )
+                                  : Text(title(row), style: type.heading),
                               trailing: w.rowActions.isEmpty
                                   ? null
                                   : rowMenu(row),
