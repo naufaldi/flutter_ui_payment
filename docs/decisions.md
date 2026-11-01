@@ -483,10 +483,9 @@ Review of every component and flow against the 8 pt grid and the emil-ui-review 
 
 **Evidence method.** Annotated review images are real simulator captures with guide lines and boxes drawn on top at measured coordinates (±2 pt); mocks are HTML drawings of a proposal, not app screens. The red / orange / green thumb-zone bands (issue #64) are an illustration chosen by the reviewer, not a rule from any skill: three equal horizontal strips following the common thumb-zone convention (Hoober; Clark, *Designing for Touch*). Real reach is arc-shaped and depends on hand and phone size, so the bands show direction, not measurement. All images live on the image-only `ui-review-evidence` branch.
 
-**Proposed, pending owner decision** (do not implement until decided):
-
-- **D59a — page-header actions on phones:** one action sits on the title row as a link or icon ("Laporan ›"); two peer actions are equal width and fill the content width; three or more show the first plus ⋮ (issue #64).
-- **D62 — payment action in the thumb zone:** on phones the primary action of every payment-path screen (checkout, authorize, status, KYC, receipt) pins to the bottom in a footer, a full-width primary with a quiet secondary under it; the app tab bar is hidden inside the payment flow (issue #64; also resolves the placement question in #49 and the space lost in #58).
+- **D59a — the header holds navigation, not the priority action:** one action is a title-row link with ›; more go behind ⋮ (issue #64).
+- **D62 — the priority action sits at the bottom** of every phone screen that has one, full width with at most one quiet secondary; the tab bar is hidden inside the payment flow (issue #64).
+- **D46 confirmed again (1 Nov 2026):** 12 stays; the strict-8 swaps stay optional.
 
 **What "spacing note: optional" on the review cards means.** D46 keeps 12 on the scale. On 36 of the 76 review cards, suggestions written before D46 changed 12 → 8 or 16, 36 → 40, 52 → 56 or 60 → 64 purely to fit a strict 8 pt grid; with 12 kept, those *value swaps alone* are not required. Everything else on those cards stays required: one value per role (#50), alignment and edge fixes, layout shifts, clipping and every non-spacing finding. Values that are not multiples of 4 (7, 22, 62) are still fixed. If the owner wants the strict-8 swaps anyway, D46 is reopened and the swaps join #50.
 
