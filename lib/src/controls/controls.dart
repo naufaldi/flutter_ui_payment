@@ -348,7 +348,7 @@ class _ControlRow extends StatelessWidget {
               height: line,
               child: OverflowBox(maxWidth: 48, maxHeight: 48, child: painted),
             ),
-            SizedBox(width: theme.spacing * 1.5),
+            SizedBox(width: theme.space(PaymentSpace.block)),
           ],
           Expanded(
             child: Column(
@@ -370,7 +370,9 @@ class _ControlRow extends StatelessWidget {
                     Text(detail!, style: type.caption),
                 if (errorText != null)
                   Padding(
-                    padding: EdgeInsets.only(top: theme.spacing * .5),
+                    padding: EdgeInsets.only(
+                      top: theme.space(PaymentSpace.inline),
+                    ),
                     child: FieldMessage(
                       errorText!,
                       tone: StatusTone.danger,
@@ -381,7 +383,7 @@ class _ControlRow extends StatelessWidget {
             ),
           ),
           if (markAtEnd) ...[
-            SizedBox(width: theme.spacing * 2),
+            SizedBox(width: theme.space(PaymentSpace.group)),
             SizedBox(
               width: 52,
               height: line,
@@ -495,9 +497,18 @@ class _PaymentTabsState extends State<PaymentTabs> {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     final metrics = switch (widget.size) {
-      PaymentSize.small => (style: type.caption, pad: theme.spacing),
-      PaymentSize.medium => (style: type.label, pad: theme.spacing * 1.5),
-      PaymentSize.large => (style: type.heading, pad: theme.spacing * 2),
+      PaymentSize.small => (
+        style: type.caption,
+        pad: theme.space(PaymentSpace.related),
+      ),
+      PaymentSize.medium => (
+        style: type.label,
+        pad: theme.space(PaymentSpace.block),
+      ),
+      PaymentSize.large => (
+        style: type.heading,
+        pad: theme.space(PaymentSpace.group),
+      ),
     };
     Widget tab(int i) => _Tab(
       tab: widget.tabs[i],
@@ -545,7 +556,7 @@ class _PaymentTabsState extends State<PaymentTabs> {
                     scrollDirection: Axis.horizontal,
                     clipBehavior: Clip.none,
                     padding: EdgeInsets.symmetric(
-                      horizontal: theme.spacing * 0.5,
+                      horizontal: theme.space(PaymentSpace.inline),
                     ),
                     child: row,
                   ),
@@ -846,7 +857,7 @@ class _PaymentTooltipState extends State<PaymentTooltip> {
                       ),
                       widget.placement,
                       Directionality.of(context),
-                      theme.spacing,
+                      theme.space(PaymentSpace.related),
                     ),
                     child: IgnorePointer(
                       child: ExcludeSemantics(
@@ -864,8 +875,8 @@ class _PaymentTooltipState extends State<PaymentTooltip> {
                               ),
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: theme.spacing,
-                                  vertical: theme.spacing * 0.5,
+                                  horizontal: theme.space(PaymentSpace.related),
+                                  vertical: theme.space(PaymentSpace.inline),
                                 ),
                                 child: Text(
                                   widget.message,

@@ -63,8 +63,8 @@ class PaymentIconButton extends StatelessWidget {
         ),
         textStyle: type.caption.copyWith(color: theme.surface),
         padding: EdgeInsets.symmetric(
-          horizontal: theme.spacing,
-          vertical: theme.spacing * .5,
+          horizontal: theme.space(PaymentSpace.related),
+          vertical: theme.space(PaymentSpace.inline),
         ),
         waitDuration: const Duration(milliseconds: 500),
       ),
@@ -170,7 +170,7 @@ class PaymentLink extends StatelessWidget {
                 children: [
                   Flexible(child: Text(label)),
                   if (external) ...[
-                    SizedBox(width: theme.spacing * .5),
+                    SizedBox(width: theme.space(PaymentSpace.inline)),
                     SizedBox(
                       height:
                           MediaQuery.textScalerOf(
