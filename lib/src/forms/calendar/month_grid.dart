@@ -46,13 +46,20 @@ class WeekdayHeader extends StatelessWidget {
           children: [
             for (var i = 0; i < 7; i++)
               Expanded(
-                child: Center(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      l.weekdayShort((l.firstDayOfWeek - 1 + i) % 7 + 1),
-                      style: type.caption,
-                      maxLines: 1,
+                // Shrinks a heading that would touch its neighbours at
+                // large text, keeping a gap between columns.
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: t.space(PaymentSpace.inline) / 2,
+                  ),
+                  child: Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        l.weekdayShort((l.firstDayOfWeek - 1 + i) % 7 + 1),
+                        style: type.caption,
+                        maxLines: 1,
+                      ),
                     ),
                   ),
                 ),

@@ -272,6 +272,19 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(tester.getRect(apply).bottom, lessThanOrEqualTo(compact.height));
+      // Weekday headings keep a gap between columns.
+      final rects = tester
+          .widgetList<Text>(
+            find.descendant(
+              of: find.byType(WeekdayHeader),
+              matching: find.byType(Text),
+            ),
+          )
+          .map((w) => tester.getRect(find.byWidget(w)))
+          .toList();
+      for (var i = 1; i < rects.length; i++) {
+        expect(rects[i].left - rects[i - 1].right, greaterThanOrEqualTo(2));
+      }
     });
 
     testWidgets('Custom range sits on the presets text column', (tester) async {
