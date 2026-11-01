@@ -139,7 +139,7 @@ void main() {
       final looks = looksDefine.isEmpty
           ? const ['light', 'dark', '200', 'id', 'id_200']
           : looksDefine.split(',').map((e) => e.trim()).toList();
-      const states = {'menu_sheet', 'tooltip_tap'};
+      const states = {'menu_sheet', 'tooltip_tap', 'search_field_sheet'};
       bool want(String slug, String look) =>
           looks.contains(look) &&
           (entries.contains(slug) || entries.contains('$slug@$look'));
@@ -154,6 +154,15 @@ void main() {
         'Layout': 'Tata letak',
         'Charts': 'Grafik',
       };
+      // Full-height sheets cover the scrim: close them by their button.
+      Future<void> closeSheet() async {
+        final close = find.byTooltip('Close panel');
+        await tester.tap(
+          close.evaluate().isNotEmpty ? close : find.byTooltip('Tutup panel'),
+        );
+        await settle(tester);
+      }
+
       // slug → (page, caption, steps before the shot, cleanup after it).
       final specimens =
           <
@@ -180,22 +189,32 @@ void main() {
             'select': ('Forms', 'PaymentSelect', null, null),
             'date_field': ('Forms', 'PaymentDateField', null, null),
             'chip': ('Forms', 'PaymentChip', null, null),
-            'search_field': (
+            // On a phone the search field is a trigger (D50): `search_field`
+            // shows it at rest, `search_field_sheet` the open sheet.
+            'search_field': ('Forms', 'PaymentSearchField', null, null),
+            'search_field_sheet': (
               'Forms',
               'PaymentSearchField',
               (_) async {
-                final field = find.descendant(
-                  of: find.byKey(const Key('search-province')),
-                  matching: find.byType(EditableText),
+                await tester.tap(
+                  find
+                      .descendant(
+                        of: find.byKey(const Key('search-province')),
+                        matching: find.byType(InkWell),
+                      )
+                      .first,
                 );
-                await tester.tap(field);
-                await tester.enterText(field, 'jawa');
-                await top('PaymentSearchField · variants');
-              },
-              () async {
-                FocusManager.instance.primaryFocus?.unfocus();
+                await settle(tester);
+                await tester.enterText(
+                  find.descendant(
+                    of: find.byType(BottomSheet),
+                    matching: find.byType(EditableText),
+                  ),
+                  'jawa',
+                );
                 await settle(tester);
               },
+              closeSheet,
             ),
             'list': ('Interaction', 'PaymentList', null, null),
             'accordion': ('Interaction', 'PaymentAccordion', null, null),
@@ -747,20 +766,7 @@ void main() {
           await top('$entry · variants');
           await shot('${name}_variants$look');
         }
-        await top('PaymentSearchField · variants');
-        await tester.tap(
-          find.descendant(
-            of: find.byKey(const Key('search-province')),
-            matching: find.byType(EditableText),
-          ),
-        );
-        await tester.enterText(
-          find.descendant(
-            of: find.byKey(const Key('search-province')),
-            matching: find.byType(EditableText),
-          ),
-          'jawa',
-        );
+        // On a phone the search field is a sheet trigger (D50): at rest.
         await top('PaymentSearchField · variants');
         await shot('search_field_variants$look');
         FocusManager.instance.primaryFocus?.unfocus();
