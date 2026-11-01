@@ -301,6 +301,7 @@ class DemoStrings {
   );
 
   // Host tools
+  String get demoTools => _t('Demo tools', 'Alat demo');
   String get hostTools => _t('Host tools (simulation)', 'Alat host (simulasi)');
   String get simulateRestart => _t('Simulate restart', 'Simulasi restart');
   String get simulateBackground =>

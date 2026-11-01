@@ -493,7 +493,7 @@ class _SheetsDemo extends StatelessWidget {
         ),
         footer: PaymentButton(
           label: t('Close', 'Tutup'),
-          variant: PaymentButtonVariant.secondary,
+          variant: PaymentButtonVariant.quiet,
           onPressed: () => Navigator.pop(panel),
         ),
       ),
@@ -692,6 +692,7 @@ class _PromoDemoState extends State<_PromoDemo> {
                 footer: PaymentButton(
                   key: const Key('promo-about-close'),
                   label: t('Close', 'Tutup'),
+                  variant: PaymentButtonVariant.quiet,
                   onPressed: () => Navigator.pop(sheet),
                 ),
               ),

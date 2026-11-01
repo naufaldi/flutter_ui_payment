@@ -40,6 +40,7 @@ class FlowScreen extends StatelessWidget {
         final c = coordinator;
         final s = DemoStrings.of(context);
         final atRoot = c.step == FlowStep.overview || c.step == FlowStep.signIn;
+        final view = _isViewStep(c.step) && !c.starting;
         return PopScope(
           canPop: atRoot,
           onPopInvokedWithResult: (didPop, _) {
@@ -50,9 +51,21 @@ class FlowScreen extends StatelessWidget {
               leading: atRoot
                   ? null
                   : BackButton(onPressed: () => _handleBack(context, c)),
-              title: _isViewStep(c.step) ? null : Text(_title(s, c.step)),
+              title: _ownHeader(c) ? null : Text(_title(s, c.step)),
               actions: [
                 if (c.signedIn) _AccountMenu(coordinator: c),
+                IconButton(
+                  key: const Key('demo-tools'),
+                  tooltip: s.demoTools,
+                  icon: const Icon(Icons.science_outlined),
+                  onPressed: () => _showDemoTools(
+                    context,
+                    coordinator: c,
+                    scenarioLabel: scenarioLabel,
+                    onRestart: onRestart,
+                    onBackground: onBackground,
+                  ),
+                ),
                 IconButton(
                   tooltip: s.settings,
                   icon: const Icon(Icons.tune),
@@ -60,13 +73,15 @@ class FlowScreen extends StatelessWidget {
                 ),
               ],
             ),
-            // Checkout pins the total and its action; everything else in the
-            // step can scroll without hiding what the customer will pay.
+            // Checkout pins its action under the list; the other payment
+            // steps pin theirs inside the step (D62).
             bottomNavigationBar:
                 c.step == FlowStep.checkout && !c.starting && !c.obscured
                 ? _CheckoutBar(c)
                 : null,
+            // A view step's pinned footer pads the bottom inset itself.
             body: SafeArea(
+              bottom: !view,
               child: PrivacyMask(
                 obscured: c.obscured,
                 // Each step enters with a short fade and 8 px rise; the
@@ -76,7 +91,7 @@ class FlowScreen extends StatelessWidget {
                   reverseDuration: PaymentMotion.of(context).exit,
                   transitionBuilder: PaymentMotion.fadeRise,
                   layoutBuilder: PaymentMotion.topLayout,
-                  child: _isViewStep(c.step) && !c.starting
+                  child: view
                       ? SizedBox.expand(
                           key: ValueKey('flow-view-${c.step.name}'),
                           child: _StepBody(coordinator: c),
@@ -93,14 +108,6 @@ class FlowScreen extends StatelessWidget {
                             24,
                           ),
                           children: [
-                            if (c.notice == 'support') ...[
-                              PaymentBanner(
-                                tone: StatusTone.info,
-                                title: s.supportOpened,
-                                announce: true,
-                              ),
-                              const SizedBox(height: 12),
-                            ],
                             if (c.starting)
                               Padding(
                                 padding: const EdgeInsets.all(32),
@@ -108,13 +115,6 @@ class FlowScreen extends StatelessWidget {
                               )
                             else
                               _StepBody(coordinator: c),
-                            const SizedBox(height: 24),
-                            _HostTools(
-                              coordinator: c,
-                              scenarioLabel: scenarioLabel,
-                              onRestart: onRestart,
-                              onBackground: onBackground,
-                            ),
                           ],
                         ),
                 ),
@@ -273,6 +273,7 @@ class _StepBody extends StatelessWidget {
       FlowStep.kycDocuments ||
       FlowStep.kycReview => KycOnboardingStep(c),
       FlowStep.kycStatus => VerificationStatusView(
+        header: _supportNotice(context, c),
         snapshot: c.kyc,
         outcomeUnknown: c.kycOutcomeUnknown,
         busyAction: c.kycBusyAction,
@@ -496,8 +497,8 @@ class _Checkout extends StatelessWidget {
           ),
           const SizedBox(height: 12),
         ],
-        // While a re-quote runs, the pinned bar says "Updating total…" and
-        // disables the action; the summary is not dimmed, which would need
+        // While a re-quote runs, the pinned button says "Updating total…"
+        // and is busy; the summary is not dimmed, which would need
         // an offscreen layer over the whole card on every method switch.
         if (quote != null)
           PaymentSummary(quote: quote)
@@ -534,12 +535,14 @@ class _CheckoutBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = DemoStrings.of(context);
     final quote = c.quote;
+    // The summary already shows the total twice, so the bar holds only the
+    // action: compact at 200% text on a small phone (#64, #58).
     return PaymentActionBar(
-      total: quote?.total,
-      updating: c.quoting,
       action: PaymentButton(
         key: const Key('review-order'),
         label: s.reviewAndPay,
+        busy: c.quoting,
+        busyLabel: PaymentLocalizations.of(context).updatingTotal,
         onPressed: quote != null && c.selectedMethod != null && !c.quoting
             ? c.reviewOrder
             : null,
@@ -556,30 +559,24 @@ class _Confirm extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = DemoStrings.of(context);
     final error = c.submitError;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (error != null) ...[
-          PaymentBanner(
-            tone: StatusTone.warning,
-            announce: true,
-            icon: Icons.lock_clock_outlined,
-            title: error.category == HostErrorCategory.sessionExpired
-                ? s.sessionExpiredTitle
-                : s.quoteFailedTitle,
-            message: error.safeMessage,
-          ),
-          const SizedBox(height: 12),
-        ],
-        PaymentConfirmation(
-          quote: c.quote!,
-          method: c.selectedMethod!,
-          previousQuote: c.previousQuote,
-          busy: c.confirming,
-          footnote: s.confirmFootnote,
-          onConfirm: c.confirm,
-        ),
-      ],
+    return PaymentConfirmation(
+      header: error == null
+          ? null
+          : PaymentBanner(
+              tone: StatusTone.warning,
+              announce: true,
+              icon: Icons.lock_clock_outlined,
+              title: error.category == HostErrorCategory.sessionExpired
+                  ? s.sessionExpiredTitle
+                  : s.quoteFailedTitle,
+              message: error.safeMessage,
+            ),
+      quote: c.quote!,
+      method: c.selectedMethod!,
+      previousQuote: c.previousQuote,
+      busy: c.confirming,
+      footnote: s.confirmFootnote,
+      onConfirm: c.confirm,
     );
   }
 }
@@ -592,46 +589,40 @@ class _Authorize extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = PaymentLocalizations.of(context);
     final theme = PaymentTheme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        PaymentSection(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // The one display amount, left-aligned under a caption rather
-              // than squeezed into the end of a row.
-              Text(
-                l10n.totalLabel,
-                style: TextStyle(
-                  fontSize: 13,
-                  height: 18 / 13,
-                  letterSpacing: 0,
-                  color: theme.textSecondary,
-                ),
+    return AuthorizationPrompt(
+      phase: c.authPhase,
+      onStart: c.authorize,
+      onBackToReview: c.backToReview,
+      header: PaymentSection(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // The one display amount, left-aligned under a caption rather
+            // than squeezed into the end of a row.
+            Text(
+              l10n.totalLabel,
+              style: TextStyle(
+                fontSize: 13,
+                height: 18 / 13,
+                letterSpacing: 0,
+                color: theme.textSecondary,
               ),
-              SizedBox(height: theme.spacing * 0.5),
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: AmountText(
-                  c.quote!.total,
-                  variant: AmountTextVariant.display,
-                ),
+            ),
+            SizedBox(height: theme.spacing * 0.5),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: AmountText(
+                c.quote!.total,
+                variant: AmountTextVariant.display,
               ),
-              InfoRow(
-                label: l10n.payWithTitle,
-                valueText: c.selectedMethod?.label ?? '',
-              ),
-            ],
-          ),
+            ),
+            InfoRow(
+              label: l10n.payWithTitle,
+              valueText: c.selectedMethod?.label ?? '',
+            ),
+          ],
         ),
-        const SizedBox(height: 8),
-        AuthorizationPrompt(
-          phase: c.authPhase,
-          onStart: c.authorize,
-          onBackToReview: c.backToReview,
-        ),
-      ],
+      ),
     );
   }
 }
@@ -647,42 +638,45 @@ class _Payment extends StatelessWidget {
     if (attempt == null) return const SizedBox.shrink();
     final instructions = attempt.snapshot?.instructions;
     final status = attempt.status;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (c.cancelRequested && !(status?.isTerminal ?? false)) ...[
-          PaymentBanner(
-            tone: StatusTone.info,
-            announce: true,
-            title: s.cancelRequestedTitle,
-            message: s.cancelRequestedMessage,
-          ),
-          const SizedBox(height: 12),
-        ],
-        PaymentStatusView(
-          attempt: attempt,
-          amount: c.attemptAmount,
-          busyAction: c.busyAction,
-          onAction: c.paymentAction,
-          instructions: instructions != null && c.showInstructions
-              ? PaymentInstructions(
-                  instructions: instructions,
-                  clock: c.host.clock,
-                  onCopyNumber: c.copy,
-                  onElapsed: c.onInstructionsElapsed,
-                )
-              : null,
-        ),
-        if (status != null && status.isTerminal) ...[
-          const SizedBox(height: 12),
-          PaymentButton(
-            key: const Key('done'),
-            label: s.done,
-            variant: PaymentButtonVariant.quiet,
-            onPressed: c.finish,
-          ),
-        ],
-      ],
+    final support = _supportNotice(context, c);
+    final canceling = c.cancelRequested && !(status?.isTerminal ?? false);
+    return PaymentStatusView(
+      header: support == null && !canceling
+          ? null
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 12,
+              children: [
+                ?support,
+                if (canceling)
+                  PaymentBanner(
+                    tone: StatusTone.info,
+                    announce: true,
+                    title: s.cancelRequestedTitle,
+                    message: s.cancelRequestedMessage,
+                  ),
+              ],
+            ),
+      attempt: attempt,
+      amount: c.attemptAmount,
+      busyAction: c.busyAction,
+      onAction: c.paymentAction,
+      instructions: instructions != null && c.showInstructions
+          ? PaymentInstructions(
+              instructions: instructions,
+              clock: c.host.clock,
+              onCopyNumber: c.copy,
+              onElapsed: c.onInstructionsElapsed,
+            )
+          : null,
+      secondaryAction: status != null && status.isTerminal
+          ? PaymentButton(
+              key: const Key('done'),
+              label: s.done,
+              variant: PaymentButtonVariant.quiet,
+              onPressed: c.finish,
+            )
+          : null,
     );
   }
 }
@@ -696,62 +690,91 @@ class _Receipt extends StatelessWidget {
     final s = DemoStrings.of(context);
     final receipt = c.receipt;
     if (receipt != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          PaymentReceipt(
-            data: receipt,
-            onShare: c.share,
-            onCopyTransactionId: c.copy,
-          ),
-          const SizedBox(height: 8),
-          PaymentButton(
-            key: const Key('receipt-details'),
-            label: s.viewDetails,
-            variant: PaymentButtonVariant.secondary,
-            onPressed: c.openCurrentDetail,
-          ),
-          PaymentButton(
-            key: const Key('receipt-done'),
-            label: s.done,
-            variant: PaymentButtonVariant.quiet,
-            onPressed: c.finish,
-          ),
-        ],
+      // "Done" ends the purchase, so it is the one primary (#49-1); sharing
+      // stays with the receipt as a hug button.
+      return PaymentFullPageView(
+        title: s.stepReceipt,
+        primaryAction: PaymentButton(
+          key: const Key('receipt-done'),
+          label: s.done,
+          onPressed: c.finish,
+        ),
+        secondaryAction: PaymentButton(
+          key: const Key('receipt-details'),
+          label: s.viewDetails,
+          variant: PaymentButtonVariant.quiet,
+          onPressed: c.openCurrentDetail,
+        ),
+        child: PaymentReceipt(
+          data: receipt,
+          onShare: c.share,
+          onCopyTransactionId: c.copy,
+        ),
       );
     }
-    final attempt = c.attempt!;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        PaymentStatusView(
-          attempt: attempt,
-          amount: c.attemptAmount,
-          busyAction: c.loadingReceipt ? PaymentAction.viewReceipt : null,
-          onAction: c.paymentAction,
-        ),
-        if (c.receiptError != null) ...[
-          const SizedBox(height: 8),
-          PaymentBanner(
-            tone: StatusTone.warning,
-            announce: true,
-            title: s.receiptLoadFailedTitle,
-            message: s.receiptLoadFailedMessage,
-            actions: [
-              PaymentButton(
-                key: const Key('retry-receipt'),
-                onPressed: c.loadingReceipt ? null : c.loadReceipt,
-                label: s.retry,
-                variant: PaymentButtonVariant.secondary,
-                width: PaymentWidth.hug,
-              ),
-            ],
-          ),
-        ],
-      ],
+    return PaymentStatusView(
+      header: c.receiptError == null
+          ? null
+          : PaymentBanner(
+              tone: StatusTone.warning,
+              announce: true,
+              title: s.receiptLoadFailedTitle,
+              message: s.receiptLoadFailedMessage,
+              actions: [
+                PaymentButton(
+                  key: const Key('retry-receipt'),
+                  onPressed: c.loadingReceipt ? null : c.loadReceipt,
+                  label: s.retry,
+                  variant: PaymentButtonVariant.secondary,
+                  width: PaymentWidth.hug,
+                ),
+              ],
+            ),
+      attempt: c.attempt!,
+      amount: c.attemptAmount,
+      busyAction: c.loadingReceipt ? PaymentAction.viewReceipt : null,
+      onAction: c.paymentAction,
     );
   }
 }
+
+/// Contact support was opened (simulated): shown above the step's content.
+Widget? _supportNotice(BuildContext context, DemoCoordinator c) =>
+    c.notice != 'support'
+    ? null
+    : PaymentBanner(
+        tone: StatusTone.info,
+        title: DemoStrings.of(context).supportOpened,
+        announce: true,
+      );
+
+/// Host tools in a sheet from the app bar, so they never sit in the step's
+/// content or between the content and its pinned action (D62).
+Future<void> _showDemoTools(
+  BuildContext context, {
+  required DemoCoordinator coordinator,
+  required String scenarioLabel,
+  required VoidCallback onRestart,
+  required VoidCallback onBackground,
+}) => showModalBottomSheet<void>(
+  context: context,
+  isScrollControlled: true,
+  showDragHandle: true,
+  backgroundColor: devWorkbench(context),
+  builder: (sheet) => _HostTools(
+    coordinator: coordinator,
+    scenarioLabel: scenarioLabel,
+    // Restart re-keys the flow, so the sheet closes first.
+    onRestart: () {
+      Navigator.pop(sheet);
+      onRestart();
+    },
+    onBackground: () {
+      Navigator.pop(sheet);
+      onBackground();
+    },
+  ),
+);
 
 class _HostTools extends StatelessWidget {
   const _HostTools({
@@ -774,83 +797,77 @@ class _HostTools extends StatelessWidget {
     final scaler = devScaler(context);
     final mono = devMono(theme.textPrimary);
     // Gallery workbench voice, not product styling: a grey fill and mono
-    // text, so the panel never reads as part of the purchase. A Material
-    // (not a decorated box) so the tile's ink stays visible.
-    return Material(
-      color: devWorkbench(context),
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(borderRadius: theme.controlBorderRadius),
-      child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          key: const Key('host-tools'),
-          title: Text(
-            s.hostTools,
-            style: devMono(theme.textSecondary),
-            textScaler: scaler,
-          ),
-          subtitle: Text(
-            '${s.activeScenario(scenarioLabel)} · ${s.account(coordinator.account)}',
-            style: mono,
-            textScaler: scaler,
-          ),
-          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              s.hostStats(
-                coordinator.submitEvents,
-                host.attemptCount,
-                host.chargeCount,
+    // text, so the sheet never reads as part of the purchase.
+    return SafeArea(
+      child: ListenableBuilder(
+        listenable: Listenable.merge([coordinator, host.log]),
+        builder: (context, _) {
+          final entries = host.log.value;
+          return ListView(
+            key: const Key('host-tools'),
+            shrinkWrap: true,
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            children: [
+              Semantics(
+                header: true,
+                child: Text(
+                  s.hostTools,
+                  style: devMono(theme.textSecondary),
+                  textScaler: scaler,
+                ),
               ),
-              key: const Key('host-stats'),
-              style: mono,
-              textScaler: scaler,
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                OutlinedButton.icon(
-                  key: const Key('host-restart'),
-                  onPressed: onRestart,
-                  icon: const Icon(Icons.restart_alt),
-                  label: Text(s.simulateRestart),
+              const SizedBox(height: 4),
+              Text(
+                '${s.activeScenario(scenarioLabel)} · ${s.account(coordinator.account)}',
+                style: mono,
+                textScaler: scaler,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                s.hostStats(
+                  coordinator.submitEvents,
+                  host.attemptCount,
+                  host.chargeCount,
                 ),
-                OutlinedButton.icon(
-                  key: const Key('host-background'),
-                  onPressed: onBackground,
-                  icon: const Icon(Icons.flip_to_back),
-                  label: Text(s.simulateBackground),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            ValueListenableBuilder(
-              valueListenable: host.log,
-              builder: (context, entries, _) {
-                if (entries.isEmpty) {
-                  return Text(s.hostLogEmpty, style: mono, textScaler: scaler);
-                }
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (final e in entries.reversed.take(30))
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Text(
-                          '${e.at.toIso8601String().substring(11, 19)}  ${e.message}',
-                          style: mono,
-                          textScaler: scaler,
-                        ),
-                      ),
-                  ],
-                );
-              },
-            ),
-          ],
-        ),
+                key: const Key('host-stats'),
+                style: mono,
+                textScaler: scaler,
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  OutlinedButton.icon(
+                    key: const Key('host-restart'),
+                    onPressed: onRestart,
+                    icon: const Icon(Icons.restart_alt),
+                    label: Text(s.simulateRestart),
+                  ),
+                  OutlinedButton.icon(
+                    key: const Key('host-background'),
+                    onPressed: onBackground,
+                    icon: const Icon(Icons.flip_to_back),
+                    label: Text(s.simulateBackground),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              if (entries.isEmpty)
+                Text(s.hostLogEmpty, style: mono, textScaler: scaler)
+              else
+                for (final e in entries.reversed.take(30))
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Text(
+                      '${e.at.toIso8601String().substring(11, 19)}  ${e.message}',
+                      style: mono,
+                      textScaler: scaler,
+                    ),
+                  ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -865,7 +882,28 @@ double listInset(BuildContext context, FlowStep step) {
   return ((content - cap) / 2).clamp(0, double.infinity);
 }
 
+/// Steps that fill the screen and pin their own footer (D62).
 bool _isViewStep(FlowStep step) => switch (step) {
+  FlowStep.signIn ||
+  FlowStep.kycIntro ||
+  FlowStep.kycIdentity ||
+  FlowStep.kycDocuments ||
+  FlowStep.kycReview ||
+  FlowStep.kycStatus ||
+  FlowStep.confirm ||
+  FlowStep.authorize ||
+  FlowStep.payment ||
+  FlowStep.receipt ||
+  FlowStep.history ||
+  FlowStep.transactionDetail ||
+  FlowStep.statement ||
+  FlowStep.fees ||
+  FlowStep.accountSettings => true,
+  _ => false,
+};
+
+/// Steps whose page header carries the title, so the app bar has none.
+bool _ownHeader(DemoCoordinator c) => switch (c.step) {
   FlowStep.signIn ||
   FlowStep.kycIdentity ||
   FlowStep.kycDocuments ||
@@ -875,5 +913,22 @@ bool _isViewStep(FlowStep step) => switch (step) {
   FlowStep.statement ||
   FlowStep.fees ||
   FlowStep.accountSettings => true,
+  FlowStep.receipt => c.receipt != null,
+  _ => false,
+};
+
+/// The payment flow, from KYC through the receipt: the app's tab bar is
+/// hidden here so nothing competes with the pinned action (D62).
+bool inPaymentFlow(FlowStep step) => switch (step) {
+  FlowStep.kycIntro ||
+  FlowStep.kycIdentity ||
+  FlowStep.kycDocuments ||
+  FlowStep.kycReview ||
+  FlowStep.kycStatus ||
+  FlowStep.checkout ||
+  FlowStep.confirm ||
+  FlowStep.authorize ||
+  FlowStep.payment ||
+  FlowStep.receipt => true,
   _ => false,
 };
