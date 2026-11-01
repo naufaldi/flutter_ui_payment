@@ -67,6 +67,7 @@ void main() {
     testWidgets('search actions sit centred on the box at $scale', (
       tester,
     ) async {
+      final handle = tester.ensureSemantics();
       await tester.pumpWidget(
         host(
           TransactionHistory(
@@ -86,11 +87,15 @@ void main() {
       expect(action.center.dy, moreOrLessEquals(box.center.dy, epsilon: 0.5));
       expect(action.left, greaterThanOrEqualTo(box.right));
       expect(action.height, greaterThanOrEqualTo(48));
-      if (scale == 2) {
-        // The label sits above the box and the button, not beside them.
-        final label = tester.getRect(find.text('Search transactions'));
-        expect(label.bottom, lessThanOrEqualTo(action.top));
-      }
+      // With actions the label is the placeholder inside the box at every
+      // size, and still the field's spoken name (D63a).
+      final placeholder = tester.getRect(find.text('Search transactions'));
+      expect(box.contains(placeholder.center), isTrue);
+      expect(
+        tester.getSemantics(find.byType(EditableText)).label,
+        contains('Search transactions'),
+      );
+      handle.dispose();
     });
   }
 }
