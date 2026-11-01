@@ -15,6 +15,7 @@ import Props from '../../../components/Props.astro';
   <Screen name="ios_catalog_text_field_variants" alt="text-field variants" />
   <Screen name="ios_catalog_text_field_variants_dark" alt="text-field variants_dark" />
   <Screen name="ios_catalog_text_field_variants_200" alt="text-field variants_200" />
+  <Screen name="ios_catalog_text_field_variants_id_200" alt="text-field variants at 200 percent text, Indonesian" />
 </Screens>
 
 ## Usage
@@ -61,7 +62,7 @@ Keep a persistent label. Never put the only instruction in `hint`. Explain how t
 
 Fields fill their parent. Stripe css width is not mirrored. PaymentFormFieldGroup adds optional marks when required and optional fields are mixed. Use [Text area](/components/text-area/) for several lines.
 
-Material-owned exception: outlined floating labels are single-line. Keep labels short (24 characters or fewer) and put instructions in description. A two-line floating-label experiment still clipped at 320 dp and 200% and was reverted.
+Labels at large text: an outlined floating label keeps one line, so above 1.5× text every field (text, currency, date, select and search) shows its label above the box instead, where it wraps (#73). The box keeps its height, so fields of different types still line up, and the label stays the field's spoken name. While the label is above, the hint shows only when the field has focus, as it does behind a floating label. Keep labels short anyway and put instructions in description.
 
 ## Which variant when
 

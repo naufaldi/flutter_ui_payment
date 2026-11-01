@@ -349,7 +349,9 @@ class PaymentButton extends StatefulWidget {
   /// Drawn height: small 36, medium 48, large 56 dp. Hit box stays at least 48.
   final PaymentSize size;
 
-  /// Fill the parent or hug the wrapped label, at least 112 dp wide.
+  /// Fill the parent or hug the wrapped label, at least 112 dp wide. A
+  /// quiet button that hugs, outside a `PaymentButtonGroup`, keeps only the
+  /// 48 dp floor and starts its text on the column edge.
   final PaymentWidth width;
 
   /// Initial route focus, useful for the safe choice in destructive dialogs.

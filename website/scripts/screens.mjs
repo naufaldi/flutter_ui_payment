@@ -362,6 +362,13 @@ const screens = {
   ios_ipad_transaction_detail_en: 'Example transaction detail on iPad mini, English',
   ios_ipad_history_light: 'Example history on iPad mini, Indonesian',
   ios_ipad_history_en: 'Example history on iPad mini, English',
+  // UI review P7b: field labels above the box at 200%, Indonesian (#73).
+  ios_catalog_text_field_variants_id_200: 'text field specimen at 200% text, Indonesian',
+  ios_catalog_currency_field_variants_id_200: 'currency field specimen at 200% text, Indonesian',
+  ios_catalog_date_field_variants_id_200: 'date field specimen at 200% text, Indonesian',
+  ios_catalog_select_variants_id_200: 'select specimen at 200% text, Indonesian',
+  ios_catalog_search_field_variants_id_200: 'search field specimen at 200% text, Indonesian',
+  ios_catalog_form_field_group_variants_id_200: 'form field group specimen at 200% text, Indonesian',
 };
 
 mkdirSync(target, { recursive: true });
