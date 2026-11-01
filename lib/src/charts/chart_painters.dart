@@ -217,8 +217,8 @@ class ChartPainter extends CustomPainter {
             case ChartPointStatus.unknown:
               final square = Rect.fromCenter(
                 center: point,
-                width: 7,
-                height: 7,
+                width: 8,
+                height: 8,
               );
               canvas.drawRect(square, Paint()..color = theme.surface);
               canvas.drawRect(square, paint..style = PaintingStyle.stroke);

@@ -207,8 +207,8 @@ class _NavTile extends StatelessWidget {
                             constraints: BoxConstraints(minHeight: line),
                             child: Center(
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 7,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: theme.space(PaymentSpace.related),
                                   vertical: 1,
                                 ),
                                 decoration: BoxDecoration(

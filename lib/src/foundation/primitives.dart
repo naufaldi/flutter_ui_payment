@@ -973,7 +973,7 @@ class StatusHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PaymentIcon.tone(tone, icon: icon),
-            SizedBox(width: theme.space(PaymentSpace.related)),
+            SizedBox(width: theme.space(PaymentSpace.block)),
             Expanded(
               child: Semantics(
                 header: true,
