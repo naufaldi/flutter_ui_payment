@@ -549,6 +549,44 @@ void main() {
       expect(label.top, greaterThanOrEqualTo(chart.top));
       expect(tester.takeException(), isNull);
     });
+    testWidgets('$kind readout measures per layout key, not per selection', (
+      tester,
+    ) async {
+      final start = debugReadoutMeasures;
+      await tester.pumpWidget(module(2, 393));
+      final measured = debugReadoutMeasures;
+      expect(measured, greaterThan(start));
+      // Tap, drag and hover only move the selection: no new measurement.
+      final plot = tester.getRect(find.byType(GestureDetector).last);
+      await tester.tapAt(Offset(plot.left + 140, plot.bottom - 40));
+      await tester.pump();
+      final tapped = chartPainter(tester).selected;
+      expect(tapped, isNot(3));
+      await tester.dragFrom(
+        Offset(plot.left + 140, plot.bottom - 40),
+        Offset(plot.width / 2, 0),
+      );
+      await tester.pump();
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: plot.centerLeft);
+      for (var x = plot.left; x < plot.right; x += 20) {
+        await mouse.moveTo(Offset(x, plot.bottom - 40));
+        await tester.pump();
+      }
+      await mouse.removePointer();
+      await tester.pump();
+      expect(debugReadoutMeasures, measured);
+      // A rebuild with the same data, width and scale reuses it too.
+      await tester.pumpWidget(module(2, 393));
+      expect(debugReadoutMeasures, measured);
+      // A new width or text scale measures again.
+      await tester.pumpWidget(module(2, 375));
+      final resized = debugReadoutMeasures;
+      expect(resized, greaterThan(measured));
+      await tester.pumpWidget(module(1, 375));
+      expect(debugReadoutMeasures, greaterThan(resized));
+      expect(tester.takeException(), isNull);
+    });
     testWidgets('$kind readout keeps one line per series where it fits', (
       tester,
     ) async {

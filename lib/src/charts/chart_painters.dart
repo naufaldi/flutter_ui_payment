@@ -6,6 +6,11 @@ import '../foundation/payment_theme.dart';
 import 'chart_geometry.dart';
 import 'chart_models.dart';
 
+/// How many times a chart has measured its readout layout (#78); tests
+/// check that a selection change reuses the measurement. This file is not
+/// exported, so it stays out of the public API.
+int debugReadoutMeasures = 0;
+
 class ChartPainter extends CustomPainter {
   ChartPainter({
     required this.series,

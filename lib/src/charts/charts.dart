@@ -245,6 +245,11 @@ class _PointChartState extends State<_PointChart> {
   /// The period a tap, drag or hover picked; null is the rest state.
   int? selected;
 
+  // Readout layouts by width, measured for [_readoutKey]. A tap, drag or
+  // hover only changes the selection, so it reuses them (#78).
+  Object? _readoutKey;
+  final _readoutLayouts = <double, ({bool stacked, int lines})>{};
+
   static List<String> _periods(_PointChart chart) => [
     for (final p
         in chart.series.isEmpty ? chart.points : chart.series.first.points)
@@ -367,9 +372,10 @@ class _PointChartState extends State<_PointChart> {
     // name wraps to two lines rather than losing its end. The band takes the
     // worst case over all periods, so selection never moves it. A
     // single-series readout keeps its one line.
-    ({bool stacked, int lines}) readoutLayout(double width) {
+    ({bool stacked, int lines}) measureReadout(double width) {
       final oneLine = (stacked: false, lines: series.length);
       if (widget.spark || series.length < 2 || points.isEmpty) return oneLine;
+      debugReadoutMeasures++;
       final room = math.max(0.0, painterFor(null).plot(Size(width, 0)).width);
       double measure(String text, {bool lines = false}) {
         final painter = TextPainter(
@@ -411,6 +417,29 @@ class _PointChartState extends State<_PointChart> {
             )
             .reduce(math.max),
       );
+    }
+
+    // Everything the readout's text and the plot width depend on. Lists
+    // compare by identity, so new series data measures again.
+    final readoutKey = (
+      widget.series,
+      widget.points,
+      widget.unit,
+      widget.spark,
+      widget.axis,
+      Localizations.maybeLocaleOf(context),
+      direction,
+      style,
+      scaler,
+    );
+    if (readoutKey != _readoutKey) {
+      _readoutKey = readoutKey;
+      _readoutLayouts.clear();
+    }
+    ({bool stacked, int lines}) readoutLayout(double width) {
+      // Hosts that keep resizing don't grow the cache without bound.
+      if (_readoutLayouts.length > 4) _readoutLayouts.clear();
+      return _readoutLayouts.putIfAbsent(width, () => measureReadout(width));
     }
 
     // In a ChartModule the plot slot grows by the lines a stacked readout
