@@ -385,4 +385,24 @@ void main() {
     );
     expect(tester.takeException(), isNull);
   });
+  testWidgets('new periods return to rest; the same periods keep a pick', (
+    tester,
+  ) async {
+    Widget chart(List<ChartPoint> points) =>
+        host(SizedBox(height: 180, child: PaymentBarChart(points: points)));
+    await tester.pumpWidget(chart(weeks));
+    final plot = tester.getRect(find.byType(GestureDetector).last);
+    await tester.tapAt(Offset(plot.left + 90, plot.center.dy));
+    await tester.pump();
+    final picked = valueText(tester);
+    expect(picked, isNot(startsWith('W4')));
+    // A rebuild with equal periods keeps the selection.
+    await tester.pumpWidget(chart(List.of(weeks)));
+    expect(valueText(tester), picked);
+    // Fewer periods, then none: back to rest without an error.
+    await tester.pumpWidget(chart(weeks.take(1).toList()));
+    expect(valueText(tester), startsWith('W1'));
+    await tester.pumpWidget(chart(const []));
+    expect(tester.takeException(), isNull);
+  });
 }

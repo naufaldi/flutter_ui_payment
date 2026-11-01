@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/money.dart';
@@ -242,6 +243,22 @@ class _PointChart extends StatefulWidget {
 class _PointChartState extends State<_PointChart> {
   /// The period a tap, drag or hover picked; null is the rest state.
   int? selected;
+
+  static List<String> _periods(_PointChart chart) => [
+    for (final p
+        in chart.series.isEmpty ? chart.points : chart.series.first.points)
+      p.label,
+  ];
+
+  // Different periods return the chart to rest, so a stale index never
+  // outlives the periods it pointed at. A rebuild with the same periods
+  // keeps the person's selection.
+  @override
+  void didUpdateWidget(_PointChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!listEquals(_periods(oldWidget), _periods(widget))) selected = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     assert(widget.points.isEmpty || widget.series.isEmpty);
@@ -319,6 +336,7 @@ class _PointChartState extends State<_PointChart> {
                 Expanded(
                   child: LayoutBuilder(
                     builder: (context, box) {
+                      if ((selected ?? 0) >= points.length) selected = null;
                       final latest = points.lastIndexWhere(
                         (p) =>
                             p.status == ChartPointStatus.settled &&
