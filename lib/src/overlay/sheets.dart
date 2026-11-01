@@ -89,7 +89,7 @@ class PaymentSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
-    final fill = _SideSheetScope.of(context);
+    final fill = _SideSheetScope.of(context) || inFullHeightSheet(context);
     final keyboard = MediaQuery.viewInsetsOf(context).bottom;
     final scrollBody = SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(
@@ -112,16 +112,7 @@ class PaymentSheet extends StatelessWidget {
           else
             Flexible(child: scrollBody),
           if (footer != null)
-            DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: theme.outline)),
-              ),
-              child: SafeArea(
-                top: false,
-                minimum: EdgeInsets.all(theme.space(PaymentSpace.group)),
-                child: footer!,
-              ),
-            )
+            KitSheetFooter(child: footer!)
           else
             const SafeArea(top: false, child: SizedBox.shrink()),
         ],
