@@ -387,10 +387,18 @@ class _ActionSpecimen extends StatelessWidget {
             ),
             onPressed: () {},
           ),
+          // States old → new and has no dismiss while paying (D48).
           PaymentBanner(
             tone: StatusTone.warning,
             title: _t(context, 'Total changed', 'Total berubah'),
-            onDismiss: () {},
+            message: PaymentLocalizations.of(context).totalChangedMessage(
+              PaymentLocalizations.of(
+                context,
+              ).moneyFormat.format(const Money.idr(102500)),
+              PaymentLocalizations.of(
+                context,
+              ).moneyFormat.format(const Money.idr(104000)),
+            ),
             actions: [
               PaymentLink(
                 label: _t(context, 'Review total', 'Periksa total'),

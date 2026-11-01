@@ -48,6 +48,7 @@ class _BannerSpecimen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = PaymentTheme.of(context).spacing;
+    final l10n = PaymentLocalizations.of(context);
     return _Entry(
       name: 'PaymentBanner · variants',
       child: Column(
@@ -68,25 +69,25 @@ class _BannerSpecimen extends StatelessWidget {
             title: _t(context, 'Payment received', 'Pembayaran diterima'),
           ),
           SizedBox(height: s),
+          // A changed amount states old → new and cannot be dismissed while
+          // the payment is open (D48); "Review total" navigates, so it is a
+          // link.
           PaymentBanner(
             tone: StatusTone.warning,
             title: _t(context, 'Total changed', 'Total berubah'),
-            message: _t(
-              context,
-              'Review the updated total before paying.',
-              'Periksa total terbaru sebelum membayar.',
+            message: l10n.totalChangedMessage(
+              l10n.moneyFormat.format(const Money.idr(102500)),
+              l10n.moneyFormat.format(const Money.idr(104000)),
             ),
             actions: [
-              PaymentButton(
+              PaymentLink(
                 label: _t(context, 'Review total', 'Periksa total'),
-                size: PaymentSize.small,
-                width: PaymentWidth.hug,
-                variant: PaymentButtonVariant.secondary,
                 onPressed: () {},
               ),
             ],
           ),
           SizedBox(height: s),
+          // One operation as a button, navigation as a link (D48a).
           PaymentBanner(
             tone: StatusTone.danger,
             title: _t(context, 'Payment failed', 'Pembayaran gagal'),
@@ -96,29 +97,23 @@ class _BannerSpecimen extends StatelessWidget {
               'Saldo Anda tidak berubah.',
             ),
             actions: [
-              for (final (label, variant) in [
-                (
-                  _t(context, 'Try again', 'Coba lagi'),
-                  PaymentButtonVariant.secondary,
-                ),
-                (
-                  _t(context, 'Contact support', 'Hubungi bantuan'),
-                  PaymentButtonVariant.quiet,
-                ),
-              ])
-                PaymentButton(
-                  label: label,
-                  size: PaymentSize.small,
-                  width: PaymentWidth.hug,
-                  variant: variant,
-                  onPressed: () {},
-                ),
+              PaymentButton(
+                label: _t(context, 'Try again', 'Coba lagi'),
+                width: PaymentWidth.hug,
+                variant: PaymentButtonVariant.secondary,
+                onPressed: () {},
+              ),
+              PaymentLink(
+                label: _t(context, 'Contact support', 'Hubungi bantuan'),
+                onPressed: () {},
+              ),
             ],
           ),
           SizedBox(height: s),
           PaymentBanner(
             tone: StatusTone.neutral,
             title: _t(context, 'Request canceled', 'Permintaan dibatalkan'),
+            onDismiss: () {},
           ),
         ],
       ),
@@ -327,9 +322,12 @@ class _TooltipSpecimen extends StatelessWidget {
                 'Payment time: 29 Oct 2026, 14:05',
                 'Waktu pembayaran: 29 Okt 2026, 14.05',
               ),
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.info_outline),
+              // An info icon toggles its hint; never a no-op press (D49).
+              trigger: (toggle, focusNode) => PaymentIconButton(
+                icon: Icons.info_outline,
+                tooltip: _t(context, 'Payment time', 'Waktu pembayaran'),
+                focusNode: focusNode,
+                onPressed: toggle,
               ),
             ),
           ],
@@ -354,9 +352,11 @@ class _TooltipSpecimen extends StatelessWidget {
               'Flips to the start when there is no room',
               'Pindah ke awal jika tidak ada ruang',
             ),
-            child: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.info_outline),
+            trigger: (toggle, focusNode) => PaymentIconButton(
+              icon: Icons.info_outline,
+              tooltip: _t(context, 'Placement', 'Penempatan'),
+              focusNode: focusNode,
+              onPressed: toggle,
             ),
           ),
         ),

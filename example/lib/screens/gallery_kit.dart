@@ -675,14 +675,26 @@ class _PromoDemoState extends State<_PromoDemo> {
             collapseWhenEmpty: false,
             onAction: cta,
             onRetry: () => setState(() => _slot = PromoSlotState.ready),
-            onAbout: (c) => showPaymentConfirmDialog(
-              context,
-              title: t('Why you see this', 'Kenapa Anda melihat ini'),
-              message: t(
-                'Bank Contoh paid for this placement. It is shown to everyone in the bill payment section and does not use your transaction data.',
-                'Bank Contoh membayar penempatan ini. Ditampilkan ke semua orang di bagian tagihan dan tidak memakai data transaksi Anda.',
+            // "Why this?" needs more than one line, so it opens a sheet
+            // with one primary Close, its completion action (D49, D54).
+            onAbout: (c) => showPaymentSheet<void>(
+              context: context,
+              builder: (sheet) => PaymentSheet(
+                header: PaymentSheetHeader(
+                  title: t('Why you see this', 'Kenapa Anda melihat ini'),
+                ),
+                body: Text(
+                  t(
+                    'Bank Contoh paid for this placement. It is shown to everyone in the bill payment section and does not use your transaction data.',
+                    'Bank Contoh membayar penempatan ini. Ditampilkan ke semua orang di bagian tagihan dan tidak memakai data transaksi Anda.',
+                  ),
+                ),
+                footer: PaymentButton(
+                  key: const Key('promo-about-close'),
+                  label: t('Close', 'Tutup'),
+                  onPressed: () => Navigator.pop(sheet),
+                ),
               ),
-              confirmLabel: t('OK', 'Oke'),
             ),
           ),
           const SizedBox(height: 16),

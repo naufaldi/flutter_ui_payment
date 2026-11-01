@@ -18,12 +18,15 @@ class FeesStep extends StatelessWidget {
           Row(
             children: [
               Expanded(child: Text(s.feesNote)),
+              // The info button toggles its hint on tap (D49).
               PaymentTooltip(
                 message: s.feesTooltip,
-                child: PaymentIconButton(
+                trigger: (toggle, focusNode) => PaymentIconButton(
+                  key: const Key('fees-info'),
                   icon: Icons.info_outline,
-                  tooltip: s.feesTooltip,
-                  onPressed: () {},
+                  tooltip: s.feesInfo,
+                  focusNode: focusNode,
+                  onPressed: toggle,
                 ),
               ),
             ],
