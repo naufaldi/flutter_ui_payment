@@ -8,6 +8,7 @@ import '../foundation/tooltip_geometry.dart';
 import 'package:flutter/material.dart';
 
 import '../foundation/row_shell.dart';
+import '../foundation/edge_fade.dart';
 import '../foundation/focus_ring.dart';
 import '../foundation/radio_mark.dart';
 import '../foundation/payment_theme.dart';
@@ -442,7 +443,11 @@ class _PaymentTabsState extends State<PaymentTabs> {
   final List<FocusNode> _nodes = [];
   void _syncNodes() {
     while (_nodes.length < widget.tabs.length) {
-      _nodes.add(FocusNode());
+      final node = FocusNode();
+      node.addListener(() {
+        if (node.hasFocus) _reveal(_nodes.indexOf(node));
+      });
+      _nodes.add(node);
     }
     while (_nodes.length > widget.tabs.length) {
       _nodes.removeLast().dispose();
@@ -453,12 +458,39 @@ class _PaymentTabsState extends State<PaymentTabs> {
   void initState() {
     super.initState();
     _syncNodes();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _reveal(widget.selectedIndex, animate: false),
+    );
   }
 
   @override
   void didUpdateWidget(PaymentTabs oldWidget) {
     super.didUpdateWidget(oldWidget);
     _syncNodes();
+    if (oldWidget.selectedIndex != widget.selectedIndex) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _reveal(widget.selectedIndex),
+      );
+    }
+  }
+
+  // Scrolls only the tab row, never the page, so the selected or focused
+  // tab is fully visible (#60).
+  void _reveal(int index, {bool animate = true}) {
+    if (!mounted || index < 0 || index >= _nodes.length) return;
+    final tab = _nodes[index].context;
+    final box = tab?.findRenderObject();
+    final position = tab == null ? null : Scrollable.maybeOf(tab)?.position;
+    if (box == null || position == null || position.axis != Axis.horizontal) {
+      return;
+    }
+    final motion = PaymentMotion.of(context);
+    position.ensureVisible(
+      box,
+      alignment: 0.5,
+      duration: animate && !motion.reduced ? motion.quick : Duration.zero,
+      curve: PaymentMotion.easeOut,
+    );
   }
 
   @override
@@ -552,8 +584,8 @@ class _PaymentTabsState extends State<PaymentTabs> {
             clipper: const _SidesClipper(),
             child: fitted
                 ? row
-                : SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
+                // An end fade shows that more tabs scroll into view.
+                : EdgeFadeScroll(
                     clipBehavior: Clip.none,
                     padding: EdgeInsets.symmetric(
                       horizontal: theme.space(PaymentSpace.inline),
