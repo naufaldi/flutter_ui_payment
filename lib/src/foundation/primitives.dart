@@ -452,25 +452,40 @@ class _PaymentButtonState extends State<PaymentButton> {
         right: math.min(padding.right, cap),
       );
     }();
-    final content = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (widget.icon != null) ...[
-          Icon(widget.icon, size: metrics.icon),
-          SizedBox(width: theme.space(PaymentSpace.related)),
-        ],
-        Flexible(
-          child: Text(
-            widget.label,
-            textAlign: !onEdge
-                ? TextAlign.center
-                : edge.x < 0
-                ? TextAlign.left
-                : TextAlign.right,
-          ),
-        ),
-      ],
+    final text = Text(
+      widget.label,
+      textAlign: !onEdge
+          ? TextAlign.center
+          : edge.x < 0
+          ? TextAlign.left
+          : TextAlign.right,
+      // With an icon, the group hugs the longest line so it stays centred
+      // when the label wraps.
+      textWidthBasis: widget.icon == null
+          ? TextWidthBasis.parent
+          : TextWidthBasis.longestLine,
     );
+    // A leading icon centres on the label's first line, so it stays beside
+    // "Konfirmasi" when the label wraps at large text (D56, #80).
+    final Widget content = widget.icon == null
+        ? Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [Flexible(child: text)],
+          )
+        : FirstLineRow(
+            hug: true,
+            gap: theme.space(PaymentSpace.related),
+            // Medium and large icons scale with the label up to 1.6x (32 dp
+            // at 2x), inside its 40 dp first line, so the button keeps its
+            // height (#80).
+            leading: Icon(
+              widget.icon,
+              size: widget.size == PaymentSize.small
+                  ? metrics.icon
+                  : PaymentIconSize.medium.resolve(context),
+            ),
+            text: text,
+          );
     final child = Stack(
       alignment: Alignment.center,
       children: [

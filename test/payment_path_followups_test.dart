@@ -1,0 +1,175 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+
+// UI review follow-ups (#79, #80): the action bar follows the footer rule on
+// wide windows, and a button's icon sits on its label's first line.
+
+Widget screen(
+  Widget body, {
+  Widget? bar,
+  double scale = 1,
+  String language = 'en',
+}) => MaterialApp(
+  locale: Locale(language),
+  supportedLocales: const [Locale('en'), Locale('id')],
+  localizationsDelegates: const [
+    PaymentLocalizations.delegate,
+    ...GlobalMaterialLocalizations.delegates,
+  ],
+  builder: (context, child) => MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
+    child: child!,
+  ),
+  home: Scaffold(body: body, bottomNavigationBar: bar),
+);
+
+void _surface(WidgetTester t, Size size) {
+  t.view.physicalSize = size;
+  t.view.devicePixelRatio = 1;
+  addTearDown(t.view.reset);
+}
+
+const _review = Key('review');
+
+Widget _bar() => PaymentActionBar(
+  action: PaymentButton(
+    key: _review,
+    label: 'Review and pay',
+    onPressed: () {},
+  ),
+);
+
+Widget _authorize() => AuthorizationPrompt(
+  phase: AuthorizationPhase.ready,
+  onStart: () {},
+  onBackToReview: () {},
+);
+
+Finder _authorizeButton() => find.byWidgetPredicate(
+  (w) => w is PaymentButton && w.icon == Icons.fingerprint,
+);
+
+Finder _inButton(Finder of) =>
+    find.descendant(of: _authorizeButton(), matching: of);
+
+void main() {
+  group('PaymentActionBar on wide windows (#79)', () {
+    testWidgets('1024x768: the action hugs at the end of the 640 column', (
+      t,
+    ) async {
+      _surface(t, const Size(1024, 768));
+      await t.pumpWidget(screen(const SizedBox.expand(), bar: _bar()));
+      final rect = t.getRect(find.byKey(_review));
+      // The 640 dp column spans 192–832 in a 1024 dp window (D53).
+      expect(rect.right, moreOrLessEquals(832, epsilon: 0.5));
+      expect(rect.width, lessThan(640));
+      expect(rect.width, greaterThanOrEqualTo(112));
+      // The bar keeps its height (12 dp, the 48 dp button, 12 dp), so the
+      // body above it keeps the rest of the window.
+      expect(t.getSize(find.byType(PaymentActionBar)).height, 72);
+    });
+
+    testWidgets('iPad mini 744x1133: hugs at the column end', (t) async {
+      _surface(t, const Size(744, 1133));
+      await t.pumpWidget(screen(const SizedBox.expand(), bar: _bar()));
+      final rect = t.getRect(find.byKey(_review));
+      expect(rect.right, moreOrLessEquals(744 - 52, epsilon: 0.5));
+      expect(rect.width, lessThan(640));
+    });
+
+    testWidgets('1024x768 at 2x: full width, like ViewFooter', (t) async {
+      _surface(t, const Size(1024, 768));
+      await t.pumpWidget(
+        screen(const SizedBox.expand(), bar: _bar(), scale: 2),
+      );
+      expect(t.getRect(find.byKey(_review)).width, 640);
+    });
+
+    testWidgets('phone 393x852: still full width', (t) async {
+      _surface(t, const Size(393, 852));
+      await t.pumpWidget(screen(const SizedBox.expand(), bar: _bar()));
+      final rect = t.getRect(find.byKey(_review));
+      expect(rect.width, 393 - 32);
+      expect(rect.left, 16);
+    });
+
+    testWidgets('with a total, the total keeps the start side', (t) async {
+      _surface(t, const Size(1024, 768));
+      await t.pumpWidget(
+        screen(
+          const SizedBox.expand(),
+          bar: PaymentActionBar(
+            total: const Money.idr(102500),
+            action: PaymentButton(key: _review, label: 'Pay', onPressed: () {}),
+          ),
+        ),
+      );
+      expect(
+        t.getRect(find.byKey(_review)).right,
+        moreOrLessEquals(832, epsilon: 0.5),
+      );
+      expect(
+        t.getRect(find.byType(AmountText)).left,
+        moreOrLessEquals(192, epsilon: 0.5),
+      );
+    });
+  });
+
+  group('PaymentButton icon on the first line (#80)', () {
+    testWidgets('2x, wrapped label: the icon centres on the first line', (
+      t,
+    ) async {
+      _surface(t, const Size(375, 667));
+      await t.pumpWidget(screen(_authorize(), scale: 2, language: 'id'));
+      expect(t.takeException(), isNull);
+      final icon = t.getRect(_inButton(find.byType(Icon)));
+      final label = _inButton(find.text('Konfirmasi pembayaran'));
+      final text = t.getRect(label);
+      // One 15/20 line at 2x is 40 dp; the label wraps to two.
+      const line = 40.0;
+      expect(text.height, greaterThanOrEqualTo(line * 2 - 1));
+      expect(icon.center.dy, moreOrLessEquals(text.top + line / 2, epsilon: 1));
+      // The icon scales with the text up to 1.6x (the medium icon token).
+      expect(icon.width, 32);
+      // Icon and label stay one centred group beside each other.
+      final button = t.getRect(_authorizeButton());
+      expect(text.left - icon.right, moreOrLessEquals(8, epsilon: 0.5));
+      expect(
+        (icon.left + text.right) / 2,
+        moreOrLessEquals(button.center.dx, epsilon: 1),
+      );
+    });
+
+    testWidgets('1x: icon and label are one centred line, as before', (
+      t,
+    ) async {
+      _surface(t, const Size(393, 852));
+      await t.pumpWidget(screen(_authorize()));
+      final icon = t.getRect(_inButton(find.byType(Icon)));
+      final text = t.getRect(_inButton(find.text('Confirm payment')));
+      final button = t.getRect(_authorizeButton());
+      expect(icon.width, 20);
+      expect(text.height, 20);
+      expect(text.left - icon.right, moreOrLessEquals(8, epsilon: 0.5));
+      expect(icon.center.dy, moreOrLessEquals(text.center.dy, epsilon: 0.5));
+      expect(
+        (icon.left + text.right) / 2,
+        moreOrLessEquals(button.center.dx, epsilon: 1),
+      );
+    });
+
+    testWidgets('1024x768, 1x: hug footer row lays out cleanly', (t) async {
+      _surface(t, const Size(1024, 768));
+      await t.pumpWidget(screen(_authorize()));
+      expect(t.takeException(), isNull);
+      final button = t.getRect(_authorizeButton());
+      expect(button.width, lessThan(640));
+      final icon = t.getRect(_inButton(find.byType(Icon)));
+      final text = t.getRect(_inButton(find.text('Confirm payment')));
+      expect(icon.center.dy, moreOrLessEquals(text.center.dy, epsilon: 0.5));
+      expect(text.left - icon.right, moreOrLessEquals(8, epsilon: 0.5));
+    });
+  });
+}

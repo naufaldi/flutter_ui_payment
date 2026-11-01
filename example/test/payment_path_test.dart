@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter_ui_payment_example/coordinator/demo_coordinator.dart';
@@ -138,6 +139,57 @@ void main() {
     expect(pinned(t, find.byType(AmountText).first), isFalse);
     await drain(t);
   });
+
+  // #80: at 200% the step title wraps to two lines in a taller bar instead
+  // of ending in "Konfirmasi pe…". The test font's glyphs are an em wide,
+  // much wider than San Francisco, so a 484 dp window gives a word the room
+  // a 375 pt iPhone SE gives it on the device; at 1024 dp it fits one line.
+  for (final (language, title, width, lines) in [
+    ('id', 'Konfirmasi pembayaran', 484.0, 2),
+    ('en', 'Confirm payment', 484.0, 2),
+    ('id', 'Konfirmasi pembayaran', 1024.0, 1),
+  ]) {
+    testWidgets('authorize title is not clipped at ${width}dp, 2x, $language', (
+      t,
+    ) async {
+      surface(t, Size(width, 800));
+      final app = await launch(
+        t,
+        settings: DemoSettings(locale: Locale(language), textScale: 2),
+      );
+      final c = await runScenario(t, app, 'P06');
+      await pumpUntil(t, () => c.quote != null && !c.quoting);
+      c.reviewOrder();
+      unawaited(c.confirm());
+      await pumpUntil(t, () => c.step == FlowStep.authorize);
+      await settle(t);
+      final bar = find.byType(AppBar);
+      final text = find.descendant(of: bar, matching: find.text(title));
+      final paragraph = t.renderObject<RenderParagraph>(text);
+      expect(paragraph.didExceedMaxLines, isFalse);
+      // The whole title is laid out, broken only between words.
+      final boxes = paragraph.getBoxesForSelection(
+        TextSelection(baseOffset: 0, extentOffset: title.length),
+      );
+      expect({for (final b in boxes) b.top}, hasLength(lines));
+      if (lines == 2) {
+        final second = paragraph.getPositionForOffset(
+          Offset(0, boxes.last.top + 1),
+        );
+        expect(title[second.offset - 1], ' ');
+      }
+      final rect = t.getRect(text);
+      final barRect = t.getRect(bar);
+      expect(barRect.top <= rect.top && rect.bottom <= barRect.bottom, isTrue);
+      // The bar grows only when the title needs the second line.
+      final toolbar = t.getRect(
+        find.descendant(of: bar, matching: find.byType(NavigationToolbar)),
+      );
+      expect(toolbar.height, lines == 1 ? kToolbarHeight : greaterThan(80));
+      expect(t.takeException(), isNull);
+      await drain(t);
+    });
+  }
 
   testWidgets('status: the quiet Done joins the pinned primary', (t) async {
     surface(t, const Size(393, 852));

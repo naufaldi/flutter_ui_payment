@@ -44,6 +44,15 @@ class FlowScreen extends StatelessWidget {
         final s = DemoStrings.of(context);
         final atRoot = c.step == FlowStep.overview || c.step == FlowStep.signIn;
         final view = _isViewStep(c.step) && !c.starting;
+        final title = _ownHeader(c) ? null : _title(s, c.step);
+        final titleLines = title == null
+            ? 1
+            : _appBarTitleLines(
+                context,
+                title,
+                leading: !atRoot,
+                actions: c.signedIn ? 2 : 1,
+              );
         return PopScope(
           canPop: atRoot,
           onPopInvokedWithResult: (didPop, _) {
@@ -51,10 +60,17 @@ class FlowScreen extends StatelessWidget {
           },
           child: Scaffold(
             appBar: AppBar(
+              // A title that doesn't fit on one line wraps to two in a
+              // taller bar instead of ending in "…" (#80).
+              toolbarHeight: titleLines == 1
+                  ? null
+                  : kToolbarHeight + _appBarTitleLine(context),
               leading: atRoot
                   ? null
                   : BackButton(onPressed: () => _handleBack(context, c)),
-              title: _ownHeader(c) ? null : Text(_title(s, c.step)),
+              title: title == null
+                  ? null
+                  : Text(title, maxLines: titleLines, softWrap: true),
               actions: [
                 if (c.signedIn) _AccountMenu(coordinator: c),
                 IconButton(
@@ -881,6 +897,44 @@ double listInset(BuildContext context, FlowStep step) {
   if (content < 600 - 32) return 0;
   final cap = step == FlowStep.checkout && content >= 840 ? 1040 : 640;
   return ((content - cap) / 2).clamp(0, double.infinity);
+}
+
+/// AppBar caps its title at 1.34x text (Material's limit), on one line.
+TextScaler _appBarTitleScaler(BuildContext context) =>
+    MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.34);
+
+/// One line of the app bar title at the current text size.
+double _appBarTitleLine(BuildContext context) {
+  final style = Theme.of(context).appBarTheme.titleTextStyle!;
+  return _appBarTitleScaler(context).scale(style.fontSize!) * style.height!;
+}
+
+/// 1 when [title] fits on one line between the back button and the
+/// [actions] 48 dp buttons, else 2. Breaks fall between words; step titles
+/// are two words at most.
+int _appBarTitleLines(
+  BuildContext context,
+  String title, {
+  required bool leading,
+  required int actions,
+}) {
+  final painter = TextPainter(
+    text: TextSpan(
+      text: title,
+      style: Theme.of(context).appBarTheme.titleTextStyle,
+    ),
+    textScaler: _appBarTitleScaler(context),
+    textDirection: Directionality.of(context),
+    maxLines: 1,
+  )..layout();
+  final width = painter.width;
+  painter.dispose();
+  final room =
+      MediaQuery.sizeOf(context).width -
+      (leading ? kToolbarHeight : 0) -
+      actions * kMinInteractiveDimension -
+      NavigationToolbar.kMiddleSpacing * 2;
+  return width <= room ? 1 : 2;
 }
 
 /// Steps that fill the screen and pin their own footer (D62).
