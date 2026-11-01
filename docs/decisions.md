@@ -481,7 +481,7 @@ Review of every component and flow against the 8 pt grid and the emil-ui-review 
 - **D60 — table rows on phones** render like a property list (issue #63).
 - **D61 — sign-in is an account-linking screen** with a visible can / cannot list and a pinned "Lanjutkan" (issue #63).
 
-**Evidence method.** Annotated review images are real simulator captures with guide lines and boxes drawn on top at measured coordinates (±2 pt); mocks are HTML drawings of a proposal, not app screens. All images live on the image-only `ui-review-evidence` branch.
+**Evidence method.** Annotated review images are real simulator captures with guide lines and boxes drawn on top at measured coordinates (±2 pt); mocks are HTML drawings of a proposal, not app screens. The red / orange / green thumb-zone bands (issue #64) are an illustration chosen by the reviewer, not a rule from any skill: three equal horizontal strips following the common thumb-zone convention (Hoober; Clark, *Designing for Touch*). Real reach is arc-shaped and depends on hand and phone size, so the bands show direction, not measurement. All images live on the image-only `ui-review-evidence` branch.
 
 **Proposed, pending owner decision** (do not implement until decided):
 
