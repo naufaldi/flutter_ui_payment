@@ -36,7 +36,7 @@ PaymentFormFieldGroup(
 | disabled | disabled scope |
 | layout | Axis.vertical / Axis.horizontal |
 
-Vertical or horizontal. Nothing else exists. Horizontal falls back below 360 dp or at large text. Disabled scope prevents re-enabling individual fields. Mixed required and optional fields add an optional mark. Group errors belong in a PaymentBanner above the group.
+Vertical or horizontal. Nothing else exists. Horizontal stays side by side while each field gets 140 dp (Month / Year fit a 329 dp phone card) and stacks below that or at large text. Put 24 dp (`PaymentSpace.section`) between groups; fields inside a group sit 16 apart (#65). Disabled scope prevents re-enabling individual fields. Mixed required and optional fields add an optional mark. Group errors belong in a PaymentBanner above the group.
 
 ## Variants
 

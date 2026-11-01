@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:flutter_ui_payment_example/coordinator/demo_coordinator.dart';
 import 'package:flutter_ui_payment_example/main.dart';
 import 'package:integration_test/integration_test.dart';
 
@@ -139,7 +140,15 @@ void main() {
       final looks = looksDefine.isEmpty
           ? const ['light', 'dark', '200', 'id', 'id_200']
           : looksDefine.split(',').map((e) => e.trim()).toList();
-      const states = {'menu_sheet', 'tooltip_tap', 'search_field_sheet'};
+      const states = {
+        'menu_sheet',
+        'tooltip_tap',
+        'search_field_sheet',
+        'date_field_sheet_calendar',
+        'date_field_sheet_wheel',
+        'date_range_presets',
+        'date_range_calendar',
+      };
       bool want(String slug, String look) =>
           looks.contains(look) &&
           (entries.contains(slug) || entries.contains('$slug@$look'));
@@ -154,6 +163,17 @@ void main() {
         'Layout': 'Tata letak',
         'Charts': 'Grafik',
       };
+      // Opens a sheet from the first [target] inside the keyed specimen.
+      Future<void> openFrom(String key, Finder target) async {
+        final from = find
+            .descendant(of: find.byKey(Key(key)), matching: target)
+            .first;
+        await tester.ensureVisible(from);
+        await settle(tester);
+        await tester.tap(from);
+        await settle(tester);
+      }
+
       // Full-height sheets cover the scrim: close them by their button.
       Future<void> closeSheet() async {
         final close = find.byTooltip('Close panel');
@@ -188,6 +208,8 @@ void main() {
             ),
             'select': ('Forms', 'PaymentSelect', null, null),
             'date_field': ('Forms', 'PaymentDateField', null, null),
+            'form_field_group': ('Forms', 'PaymentFormFieldGroup', null, null),
+            'radio': ('Controls', 'PaymentRadio', null, null),
             'chip': ('Forms', 'PaymentChip', null, null),
             // On a phone the search field is a trigger (D50): `search_field`
             // shows it at rest, `search_field_sheet` the open sheet.
@@ -214,6 +236,37 @@ void main() {
                 );
                 await settle(tester);
               },
+              closeSheet,
+            ),
+            // Kit date sheets (D51, D52, D52a).
+            'date_field_sheet_calendar': (
+              'Forms',
+              'PaymentDateField',
+              (_) => openFrom('date-transfer', find.byType(IconButton)),
+              closeSheet,
+            ),
+            'date_field_sheet_wheel': (
+              'Forms',
+              'PaymentDateField',
+              (_) => openFrom('date-dob-filled', find.byType(IconButton)),
+              closeSheet,
+            ),
+            'date_range_picker': (
+              'Forms',
+              'PaymentDateRangePicker',
+              null,
+              null,
+            ),
+            'date_range_presets': (
+              'Forms',
+              'PaymentDateRangePicker',
+              (_) => openFrom('range-presets', find.byType(InkWell)),
+              closeSheet,
+            ),
+            'date_range_calendar': (
+              'Forms',
+              'PaymentDateRangePicker',
+              (_) => openFrom('range-history', find.byType(InkWell)),
               closeSheet,
             ),
             'list': ('Interaction', 'PaymentList', null, null),
@@ -440,6 +493,34 @@ void main() {
         await settle(tester);
         await tester.tap(find.byTooltip('Tutup panel'));
         await settle(tester);
+      }
+      // The P4 screens: KYC details (province search, date of birth) and
+      // history (range picker), in the looks screenshots_test uses.
+      for (final screen in ['kyc_onboarding', 'history']) {
+        for (final (look, settings) in [
+          ('light', const DemoSettings()),
+          ('dark', const DemoSettings(themeMode: ThemeMode.dark)),
+          ('light_200', const DemoSettings(textScale: 2)),
+        ]) {
+          if (!entries.contains(screen) && !entries.contains('$screen@$look')) {
+            continue;
+          }
+          app.updateSettings(settings);
+          await settle(tester);
+          if (screen == 'kyc_onboarding') {
+            final c = await runScenario(tester, app, 'K01');
+            if (c.step == FlowStep.kycIntro) {
+              c.acceptConsent();
+              await settle(tester);
+            }
+          } else {
+            final c = await runScenario(tester, app, 'A01');
+            await pumpUntil(tester, () => !c.historyLoading);
+          }
+          await settle(tester);
+          await tester.pump(const Duration(milliseconds: 400));
+          await binding.takeScreenshot('${platform}_${screen}_$look');
+        }
       }
       if (entries.contains('fees_light')) {
         app.updateSettings(const DemoSettings());

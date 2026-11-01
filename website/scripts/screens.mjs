@@ -324,6 +324,20 @@ const screens = {
   // UI review P4: phone search sheet (D50).
   ios_catalog_search_field_sheet: 'PaymentSearchField sheet on a phone, English',
   ios_catalog_search_field_sheet_id_200: 'PaymentSearchField sheet on a phone at 200% text, Indonesian',
+  // UI review P4: kit date sheets (D51, D52, D52a).
+  ios_catalog_date_field_sheet_calendar: 'PaymentDateField calendar sheet for a near date, English',
+  ios_catalog_date_field_sheet_calendar_200: 'PaymentDateField calendar sheet at 200% text, English',
+  ios_catalog_date_field_sheet_wheel: 'PaymentDateField wheel sheet for a date of birth, English',
+  ios_catalog_date_field_sheet_wheel_dark: 'PaymentDateField wheel sheet, dark, English',
+  ios_catalog_date_field_sheet_wheel_200: 'PaymentDateField wheel sheet at 200% text, English',
+  ios_catalog_date_field_sheet_wheel_id: 'PaymentDateField wheel sheet, Indonesian',
+  ios_catalog_date_range_presets: 'PaymentDateRangePicker presets sheet, English',
+  ios_catalog_date_range_presets_200: 'PaymentDateRangePicker presets sheet at 200% text, English',
+  ios_catalog_date_range_calendar: 'PaymentDateRangePicker range calendar, English',
+  ios_catalog_date_range_calendar_dark: 'PaymentDateRangePicker range calendar, dark, English',
+  ios_catalog_date_range_calendar_200: 'PaymentDateRangePicker range calendar at 200% text, English',
+  ios_catalog_date_range_calendar_id: 'PaymentDateRangePicker range calendar, Indonesian',
+  ios_catalog_date_range_calendar_id_200: 'PaymentDateRangePicker range calendar at 200% text, Indonesian',
 };
 
 mkdirSync(target, { recursive: true });

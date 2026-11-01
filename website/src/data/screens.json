@@ -186,17 +186,17 @@
   },
   "ios_kyc_onboarding_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example kyc onboarding light, Indonesian"
   },
   "ios_kyc_onboarding_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example kyc onboarding dark, Indonesian"
   },
   "ios_kyc_onboarding_light_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example kyc onboarding light_200, Indonesian"
   },
   "ios_history_light": {
@@ -611,12 +611,12 @@
   },
   "ios_catalog_select_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "select specimen_dark, English"
   },
   "ios_catalog_select_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "select specimen_200, English"
   },
   "ios_catalog_date_field_variants": {
@@ -626,42 +626,42 @@
   },
   "ios_catalog_date_field_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "date field specimen_dark, English"
   },
   "ios_catalog_date_field_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "date field specimen_200, English"
   },
   "ios_catalog_form_field_group_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "form field group specimen, English"
   },
   "ios_catalog_form_field_group_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "form field group specimen_dark, English"
   },
   "ios_catalog_form_field_group_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "form field group specimen_200, English"
   },
   "ios_catalog_date_range_picker_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "date range picker specimen, English"
   },
   "ios_catalog_date_range_picker_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "date range picker specimen_dark, English"
   },
   "ios_catalog_date_range_picker_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "date range picker specimen_200, English"
   },
   "ios_catalog_search_field_variants": {
@@ -936,17 +936,17 @@
   },
   "ios_catalog_radio_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog radio variants, English"
   },
   "ios_catalog_radio_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog radio variants dark, English"
   },
   "ios_catalog_radio_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog radio variants 200, English"
   },
   "ios_catalog_switch_variants": {
@@ -1468,5 +1468,70 @@
     "width": 640,
     "height": 1391,
     "caption": "PaymentSearchField sheet on a phone at 200% text, Indonesian"
+  },
+  "ios_catalog_date_field_sheet_calendar": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateField calendar sheet for a near date, English"
+  },
+  "ios_catalog_date_field_sheet_calendar_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateField calendar sheet at 200% text, English"
+  },
+  "ios_catalog_date_field_sheet_wheel": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateField wheel sheet for a date of birth, English"
+  },
+  "ios_catalog_date_field_sheet_wheel_dark": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateField wheel sheet, dark, English"
+  },
+  "ios_catalog_date_field_sheet_wheel_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateField wheel sheet at 200% text, English"
+  },
+  "ios_catalog_date_field_sheet_wheel_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateField wheel sheet, Indonesian"
+  },
+  "ios_catalog_date_range_presets": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateRangePicker presets sheet, English"
+  },
+  "ios_catalog_date_range_presets_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateRangePicker presets sheet at 200% text, English"
+  },
+  "ios_catalog_date_range_calendar": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateRangePicker range calendar, English"
+  },
+  "ios_catalog_date_range_calendar_dark": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateRangePicker range calendar, dark, English"
+  },
+  "ios_catalog_date_range_calendar_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateRangePicker range calendar at 200% text, English"
+  },
+  "ios_catalog_date_range_calendar_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateRangePicker range calendar, Indonesian"
+  },
+  "ios_catalog_date_range_calendar_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentDateRangePicker range calendar at 200% text, Indonesian"
   }
 }

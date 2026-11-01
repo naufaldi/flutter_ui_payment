@@ -343,7 +343,18 @@ class _IdentityFormState extends State<IdentityForm> {
         }
         grouped.add(PaymentFormFieldGroup(legend: group, children: children));
       }
-      grouped.add(SizedBox(height: theme.space(PaymentSpace.group)));
+      // 24 around a field group and before the action, 16 between fields
+      // (D46, #65).
+      final next = i < widget.fields.length ? widget.fields[i] : null;
+      grouped.add(
+        SizedBox(
+          height: theme.space(
+            f.group == null && next != null && next.group == null
+                ? PaymentSpace.group
+                : PaymentSpace.section,
+          ),
+        ),
+      );
     }
     return Form(
       key: _formKey,

@@ -91,6 +91,7 @@ class _FieldTriggerState extends State<FieldTrigger> {
                         ),
                       ),
               ).copyWith(
+                hintMaxLines: 1,
                 error: widget.errorText == null
                     ? null
                     : FieldMessage(

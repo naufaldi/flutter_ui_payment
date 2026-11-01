@@ -6,8 +6,13 @@ import '../foundation/field_decoration.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_tokens.dart';
+import 'calendar/date_sheets.dart';
 
-/// Typed calendar date with a calendar-only picker. Host owns range rules.
+/// Typed calendar date with a kit date sheet. Host owns range rules.
+///
+/// Typing DD/MM/YYYY is the primary path. The calendar button opens a wheel
+/// when the allowed span is more than five years (date of birth), otherwise
+/// a month calendar; both end in a full-width "Choose date" (D52, D52a).
 class PaymentDateField extends StatefulWidget {
   const PaymentDateField({
     super.key,
@@ -141,17 +146,16 @@ class _PaymentDateFieldState extends State<PaymentDateField> {
     super.dispose();
   }
 
+  /// Opens the kit date sheet (D52, D52a): a wheel for spans over five
+  /// years, such as a date of birth, otherwise the calendar. Typed entry
+  /// stays the primary path.
   Future<void> _pick() async {
-    var initial =
-        widget.value ?? _reported ?? DateUtils.dateOnly(DateTime.now());
-    if (initial.isBefore(widget.firstDate)) initial = widget.firstDate;
-    if (initial.isAfter(widget.lastDate)) initial = widget.lastDate;
-    final result = await showDatePicker(
+    final result = await showKitDateSheet(
       context: context,
-      initialDate: initial,
+      title: widget.label,
+      initial: widget.value ?? _reported,
       firstDate: widget.firstDate,
       lastDate: widget.lastDate,
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
     );
     if (!mounted) return;
     if (result != null) {

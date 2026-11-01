@@ -8,8 +8,8 @@ import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_tokens.dart';
 import '../foundation/primitives.dart';
-import '../interaction/interaction.dart';
 import '../overlay/sheets.dart';
+import 'calendar/date_sheets.dart';
 
 /// Calendar grouping. Nothing else exists.
 enum PaymentDateGranularity {
@@ -80,7 +80,12 @@ class PaymentDateRange {
   int get hashCode => Object.hash(start, end, preset);
 }
 
-/// Preset sheet or Flutter range calendar; performs no zone conversion.
+/// Preset sheet or the kit range calendar (D51); performs no zone
+/// conversion.
+///
+/// "Custom range" opens a full-height sheet with a scrolling month calendar
+/// (first tap the start, second tap the end), typed entry from its header,
+/// and a pinned footer with the range, a full-width Apply and Clear.
 class PaymentDateRangePicker extends StatefulWidget {
   const PaymentDateRangePicker({
     super.key,
@@ -146,27 +151,19 @@ class _PaymentDateRangePickerState extends State<PaymentDateRangePicker> {
   }
 
   Future<void> _custom() async {
-    final r = await showDateRangePicker(
+    final r = await showKitRangeSheet(
       context: context,
+      title: widget.label,
+      initial: widget.value,
       firstDate: widget.firstDate,
       lastDate: widget.lastDate,
-      initialDateRange: widget.value == null
-          ? null
-          : DateTimeRange(start: widget.value!.start, end: widget.value!.end),
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
     );
-    if (mounted && r != null) {
-      widget.onChanged(
-        PaymentDateRange(
-          start: DateUtils.dateOnly(r.start),
-          end: DateUtils.dateOnly(r.end),
-        ),
-      );
-    }
+    if (mounted && r != null) widget.onChanged(r.range);
   }
 
   Future<void> _open() async {
     final l = PaymentLocalizations.of(context);
+    final v = widget.value;
     if (widget.presets.isEmpty) {
       await _custom();
     } else {
@@ -180,16 +177,24 @@ class _PaymentDateRangePickerState extends State<PaymentDateRangePicker> {
           body: Column(
             children: [
               for (final p in widget.presets)
-                PaymentRadio<PaymentDatePreset>(
+                PaymentRadio<Object>(
                   value: p,
                   groupValue: widget.value?.preset,
                   label: p.label,
                   description: l.formatDateRange(p.start, p.end),
                   onChanged: (v) => Navigator.pop(context, v),
                 ),
-              PaymentListItem(
-                title: l.customRange,
-                onPressed: () => Navigator.pop(context, #custom),
+              // A radio row, so its text starts on the presets' text column
+              // (D51). It is never the group value: a selected radio ignores
+              // taps, and the calendar must reopen to edit a custom range.
+              PaymentRadio<Object>(
+                value: #custom,
+                groupValue: widget.value?.preset,
+                label: l.customRange,
+                description: v == null || v.preset != null
+                    ? null
+                    : l.formatDateRange(v.start, v.end),
+                onChanged: (_) => Navigator.pop(context, #custom),
               ),
             ],
           ),

@@ -44,12 +44,16 @@ class _FormsSpecimenState extends State<_FormsSpecimen> {
   String? occupation;
   Set<String> methods = {'Transfer', 'QRIS', 'Card'};
   DateTime? date;
+  DateTime? transferDate;
   @override
   Widget build(BuildContext context) {
     String t(String en, String id) => _t(context, en, id);
     final occupations = _occupations(context);
     final occupationLabel = t('Occupation', 'Pekerjaan');
     final dateOfBirth = t('Date of birth', 'Tanggal lahir');
+    // Past dates end today (D51); a date of birth spans decades, so its
+    // picker is the wheel (D52a, Q2).
+    final today = DateUtils.dateOnly(DateTime.now());
     final children = switch (widget.name) {
       'PaymentTextArea' => <Widget>[
         PaymentTextArea(
@@ -117,18 +121,20 @@ class _FormsSpecimenState extends State<_FormsSpecimen> {
       ],
       'PaymentDateField' => <Widget>[
         PaymentDateField(
+          key: const Key('date-dob'),
           label: dateOfBirth,
           value: date,
           onChanged: (v) => setState(() => date = v),
           firstDate: DateTime(1900),
-          lastDate: DateTime(2030),
+          lastDate: today,
         ),
         PaymentDateField(
+          key: const Key('date-dob-filled'),
           label: dateOfBirth,
           value: DateTime(1995, 8, 17),
           onChanged: (_) {},
           firstDate: DateTime(1900),
-          lastDate: DateTime(2030),
+          lastDate: today,
         ),
         PaymentDateField(
           label: dateOfBirth,
@@ -136,7 +142,7 @@ class _FormsSpecimenState extends State<_FormsSpecimen> {
           errorText: t('You must be 17 or older.', 'Usia minimal 17 tahun.'),
           onChanged: (_) {},
           firstDate: DateTime(1900),
-          lastDate: DateTime(2030),
+          lastDate: today,
         ),
         PaymentDateField(
           label: dateOfBirth,
@@ -144,7 +150,16 @@ class _FormsSpecimenState extends State<_FormsSpecimen> {
           enabled: false,
           onChanged: (_) {},
           firstDate: DateTime(1900),
-          lastDate: DateTime(2030),
+          lastDate: today,
+        ),
+        // A near date: the calendar (D52a).
+        PaymentDateField(
+          key: const Key('date-transfer'),
+          label: t('Transfer date', 'Tanggal transfer'),
+          value: transferDate,
+          onChanged: (v) => setState(() => transferDate = v),
+          firstDate: today,
+          lastDate: today.add(const Duration(days: 90)),
         ),
       ],
       _ => <Widget>[
@@ -160,7 +175,7 @@ class _FormsSpecimenState extends State<_FormsSpecimen> {
               value: date,
               onChanged: (v) => setState(() => date = v),
               firstDate: DateTime(1900),
-              lastDate: DateTime(2030),
+              lastDate: today,
             ),
           ],
         ),
@@ -192,7 +207,12 @@ class _FormsSpecimenState extends State<_FormsSpecimen> {
       name: '${widget.name} · variants',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: PaymentTheme.of(context).space(PaymentSpace.group),
+        // Field groups sit a section apart (#65); single fields a group.
+        spacing: PaymentTheme.of(context).space(
+          widget.name == 'PaymentFormFieldGroup'
+              ? PaymentSpace.section
+              : PaymentSpace.group,
+        ),
         children: children,
       ),
     );
@@ -351,14 +371,16 @@ class _DateRangeSpecimenState extends State<_DateRangeSpecimen> {
           spacing: PaymentTheme.of(context).space(PaymentSpace.group),
           children: [
             PaymentDateRangePicker(
+              key: const Key('range-presets'),
               label: _t(context, 'Date range', 'Rentang tanggal'),
               value: value,
               onChanged: (v) => setState(() => value = v),
               firstDate: DateTime(2020),
-              lastDate: DateTime(2030),
+              lastDate: DateUtils.dateOnly(DateTime.now()),
               presets: presets,
             ),
             PaymentDateRangePicker(
+              key: const Key('range-history'),
               label: _t(context, 'Payment history', 'Riwayat pembayaran'),
               value: PaymentDateRange(
                 start: DateTime(2026, 10),
@@ -366,7 +388,7 @@ class _DateRangeSpecimenState extends State<_DateRangeSpecimen> {
               ),
               onChanged: (_) {},
               firstDate: DateTime(2020),
-              lastDate: DateTime(2030),
+              lastDate: DateUtils.dateOnly(DateTime.now()),
               granularity: granularity,
               onGranularityChanged: (v) => setState(() => granularity = v),
             ),
@@ -375,7 +397,7 @@ class _DateRangeSpecimenState extends State<_DateRangeSpecimen> {
               value: PaymentDateRange.fromPreset(presets[1]),
               onChanged: (_) {},
               firstDate: DateTime(2020),
-              lastDate: DateTime(2030),
+              lastDate: DateUtils.dateOnly(DateTime.now()),
               presets: presets,
             ),
             PaymentDateRangePicker(
@@ -384,7 +406,7 @@ class _DateRangeSpecimenState extends State<_DateRangeSpecimen> {
               enabled: false,
               onChanged: (_) {},
               firstDate: DateTime(2020),
-              lastDate: DateTime(2030),
+              lastDate: DateUtils.dateOnly(DateTime.now()),
             ),
           ],
         ),

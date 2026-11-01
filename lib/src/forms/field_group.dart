@@ -7,7 +7,12 @@ import '../foundation/payment_type.dart';
 import 'date_field.dart';
 import 'select.dart';
 
-/// Related fields under a legend; horizontal falls back below 360 dp or at large text.
+/// Narrowest field in a horizontal group: two fit a 329 dp phone card (#65).
+const _minFieldWidth = 140.0;
+
+/// Related fields under a legend. A horizontal group stacks when its fields
+/// would be narrower than 140 dp each, or at large text. Hosts put 24 dp
+/// (`PaymentSpace.section`) between groups; fields inside sit 16 apart.
 class PaymentFormFieldGroup extends StatelessWidget {
   const PaymentFormFieldGroup({
     super.key,
@@ -66,7 +71,11 @@ class PaymentFormFieldGroup extends StatelessWidget {
               ? vertical()
               : LayoutBuilder(
                   builder: (context, constraints) =>
-                      constraints.maxWidth < 360 || PaymentType.isLarge(context)
+                      constraints.maxWidth <
+                              children.length * _minFieldWidth +
+                                  (children.length - 1) *
+                                      t.space(PaymentSpace.group) ||
+                          PaymentType.isLarge(context)
                       ? vertical()
                       : Row(
                           crossAxisAlignment: CrossAxisAlignment.start,

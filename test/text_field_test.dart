@@ -186,6 +186,15 @@ void main() {
             onChanged: (_) {},
             size: size,
           ),
+          // An empty select with a long hint keeps one line (#65).
+          'select hint': PaymentSelect<int>(
+            label: 'Occupation',
+            hint: 'Choose your occupation from the list',
+            options: const [PaymentSelectOption(value: 1, label: 'Bali')],
+            value: null,
+            onChanged: (_) {},
+            size: size,
+          ),
         };
         for (final entry in fields.entries) {
           await tester.pumpWidget(host(entry.value, scale));

@@ -21,12 +21,15 @@ import HostOwns from '../../../components/HostOwns.astro';
 
 ```dart
 // example/lib/screens/gallery_selection.dart
+// A group error shows once, under the last option (#65).
 PaymentRadio(
                 value: method,
                 groupValue: null,
                 onChanged: (_) {},
                 label: method,
-                errorText: 'Choose how to get your receipt',
+                errorText: method == 'SMS'
+                    ? 'Choose how to get your receipt'
+                    : null,
               );
 ```
 
@@ -58,7 +61,7 @@ The payment method picker shares the same radio mark. An unavailable method has 
 
 ### Behavior, states and migration
 
-Stripe error maps to errorText: icon, danger caption and unchecked danger ring. Required is semantics-only; hosts own validation and progression. HiddenElements keeps hidden label, description and error text spoken. Keep a group's labels visible when they distinguish choices, and use specific recovery copy.
+Stripe error maps to errorText: icon, danger caption and unchecked danger ring. Required is semantics-only; hosts own validation and progression. HiddenElements keeps hidden label, description and error text spoken. Keep a group's labels visible when they distinguish choices, and use specific recovery copy. A group error goes on the last option only, so it shows once under the group instead of under every option (#65).
 
 ## Which variant when
 
