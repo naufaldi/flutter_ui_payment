@@ -108,19 +108,23 @@ class PaymentTextField extends StatefulWidget {
   /// Controlled local list filter, with clear and refocus.
   ///
   /// [actions] sit after the box on the same line, centred on it, such as a
-  /// filter [PaymentIconButton]; a label above the box spans them.
+  /// filter [PaymentIconButton]; a label above the box spans them. A hidden
+  /// label ([hiddenElements]) shows as the placeholder instead and stays the
+  /// field's spoken name.
   factory PaymentTextField.search({
     Key? key,
     required String query,
     required ValueChanged<String> onChanged,
     String? label,
     List<Widget> actions = const [],
+    Set<PaymentFieldPart> hiddenElements = const {},
   }) => PaymentTextField._search(
     key: key,
     query: query,
     onChanged: onChanged,
     label: label ?? '',
     actions: actions,
+    hiddenElements: hiddenElements,
   );
   const PaymentTextField._search({
     super.key,
@@ -128,6 +132,7 @@ class PaymentTextField extends StatefulWidget {
     required this.onChanged,
     required this.label,
     required this.actions,
+    required this.hiddenElements,
   }) : _multiline = false,
        _minLines = 1,
        _maxLines = 1,
@@ -141,7 +146,6 @@ class PaymentTextField extends StatefulWidget {
        errorText = null,
        validator = null,
        required = false,
-       hiddenElements = const {},
        type = PaymentTextFieldType.search,
        size = PaymentSize.medium,
        onSubmitted = null,
@@ -323,6 +327,8 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
     final error = _hideHostError ? null : widget.errorText;
     final above =
         !hidden.contains(PaymentFieldPart.label) && fieldLabelAbove(context);
+    final placeholder =
+        widget.query != null && hidden.contains(PaymentFieldPart.label);
     final input = ListenableBuilder(
       listenable: _focus,
       builder: (context, _) => Semantics(
@@ -403,47 +409,67 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
             tone: StatusTone.danger,
             hidden: hidden.contains(PaymentFieldPart.error),
           ),
-          decoration: paymentFieldDecoration(
-            context,
-            label: label,
-            hideLabel: hidden.contains(PaymentFieldPart.label),
-            labelAbove: above,
-            hint: above && !_focus.hasFocus ? null : widget.hint,
-            enabled: enabled,
-            contentPadding: fieldContentPadding(
-              theme,
-              widget.size,
-              labelAbove: above,
-            ),
-            helper: widget.description == null
-                ? null
-                : FieldMessage(
-                    widget.description!,
-                    tone: widget.descriptionTone == StatusTone.neutral
-                        ? null
-                        : widget.descriptionTone,
-                    hidden: hidden.contains(PaymentFieldPart.description),
-                  ),
-            prefixText: widget.prefixText,
-            prefixIcon: widget.query == null
-                ? widget.prefixIcon
-                : const PaymentIcon(
-                    Icons.search,
-                    color: PaymentTextColor.secondary,
-                  ),
-            suffixIcon: widget.query == null
-                ? widget.suffix
-                : widget.query!.isEmpty
-                ? null
-                : PaymentIconButton(
-                    icon: PaymentIcons.close,
-                    tooltip: l10n.clearSearch,
-                    onPressed: () {
-                      widget.onChanged!('');
-                      _focus.requestFocus();
-                    },
-                  ),
-          ).copyWith(alignLabelWithHint: widget._multiline),
+          decoration:
+              paymentFieldDecoration(
+                context,
+                label: label,
+                hideLabel: hidden.contains(PaymentFieldPart.label),
+                labelAbove: above,
+                hint: above && !_focus.hasFocus || placeholder
+                    ? null
+                    : widget.hint,
+                enabled: enabled,
+                contentPadding: fieldContentPadding(
+                  theme,
+                  widget.size,
+                  // No floating label takes the top padding back.
+                  labelAbove: above || placeholder,
+                ),
+                helper: widget.description == null
+                    ? null
+                    : FieldMessage(
+                        widget.description!,
+                        tone: widget.descriptionTone == StatusTone.neutral
+                            ? null
+                            : widget.descriptionTone,
+                        hidden: hidden.contains(PaymentFieldPart.description),
+                      ),
+                prefixText: widget.prefixText,
+                prefixIcon: widget.query == null
+                    ? widget.prefixIcon
+                    : const PaymentIcon(
+                        Icons.search,
+                        color: PaymentTextColor.secondary,
+                      ),
+                suffixIcon: widget.query == null
+                    ? widget.suffix
+                    : widget.query!.isEmpty
+                    ? null
+                    : PaymentIconButton(
+                        icon: PaymentIcons.close,
+                        tooltip: l10n.clearSearch,
+                        onPressed: () {
+                          widget.onChanged!('');
+                          _focus.requestFocus();
+                        },
+                      ),
+              ).copyWith(
+                alignLabelWithHint: widget._multiline,
+                // A search without a visible label shows it as the placeholder;
+                // the Semantics above already speaks it, so the hint stays silent.
+                hint: placeholder
+                    ? ExcludeSemantics(
+                        child: Text(
+                          label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: type.input.copyWith(
+                            color: theme.textSecondary,
+                          ),
+                        ),
+                      )
+                    : null,
+              ),
         ),
       ),
     );
