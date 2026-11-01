@@ -1,32 +1,32 @@
 {
   "ios_catalog_dialog_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "showPaymentConfirmDialog specimen, English"
   },
   "ios_catalog_dialog_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "showPaymentConfirmDialog specimen_dark, English"
   },
   "ios_catalog_dialog_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "showPaymentConfirmDialog specimen_200, English"
   },
   "ios_catalog_sheets_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PaymentSheet specimen, English"
   },
   "ios_catalog_sheets_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PaymentSheet specimen_dark, English"
   },
   "ios_catalog_sheets_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PaymentSheet specimen_200, English"
   },
   "ios_catalog_section_variants": {
@@ -86,12 +86,12 @@
   },
   "ios_catalog_privacy_mask_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PrivacyMask specimen, English"
   },
   "ios_catalog_privacy_mask_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PrivacyMask specimen_dark, English"
   },
   "ios_catalog_action_bar_variants": {
@@ -146,12 +146,12 @@
   },
   "ios_catalog_state_message_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "StateMessage · PaymentEmptyMessage specimen_dark, English"
   },
   "ios_catalog_state_message_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "StateMessage · PaymentEmptyMessage specimen_200, English"
   },
   "ios_catalog_chart_module_variants": {
@@ -261,7 +261,7 @@
   },
   "ios_fees_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example fees light, Indonesian"
   },
   "ios_fees_dark": {
@@ -351,17 +351,17 @@
   },
   "ios_catalog_button_group_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "button group specimen, English"
   },
   "ios_catalog_button_group_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "button group specimen_dark, English"
   },
   "ios_catalog_button_group_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "button group specimen_200, English"
   },
   "ios_catalog_context_view_variants": {
@@ -811,17 +811,17 @@
   },
   "ios_catalog_banner_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog banner variants, English"
   },
   "ios_catalog_banner_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog banner variants dark, English"
   },
   "ios_catalog_banner_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog banner variants 200, English"
   },
   "ios_catalog_toast_variants": {
@@ -841,32 +841,32 @@
   },
   "ios_catalog_tooltip_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog tooltip variants, English"
   },
   "ios_catalog_tooltip_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog tooltip variants dark, English"
   },
   "ios_catalog_tooltip_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog tooltip variants 200, English"
   },
   "ios_catalog_menu_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog menu variants, English"
   },
   "ios_catalog_menu_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog menu variants dark, English"
   },
   "ios_catalog_menu_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog menu variants 200, English"
   },
   "ios_catalog_accordion_variants": {
@@ -1316,7 +1316,7 @@
   },
   "ios_kit_sheet_confirm": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: destructive confirmation"
   },
   "ios_kit_promo": {
@@ -1433,5 +1433,20 @@
     "width": 640,
     "height": 1391,
     "caption": "tooltip specimen at 200% text, Indonesian"
+  },
+  "ios_catalog_menu_sheet": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentMenu action sheet on a phone, English"
+  },
+  "ios_catalog_menu_sheet_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentMenu action sheet on a phone, Indonesian"
+  },
+  "ios_catalog_tooltip_tap": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentTooltip opened by tap, English"
   }
 }

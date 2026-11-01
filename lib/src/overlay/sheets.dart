@@ -12,6 +12,8 @@ import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/layout_rules.dart';
 import '../foundation/payment_tokens.dart';
+import '../foundation/first_line.dart';
+import 'modal_presenters.dart';
 
 /// Title row for a [PaymentSheet] with an optional close button.
 ///
@@ -43,35 +45,29 @@ class PaymentSheetHeader extends StatelessWidget {
         theme.space(PaymentSpace.related),
         theme.space(PaymentSpace.related),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Padding(
-              // Centers the first line on the 48 dp close button.
-              padding: const EdgeInsets.only(top: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Semantics(
-                    header: true,
-                    child: Text(title, style: type.title),
-                  ),
-                  if (subtitle != null) ...[
-                    SizedBox(height: theme.space(PaymentSpace.inline)),
-                    Text(subtitle!, style: type.caption),
-                  ],
-                ],
+      // The title's first line centres on the 48 dp close button at every
+      // text scale (#61-7). The band stays 48 without the button, so hiding
+      // it during a host call does not move the title.
+      child: FirstLineRow(
+        line: lineHeightOf(context, type.title),
+        trailingExtent: 48,
+        text: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Semantics(header: true, child: Text(title, style: type.title)),
+            if (subtitle != null) ...[
+              SizedBox(height: theme.space(PaymentSpace.inline)),
+              Text(subtitle!, style: type.caption),
+            ],
+          ],
+        ),
+        trailing: onClose == null
+            ? null
+            : PaymentIconButton(
+                icon: PaymentIcons.close,
+                tooltip: l10n.closeSheet,
+                onPressed: onClose,
               ),
-            ),
-          ),
-          if (onClose != null)
-            PaymentIconButton(
-              icon: PaymentIcons.close,
-              tooltip: l10n.closeSheet,
-              onPressed: onClose,
-            ),
-        ],
       ),
     );
   }
@@ -143,47 +139,11 @@ Future<T?> showPaymentSheet<T>({
   required WidgetBuilder builder,
   bool isDismissible = true,
 }) {
-  return _showSheet(
+  return showKitBottomSheet(
     context: context,
     builder: builder,
     isDismissible: isDismissible,
     enableDrag: isDismissible,
-    showDragHandle: true,
-  );
-}
-
-Future<T?> _showSheet<T>({
-  required BuildContext context,
-  required WidgetBuilder builder,
-  required bool isDismissible,
-  required bool enableDrag,
-  required bool showDragHandle,
-}) {
-  final motion = PaymentMotion.of(context);
-
-  final theme = PaymentTheme.of(context);
-  return showModalBottomSheet<T>(
-    context: context,
-    builder: builder,
-    isScrollControlled: true,
-    useSafeArea: true,
-    showDragHandle: showDragHandle,
-    isDismissible: isDismissible,
-    enableDrag: enableDrag,
-    backgroundColor: theme.surface,
-    // Flat sheet: the sheet radius on the top corners only, no tint; the
-    // default handle is a small 32 x 4 bar.
-    elevation: 0,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: theme.sheetBorderRadius.topLeft),
-    ),
-    sheetAnimationStyle: motion.reduced
-        ? AnimationStyle.noAnimation
-        : AnimationStyle(
-            duration: motion.sheetEnter,
-            reverseDuration: motion.sheetExit,
-            curve: PaymentMotion.drawer,
-          ),
   );
 }
 
@@ -304,10 +264,9 @@ Future<T?> showPaymentFocusView<T>(
       builder: scoped,
     );
   }
-  return _showSheet<T>(
+  return showKitBottomSheet<T>(
     context: context,
     builder: scoped,
-    isDismissible: true,
     enableDrag: false,
     showDragHandle: false,
   );

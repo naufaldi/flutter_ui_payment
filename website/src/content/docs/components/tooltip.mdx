@@ -1,15 +1,16 @@
 ---
 title: Tooltip
-description: PaymentTooltip shows a short hint on long press or mouse hover, in ink with the caption type. It may only repeat or name something.
+description: PaymentTooltip shows a one-line hint on tap, long press, hover or focus, in ink with the caption type. It may only repeat or name something.
 ---
 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-`PaymentTooltip` adds a short hint to a control or a short value: the full date behind "2 days ago", the name of an icon button. It is the theme's ink color with the surface color for text, the strongest contrast the theme has.
+`PaymentTooltip` adds a one-line, non-interactive hint to a control or a short value: the full date behind "2 days ago", the name of an icon button. It opens on tap as well as on long press, hover and keyboard focus (D49). It is the theme's ink color with the surface color for text, the strongest contrast the theme has.
 
 <Screens>
+  <Screen name="ios_catalog_tooltip_tap" alt="A tooltip opened by a tap on the 2d ago text, showing the full payment date" caption="Opened by tap" />
   <Screen name="ios_catalog_tooltip_variants" dark="ios_catalog_tooltip_variants_dark" alt="tooltip variants in the native gallery" caption="Tooltip variants" />
   <Screen name="ios_catalog_tooltip_variants_200" alt="tooltip at 200 percent text" caption="200% text" />
 </Screens>
@@ -25,17 +26,43 @@ PaymentTooltip(
         );
 ```
 
+An interactive trigger, such as an info button, uses `trigger`. The button's own press toggles the hint, because the button wins the tap:
+
+```dart
+// example/lib/screens/steps/fees_step.dart
+PaymentTooltip(
+  message: s.feesTooltip,
+  trigger: (toggle, focusNode) => PaymentIconButton(
+    icon: Icons.info_outline,
+    tooltip: s.feesInfo,
+    focusNode: focusNode,
+    onPressed: toggle,
+  ),
+);
+```
+
 ## Stripe → kit
 
 | Stripe prop | Kit | Note |
 | --- | --- | --- |
-| children | child | Flutter body composition. |
+| children | child, trigger | Flutter body composition; `trigger` for an interactive trigger. |
 
 DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
 
 ## Variants
 
 Variants: label, description; twelve placements. Nothing else exists.
+
+### Tap, one line, and `trigger`
+
+- A tap on a non-interactive `child` (text, an icon, a disabled control) toggles the hint. A second tap, a tap outside and Escape close it.
+- A child with its own tap action wins the tap, so wrap an interactive control with `trigger` instead of `child`. The builder receives `toggle` and a `focusNode`. Pass `toggle` to the button's `onPressed` and the focus node to the button. The kit hides the button's own Material tooltip and keeps its name for screen readers.
+- An info icon never has a no-op `onPressed`: it toggles its hint or opens a sheet.
+- Pass exactly one of `child` and `trigger`.
+
+### Longer explanations open a sheet
+
+A tooltip holds one line. An explanation that needs more, such as a promotion's "Why this?" / "Kenapa ini?", opens a [sheet](/components/sheets/) with a title, the text and one primary Close. See [Promotions](/patterns/promotions/).
 
 ### When not to use one
 
@@ -48,7 +75,7 @@ A tooltip is easy to miss on a phone: nothing shows that it is there. It may onl
 
 The twelve placements are top, topStart, topEnd, bottom, bottomStart, bottomEnd, start, startTop, startBottom, end, endTop and endBottom. Start and end follow direction. A bubble flips when the opposite side fits, then shifts inside an 8 dp margin. Default placement is bottom.
 
-Label names an icon-only trigger; description adds its semantic tooltip. The bubble is never interactive or focusable and needs an Overlay. Hover waits 500 ms by default; keyboard focus opens immediately. Escape, blur, exit, outside tap and another tooltip close it. Long press closes 1.5 seconds after release. Never put a fee, requirement or error only here.
+Label names an icon-only trigger; description adds its semantic tooltip. The bubble is never interactive or focusable and needs an Overlay. A tap opens it at once, and a second tap closes it. Hover waits 500 ms by default; keyboard focus opens immediately. Escape, blur, exit, an outside tap and another tooltip close it. A hint opened by long press closes 1.5 seconds after release. Never put a fee, requirement or error only here.
 
 ## Which variant when
 
@@ -66,7 +93,7 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 **Do**: Attach to a focusable 48 dp trigger; use label only when replacing the trigger name.
 
-**Don't**: Put links or buttons inside hover-only tooltip content.
+**Don't**: Put links or buttons inside tooltip content, or give an info icon a no-op `onPressed`.
 
 ## Content guidelines
 
@@ -80,7 +107,7 @@ Attach to a focusable 48 dp trigger; use label only when replacing the trigger n
 - The message is also the control's tooltip in the semantics tree, so screen readers read it with the control.
 - Keyboard focus opens it. Do not rely on a tooltip for anything a keyboard user needs.
 
-A04 gives the fee policy a real tooltip use, attached to a focusable information button with a 48 dp target.
+A04 gives the fee policy a real tooltip use: a focusable information button with a 48 dp target that toggles the hint on tap.
 
 ## Used in
 

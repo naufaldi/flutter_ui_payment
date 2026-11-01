@@ -91,6 +91,7 @@ AuthorizationPrompt(
 - `PaymentSummary` leads with the total, then items, then every fee, discount and tax. Fees are never collapsed. With `previousQuote` it shows a notice with both totals.
 - `PaymentMethodPicker` shows unavailable methods disabled with your `unavailableReason`. `PaymentMethodPicker.validSelection(methods, id)` returns `null` when a selected method disappeared or became unavailable, so you can clear it.
 - `PaymentConfirmation` keeps `onConfirm` unreachable until the customer accepts a changed total.
+- After a re-quote, `PaymentSummary` shows a warning [banner](/components/banner/) that states old → new ("Was Rp102.500, now Rp104.000"). It has no close button while the payment is open (D48), so the only cue that the total changed cannot be hidden before paying.
 - `AuthorizationPrompt` never receives a PIN, OTP or biometric result. Your SDK runs the challenge; you set the `AuthorizationPhase`. Canceled and failed have different copy, and neither is shown as a payment.
 - `PaymentActionBar` pins the total and the main action. While `updating` is true it says "Updating total…"; disable the action yourself.
 - For free-form amounts, such as a top-up, use [`PaymentCurrencyField`](/components/currency-field/).

@@ -106,6 +106,7 @@ class DemoStrings {
   String get download => _t("Download", "Unduh");
   String get feesTitle => _t("Fee schedule", "Daftar biaya");
   String get feesNote => _t("Fees include VAT.", "Biaya sudah termasuk PPN.");
+  String get feesInfo => _t("About fees", "Tentang biaya");
   String get feesTooltip => _t(
     "Set by Ruang Bayar for each payment method.",
     "Ditetapkan Ruang Bayar per metode pembayaran.",

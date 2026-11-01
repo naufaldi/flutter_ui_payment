@@ -80,6 +80,37 @@ void main() {
       t.getTopLeft(find.text('Remove card')).dy,
       lessThan(t.getTopLeft(find.text('Cancel')).dy),
     );
+    // Stacked buttons fill the group's width, so no edge is ragged (#65).
+    for (final label in ['Remove card', 'Cancel']) {
+      final rect = t.getRect(find.widgetWithText(PaymentButton, label));
+      expect(rect.width, 220);
+    }
+    expect(t.takeException(), isNull);
+  });
+  testWidgets('none keeps one row of hug buttons when they fit', (t) async {
+    await t.pumpWidget(
+      contentHost(
+        SizedBox(
+          width: 360,
+          child: PaymentButtonGroup(
+            collapse: PaymentButtonGroupCollapse.none,
+            children: [
+              PaymentButton(
+                label: 'Cancel',
+                variant: PaymentButtonVariant.quiet,
+                onPressed: () {},
+              ),
+              PaymentButton(label: 'Save', onPressed: () {}),
+            ],
+          ),
+        ),
+      ),
+    );
+    final cancel = t.getRect(find.widgetWithText(PaymentButton, 'Cancel'));
+    final save = t.getRect(find.widgetWithText(PaymentButton, 'Save'));
+    expect(cancel.top, save.top);
+    expect(cancel.right, lessThan(save.left));
+    expect(save.width, lessThan(360));
     expect(t.takeException(), isNull);
   });
   testWidgets('vertical fills and keeps host order', (t) async {
@@ -104,7 +135,7 @@ void main() {
     );
     expect(t.takeException(), isNull);
   });
-  testWidgets('overflow menu wraps long labels at large text', (t) async {
+  testWidgets('overflow opens full-width sheet rows on a phone', (t) async {
     await setSurface(t, const Size(320, 1000));
     await t.pumpWidget(
       contentHost(
@@ -132,7 +163,12 @@ void main() {
       of: find.byType(MenuItemButton),
       matching: find.text('Download statement for October 2026'),
     );
-    expect(t.getSize(label).height, greaterThan(50));
+    // D55: on a phone the overflow is an action sheet with full-width rows.
+    final row = t.getRect(
+      find.ancestor(of: label, matching: find.byType(MenuItemButton)),
+    );
+    expect(row.width, 320);
+    expect(row.height, greaterThanOrEqualTo(48));
     expect(t.takeException(), isNull);
   });
   testWidgets('only one primary allowed', (t) async {

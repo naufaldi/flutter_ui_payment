@@ -36,6 +36,14 @@ PaymentButtonGroup(
 
 Variants: horizontal auto overflow, horizontal none, vertical. Nothing else exists.
 
+### Horizontal none
+
+`collapse: PaymentButtonGroupCollapse.none` keeps one row of hug buttons while they fit. When they don't, every button stacks at full width, with the emphasized action (primary or destructive, passed last) on top. A stacked group never leaves a ragged edge (D45, #65).
+
+### Horizontal auto overflow
+
+The first action stays visible; trailing actions move into a ⋮ [menu](/components/menu/), and destructive actions always go there. On a phone that menu is a bottom action sheet.
+
 ### States and content
 
 The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.

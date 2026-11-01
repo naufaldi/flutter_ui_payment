@@ -139,6 +139,7 @@ void main() {
       final looks = looksDefine.isEmpty
           ? const ['light', 'dark', '200', 'id', 'id_200']
           : looksDefine.split(',').map((e) => e.trim()).toList();
+      const states = {'menu_sheet', 'tooltip_tap'};
       bool want(String slug, String look) =>
           looks.contains(look) &&
           (entries.contains(slug) || entries.contains('$slug@$look'));
@@ -196,7 +197,10 @@ void main() {
             ),
             'list': ('Interaction', 'PaymentList', null, null),
             'accordion': ('Interaction', 'PaymentAccordion', null, null),
-            'menu': (
+            // On a phone the menu opens as an action sheet (D55): `menu`
+            // shows the specimen at rest, `menu_sheet` the open sheet.
+            'menu': ('Interaction', 'PaymentMenu', null, null),
+            'menu_sheet': (
               'Interaction',
               'PaymentMenu',
               (_) async {
@@ -214,6 +218,19 @@ void main() {
               },
             ),
             'banner': ('Feedback', 'PaymentBanner', null, null),
+            // A tap opens the hint (D49); a second tap closes it.
+            'tooltip_tap': (
+              'Feedback',
+              'PaymentTooltip',
+              (_) async {
+                await tester.tap(find.byKey(const Key('tooltip-description')));
+                await tester.pump();
+              },
+              () async {
+                await tester.tap(find.byKey(const Key('tooltip-description')));
+                await settle(tester);
+              },
+            ),
             'toast': (
               'Feedback',
               'showPaymentToast',
@@ -237,6 +254,8 @@ void main() {
                 await settle(tester);
               },
             ),
+            'sheets': ('Kit components', 'PaymentSheet', null, null),
+            'privacy_mask': ('Kit components', 'PrivacyMask', null, null),
             'action_bar': ('Kit components', 'PaymentActionBar', null, null),
             'loading_skeleton': (
               'Kit components',
@@ -316,9 +335,56 @@ void main() {
           await openPage(page);
           await top('$entry · variants');
           await before?.call(id);
-          await shot('${slug}_variants$suffix');
+          // State captures are named `<slug><look>`, not `_variants`.
+          await shot(
+            states.contains(slug) ? '$slug$suffix' : '${slug}_variants$suffix',
+          );
           await after?.call();
         }
+      }
+      // The kit and flow captures P2 refreshes, in this one session: the
+      // Indonesian destructive confirm over the pending-payment sheet, and
+      // the fees screen with its ⓘ.
+      if (entries.contains('kit_sheet_confirm')) {
+        app.updateSettings(const DemoSettings());
+        app.selectTab(2);
+        await settle(tester);
+        await tester.tap(find.byTooltip('Buka navigasi'));
+        await settle(tester);
+        final item = find.descendant(
+          of: find.byType(Drawer),
+          matching: find.text('Sheet & drawer'),
+        );
+        await tester.scrollUntilVisible(
+          item,
+          120,
+          scrollable: find.descendant(
+            of: find.byType(Drawer),
+            matching: find.byType(Scrollable),
+          ),
+        );
+        await tester.ensureVisible(item);
+        await settle(tester);
+        await tester.tap(item);
+        await settle(tester);
+        await tester.tap(find.text('Tutup vs. batalkan pembayaran'));
+        await settle(tester);
+        await tester.tap(find.text('Minta pembatalan'));
+        await settle(tester);
+        await tester.pump(const Duration(milliseconds: 400));
+        await binding.takeScreenshot('${platform}_kit_sheet_confirm');
+        await tester.tap(find.text('Tetap bayar'));
+        await settle(tester);
+        await tester.tap(find.byTooltip('Tutup panel'));
+        await settle(tester);
+      }
+      if (entries.contains('fees_light')) {
+        app.updateSettings(const DemoSettings());
+        await settle(tester);
+        await runScenario(tester, app, 'A04');
+        await settle(tester);
+        await tester.pump(const Duration(milliseconds: 400));
+        await binding.takeScreenshot('${platform}_fees_light');
       }
       return;
     }

@@ -2050,7 +2050,7 @@
   "PaymentTooltip": {
     "kind": "class",
     "file": "lib/src/controls/controls.dart",
-    "doc": "A noninteractive hint shown on hover, long press or keyboard focus.\nEscape, blur, exit and an outside tap hide it. Requires an Overlay.\nNever put a fee, a requirement or an error only in a tooltip.",
+    "doc": "A one-line, noninteractive hint (D49). It opens on tap, hover, long press\nor keyboard focus; a second tap, an outside tap, Escape, blur and exit\nclose it. Screen readers get `message` through the trigger's semantics.\nRequires an Overlay.\n\nWrap text, an icon or a disabled control in `child`. For an interactive\ntrigger such as an info `PaymentIconButton`, use `trigger` instead: the\nbutton's own press must toggle the hint, because it wins the tap.\n\nNever put a fee, a requirement or an error only in a tooltip. An\nexplanation longer than one line (\"Why this?\") opens a sheet instead.",
     "extends": "StatefulWidget",
     "constructors": [
       {
@@ -2070,14 +2070,25 @@
           },
           {
             "name": "child",
-            "type": "Widget",
-            "required": true,
+            "type": "Widget?",
+            "required": false,
             "default": null,
             "named": true,
             "viaThis": true,
             "isSuper": false,
             "fieldName": "child",
-            "doc": ""
+            "doc": "A non-interactive trigger; a tap on it toggles the hint."
+          },
+          {
+            "name": "trigger",
+            "type": "Widget Function(VoidCallback toggle, FocusNode focusNode)?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "trigger",
+            "doc": "Builds an interactive trigger that toggles the hint, e.g. an info\n`PaymentIconButton` with `onPressed: toggle` (D49). Pass `focusNode`\nto the button so keyboard focus shows the hint too."
           },
           {
             "name": "placement",
@@ -2130,8 +2141,8 @@
         "name": "child",
         "kind": "field",
         "static": false,
-        "type": "Widget",
-        "doc": ""
+        "type": "Widget?",
+        "doc": "A non-interactive trigger; a tap on it toggles the hint."
       },
       {
         "name": "placement",
@@ -6618,7 +6629,7 @@
   "PaymentBanner": {
     "kind": "class",
     "file": "lib/src/foundation/primitives.dart",
-    "doc": "Inline message for errors, warnings and explanations.",
+    "doc": "Inline message for errors, warnings and explanations.\n\nOne anatomy in every tone (D48a): the 20 dp tone icon centres on the\ntitle's first line; title, message and actions share one text column\n(title → message 4, message → actions 8); the close button centres on\nthe first line and its 48 dp target overlaps the 12 dp padding, so a\ndismissible banner is as tall as the same banner without close.\n\nActions are at most one hug secondary `PaymentButton` (an operation such\nas \"Try again\", drawn small) plus at most one `PaymentLink` (navigation\nsuch as \"Review total\"), never two buttons of equal weight.\n\nA banner about a changed payment amount states old → new and has no\n`onDismiss` while the payment is open (D48), like a danger banner that\nblocks the flow.",
     "extends": "StatefulWidget",
     "constructors": [
       {
@@ -6678,7 +6689,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "actions",
-            "doc": "Inline links or hug secondary/quiet actions."
+            "doc": "At most one hug secondary `PaymentButton` plus one `PaymentLink`."
           },
           {
             "name": "announce",
@@ -6700,7 +6711,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onDismiss",
-            "doc": "Shows Hide banner; reports at most once. The host removes the banner."
+            "doc": "Shows Hide banner; reports at most once. The host removes the banner.\nLeave it null on a changed-amount banner while the payment is open."
           }
         ],
         "doc": ""
@@ -6742,7 +6753,7 @@
         "kind": "field",
         "static": false,
         "type": "List<Widget>",
-        "doc": "Inline links or hug secondary/quiet actions."
+        "doc": "At most one hug secondary `PaymentButton` plus one `PaymentLink`."
       },
       {
         "name": "announce",
@@ -6756,7 +6767,7 @@
         "kind": "field",
         "static": false,
         "type": "VoidCallback?",
-        "doc": "Shows Hide banner; reports at most once. The host removes the banner."
+        "doc": "Shows Hide banner; reports at most once. The host removes the banner.\nLeave it null on a changed-amount banner while the payment is open."
       }
     ],
     "copyWith": null
@@ -7791,7 +7802,7 @@
   "PaymentMenu": {
     "kind": "class",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "Overflow menu behind an icon button.\n\nBuilt on `MenuAnchor`, so arrow keys move between entries, Escape closes\nthe menu and focus returns to the button. Opening is instant: a menu used\nmany times a day should not make people wait for it.",
+    "doc": "Overflow menu behind an icon button.\n\nOn wide windows it is built on `MenuAnchor`, so arrow keys move between\nentries, Escape closes the menu and focus returns to the button; the panel\nkeeps 16 dp from the window edges. On phones (narrower than 600 dp) the\ntrigger opens a bottom action sheet instead (D55): full-width 48 dp rows,\ngroup titles as captions, destructive items last after a divider, and a\nfull-width Cancel at the bottom. The sheet closes before the selection is\ndispatched, and focus returns to the trigger. Opening is instant: a menu\nused many times a day should not make people wait for it.",
     "extends": "StatefulWidget",
     "constructors": [
       {
@@ -7908,7 +7919,7 @@
   "showPaymentConfirmDialog": {
     "kind": "function",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "Asks before an action that cannot be undone. Resolves to true only when\nthe person confirms; dismissing, Back and Escape all resolve to false.\n\nFor `destructive` actions the safe choice (cancel) receives focus first,\nso Enter never confirms by accident.",
+    "doc": "Asks before an action that cannot be undone. Resolves to true only when\nthe person confirms; the scrim, swipe down, Back and Escape all resolve\nto false.\n\nOn phones (narrower than 600 dp) it is a bottom confirm sheet: title,\nmessage, then full-width actions stacked top-down with the confirm action\non top and Cancel below (D45). On wider windows it is a centred dialog\nwith one row of equal-width buttons, confirm trailing. Both use one 16 dp\ninset at every text scale, so the layout never depends on label length.\n\nFor `destructive` actions the safe choice (cancel) receives focus first,\nso Enter never confirms by accident.",
     "returns": "Future<bool>",
     "typeParams": "",
     "params": [
@@ -20889,7 +20900,7 @@
       },
       {
         "name": "none",
-        "doc": "Stack an overflowing row, with the emphasized action on top."
+        "doc": "Stack an overflowing row at full width, with the emphasized action on\ntop."
       }
     ]
   },

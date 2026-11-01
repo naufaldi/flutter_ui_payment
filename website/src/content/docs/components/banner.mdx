@@ -15,6 +15,7 @@ import HostOwns from '../../../components/HostOwns.astro';
 <Screens>
   <Screen name="ios_catalog_banner_variants" dark="ios_catalog_banner_variants_dark" alt="banner variants in the native gallery" caption="Banner variants" />
   <Screen name="ios_catalog_banner_variants_200" alt="banner at 200 percent text" caption="200% text" />
+  <Screen name="ios_catalog_banner_variants_id" alt="banner variants in Indonesian" caption="Indonesian" />
 </Screens>
 
 ## Usage
@@ -47,26 +48,47 @@ Variants: neutral, info, success, warning, danger. Nothing else exists.
 | `warning` | `Icons.warning_amber_outlined` | Something to review before going on, such as a changed total. |
 | `danger` | `Icons.error_outline` | A failure that blocks the next step. |
 
+### Anatomy
+
+One layout in every tone (D48a):
+
+```
+[icon]  Title                                  [×]
+        Message, one or two lines
+        [Action]  Secondary link
+```
+
+- **Icon:** 20 dp, centred on the title's first line, never on the whole block. It grows with the text up to 1.6×.
+- **Text column:** the title, message and actions share one start edge. Title → message is 4, and message → actions is 8.
+- **Close (×):** shown when `onDismiss` is set. Its glyph centres on the title's first line, and its 48 dp target overlaps the 12 dp padding instead of growing the title row. A dismissible banner is exactly as tall as the same banner without close.
+- **Padding:** 12 on all sides.
+
 ### With actions
 
-`actions` takes widgets shown under the text, in a row that wraps. Use one or two buttons that resolve the notice.
+`actions` takes at most one hug secondary `PaymentButton` plus at most one `PaymentLink`, shown in the text column in a row that wraps. Use a button for an operation ("Try again") and a link for navigation ("Review total"). Never use two buttons of equal weight. The banner draws its button at the small size, and a debug assert rejects anything else.
 
 ```dart
 PaymentBanner(
   tone: StatusTone.danger,
-  title: 'Couldn’t load your balance',
-  message: 'You can still pay with another method.',
+  title: 'Payment failed',
+  message: 'Your balance has not changed.',
   actions: [
     PaymentButton(
       label: 'Try again',
       variant: PaymentButtonVariant.secondary,
-      onPressed: host.reloadBalance,
+      width: PaymentWidth.hug,
+      onPressed: host.retry,
     ),
+    PaymentLink(label: 'Contact support', onPressed: host.openSupport),
   ],
 );
 ```
 
-A `PaymentButton` fills its width, so give it a narrower parent if it should not span the banner.
+### Changed amounts
+
+A banner about a changed payment amount states old → new, for example "Was Rp102.500, now Rp104.000". It has no `onDismiss` while the payment is open (D48), so the only cue that the total changed cannot be hidden before paying. The same rule covers a danger banner that blocks the flow. `PaymentSummary` shows such a banner after a re-quote, using `totalChangedMessage`.
+
+**Migration (UI review P2):** the tightened assert rejects a second button, a quiet button and a second link. Turn the extra action into a `PaymentLink`, and remove `onDismiss` from a total-changed banner.
 
 ### Announcing
 
@@ -74,7 +96,7 @@ A `PaymentButton` fills its width, so give it a narrower parent if it should not
 
 ### Stripe mapping and actions
 
-Use onDismiss for a Hide banner action reported once; the host removes the banner. Actions accept PaymentLink or hug secondary/quiet PaymentButton.
+Use onDismiss for a Hide banner action reported once; the host removes the banner. Actions accept at most one hug secondary PaymentButton plus one PaymentLink.
 
 ## Which variant when
 
@@ -106,7 +128,7 @@ Use warning for a supporting module failure; danger when primary content failed.
 ## Accessibility
 
 - The tone always comes with an icon and a title, so color is not the only signal.
-- The icon grows with text size up to 1.6× and stays centered on the title's first line however far the title wraps.
+- The icon grows with text size up to 1.6× and stays centered on the title's first line however far the title wraps. The close button's label is "Hide banner:" followed by the title.
 - The banner is one semantics container, so its title and message are read together.
 
 ## Used in

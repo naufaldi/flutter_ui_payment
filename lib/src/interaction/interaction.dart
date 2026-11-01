@@ -19,6 +19,7 @@ import '../foundation/token_resolvers.dart';
 import '../foundation/primitives.dart';
 import '../foundation/layout_rules.dart';
 import '../foundation/first_line.dart';
+import '../overlay/modal_presenters.dart';
 
 /// A tappable row for settings, menus and action lists.
 ///
@@ -309,9 +310,14 @@ class PaymentMenuGroup extends PaymentMenuEntry {
 
 /// Overflow menu behind an icon button.
 ///
-/// Built on [MenuAnchor], so arrow keys move between entries, Escape closes
-/// the menu and focus returns to the button. Opening is instant: a menu used
-/// many times a day should not make people wait for it.
+/// On wide windows it is built on [MenuAnchor], so arrow keys move between
+/// entries, Escape closes the menu and focus returns to the button; the panel
+/// keeps 16 dp from the window edges. On phones (narrower than 600 dp) the
+/// trigger opens a bottom action sheet instead (D55): full-width 48 dp rows,
+/// group titles as captions, destructive items last after a divider, and a
+/// full-width Cancel at the bottom. The sheet closes before the selection is
+/// dispatched, and focus returns to the trigger. Opening is instant: a menu
+/// used many times a day should not make people wait for it.
 class PaymentMenu extends StatefulWidget {
   const PaymentMenu({
     super.key,
@@ -343,24 +349,59 @@ class PaymentMenu extends StatefulWidget {
 
 class _PaymentMenuState extends State<PaymentMenu> {
   final _triggerFocus = FocusNode();
+  bool _sheetOpen = false;
   @override
   void dispose() {
     _triggerFocus.dispose();
     super.dispose();
   }
 
+  /// The entry's action, or null when it is disabled.
+  VoidCallback? _actionOf(PaymentMenuItem entry) {
+    final onAction = widget.onAction;
+    if (entry.disabled) return null;
+    return entry.onSelected ??
+        (entry.id != null && onAction != null
+            ? () => onAction(entry.id!)
+            : null);
+  }
+
+  Future<void> _openSheet() async {
+    if (_sheetOpen) return;
+    _sheetOpen = true;
+    final chosen = await showKitBottomSheet<PaymentMenuItem>(
+      context: context,
+      showDragHandle: false,
+      builder: (context) =>
+          _MenuSheet(entries: widget.entries, actionOf: _actionOf),
+    );
+    _sheetOpen = false;
+    // The sheet has closed: dispatch once, then return focus to the trigger.
+    if (chosen != null) _actionOf(chosen)?.call();
+    if (mounted) _triggerFocus.requestFocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     final entries = widget.entries;
-    final onAction = widget.onAction;
     final icon = widget.icon;
     final tooltip = widget.tooltip;
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     final l10n = PaymentLocalizations.of(context);
+    final edge = theme.space(PaymentSpace.group);
+    final iconColumn = entries.any(
+      (e) =>
+          e is PaymentMenuItem && e.icon != null ||
+          e is PaymentMenuGroup && e.items.any((i) => i.icon != null),
+    );
     Widget menuItem(PaymentMenuItem entry) => MenuItemButton(
+      // Items without an icon keep the icon column when a sibling has one,
+      // so every label starts on the same edge (#61-1).
       leadingIcon: entry.icon == null
-          ? null
+          ? (iconColumn
+                ? SizedBox(width: PaymentIconSize.medium.resolve(context))
+                : null)
           : PaymentIcon(
               entry.icon,
               color: entry.destructive
@@ -370,8 +411,7 @@ class _PaymentMenuState extends State<PaymentMenu> {
       style: MenuItemButton.styleFrom(
         minimumSize: const Size(160, 48),
         maximumSize: Size(
-          MediaQuery.sizeOf(context).width -
-              2 * theme.space(PaymentSpace.group),
+          MediaQuery.sizeOf(context).width - 2 * edge,
           double.infinity,
         ),
         foregroundColor: entry.destructive
@@ -379,28 +419,38 @@ class _PaymentMenuState extends State<PaymentMenu> {
             : theme.textPrimary,
         textStyle: type.label,
       ),
-      onPressed: entry.disabled
-          ? null
-          : entry.onSelected ??
-                (entry.id != null && onAction != null
-                    ? () => onAction(entry.id!)
-                    : null),
+      onPressed: _actionOf(entry),
       child: Text(entry.label, softWrap: true),
     );
+    // MenuAnchor clamps its panel flush to the window edge. The panel is a
+    // transparent frame with a 16 dp side margin around the visible box, so
+    // the box keeps 16 dp from the edges (#61-1); the offset puts the box,
+    // not the frame, under the trigger's start edge.
     return MenuAnchor(
       childFocusNode: _triggerFocus,
-      style: MenuStyle(
-        backgroundColor: WidgetStatePropertyAll(theme.surface),
-        surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
-        elevation: const WidgetStatePropertyAll(2),
-        side: WidgetStatePropertyAll(BorderSide(color: theme.outline)),
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: theme.controlBorderRadius),
-        ),
+      reservedPadding: EdgeInsets.zero,
+      alignmentOffset: Offset(-edge, 0),
+      style: const MenuStyle(
+        alignment: AlignmentDirectional.bottomStart,
+        backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
+        shadowColor: WidgetStatePropertyAll(Colors.transparent),
+        elevation: WidgetStatePropertyAll(0),
+        padding: WidgetStatePropertyAll(EdgeInsets.zero),
+        side: WidgetStatePropertyAll(BorderSide.none),
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder()),
       ),
       builder: (context, controller, _) {
-        void toggle() =>
-            controller.isOpen ? controller.close() : controller.open();
+        void toggle() {
+          if (controller.isOpen) {
+            controller.close();
+          } else if (isCompact(context)) {
+            _openSheet();
+          } else {
+            controller.open();
+          }
+        }
+
         final built =
             widget.trigger?.call(toggle, _triggerFocus) ??
             PaymentIconButton(
@@ -413,29 +463,172 @@ class _PaymentMenuState extends State<PaymentMenu> {
         return built;
       },
       menuChildren: [
-        for (final (i, entry) in entries.indexed) ...[
-          if (i > 0 &&
-              (entry is PaymentMenuGroup || entries[i - 1] is PaymentMenuGroup))
-            const PaymentDivider(),
-          if (entry is PaymentMenuGroup) ...[
-            if (entry.title != null)
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(
-                  theme.space(PaymentSpace.block),
-                  theme.space(PaymentSpace.related),
-                  theme.space(PaymentSpace.block),
-                  theme.space(PaymentSpace.inline),
-                ),
-                child: Semantics(
-                  header: true,
-                  child: Text(entry.title!, style: type.caption),
-                ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: edge),
+          child: Material(
+            color: theme.surface,
+            surfaceTintColor: Colors.transparent,
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: theme.controlBorderRadius,
+              side: BorderSide(color: theme.outline),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: theme.space(PaymentSpace.related),
               ),
-            for (final item in entry.items) menuItem(item),
-          ] else if (entry is PaymentMenuItem)
-            menuItem(entry),
-        ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final (i, entry) in entries.indexed) ...[
+                    if (i > 0 &&
+                        (entry is PaymentMenuGroup ||
+                            entries[i - 1] is PaymentMenuGroup))
+                      const PaymentDivider(),
+                    if (entry is PaymentMenuGroup) ...[
+                      if (entry.title != null)
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                            theme.space(PaymentSpace.block),
+                            theme.space(PaymentSpace.related),
+                            theme.space(PaymentSpace.block),
+                            theme.space(PaymentSpace.inline),
+                          ),
+                          child: Semantics(
+                            header: true,
+                            child: Text(entry.title!, style: type.caption),
+                          ),
+                        ),
+                      for (final item in entry.items) menuItem(item),
+                    ] else if (entry is PaymentMenuItem)
+                      menuItem(entry),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
       ],
+    );
+  }
+}
+
+/// The phone presentation of [PaymentMenu] (D55). Pops with the chosen item;
+/// Cancel, the scrim, swipe down and Escape pop with null.
+class _MenuSheet extends StatelessWidget {
+  const _MenuSheet({required this.entries, required this.actionOf});
+  final List<PaymentMenuEntry> entries;
+  final VoidCallback? Function(PaymentMenuItem) actionOf;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    final type = PaymentType.of(context);
+    final l10n = PaymentLocalizations.of(context);
+    final inset = theme.space(PaymentSpace.group);
+    // Runs of safe items in host order (a group keeps its title); every
+    // destructive item moves to one run at the end.
+    final runs = <(String?, List<PaymentMenuItem>)>[];
+    final danger = <PaymentMenuItem>[];
+    var plain = false;
+    for (final entry in entries) {
+      if (entry is PaymentMenuItem) {
+        if (entry.destructive) {
+          danger.add(entry);
+        } else if (plain) {
+          runs.last.$2.add(entry);
+        } else {
+          runs.add((null, [entry]));
+          plain = true;
+        }
+      } else if (entry is PaymentMenuGroup) {
+        danger.addAll(entry.items.where((i) => i.destructive));
+        final safe = entry.items.where((i) => !i.destructive).toList();
+        if (safe.isNotEmpty) runs.add((entry.title, safe));
+        plain = false;
+      }
+    }
+    if (danger.isNotEmpty) runs.add((null, danger));
+    final iconColumn = runs.any((r) => r.$2.any((i) => i.icon != null));
+    Widget row(PaymentMenuItem item) {
+      final enabled = actionOf(item) != null;
+      return MenuItemButton(
+        leadingIcon: item.icon == null
+            ? (iconColumn
+                  ? SizedBox(width: PaymentIconSize.medium.resolve(context))
+                  : null)
+            : PaymentIcon(
+                item.icon,
+                color: item.destructive
+                    ? PaymentTextColor.danger
+                    : PaymentTextColor.secondary,
+              ),
+        style: MenuItemButton.styleFrom(
+          minimumSize: const Size.fromHeight(48),
+          padding: EdgeInsets.symmetric(horizontal: inset),
+          foregroundColor: item.destructive
+              ? theme.danger.foreground
+              : theme.textPrimary,
+          textStyle: type.label,
+        ),
+        onPressed: enabled ? () => Navigator.pop(context, item) : null,
+        // Long labels wrap inside the full-width row.
+        overflowAxis: Axis.vertical,
+        child: Text(item.label, softWrap: true),
+      );
+    }
+
+    return SafeArea(
+      top: false,
+      minimum: EdgeInsets.only(bottom: inset),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(top: theme.space(PaymentSpace.related)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final (i, (title, items)) in runs.indexed) ...[
+                    if (i > 0) const PaymentDivider(),
+                    if (title != null)
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                          inset,
+                          theme.space(PaymentSpace.related),
+                          inset,
+                          theme.space(PaymentSpace.inline),
+                        ),
+                        child: Semantics(
+                          header: true,
+                          child: Text(title, style: type.caption),
+                        ),
+                      ),
+                    for (final item in items) row(item),
+                  ],
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              inset,
+              theme.space(PaymentSpace.related),
+              inset,
+              0,
+            ),
+            child: PaymentButton(
+              label: l10n.cancel,
+              variant: PaymentButtonVariant.quiet,
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -449,7 +642,14 @@ typedef ActionMenu = PaymentMenu;
 typedef ActionMenuEntry = PaymentMenuItem;
 
 /// Asks before an action that cannot be undone. Resolves to true only when
-/// the person confirms; dismissing, Back and Escape all resolve to false.
+/// the person confirms; the scrim, swipe down, Back and Escape all resolve
+/// to false.
+///
+/// On phones (narrower than 600 dp) it is a bottom confirm sheet: title,
+/// message, then full-width actions stacked top-down with the confirm action
+/// on top and Cancel below (D45). On wider windows it is a centred dialog
+/// with one row of equal-width buttons, confirm trailing. Both use one 16 dp
+/// inset at every text scale, so the layout never depends on label length.
 ///
 /// For [destructive] actions the safe choice (cancel) receives focus first,
 /// so Enter never confirms by accident.
@@ -461,50 +661,106 @@ Future<bool> showPaymentConfirmDialog(
   String? cancelLabel,
   bool destructive = false,
 }) async {
-  final result = await showDialog<bool>(
-    context: context,
-    builder: (context) {
-      final theme = PaymentTheme.of(context);
-      final l10n = PaymentLocalizations.of(context);
-      final type = PaymentType.of(context);
-      // One filled button: the confirm action, in the danger tone when it
-      // cannot be undone. Cancel stays a quiet text button.
-      return AlertDialog(
-        backgroundColor: theme.surface,
-        surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: theme.sheetBorderRadius),
-        title: Text(title, style: type.title),
-        content: Text(
+  // One filled button: the confirm action, in the danger tone when it cannot
+  // be undone. Cancel stays quiet.
+  List<PaymentButton> actions(BuildContext context) => [
+    PaymentButton(
+      label: confirmLabel,
+      variant: destructive
+          ? PaymentButtonVariant.destructive
+          : PaymentButtonVariant.primary,
+      autofocus: !destructive,
+      onPressed: () => Navigator.pop(context, true),
+    ),
+    PaymentButton(
+      label: cancelLabel ?? PaymentLocalizations.of(context).cancel,
+      variant: PaymentButtonVariant.quiet,
+      autofocus: destructive,
+      onPressed: () => Navigator.pop(context, false),
+    ),
+  ];
+  Widget text(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    final type = PaymentType.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(header: true, child: Text(title, style: type.title)),
+        SizedBox(height: theme.space(PaymentSpace.related)),
+        Text(
           message,
           style: type.bodyFor(context).copyWith(color: theme.textSecondary),
         ),
-        actionsPadding: EdgeInsets.all(theme.space(PaymentSpace.group)),
-        actions: [
-          PaymentButtonGroup(
-            collapse: PaymentButtonGroupCollapse.none,
-            children: [
-              PaymentButton(
-                label: cancelLabel ?? l10n.cancel,
-                variant: PaymentButtonVariant.quiet,
-                width: PaymentWidth.hug,
-                autofocus: destructive,
-                onPressed: () => Navigator.pop(context, false),
-              ),
-              PaymentButton(
-                label: confirmLabel,
-                variant: destructive
-                    ? PaymentButtonVariant.destructive
-                    : PaymentButtonVariant.primary,
-                width: PaymentWidth.hug,
-                autofocus: !destructive,
-                onPressed: () => Navigator.pop(context, true),
-              ),
-            ],
+      ],
+    );
+  }
+
+  final bool? result;
+  if (isCompact(context)) {
+    result = await showKitBottomSheet<bool>(
+      context: context,
+      showDragHandle: false,
+      builder: (context) {
+        final theme = PaymentTheme.of(context);
+        final inset = theme.space(PaymentSpace.group);
+        // The text scrolls at large sizes; the actions stay in reach.
+        return SafeArea(
+          top: false,
+          minimum: EdgeInsets.only(bottom: inset),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(inset, inset, inset, 0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Flexible(child: SingleChildScrollView(child: text(context))),
+                SizedBox(height: theme.space(PaymentSpace.section)),
+                PaymentButtonGroup(
+                  direction: Axis.vertical,
+                  children: actions(context),
+                ),
+              ],
+            ),
           ),
-        ],
-      );
-    },
-  );
+        );
+      },
+    );
+  } else {
+    result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final theme = PaymentTheme.of(context);
+        final inset = theme.space(PaymentSpace.group);
+        final [confirm, cancel] = actions(context);
+        return Dialog(
+          backgroundColor: theme.surface,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(borderRadius: theme.sheetBorderRadius),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: Padding(
+              padding: EdgeInsets.all(inset),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(child: SingleChildScrollView(child: text(context))),
+                  SizedBox(height: theme.space(PaymentSpace.section)),
+                  Row(
+                    children: [
+                      Expanded(child: cancel),
+                      SizedBox(width: theme.space(PaymentSpace.related)),
+                      Expanded(child: confirm),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
   return result ?? false;
 }
 
@@ -1197,18 +1453,19 @@ class StateMessage extends StatelessWidget {
                 SizedBox(height: theme.space(PaymentSpace.inline)),
                 Text(
                   message!,
-                  style: type.body.copyWith(color: theme.textSecondary),
+                  style: type
+                      .bodyFor(context)
+                      .copyWith(color: theme.textSecondary),
                 ),
               ],
+              // Inside a module the action hugs its label (D59, #61-5).
               if (actionLabel != null && onAction != null) ...[
                 SizedBox(height: theme.space(PaymentSpace.block)),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 280),
-                  child: PaymentButton(
-                    label: actionLabel!,
-                    variant: PaymentButtonVariant.secondary,
-                    onPressed: onAction,
-                  ),
+                PaymentButton(
+                  label: actionLabel!,
+                  variant: PaymentButtonVariant.secondary,
+                  width: PaymentWidth.hug,
+                  onPressed: onAction,
                 ),
               ],
             ],

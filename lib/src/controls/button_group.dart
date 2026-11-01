@@ -12,7 +12,8 @@ enum PaymentButtonGroupCollapse {
   /// Move trailing actions into a menu, retaining the first action.
   auto,
 
-  /// Stack an overflowing row, with the emphasized action on top.
+  /// Stack an overflowing row at full width, with the emphasized action on
+  /// top.
   none,
 }
 
@@ -69,15 +70,14 @@ class _PaymentButtonGroupState extends State<PaymentButtonGroup> {
       );
     }
     if (widget.collapse == PaymentButtonGroupCollapse.none) {
-      return OverflowBar(
+      // One row of hug buttons when it fits; otherwise a full-width stack
+      // with the emphasized action on top (D45, #65).
+      return _RowOrStack(
         spacing: spacing,
-        overflowSpacing: spacing,
-        overflowAlignment: OverflowBarAlignment.end,
-        overflowDirection:
+        direction: Directionality.of(context),
+        lastOnTop:
             buttons.last.variant == PaymentButtonVariant.primary ||
-                buttons.last.variant == PaymentButtonVariant.destructive
-            ? VerticalDirection.up
-            : VerticalDirection.down,
+            buttons.last.variant == PaymentButtonVariant.destructive,
         children: buttons.map(hugButton).toList(),
       );
     }
@@ -141,6 +141,156 @@ class _CollapseRow extends MultiChildRenderObjectWidget {
       ..direction = direction
       ..onFit = onFit
       ..markNeedsLayout();
+  }
+}
+
+class _RowOrStack extends MultiChildRenderObjectWidget {
+  const _RowOrStack({
+    required this.spacing,
+    required this.direction,
+    required this.lastOnTop,
+    required super.children,
+  });
+  final double spacing;
+  final TextDirection direction;
+  final bool lastOnTop;
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderRowOrStack(spacing, direction, lastOnTop);
+  @override
+  void updateRenderObject(BuildContext context, _RenderRowOrStack r) {
+    r
+      ..spacing = spacing
+      ..direction = direction
+      ..lastOnTop = lastOnTop
+      ..markNeedsLayout();
+  }
+}
+
+class _RenderRowOrStack extends RenderBox
+    with
+        ContainerRenderObjectMixin<RenderBox, _Data>,
+        RenderBoxContainerDefaultsMixin<RenderBox, _Data> {
+  _RenderRowOrStack(this.spacing, this.direction, this.lastOnTop);
+  double spacing;
+  TextDirection direction;
+  bool lastOnTop;
+
+  List<RenderBox> get boxes {
+    final result = <RenderBox>[];
+    RenderBox? c = firstChild;
+    while (c != null) {
+      result.add(c);
+      c = (c.parentData! as _Data).nextSibling;
+    }
+    return result;
+  }
+
+  @override
+  void setupParentData(RenderBox child) {
+    if (child.parentData is! _Data) child.parentData = _Data();
+  }
+
+  double _rowWidth(List<RenderBox> list) =>
+      list.fold(0.0, (a, c) => a + c.getMaxIntrinsicWidth(double.infinity)) +
+      math.max(0, list.length - 1) * spacing;
+
+  @override
+  void performLayout() {
+    final list = boxes;
+    if (_rowWidth(list) <= constraints.maxWidth) {
+      double x = 0;
+      double height = 0;
+      for (final c in list) {
+        c.layout(
+          BoxConstraints(maxWidth: constraints.maxWidth),
+          parentUsesSize: true,
+        );
+        height = math.max(height, c.size.height);
+      }
+      final width = _rowWidth(list);
+      size = constraints.constrain(Size(width, height));
+      for (final c in list) {
+        (c.parentData! as _Data).offset = Offset(
+          direction == TextDirection.ltr ? x : size.width - x - c.size.width,
+          (size.height - c.size.height) / 2,
+        );
+        x += c.size.width + spacing;
+      }
+      return;
+    }
+    final order = lastOnTop ? list.reversed.toList() : list;
+    double y = 0;
+    for (final c in order) {
+      c.layout(
+        BoxConstraints.tightFor(width: constraints.maxWidth),
+        parentUsesSize: true,
+      );
+      (c.parentData! as _Data).offset = Offset(0, y);
+      y += c.size.height + spacing;
+    }
+    size = constraints.constrain(
+      Size(constraints.maxWidth, math.max(0, y - spacing)),
+    );
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) =>
+      defaultPaint(context, offset);
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) =>
+      defaultHitTestChildren(result, position: position);
+
+  @override
+  double computeMaxIntrinsicWidth(double height) => _rowWidth(boxes);
+  @override
+  double computeMinIntrinsicWidth(double height) =>
+      boxes.fold(0.0, (a, c) => math.max(a, c.getMinIntrinsicWidth(height)));
+  @override
+  double computeMaxIntrinsicHeight(double width) {
+    final list = boxes;
+    if (_rowWidth(list) <= width) {
+      return list.fold(
+        0.0,
+        (a, c) => math.max(a, c.getMaxIntrinsicHeight(double.infinity)),
+      );
+    }
+    return list.fold(0.0, (a, c) => a + c.getMaxIntrinsicHeight(width)) +
+        math.max(0, list.length - 1) * spacing;
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) =>
+      computeMaxIntrinsicHeight(width);
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final list = boxes;
+    if (_rowWidth(list) <= constraints.maxWidth) {
+      return constraints.constrain(
+        Size(
+          _rowWidth(list),
+          list.fold(
+            0.0,
+            (a, c) => math.max(
+              a,
+              c
+                  .getDryLayout(BoxConstraints(maxWidth: constraints.maxWidth))
+                  .height,
+            ),
+          ),
+        ),
+      );
+    }
+    final tight = BoxConstraints.tightFor(width: constraints.maxWidth);
+    return constraints.constrain(
+      Size(
+        constraints.maxWidth,
+        list.fold(0.0, (a, c) => a + c.getDryLayout(tight).height) +
+            math.max(0, list.length - 1) * spacing,
+      ),
+    );
   }
 }
 

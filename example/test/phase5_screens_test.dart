@@ -151,10 +151,14 @@ void main() {
     expect(find.byType(PaymentTable), findsOneWidget);
     expect(find.text('Virtual account'), findsOneWidget);
     expect(find.text('Card'), findsOneWidget);
-    expect(
-      find.byTooltip('Set by Ruang Bayar for each payment method.'),
-      findsOneWidget,
-    );
+    // D49: the info button opens its one-line hint on tap.
+    const hint = 'Set by Ruang Bayar for each payment method.';
+    expect(find.text(hint), findsNothing);
+    await tapVisible(t, find.byKey(const Key('fees-info')));
+    expect(find.text(hint), findsOneWidget);
+    await t.tap(find.byKey(const Key('fees-info')));
+    await t.pump();
+    expect(find.text(hint), findsNothing);
     await drain(t);
   });
   testWidgets('A05 grouped settings saves, clears status on edit and retries', (

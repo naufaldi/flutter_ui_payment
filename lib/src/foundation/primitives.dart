@@ -1,6 +1,5 @@
 import '../foundation/payment_icons.dart';
 import '../foundation/payment_tokens.dart';
-import 'dart:math' as math;
 import '../controls/actions.dart';
 import 'dart:async';
 
@@ -17,6 +16,7 @@ import 'payment_type.dart';
 import 'token_resolvers.dart';
 import 'tap_target.dart';
 import 'first_line.dart';
+import 'button_copy.dart';
 
 /// The five amount looks. Nothing else exists.
 enum AmountTextVariant {
@@ -724,6 +724,20 @@ class PaymentBadge extends StatelessWidget {
 typedef StatusBadge = PaymentBadge;
 
 /// Inline message for errors, warnings and explanations.
+///
+/// One anatomy in every tone (D48a): the 20 dp tone icon centres on the
+/// title's first line; title, message and actions share one text column
+/// (title → message 4, message → actions 8); the close button centres on
+/// the first line and its 48 dp target overlaps the 12 dp padding, so a
+/// dismissible banner is as tall as the same banner without close.
+///
+/// Actions are at most one hug secondary [PaymentButton] (an operation such
+/// as "Try again", drawn small) plus at most one [PaymentLink] (navigation
+/// such as "Review total"), never two buttons of equal weight.
+///
+/// A banner about a changed payment amount states old → new and has no
+/// [onDismiss] while the payment is open (D48), like a danger banner that
+/// blocks the flow.
 class PaymentBanner extends StatefulWidget {
   const PaymentBanner({
     super.key,
@@ -748,13 +762,14 @@ class PaymentBanner extends StatefulWidget {
   /// Default trigger glyph.
   final IconData? icon;
 
-  /// Inline links or hug secondary/quiet actions.
+  /// At most one hug secondary [PaymentButton] plus one [PaymentLink].
   final List<Widget> actions;
 
   /// Announces the banner to screen readers when it appears.
   final bool announce;
 
   /// Shows Hide banner; reports at most once. The host removes the banner.
+  /// Leave it null on a changed-amount banner while the payment is open.
   final VoidCallback? onDismiss;
   @override
   State<PaymentBanner> createState() => _PaymentBannerState();
@@ -766,114 +781,104 @@ class _PaymentBannerState extends State<PaymentBanner> {
   Widget build(BuildContext context) {
     assert(
       widget.actions.every(
-        (w) =>
-            w is PaymentLink ||
-            w is PaymentButton &&
-                w.width == PaymentWidth.hug &&
-                (w.variant == PaymentButtonVariant.secondary ||
-                    w.variant == PaymentButtonVariant.quiet),
-      ),
-      'PaymentBanner actions are links or hug secondary/quiet buttons.',
+            (w) =>
+                w is PaymentLink ||
+                w is PaymentButton &&
+                    w.width == PaymentWidth.hug &&
+                    w.variant == PaymentButtonVariant.secondary,
+          ) &&
+          widget.actions.whereType<PaymentButton>().length <= 1 &&
+          widget.actions.whereType<PaymentLink>().length <= 1,
+      'PaymentBanner actions are at most one hug secondary PaymentButton '
+      'plus one PaymentLink (D48a).',
     );
     final theme = PaymentTheme.of(context);
     final colors = theme.tone(widget.tone);
     final type = PaymentType.of(context);
+    final pad = theme.space(PaymentSpace.block);
     // One line of the 15/20 heading title.
     final line = PaymentType.firstLineHeight(context);
+    final dismissible = widget.onDismiss != null;
+    // The action row's 48 dp targets overlap the gap above and the padding
+    // below by 6, so the small (36 dp) button sits 8 under the message and
+    // 12 above the edge, like the close target (D48a).
+    final overlap = widget.actions.isEmpty ? 0.0 : (48 - 36) / 2;
     return Semantics(
       container: true,
       liveRegion: widget.announce,
-      child: Container(
-        width: double.infinity,
-        padding: widget.onDismiss == null
-            ? EdgeInsets.all(theme.space(PaymentSpace.block))
-            : EdgeInsetsDirectional.only(
-                start: theme.space(PaymentSpace.block),
-                bottom: theme.space(PaymentSpace.block),
-              ),
+      child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.container,
           borderRadius: theme.controlBorderRadius,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
+          clipBehavior: Clip.none,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // The icon scales with the text up to 1.6× and centers on
+            Padding(
+              // The text column ends clear of the 48 dp close target.
+              padding: EdgeInsetsDirectional.fromSTEB(
+                pad,
+                pad,
+                dismissible ? pad + 36 : pad,
+                pad - overlap,
+              ),
+              child: FirstLineRow(
+                // The icon scales with the text up to 1.6× and centres on
                 // the title's first line, however many lines it wraps to.
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: widget.onDismiss == null
-                        ? 0
-                        : theme.space(PaymentSpace.block),
-                  ),
-                  child: PaymentIcon.tone(widget.tone, icon: widget.icon),
-                ),
-                SizedBox(width: theme.space(PaymentSpace.block)),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: widget.onDismiss == null
-                          ? 0
-                          : theme.space(PaymentSpace.block),
+                leading: PaymentIcon.tone(widget.tone, icon: widget.icon),
+                gap: pad,
+                line: line,
+                text: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.title,
+                      style: type.heading.copyWith(color: colors.foreground),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.title,
-                          style: type.heading.copyWith(
-                            color: colors.foreground,
-                          ),
-                        ),
-                        if (widget.message != null) ...[
-                          SizedBox(height: theme.space(PaymentSpace.inline)),
-                          Text(widget.message!, style: type.bodyFor(context)),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-                if (widget.onDismiss != null)
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: math.max(
-                        0,
-                        theme.space(PaymentSpace.block) + line / 2 - 24,
+                    if (widget.message != null) ...[
+                      SizedBox(height: theme.space(PaymentSpace.inline)),
+                      Text(widget.message!, style: type.bodyFor(context)),
+                    ],
+                    if (widget.actions.isNotEmpty) ...[
+                      SizedBox(
+                        height: theme.space(PaymentSpace.related) - overlap,
                       ),
-                    ),
-                    child: PaymentIconButton(
-                      icon: PaymentIcons.close,
-                      tooltip:
-                          '${PaymentLocalizations.of(context).hideBanner}: ${widget.title}',
-                      onPressed: _reported
-                          ? null
-                          : () {
-                              if (_reported) return;
-                              setState(() => _reported = true);
-                              widget.onDismiss!();
-                            },
-                    ),
-                  ),
-              ],
-            ),
-            if (widget.actions.isNotEmpty) ...[
-              SizedBox(height: theme.space(PaymentSpace.related)),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  end: widget.onDismiss == null
-                      ? 0
-                      : theme.space(PaymentSpace.block),
-                ),
-                child: Wrap(
-                  spacing: theme.space(PaymentSpace.related),
-                  runSpacing: theme.space(PaymentSpace.inline),
-                  children: widget.actions,
+                      Wrap(
+                        spacing: theme.space(PaymentSpace.related),
+                        runSpacing: theme.space(PaymentSpace.inline),
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          for (final action in widget.actions)
+                            action is PaymentButton
+                                ? hugButton(action, size: PaymentSize.small)
+                                : action,
+                        ],
+                      ),
+                    ],
+                  ],
                 ),
               ),
-            ],
+            ),
+            if (dismissible)
+              // The 20 dp glyph centres on the first line and sits on the
+              // 12 dp end padding; its target overlaps the padding instead
+              // of adding height.
+              PositionedDirectional(
+                top: pad + line / 2 - 24,
+                end: pad + 10 - 24,
+                child: PaymentIconButton(
+                  icon: PaymentIcons.close,
+                  tooltip:
+                      '${PaymentLocalizations.of(context).hideBanner}: ${widget.title}',
+                  onPressed: _reported
+                      ? null
+                      : () {
+                          if (_reported) return;
+                          setState(() => _reported = true);
+                          widget.onDismiss!();
+                        },
+                ),
+              ),
           ],
         ),
       ),
@@ -1071,13 +1076,33 @@ class PrivacyMask extends StatelessWidget {
           Positioned.fill(
             child: ColoredBox(
               color: theme.surface,
-              child: Center(
-                child: PaymentIcon(
-                  Icons.lock_outline,
-                  size: PaymentIconSize.xlarge,
-                  color: PaymentTextColor.secondary,
-                  semanticLabel: PaymentLocalizations.of(context).contentHidden,
-                ),
+              // The lock keeps 16 dp from the mask's edges: the largest icon
+              // size that fits the strip, never one that fills it (#61-6).
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final room =
+                      constraints.maxHeight -
+                      2 * theme.space(PaymentSpace.group);
+                  final size =
+                      [
+                        PaymentIconSize.xlarge,
+                        PaymentIconSize.large,
+                        PaymentIconSize.medium,
+                      ].firstWhere(
+                        (s) => s.resolve(context) <= room,
+                        orElse: () => PaymentIconSize.small,
+                      );
+                  return Center(
+                    child: PaymentIcon(
+                      Icons.lock_outline,
+                      size: size,
+                      color: PaymentTextColor.secondary,
+                      semanticLabel: PaymentLocalizations.of(
+                        context,
+                      ).contentHidden,
+                    ),
+                  );
+                },
               ),
             ),
           ),

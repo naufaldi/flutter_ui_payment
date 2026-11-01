@@ -82,7 +82,13 @@ class _KitSpecimenState extends State<_KitSpecimen> {
                   'Pilih metode untuk pembayaran demo ini.',
                 ),
               ),
-              footer: action(tr('Done', 'Selesai'), onPressed: () {}),
+              // The sheet's completion action is its one primary; the
+              // trigger that opens a sheet stays secondary (D54).
+              footer: action(
+                tr('Done', 'Selesai'),
+                onPressed: () {},
+                primary: true,
+              ),
             ),
           ),
           action(

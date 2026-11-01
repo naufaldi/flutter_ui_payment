@@ -315,6 +315,10 @@ const screens = {
   ios_catalog_button_group_variants_id_200: 'button group specimen at 200% text, Indonesian',
   ios_catalog_tooltip_variants_id: 'tooltip specimen, Indonesian',
   ios_catalog_tooltip_variants_id_200: 'tooltip specimen at 200% text, Indonesian',
+  // UI review P2: phone action sheet (D55) and tap tooltip (D49).
+  ios_catalog_menu_sheet: 'PaymentMenu action sheet on a phone, English',
+  ios_catalog_menu_sheet_id: 'PaymentMenu action sheet on a phone, Indonesian',
+  ios_catalog_tooltip_tap: 'PaymentTooltip opened by tap, English',
 };
 
 mkdirSync(target, { recursive: true });
