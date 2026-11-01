@@ -31,7 +31,7 @@ The phone footer stacks full-width primary then secondary actions. Supporting co
 - **The header holds navigation (D59a).** On phones, one action is a title-row link "Label ›"; two or more go behind ⋮. No button stacks under the title. The title never breaks inside a word: when it doesn't fit on one line beside the link, the link moves to its own start-aligned line under the title (UI review P7a).
 - **The priority action sits at the bottom (D62).** Full-page views and detail pages pin `primaryAction` with at most one quiet `secondaryAction` in a footer above the bottom safe area. An operation that was the only header action becomes the footer primary (Q3).
 - **One back control.** On phones, drop the breadcrumb when the app bar already goes back.
-- **Centred column (D53).** From 600 dp the content sits in a centred column up to 640 dp; two-column pages keep two columns from 840 dp, capped at 1040 dp. Hairlines and scroll bars span the window.
+- **Centred column (D53).** From 600 dp the content sits in a centred column up to 640 dp; two-column pages keep two columns from 840 dp, capped at 1040 dp. Hairlines and scroll bars span the window. A pinned footer takes the column of the content above it: views pass their cap to their footer, and a `PaymentActionBar` takes it through `maxContentWidth`, so a two-column checkout's action ends at the content's end edge (#84). Measure the column from the width the page gets, not the window, when a side rail takes part of it.
 - **Large text.** Above 1.5× the header scrolls with the body.
 
 <Screen name="ios_ipad_checkout_en" alt="Checkout on iPad mini: content and the pinned total bar share one centred column" caption="iPad mini, checkout" />

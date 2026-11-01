@@ -11,6 +11,7 @@ Widget screen(
   Widget? bar,
   double scale = 1,
   String language = 'en',
+  TextDirection? direction,
 }) => MaterialApp(
   locale: Locale(language),
   supportedLocales: const [Locale('en'), Locale('id')],
@@ -20,7 +21,9 @@ Widget screen(
   ],
   builder: (context, child) => MediaQuery(
     data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
-    child: child!,
+    child: direction == null
+        ? child!
+        : Directionality(textDirection: direction, child: child!),
   ),
   home: Scaffold(body: body, bottomNavigationBar: bar),
 );
@@ -114,6 +117,112 @@ void main() {
         t.getRect(find.byType(AmountText)).left,
         moreOrLessEquals(192, epsilon: 0.5),
       );
+    });
+  });
+
+  // #84: a bar under a wider content column takes the same cap, so its
+  // action ends where the content does.
+  group('PaymentActionBar under a wide content column (#84)', () {
+    const content = Key('content');
+    // A page column like the example's: 16 dp gutters, centred, capped.
+    Widget page(double cap) => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: cap),
+          child: const SizedBox(key: content, height: 40, width: 2000),
+        ),
+      ),
+    );
+    Widget wideBar({Money? total}) => PaymentActionBar(
+      maxContentWidth: 1040,
+      total: total,
+      action: PaymentButton(
+        key: _review,
+        label: 'Review and pay',
+        onPressed: () {},
+      ),
+    );
+
+    for (final size in [const Size(1024, 768), const Size(1194, 834)]) {
+      for (final direction in TextDirection.values) {
+        testWidgets(
+          '${size.width.toInt()}x${size.height.toInt()} ${direction.name}: '
+          'the action ends at the content end edge',
+          (t) async {
+            _surface(t, size);
+            await t.pumpWidget(
+              screen(page(1040), bar: wideBar(), direction: direction),
+            );
+            final column = t.getRect(find.byKey(content));
+            final rect = t.getRect(find.byKey(_review));
+            // 16–1008 at 1024, 77–1117 at 1194.
+            expect(column.width, size.width == 1024 ? 1024 - 32 : 1040);
+            final bar = t.getRect(
+              find
+                  .descendant(
+                    of: find.byType(PaymentActionBar),
+                    matching: find.byType(LayoutBuilder),
+                  )
+                  .first,
+            );
+            expect(bar.left, moreOrLessEquals(column.left, epsilon: 1));
+            expect(bar.width, moreOrLessEquals(column.width, epsilon: 1));
+            if (direction == TextDirection.ltr) {
+              expect(rect.right, moreOrLessEquals(column.right, epsilon: 1));
+            } else {
+              expect(rect.left, moreOrLessEquals(column.left, epsilon: 1));
+            }
+            expect(rect.width, lessThan(column.width / 2));
+          },
+        );
+      }
+    }
+
+    for (final direction in TextDirection.values) {
+      testWidgets('1194x834 ${direction.name}: the total keeps the start '
+          'side of the 1040 column', (t) async {
+        _surface(t, const Size(1194, 834));
+        await t.pumpWidget(
+          screen(
+            page(1040),
+            bar: wideBar(total: const Money.idr(102500)),
+            direction: direction,
+          ),
+        );
+        final column = t.getRect(find.byKey(content));
+        final action = t.getRect(find.byKey(_review));
+        final total = t.getRect(find.byType(AmountText));
+        if (direction == TextDirection.ltr) {
+          expect(total.left, moreOrLessEquals(column.left, epsilon: 1));
+          expect(action.right, moreOrLessEquals(column.right, epsilon: 1));
+        } else {
+          expect(total.right, moreOrLessEquals(column.right, epsilon: 1));
+          expect(action.left, moreOrLessEquals(column.left, epsilon: 1));
+        }
+      });
+    }
+
+    for (final width in [744.0, 871.0]) {
+      testWidgets('${width.toInt()}dp: the default bar keeps 640', (t) async {
+        _surface(t, Size(width, 1000));
+        await t.pumpWidget(screen(page(640), bar: _bar()));
+        final column = t.getRect(find.byKey(content));
+        expect(column.width, 640);
+        expect(
+          t.getRect(find.byKey(_review)).right,
+          moreOrLessEquals(column.right, epsilon: 0.5),
+        );
+      });
+    }
+
+    testWidgets('phone 393x852: full width whatever the cap', (t) async {
+      _surface(t, const Size(393, 852));
+      await t.pumpWidget(screen(page(1040), bar: wideBar()));
+      final rect = t.getRect(find.byKey(_review));
+      expect(rect.left, 16);
+      expect(rect.width, 393 - 32);
     });
   });
 

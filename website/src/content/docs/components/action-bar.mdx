@@ -19,7 +19,9 @@ Pin the payable total beside one primary Pay action. The host computes the amoun
 ```dart
 // example/lib/screens/flow_screen.dart
 // The summary already shows the total, so the bar holds only the action.
+// maxContentWidth is the list's own cap: 1040 beside the order context.
 PaymentActionBar(
+      maxContentWidth: maxContentWidth,
       action: PaymentButton(
         label: s.reviewAndPay,
         busy: c.quoting,
@@ -44,7 +46,7 @@ Variants: ready, updating, disabled action. Nothing else exists.
 | Situation | Variant / composition | Payment example |
 | --- | --- | --- |
 | Pinned payable total | ready | Use one primary Pay action; updating means the host is recomputing the quote. |
-| Total already on screen (checkout summary) | action only, no `total` | The example's checkout: "Review payment", busy with "Updating total…" during a re-quote, so the total isn't shown three times and the bar stays compact at 200% (D62, #64). Full width on phones; from 600 dp of available footer width (about 632 dp of window with the default gutters) it hugs at the end edge (#79). |
+| Total already on screen (checkout summary) | action only, no `total` | The example's checkout: "Review payment", busy with "Updating total…" during a re-quote, so the total isn't shown three times and the bar stays compact at 200% (D62, #64). Full width on phones; from 600 dp of available footer width (about 632 dp of window with the default gutters) it hugs at the end edge (#79). With the order context beside the form the example passes `maxContentWidth: 1040`, so the action ends where the content does (#84). |
 
 Use Button group for secondary page actions. Later payment-path screens (confirm, authorize, status, KYC) pin their own action when given a bounded height, so they don't need this bar (D62).
 
@@ -54,7 +56,7 @@ Ready shows the host total and action. Updating keeps the total region stable wh
 
 **Layout.** The total stays laid out under the "Updating total" caption, so the bar keeps one height while the total refreshes, at every text scale.
 
-**Width.** From 600 dp the bar's content keeps the page's 640 dp column. An action alone follows the footer rule of views and the payment path (D59, D62): full width below 600 dp of available footer width and at large text, a hug button at the end edge wider. The width is measured inside the bar's padding, so with the default 16 dp gutters hugging starts at a window about 632 dp wide. With a total, the total takes the start side and the action hugs at the end.
+**Width.** From 600 dp the bar's content sits in a centred column: 640 dp by default (D53), or `maxContentWidth`. Pass the cap of the content above the bar, such as 1040 for a two-column page, so the bar's column and its action's end edge line up with the content's (#84). An action alone follows the footer rule of views and the payment path (D59, D62): full width below 600 dp of available footer width and at large text, a hug button at the end edge wider. The width is measured inside the bar's padding, so with the default 16 dp gutters hugging starts at a window about 632 dp wide. With a total, the total takes the start side and the action hugs at the end.
 
 ## Do and don't
 
