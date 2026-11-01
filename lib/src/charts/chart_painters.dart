@@ -294,13 +294,38 @@ class ChartPainter extends CustomPainter {
     canvas.restore();
     if (selected == null || selected! >= points.length) return;
     // D58: a guide line from the selected point or bar top up to the value
-    // label band, and an emphasised marker on the selected point.
+    // label band, and an emphasised marker on the selected point or bar.
     final i = selected!;
     var top = area.bottom;
     if (bars) {
+      Rect? group;
       for (final rects in grouped) {
         final rect = rects[i];
-        if (rect != null) top = math.min(top, rect.top);
+        if (rect != null) group = group?.expandToInclude(rect) ?? rect;
+      }
+      if (group != null) {
+        // An accent outline 2 dp outside the bar (or the group's bars),
+        // open at the baseline, so a fill in the accent still reads.
+        canvas.save();
+        canvas.clipRect(Rect.fromLTRB(0, 0, size.width, area.bottom));
+        canvas.drawRRect(
+          RRect.fromRectAndCorners(
+            Rect.fromLTRB(
+              group.left - selectedRingOffset,
+              group.top - selectedRingOffset,
+              group.right + selectedRingOffset,
+              area.bottom + 4,
+            ),
+            topLeft: const Radius.circular(2 + selectedRingOffset),
+            topRight: const Radius.circular(2 + selectedRingOffset),
+          ),
+          Paint()
+            ..color = theme.accent
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.5,
+        );
+        canvas.restore();
+        top = group.top - selectedRingOffset - .75;
       }
     } else {
       for (var j = 0; j < series.length; j++) {
@@ -331,6 +356,9 @@ class ChartPainter extends CustomPainter {
       );
     }
   }
+
+  /// Distance from the selected bar's edge to the centre of its outline.
+  static const selectedRingOffset = 2.75;
 
   @override
   bool shouldRepaint(ChartPainter oldDelegate) => true;

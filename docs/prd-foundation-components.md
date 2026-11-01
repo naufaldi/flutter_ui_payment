@@ -2070,7 +2070,7 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 
 **UI review P3: rows, content, tables and charts** (D57, D58, D60; #62, #63-4, #63-7, #58-3, #65 date range)
 - [x] `reference` on `InfoRow`, `PaymentPropertyListItem`, `PaymentDetailValue` (+ `onCopy`); copy glyph on the value edge (D57)
-- [x] Line and bar charts: latest value selected at rest, one exact label in a fixed band, guide line, tap / drag / hover; ≤ 12-point markers; scaled y gutter (D58)
+- [x] Line and bar charts: latest value selected at rest, one exact label in a fixed band, guide line, emphasised point or outlined bar, tap / drag / hover; ≤ 12-point markers; scaled y gutter (D58)
 - [x] `ChartModule`: caption line only when present; plot capped at `compactHeight` at large text (#58-3)
 - [x] Narrow `PaymentTable` / `PaymentDataTable` rows as property rows with the ⋮ on the title line; Total divider; select-all inset; non-breaking ID hyphens (D60)
 - [x] `PaymentSection` 36 dp header band; navigation selection weight + indicator, 48 dp pitch; task-list connector documented

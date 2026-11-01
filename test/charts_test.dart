@@ -322,6 +322,50 @@ void main() {
     expect(painter(long).markEvery, isFalse);
     expect(painter(long.take(12).toList()).markEvery, isTrue);
   });
+  test('the selected bar gets an accent outline (D58)', () {
+    for (final brightness in Brightness.values) {
+      final theme = PaymentTheme.fromColorScheme(
+        ColorScheme.fromSeed(seedColor: Colors.blue, brightness: brightness),
+      );
+      ChartPainter painter(int? selected) => ChartPainter(
+        series: const [PaymentChartSeries(label: '', points: weeks)],
+        unit: PaymentChartUnit.money,
+        colors: [theme.accent],
+        showX: true,
+        showY: true,
+        gridX: false,
+        gridY: true,
+        theme: theme,
+        l10n: PaymentLocalizations('en'),
+        style: const TextStyle(fontSize: 13, height: 18 / 13),
+        scaler: TextScaler.noScaling,
+        bars: true,
+        selected: selected,
+      );
+      const size = Size(320, 180);
+      List<RRect> outlines(int? selected) {
+        final canvas = _RecordingCanvas();
+        painter(selected).paint(canvas, size);
+        return [
+          for (final (rrect, paint) in canvas.rrects)
+            if (paint.style == PaintingStyle.stroke &&
+                paint.color.toARGB32() == theme.accent.toARGB32())
+              rrect,
+        ];
+      }
+
+      expect(outlines(null), isEmpty);
+      for (final selected in [1, 3]) {
+        final p = painter(selected);
+        final area = p.plot(size);
+        final bar = groupedBarRects(p.series, area, p.unit).single[selected]!;
+        final outline = outlines(selected).single;
+        expect(outline.center.dx, closeTo(p.columnX(selected, area), .01));
+        expect(outline.left, bar.left - ChartPainter.selectedRingOffset);
+        expect(outline.top, bar.top - ChartPainter.selectedRingOffset);
+      }
+    }
+  });
   testWidgets('the y gutter fits its scaled labels', (tester) async {
     final gutters = <double>[];
     for (final scale in [1.0, 2.0]) {
@@ -405,4 +449,15 @@ void main() {
     await tester.pumpWidget(chart(const []));
     expect(tester.takeException(), isNull);
   });
+}
+
+/// Records rounded rectangles and ignores every other canvas call.
+class _RecordingCanvas implements Canvas {
+  final rrects = <(RRect, Paint)>[];
+
+  @override
+  void drawRRect(RRect rrect, Paint paint) => rrects.add((rrect, paint));
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {}
 }
