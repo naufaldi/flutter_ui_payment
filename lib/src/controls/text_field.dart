@@ -67,6 +67,7 @@ class PaymentTextField extends StatefulWidget {
        _maxLines = 1,
        _maxLength = null,
        query = null,
+       actions = const [],
        assert(controller == null || initialValue == null);
 
   const PaymentTextField._area({
@@ -101,25 +102,32 @@ class PaymentTextField extends StatefulWidget {
        suffix = null,
        _multiline = true,
        query = null,
+       actions = const [],
        assert(controller == null || initialValue == null);
 
   /// Controlled local list filter, with clear and refocus.
+  ///
+  /// [actions] sit after the box on the same line, centred on it, such as a
+  /// filter [PaymentIconButton]; a label above the box spans them.
   factory PaymentTextField.search({
     Key? key,
     required String query,
     required ValueChanged<String> onChanged,
     String? label,
+    List<Widget> actions = const [],
   }) => PaymentTextField._search(
     key: key,
     query: query,
     onChanged: onChanged,
     label: label ?? '',
+    actions: actions,
   );
   const PaymentTextField._search({
     super.key,
     required this.query,
     required this.onChanged,
     required this.label,
+    required this.actions,
   }) : _multiline = false,
        _minLines = 1,
        _maxLines = 1,
@@ -235,6 +243,9 @@ class PaymentTextField extends StatefulWidget {
 
   /// Controlled query used by the search constructor.
   final String? query;
+
+  /// Controls after the search box, centred on it (search constructor only).
+  final List<Widget> actions;
   @override
   State<PaymentTextField> createState() => _PaymentTextFieldState();
 }
@@ -440,7 +451,14 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
       label: above ? label : null,
       enabled: enabled,
       onTap: _focus.requestFocus,
-      child: input,
+      child: widget.actions.isEmpty
+          ? input
+          : Row(
+              children: [
+                Expanded(child: input),
+                ...widget.actions,
+              ],
+            ),
     );
     if (!widget._multiline || widget.onSubmitted == null) return field;
     void submit() => widget.onSubmitted!(widget.controller?.text ?? '');
