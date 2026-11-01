@@ -16,6 +16,7 @@ import 'payment_theme.dart';
 import 'payment_type.dart';
 import 'token_resolvers.dart';
 import 'tap_target.dart';
+import 'first_line.dart';
 
 /// The five amount looks. Nothing else exists.
 enum AmountTextVariant {
@@ -969,23 +970,18 @@ class StatusHeader extends StatelessWidget {
       children: [
         StatusBand(tone: tone, hatched: hatched),
         SizedBox(height: theme.space(PaymentSpace.block)),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PaymentIcon.tone(tone, icon: icon),
-            SizedBox(width: theme.space(PaymentSpace.block)),
-            Expanded(
-              child: Semantics(
-                header: true,
-                child: Text(
-                  title,
-                  style: PaymentType.of(
-                    context,
-                  ).heading.copyWith(color: colors.foreground),
-                ),
-              ),
+        FirstLineRow(
+          leading: PaymentIcon.tone(tone, icon: icon),
+          gap: theme.space(PaymentSpace.block),
+          text: Semantics(
+            header: true,
+            child: Text(
+              title,
+              style: PaymentType.of(
+                context,
+              ).heading.copyWith(color: colors.foreground),
             ),
-          ],
+          ),
         ),
       ],
     );

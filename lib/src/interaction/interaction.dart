@@ -18,6 +18,7 @@ import '../foundation/payment_tokens.dart';
 import '../foundation/token_resolvers.dart';
 import '../foundation/primitives.dart';
 import '../foundation/layout_rules.dart';
+import '../foundation/first_line.dart';
 
 /// A tappable row for settings, menus and action lists.
 ///
@@ -114,91 +115,84 @@ class PaymentListItem extends StatelessWidget {
     final detail = !enabled && disabledReason != null
         ? disabledReason
         : secondaryTitle;
-    // Icon and chevron center on the title's first line, not on the whole
-    // block, so multi-line rows at large text keep them beside the title.
-    final line = PaymentType.firstLineHeight(context);
+    // Icon, value and trailing control centre on the title's first line,
+    // not on the whole block, so multi-line rows keep them beside the title
+    // (D56). At large text the value moves under the title and keeps its
+    // size instead of shrinking beside it (#60).
+    final large = PaymentType.isLarge(context);
+    final valueText = value == null
+        ? null
+        : DefaultTextStyle.merge(
+            style: type.label.copyWith(color: theme.textPrimary),
+            textAlign: large ? TextAlign.start : TextAlign.end,
+            child: value!,
+          );
+    final titles = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: (size == PaymentListItemSize.large ? type.heading : type.label)
+              .copyWith(color: foreground),
+        ),
+        if (valueText != null && large) ...[
+          SizedBox(height: theme.space(PaymentSpace.inline)),
+          valueText,
+        ],
+        if (detail != null) Text(detail, style: type.caption),
+      ],
+    );
+    final media = image != null
+        ? SizedBox.square(
+            dimension: size == PaymentListItemSize.large
+                ? kMediaTile
+                : PaymentIconSize.medium.resolve(context),
+            child: image,
+          )
+        : icon != null
+        ? PaymentIcon(
+            icon,
+            color: danger
+                ? PaymentTextColor.danger
+                : PaymentTextColor.secondary,
+          )
+        : null;
     final row = RowShell(
       onTap: handler,
       minHeight: size == PaymentListItemSize.large ? 64 : 48,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (image != null) ...[
-            SizedBox(
-              width: size == PaymentListItemSize.large
-                  ? theme.space(PaymentSpace.related) * 5
-                  : PaymentIconSize.medium.resolve(context),
-              height: size == PaymentListItemSize.large
-                  ? theme.space(PaymentSpace.related) * 5
-                  : line,
-              child: Center(
-                child: SizedBox.square(
-                  dimension: size == PaymentListItemSize.large
-                      ? theme.space(PaymentSpace.related) * 5
-                      : PaymentIconSize.medium.resolve(context),
-                  child: image,
-                ),
-              ),
-            ),
-            SizedBox(width: theme.space(PaymentSpace.block)),
-          ],
-          if (icon != null) ...[
-            PaymentIcon(
-              icon,
-              color: danger
-                  ? PaymentTextColor.danger
-                  : PaymentTextColor.secondary,
-            ),
-            SizedBox(width: theme.space(PaymentSpace.block)),
-          ],
-          Expanded(
-            flex: value == null ? 1 : 3,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style:
-                      (size == PaymentListItemSize.large
-                              ? type.heading
-                              : type.label)
-                          .copyWith(color: foreground),
-                ),
-                if (detail != null) Text(detail, style: type.caption),
-              ],
-            ),
-          ),
-          if (value != null) ...[
-            SizedBox(width: theme.space(PaymentSpace.group)),
-            Flexible(
-              flex: 2,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: line),
-                child: Align(
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: DefaultTextStyle.merge(
-                    style: type.label.copyWith(color: theme.textPrimary),
-                    textAlign: TextAlign.end,
-                    child: value!,
+      child: FirstLineRow(
+        leading: media,
+        gap: theme.space(PaymentSpace.block),
+        text: valueText == null || large
+            ? titles
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 3, child: titles),
+                  SizedBox(width: theme.space(PaymentSpace.group)),
+                  Flexible(
+                    flex: 2,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: PaymentType.firstLineHeight(context),
+                      ),
+                      child: Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: valueText,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ),
-            if (enabled) SizedBox(width: theme.space(PaymentSpace.related)),
-          ],
-          if (trailing != null)
-            // A minimum, never a fixed height, so a switch or a 48 dp
-            // button keeps its own size.
-            ConstrainedBox(
-              constraints: BoxConstraints(minHeight: line),
-              child: Center(child: trailing),
-            )
-          else if (enabled)
-            const PaymentIcon(
-              PaymentIcons.forward,
-              color: PaymentTextColor.secondary,
-            ),
-        ],
+        trailingGap: theme.space(PaymentSpace.related),
+        trailing:
+            trailing ??
+            (enabled
+                ? const PaymentIcon(
+                    PaymentIcons.forward,
+                    color: PaymentTextColor.secondary,
+                  )
+                : null),
       ),
     );
     return enabled || disabled
@@ -702,65 +696,64 @@ class _ToastContentState extends State<_ToastContent> {
       valueListenable: widget.controller._state,
       builder: (context, state, _) => DefaultTextStyle(
         style: type.label.copyWith(color: theme.surface),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ExcludeSemantics(
-              child: SizedBox(
-                width: iconSize,
-                height: PaymentType.firstLineHeight(context),
-                child: Center(
-                  child: state.pending
-                      ? PaymentSpinner(
-                          size: PaymentSize.small,
-                          color: theme.surface,
-                        )
-                      : Icon(
-                          toneIcon(state.tone),
-                          size: iconSize,
-                          color: theme.surface,
-                        ),
-                ),
-              ),
-            ),
-            SizedBox(width: theme.space(PaymentSpace.block)),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: theme.space(PaymentSpace.inline),
-                ),
-                child: Text(state.message),
-              ),
-            ),
-            if (widget.actionLabel != null && widget.onAction != null) ...[
-              SizedBox(width: theme.space(PaymentSpace.related)),
-              PaymentFocusRing(
-                radius: theme.controlBorderRadius,
-                color: theme.surface,
-                child: TextButton(
-                  onPressed: () {
-                    widget.controller.dismiss();
-                    widget.onAction!();
-                  },
-                  style: PaymentFocusRing.withoutFocusFill(
-                    TextButton.styleFrom(
-                      foregroundColor: theme.surface,
-                      textStyle: type.label.copyWith(
-                        fontWeight: type.heading.fontWeight,
+        // The message keeps 4 pt above and below, so the icon and the
+        // action centre on its first line inside that padding (#46).
+        child: FirstLineRow(
+          line:
+              PaymentType.firstLineHeight(context) +
+              2 * theme.space(PaymentSpace.inline),
+          gap: theme.space(PaymentSpace.block),
+          trailingGap: theme.space(PaymentSpace.related),
+          leading: ExcludeSemantics(
+            child: SizedBox.square(
+              dimension: iconSize,
+              child: Center(
+                child: state.pending
+                    ? PaymentSpinner(
+                        size: PaymentSize.small,
+                        color: theme.surface,
+                      )
+                    : Icon(
+                        toneIcon(state.tone),
+                        size: iconSize,
+                        color: theme.surface,
                       ),
-                      minimumSize: const Size(48, 48),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      visualDensity: VisualDensity.standard,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: theme.space(PaymentSpace.block),
+              ),
+            ),
+          ),
+          text: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: theme.space(PaymentSpace.inline),
+            ),
+            child: Text(state.message),
+          ),
+          trailing: widget.actionLabel != null && widget.onAction != null
+              ? PaymentFocusRing(
+                  radius: theme.controlBorderRadius,
+                  color: theme.surface,
+                  child: TextButton(
+                    onPressed: () {
+                      widget.controller.dismiss();
+                      widget.onAction!();
+                    },
+                    style: PaymentFocusRing.withoutFocusFill(
+                      TextButton.styleFrom(
+                        foregroundColor: theme.surface,
+                        textStyle: type.label.copyWith(
+                          fontWeight: type.heading.fontWeight,
+                        ),
+                        minimumSize: const Size(48, 48),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.standard,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: theme.space(PaymentSpace.block),
+                        ),
                       ),
                     ),
+                    child: Text(widget.actionLabel!),
                   ),
-                  child: Text(widget.actionLabel!),
-                ),
-              ),
-            ],
-          ],
+                )
+              : null,
         ),
       ),
     );
@@ -880,37 +873,33 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
               padding: EdgeInsets.symmetric(
                 vertical: theme.space(PaymentSpace.block),
               ),
-              child: Row(
-                children: [
-                  if (_media != null) ...[
-                    _media is PaymentImage
-                        ? SizedBox.square(dimension: kMediaTile, child: _media)
-                        : _media!,
-                    SizedBox(width: theme.space(PaymentSpace.block)),
+              // Media and chevron centre on the title's first line, so a
+              // header that wraps at large text keeps them beside it (#61).
+              child: FirstLineRow(
+                leading: _media is PaymentImage
+                    ? SizedBox.square(dimension: kMediaTile, child: _media)
+                    : _media,
+                gap: theme.space(PaymentSpace.block),
+                text: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.title, style: type.heading),
+                    if (widget.subtitle != null)
+                      Text(widget.subtitle!, style: type.caption),
                   ],
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(widget.title, style: type.heading),
-                        if (widget.subtitle != null)
-                          Text(widget.subtitle!, style: type.caption),
-                      ],
-                    ),
+                ),
+                trailingGap: theme.space(PaymentSpace.related),
+                // Rotation is a transform: no layout, no repaint of the
+                // row. 150 ms, the same as other state changes.
+                trailing: AnimatedRotation(
+                  turns: open ? 0.5 : 0,
+                  duration: motion.quick,
+                  curve: PaymentMotion.easeOut,
+                  child: const PaymentIcon(
+                    Icons.expand_more,
+                    color: PaymentTextColor.secondary,
                   ),
-                  SizedBox(width: theme.space(PaymentSpace.related)),
-                  // Rotation is a transform: no layout, no repaint of
-                  // the row. 150 ms, the same as other state changes.
-                  AnimatedRotation(
-                    turns: open ? 0.5 : 0,
-                    duration: motion.quick,
-                    curve: PaymentMotion.easeOut,
-                    child: const PaymentIcon(
-                      Icons.expand_more,
-                      color: PaymentTextColor.secondary,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -1182,40 +1171,35 @@ class StateMessage extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           vertical: theme.space(PaymentSpace.group),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ExcludeSemantics(
-              child: PaymentIcon(icon, color: PaymentTextColor.secondary),
-            ),
-            SizedBox(width: theme.space(PaymentSpace.block)),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: type.heading),
-                  if (message != null) ...[
-                    SizedBox(height: theme.space(PaymentSpace.inline)),
-                    Text(
-                      message!,
-                      style: type.body.copyWith(color: theme.textSecondary),
-                    ),
-                  ],
-                  if (actionLabel != null && onAction != null) ...[
-                    SizedBox(height: theme.space(PaymentSpace.block)),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 280),
-                      child: PaymentButton(
-                        label: actionLabel!,
-                        variant: PaymentButtonVariant.secondary,
-                        onPressed: onAction,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
+        child: FirstLineRow(
+          leading: ExcludeSemantics(
+            child: PaymentIcon(icon, color: PaymentTextColor.secondary),
+          ),
+          gap: theme.space(PaymentSpace.block),
+          text: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: type.heading),
+              if (message != null) ...[
+                SizedBox(height: theme.space(PaymentSpace.inline)),
+                Text(
+                  message!,
+                  style: type.body.copyWith(color: theme.textSecondary),
+                ),
+              ],
+              if (actionLabel != null && onAction != null) ...[
+                SizedBox(height: theme.space(PaymentSpace.block)),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 280),
+                  child: PaymentButton(
+                    label: actionLabel!,
+                    variant: PaymentButtonVariant.secondary,
+                    onPressed: onAction,
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );

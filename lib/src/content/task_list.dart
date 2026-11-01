@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import '../foundation/first_line.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/row_shell.dart';
@@ -34,6 +37,12 @@ class PaymentTaskList extends StatelessWidget {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     final strings = PaymentLocalizations.of(context);
+    // The icon centres on the label's first line: the 48 dp row centre at
+    // normal text, the first line inside the row padding when it wraps.
+    final iconBand = math.max(
+      48.0,
+      lineHeightOf(context, type.label) + 2 * theme.space(PaymentSpace.block),
+    );
     Widget row(PaymentTaskListItem item, {bool last = true}) {
       final done = item.status == PaymentTaskStatus.complete;
       final label = [
@@ -65,7 +74,7 @@ class PaymentTaskList extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: 48,
+                        height: iconBand,
                         child: Icon(
                           icon,
                           color:
