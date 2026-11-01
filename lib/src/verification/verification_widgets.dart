@@ -3,6 +3,8 @@ import '../forms/search_field.dart';
 import '../forms/field_group.dart';
 import '../forms/date_field.dart';
 import '../foundation/date_input.dart';
+import '../foundation/action_frame.dart';
+import '../controls/button_group.dart';
 import '../foundation/payment_icons.dart';
 import '../foundation/payment_tokens.dart';
 import '../controls/actions.dart';
@@ -22,6 +24,10 @@ import 'verification_models.dart';
 /// Explains what data the host requests and why, then asks for consent.
 ///
 /// Consent always starts unchecked; [onContinue] is unreachable without it.
+///
+/// Given a bounded height, the explanation and consent scroll and Continue
+/// pins to a footer at the bottom (D62). Inside a scroll view it follows the
+/// consent, as before.
 class VerificationIntro extends StatefulWidget {
   const VerificationIntro({
     super.key,
@@ -29,6 +35,7 @@ class VerificationIntro extends StatefulWidget {
     required this.onContinue,
     this.onOpenPolicy,
     this.consentLabel,
+    this.header,
   });
 
   final List<DataRequirement> requirements;
@@ -37,6 +44,10 @@ class VerificationIntro extends StatefulWidget {
   /// Opens the host's privacy policy; hidden when null.
   final VoidCallback? onOpenPolicy;
   final String? consentLabel;
+
+  /// Host content shown above this widget's content, inside its scroll
+  /// region (D62).
+  final Widget? header;
 
   @override
   State<VerificationIntro> createState() => _VerificationIntroState();
@@ -50,73 +61,86 @@ class _VerificationIntroState extends State<VerificationIntro> {
     final l10n = PaymentLocalizations.of(context);
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        PaymentSection(
-          title: l10n.kycIntroTitle,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(l10n.kycIntroMessage, style: type.bodyFor(context)),
-              SizedBox(height: theme.space(PaymentSpace.related)),
-              for (final r in widget.requirements)
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: theme.space(PaymentSpace.related),
-                  ),
-                  child: MergeSemantics(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Centered on the title's first line at any scale.
-                        const PaymentIcon(
-                          Icons.check_circle_outline,
-                          color: PaymentTextColor.secondary,
-                        ),
-                        SizedBox(width: theme.space(PaymentSpace.block)),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(r.title, style: type.heading),
-                              Text(r.purpose, style: type.caption),
-                            ],
+    final go = PaymentButton(
+      label: l10n.continueLabel,
+      onPressed: _consented ? widget.onContinue : null,
+    );
+    final hint = _consented
+        ? null
+        : Text(l10n.consentRequiredHint, style: type.caption);
+    return ActionFrame(
+      header: widget.header,
+      primaryAction: go,
+      note: hint,
+      builder: (context, pinned) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PaymentSection(
+            title: l10n.kycIntroTitle,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.kycIntroMessage, style: type.bodyFor(context)),
+                SizedBox(height: theme.space(PaymentSpace.related)),
+                for (final r in widget.requirements)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: theme.space(PaymentSpace.related),
+                    ),
+                    child: MergeSemantics(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Centered on the title's first line at any scale.
+                          const PaymentIcon(
+                            Icons.check_circle_outline,
+                            color: PaymentTextColor.secondary,
                           ),
-                        ),
-                      ],
+                          SizedBox(width: theme.space(PaymentSpace.block)),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(r.title, style: type.heading),
+                                Text(r.purpose, style: type.caption),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-            ],
-          ),
-        ),
-        SizedBox(height: theme.space(PaymentSpace.block)),
-        if (widget.onOpenPolicy != null)
-          Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: PaymentLink(
-              label: l10n.readPrivacyPolicy,
-              external: true,
-              onPressed: widget.onOpenPolicy,
+              ],
             ),
           ),
-        PaymentCheckbox(
-          value: _consented,
-          onChanged: (v) => setState(() => _consented = v),
-          label: widget.consentLabel ?? l10n.consentLabel,
-        ),
-        SizedBox(height: theme.space(PaymentSpace.related)),
-        PaymentButton(
-          label: l10n.continueLabel,
-          onPressed: _consented ? widget.onContinue : null,
-        ),
-        if (!_consented)
-          Padding(
-            padding: EdgeInsets.only(top: theme.space(PaymentSpace.related)),
-            child: Text(l10n.consentRequiredHint, style: type.caption),
+          SizedBox(height: theme.space(PaymentSpace.block)),
+          if (widget.onOpenPolicy != null)
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: PaymentLink(
+                label: l10n.readPrivacyPolicy,
+                external: true,
+                onPressed: widget.onOpenPolicy,
+              ),
+            ),
+          PaymentCheckbox(
+            value: _consented,
+            onChanged: (v) => setState(() => _consented = v),
+            label: widget.consentLabel ?? l10n.consentLabel,
           ),
-      ],
+          if (!pinned) ...[
+            SizedBox(height: theme.space(PaymentSpace.related)),
+            go,
+            if (hint != null)
+              Padding(
+                padding: EdgeInsets.only(
+                  top: theme.space(PaymentSpace.related),
+                ),
+                child: hint,
+              ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -691,6 +715,10 @@ class VerificationReview extends StatelessWidget {
 
 /// Explains a verification state and offers only host-allowed actions.
 /// There is never a bypass action.
+///
+/// Given a bounded height, the status scrolls and the first action pins to a
+/// footer at the bottom; the others stay in the content as hug buttons (D62).
+/// Inside a scroll view all actions follow the status, as before.
 class VerificationStatusView extends StatelessWidget {
   const VerificationStatusView({
     super.key,
@@ -698,6 +726,7 @@ class VerificationStatusView extends StatelessWidget {
     required this.onAction,
     this.outcomeUnknown = false,
     this.busyAction,
+    this.header,
   });
 
   final VerificationSnapshot snapshot;
@@ -706,6 +735,10 @@ class VerificationStatusView extends StatelessWidget {
   /// The last submit timed out: the host may or may not have received it.
   final bool outcomeUnknown;
   final VerificationAction? busyAction;
+
+  /// Host content shown above this widget's content, inside its scroll
+  /// region (D62), e.g. a banner.
+  final Widget? header;
 
   @override
   Widget build(BuildContext context) {
@@ -749,58 +782,79 @@ class VerificationStatusView extends StatelessWidget {
         : VerificationAction.values
               .where(snapshot.allowedActions.contains)
               .toList();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Semantics(
-          container: true,
-          liveRegion: true,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AnimatedSwitcher(
-                duration: motion.enter,
-                reverseDuration: motion.exit,
-                switchInCurve: PaymentMotion.easeOut,
-                transitionBuilder: PaymentMotion.fadeScale,
-                layoutBuilder: PaymentMotion.topLayout,
-                // As in the payment status view: a hatched band when the
-                // submit may not have arrived, solid otherwise.
-                child: StatusHeader(
-                  key: ValueKey(title),
-                  tone: tone,
-                  icon: icon,
-                  title: title,
-                  hatched: outcomeUnknown,
+    PaymentButton button(int i, VerificationAction action) => PaymentButton(
+      label: l10n.verificationActionLabel(action),
+      variant: i == 0
+          ? PaymentButtonVariant.primary
+          : PaymentButtonVariant.secondary,
+      busy: busyAction == action,
+      busyLabel: l10n.checkingStatus,
+      onPressed: () => onAction(action),
+    );
+    return ActionFrame(
+      header: header,
+      primaryAction: actions.isEmpty ? null : button(0, actions.first),
+      builder: (context, pinned) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            container: true,
+            liveRegion: true,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AnimatedSwitcher(
+                  duration: motion.enter,
+                  reverseDuration: motion.exit,
+                  switchInCurve: PaymentMotion.easeOut,
+                  transitionBuilder: PaymentMotion.fadeScale,
+                  layoutBuilder: PaymentMotion.topLayout,
+                  // As in the payment status view: a hatched band when the
+                  // submit may not have arrived, solid otherwise.
+                  child: StatusHeader(
+                    key: ValueKey(title),
+                    tone: tone,
+                    icon: icon,
+                    title: title,
+                    hatched: outcomeUnknown,
+                  ),
                 ),
-              ),
-              SizedBox(height: theme.space(PaymentSpace.block)),
-              Text(message, style: type.bodyFor(context)),
-              if (snapshot.updatedAt != null && !outcomeUnknown) ...[
-                SizedBox(height: theme.space(PaymentSpace.related)),
-                Text(
-                  l10n.updatedAt(l10n.formatDateTime(snapshot.updatedAt!)),
-                  style: type.caption,
-                ),
+                SizedBox(height: theme.space(PaymentSpace.block)),
+                Text(message, style: type.bodyFor(context)),
+                if (snapshot.updatedAt != null && !outcomeUnknown) ...[
+                  SizedBox(height: theme.space(PaymentSpace.related)),
+                  Text(
+                    l10n.updatedAt(l10n.formatDateTime(snapshot.updatedAt!)),
+                    style: type.caption,
+                  ),
+                ],
               ],
-            ],
-          ),
-        ),
-        SizedBox(height: theme.space(PaymentSpace.section)),
-        for (final (i, action) in actions.indexed)
-          Padding(
-            padding: EdgeInsets.only(bottom: theme.space(PaymentSpace.related)),
-            child: PaymentButton(
-              label: l10n.verificationActionLabel(action),
-              variant: i == 0
-                  ? PaymentButtonVariant.primary
-                  : PaymentButtonVariant.secondary,
-              busy: busyAction == action,
-              busyLabel: l10n.checkingStatus,
-              onPressed: () => onAction(action),
             ),
           ),
-      ],
+          if (!pinned) ...[
+            SizedBox(height: theme.space(PaymentSpace.section)),
+            for (final (i, action) in actions.indexed)
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: theme.space(PaymentSpace.related),
+                ),
+                child: button(i, action),
+              ),
+          ] else if (actions.length > 1) ...[
+            SizedBox(height: theme.space(PaymentSpace.group)),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: PaymentButtonGroup(
+                collapse: PaymentButtonGroupCollapse.none,
+                children: [
+                  for (final (i, action) in actions.indexed.skip(1))
+                    button(i, action),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
