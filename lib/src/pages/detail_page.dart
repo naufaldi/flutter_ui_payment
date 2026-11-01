@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../foundation/primitives.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
+import '../foundation/layout_rules.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/kit_strings.dart';
 import '../controls/actions.dart';
@@ -67,7 +68,7 @@ class PaymentDetailPage extends StatelessWidget {
               padding: EdgeInsets.all(PaymentTheme.of(context).spacing * 2),
               child: LayoutBuilder(
                 builder: (context, k) {
-                  if (k.maxWidth < 600 || PaymentType.isLarge(context)) {
+                  if (k.maxWidth < kCompactBreakpoint || PaymentType.isLarge(context)) {
                     final b = breadcrumbs.last;
                     return Row(
                       children: [

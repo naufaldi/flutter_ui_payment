@@ -4,6 +4,7 @@ import 'payment_type.dart';
 import 'primitives.dart';
 import 'payment_icons.dart';
 import 'payment_tokens.dart';
+import 'layout_rules.dart';
 import 'button_copy.dart';
 import '../controls/button_group.dart';
 
@@ -88,7 +89,7 @@ class ViewHeader extends StatelessWidget {
       padding: EdgeInsets.all(theme.spacing * 2),
       child: LayoutBuilder(
         builder: (context, k) {
-          final stack = k.maxWidth < 600 || PaymentType.isLarge(context);
+          final stack = k.maxWidth < kCompactBreakpoint || PaymentType.isLarge(context);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: theme.spacing * 1.5,

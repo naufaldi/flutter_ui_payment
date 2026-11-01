@@ -10,6 +10,7 @@ import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
+import '../foundation/layout_rules.dart';
 
 /// Title row for a [PaymentSheet] with an optional close button.
 ///
@@ -295,7 +296,7 @@ Future<T?> showPaymentFocusView<T>(
     size: size,
     child: Builder(builder: builder),
   );
-  if (MediaQuery.sizeOf(context).width >= 600) {
+  if (!isCompact(context)) {
     return showPaymentSideSheet<T>(
       context: context,
       maxWidth: size == PaymentFocusViewSize.small ? 420 : 720,
