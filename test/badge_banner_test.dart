@@ -81,17 +81,31 @@ void main() {
   testWidgets('banner actions reject unsupported priorities and widths', (
     tester,
   ) async {
-    for (final action in [
-      FilledButton(onPressed: () {}, child: const Text('Retry')),
-      PaymentButton(label: 'Retry', onPressed: () {}),
-      PaymentButton(label: 'Retry', width: PaymentWidth.hug, onPressed: () {}),
+    PaymentButton hug(PaymentButtonVariant variant) => PaymentButton(
+      label: 'Retry',
+      width: PaymentWidth.hug,
+      variant: variant,
+      onPressed: () {},
+    );
+    final link = PaymentLink(label: 'Contact support', onPressed: () {});
+    for (final actions in <List<Widget>>[
+      [FilledButton(onPressed: () {}, child: const Text('Retry'))],
+      [PaymentButton(label: 'Retry', onPressed: () {})],
+      [hug(PaymentButtonVariant.primary)],
+      [hug(PaymentButtonVariant.quiet)],
+      // D48a: never two buttons, never two links.
+      [
+        hug(PaymentButtonVariant.secondary),
+        hug(PaymentButtonVariant.secondary),
+      ],
+      [link, PaymentLink(label: 'Help', onPressed: () {})],
     ]) {
       await tester.pumpWidget(
         host(
           PaymentBanner(
             tone: StatusTone.warning,
             title: 'Changed',
-            actions: [action],
+            actions: actions,
           ),
           1,
         ),
@@ -99,6 +113,105 @@ void main() {
       expect(tester.takeException(), isAssertionError);
       await tester.pumpWidget(const SizedBox());
     }
+    await tester.pumpWidget(
+      host(
+        PaymentBanner(
+          tone: StatusTone.danger,
+          title: 'Payment failed',
+          actions: [hug(PaymentButtonVariant.secondary), link],
+        ),
+        1,
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    // The button draws small (36 dp) inside its 48 dp target.
+    expect(
+      tester
+          .getSize(
+            find.descendant(
+              of: find.byType(PaymentButton),
+              matching: find.byType(OutlinedButton),
+            ),
+          )
+          .height,
+      36,
+    );
+  });
+  for (final scale in [1.0, 2.0]) {
+    testWidgets('banner anatomy at $scale×', (tester) async {
+      var dismissed = 0;
+      Widget banner({VoidCallback? onDismiss}) => PaymentBanner(
+        tone: StatusTone.warning,
+        title: 'Total changed',
+        message: 'Rp102.500 → Rp104.000',
+        onDismiss: onDismiss,
+        actions: [PaymentLink(label: 'Review total', onPressed: () {})],
+      );
+      await tester.pumpWidget(host(banner(), scale));
+      final plain = tester.getSize(find.byType(PaymentBanner));
+      await tester.pumpWidget(
+        host(banner(onDismiss: () => dismissed++), scale),
+      );
+      // The close target overlaps the padding: no extra height.
+      expect(tester.getSize(find.byType(PaymentBanner)), plain);
+      // Title, message and action share the text column.
+      final edge = tester.getTopLeft(find.text('Total changed')).dx;
+      expect(tester.getTopLeft(find.text('Rp102.500 → Rp104.000')).dx, edge);
+      expect(tester.getTopLeft(find.text('Review total')).dx, edge);
+      // Icon and close glyph centre on the title's first line.
+      final line = scale * 20;
+      final firstLine =
+          tester.getTopLeft(find.text('Total changed')).dy + line / 2;
+      expect(
+        tester.getCenter(find.byIcon(PaymentIcons.warning)).dy,
+        closeTo(firstLine, 0.5),
+      );
+      expect(
+        tester.getCenter(find.byIcon(PaymentIcons.close)).dy,
+        closeTo(firstLine, 0.5),
+      );
+      // Dismiss reports once.
+      final close = find.byIcon(PaymentIcons.close);
+      await tester.tap(close);
+      await tester.pump();
+      await tester.tap(close, warnIfMissed: false);
+      await tester.pump();
+      expect(dismissed, 1);
+    });
+  }
+  testWidgets('re-quote banner states old → new and cannot be dismissed', (
+    tester,
+  ) async {
+    PaymentQuote quote(int revision, int fee) => PaymentQuote(
+      id: 'Q-1',
+      revision: revision,
+      lines: [
+        const QuoteLine(label: 'Paket Belajar', amount: Money.idr(100000)),
+        QuoteLine(
+          label: 'Service fee',
+          amount: Money.idr(fee),
+          kind: QuoteLineKind.fee,
+        ),
+      ],
+      total: Money.idr(100000 + fee),
+      expiresAt: DateTime.utc(2030),
+    );
+    await tester.pumpWidget(
+      host(
+        SingleChildScrollView(
+          child: PaymentSummary(
+            quote: quote(2, 3500),
+            previousQuote: quote(1, 2500),
+          ),
+        ),
+        1,
+      ),
+    );
+    final banner = tester.widget<PaymentBanner>(find.byType(PaymentBanner));
+    expect(banner.onDismiss, isNull);
+    expect(banner.message, contains('102,500'));
+    expect(banner.message, contains('103,500'));
+    expect(find.byIcon(PaymentIcons.close), findsNothing);
   });
   testWidgets('long banner at 320 and double text wraps actions', (
     tester,
@@ -114,17 +227,15 @@ void main() {
             tone: StatusTone.danger,
             title: 'Pembayaran belum berhasil dikonfirmasi',
             message: 'Periksa kembali jumlah pembayaran sebelum mencoba lagi.',
+            onDismiss: () {},
             actions: [
-              for (final variant in [
-                PaymentButtonVariant.secondary,
-                PaymentButtonVariant.quiet,
-              ])
-                PaymentButton(
-                  label: 'Coba lagi',
-                  variant: variant,
-                  width: PaymentWidth.hug,
-                  onPressed: () {},
-                ),
+              PaymentButton(
+                label: 'Coba lagi',
+                variant: PaymentButtonVariant.secondary,
+                width: PaymentWidth.hug,
+                onPressed: () {},
+              ),
+              PaymentLink(label: 'Hubungi bantuan', onPressed: () {}),
             ],
           ),
         ),
