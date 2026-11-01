@@ -37,9 +37,11 @@ class ContentColumn extends StatelessWidget {
   );
 }
 
-/// Internal: the pinned bottom band shared by views and the action bar. The
-/// hairline spans the window; the content keeps the column cap, so it lines
-/// up with the content above it (D53).
+/// Internal: the one pinned bottom band of the kit: views, `PaymentSheet`,
+/// the full-height search and date sheets, and the action bar. A hairline on
+/// top, then `group` padding or the bottom safe-area inset when that is
+/// larger. The hairline spans its parent; with [maxContentWidth] the content
+/// keeps that column cap, so it lines up with the content above it (D53).
 class PinnedFooter extends StatelessWidget {
   const PinnedFooter({
     super.key,
@@ -51,10 +53,14 @@ class PinnedFooter extends StatelessWidget {
 
   /// Inset inside the safe area; defaults to `group` on every side.
   final EdgeInsets? padding;
-  final double maxContentWidth;
+
+  /// Column cap for the content. Null leaves the child at the full width,
+  /// for a sheet whose body has no cap of its own.
+  final double? maxContentWidth;
   @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
+    final cap = maxContentWidth;
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: theme.outline)),
@@ -62,7 +68,7 @@ class PinnedFooter extends StatelessWidget {
       child: SafeArea(
         top: false,
         minimum: padding ?? EdgeInsets.all(theme.space(PaymentSpace.group)),
-        child: ContentColumn(maxWidth: maxContentWidth, child: child),
+        child: cap == null ? child : ContentColumn(maxWidth: cap, child: child),
       ),
     );
   }

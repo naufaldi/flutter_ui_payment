@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_tokens.dart';
+import '../foundation/view_frame.dart';
 
 /// Internal: the kit's modal bottom sheet, shared by [showPaymentSheet], the
 /// phone confirm sheet (D45) and the phone menu sheet (D55). Not exported.
@@ -62,30 +63,6 @@ class _FullHeightScope extends InheritedWidget {
 bool inFullHeightSheet(BuildContext context) =>
     context.dependOnInheritedWidgetOfExactType<_FullHeightScope>() != null;
 
-/// Internal: the pinned footer chrome shared by `PaymentSheet` and the kit's
-/// full-height sheets: a hairline on top and 16 dp padding, or the bottom
-/// safe-area inset when that is larger.
-class KitSheetFooter extends StatelessWidget {
-  const KitSheetFooter({super.key, required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = PaymentTheme.of(context);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: theme.outline)),
-      ),
-      child: SafeArea(
-        top: false,
-        minimum: EdgeInsets.all(theme.space(PaymentSpace.group)),
-        child: child,
-      ),
-    );
-  }
-}
-
 /// Internal: layout of the kit's full-height search and date sheets. A fixed
 /// [header] and [top], a [body] that fills the rest (the caller supplies a
 /// lazy scrollable), and a pinned [footer]. Moves above the keyboard.
@@ -120,7 +97,7 @@ class KitFullSheet extends StatelessWidget {
             ),
           Expanded(child: body),
           if (footer != null)
-            KitSheetFooter(child: footer!)
+            PinnedFooter(maxContentWidth: null, child: footer!)
           else
             const SafeArea(top: false, child: SizedBox.shrink()),
         ],

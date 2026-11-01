@@ -111,8 +111,10 @@ class PaymentSheet extends StatelessWidget {
             Expanded(child: scrollBody)
           else
             Flexible(child: scrollBody),
+          // The sheet's body has no column cap (a large focus view's side
+          // sheet is 720 dp), so neither has its footer.
           if (footer != null)
-            KitSheetFooter(child: footer!)
+            PinnedFooter(maxContentWidth: null, child: footer!)
           else
             const SafeArea(top: false, child: SizedBox.shrink()),
         ],
