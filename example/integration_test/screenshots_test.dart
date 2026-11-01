@@ -73,10 +73,7 @@ void main() {
         c.reviewOrder();
         await c.confirm();
         await pumpUntil(tester, () => c.quote?.revision == 2 && !c.confirming);
-        if (MediaQuery.textScalerOf(
-              tester.element(find.byType(PaymentConfirmation)),
-            ).scale(1) >
-            1) {
+        if ((app.settings.textScale ?? 1) > 1) {
           await settle(tester);
           await Scrollable.ensureVisible(
             tester.element(find.byType(PaymentCheckbox)),

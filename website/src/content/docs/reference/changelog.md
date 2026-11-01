@@ -11,9 +11,9 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
 
   ```dart
   // Before: a Column hands the status view an unbounded height
-  Column(children: [PaymentBanner(title: 'Cancellation requested'), PaymentStatusView(attempt: a, onAction: act)])
+  Column(children: [PaymentBanner(tone: StatusTone.info, title: 'Cancellation requested'), PaymentStatusView(attempt: a, onAction: act)])
   // After: the banner scrolls with the status and the action is pinned
-  PaymentStatusView(header: PaymentBanner(title: 'Cancellation requested'), attempt: a, onAction: act)
+  PaymentStatusView(header: PaymentBanner(tone: StatusTone.info, title: 'Cancellation requested'), attempt: a, onAction: act)
   ```
 
 - **Example flow (D62, #49, #58, #64).** From KYC through the receipt the app's tab bar is hidden, and back leaves the flow. KYC intro and status, confirm, authorize, payment status and receipt fill the screen with their pinned action. The receipt's "Selesai" is the primary, with a quiet "Lihat detail" under it (#49-1). The checkout bar holds only "Tinjau pembayaran", busy while the total updates, so the total isn't repeated a third time and the bar is compact at 200% (#64, #58). Host tools move from the end of each step to a "Demo tools" sheet in the app bar. Cancel, back and close are quiet everywhere, including the gallery's sheet Close buttons (#49-3).
