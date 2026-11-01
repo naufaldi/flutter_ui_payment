@@ -311,7 +311,12 @@ void main() {
         () => c.step == FlowStep.transactionDetail && !c.detailLoading,
       );
       expect(find.byType(PaymentDetailPage), findsOneWidget);
-      expect(find.text(c.attempt!.attemptId), findsWidgets);
+      // The phone attempts table titles the ID with non-breaking hyphens;
+      // its semantics label keeps the original.
+      expect(
+        find.text(c.attempt!.attemptId.replaceAll('-', '\u2011')),
+        findsWidgets,
+      );
       await openReport(tester);
       await tapVisible(
         tester,
