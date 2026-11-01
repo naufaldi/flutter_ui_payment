@@ -447,6 +447,12 @@ extension KitStrings on PaymentLocalizations {
 
   /// Create an item.
   String get create => _k('Create', 'Tambah');
+
+  /// Sign-in heading over what the connecting app can do (D61).
+  String get signInCan => _k('This app can', 'Aplikasi ini bisa');
+
+  /// Sign-in heading over what the connecting app can never do (D61).
+  String get signInCannot => _k('It can never', 'Aplikasi ini tidak bisa');
 }
 
 /// Groups used by transaction filters. Defined here so the strings and the
