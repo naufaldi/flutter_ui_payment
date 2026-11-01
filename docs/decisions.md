@@ -453,16 +453,14 @@ Capture-glance corrections: the harness resets descendant scroll positions befor
 
 Review of every component and flow against the 8 pt grid and the emil-ui-review bar (captures from `main` @ c6cf131). Findings are tracked in issues #45–#50, each with annotated screenshots.
 
-**Decided** (do not reopen without a new reason):
+**Decided** (do not reopen without a new reason; details in the PRD decision table):
 
-- **D45 — confirm on phones is a bottom sheet** with top-down, full-width actions (issue #45). See the PRD decision table.
+- **D45 — confirm on phones is a bottom sheet** with top-down, full-width actions (issue #45).
 - **D46 — the spacing scale keeps 12** (8 pt grid with 4 pt half-steps); one value per role, everything through `PaymentSpace` (issue #50).
+- **D47 — no warning button.** Warnings are states shown by banner, badge or toast.
+- **D48 — banner actions on the text column; no dismiss before paying on a changed total, which states old → new** (issue #52).
+- **D49 — tooltips open on tap and hold one line; longer explanations ("Why this?") open a sheet** (issue #53).
+- **D50 — search on phones is a full-height sheet; an elevated anchored list on wide screens** (issue #54).
+- **D51 — custom date range is a kit calendar sheet with an Apply footer** (issue #55).
 
-**Open, under discussion** (proposals only; nothing changes until the owner decides):
-
-1. **Button "warning" variant.** Proposal: none. The variants stay primary / secondary / quiet / destructive (Stripe has the same set). A warning is a state, shown by `PaymentBanner`, `PaymentBadge` or a toast next to the action, not a button colour.
-2. **Banner with a dismiss button and an action** ("Total changed" / "Review total"). The 48 dp dismiss target sets the title row height and the action starts at the icon column, leaving a large gap. Proposal: actions align to the text column; the dismiss target overlaps padding instead of growing the row; a total-changed warning states old → new and is not dismissible before payment.
-3. **Tooltip vs sheet for explanations.** `PaymentTooltip` opens on hover, long press or focus, so on a phone a tap on an info icon does nothing (fees screen). Proposal: info icons open on tap; tooltips only for one-line hints; longer explanations such as "Why this?" open a bottom sheet.
-4. **Search field on phones.** The suggestion list renders inline with a hairline outline, no fill change and no elevation, and pushes content down; the keyboard can cover it. Proposal: on phones, open a full-height search sheet (consistent with `PaymentSelect` and D45); keep an anchored, elevated list on wide screens.
-5. **Date range picker.** Presets open a kit sheet; "Custom range" opens Flutter's stock Material full-screen range calendar (first captured 1 Nov 2026, light, 100%). Findings: the calendar's only action is a small grey "Save" text button in the top-right corner, out of thumb reach and unlike D45's bottom, full-width actions; the calendar does not use kit buttons or the kit range colours; the bottom safe area shows an unpainted grey strip; `initialEntryMode: calendarOnly` hides typed entry, which D36 says the picker offers; in the presets sheet "Custom range" starts at the radio column instead of the text column. Proposal: a kit range calendar inside a full-height `PaymentSheet` with a pinned footer (selected range summary, full-width "Apply", "Clear"), or at minimum a themed Material picker. Hosts should pass `lastDate: today` for history ranges.
-
+Other findings from the review are tracked with annotated screenshots in issues #46–#49.
