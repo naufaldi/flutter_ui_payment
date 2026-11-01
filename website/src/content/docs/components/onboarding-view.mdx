@@ -8,6 +8,8 @@ import Props from '../../../components/Props.astro';
 
 KYC setup gets to current-step value first on phones, with all tasks in a collapsed accordion. At 840 dp a 280 dp task sidebar accompanies the current content. Variants: ready, pending, error, completed. Nothing else exists. The host owns every task status. onCompleted fires post-frame once when completed turns true, including an initially completed view; there is no timer or kit navigation.
 
+**Pinned step action (D62).** `primaryAction`, with at most one quiet `secondaryAction`, is the current step's submit. Given a bounded height the content scrolls and the actions pin to a footer above the bottom safe area, full width on phones; inside a scroll view they follow the content. The footer is hidden while `pending` or `completed`, when the step isn't shown. A step's form then leaves out its own button: `IdentityForm` takes an `IdentityFormController`, and `VerificationReview` takes `inlineSubmit: false` with `VerificationReview.submitButton`. See [Verification](/patterns/verification/).
+
 ## Usage
 
 ```dart

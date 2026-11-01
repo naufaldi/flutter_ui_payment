@@ -15978,10 +15978,55 @@
     ],
     "copyWith": null
   },
+  "IdentityFormController": {
+    "kind": "class",
+    "file": "lib/src/verification/verification_widgets.dart",
+    "doc": "Submits an `IdentityForm` from outside it, so a host can pin the submit\nin a footer, e.g. `PaymentOnboardingView.primaryAction` (D62).\n\n`submit` runs the same validation as the form's own button: it shows the\nerrors, moves focus to the first invalid field and resolves `false`, or\ncalls `IdentityForm.onSubmit` and resolves `true` once it completes. The\nhost owns the controller and disposes it.",
+    "extends": "ChangeNotifier",
+    "constructors": [],
+    "getters": [
+      {
+        "name": "busy",
+        "type": "bool",
+        "doc": "True while `IdentityForm.onSubmit` runs."
+      },
+      {
+        "name": "canSubmit",
+        "type": "bool",
+        "doc": "A form is attached and no submit is running."
+      }
+    ],
+    "statics": [],
+    "members": [
+      {
+        "name": "busy",
+        "kind": "getter",
+        "static": false,
+        "type": "bool",
+        "doc": "True while `IdentityForm.onSubmit` runs."
+      },
+      {
+        "name": "canSubmit",
+        "kind": "getter",
+        "static": false,
+        "type": "bool",
+        "doc": "A form is attached and no submit is running."
+      },
+      {
+        "name": "submit",
+        "kind": "method",
+        "static": false,
+        "type": "Future<bool>",
+        "signature": "Future<bool> submit()",
+        "doc": "Validates the attached form and submits it when valid. Resolves `false`\nwhen the form is invalid, detached or already submitting."
+      }
+    ],
+    "copyWith": null
+  },
   "IdentityForm": {
     "kind": "class",
     "file": "lib/src/verification/verification_widgets.dart",
-    "doc": "Identity form driven by host `IdentityFieldSpec`s.\n\nSubmit validates every field, shows errors on the relevant fields and\nmoves focus to the first invalid one. Names accept any script.",
+    "doc": "Identity form driven by host `IdentityFieldSpec`s.\n\nSubmit validates every field, shows errors on the relevant fields and\nmoves focus to the first invalid one. Names accept any script.\n\nWith a `controller` the form has no submit button of its own: the host\nplaces one that calls `IdentityFormController.submit`, e.g. pinned in\n`PaymentOnboardingView.primaryAction` (D62).",
     "extends": "StatefulWidget",
     "constructors": [
       {
@@ -16052,7 +16097,18 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "submitLabel",
-            "doc": ""
+            "doc": "The inline button's label; unused with a `controller`."
+          },
+          {
+            "name": "controller",
+            "type": "IdentityFormController?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "controller",
+            "doc": "Submits the form from a host button and hides the inline one."
           }
         ],
         "doc": ""
@@ -16080,7 +16136,14 @@
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": ""
+        "doc": "The inline button's label; unused with a `controller`."
+      },
+      {
+        "name": "controller",
+        "kind": "field",
+        "static": false,
+        "type": "IdentityFormController?",
+        "doc": "Submits the form from a host button and hides the inline one."
       }
     ],
     "copyWith": null
@@ -16198,7 +16261,7 @@
   "VerificationReview": {
     "kind": "class",
     "file": "lib/src/verification/verification_widgets.dart",
-    "doc": "Read-only review before submitting verification.\n\nValues marked `IdentityFieldSpec.maskInReview` show only the last four\ncharacters, keeping identity data to the minimum needed.",
+    "doc": "Read-only review before submitting verification.\n\nValues marked `IdentityFieldSpec.maskInReview` show only the last four\ncharacters, keeping identity data to the minimum needed.\n\nWith `inlineSubmit` false the review leaves its submit to the host, which\npins `submitButton` in a footer, e.g. `PaymentOnboardingView.primaryAction`\n(D62).",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -16281,6 +16344,17 @@
             "isSuper": false,
             "fieldName": "busy",
             "doc": ""
+          },
+          {
+            "name": "inlineSubmit",
+            "type": "bool",
+            "required": false,
+            "default": "true",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "inlineSubmit",
+            "doc": "Shows the submit button at the end of the review. False when the host\nplaces `submitButton` itself."
           }
         ],
         "doc": ""
@@ -16288,6 +16362,8 @@
     ],
     "getters": [],
     "statics": [
+      "isReady",
+      "submitButton",
       "mask"
     ],
     "members": [
@@ -16318,6 +16394,29 @@
         "static": false,
         "type": "bool",
         "doc": ""
+      },
+      {
+        "name": "inlineSubmit",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Shows the submit button at the end of the review. False when the host\nplaces `submitButton` itself."
+      },
+      {
+        "name": "isReady",
+        "kind": "static",
+        "static": true,
+        "type": "bool",
+        "signature": "static bool isReady( List<(DocumentRequirement, DocumentSlotState)> documents, )",
+        "doc": "Whether every document slot is uploaded, so submitting is allowed."
+      },
+      {
+        "name": "submitButton",
+        "kind": "static",
+        "static": true,
+        "type": "PaymentButton",
+        "signature": "static PaymentButton submitButton( BuildContext context, { Key? key, required List<(DocumentRequirement, DocumentSlotState)> documents, required Future<void> Function()? onSubmit, bool busy = false, })",
+        "doc": "The review's submit button: disabled until `isReady`, busy with the\nsubmitting label. The inline button is this one."
       },
       {
         "name": "mask",
@@ -23223,7 +23322,7 @@
   "PaymentOnboardingView": {
     "kind": "class",
     "file": "lib/src/views/onboarding_view.dart",
-    "doc": "Host-guided setup with current content before the task list on phones.",
+    "doc": "Host-guided setup with current content before the task list on phones.\n\n`primaryAction`, with at most one quiet `secondaryAction`, is the current\nstep's submit. Given a bounded height the content scrolls and the actions\npin to a footer at the bottom (D62); inside a scroll view they follow the\ncontent. A step's form then leaves its own button out: `IdentityForm`\ntakes an `IdentityFormController`, and `VerificationReview` takes\n`inlineSubmit: false` with `VerificationReview.submitButton` here. Without\nactions the step's content keeps its own inline button, as before.",
     "extends": "StatefulWidget",
     "constructors": [
       {
@@ -23317,6 +23416,28 @@
             "isSuper": false,
             "fieldName": "onCompleted",
             "doc": "Host action for leaving the completed onboarding flow."
+          },
+          {
+            "name": "primaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "primaryAction",
+            "doc": "The current step's submit, pinned at the bottom (D62). Hidden while\n`pending` or `completed`, when the step's content isn't shown."
+          },
+          {
+            "name": "secondaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "secondaryAction",
+            "doc": "Quiet only (D59), under `primaryAction`."
           }
         ],
         "doc": ""
@@ -23380,6 +23501,20 @@
         "static": false,
         "type": "VoidCallback?",
         "doc": "Host action for leaving the completed onboarding flow."
+      },
+      {
+        "name": "primaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "The current step's submit, pinned at the bottom (D62). Hidden while\n`pending` or `completed`, when the step's content isn't shown."
+      },
+      {
+        "name": "secondaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "Quiet only (D59), under `primaryAction`."
       }
     ],
     "copyWith": null

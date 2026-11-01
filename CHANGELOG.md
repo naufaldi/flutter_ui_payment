@@ -1,3 +1,16 @@
+## UI review P7a (2026-11-01)
+
+- **Pinned submit in KYC onboarding (D62, #64).** `PaymentOnboardingView` takes `primaryAction` and one quiet `secondaryAction`, pinned in the shared footer when its height is bounded, full width on phones; the footer is hidden while `pending` or `completed`. New `IdentityFormController` (a `ChangeNotifier`): `submit()` runs the form's own validation and focus-first-error and resolves `false` when a field is invalid, and `busy` / `canSubmit` drive a host button. `IdentityForm.controller` hides the form's inline button. `VerificationReview.inlineSubmit: false` hides the review's button, and `VerificationReview.submitButton(…)` builds the same button (disabled until every document is uploaded, busy with "Submitting…") for the footer; `VerificationReview.isReady` exposes that rule. All additive: without a controller or `primaryAction` the inline buttons stay. The example's details, documents and review steps pin "Continue", "Continue to review" and "Submit for verification". To pin a step's submit:
+
+  ```dart
+  final identity = IdentityFormController(); // the host owns and disposes it
+  PaymentOnboardingView(title: title, tasks: tasks, primaryAction: PaymentButton(label: 'Continue', busy: identity.busy, onPressed: identity.submit), child: IdentityForm(fields: fields, controller: identity, onSubmit: save))
+  ```
+
+- **Header title never breaks inside a word (D59a, P5 regression).** When a header's title on one line and its "Label ›" link don't fit side by side, the link takes its own line under the header text, start-aligned with its 48 dp target, instead of taking half the row and breaking the title mid-word ("Transacti / ons" at 200% on a small phone). A ⋮ menu stays on the title row. No API change.
+- **History: list before the month's figures (#58).** The example's history page shows the month's payments, refunds and most-used method after the transaction list, so a transaction row is on the first screen at 100%. At 200% on an iPhone SE the first screen still ends before the first row (see #58).
+- **Example app bar.** "Demo tools" moved from its own app-bar icon into the settings sheet, so the bar keeps at most two trailing actions and step titles such as "Konfirmasi pembayaran" fit at 100%.
+
 ## UI review P7b (2026-11-01)
 
 - **Field labels above the box at large text (#73).** Above 1.5× text, `PaymentTextField`, `PaymentTextArea`, `PaymentCurrencyField`, `PaymentDateField`, `PaymentSelect` and the phone `PaymentSearchField` trigger show their label above the box, where it wraps, instead of a floating label that kept one line and ellipsized ("Date of birth (opt…"). The box keeps its height, so fields of different types still line up (#47). The label stays the field's spoken name, and tapping it focuses the field or opens the picker. While the label is above, the hint shows only when the field has focus, as it does behind a floating label. Normal text is unchanged. No API change. **Migration:** tests that find a field's label at 2× find it above the box; tests that read `InputDecoration.labelText` or `hintText` at 2× see null.

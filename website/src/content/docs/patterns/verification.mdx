@@ -104,9 +104,31 @@ VerificationStatusView(
 - The form validates every field on submit, shows errors on the relevant fields and moves focus to the first invalid one. Names accept any script; nothing limits them to ASCII.
 - Fields the host asks to correct (`highlightFields`, or `fieldsToFix` on the snapshot) are highlighted, and still-valid data does not have to be entered again.
 - Review shows only the last four characters of fields marked `maskInReview`. "Edit" sits in each section header and is spoken with its section name.
-- **Pinned action (D62).** Given a bounded height, for example as a screen's body, `VerificationIntro` pins Continue to a footer at the bottom, with the consent hint above it, and `VerificationStatusView` pins its first allowed action; the other actions stay in the content as hug buttons. Both take a `header` for host content that scrolls with them. Inside a scroll view the actions follow the content as before. `IdentityForm` and `VerificationReview` keep their submit at the end of the form inside `PaymentOnboardingView`.
+- **Pinned action (D62).** Given a bounded height, for example as a screen's body, `VerificationIntro` pins Continue to a footer at the bottom, with the consent hint above it, and `VerificationStatusView` pins its first allowed action; the other actions stay in the content as hug buttons. Both take a `header` for host content that scrolls with them. Inside a scroll view the actions follow the content as before.
+- **Pinned submit in onboarding (D62, UI review P7a).** `PaymentOnboardingView` takes `primaryAction` and one quiet `secondaryAction` and pins them in the same footer. For the details step, give `IdentityForm` an `IdentityFormController` and make the pinned button call `controller.submit()`: it runs the form's own validation and focus-first-error, resolves `false` when a field is invalid, and exposes `busy` and `canSubmit`. The form then has no inline button. For review, pass `inlineSubmit: false` and pin `VerificationReview.submitButton(context, documents: …, onSubmit: …, busy: …)`, which keeps the same "every document uploaded" rule and submitting label; the missing-documents banner stays in the content. Without a controller or `primaryAction` both keep their inline button.
 - The status view offers only `allowedActions` from your `VerificationSnapshot`. There is never a bypass action, and a network failure never turns into "rejected".
 - A submit that timed out (`outcomeUnknown: true`) is shown as not confirmed yet; hold new submits until your host has checked the previous request.
+
+To pin the details step's submit:
+
+```dart
+final identity = IdentityFormController(); // the host owns and disposes it
+PaymentOnboardingView(
+  title: 'Verifikasi identitas',
+  tasks: tasks,
+  primaryAction: PaymentButton(
+    label: 'Lanjutkan',
+    busy: identity.busy,
+    onPressed: identity.submit,
+  ),
+  child: IdentityForm(fields: fields, controller: identity, onSubmit: host.saveIdentity),
+)
+```
+
+<Screens>
+  <Screen name="ios_se_kyc_onboarding_en_200" alt="KYC details on iPhone SE at 200% text: the form scrolls and Continue is pinned at the bottom." caption="Details, iPhone SE, 200%" />
+  <Screen name="ios_se_kyc_review_en_200" alt="KYC review on iPhone SE at 200% text: Submit for verification is pinned at the bottom." caption="Review, iPhone SE, 200%" />
+</Screens>
 
 Identity fields support the search kind for long host option lists. Consecutive fields with the same group share one field-group legend.
 
