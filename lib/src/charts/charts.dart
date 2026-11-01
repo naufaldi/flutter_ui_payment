@@ -730,7 +730,7 @@ class ChartModule extends StatelessWidget {
       ChartState.loading => ClipRect(
         child: SingleChildScrollView(
           child: LoadingSkeleton(
-            rows: math.max(1, ((height ?? compactHeight) / 48).floor()),
+            rows: math.max(1, ((height ?? compactHeight) / 62).floor()),
             leading: false,
           ),
         ),
@@ -777,10 +777,16 @@ class ChartModule extends StatelessWidget {
                   if (headline != null)
                     AmountText(headline!, variant: AmountTextVariant.large)
                   else if (state == ChartState.loading)
+                    // A skeleton row is a two-line list row (62 dp); the
+                    // 48 dp headline slot shows its top and clips the rest.
                     const SizedBox(
                       height: 48,
                       child: ClipRect(
-                        child: LoadingSkeleton(rows: 1, leading: false),
+                        child: OverflowBox(
+                          alignment: AlignmentDirectional.topStart,
+                          maxHeight: double.infinity,
+                          child: LoadingSkeleton(rows: 1, leading: false),
+                        ),
                       ),
                     )
                   else
