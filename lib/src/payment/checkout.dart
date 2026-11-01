@@ -255,14 +255,12 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
             ),
       ),
     );
-    final field = above
-        ? FieldLabelAbove(
-            label: label,
-            enabled: !(FieldGroupScope.of(context)?.disabled ?? false),
-            onTap: _focus.requestFocus,
-            child: Semantics(label: label, child: input),
-          )
-        : input;
+    final field = FieldLabelAbove(
+      label: above ? label : null,
+      enabled: !(FieldGroupScope.of(context)?.disabled ?? false),
+      onTap: _focus.requestFocus,
+      child: Semantics(label: above ? label : null, child: input),
+    );
     assert(
       widget.currencies.length < 2 ||
           (widget.onCurrencyChanged != null &&

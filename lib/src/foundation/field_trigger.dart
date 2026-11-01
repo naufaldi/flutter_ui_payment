@@ -66,7 +66,7 @@ class _FieldTriggerState extends State<FieldTrigger> {
               label: label,
               hideLabel: hideLabel,
               labelAbove: above,
-              hint: widget.hint,
+              hint: above && !focused ? null : widget.hint,
               enabled: widget.enabled,
               contentPadding: fieldContentPadding(
                 t,
@@ -115,14 +115,12 @@ class _FieldTriggerState extends State<FieldTrigger> {
           : SemanticsValidationResult.none,
       onTap: widget.enabled ? widget.onPressed : null,
       excludeSemantics: true,
-      child: above
-          ? FieldLabelAbove(
-              label: label,
-              enabled: widget.enabled,
-              onTap: widget.onPressed,
-              child: field,
-            )
-          : field,
+      child: FieldLabelAbove(
+        label: above ? label : null,
+        enabled: widget.enabled,
+        onTap: widget.onPressed,
+        child: field,
+      ),
     );
   }
 }

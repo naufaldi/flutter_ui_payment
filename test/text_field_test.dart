@@ -366,6 +366,53 @@ void main() {
       );
     });
 
+    testWidgets('the hint shows on focus, never ellipsized at rest', (t) async {
+      await phase4.setSurface(t, const Size(320, 1000));
+      const hint = 'Choose your occupation from the list';
+      await t.pumpWidget(
+        phase4.contentHost(
+          Column(
+            children: [
+              const PaymentTextField(label: 'Full name', hint: hint),
+              PaymentSelect<int>(
+                label: 'Occupation',
+                hint: hint,
+                options: const [PaymentSelectOption(value: 1, label: 'Bali')],
+                value: null,
+                onChanged: (_) {},
+              ),
+            ],
+          ),
+          scale: 2,
+        ),
+      );
+      InputDecoration decoration(int i) => t
+          .widgetList<InputDecorator>(find.byType(InputDecorator))
+          .elementAt(i)
+          .decoration;
+      expect(decoration(0).hintText, isNull);
+      expect(decoration(1).hintText, isNull);
+      await t.tap(find.byType(EditableText));
+      await t.pump();
+      expect(decoration(0).hintText, hint);
+    });
+
+    testWidgets('typed text survives crossing 1.5×', (t) async {
+      await phase4.setSurface(t, const Size(320, 1000));
+      Future<void> pump(double scale) => t.pumpWidget(
+        phase4.contentHost(
+          const PaymentTextField(label: 'Full name', initialValue: 'Ana'),
+          scale: scale,
+        ),
+      );
+      await pump(1);
+      await t.enterText(find.byType(EditableText), 'Ana Putri');
+      await pump(2);
+      expect(find.text('Ana Putri'), findsOneWidget);
+      await pump(1);
+      expect(find.text('Ana Putri'), findsOneWidget);
+    });
+
     testWidgets('normal text keeps the floating label', (t) async {
       for (final scale in [1.0, 1.5]) {
         await t.pumpWidget(

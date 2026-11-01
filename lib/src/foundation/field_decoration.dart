@@ -55,9 +55,11 @@ class FieldMessage extends StatelessWidget {
 /// moves above the box and wraps there (#73).
 bool fieldLabelAbove(BuildContext context) => PaymentType.isLarge(context);
 
-/// Internal: a field's label on its own lines above the box, used when
-/// [fieldLabelAbove] is true. The label is visual only: the field keeps
-/// its accessible name. [onTap] lets a text field take focus from it.
+/// Internal: a field's label on its own lines above the box, shown when
+/// [label] is non-null ([fieldLabelAbove]). Fields wrap their box in it at
+/// every text scale, so crossing 1.5× keeps the input's state. The label is
+/// visual only: the field keeps its accessible name. [onTap] lets a text
+/// field take focus from it.
 class FieldLabelAbove extends StatelessWidget {
   const FieldLabelAbove({
     super.key,
@@ -66,7 +68,7 @@ class FieldLabelAbove extends StatelessWidget {
     required this.child,
     this.onTap,
   });
-  final String label;
+  final String? label;
   final bool enabled;
   final Widget child;
   final VoidCallback? onTap;
@@ -79,17 +81,18 @@ class FieldLabelAbove extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: theme.space(PaymentSpace.inline),
       children: [
-        ExcludeSemantics(
-          child: GestureDetector(
-            onTap: enabled ? onTap : null,
-            child: Text(
-              label,
-              style: type.label.copyWith(
-                color: enabled ? theme.textSecondary : theme.disabled,
+        if (label != null)
+          ExcludeSemantics(
+            child: GestureDetector(
+              onTap: enabled ? onTap : null,
+              child: Text(
+                label!,
+                style: type.label.copyWith(
+                  color: enabled ? theme.textSecondary : theme.disabled,
+                ),
               ),
             ),
           ),
-        ),
         child,
       ],
     );
@@ -97,7 +100,9 @@ class FieldLabelAbove extends StatelessWidget {
 }
 
 /// [labelAbove] drops the floating label; the caller shows it with
-/// [FieldLabelAbove] instead.
+/// [FieldLabelAbove] instead. Pass the hint only while focused then: with
+/// no label in the box Material shows it at rest, where a long one would
+/// ellipsize; a floating label hides it the same way.
 InputDecoration paymentFieldDecoration(
   BuildContext context, {
   required String label,
