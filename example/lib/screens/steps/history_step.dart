@@ -69,32 +69,6 @@ class HistoryStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: t.space(PaymentSpace.group),
         children: [
-          PaymentDateRangePicker(
-            label: s.dateRange,
-            value: c.historyRange,
-            onChanged: c.setHistoryRange,
-            firstDate: DateTime(2026),
-            lastDate: now,
-            presets: [
-              PaymentDatePreset(
-                label: s.last7Days,
-                start: DateUtils.dateOnly(
-                  now,
-                ).subtract(const Duration(days: 6)),
-                end: now,
-              ),
-              PaymentDatePreset(
-                label: s.presetThisMonth,
-                start: month,
-                end: now,
-              ),
-              PaymentDatePreset(
-                label: s.presetLastMonth,
-                start: previous,
-                end: month.subtract(const Duration(days: 1)),
-              ),
-            ],
-          ),
           if (active) ...[
             PaymentChipList(
               children: [
@@ -156,6 +130,38 @@ class HistoryStep extends StatelessWidget {
                 ? null
                 : c.historyError!.safeMessage ?? s.historyFailed,
             onRetry: c.retryHistory,
+            // The date range is a calendar button on the search line, so the
+            // filters take one line at every text size; the chosen range
+            // shows as the date chip above (D63a).
+            searchActions: [
+              PaymentDateRangePicker.button(
+                key: const Key('history-range'),
+                label: s.dateRange,
+                value: c.historyRange,
+                onChanged: c.setHistoryRange,
+                firstDate: DateTime(2026),
+                lastDate: now,
+                presets: [
+                  PaymentDatePreset(
+                    label: s.last7Days,
+                    start: DateUtils.dateOnly(
+                      now,
+                    ).subtract(const Duration(days: 6)),
+                    end: now,
+                  ),
+                  PaymentDatePreset(
+                    label: s.presetThisMonth,
+                    start: month,
+                    end: now,
+                  ),
+                  PaymentDatePreset(
+                    label: s.presetLastMonth,
+                    start: previous,
+                    end: month.subtract(const Duration(days: 1)),
+                  ),
+                ],
+              ),
+            ],
           ),
           // History is for finding a payment, so the list leads at every
           // text size and the spending chart and the month's figures follow
