@@ -5,17 +5,22 @@ void main() {
   test('calendar dates retain host calendar and locale', () {
     final en = PaymentLocalizations('en');
     final id = PaymentLocalizations('id');
-    expect(en.formatDate(DateTime(2026, 10, 30)), '30 Oct 2026');
-    expect(id.formatDate(DateTime(2026, 10, 30)), '30 Okt 2026');
+    expect(en.formatDate(DateTime(2026, 10, 30)), '30\u00A0Oct\u00A02026');
+    expect(id.formatDate(DateTime(2026, 10, 30)), '30\u00A0Okt\u00A02026');
     for (final entry in {5: 'Mei', 8: 'Agu', 12: 'Des'}.entries) {
       expect(
         id.formatDate(DateTime(2026, entry.key, 1)),
-        '1 ${entry.value} 2026',
+        '1\u00A0${entry.value}\u00A02026',
       );
     }
-    expect(en.formatDate(DateTime.utc(2026, 10, 30, 23, 30)), '30 Oct 2026');
+    expect(
+      en.formatDate(DateTime.utc(2026, 10, 30, 23, 30)),
+      '30\u00A0Oct\u00A02026',
+    );
     final timed = DateTime(2026, 10, 30, 14, 5);
     expect(en.formatDateTime(timed), startsWith(en.formatDate(timed)));
+    expect(en.formatDateTime(timed), '30\u00A0Oct\u00A02026, 14:05');
+    expect(id.formatDateTime(timed), '30\u00A0Okt\u00A02026, 14.05');
     expect(en.dateInputPattern, 'DD/MM/YYYY');
     expect(id.dateInputPattern, 'DD/MM/YYYY');
     for (final pattern in ['MM/DD/YYYY', 'YYYY-MM-DD', 'DD.MM.YYYY']) {

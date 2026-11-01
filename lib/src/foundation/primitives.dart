@@ -17,6 +17,7 @@ import 'token_resolvers.dart';
 import 'tap_target.dart';
 import 'first_line.dart';
 import 'button_copy.dart';
+import 'section_layout.dart';
 
 /// The five amount looks. Nothing else exists.
 enum AmountTextVariant {
@@ -194,6 +195,7 @@ class InfoRow extends StatelessWidget {
     this.emphasis = false,
     this.caption,
     this.trailing,
+    this.reference = false,
   }) : assert(value != null || valueText != null);
 
   final String label;
@@ -202,9 +204,16 @@ class InfoRow extends StatelessWidget {
   final String? caption;
   final bool emphasis;
 
-  /// Optional action after the value, such as a 48 dp copy button. Label and
-  /// value keep the top line; the action centers against them.
+  /// Optional action after the value, such as a 48 dp copy button. It
+  /// centres on the first line, and an icon button's glyph sits on the value
+  /// edge while its 48 dp target stays inside the row.
   final Widget? trailing;
+
+  /// Shows [valueText] as a reference or ID: tabular figures in the
+  /// reference font, end-aligned with the other values and without a fill
+  /// (D57). Pair it with a [PaymentCopyButton] in [trailing]. Use
+  /// [PaymentCode] only for multi-line technical text.
+  final bool reference;
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +230,7 @@ class InfoRow extends StatelessWidget {
           // A value that wraps under its label at large text starts at the
           // left edge, as the label does.
           textAlign: large ? TextAlign.start : TextAlign.end,
-          style: type.label,
+          style: reference ? type.reference(type.label) : type.label,
         );
     final labelWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,11 +283,12 @@ class InfoRow extends StatelessWidget {
       child: MergeSemantics(
         child: trailing == null
             ? row
-            : Row(
-                children: [
-                  Expanded(child: row),
-                  trailing!,
-                ],
+            : FirstLineRow(
+                text: row,
+                trailing: TextActionEdge.end(
+                  child: EdgeAlignedIcon(child: trailing!),
+                ),
+                trailingGap: 0,
               ),
       ),
     );
@@ -911,34 +921,18 @@ class PaymentSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: theme.space(PaymentSpace.related),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (title != null) ...[
-            Row(
-              children: [
-                Expanded(
-                  child: Semantics(
-                    header: true,
-                    child: Text(title!, style: PaymentType.of(context).heading),
-                  ),
-                ),
-                if (trailing != null) TextActionEdge.end(child: trailing!),
-              ],
-            ),
-            SizedBox(
-              height: trailing == null
-                  ? theme.space(PaymentSpace.related) * 0.5
-                  : 0,
-            ),
-          ],
-          child,
-        ],
-      ),
+    final type = PaymentType.of(context);
+    // One 36 dp header band with or without an action; the action's 48 dp
+    // target overhangs the band into the section padding (#62).
+    return SectionLayout(
+      padding: theme.space(PaymentSpace.related),
+      line: lineHeightOf(context, type.heading),
+      gap: theme.space(PaymentSpace.related),
+      title: title == null
+          ? null
+          : Semantics(header: true, child: Text(title!, style: type.heading)),
+      trailing: trailing == null ? null : TextActionEdge.end(child: trailing!),
+      body: child,
     );
   }
 }

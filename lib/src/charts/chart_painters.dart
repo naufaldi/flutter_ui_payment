@@ -24,6 +24,50 @@ class ChartPainter extends CustomPainter {
     this.zeroBased = false,
     this.selected,
   });
+
+  /// Line height of the value label band above the plot (D58): one caption
+  /// line per series at the clamped text scale. Zero for sparklines.
+  double get band => spark
+      ? 0
+      : series.length *
+            scaler.scale(style.fontSize ?? 13) *
+            (style.height ?? 1);
+
+  /// Whether every settled point gets a marker (D58: series of ≤ 12 points);
+  /// longer series mark the last point and the selected one.
+  bool get markEvery => !spark && points.length <= 12;
+
+  late final List<double> _ticks = niceTicks(
+    series
+        .expand((s) => s.points)
+        .map((p) => chartReading(p, unit))
+        .whereType<num>()
+        .map((v) => v.toDouble()),
+    zeroBased: bars || zeroBased,
+  );
+
+  String get _currency =>
+      points.where((p) => p.value != null).firstOrNull?.value?.currency ??
+      'IDR';
+
+  List<String> get _tickLabels => [
+    for (final tick in _ticks)
+      formatChartValue(l10n, tick, unit, currency: _currency, axis: true),
+  ];
+
+  // The y gutter fits the widest scaled tick label plus a related gap, so
+  // "Rp600K" never touches the plot at 200% (#62).
+  late final double _gutter = math.max(
+    40.0,
+    _tickLabels.map((l) => text(l).width).fold(0.0, math.max) + 8,
+  );
+
+  /// Horizontal centre of column [i] in [area].
+  double columnX(int i, Rect area) => bars
+      ? area.left + area.width * (i + .5) / points.length
+      : points.length == 1
+      ? area.center.dx
+      : area.left + area.width * i / (points.length - 1);
   final List<PaymentChartSeries> series;
   final PaymentChartUnit unit;
   final List<Color> colors;
@@ -38,11 +82,20 @@ class ChartPainter extends CustomPainter {
   final bool zeroBased;
   final int? selected;
 
-  Rect plot(Size size) => Rect.fromLTRB(
-    spark ? 4 : (showY && size.width >= 200 ? 76 : 8),
-    spark ? 5 : 22,
-    size.width - 8,
-    math.max(spark ? 5 : 22, size.height - (spark ? 5 : (showX ? 28 : 8))),
+  Rect plot(Size size) {
+    final top = spark ? 5.0 : band + 4;
+    return Rect.fromLTRB(
+      spark ? 4 : (showY && size.width >= 200 ? _gutter : 8),
+      top,
+      size.width - 8,
+      math.max(top, size.height - (spark ? 5 : (showX ? _xBand : 8))),
+    );
+  }
+
+  // Room under the plot for the x labels at the clamped text scale.
+  double get _xBand => math.max(
+    28,
+    scaler.scale(style.fontSize ?? 13) * (style.height ?? 1) + 8,
   );
 
   TextPainter text(String value) => TextPainter(
@@ -58,16 +111,9 @@ class ChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final area = plot(size);
     if (series.isEmpty || points.isEmpty || area.height <= 0) return;
-    final values = series
-        .expand((s) => s.points)
-        .map((p) => chartReading(p, unit))
-        .whereType<num>()
-        .map((v) => v.toDouble());
-    final ticks = niceTicks(values, zeroBased: bars || zeroBased);
+    final ticks = _ticks;
     if (!spark) {
-      final currency =
-          points.where((p) => p.value != null).firstOrNull?.value?.currency ??
-          'IDR';
+      final tickLabels = _tickLabels;
       for (var i = 0; i < ticks.length; i++) {
         final y = area.bottom - area.height * i / 2;
         if (gridY) {
@@ -80,15 +126,7 @@ class ChartPainter extends CustomPainter {
           );
         }
         if (showY && size.width >= 200) {
-          final label = text(
-            formatChartValue(
-              l10n,
-              ticks[i],
-              unit,
-              currency: currency,
-              axis: true,
-            ),
-          );
+          final label = text(tickLabels[i]);
           if (i != 1 || label.height < area.height / 2) {
             label.paint(canvas, Offset(0, y - label.height / 2));
           }
@@ -107,11 +145,7 @@ class ChartPainter extends CustomPainter {
             (size.width < 200 || i % stride != 0)) {
           continue;
         }
-        final x = bars
-            ? area.left + area.width * (i + .5) / points.length
-            : points.length == 1
-            ? area.center.dx
-            : area.left + area.width * i / (points.length - 1);
+        final x = columnX(i, area);
         final label = labels[i];
         final left = (x - label.width / 2).clamp(
           0.0,
@@ -223,31 +257,108 @@ class ChartPainter extends CustomPainter {
               canvas.drawRect(square, Paint()..color = theme.surface);
               canvas.drawRect(square, paint..style = PaintingStyle.stroke);
             case ChartPointStatus.settled:
-              if (i == offsets.length - 1 ||
+              final isolated =
                   (i == 0 || offsets[i - 1] == null) &&
-                      (i == offsets.length - 1 || offsets[i + 1] == null)) {
+                  (i == offsets.length - 1 || offsets[i + 1] == null);
+              if (!spark && i == selected) {
+                // Emphasised below, after every series is drawn.
+              } else if (isolated || (spark && i == offsets.length - 1)) {
                 canvas.drawCircle(point, spark ? 2 : 3.5, paint);
+              } else if (markEvery || (!spark && i == offsets.length - 1)) {
+                // A 3 dp ring with a surface fill on each period (D58).
+                canvas.drawCircle(point, 3, Paint()..color = theme.surface);
+                canvas.drawCircle(
+                  point,
+                  3,
+                  paint..style = PaintingStyle.stroke,
+                );
               }
           }
         }
       }
     }
-    if (selected != null && selected! < points.length) {
-      final x = bars
-          ? area.left + area.width * (selected! + .5) / points.length
-          : points.length == 1
-          ? area.center.dx
-          : area.left + area.width * selected! / (points.length - 1);
+    if (spark) {
+      if (selected != null && selected! < points.length) {
+        final x = columnX(selected!, area);
+        canvas.drawLine(
+          Offset(x, area.top),
+          Offset(x, area.bottom),
+          Paint()
+            ..color = theme.outline
+            ..strokeWidth = 1,
+        );
+      }
+      canvas.restore();
+      return;
+    }
+    canvas.restore();
+    if (selected == null || selected! >= points.length) return;
+    // D58: a guide line from the selected point or bar top up to the value
+    // label band, and an emphasised marker on the selected point or bar.
+    final i = selected!;
+    var top = area.bottom;
+    if (bars) {
+      Rect? group;
+      for (final rects in grouped) {
+        final rect = rects[i];
+        if (rect != null) group = group?.expandToInclude(rect) ?? rect;
+      }
+      if (group != null) {
+        // An accent outline 2 dp outside the bar (or the group's bars),
+        // open at the baseline, so a fill in the accent still reads.
+        canvas.save();
+        canvas.clipRect(Rect.fromLTRB(0, 0, size.width, area.bottom));
+        canvas.drawRRect(
+          RRect.fromRectAndCorners(
+            Rect.fromLTRB(
+              group.left - selectedRingOffset,
+              group.top - selectedRingOffset,
+              group.right + selectedRingOffset,
+              area.bottom + 4,
+            ),
+            topLeft: const Radius.circular(2 + selectedRingOffset),
+            topRight: const Radius.circular(2 + selectedRingOffset),
+          ),
+          Paint()
+            ..color = theme.accent
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.5,
+        );
+        canvas.restore();
+        top = group.top - selectedRingOffset - .75;
+      }
+    } else {
+      for (var j = 0; j < series.length; j++) {
+        final point = linePoints(
+          series[j].points,
+          area,
+          zeroBased: zeroBased,
+          ticks: ticks,
+          unit: unit,
+        )[i];
+        if (point == null) continue;
+        top = math.min(top, point.dy);
+        if (series[j].points[i].status == ChartPointStatus.settled) {
+          canvas.drawCircle(point, 6, Paint()..color = theme.surface);
+          canvas.drawCircle(point, 4.5, Paint()..color = colors[j]);
+        }
+      }
+    }
+    final x = columnX(i, area);
+    final from = bars ? top : top - 7;
+    if (from > band) {
       canvas.drawLine(
-        Offset(x, area.top),
-        Offset(x, area.bottom),
+        Offset(x, from),
+        Offset(x, band),
         Paint()
-          ..color = theme.outline
+          ..color = theme.border
           ..strokeWidth = 1,
       );
     }
-    canvas.restore();
   }
+
+  /// Distance from the selected bar's edge to the centre of its outline.
+  static const selectedRingOffset = 2.75;
 
   @override
   bool shouldRepaint(ChartPainter oldDelegate) => true;

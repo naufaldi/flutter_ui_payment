@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter_ui_payment/src/charts/chart_geometry.dart';
+import 'package:flutter_ui_payment/src/charts/chart_painters.dart';
 
 Widget host(
   Widget child, {
@@ -39,6 +40,21 @@ const points = [
   ),
   ChartPoint(label: '22 Oct', value: null),
 ];
+const weeks = [
+  ChartPoint(label: 'W1', value: Money.idr(100000)),
+  ChartPoint(label: 'W2', value: Money.idr(350000)),
+  ChartPoint(label: 'W3', value: Money.idr(200000)),
+  ChartPoint(label: 'W4', value: Money.idr(420000)),
+];
+String valueText(WidgetTester tester) => tester
+    .widgetList<Text>(
+      find.descendant(
+        of: find.byKey(const ValueKey('payment-chart-value')),
+        matching: find.byType(Text),
+      ),
+    )
+    .map((t) => t.data)
+    .join();
 void main() {
   test('geometry handles zero, missing, outliers and frame bounds', () {
     final rects = barRects(const [
@@ -194,15 +210,19 @@ void main() {
   });
   testWidgets('hover readout and sparkline sizing', (tester) async {
     await tester.pumpWidget(
-      host(const SizedBox(height: 180, child: PaymentBarChart(points: points))),
+      host(const SizedBox(height: 180, child: PaymentBarChart(points: weeks))),
     );
+    expect(valueText(tester), startsWith('W4 ·'));
     final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await mouse.addPointer(location: Offset.zero);
-    await mouse.moveTo(
-      tester.getTopLeft(find.byType(PaymentBarChart)) + const Offset(105, 70),
-    );
+    final box = tester.getRect(find.byType(PaymentBarChart));
+    await mouse.moveTo(box.topRight + const Offset(-200, 90));
     await tester.pump();
-    expect(find.textContaining('1 Oct ·'), findsOneWidget);
+    expect(valueText(tester), isNot(startsWith('W4 ·')));
+    // Leaving returns to rest.
+    await mouse.moveTo(box.bottomRight + const Offset(10, 10));
+    await tester.pump();
+    expect(valueText(tester), startsWith('W4 ·'));
     await mouse.removePointer();
     await tester.pumpWidget(
       host(const Center(child: PaymentSparkline(points: points))),
@@ -216,4 +236,230 @@ void main() {
       findsNothing,
     );
   });
+  for (final bars in [false, true]) {
+    final kind = bars ? 'bar' : 'line';
+    Widget chart({bool inspectable = true}) => SizedBox(
+      height: 180,
+      child: bars
+          ? PaymentBarChart(points: weeks, inspectable: inspectable)
+          : PaymentLineChart(points: weeks, inspectable: inspectable),
+    );
+    testWidgets('$kind chart shows the latest exact value at rest (D58)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(host(chart(), locale: 'id'));
+      expect(valueText(tester), 'W4 · Rp420.000');
+      final rest = tester.getSize(find.byType(CustomPaint).last);
+      final label = tester.getRect(
+        find.byKey(const ValueKey('payment-chart-value')),
+      );
+      final height = tester.getSize(find.byType(SizedBox).first).height;
+      // A tap on another period selects it, with no toggle-off.
+      final plot = tester.getRect(find.byType(GestureDetector).last);
+      await tester.tapAt(Offset(plot.left + 90, plot.center.dy));
+      await tester.pump();
+      final tapped = valueText(tester);
+      expect(tapped, isNot('W4 · Rp420.000'));
+      expect(tapped, contains('Rp'));
+      // The painter receives the tapped period, not the rest one.
+      ChartPainter painter() => tester
+          .widgetList<CustomPaint>(find.byType(CustomPaint))
+          .map((p) => p.painter)
+          .whereType<ChartPainter>()
+          .single;
+      expect(painter().selected, isNot(3));
+      await tester.tapAt(Offset(plot.left + 90, plot.center.dy));
+      await tester.pump();
+      expect(valueText(tester), tapped);
+      // A drag moves it to the end.
+      await tester.dragFrom(
+        Offset(plot.left + 90, plot.center.dy),
+        Offset(plot.width - 90, 0),
+      );
+      await tester.pump();
+      expect(valueText(tester), 'W4 · Rp420.000');
+      // The label band and the chart keep their geometry.
+      expect(tester.getSize(find.byType(CustomPaint).last), rest);
+      expect(
+        tester
+            .getRect(find.byKey(const ValueKey('payment-chart-value')))
+            .bottom,
+        label.bottom,
+      );
+      expect(tester.getSize(find.byType(SizedBox).first).height, height);
+      expect(painter().markEvery, isTrue);
+      expect(painter().selected, 3);
+    });
+    testWidgets('$kind chart without inspection still labels its rest value', (
+      tester,
+    ) async {
+      await tester.pumpWidget(host(chart(inspectable: false)));
+      expect(valueText(tester), 'W4 · Rp420,000');
+      await tester.tap(find.byType(bars ? PaymentBarChart : PaymentLineChart));
+      await tester.pump();
+      expect(valueText(tester), 'W4 · Rp420,000');
+    });
+  }
+  test('series longer than 12 points mark only the last and selected', () {
+    final long = [
+      for (var i = 0; i < 13; i++)
+        ChartPoint(label: '$i', value: Money.idr(i * 1000)),
+    ];
+    final theme = PaymentTheme.fromColorScheme(
+      ColorScheme.fromSeed(seedColor: Colors.blue),
+    );
+    ChartPainter painter(List<ChartPoint> points) => ChartPainter(
+      series: [PaymentChartSeries(label: '', points: points)],
+      unit: PaymentChartUnit.money,
+      colors: const [Colors.blue],
+      showX: true,
+      showY: true,
+      gridX: false,
+      gridY: true,
+      theme: theme,
+      l10n: PaymentLocalizations('en'),
+      style: const TextStyle(fontSize: 13, height: 18 / 13),
+      scaler: TextScaler.noScaling,
+    );
+    expect(painter(long).markEvery, isFalse);
+    expect(painter(long.take(12).toList()).markEvery, isTrue);
+  });
+  test('the selected bar gets an accent outline (D58)', () {
+    for (final brightness in Brightness.values) {
+      final theme = PaymentTheme.fromColorScheme(
+        ColorScheme.fromSeed(seedColor: Colors.blue, brightness: brightness),
+      );
+      ChartPainter painter(int? selected) => ChartPainter(
+        series: const [PaymentChartSeries(label: '', points: weeks)],
+        unit: PaymentChartUnit.money,
+        colors: [theme.accent],
+        showX: true,
+        showY: true,
+        gridX: false,
+        gridY: true,
+        theme: theme,
+        l10n: PaymentLocalizations('en'),
+        style: const TextStyle(fontSize: 13, height: 18 / 13),
+        scaler: TextScaler.noScaling,
+        bars: true,
+        selected: selected,
+      );
+      const size = Size(320, 180);
+      List<RRect> outlines(int? selected) {
+        final canvas = _RecordingCanvas();
+        painter(selected).paint(canvas, size);
+        return [
+          for (final (rrect, paint) in canvas.rrects)
+            if (paint.style == PaintingStyle.stroke &&
+                paint.color.toARGB32() == theme.accent.toARGB32())
+              rrect,
+        ];
+      }
+
+      expect(outlines(null), isEmpty);
+      for (final selected in [1, 3]) {
+        final p = painter(selected);
+        final area = p.plot(size);
+        final bar = groupedBarRects(p.series, area, p.unit).single[selected]!;
+        final outline = outlines(selected).single;
+        expect(outline.center.dx, closeTo(p.columnX(selected, area), .01));
+        expect(outline.left, bar.left - ChartPainter.selectedRingOffset);
+        expect(outline.top, bar.top - ChartPainter.selectedRingOffset);
+      }
+    }
+  });
+  testWidgets('the y gutter fits its scaled labels', (tester) async {
+    final gutters = <double>[];
+    for (final scale in [1.0, 2.0]) {
+      await tester.pumpWidget(
+        host(
+          const SizedBox(height: 180, child: PaymentBarChart(points: weeks)),
+          scale: scale,
+        ),
+      );
+      final painter = tester
+          .widgetList<CustomPaint>(find.byType(CustomPaint))
+          .map((p) => p.painter)
+          .whereType<ChartPainter>()
+          .single;
+      final area = painter.plot(const Size(320, 180));
+      final widest = [
+        'Rp0',
+        'Rp250K',
+        'Rp500K',
+      ].map((l) => painter.text(l).width).reduce((a, b) => a > b ? a : b);
+      expect(area.left, greaterThanOrEqualTo(widest + 8));
+      gutters.add(area.left);
+    }
+    // The gutter follows the labels instead of a fixed 76.
+    expect(gutters.last, greaterThan(gutters.first));
+  });
+  testWidgets('multi-series charts give each series one label line', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        const SizedBox(
+          height: 180,
+          child: PaymentBarChart(
+            series: [
+              PaymentChartSeries(label: 'This month', points: weeks),
+              PaymentChartSeries(label: 'Last month', points: weeks),
+            ],
+          ),
+        ),
+        scale: 2,
+      ),
+    );
+    final rows = find.descendant(
+      of: find.byKey(const ValueKey('payment-chart-value')),
+      matching: find.byType(Row),
+    );
+    String line(int i) => tester
+        .widgetList<Text>(
+          find.descendant(of: rows.at(i), matching: find.byType(Text)),
+        )
+        .map((t) => t.data)
+        .join();
+    expect(rows, findsNWidgets(2));
+    expect(line(0), 'W4 · This month · Rp420,000');
+    expect(line(1), 'Last month · Rp420,000');
+    // The series name gives way before the amount does.
+    expect(
+      find.descendant(of: rows.at(0), matching: find.byType(Flexible)),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('new periods return to rest; the same periods keep a pick', (
+    tester,
+  ) async {
+    Widget chart(List<ChartPoint> points) =>
+        host(SizedBox(height: 180, child: PaymentBarChart(points: points)));
+    await tester.pumpWidget(chart(weeks));
+    final plot = tester.getRect(find.byType(GestureDetector).last);
+    await tester.tapAt(Offset(plot.left + 90, plot.center.dy));
+    await tester.pump();
+    final picked = valueText(tester);
+    expect(picked, isNot(startsWith('W4')));
+    // A rebuild with equal periods keeps the selection.
+    await tester.pumpWidget(chart(List.of(weeks)));
+    expect(valueText(tester), picked);
+    // Fewer periods, then none: back to rest without an error.
+    await tester.pumpWidget(chart(weeks.take(1).toList()));
+    expect(valueText(tester), startsWith('W1'));
+    await tester.pumpWidget(chart(const []));
+    expect(tester.takeException(), isNull);
+  });
+}
+
+/// Records rounded rectangles and ignores every other canvas call.
+class _RecordingCanvas implements Canvas {
+  final rrects = <(RRect, Paint)>[];
+
+  @override
+  void drawRRect(RRect rrect, Paint paint) => rrects.add((rrect, paint));
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {}
 }

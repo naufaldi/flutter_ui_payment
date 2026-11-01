@@ -134,15 +134,17 @@ void main() {
         matching: find.text('Amount, highest first'),
       ),
     );
-    expect(find.text('STL-DEMO-0023'), findsOneWidget);
+    // Narrow ID titles show non-breaking hyphens (U+2011).
+    Finder id(String value) => find.text(value.replaceAll('-', '\u2011'));
+    expect(id('STL-DEMO-0023'), findsOneWidget);
     final search = find.descendant(
       of: find.byType(PaymentTextField),
       matching: find.byType(EditableText),
     );
     await t.enterText(search, '0023');
     await settle(t);
-    expect(find.text('STL-DEMO-0023'), findsOneWidget);
-    expect(find.text('STL-DEMO-0022'), findsNothing);
+    expect(id('STL-DEMO-0023'), findsOneWidget);
+    expect(id('STL-DEMO-0022'), findsNothing);
     await drain(t);
   });
   testWidgets('A04 fees and help tooltip', (t) async {

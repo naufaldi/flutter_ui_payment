@@ -255,6 +255,54 @@ void main() {
       final badge = tester.widget<Text>(find.text('2'));
       expect(badge.style!.fontSize, greaterThanOrEqualTo(12));
     });
+    testWidgets('selection shows weight and a start indicator; rows are 48', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        app(
+          Scaffold(
+            body: NavSidebar(
+              sections: const [
+                PaymentNavSection(
+                  items: [
+                    PaymentNavItem(id: 'a', label: 'Home', icon: Icons.home),
+                    PaymentNavItem(
+                      id: 'b',
+                      label: 'Payments',
+                      icon: Icons.list,
+                    ),
+                  ],
+                ),
+              ],
+              selectedId: 'a',
+              onSelected: (_) {},
+            ),
+          ),
+        ),
+      );
+      final selected = tester.widget<Text>(find.text('Home'));
+      final other = tester.widget<Text>(find.text('Payments'));
+      expect(selected.style!.fontWeight, FontWeight.w600);
+      expect(other.style!.fontWeight, FontWeight.w400);
+      final indicator = find.byKey(const ValueKey('nav-selected-indicator'));
+      expect(indicator, findsOneWidget);
+      final context = tester.element(indicator);
+      expect(
+        (tester.widget<DecoratedBox>(indicator).decoration as BoxDecoration)
+            .color,
+        PaymentTheme.of(context).accent,
+      );
+      expect(tester.getSize(indicator).width, 2);
+      expect(
+        tester.getTopLeft(indicator).dx,
+        tester.getTopLeft(find.byType(InkWell).first).dx,
+      );
+      expect(
+        tester.getTopLeft(find.text('Payments')).dy -
+            tester.getTopLeft(find.text('Home')).dy,
+        48,
+      );
+    });
   });
 
   group('Sheets', () {

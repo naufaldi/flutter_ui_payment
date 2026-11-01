@@ -25,6 +25,11 @@ enum PaymentTaskStatus {
 }
 
 /// Sequential setup tasks with distinct status marks.
+///
+/// A 2 dp connector joins each top-level task's mark to the next one. It
+/// only says the tasks run in this order: it looks the same for every
+/// status, so progress is read from the marks and their spoken status,
+/// never from the line. Sub-tasks have no connector (#62).
 class PaymentTaskList extends StatelessWidget {
   /// Creates a task list.
   const PaymentTaskList({super.key, required this.items});

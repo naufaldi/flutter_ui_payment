@@ -42,6 +42,7 @@ class PaymentPropertyList extends StatelessWidget {
                   emphasis: item.emphasis,
                   caption: item.caption,
                   trailing: item.trailing,
+                  reference: item.reference,
                 ),
             ],
           );
@@ -66,9 +67,14 @@ class PaymentPropertyList extends StatelessWidget {
                               item.value ??
                               Text(
                                 item.valueText!,
-                                style: item.emphasis
-                                    ? type.heading
-                                    : type.label,
+                                style: switch ((
+                                  item.emphasis,
+                                  item.reference,
+                                )) {
+                                  (true, _) => type.heading,
+                                  (false, true) => type.reference(type.label),
+                                  (false, false) => type.label,
+                                },
                               ),
                         ),
                         if (item.trailing != null) item.trailing!,
@@ -98,6 +104,7 @@ class PaymentPropertyListItem {
     this.emphasis = false,
     this.caption,
     this.trailing,
+    this.reference = false,
   }) : assert((valueText == null) != (value == null));
 
   /// Descriptive label.
@@ -115,6 +122,10 @@ class PaymentPropertyListItem {
   /// Supporting explanation.
   final String? caption;
 
-  /// Optional action after the value.
+  /// Optional action after the value, such as a [PaymentCopyButton].
   final Widget? trailing;
+
+  /// Shows [valueText] as a reference or ID: monospace tabular text on the
+  /// value edge, without a fill (D57). Add a copy button as [trailing].
+  final bool reference;
 }

@@ -109,6 +109,8 @@ Do: `format.format` for checkout amounts, as in the existing AmountText. Don't: 
 
 `PaymentLocalizations.formatDate` returns “30 Oct 2026” or “30 Okt 2026” without converting zones or using the time. Calendar dates belong to the host. `formatDateTime` converts an instant to device-local time and adds “14:05” or “14.05”. Never use it to re-zone a date of birth.
 
+Day, month and year are joined by no-break spaces (U+00A0), so a date never wraps as “1 Oct / 2026” at large text. `formatDateRange` glues the dash of a same-month range (“1–31 Oct 2026”) with U+2060 and lets a longer range wrap only after “– ”. Compare formatted dates with `\u00A0`, not a plain space.
+
 `dateInputPattern` is DD/MM/YYYY for both locales (Q12). A language change must not change the order in which an Indonesian user types their birth date. Grammar: DD, MM, YYYY exactly once, separated by the same /, . or - character. The pattern must stay visible as the hint; it does not replace a field label. The host supplies a delegate returning:
 
 ```dart

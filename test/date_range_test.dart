@@ -8,19 +8,19 @@ void main() {
     final en = PaymentLocalizations('en'), id = PaymentLocalizations('id');
     expect(
       en.formatDateRange(DateTime(2026, 10), DateTime(2026, 10, 31)),
-      '1–31 Oct 2026',
+      '1\u2060–\u206031\u00A0Oct\u00A02026',
     );
     expect(
       id.formatDateRange(DateTime(2026, 10), DateTime(2026, 10, 31)),
-      '1–31 Okt 2026',
+      '1\u2060–\u206031\u00A0Okt\u00A02026',
     );
     expect(
       en.formatDateRange(DateTime(2026, 9, 28), DateTime(2026, 10, 3)),
-      '28 Sep – 3 Oct 2026',
+      '28\u00A0Sep\u00A0– 3\u00A0Oct\u00A02026',
     );
     expect(
       en.formatDateRange(DateTime(2025, 12, 30), DateTime(2026, 1, 2)),
-      '30 Dec 2025 – 2 Jan 2026',
+      '30\u00A0Dec\u00A02025\u00A0– 2\u00A0Jan\u00A02026',
     );
     final p = PaymentDatePreset(
       label: 'This month',

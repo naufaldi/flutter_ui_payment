@@ -59,6 +59,12 @@ Use named series with identical period labels and ordering. Line and bar charts 
 
 Use a line for direction, bars for period comparisons, a meter for category proportions and a sparkline beside a KPI. Percent and number units read `measure`; money reads `value`. A measure of 45 means 45 percent. Missing readings remain gaps.
 
+### Exact value at rest (D58)
+
+The latest settled period is selected when the chart appears. One label in a fixed band above the plot gives its exact amount, such as "29 Okt · Rp420.000" in tabular figures, and a guide line runs from the point or bar top up to that label. The selected bar gets a thin accent outline 2 dp outside it, open at the baseline; with several series the outline wraps the whole group. Unselected bars keep their full colour, so every bar keeps 3:1 contrast with the surface. Tap a period, drag across the plot or hover with a mouse to select another; moving the mouse away returns to the latest. The band never changes height, so nothing below the chart moves. With `inspectable: false` the label still shows the latest value and the chart takes no gestures. Series of 12 points or fewer draw a small ring on every settled point; longer series ring the last point. There is no permanent label on every point: those collide at 200% text and in Indonesian.
+
+<Screen name="ios_catalog_chart_bar_selected" alt="Bar chart with a tapped bar selected and its exact value labelled" caption="A tapped bar" />
+
 Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to read a value. Meter `onSegmentPressed` activates full-width legend rows; the painted bar takes no taps.
 
 **Breaking:** `MeterSegment.color` is removed. Use the semantic category ramp. `MeterSegment.value` is optional; supply `measure` for numeric units. Point `value` and chart `points` are optional when using measures or series.
@@ -93,7 +99,7 @@ Use matching W1–W4 categories and a zero baseline for amounts.
 
 ## Accessibility
 
-A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. Pointer inspection on line/bar charts is supplemental; it has no keyboard focus target. Status is conveyed by shape and words as well as color.
+A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. The value label is supplemental: the summary already announces the latest amount, and selection has no keyboard focus target. Status is conveyed by shape and words as well as color.
 
 ## Used in
 

@@ -73,11 +73,40 @@ void main() {
           contentHost(table, scale: size.width == 800 ? 2 : 1, dark: dark),
         );
         expect(find.byType(Table), findsNothing);
-        expect(find.byType(InfoRow), findsOneWidget);
+        // Two facts per row plus the total.
+        expect(find.byType(InfoRow), findsNWidgets(5));
         expect(find.text('Total'), findsOneWidget);
         expect(t.takeException(), isNull);
       }
     }
+  });
+  testWidgets('narrow rows read as property rows on the value edge (D60)', (
+    t,
+  ) async {
+    await setSurface(t, const Size(393, 844));
+    await t.pumpWidget(contentHost(table));
+    // No "Label: value" text; every value is present.
+    expect(find.textContaining(':'), findsNothing);
+    for (final value in ['Rp2.500', 'Rp0', 'Within 10 min', 'Instant']) {
+      expect(find.text(value), findsWidgets);
+    }
+    // Labels start on the column edge and values end on the value edge.
+    final edge = t.getRect(find.byType(PaymentTable)).right;
+    expect(t.getTopRight(find.text('Rp0')).dx, edge);
+    expect(t.getTopRight(find.text('Instant')).dx, edge);
+    expect(
+      t.getTopLeft(find.text('Fee').first).dx,
+      t.getTopLeft(find.text('QRIS')).dx,
+    );
+    // A divider separates the last row from the Total footer.
+    final total = t.getTopLeft(find.text('Total')).dy;
+    final dividers = find
+        .byType(PaymentDivider)
+        .evaluate()
+        .map((e) => t.getTopLeft(find.byWidget(e.widget)).dy)
+        .where((y) => y < total && y > t.getTopLeft(find.text('Instant')).dy);
+    expect(dividers, isNotEmpty);
+    expect(t.takeException(), isNull);
   });
   testWidgets('table skeleton adapts and speaks loading', (t) async {
     for (final width in [320.0, 800.0]) {

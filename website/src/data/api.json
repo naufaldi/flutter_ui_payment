@@ -3767,7 +3767,7 @@
         "static": false,
         "type": "String",
         "signature": "String formatDateRange(DateTime start, DateTime end)",
-        "doc": "Calendar date in the host zone; unlike `formatDateTime`, no conversion\nto the device zone occurs and the time is ignored.\nCompact calendar range using the same localized month names as formatDate."
+        "doc": "Compact calendar range using the same localized month names as formatDate.\n\nEach date keeps its no-break spaces. The short same-month form\n(\"1–31 Oct 2026\") never breaks at its dash (U+2060 joins it); the\nspaced form keeps one break after \"– \" so a long range can wrap at\nlarge text without splitting a date (#65)."
       },
       {
         "name": "formatDate",
@@ -3775,7 +3775,7 @@
         "static": false,
         "type": "String",
         "signature": "String formatDate(DateTime value)",
-        "doc": ""
+        "doc": "Calendar date in the host zone; unlike `formatDateTime`, no conversion\nto the device zone occurs and the time is ignored. Day, month and year\nare joined by no-break spaces (U+00A0), so \"1 Oct 2026\" never wraps\ninside the date."
       },
       {
         "name": "languageCode",
@@ -3821,7 +3821,7 @@
         "static": false,
         "type": "String",
         "signature": "String formatDateTime(DateTime value)",
-        "doc": "\"30 Oct 2026, 14:05\" / \"30 Okt 2026, 14.05\" in the device time zone."
+        "doc": "\"30 Oct 2026, 14:05\" / \"30 Okt 2026, 14.05\" in the device time zone.\nThe date part uses `formatDate`'s no-break spaces."
       },
       {
         "name": "formatBytes",
@@ -6116,7 +6116,18 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "trailing",
-            "doc": "Optional action after the value, such as a 48 dp copy button. Label and\nvalue keep the top line; the action centers against them."
+            "doc": "Optional action after the value, such as a 48 dp copy button. It\ncentres on the first line, and an icon button's glyph sits on the value\nedge while its 48 dp target stays inside the row."
+          },
+          {
+            "name": "reference",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "reference",
+            "doc": "Shows `valueText` as a reference or ID: tabular figures in the\nreference font, end-aligned with the other values and without a fill\n(D57). Pair it with a `PaymentCopyButton` in `trailing`. Use\n`PaymentCode` only for multi-line technical text."
           }
         ],
         "doc": ""
@@ -6165,7 +6176,14 @@
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": "Optional action after the value, such as a 48 dp copy button. Label and\nvalue keep the top line; the action centers against them."
+        "doc": "Optional action after the value, such as a 48 dp copy button. It\ncentres on the first line, and an icon button's glyph sits on the value\nedge while its 48 dp target stays inside the row."
+      },
+      {
+        "name": "reference",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Shows `valueText` as a reference or ID: tabular figures in the\nreference font, end-aligned with the other values and without a fill\n(D57). Pair it with a `PaymentCopyButton` in `trailing`. Use\n`PaymentCode` only for multi-line technical text."
       }
     ],
     "copyWith": null
@@ -20575,7 +20593,18 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "trailing",
-            "doc": "Optional action after the value."
+            "doc": "Optional action after the value, such as a `PaymentCopyButton`."
+          },
+          {
+            "name": "reference",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "reference",
+            "doc": "Shows `valueText` as a reference or ID: monospace tabular text on the\nvalue edge, without a fill (D57). Add a copy button as `trailing`."
           }
         ],
         "doc": "Creates a fact. Supply either valueText or value."
@@ -20624,7 +20653,14 @@
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": "Optional action after the value."
+        "doc": "Optional action after the value, such as a `PaymentCopyButton`."
+      },
+      {
+        "name": "reference",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Shows `valueText` as a reference or ID: monospace tabular text on the\nvalue edge, without a fill (D57). Add a copy button as `trailing`."
       }
     ],
     "copyWith": null
@@ -21015,7 +21051,7 @@
   "PaymentTaskList": {
     "kind": "class",
     "file": "lib/src/content/task_list.dart",
-    "doc": "Sequential setup tasks with distinct status marks.",
+    "doc": "Sequential setup tasks with distinct status marks.\n\nA 2 dp connector joins each top-level task's mark to the next one. It\nonly says the tasks run in this order: it looks the same for every\nstatus, so progress is read from the marks and their spoken status,\nnever from the line. Sub-tasks have no connector (#62).",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -23451,6 +23487,28 @@
             "isSuper": false,
             "fieldName": "subText",
             "doc": "Supporting copy below a detail value."
+          },
+          {
+            "name": "reference",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "reference",
+            "doc": "Shows `text` as a reference or ID: monospace tabular text on the value\nedge, without a fill (D57)."
+          },
+          {
+            "name": "onCopy",
+            "type": "Future<bool> Function(String value)?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onCopy",
+            "doc": "Host copy for `text`; adds a `PaymentCopyButton` whose glyph sits on\nthe value edge."
           }
         ],
         "doc": ""
@@ -23508,6 +23566,13 @@
         "static": false,
         "type": "String?",
         "doc": "Supporting copy below a detail value."
+      },
+      {
+        "name": "reference",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Shows `text` as a reference or ID: monospace tabular text on the value\nedge, without a fill (D57)."
       }
     ],
     "copyWith": null

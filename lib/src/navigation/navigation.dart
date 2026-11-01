@@ -147,89 +147,112 @@ class _NavTile extends StatelessWidget {
     final line = PaymentType.firstLineHeight(context);
     // Selection is instant: navigation is used constantly and keyboard users
     // move through it fast, so it should never wait on an animation. It is
-    // shown by color and a muted fill (a shape, so not by color alone), never
-    // by a change of weight, so the label does not shift.
-    return Padding(
-      padding: EdgeInsets.only(bottom: theme.space(PaymentSpace.inline)),
-      child: Semantics(
-        selected: selected,
-        enabled: enabled,
-        button: true,
-        child: PaymentFocusRing(
-          radius: radius,
-          child: Material(
-            color: selected ? theme.surfaceMuted : Colors.transparent,
+    // shown by accent color, heading weight, a muted fill and a 2 dp start
+    // indicator, so it never depends on the fill alone: a host whose accent
+    // matches its text, as in dark themes, still shows the indicator and
+    // the weight (#62). Rows are 48 dp apart.
+    return Semantics(
+      selected: selected,
+      enabled: enabled,
+      button: true,
+      child: PaymentFocusRing(
+        radius: radius,
+        child: Material(
+          color: selected ? theme.surfaceMuted : Colors.transparent,
+          borderRadius: radius,
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
             borderRadius: radius,
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: onTap,
-              borderRadius: radius,
-              focusColor: Colors.transparent,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 48),
-                child: Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: theme.space(PaymentSpace.block),
-                      vertical: theme.space(PaymentSpace.related),
+            focusColor: Colors.transparent,
+            child: Stack(
+              children: [
+                if (selected)
+                  PositionedDirectional(
+                    start: 0,
+                    top: theme.space(PaymentSpace.block),
+                    bottom: theme.space(PaymentSpace.block),
+                    width: 2,
+                    child: DecoratedBox(
+                      key: const ValueKey('nav-selected-indicator'),
+                      decoration: BoxDecoration(
+                        color: theme.accent,
+                        borderRadius: BorderRadius.circular(1),
+                      ),
                     ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PaymentIcon(
-                          selected
-                              ? (item.selectedIcon ?? item.icon)
-                              : item.icon,
-                          color: selected
-                              ? PaymentTextColor.accent
-                              : enabled
-                              ? PaymentTextColor.primary
-                              : PaymentTextColor.secondary,
-                        ),
-                        SizedBox(width: theme.space(PaymentSpace.block)),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.label,
-                                style: type.label.copyWith(color: foreground),
-                              ),
-                              if (!enabled && item.disabledReason != null)
-                                Text(item.disabledReason!, style: type.caption),
-                            ],
+                  ),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: theme.space(PaymentSpace.block),
+                        vertical: theme.space(PaymentSpace.related),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          PaymentIcon(
+                            selected
+                                ? (item.selectedIcon ?? item.icon)
+                                : item.icon,
+                            color: selected
+                                ? PaymentTextColor.accent
+                                : enabled
+                                ? PaymentTextColor.primary
+                                : PaymentTextColor.secondary,
                           ),
-                        ),
-                        if (item.badge != null) ...[
-                          SizedBox(width: theme.space(PaymentSpace.related)),
-                          ConstrainedBox(
-                            constraints: BoxConstraints(minHeight: line),
-                            child: Center(
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: theme.space(PaymentSpace.related),
-                                  vertical: 1,
+                          SizedBox(width: theme.space(PaymentSpace.block)),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.label,
+                                  style: (selected ? type.heading : type.label)
+                                      .copyWith(color: foreground),
                                 ),
-                                decoration: BoxDecoration(
-                                  color: theme.accent,
-                                  borderRadius: BorderRadius.circular(999),
-                                ),
-                                child: Text(
-                                  item.badge!,
-                                  style: type.tag.tabular.copyWith(
-                                    color: theme.onAccent,
+                                if (!enabled && item.disabledReason != null)
+                                  Text(
+                                    item.disabledReason!,
+                                    style: type.caption,
+                                  ),
+                              ],
+                            ),
+                          ),
+                          if (item.badge != null) ...[
+                            SizedBox(width: theme.space(PaymentSpace.related)),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(minHeight: line),
+                              child: Center(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: theme.space(
+                                      PaymentSpace.related,
+                                    ),
+                                    vertical: 1,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: theme.accent,
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                  child: Text(
+                                    item.badge!,
+                                    style: type.tag.tabular.copyWith(
+                                      color: theme.onAccent,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ),

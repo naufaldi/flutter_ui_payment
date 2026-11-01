@@ -36,6 +36,31 @@ void main() {
       await binding.takeScreenshot('${platform}_${screen}_$look');
     }
 
+    // Selective session: --dart-define=CAPTURE_ONLY=history,transaction_detail
+    // captures only those screens in every look.
+    const only = String.fromEnvironment('CAPTURE_ONLY');
+    if (only.isNotEmpty) {
+      final screens = <String, Future<void> Function()>{
+        'history': () async {
+          final c = await runScenario(tester, app, 'A01');
+          await pumpUntil(tester, () => !c.historyLoading);
+        },
+        'transaction_detail': () async {
+          final c = await runScenario(tester, app, 'A02');
+          await pumpUntil(tester, () => !c.detailLoading);
+        },
+      };
+      for (final MapEntry(key: look, value: settings) in looks.entries) {
+        app.updateSettings(settings);
+        await tester.pump();
+        for (final screen in only.split(',').map((e) => e.trim())) {
+          await screens[screen]!();
+          await shot(screen, look);
+        }
+      }
+      return;
+    }
+
     for (final MapEntry(key: look, value: settings) in looks.entries) {
       app.updateSettings(settings);
       await tester.pump();

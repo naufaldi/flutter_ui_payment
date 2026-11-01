@@ -114,4 +114,56 @@ void main() {
       throwsAssertionError,
     );
   });
+  testWidgets('section header is one 36 dp band; its action stays tappable', (
+    tester,
+  ) async {
+    var taps = 0;
+    await tester.pumpWidget(
+      host(
+        Column(
+          children: [
+            const PaymentSection(
+              key: Key('plain'),
+              title: 'Details',
+              child: SizedBox(key: Key('plain-body'), height: 10),
+            ),
+            PaymentSection(
+              key: const Key('action'),
+              title: 'Details',
+              trailing: PaymentButton(
+                label: 'Edit',
+                size: PaymentSize.small,
+                width: PaymentWidth.hug,
+                variant: PaymentButtonVariant.secondary,
+                onPressed: () => taps++,
+              ),
+              child: const SizedBox(key: Key('action-body'), height: 10),
+            ),
+          ],
+        ),
+        1,
+      ),
+    );
+    double bodyTop(String key) =>
+        tester.getTopLeft(find.byKey(Key(key))).dy -
+        tester.getTopLeft(find.byKey(Key(key.split('-').first))).dy;
+    // 8 padding + 36 band, with or without an action.
+    expect(bodyTop('plain-body'), 44);
+    expect(bodyTop('action-body'), 44);
+    expect(
+      tester.getSize(find.byKey(const Key('plain'))).height,
+      tester.getSize(find.byKey(const Key('action'))).height,
+    );
+    // The title and the action share one centre line.
+    expect(
+      tester.getCenter(find.text('Edit')).dy,
+      closeTo(tester.getCenter(find.text('Details').last).dy, 0.5),
+    );
+    // The 48 dp target overhangs the band; its top and bottom edges hit.
+    final target = tester.getRect(find.byType(PaymentButton));
+    expect(target.height, greaterThanOrEqualTo(48));
+    await tester.tapAt(Offset(target.center.dx, target.top + 1));
+    await tester.tapAt(Offset(target.center.dx, target.bottom - 1));
+    expect(taps, 2);
+  });
 }

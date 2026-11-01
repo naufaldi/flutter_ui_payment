@@ -64,6 +64,9 @@ class PaymentTable extends StatelessWidget {
         }
         Widget value(PaymentTableCell c, TextStyle style) =>
             DefaultTextStyle(style: style, child: c.child);
+        // D60: each row reads like a property list. The title takes the
+        // first line; every other column, the amount included, is a label
+        // on the start edge and its value on the one value edge.
         return Semantics(
           label: caption,
           child: Column(
@@ -78,51 +81,24 @@ class PaymentTable extends StatelessWidget {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      spacing: theme.space(PaymentSpace.inline),
                       children: [
-                        if (PaymentType.isLarge(context)) ...[
-                          value(rows[i].cells[title], type.heading),
-                          if (numeric >= 0 && numeric != title)
-                            value(rows[i].cells[numeric], type.label.tabular),
-                        ] else
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: value(
-                                  rows[i].cells[title],
-                                  type.heading,
-                                ),
-                              ),
-                              if (numeric >= 0 && numeric != title)
-                                Flexible(
-                                  child: Align(
-                                    alignment: AlignmentDirectional.centerEnd,
-                                    child: value(
-                                      rows[i].cells[numeric],
-                                      type.label.tabular,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
+                        value(rows[i].cells[title], type.heading),
                         for (var j = 0; j < head.length; j++)
-                          if (j != title && j != numeric)
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('${head[j].label}: ', style: type.caption),
-                                Flexible(
-                                  child: value(rows[i].cells[j], type.caption),
-                                ),
-                              ],
+                          if (j != title)
+                            InfoRow(
+                              label: head[j].label,
+                              value: value(
+                                rows[i].cells[j],
+                                isNumeric(j) ? type.label.tabular : type.label,
+                              ),
                             ),
                       ],
                     ),
                   ),
                 ),
               ],
-              if (footer != null)
+              if (footer != null) ...[
+                const PaymentDivider(),
                 InfoRow(
                   label: footer!.cells[title].child is Text
                       ? (footer!.cells[title].child as Text).data ??
@@ -131,6 +107,7 @@ class PaymentTable extends StatelessWidget {
                   value: footer!.cells[numeric < 0 ? title : numeric].child,
                   emphasis: true,
                 ),
+              ],
             ],
           ),
         );

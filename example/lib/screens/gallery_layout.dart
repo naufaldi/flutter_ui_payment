@@ -177,6 +177,7 @@ class _ImageTilesState extends State<_ImageTiles> {
         children: [
           Wrap(
             spacing: PaymentTheme.of(context).space(PaymentSpace.related),
+            runSpacing: PaymentTheme.of(context).space(PaymentSpace.related),
             children: [
               if (provider != null)
                 PaymentImage(

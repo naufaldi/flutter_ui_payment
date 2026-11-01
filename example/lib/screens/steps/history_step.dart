@@ -29,15 +29,19 @@ class HistoryStep extends StatelessWidget {
       for (var w = 0; w < 4; w++)
         ChartPoint(
           label: s.weekLabel(w + 1),
-          value: c.history
-              .where(
-                (r) =>
-                    r.status == PaymentStatus.succeeded &&
-                    r.createdAt.year == start.year &&
-                    r.createdAt.month == start.month &&
-                    ((r.createdAt.day - 1) ~/ 7).clamp(0, 3) == w,
-              )
-              .fold<Money>(const Money.idr(0), (a, r) => a + r.amount),
+          // A week that has not started has no reading yet, not zero, so
+          // the chart's rest label lands on the latest real week (D58).
+          value: start == month && w * 7 + 1 > now.day
+              ? null
+              : c.history
+                    .where(
+                      (r) =>
+                          r.status == PaymentStatus.succeeded &&
+                          r.createdAt.year == start.year &&
+                          r.createdAt.month == start.month &&
+                          ((r.createdAt.day - 1) ~/ 7).clamp(0, 3) == w,
+                    )
+                    .fold<Money>(const Money.idr(0), (a, r) => a + r.amount),
         ),
     ];
     final methods = <String, int>{};

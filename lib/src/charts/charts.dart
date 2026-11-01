@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/money.dart';
@@ -240,7 +241,24 @@ class _PointChart extends StatefulWidget {
 }
 
 class _PointChartState extends State<_PointChart> {
+  /// The period a tap, drag or hover picked; null is the rest state.
   int? selected;
+
+  static List<String> _periods(_PointChart chart) => [
+    for (final p
+        in chart.series.isEmpty ? chart.points : chart.series.first.points)
+      p.label,
+  ];
+
+  // Different periods return the chart to rest, so a stale index never
+  // outlives the periods it pointed at. A rebuild with the same periods
+  // keeps the person's selection.
+  @override
+  void didUpdateWidget(_PointChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!listEquals(_periods(oldWidget), _periods(widget))) selected = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     assert(widget.points.isEmpty || widget.series.isEmpty);
@@ -318,6 +336,18 @@ class _PointChartState extends State<_PointChart> {
                 Expanded(
                   child: LayoutBuilder(
                     builder: (context, box) {
+                      if ((selected ?? 0) >= points.length) selected = null;
+                      final latest = points.lastIndexWhere(
+                        (p) =>
+                            p.status == ChartPointStatus.settled &&
+                            chartReading(p, widget.unit) != null,
+                      );
+                      // D58: the latest settled period is selected at rest; a
+                      // tap, drag or hover moves the selection and leaving
+                      // returns to rest. Sparklines keep no rest selection.
+                      final shown = widget.spark || points.isEmpty
+                          ? selected
+                          : (selected ?? (latest < 0 ? null : latest));
                       final painter = ChartPainter(
                         series: series,
                         unit: widget.unit,
@@ -343,7 +373,7 @@ class _PointChartState extends State<_PointChart> {
                         bars: widget.bars,
                         spark: widget.spark,
                         zeroBased: widget.zeroBased,
-                        selected: selected,
+                        selected: shown,
                       );
                       void inspect(Offset position, bool toggle) {
                         if (!widget.inspectable || points.isEmpty) {
@@ -367,68 +397,146 @@ class _PointChartState extends State<_PointChart> {
                         );
                       }
 
-                      final point =
-                          selected != null && selected! < points.length
-                          ? points[selected!]
-                          : null;
-                      final index =
-                          selected ??
-                          points.lastIndexWhere(
-                            (p) =>
-                                p.status == ChartPointStatus.settled &&
-                                chartReading(p, widget.unit) != null,
-                          );
+                      final index = selected ?? latest;
                       final message = index < 0
                           ? l10n.chartNoData
                           : '${points[index].label} · ${formatChartValue(l10n, chartReading(points[index], widget.unit) ?? 0, widget.unit, currency: points[index].value?.currency ?? 'IDR')}';
-                      final plot = MouseRegion(
+                      // One line per series: the period and series name
+                      // may truncate, the amount never does. Only the first
+                      // line repeats the period.
+                      List<(String, String)> readout(int i) => [
+                        for (final (j, s) in series.indexed)
+                          (
+                            [
+                              if (j == 0) s.points[i].label,
+                              if (series.length > 1) s.label,
+                            ].join(' · '),
+                            '${switch (chartReading(s.points[i], widget.unit)) {
+                              null => l10n.chartNoData,
+                              final reading => formatChartValue(l10n, reading, widget.unit, currency: s.points[i].value?.currency ?? 'IDR'),
+                            }}${s.points[i].status == ChartPointStatus.settled ? '' : ' · ${s.points[i].status == ChartPointStatus.pending ? l10n.chartPendingKey : l10n.chartUnknownKey}'}',
+                          ),
+                      ];
+                      if (widget.spark) {
+                        final plot = MouseRegion(
+                          onHover: (event) =>
+                              inspect(event.localPosition, false),
+                          onExit: (_) => setState(() => selected = null),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTapDown: (event) =>
+                                inspect(event.localPosition, true),
+                            child: CustomPaint(
+                              painter: painter,
+                              size: Size.infinite,
+                            ),
+                          ),
+                        );
+                        return widget.inspectable
+                            ? PaymentTooltip(
+                                message: message,
+                                type: PaymentTooltipType.description,
+                                placement: PaymentTooltipPlacement.top,
+                                delay: Duration.zero,
+                                child: plot,
+                              )
+                            : plot;
+                      }
+                      // One exact-value label sits in a fixed band above the
+                      // plot, so rest and selection never shift the layout.
+                      final area = painter.plot(box.biggest);
+                      final chart = Stack(
+                        children: [
+                          Positioned.fill(child: CustomPaint(painter: painter)),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            height: painter.band,
+                            child: CustomSingleChildLayout(
+                              delegate: _BandLabelLayout(
+                                x: shown == null
+                                    ? area.left
+                                    : painter.columnX(shown, area),
+                                left: area.left,
+                                right: area.right,
+                                centred: shown != null,
+                              ),
+                              child: DefaultTextStyle.merge(
+                                style: type.caption.tabular.copyWith(
+                                  color: shown == null
+                                      ? theme.textSecondary
+                                      : theme.textPrimary,
+                                ),
+                                maxLines: 1,
+                                child: MediaQuery.withClampedTextScaling(
+                                  maxScaleFactor: 1.5,
+                                  child: Column(
+                                    key: const ValueKey('payment-chart-value'),
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (shown == null)
+                                        Text(l10n.chartNoData)
+                                      else
+                                        for (final (name, value) in readout(
+                                          shown,
+                                        ))
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              if (name.isNotEmpty)
+                                                Flexible(
+                                                  child: Text(
+                                                    '$name · ',
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    softWrap: false,
+                                                  ),
+                                                ),
+                                              // Truncates only when the
+                                              // amount alone is wider than
+                                              // the plot.
+                                              ConstrainedBox(
+                                                constraints: BoxConstraints(
+                                                  maxWidth: math.max(
+                                                    0,
+                                                    area.width,
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  value,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  softWrap: false,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                      if (!widget.inspectable) return chart;
+                      return MouseRegion(
                         onHover: (event) => inspect(event.localPosition, false),
                         onExit: (_) => setState(() => selected = null),
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTapDown: (event) =>
-                              inspect(event.localPosition, true),
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: CustomPaint(painter: painter),
-                              ),
-                              if (point != null && !widget.spark)
-                                Positioned(
-                                  top: 0,
-                                  left: 4,
-                                  right: 4,
-                                  child: ColoredBox(
-                                    color: theme.surface,
-                                    child: Text(
-                                      series
-                                          .map((s) {
-                                            final p = s.points[selected!];
-                                            final reading = chartReading(
-                                              p,
-                                              widget.unit,
-                                            );
-                                            return '${p.label} · ${series.length > 1 ? '${s.label} ' : ''}${reading == null ? l10n.chartNoData : formatChartValue(l10n, reading, widget.unit, currency: p.value?.currency ?? 'IDR')}${p.status == ChartPointStatus.settled ? '' : ' · ${p.status == ChartPointStatus.pending ? l10n.chartPendingKey : l10n.chartUnknownKey}'}';
-                                          })
-                                          .join(' · '),
-                                      style: type.caption.tabular,
-                                      maxLines: 1 + series.length,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
+                              inspect(event.localPosition, false),
+                          onHorizontalDragStart: (event) =>
+                              inspect(event.localPosition, false),
+                          onHorizontalDragUpdate: (event) =>
+                              inspect(event.localPosition, false),
+                          child: chart,
                         ),
                       );
-                      return widget.spark && widget.inspectable
-                          ? PaymentTooltip(
-                              message: message,
-                              type: PaymentTooltipType.description,
-                              placement: PaymentTooltipPlacement.top,
-                              delay: Duration.zero,
-                              child: plot,
-                            )
-                          : plot;
                     },
                   ),
                 ),
@@ -759,6 +867,9 @@ class ChartModule extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // The headline block reserves its caption line only when there is
+          // a caption or delta, so a bare amount leaves no hole above the
+          // plot, whose value band already separates the two (#62).
           if (showHeadline)
             SizedBox(
               height:
@@ -767,10 +878,12 @@ class ChartModule extends StatelessWidget {
                       .scale(
                         type.amountLarge.fontSize! * type.amountLarge.height!,
                       ) +
-                  MediaQuery.textScalerOf(
-                    context,
-                  ).scale(type.caption.fontSize! * type.caption.height!) +
-                  theme.space(PaymentSpace.section),
+                  (headlineCaption == null && delta == null
+                      ? 0
+                      : MediaQuery.textScalerOf(context).scale(
+                          type.caption.fontSize! * type.caption.height!,
+                        )) +
+                  theme.space(PaymentSpace.group),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -778,10 +891,15 @@ class ChartModule extends StatelessWidget {
                     AmountText(headline!, variant: AmountTextVariant.large)
                   else if (state == ChartState.loading)
                     // A skeleton row is a two-line list row (62 dp); the
-                    // 48 dp headline slot shows its top and clips the rest.
-                    const SizedBox(
-                      height: 48,
-                      child: ClipRect(
+                    // amount-line slot shows its top and clips the rest.
+                    SizedBox(
+                      height: MediaQuery.textScalerOf(context)
+                          .clamp(maxScaleFactor: 1.6)
+                          .scale(
+                            type.amountLarge.fontSize! *
+                                type.amountLarge.height!,
+                          ),
+                      child: const ClipRect(
                         child: OverflowBox(
                           alignment: AlignmentDirectional.topStart,
                           maxHeight: double.infinity,
@@ -808,15 +926,51 @@ class ChartModule extends StatelessWidget {
                 ],
               ),
             ),
+          // At large text the plot never grows past the compact height, so
+          // the rows under a chart stay on the first screen (#58-3).
           SizedBox(
             key: const ValueKey('payment-chart-plot'),
-            height: height,
+            height: height == null || !large
+                ? height
+                : math.min(height!, compactHeight),
             child: plot,
           ),
         ],
       ),
     );
   }
+}
+
+/// Places the value label over its column, kept inside the plot.
+class _BandLabelLayout extends SingleChildLayoutDelegate {
+  const _BandLabelLayout({
+    required this.x,
+    required this.left,
+    required this.right,
+    required this.centred,
+  });
+  final double x, left, right;
+  final bool centred;
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) =>
+      BoxConstraints(maxWidth: math.max(0, right - left));
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) {
+    final start = centred ? x - childSize.width / 2 : left;
+    return Offset(
+      start.clamp(left, math.max(left, right - childSize.width)),
+      size.height - childSize.height,
+    );
+  }
+
+  @override
+  bool shouldRelayout(_BandLabelLayout old) =>
+      old.x != x ||
+      old.left != left ||
+      old.right != right ||
+      old.centred != centred;
 }
 
 class _SeriesKey extends CustomPainter {
