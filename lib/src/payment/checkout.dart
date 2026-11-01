@@ -1,6 +1,7 @@
 import '../forms/select.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/field_decoration.dart';
+import '../foundation/first_line.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -182,7 +183,14 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
         l10n.maximumAmount(l10n.moneyFormat.format(widget.maximum!)),
     ].join(' · ');
     // The entered amount is a large amount, so it follows text scaling only
-    // up to 1.6×, like the other 20 px amounts.
+    // up to 1.6×, like the other 20 px amounts. Its line matches the text
+    // field's input line, so both fields are the same height (#47).
+    final amountSize = MediaQuery.textScalerOf(
+      context,
+    ).clamp(maxScaleFactor: 1.6).scale(type.amountLarge.fontSize!);
+    final amountStyle = type.amountLarge.copyWith(
+      height: lineHeightOf(context, type.input) / amountSize,
+    );
     final field = MediaQuery.withClampedTextScaling(
       maxScaleFactor: 1.6,
       child: TextField(
@@ -198,7 +206,7 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
           decimal: spec.minorDigits > 0,
         ),
         textInputAction: TextInputAction.done,
-        style: type.amountLarge,
+        style: amountStyle,
         decoration:
             paymentFieldDecoration(
               context,
@@ -206,9 +214,7 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
               hideLabel: widget.hiddenElements.contains(PaymentFieldPart.label),
               contentPadding: fieldContentPadding(theme, widget.size),
               prefixText: '${spec.symbol} ',
-              prefixStyle: type.amountLarge.copyWith(
-                color: theme.textSecondary,
-              ),
+              prefixStyle: amountStyle.copyWith(color: theme.textSecondary),
               helper: widget.description == null && limits.isEmpty
                   ? null
                   : FieldMessage(

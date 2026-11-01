@@ -93,22 +93,40 @@ InputDecoration paymentFieldDecoration(
   );
 }
 
-EdgeInsetsGeometry? fieldContentPadding(PaymentTheme theme, PaymentSize size) =>
-    switch (size) {
-      PaymentSize.small => EdgeInsetsDirectional.fromSTEB(
-        theme.space(PaymentSpace.block),
-        theme.space(PaymentSpace.group),
-        theme.space(PaymentSpace.block),
-        theme.space(PaymentSpace.related),
-      ),
-      PaymentSize.medium => null,
-      PaymentSize.large => EdgeInsetsDirectional.fromSTEB(
-        theme.space(PaymentSpace.block),
-        theme.space(PaymentSpace.section),
-        theme.space(PaymentSpace.block),
-        theme.space(PaymentSpace.group),
-      ),
-    };
+/// Horizontal gap an [OutlineInputBorder] adds inside the content padding
+/// (its default `gapPadding`).
+const _outlineGap = 4.0;
+
+/// Content padding for every field size, so text, currency, date and select
+/// fields share one text edge and one height per size: 48, 56 and 64 dp
+/// with a 24 dp input line (#47).
+///
+/// The text starts `group` (16) in from the border: the outline adds its
+/// 4 dp gap to the 12 given here. The top padding is 4 more than the
+/// bottom, which the floating label takes back, so the text sits centred.
+EdgeInsetsGeometry fieldContentPadding(PaymentTheme theme, PaymentSize size) {
+  final inset = theme.space(PaymentSpace.group) - _outlineGap;
+  return switch (size) {
+    PaymentSize.small => EdgeInsetsDirectional.fromSTEB(
+      inset,
+      theme.space(PaymentSpace.group),
+      inset,
+      theme.space(PaymentSpace.related),
+    ),
+    PaymentSize.medium => EdgeInsetsDirectional.fromSTEB(
+      inset,
+      theme.space(PaymentSpace.group) + theme.space(PaymentSpace.inline),
+      inset,
+      theme.space(PaymentSpace.block),
+    ),
+    PaymentSize.large => EdgeInsetsDirectional.fromSTEB(
+      inset,
+      theme.space(PaymentSpace.section),
+      inset,
+      theme.space(PaymentSpace.group),
+    ),
+  };
+}
 
 class FieldGroupScope extends InheritedWidget {
   const FieldGroupScope({

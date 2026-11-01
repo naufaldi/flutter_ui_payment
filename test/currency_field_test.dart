@@ -60,10 +60,11 @@ void main() {
       final box = tester.getSize(find.byType(InputDecorator));
       heights.add(box.height);
       debugPrint('Currency size $size height=${box.height}');
-      expect(
-        field.style,
-        PaymentType.of(tester.element(find.byType(TextField))).amountLarge,
-      );
+      // The amount role, on the input's 24 dp line (#47).
+      final amount = PaymentType.of(
+        tester.element(find.byType(TextField)),
+      ).amountLarge;
+      expect(field.style, amount.copyWith(height: 24 / 20));
       expect(
         find.textContaining('Use your available balance\n'),
         findsOneWidget,
