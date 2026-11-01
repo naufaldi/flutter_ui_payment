@@ -121,6 +121,9 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
   );
   @override
   Widget build(BuildContext context) {
+    // One money format per locale on a screen (#57).
+    String money(int rupiah) =>
+        PaymentLocalizations.of(context).moneyFormat.format(Money.idr(rupiah));
     final facts = [
       PaymentPropertyListItem(
         label: _t(context, 'Items', 'Barang'),
@@ -128,15 +131,15 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
       ),
       PaymentPropertyListItem(
         label: _t(context, 'Subtotal', 'Subtotal'),
-        valueText: 'Rp100.000',
+        valueText: money(100000),
       ),
       PaymentPropertyListItem(
         label: _t(context, 'Fee', 'Biaya'),
-        valueText: 'Rp2.500',
+        valueText: money(2500),
       ),
       PaymentPropertyListItem(
         label: _t(context, 'Total', 'Total'),
-        valueText: 'Rp102.500',
+        valueText: money(102500),
         emphasis: true,
       ),
     ];
@@ -517,17 +520,17 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
               title: _t(context, 'Recent transactions', 'Transaksi terbaru'),
               child: PaymentPropertyList(
                 items: [
-                  const PaymentPropertyListItem(
+                  PaymentPropertyListItem(
                     label: 'Toko Contoh',
-                    valueText: 'Rp102.500',
+                    valueText: money(102500),
                   ),
                   PaymentPropertyListItem(
                     label: _t(context, 'Groceries', 'Belanja harian'),
-                    valueText: 'Rp75.000',
+                    valueText: money(75000),
                   ),
                   PaymentPropertyListItem(
                     label: _t(context, 'Coffee', 'Kopi'),
-                    valueText: 'Rp25.000',
+                    valueText: money(25000),
                   ),
                 ],
               ),
@@ -540,7 +543,7 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
                 items: [
                   PaymentPropertyListItem(
                     label: _t(context, 'Available', 'Tersedia'),
-                    valueText: 'Rp500.000',
+                    valueText: money(500000),
                   ),
                 ],
               ),
