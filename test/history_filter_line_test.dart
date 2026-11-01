@@ -91,9 +91,11 @@ void main() {
       // size, and still the field's spoken name (D63a).
       final placeholder = tester.getRect(find.text('Search transactions'));
       expect(box.contains(placeholder.center), isTrue);
+      // Exactly once: a placeholder that isn't excluded from semantics
+      // would be read after the label.
       expect(
-        tester.getSemantics(find.byType(EditableText)).label,
-        contains('Search transactions'),
+        tester.getSemantics(find.byType(EditableText)).getSemanticsData().label,
+        'Search transactions',
       );
       handle.dispose();
     });
