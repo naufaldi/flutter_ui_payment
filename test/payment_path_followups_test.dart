@@ -226,6 +226,86 @@ void main() {
     });
   });
 
+  // #88: in phone landscape the side safe-area insets reach the bar, which
+  // sits beside the body rather than inside its SafeArea. The bar adds its
+  // 16 dp gutter to them, as the body does, so both content edges match.
+  group('PaymentActionBar beside a SafeArea body (#88)', () {
+    const content = Key('content');
+    // A host body as the docs show it: a side SafeArea, then 16 dp gutters
+    // and the centred 640 dp column.
+    Widget page() => SafeArea(
+      bottom: false,
+      child: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: const SizedBox(key: content, height: 40, width: 2000),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    for (final (size, left, right) in [
+      // iPhone 16 Pro sizes, notch either side; an Android cutout on one.
+      (const Size(852, 393), 59.0, 59.0),
+      (const Size(852, 393), 59.0, 0.0),
+      (const Size(812, 375), 0.0, 48.0),
+      // Portrait, no side insets: unchanged.
+      (const Size(393, 852), 0.0, 0.0),
+    ]) {
+      for (final direction in TextDirection.values) {
+        testWidgets('${size.width.toInt()}x${size.height.toInt()}, insets '
+            '${left.toInt()}/${right.toInt()}, ${direction.name}: '
+            'the bar\'s content edges are the body\'s', (t) async {
+          _surface(t, size);
+          final landscape = size.width > size.height;
+          t.view.padding = t.view.viewPadding = FakeViewPadding(
+            left: left,
+            right: right,
+            top: landscape ? 0 : 59,
+            bottom: landscape ? 21 : 34,
+          );
+          await t.pumpWidget(screen(page(), bar: _bar(), direction: direction));
+          final body = t.getRect(find.byKey(content));
+          final bar = t.getRect(
+            find
+                .descendant(
+                  of: find.byType(PaymentActionBar),
+                  matching: find.byType(LayoutBuilder),
+                )
+                .first,
+          );
+          final action = t.getRect(find.byKey(_review));
+          // Each side: the inset, then the 16 dp gutter (then the column's
+          // centring when the room is wider than 640).
+          expect(body.left, greaterThanOrEqualTo(left + 16));
+          expect(size.width - body.right, greaterThanOrEqualTo(right + 16));
+          expect(bar.left, moreOrLessEquals(body.left, epsilon: 1));
+          expect(bar.right, moreOrLessEquals(body.right, epsilon: 1));
+          if (size.width - left - right - 32 < 600) {
+            // Full width below 600 dp of footer width (#79).
+            expect(action.left, moreOrLessEquals(body.left, epsilon: 1));
+            expect(action.right, moreOrLessEquals(body.right, epsilon: 1));
+          } else if (direction == TextDirection.ltr) {
+            expect(action.right, moreOrLessEquals(body.right, epsilon: 1));
+          } else {
+            expect(action.left, moreOrLessEquals(body.left, epsilon: 1));
+          }
+          if (!landscape) {
+            expect(action.left, 16);
+            expect(action.width, 393 - 32);
+          }
+          // The bottom keeps the larger of the inset and 12 dp.
+          expect(action.bottom, size.height - (landscape ? 21 : 34));
+        });
+      }
+    }
+  });
+
   group('PaymentButton icon on the first line (#80)', () {
     testWidgets('2x, wrapped label: the icon centres on the first line', (
       t,

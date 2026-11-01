@@ -23,6 +23,7 @@ class DemoSettings {
     this.locale = const Locale('id'),
     this.textScale,
     this.reduceMotion = false,
+    this.textDirection,
   });
 
   final DemoBrand brand;
@@ -32,6 +33,10 @@ class DemoSettings {
   /// Null follows the device setting.
   final double? textScale;
   final bool reduceMotion;
+
+  /// Null follows [locale]. Neither demo language is right-to-left, so the
+  /// tests set this to check the layout mirrors.
+  final TextDirection? textDirection;
 
   DemoSettings copyWith({
     DemoBrand? brand,
@@ -45,6 +50,7 @@ class DemoSettings {
     locale: locale ?? this.locale,
     textScale: textScale == null ? this.textScale : textScale(),
     reduceMotion: reduceMotion ?? this.reduceMotion,
+    textDirection: textDirection,
   );
 }
 
@@ -173,7 +179,12 @@ class DemoAppState extends State<DemoApp> {
                 : TextScaler.linear(settings.textScale!),
             disableAnimations: media.disableAnimations || settings.reduceMotion,
           ),
-          child: child!,
+          child: settings.textDirection == null
+              ? child!
+              : Directionality(
+                  textDirection: settings.textDirection!,
+                  child: child!,
+                ),
         );
       },
       home: _Shell(app: this),
@@ -215,11 +226,16 @@ class _Shell extends StatelessWidget {
     // Phones get a bottom bar; tablets, desktops and wide browser windows get
     // a side rail so the content keeps a readable width.
     if (MediaQuery.sizeOf(context).width >= 840) {
+      // The rail takes the safe-area inset on its own side, the start edge,
+      // and the body beside it no longer sees that inset, so a phone in
+      // landscape applies it once (#88).
+      final ltr = Directionality.of(context) == TextDirection.ltr;
       return Scaffold(
         body: Row(
           children: [
             SafeArea(
-              right: false,
+              left: ltr,
+              right: !ltr,
               child: NavigationRail(
                 selectedIndex: app.tab,
                 onDestinationSelected: app.selectTab,
@@ -235,7 +251,14 @@ class _Shell extends StatelessWidget {
               ),
             ),
             const VerticalDivider(width: 1),
-            Expanded(child: body),
+            Expanded(
+              child: MediaQuery.removePadding(
+                context: context,
+                removeLeft: ltr,
+                removeRight: !ltr,
+                child: body,
+              ),
+            ),
           ],
         ),
       );
