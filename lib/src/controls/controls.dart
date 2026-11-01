@@ -13,6 +13,7 @@ import '../foundation/focus_ring.dart';
 import '../foundation/radio_mark.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
+import 'actions.dart' show PaymentIconButton;
 
 /// A checkbox with its label, for consent and opt-in choices.
 ///
@@ -785,20 +786,39 @@ enum PaymentTooltipType {
   description,
 }
 
-/// A noninteractive hint shown on hover, long press or keyboard focus.
-/// Escape, blur, exit and an outside tap hide it. Requires an Overlay.
-/// Never put a fee, a requirement or an error only in a tooltip.
+/// A one-line, noninteractive hint (D49). It opens on tap, hover, long press
+/// or keyboard focus; a second tap, an outside tap, Escape, blur and exit
+/// close it. Screen readers get [message] through the trigger's semantics.
+/// Requires an Overlay.
+///
+/// Wrap text, an icon or a disabled control in [child]. For an interactive
+/// trigger such as an info [PaymentIconButton], use [trigger] instead: the
+/// button's own press must toggle the hint, because it wins the tap.
+///
+/// Never put a fee, a requirement or an error only in a tooltip. An
+/// explanation longer than one line ("Why this?") opens a sheet instead.
 class PaymentTooltip extends StatefulWidget {
   const PaymentTooltip({
     super.key,
     required this.message,
-    required this.child,
+    this.child,
+    this.trigger,
     this.placement = PaymentTooltipPlacement.bottom,
     this.type = PaymentTooltipType.description,
     this.delay = const Duration(milliseconds: 500),
-  });
+  }) : assert(
+         (child == null) != (trigger == null),
+         'Pass either child or trigger.',
+       );
   final String message;
-  final Widget child;
+
+  /// A non-interactive trigger; a tap on it toggles the hint.
+  final Widget? child;
+
+  /// Builds an interactive trigger that toggles the hint, e.g. an info
+  /// [PaymentIconButton] with `onPressed: toggle` (D49). Pass `focusNode`
+  /// to the button so keyboard focus shows the hint too.
+  final Widget Function(VoidCallback toggle, FocusNode focusNode)? trigger;
   final PaymentTooltipPlacement placement;
   final PaymentTooltipType type;
   final Duration delay;
@@ -808,6 +828,7 @@ class PaymentTooltip extends StatefulWidget {
 
 class _PaymentTooltipState extends State<PaymentTooltip> {
   final _portal = OverlayPortalController();
+  final _triggerFocus = FocusNode(debugLabel: 'PaymentTooltip trigger');
   Timer? _showTimer;
   Timer? _hideTimer;
   static _PaymentTooltipState? _open;
@@ -816,22 +837,50 @@ class _PaymentTooltipState extends State<PaymentTooltip> {
     _hideTimer?.cancel();
     if (_open != this) _open?._hide();
     _open = this;
+    if (!_portal.isShowing) HardwareKeyboard.instance.addHandler(_onKey);
     _portal.show();
   }
 
   void _hide() {
     _showTimer?.cancel();
     _hideTimer?.cancel();
+    HardwareKeyboard.instance.removeHandler(_onKey);
     _portal.hide();
     if (_open == this) _open = null;
+  }
+
+  void _toggle() => _portal.isShowing ? _hide() : _show();
+
+  // Escape closes a hint opened by tap, where focus is not on the trigger.
+  // Handled only while this hint shows, so other Escape users are untouched.
+  bool _onKey(KeyEvent event) {
+    if (event is! KeyDownEvent ||
+        event.logicalKey != LogicalKeyboardKey.escape ||
+        !_portal.isShowing) {
+      return false;
+    }
+    _hide();
+    return true;
   }
 
   @override
   void dispose() {
     _showTimer?.cancel();
     _hideTimer?.cancel();
+    HardwareKeyboard.instance.removeHandler(_onKey);
+    _triggerFocus.dispose();
     if (_open == this) _open = null;
     super.dispose();
+  }
+
+  // The kit hint replaces an icon button's own Material tooltip. A hidden
+  // Material tooltip drops its semantics, so the button's name is restored.
+  Widget _buildTrigger() {
+    final trigger = widget.trigger!(_toggle, _triggerFocus);
+    return Semantics(
+      label: trigger is PaymentIconButton ? trigger.tooltip : null,
+      child: TooltipVisibility(visible: false, child: trigger),
+    );
   }
 
   @override
@@ -874,6 +923,9 @@ class _PaymentTooltipState extends State<PaymentTooltip> {
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               excludeFromSemantics: true,
+              // A child with its own tap recognizer wins the arena; text,
+              // icons and disabled controls have none, so this tap toggles.
+              onTap: widget.trigger == null ? _toggle : null,
               onLongPress: _show,
               onLongPressEnd: (_) =>
                   _hideTimer = Timer(const Duration(milliseconds: 1500), _hide),
@@ -924,7 +976,7 @@ class _PaymentTooltipState extends State<PaymentTooltip> {
                     ),
                   );
                 },
-                child: widget.child,
+                child: widget.child ?? _buildTrigger(),
               ),
             ),
           ),
