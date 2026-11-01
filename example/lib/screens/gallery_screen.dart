@@ -494,7 +494,7 @@ class _Foundation extends StatelessWidget {
       name:
           'PaymentTheme · AmountText · InfoRow · PaymentBadge · PaymentButton',
       child: PaymentSection(
-        title: 'Foundation',
+        title: _t(context, 'Foundation', 'Fondasi'),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -502,20 +502,24 @@ class _Foundation extends StatelessWidget {
               Money.idr(102500),
               variant: AmountTextVariant.display,
             ),
-            const InfoRow(
-              label: 'Biaya layanan',
-              value: AmountText(Money.idr(2500)),
-            ),
-            const InfoRow(
-              label: 'Nominal besar',
-              value: AmountText(Money.idr(1250000000)),
-            ),
-            const InfoRow(
-              label: 'USD (2 decimals)',
-              value: AmountText(Money(1999, 'USD')),
+            InfoRow(
+              label: _t(context, 'Service fee', 'Biaya layanan'),
+              value: const AmountText(Money.idr(2500)),
             ),
             InfoRow(
-              label: 'Ringkas (sumbu grafik)',
+              label: _t(context, 'Large amount', 'Nominal besar'),
+              value: const AmountText(Money.idr(1250000000)),
+            ),
+            InfoRow(
+              label: _t(context, 'USD (2 decimals)', 'USD (2 desimal)'),
+              value: const AmountText(Money(1999, 'USD')),
+            ),
+            InfoRow(
+              label: _t(
+                context,
+                'Compact (chart axis)',
+                'Ringkas (sumbu grafik)',
+              ),
               value: Text(
                 PaymentLocalizations.of(
                   context,
@@ -537,12 +541,16 @@ class _Foundation extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             PaymentButton(
-              label: 'Async action (2 s lock)',
+              label: _t(
+                context,
+                'Async action (2 s lock)',
+                'Aksi async (kunci 2 dtk)',
+              ),
               onPressed: () => Future.delayed(const Duration(seconds: 2)),
             ),
             const SizedBox(height: 8),
-            const PaymentButton(
-              label: 'Disabled',
+            PaymentButton(
+              label: _t(context, 'Disabled', 'Nonaktif'),
               variant: PaymentButtonVariant.secondary,
               onPressed: null,
             ),
