@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 
 import '../foundation/button_copy.dart';
 import '../foundation/kit_strings.dart';
-import '../foundation/layout_rules.dart';
 import '../foundation/money.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
@@ -29,7 +28,7 @@ class PaymentActionBar extends StatelessWidget {
     this.total,
     this.totalLabel,
     this.updating = false,
-    this.maxContentWidth = kContentMaxWidth,
+    this.maxContentWidth = 640,
   });
 
   /// Main action; pass width: PaymentWidth.hug on PaymentButton. With no
@@ -42,9 +41,10 @@ class PaymentActionBar extends StatelessWidget {
   final String? totalLabel;
   final bool updating;
 
-  /// Widest column for the bar's content, centred like the page's (D53).
-  /// Pass the cap of the content above the bar, e.g. 1040 when it shows two
-  /// columns, so the action's end edge lines up with the content's (#84).
+  /// Widest column for the bar's content, centred like the page's: the
+  /// 640 dp D53 column by default. Pass the cap of the content above the
+  /// bar, e.g. 1040 when it shows two columns, so the action's end edge
+  /// lines up with the content's (#84).
   final double maxContentWidth;
 
   @override
