@@ -583,28 +583,35 @@ class DocumentUploadTile extends StatelessWidget {
         Icons.error_outline,
       ),
     };
+    final badge = PaymentBadge(tone: tone, icon: icon, label: statusLabel);
     return PaymentSection(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(requirement.label, style: type.heading),
-                    Text(limits, style: type.caption),
-                  ],
+          // At large text the badge goes under the limits: beside the
+          // title it got half the row and broke a word ("ditambahka / n").
+          if (PaymentType.isLarge(context)) ...[
+            Text(requirement.label, style: type.heading),
+            Text(limits, style: type.caption),
+            SizedBox(height: theme.space(PaymentSpace.related)),
+            badge,
+          ] else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(requirement.label, style: type.heading),
+                      Text(limits, style: type.caption),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(width: theme.space(PaymentSpace.related)),
-              Flexible(
-                child: PaymentBadge(tone: tone, icon: icon, label: statusLabel),
-              ),
-            ],
-          ),
+                SizedBox(width: theme.space(PaymentSpace.related)),
+                Flexible(child: badge),
+              ],
+            ),
           if (needsUpdate && state.phase != DocumentSlotPhase.uploaded) ...[
             SizedBox(height: theme.space(PaymentSpace.related)),
             Text(

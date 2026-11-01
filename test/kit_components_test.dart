@@ -90,6 +90,41 @@ void main() {
     expect(tester.getSize(find.byType(PaymentActionBar)).height, settled);
     expect(find.text('Updating total…'), findsOneWidget);
   });
+  for (final scale in [1.0, 2.0]) {
+    testWidgets('document tile badge placement at ${scale}x', (tester) async {
+      tester.view.physicalSize = const Size(375, 667);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        host(
+          DocumentUploadTile(
+            requirement: const DocumentRequirement(
+              key: 'ktp',
+              label: 'KTP',
+              acceptedTypes: {'image/jpeg', 'image/png'},
+              acceptedTypesLabel: 'JPG, PNG',
+              maxBytes: 5 * 1024 * 1024,
+            ),
+            state: const DocumentSlotState.empty(),
+            onPick: () {},
+          ),
+          scale,
+        ),
+      );
+      final title = tester.getRect(find.text('KTP'));
+      final badge = tester.getRect(find.byType(PaymentBadge));
+      final limits = tester.getRect(find.textContaining('5 MB'));
+      if (scale == 1) {
+        // Beside the title, on its first line.
+        expect(badge.left, greaterThan(title.right));
+        expect(badge.top, lessThan(limits.top));
+      } else {
+        // Under the limits, as wide as it needs: no word breaks.
+        expect(badge.top, greaterThanOrEqualTo(limits.bottom));
+        expect(badge.left, title.left);
+      }
+    });
+  }
   testWidgets('countdown keeps one width from 1:00:00 to 59:59', (
     tester,
   ) async {
