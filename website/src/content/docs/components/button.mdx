@@ -150,6 +150,16 @@ focusNode supports host focus return, including custom menu triggers.
 
 [Button group](/components/button-group/) now composes related status and dialog actions. Overflow menus wrap long labels at large text.
 
+## Width (D59, D59a, D62)
+
+| Where the button sits | On phones | Wide |
+| --- | --- | --- |
+| Footer of a view or page, sheet, confirm dialog: the action that finishes or advances the task | Full width, primary on top, at most one quiet action under it | Hug, at the end edge |
+| Page header | Not a button: one action is a title-row link "Label ›", more go behind ⋮ | Hug |
+| Rows, cards, banners, state messages, tables | Hug | Hug |
+
+The screen's priority action pins at the bottom (D62); a full-width button in a header would read as the main step and push the content down.
+
 ## Which variant when
 
 | Situation | Variant / composition | Payment example |

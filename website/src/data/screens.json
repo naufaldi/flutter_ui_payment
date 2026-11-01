@@ -171,17 +171,17 @@
   },
   "ios_sign_in_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example sign in light, Indonesian"
   },
   "ios_sign_in_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example sign in dark, Indonesian"
   },
   "ios_sign_in_light_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example sign in light_200, Indonesian"
   },
   "ios_kyc_onboarding_light": {
@@ -246,17 +246,17 @@
   },
   "ios_statement_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example statement light, Indonesian"
   },
   "ios_statement_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example statement dark, Indonesian"
   },
   "ios_statement_light_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example statement light_200, Indonesian"
   },
   "ios_fees_light": {
@@ -266,27 +266,27 @@
   },
   "ios_fees_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example fees dark, Indonesian"
   },
   "ios_fees_light_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example fees light_200, Indonesian"
   },
   "ios_account_settings_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example account settings light, Indonesian"
   },
   "ios_account_settings_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example account settings dark, Indonesian"
   },
   "ios_account_settings_light_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example account settings light_200, Indonesian"
   },
   "ios_catalog_property_list_variants": {
@@ -371,152 +371,152 @@
   },
   "ios_catalog_context_view_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "context view specimen, English"
   },
   "ios_catalog_context_view_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "context view specimen_dark, English"
   },
   "ios_catalog_context_view_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "context view specimen_200, English"
   },
   "ios_catalog_full_page_view_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "full page view specimen, English"
   },
   "ios_catalog_full_page_view_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "full page view specimen_dark, English"
   },
   "ios_catalog_full_page_view_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "full page view specimen_200, English"
   },
   "ios_catalog_focus_view_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "focus view specimen, English"
   },
   "ios_catalog_focus_view_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "focus view specimen_dark, English"
   },
   "ios_catalog_focus_view_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "focus view specimen_200, English"
   },
   "ios_catalog_settings_view_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "settings view specimen, English"
   },
   "ios_catalog_settings_view_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "settings view specimen_dark, English"
   },
   "ios_catalog_settings_view_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "settings view specimen_200, English"
   },
   "ios_catalog_sign_in_view_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "sign in view specimen, English"
   },
   "ios_catalog_sign_in_view_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "sign in view specimen_dark, English"
   },
   "ios_catalog_sign_in_view_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "sign in view specimen_200, English"
   },
   "ios_catalog_onboarding_view_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "onboarding view specimen, English"
   },
   "ios_catalog_onboarding_view_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "onboarding view specimen_dark, English"
   },
   "ios_catalog_onboarding_view_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "onboarding view specimen_200, English"
   },
   "ios_catalog_detail_page_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "detail page specimen, English"
   },
   "ios_catalog_detail_page_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "detail page specimen_dark, English"
   },
   "ios_catalog_detail_page_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "detail page specimen_200, English"
   },
   "ios_catalog_overview_page_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "overview page specimen, English"
   },
   "ios_catalog_overview_page_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "overview page specimen_dark, English"
   },
   "ios_catalog_overview_page_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "overview page specimen_200, English"
   },
   "ios_catalog_detail_page_property_list_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "detail page property list specimen, English"
   },
   "ios_catalog_detail_page_property_list_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "detail page property list specimen_dark, English"
   },
   "ios_catalog_detail_page_property_list_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "detail page property list specimen_200, English"
   },
   "ios_catalog_detail_page_table_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "detail page table specimen, English"
   },
   "ios_catalog_detail_page_table_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "detail page table specimen_dark, English"
   },
   "ios_catalog_detail_page_table_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "detail page table specimen_200, English"
   },
   "ios_catalog_box_variants": {
@@ -1533,5 +1533,80 @@
     "width": 640,
     "height": 1391,
     "caption": "PaymentDateRangePicker range calendar at 200% text, Indonesian"
+  },
+  "ios_catalog_sign_in_view_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "sign in view specimen at 200% text, Indonesian"
+  },
+  "ios_catalog_settings_view_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "settings view specimen at 200% text, Indonesian"
+  },
+  "ios_catalog_context_view_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "context view specimen at 200% text, Indonesian"
+  },
+  "ios_se_sign_in_light_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example sign in on iPhone SE at 200% text, Indonesian"
+  },
+  "ios_se_sign_in_en_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example sign in on iPhone SE at 200% text, English"
+  },
+  "ios_se_history_light_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example history on iPhone SE at 200% text, Indonesian"
+  },
+  "ios_se_history_en_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example history on iPhone SE at 200% text, English"
+  },
+  "ios_se_transaction_detail_light_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example transaction detail on iPhone SE at 200% text, Indonesian"
+  },
+  "ios_se_transaction_detail_en_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example transaction detail on iPhone SE at 200% text, English"
+  },
+  "ios_ipad_checkout_light": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example checkout on iPad mini, Indonesian"
+  },
+  "ios_ipad_checkout_en": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example checkout on iPad mini, English"
+  },
+  "ios_ipad_transaction_detail_light": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example transaction detail on iPad mini, Indonesian"
+  },
+  "ios_ipad_transaction_detail_en": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example transaction detail on iPad mini, English"
+  },
+  "ios_ipad_history_light": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example history on iPad mini, Indonesian"
+  },
+  "ios_ipad_history_en": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example history on iPad mini, English"
   }
 }

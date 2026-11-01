@@ -1387,8 +1387,9 @@ PaymentButtonGroup({Key? key, required List<PaymentButton> children,
 
 **`PaymentFullPageView`** (Stripe FullPageView)
 
-- **Variants:** `title` (Stripe takes it from the manifest; the kit needs it for header semantics); `pageAction` (label + onPress) → `pageAction: PaymentButton?` (`size: small`, in the header row); `child`.
-- **Narrow:** the page action moves under the title, full width.
+- **Variants:** `title` (Stripe takes it from the manifest; the kit needs it for header semantics); `pageAction` (label + onPress) → `pageLink: PaymentLink?` for navigation on the title row ("Label ›", D59a) and `primaryAction` / `secondaryAction: PaymentButton?` for the screen's priority action in a pinned footer (D62); `child`. `pageAction: PaymentButton?` is deprecated (UI review P5, removed in 0.2.0).
+- **Narrow:** the header holds navigation only: the link stays on the title row and nothing stacks under the title. The footer stacks full-width actions, primary on top (D59).
+- **Wide:** content sits in a centred 640 dp column; a `PaymentOverviewPage` child with a secondary column keeps two columns up to 1040 dp from 840 dp (D53, Q1).
 
 **`PaymentFocusView`** + **`showPaymentFocusView`** (Stripe FocusView)
 
@@ -1416,9 +1417,10 @@ Stripe's SignInView is a sign-in *screen*: brand, description and actions that s
 - **Variants:**
   - `brandColor` / `brandIcon` → `brand: Widget?`.
   - `description` → `description`.
-  - `descriptionActionLabel` / `Title` / `Contents` → `learnMore: PaymentSignInLearnMore?` (label, title, builder). It opens a `PaymentFocusView`.
+  - `descriptionActionLabel` / `Title` / `Contents` → `canDo` / `cannotDo: List<String>`, shown in plain view with ✓ / ✕ under "This app can" / "It can never" (D61). `learnMore: PaymentSignInLearnMore?` (opens a `PaymentFocusView`) is deprecated (UI review P5, removed in 0.2.0).
+  - Kit addition (D61): `requesterBrand: Widget?`, the connecting app's tile before `brand`'s.
   - `primaryAction` / `secondaryAction` (label + href or onPress) → `primaryAction: PaymentButton` (required, `size: large` on wide) and `secondaryAction: PaymentButton?`. Both call the host, which signs the user in through its own screen, the system browser or a bank app.
-  - `footerContent` → `legalLinks: List<PaymentLink>` and `footnote: String?`. **There is no free widget slot.** A host cannot inject a credential field through the kit's view.
+  - `footerContent` → `legalNotice: String?` (one sentence; `{0}`, `{1}` become inline links to `legalLinks`) and `legalLinks: List<PaymentLink>`, pinned above the actions with the primary and a quiet secondary (D61). Without `legalNotice` the links show as a row. `footnote: String?` is deprecated (UI review P5). **There is no free widget slot.** A host cannot inject a credential field through the kit's view.
   - Kit additions: `title` (required for header semantics; default copy "Sign in to continue" / "Masuk untuk melanjutkan"); `errorText` (a host error → `PaymentBanner(danger)` above the actions).
 - **States:** default; busy (primary action `Future`); error (banner, announced, focus moves to the banner).
 - **Security:** the view contains no `EditableText`. A widget test asserts `find.byType(EditableText)` finds nothing (B11).
@@ -1441,7 +1443,8 @@ PaymentContextView({Key? key, required String title, required Widget child,
   PaymentButton? secondaryAction, Widget? footer})
 
 PaymentFullPageView({Key? key, required String title, required Widget child,
-  PaymentButton? pageAction})
+  @Deprecated PaymentButton? pageAction, PaymentLink? pageLink,
+  PaymentButton? primaryAction, PaymentButton? secondaryAction})
 
 Future<T?> showPaymentFocusView<T>(BuildContext context, {required WidgetBuilder builder,
   PaymentFocusViewSize size = PaymentFocusViewSize.small})
@@ -1453,9 +1456,11 @@ PaymentSettingsView({Key? key, required String title, required Widget child,
   Future<void> Function()? onSave, String? saveLabel, String? statusMessage, StatusTone statusTone = StatusTone.neutral})
 
 PaymentSignInView({Key? key, required PaymentButton primaryAction, String? title,
-  String? description, Widget? brand, PaymentSignInLearnMore? learnMore,
+  String? description, Widget? brand, Widget? requesterBrand,
+  List<String> canDo = const [], List<String> cannotDo = const [], String? legalNotice,
+  @Deprecated PaymentSignInLearnMore? learnMore,
   PaymentButton? secondaryAction, List<PaymentLink> legalLinks = const [],
-  String? footnote, String? errorText}) // no child, no field, no free footer slot (D32)
+  @Deprecated String? footnote, String? errorText}) // no child, no field, no free footer slot (D32)
 
 PaymentOnboardingView({Key? key, required String title, required List<PaymentTaskListItem> tasks,
   required Widget child, String? description, bool pending = false, PaymentBanner? error,
@@ -1510,7 +1515,10 @@ PaymentPageModule({Key? key, required String title, required Widget child,
 
 PaymentDetailPage({Key? key, required String title, required List<PaymentPageModule> primary,
   List<PaymentPageModule>? secondary, List<PaymentBreadcrumb> breadcrumbs = const [],
-  String? description, List<PaymentButton> actions = const [], bool pending = false})
+  String? description, List<PaymentButton> actions = const [], bool pending = false,
+  PaymentButton? primaryAction, PaymentButton? secondaryAction})
+// UI review P5: actions follow D59a (one → title-row link, more → ⋮ on phones);
+// primaryAction / secondaryAction pin in the footer (D62).
 
 PaymentOverviewPage({Key? key, required List<PaymentPageModule> primary,
   List<PaymentPageModule>? secondary, bool pending = false})
@@ -2082,6 +2090,17 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Kit date sheet: wheel for spans over five years, calendar otherwise, full-width Choose date (D52, D52a, Q2 default)
 - [x] `PaymentLocalizations.monthName`, `formatMonthYear`, `formatDateLong`, `weekdayShort`, `firstDayOfWeek`; no `showDatePicker` / `showDateRangePicker` in `lib`
 - [x] Radio group error once; one-line select hint at 200%; field groups side by side at 329 dp, 24 between groups (#65)
+
+**UI review P5: views and pages** (D53, D59, D59a, D61, D62 for detail pages, D57 in the context view; #57, #63, #49-4/5, #58-1, #64-1/2, #66)
+- [x] Content column 640 dp from 600 dp; two columns up to 1040 dp from 840 dp; full-bleed hairlines (D53, Q1)
+- [x] Phone header: `pageLink` or one action as "Label ›" on the title row; more behind ⋮; nothing under the title (D59a)
+- [x] Footer `primaryAction` / `secondaryAction` on `PaymentFullPageView` and `PaymentDetailPage`; `pageAction` deprecated (D62, Q3)
+- [x] Header scrolls with the body at large text (#49-4)
+- [x] Account-linking sign-in: tiles, can / cannot, legal sentence and pinned Continue / Cancel; `learnMore` and `footnote` deprecated (D61)
+- [x] Breadcrumb chevron hangs at the title edge; one breadcrumb → title gap; table outer cells on the content edge
+- [x] Transaction detail: "Lihat struk" primary, quiet "Laporkan masalah", no phone breadcrumb; history "Laporan ›"
+- [x] Settings legend → first control: one 8 dp gap for fields and selection rows (#66)
+- [x] One pinned footer for views, the action bar and sheets (P4's `KitSheetFooter` merged into `PinnedFooter`)
 ```
 
 ### Phase 2E implementation notes

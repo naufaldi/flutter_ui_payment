@@ -23,25 +23,31 @@ class TransactionDetailStep extends StatelessWidget {
     return PaymentDetailPage(
       title: s.detailTitle(l.moneyFormat.format(r.amount), r.merchant),
       description: '${r.methodLabel} · ${l.formatDate(r.createdAt)}',
+      // The app bar already goes back on phones, so the breadcrumb shows
+      // only on wide screens (#49-5).
       breadcrumbs: [
-        PaymentBreadcrumb(label: s.transactions, onPressed: c.openHistory),
+        if (MediaQuery.sizeOf(context).width >= 600)
+          PaymentBreadcrumb(label: s.transactions, onPressed: c.openHistory),
       ],
-      actions: [
-        PaymentButton(
-          key: const Key('view-receipt'),
-          label: s.viewReceipt,
-          variant: PaymentButtonVariant.secondary,
-          onPressed: r.id == c.attempt?.attemptId
-              ? c.closeDetail
-              : () => showPaymentToast(context, message: s.viewReceipt),
-        ),
-        PaymentButton(
-          key: const Key('report-problem'),
-          label: s.reportProblem,
-          variant: PaymentButtonVariant.secondary,
-          onPressed: () => showReportProblem(context, c, r),
-        ),
-      ],
+      // The priority action pins at the bottom with the rare action quiet
+      // under it; the header keeps navigation only (D59a, D62).
+      primaryAction: PaymentButton(
+        key: const Key('view-receipt'),
+        label: s.viewReceipt,
+        onPressed: r.id == c.attempt?.attemptId
+            ? c.closeDetail
+            : () => showPaymentToast(context, message: s.viewReceipt),
+      ),
+      secondaryAction: PaymentButton(
+        key: const Key('report-problem'),
+        label: s.reportProblem,
+        variant: PaymentButtonVariant.quiet,
+        // A block body: the button doesn't wait on the sheet, so it isn't
+        // busy behind it (#64).
+        onPressed: () {
+          showReportProblem(context, c, r);
+        },
+      ),
       pending: c.detailLoading,
       primary: [
         PaymentPageModule(

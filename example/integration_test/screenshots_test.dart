@@ -37,10 +37,38 @@ void main() {
     }
 
     // Selective session: --dart-define=CAPTURE_ONLY=history,transaction_detail
-    // captures only those screens in every look.
+    // captures only those screens, in every look of CAPTURE_LOOKS (default
+    // light, dark, light_200). The app is Indonesian by default; en and
+    // en_200 are the English looks used by the SE and iPad sets.
     const only = String.fromEnvironment('CAPTURE_ONLY');
     if (only.isNotEmpty) {
+      const looksDefine = String.fromEnvironment('CAPTURE_LOOKS');
+      final selected = {
+        ...looks,
+        'en': const DemoSettings(locale: Locale('en')),
+        'en_200': const DemoSettings(locale: Locale('en'), textScale: 2),
+      };
+      final names = looksDefine.isEmpty
+          ? looks.keys.toList()
+          : looksDefine.split(',').map((e) => e.trim()).toList();
       final screens = <String, Future<void> Function()>{
+        'sign_in': () async {
+          await runScenario(tester, app, 'H04');
+        },
+        'checkout': () async {
+          final c = await runScenario(tester, app, 'H02');
+          await pumpUntil(tester, () => c.quote != null && !c.quoting);
+        },
+        'statement': () async {
+          final c = await runScenario(tester, app, 'A03');
+          await pumpUntil(tester, () => c.settlements.isNotEmpty);
+        },
+        'fees': () async {
+          await runScenario(tester, app, 'A04');
+        },
+        'account_settings': () async {
+          await runScenario(tester, app, 'A05');
+        },
         'history': () async {
           final c = await runScenario(tester, app, 'A01');
           await pumpUntil(tester, () => !c.historyLoading);
@@ -50,8 +78,8 @@ void main() {
           await pumpUntil(tester, () => !c.detailLoading);
         },
       };
-      for (final MapEntry(key: look, value: settings) in looks.entries) {
-        app.updateSettings(settings);
+      for (final look in names) {
+        app.updateSettings(selected[look]!);
         await tester.pump();
         for (final screen in only.split(',').map((e) => e.trim())) {
           await screens[screen]!();
@@ -149,26 +177,8 @@ void main() {
       c = await runScenario(tester, app, 'A02');
       await pumpUntil(tester, () => !c.detailLoading);
       await shot('transaction_detail', look);
-      final report = find.byKey(const Key('report-problem')).hitTestable();
-      if (report.evaluate().isNotEmpty) {
-        await tapVisible(tester, report);
-      } else {
-        final label = PaymentLocalizations.of(
-          tester.element(find.byType(PaymentDetailPage)),
-        ).moreActions;
-        await tapVisible(tester, find.byTooltip(label));
-        // Menu labels are host-owned and localized; read the page action label.
-        final page = tester.widget<PaymentDetailPage>(
-          find.byType(PaymentDetailPage),
-        );
-        await tapVisible(
-          tester,
-          find.descendant(
-            of: find.byType(MenuItemButton),
-            matching: find.text(page.actions.last.label),
-          ),
-        );
-      }
+      // "Report a problem" is the quiet footer action (D62).
+      await tapVisible(tester, find.byKey(const Key('report-problem')));
       await shot('report_problem', look);
       await tapVisible(tester, find.byKey(const Key('report-cancel')));
       await settle(tester);

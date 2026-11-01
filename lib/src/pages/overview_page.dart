@@ -6,6 +6,7 @@ import 'detail_page_property_list.dart';
 import 'detail_page_table.dart';
 import '../charts/charts.dart';
 import '../foundation/payment_tokens.dart';
+import '../foundation/layout_rules.dart';
 
 /// Non-scrolling page modules; place inside a FullPageView.
 class PaymentOverviewPage extends StatelessWidget {
@@ -35,6 +36,12 @@ class PaymentOverviewPage extends StatelessWidget {
             w is ChartModule,
       ),
     );
+    // Page modules end with `section` under their content; a chart module
+    // (a section with `related` padding) gets the rest of it, so every
+    // module → module gap is equal (#66).
+    final theme = PaymentTheme.of(context);
+    final after =
+        theme.space(PaymentSpace.section) - theme.space(PaymentSpace.related);
     Widget column(List<Widget> items, int count) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: pending
@@ -42,11 +49,20 @@ class PaymentOverviewPage extends StatelessWidget {
               for (var i = 0; i < count; i++)
                 const LoadingSkeleton(rows: 3, leading: false),
             ]
-          : items,
+          : [
+              for (final item in items)
+                if (item is ChartModule)
+                  Padding(
+                    padding: EdgeInsets.only(bottom: after),
+                    child: item,
+                  )
+                else
+                  item,
+            ],
     );
     return LayoutBuilder(
       builder: (context, k) {
-        if (k.maxWidth >= 840 && secondary != null) {
+        if (k.maxWidth >= kTwoColumnBreakpoint && secondary != null) {
           return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: PaymentTheme.of(context).space(PaymentSpace.section),

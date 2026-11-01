@@ -31,6 +31,13 @@ PaymentContextView(
       );
 ```
 
+## Header and footer (D59a, D62)
+
+- The brand icon centres on the title's first line, 12 dp from it.
+- On phones one header action sits on the title row as "Label ›" and more go behind ⋮; nothing stacks under the title. Keep the task's own step in `primaryAction`.
+- An ID such as the order ID is a reference row with a copy button (D57), not a separate "Copy order ID" button. Close and Cancel are quiet.
+- At large text the header scrolls with the body, so the total and help link stay reachable on the first screen.
+
 ## Stripe → kit
 
 | Stripe | Kit |

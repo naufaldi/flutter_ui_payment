@@ -11,28 +11,45 @@ Entry point for external bank sign-in. Variants: ready, host error. Nothing else
 ## Usage
 
 ```dart
-// example/lib/screens/gallery_views.dart
+// example/lib/screens/steps/sign_in_step.dart
 PaymentSignInView(
-        brand: const PaymentIcon(Icons.account_balance_wallet_outlined),
-        description: 'Sign in with your bank app to see payments and refunds.',
-        learnMore: PaymentSignInLearnMore(
-          label: 'What we can see',
-          title: 'Permissions',
-          builder: (_) => const Text('Payment history and refunds.'),
-        ),
-        primaryAction: button(
-          'Continue with bank app',
-          variant: PaymentButtonVariant.primary,
-        ),
-        secondaryAction: button('Use another account'),
-        legalLinks: [
-          PaymentLink(label: 'Terms', external: true, onPressed: () {}),
-          PaymentLink(label: 'Privacy', external: true, onPressed: () {}),
-        ],
-        footnote: 'We never ask for your PIN here.',
-        errorText: state == 1 ? 'Sign-in was canceled. Try again.' : null,
-      );
+  requesterBrand: const PaymentIcon(Icons.school_outlined),
+  brand: const PaymentIcon(Icons.account_balance_wallet_outlined),
+  title: 'Masuk dengan Ruang Bayar',
+  description: 'Untuk membayar dan melihat pembayaran Anda di Toko Belajar.',
+  canDo: [
+    'Melihat nama dan nomor akun Anda',
+    'Meminta pembayaran, selalu dengan konfirmasi Anda',
+  ],
+  cannotDo: ['Melihat PIN atau saldo Anda'],
+  legalNotice: 'Dengan melanjutkan, Anda menyetujui {0} dan {1} Ruang Bayar.',
+  legalLinks: [
+    PaymentLink(label: 'Ketentuan', external: true, onPressed: openTerms),
+    PaymentLink(label: 'Privasi', external: true, onPressed: openPrivacy),
+  ],
+  primaryAction: PaymentButton(label: 'Lanjutkan', onPressed: signIn),
+  secondaryAction: PaymentButton(
+    label: 'Batal',
+    variant: PaymentButtonVariant.quiet,
+    onPressed: cancel,
+  ),
+);
 ```
+
+## Account linking (D61)
+
+The screen says who is connecting and what that allows, then puts one short action where the thumb is.
+
+- **Two tiles:** the connecting app (`requesterBrand`) · · · the account (`brand`).
+- **One specific headline**, such as "Masuk dengan Ruang Bayar", not "Sign in to continue".
+- **Can and can never, in plain view:** `canDo` (✓) under "Aplikasi ini bisa" and `cannotDo` (✕) under "Aplikasi ini tidak bisa", in one outlined box. Put reassurance such as "never sees your PIN" here instead of a footnote.
+- **One legal sentence** in the pinned footer, right above the action: `legalNotice` with `{0}`, `{1}` replaced by inline links to `legalLinks`. Inline links in a sentence are exempt from the 48 dp target rule and keep link semantics.
+- **Pinned footer:** a short primary ("Lanjutkan") and a quiet "Batal", so the action is on the first screen of a 375 × 667 phone at 200% in Indonesian.
+
+`learnMore` and `footnote` are deprecated and removed in 0.2.0; they still render in the body.
+
+<Screen name="ios_se_sign_in_light_200" alt="Sign-in on iPhone SE at 200% text in Indonesian: tiles, headline, can and cannot lists, and the pinned legal sentence with Lanjutkan and Batal" caption="iPhone SE, 200%, Indonesian" />
+<Screen name="ios_se_sign_in_en_200" alt="Sign-in on iPhone SE at 200% text in English with the pinned Continue button" caption="iPhone SE, 200%, English" />
 
 ## Stripe → kit
 

@@ -162,6 +162,7 @@ void main() {
         'Feedback': 'Umpan balik',
         'Layout': 'Tata letak',
         'Charts': 'Grafik',
+        'Views & pages': 'Tampilan & halaman',
       };
       // Opens a sheet from the first [target] inside the keyed specimen.
       Future<void> openFrom(String key, Finder target) async {
@@ -360,6 +361,47 @@ void main() {
             'bar_chart': ('Charts', 'PaymentBarChart', null, null),
             'meter_chart': ('Charts', 'PaymentMeterChart', null, null),
             'sparkline': ('Charts', 'PaymentSparkline', null, null),
+            // UI review P5.
+            'context_view': ('Views & pages', 'PaymentContextView', null, null),
+            'full_page_view': (
+              'Views & pages',
+              'PaymentFullPageView',
+              null,
+              null,
+            ),
+            'focus_view': ('Views & pages', 'PaymentFocusView', null, null),
+            'settings_view': (
+              'Views & pages',
+              'PaymentSettingsView',
+              null,
+              null,
+            ),
+            'sign_in_view': ('Views & pages', 'PaymentSignInView', null, null),
+            'onboarding_view': (
+              'Views & pages',
+              'PaymentOnboardingView',
+              null,
+              null,
+            ),
+            'detail_page': ('Views & pages', 'PaymentDetailPage', null, null),
+            'overview_page': (
+              'Views & pages',
+              'PaymentOverviewPage',
+              null,
+              null,
+            ),
+            'detail_page_property_list': (
+              'Views & pages',
+              'PaymentDetailPagePropertyList',
+              null,
+              null,
+            ),
+            'detail_page_table': (
+              'Views & pages',
+              'PaymentDetailPageTable',
+              null,
+              null,
+            ),
           };
       // Chart states captured after steps, named `<slug><suffix>` too.
       final chartStates = <String, (String, Future<void> Function())>{

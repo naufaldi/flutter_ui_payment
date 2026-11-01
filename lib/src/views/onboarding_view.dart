@@ -4,6 +4,8 @@ import '../foundation/payment_theme.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/view_frame.dart';
+import '../foundation/layout_rules.dart';
+import '../foundation/payment_tokens.dart';
 import '../interaction/interaction.dart';
 import '../content/task_list.dart';
 
@@ -86,6 +88,7 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
         ? Semantics(
             liveRegion: true,
             child: Row(
+              spacing: PaymentTheme.of(context).space(PaymentSpace.block),
               children: [
                 const PaymentSpinner(),
                 Flexible(child: Text(l.loading)),
@@ -95,7 +98,7 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
         : w.child;
     return LayoutBuilder(
       builder: (context, k) {
-        final wide = k.maxWidth >= 840;
+        final wide = k.maxWidth >= kTwoColumnBreakpoint;
 
         final frame = ViewFrame(
           header: ViewHeader(
@@ -113,6 +116,7 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: PaymentTheme.of(context).space(PaymentSpace.group),
             children: [
               if (w.error != null) w.error!,
               content,
@@ -125,18 +129,25 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
           ),
         );
         if (!wide) return frame;
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 280,
-              child: SingleChildScrollView(
-                child: PaymentTaskList(items: w.tasks),
+        // Two columns stay two columns, centred up to 1040 dp (D53, Q1).
+        return ContentColumn(
+          maxWidth: kTwoColumnMaxWidth,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 280,
+                child: SingleChildScrollView(
+                  child: PaymentTaskList(items: w.tasks),
+                ),
               ),
-            ),
-            VerticalDivider(width: 1, color: PaymentTheme.of(context).outline),
-            Expanded(child: frame),
-          ],
+              VerticalDivider(
+                width: 1,
+                color: PaymentTheme.of(context).outline,
+              ),
+              Expanded(child: frame),
+            ],
+          ),
         );
       },
     );

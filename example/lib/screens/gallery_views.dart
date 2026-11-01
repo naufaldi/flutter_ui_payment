@@ -49,7 +49,9 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
               label: _t(context, 'Amount', 'Jumlah'),
               values: [
                 PaymentDetailValue(
-                  'Rp102.500',
+                  PaymentLocalizations.of(
+                    context,
+                  ).moneyFormat.format(const Money.idr(102500)),
                   subText: _t(context, 'Including fee', 'Termasuk biaya'),
                 ),
               ],
@@ -119,6 +121,9 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
   );
   @override
   Widget build(BuildContext context) {
+    // One money format per locale on a screen (#57).
+    String money(int rupiah) =>
+        PaymentLocalizations.of(context).moneyFormat.format(Money.idr(rupiah));
     final facts = [
       PaymentPropertyListItem(
         label: _t(context, 'Items', 'Barang'),
@@ -126,15 +131,15 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
       ),
       PaymentPropertyListItem(
         label: _t(context, 'Subtotal', 'Subtotal'),
-        valueText: 'Rp100.000',
+        valueText: money(100000),
       ),
       PaymentPropertyListItem(
         label: _t(context, 'Fee', 'Biaya'),
-        valueText: 'Rp2.500',
+        valueText: money(2500),
       ),
       PaymentPropertyListItem(
         label: _t(context, 'Total', 'Total'),
-        valueText: 'Rp102.500',
+        valueText: money(102500),
         emphasis: true,
       ),
     ];
@@ -147,22 +152,51 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
           'Toko Contoh · Pesanan DEMO-42',
         ),
         brand: const PaymentIcon(Icons.storefront_outlined),
-        actions: [button(_t(context, 'Copy order ID', 'Salin ID pesanan'))],
         externalLink: PaymentLink(
           label: _t(context, 'Merchant help', 'Bantuan merchant'),
           external: true,
           onPressed: () {},
         ),
-        secondaryAction: button(_t(context, 'Close', 'Tutup')),
+        // Close and cancel are quiet everywhere (#49-3).
+        secondaryAction: button(
+          _t(context, 'Close', 'Tutup'),
+          variant: PaymentButtonVariant.quiet,
+        ),
         primaryAction: button(
           _t(context, 'Continue to payment', 'Lanjut ke pembayaran'),
           variant: PaymentButtonVariant.primary,
         ),
-        child: PaymentPropertyList(items: facts),
+        // The order ID is a reference row with a copy action, not a
+        // separate button (D57).
+        child: PaymentPropertyList(
+          items: [
+            PaymentPropertyListItem(
+              label: _t(context, 'Order ID', 'ID pesanan'),
+              valueText: 'DEMO-42',
+              reference: true,
+              trailing: PaymentCopyButton(
+                value: 'DEMO-42',
+                tooltip: _t(context, 'Copy order ID', 'Salin ID pesanan'),
+                onCopy: (_) async => true,
+              ),
+            ),
+            ...facts,
+          ],
+        ),
       ),
+      // The header keeps navigation; the operation pins to the footer
+      // (D59a, D62, Q3).
       'PaymentFullPageView' => PaymentFullPageView(
         title: _t(context, 'Transactions', 'Transaksi'),
-        pageAction: button(_t(context, 'Download statement', 'Unduh laporan')),
+        pageLink: PaymentLink(
+          label: _t(context, 'Fees', 'Biaya'),
+          onPressed: () =>
+              _galleryFeedback(context, 'Fees opened', 'Biaya dibuka'),
+        ),
+        primaryAction: button(
+          _t(context, 'Download statement', 'Unduh laporan'),
+          variant: PaymentButtonVariant.primary,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: PaymentTheme.of(context).space(PaymentSpace.block),
@@ -291,30 +325,40 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
           ],
         ),
       ),
+      // Account linking (D61): both tiles, what the app can and can never
+      // do, one legal sentence and a pinned Continue / quiet Cancel.
       'PaymentSignInView' => PaymentSignInView(
+        requesterBrand: const PaymentIcon(Icons.school_outlined),
         brand: const PaymentIcon(Icons.account_balance_wallet_outlined),
+        title: _t(
+          context,
+          'Sign in with Ruang Bayar',
+          'Masuk dengan Ruang Bayar',
+        ),
         description: _t(
           context,
-          'Sign in with your bank app to see payments and refunds.',
-          'Masuk dengan aplikasi bank untuk melihat pembayaran dan refund.',
+          'To pay and see your payments in Toko Belajar.',
+          'Untuk membayar dan melihat pembayaran Anda di Toko Belajar.',
         ),
-        learnMore: PaymentSignInLearnMore(
-          label: _t(context, 'What we can see', 'Yang bisa kami lihat'),
-          title: _t(context, 'Permissions', 'Izin'),
-          builder: (_) => Text(
-            _t(
-              context,
-              'Payment history and refunds.',
-              'Riwayat pembayaran dan refund.',
-            ),
+        canDo: [
+          _t(
+            context,
+            'See your name and account number',
+            'Melihat nama dan nomor akun Anda',
           ),
-        ),
-        primaryAction: button(
-          _t(context, 'Continue with bank app', 'Lanjut dengan aplikasi bank'),
-          variant: PaymentButtonVariant.primary,
-        ),
-        secondaryAction: button(
-          _t(context, 'Use another account', 'Gunakan akun lain'),
+          _t(
+            context,
+            'Request payments, always with your confirmation',
+            'Meminta pembayaran, selalu dengan konfirmasi Anda',
+          ),
+        ],
+        cannotDo: [
+          _t(context, 'See your PIN or balance', 'Melihat PIN atau saldo Anda'),
+        ],
+        legalNotice: _t(
+          context,
+          'By continuing you agree to Ruang Bayar’s {0} and {1}.',
+          'Dengan melanjutkan, Anda menyetujui {0} dan {1} Ruang Bayar.',
         ),
         legalLinks: [
           PaymentLink(
@@ -328,10 +372,13 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
             onPressed: () {},
           ),
         ],
-        footnote: _t(
-          context,
-          'We never ask for your PIN here.',
-          'Kami tidak pernah meminta PIN Anda di sini.',
+        primaryAction: button(
+          _t(context, 'Continue', 'Lanjutkan'),
+          variant: PaymentButtonVariant.primary,
+        ),
+        secondaryAction: button(
+          _t(context, 'Cancel', 'Batal'),
+          variant: PaymentButtonVariant.quiet,
         ),
         errorText: state == 1
             ? _t(
@@ -394,8 +441,8 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
       'PaymentDetailPage' => PaymentDetailPage(
         title: _t(
           context,
-          'Rp102.500 to Toko Contoh',
-          'Rp102.500 ke Toko Contoh',
+          '${PaymentLocalizations.of(context).moneyFormat.format(const Money.idr(102500))} to Toko Contoh',
+          '${PaymentLocalizations.of(context).moneyFormat.format(const Money.idr(102500))} ke Toko Contoh',
         ),
         description: _t(
           context,
@@ -408,12 +455,18 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
             onPressed: () {},
           ),
         ],
+        // The priority action pins to the footer; the header keeps the
+        // rarer actions, behind ⋮ on phones (D59a, D62).
+        primaryAction: button(
+          _t(context, 'View receipt', 'Lihat struk'),
+          variant: PaymentButtonVariant.primary,
+        ),
+        secondaryAction: button(
+          _t(context, 'Report a problem', 'Laporkan masalah'),
+          variant: PaymentButtonVariant.quiet,
+        ),
         actions: [
-          button(_t(context, 'View receipt', 'Lihat struk')),
-          button(
-            _t(context, 'Report a problem', 'Laporkan masalah'),
-            variant: PaymentButtonVariant.quiet,
-          ),
+          button(_t(context, 'Download PDF', 'Unduh PDF')),
           button(
             _t(context, 'Request refund', 'Ajukan refund'),
             variant: PaymentButtonVariant.destructive,
@@ -452,6 +505,10 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
             ChartModule(
               title: _t(context, 'This month', 'Bulan ini'),
               state: ChartState.ready,
+              // The headline is the chart's own total, never "—" beside
+              // data (#66).
+              headline: const Money.idr(2010000),
+              headlineCaption: _t(context, '1–29 Oct', '1–29 Okt'),
               chart: SizedBox(
                 height: 240,
                 child: PaymentBarChart(
@@ -463,17 +520,17 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
               title: _t(context, 'Recent transactions', 'Transaksi terbaru'),
               child: PaymentPropertyList(
                 items: [
-                  const PaymentPropertyListItem(
+                  PaymentPropertyListItem(
                     label: 'Toko Contoh',
-                    valueText: 'Rp102.500',
+                    valueText: money(102500),
                   ),
                   PaymentPropertyListItem(
                     label: _t(context, 'Groceries', 'Belanja harian'),
-                    valueText: 'Rp75.000',
+                    valueText: money(75000),
                   ),
                   PaymentPropertyListItem(
                     label: _t(context, 'Coffee', 'Kopi'),
-                    valueText: 'Rp25.000',
+                    valueText: money(25000),
                   ),
                 ],
               ),
@@ -486,7 +543,7 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
                 items: [
                   PaymentPropertyListItem(
                     label: _t(context, 'Available', 'Tersedia'),
-                    valueText: 'Rp500.000',
+                    valueText: money(500000),
                   ),
                 ],
               ),

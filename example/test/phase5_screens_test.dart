@@ -39,12 +39,51 @@ void main() {
     await pumpUntilFound(t, find.byIcon(PaymentIcons.copied));
     await drain(t);
   });
+  testWidgets('A02 footer: receipt primary, quiet report, one back (D62)', (
+    t,
+  ) async {
+    surface(t, const Size(393, 852));
+    final app = await launch(t);
+    final c = await runScenario(t, app, 'A02');
+    await pumpUntil(t, () => !c.detailLoading);
+    await settle(t);
+    final receipt = find.byKey(const Key('view-receipt'));
+    final report = find.byKey(const Key('report-problem'));
+    expect(
+      t.widget<PaymentButton>(receipt).variant,
+      PaymentButtonVariant.primary,
+    );
+    expect(t.widget<PaymentButton>(report).variant, PaymentButtonVariant.quiet);
+    // Both pinned in the footer, on screen without scrolling.
+    expect(receipt.hitTestable(), findsOneWidget);
+    expect(report.hitTestable(), findsOneWidget);
+    expect(t.getRect(receipt).top, lessThan(t.getRect(report).top));
+    expect(t.getRect(receipt).width, t.getRect(report).width);
+    // The app bar's back is the only back control on a phone (#49-5).
+    expect(find.byIcon(Icons.chevron_left), findsNothing);
+    // The report button doesn't stay busy behind its sheet (#64).
+    await tapVisible(t, report);
+    await settle(t);
+    expect(find.byType(PaymentFocusView), findsOneWidget);
+    expect(t.widget<PaymentButton>(report).busy, isFalse);
+    expect(
+      find.descendant(of: report, matching: find.byType(PaymentSpinner)),
+      findsNothing,
+    );
+    await drain(t);
+  });
   testWidgets('A02 report discard, safe submission and retry', (t) async {
     final app = await launch(t);
     var c = await runScenario(t, app, 'A02');
     await pumpUntil(t, () => !c.detailLoading);
     await settle(t);
     Future<void> open() async {
+      // A "Report sent" toast floats over the pinned footer; dismiss it as
+      // a person would before reopening the report.
+      t
+          .state<ScaffoldMessengerState>(find.byType(ScaffoldMessenger).first)
+          .clearSnackBars();
+      await settle(t);
       final direct = find.byKey(const Key('report-problem'));
       if (direct.evaluate().isNotEmpty) {
         await tapVisible(t, direct);

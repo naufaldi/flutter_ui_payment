@@ -6,32 +6,60 @@ description: Add context, full-page, focus, settings, sign-in and onboarding vie
 import Screen from '../../../components/Screen.astro';
 import Props from '../../../components/Props.astro';
 
-The transaction-history body for an AdaptiveNavShell. Variants: full page body. Nothing else exists. The header and optional pageAction stay outside the one body scroll region. A default fill-width action is normalized to hug.
+The transaction-history body for an AdaptiveNavShell. Variants: full page body. Nothing else exists. The header holds navigation only: `pageLink` sits on the title row as "Label ›" (D59a). The screen's priority action, if it has one, pins in a bottom footer as `primaryAction`, with at most one quiet `secondaryAction` under it (D62).
 
 ## Usage
 
 ```dart
-// example/lib/screens/gallery_views.dart
+// example/lib/screens/steps/history_step.dart, simplified
 PaymentFullPageView(
-        title: 'Transactions',
-        pageAction: button('Download statement'),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: PaymentTheme.of(context).space(PaymentSpace.block),
-          children: [
-            PaymentTabs(
-              tabs: const [
-                PaymentTab(label: 'All'),
-                PaymentTab(label: 'In progress'),
-                PaymentTab(label: 'Refunds'),
-              ],
-              selectedIndex: state,
-              onSelected: (v) => setState(() => state = v),
-            ),
-            const PaymentPropertyList(items: facts),
-          ],
-        ),
-      );
+  title: 'Transaksi',
+  // Opens another screen: a link on the title row (D59a).
+  pageLink: PaymentLink(label: 'Laporan', onPressed: openStatement),
+  child: history,
+);
+
+// example/lib/screens/gallery_views.dart, simplified: an operation is the
+// footer's primary action, not a header button (D62, Q3).
+PaymentFullPageView(
+  title: 'Transactions',
+  pageLink: PaymentLink(label: 'Fees', onPressed: openFees),
+  primaryAction: PaymentButton(label: 'Download statement', onPressed: download),
+  child: body,
+);
+```
+
+## Header, footer and width
+
+- **Phones (below 600 dp).** `pageLink` sits on the title row as "Label ›" with its 48 dp target; nothing stacks under the title. `primaryAction` and `secondaryAction` pin in a footer above the bottom safe area, full width, primary on top (D59, D62).
+- **Wide (600 dp and wider).** Header, body and footer content sit in a centred column up to 640 dp; the hairlines and scroll bar still span the window (D53). A `PaymentOverviewPage` child with a secondary column keeps two columns from 840 dp, capped at 1040 dp. Footer actions hug their labels at the end edge.
+- **Large text.** Above 1.5× the header scrolls away with the body instead of staying pinned.
+
+### Migration from `pageAction`
+
+`pageAction` is deprecated and removed in 0.2.0. It still renders: on phones as a title-row link, on wide screens as a hug button. Pick the replacement by what the action does:
+
+```dart
+// Before
+PaymentFullPageView(
+  title: 'Transactions',
+  pageAction: PaymentButton(label: 'Statement', onPressed: openStatement),
+  child: body,
+);
+
+// After: it opens another screen
+PaymentFullPageView(
+  title: 'Transactions',
+  pageLink: PaymentLink(label: 'Statement', onPressed: openStatement),
+  child: body,
+);
+
+// After: it is the screen's main step
+PaymentFullPageView(
+  title: 'Transactions',
+  primaryAction: PaymentButton(label: 'Download statement', onPressed: download),
+  child: body,
+);
 ```
 
 ## Stripe → kit

@@ -3,7 +3,6 @@ import '../foundation/primitives.dart';
 import '../foundation/payment_icons.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/view_frame.dart';
-import '../controls/button_group.dart';
 import '../controls/actions.dart';
 import '../layout/content.dart';
 import '../foundation/payment_tokens.dart';
@@ -36,7 +35,8 @@ class PaymentContextView extends StatelessWidget {
   /// Host brand icon or image.
   final Widget? brand;
 
-  /// Host actions displayed in the page header.
+  /// Header actions: on phones one shows as a title-row link and more go
+  /// behind ⋮ (D59a). The task's own step belongs in [primaryAction].
   final List<PaymentButton> actions;
 
   final PaymentBanner? banner;
@@ -69,14 +69,8 @@ class PaymentContextView extends StatelessWidget {
         title: title,
         description: description,
         leading: brand,
-        below: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: PaymentTheme.of(context).space(PaymentSpace.group),
-          children: [
-            if (actions.isNotEmpty) PaymentButtonGroup(children: actions),
-            ?banner,
-          ],
-        ),
+        actions: actions,
+        below: banner,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
