@@ -16,6 +16,24 @@ import 'token_resolvers.dart';
 import 'payment_localizations.dart';
 import 'kit_strings.dart';
 
+/// Internal: the width [text] takes on one line in [style], as a `Text`
+/// under the ambient default style and text scale draws it.
+double oneLineWidth(BuildContext context, String text, TextStyle style) {
+  final painter = TextPainter(
+    text: TextSpan(
+      text: text,
+      style: DefaultTextStyle.of(context).style.merge(style),
+    ),
+    textDirection: Directionality.of(context),
+    textScaler: MediaQuery.textScalerOf(context),
+    locale: Localizations.maybeLocaleOf(context),
+    maxLines: 1,
+  )..layout();
+  final width = painter.width;
+  painter.dispose();
+  return width;
+}
+
 /// Internal: centres [child] in a column at most [maxWidth] wide (D53).
 /// Phones are narrower than the cap, so they are unchanged.
 class ContentColumn extends StatelessWidget {
@@ -167,6 +185,7 @@ class HeaderLink extends StatelessWidget {
     required this.onPressed,
     this.semanticLabel,
     this.external = false,
+    this.alignment = AlignmentDirectional.centerEnd,
   });
   final String label;
   final VoidCallback? onPressed;
@@ -174,6 +193,16 @@ class HeaderLink extends StatelessWidget {
 
   /// Opens outside the app: link role and the "opens externally" hint.
   final bool external;
+
+  /// Where the text sits in its 48 dp target: on the end edge on the title
+  /// row, on the start edge when the link has its own line.
+  final AlignmentGeometry alignment;
+
+  /// Width of [label] and its › glyph on one line, for the header's fit
+  /// check.
+  static double naturalWidth(BuildContext context, String label) =>
+      oneLineWidth(context, label, PaymentType.of(context).heading) +
+      PaymentIconSize.medium.resolve(context);
   @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
@@ -189,7 +218,7 @@ class HeaderLink extends StatelessWidget {
       hint: external ? PaymentLocalizations.of(context).opensExternally : null,
       onTap: onPressed,
       child: MinTapTarget(
-        alignment: AlignmentDirectional.centerEnd,
+        alignment: alignment,
         child: PaymentFocusRing(
           radius: theme.controlBorderRadius,
           child: PaymentPressScale(
@@ -303,8 +332,6 @@ class ViewHeader extends StatelessWidget {
         builder: (context, k) {
           final compact = k.maxWidth < kCompactBreakpoint;
           final large = PaymentType.isLarge(context);
-          Widget headerLink(PaymentButton a) =>
-              HeaderLink(key: a.key, label: a.label, onPressed: a.onPressed);
           final menu = PaymentMenu(
             entries: [
               for (final a in actions)
@@ -315,19 +342,49 @@ class ViewHeader extends StatelessWidget {
                 ),
             ],
           );
+          // One header link at most: the page link, or a phone's single
+          // action.
+          final single = compact && actions.length == 1 && link == null
+              ? actions.single
+              : null;
+          final linkLabel = link?.label ?? single?.label;
+          final hasMenu = compact && actions.isNotEmpty && single == null;
+          Widget? headerLink(AlignmentGeometry alignment) => link != null
+              ? HeaderLink(
+                  key: link!.key,
+                  label: link!.label,
+                  semanticLabel: link!.semanticLabel,
+                  external: link!.external,
+                  onPressed: link!.onPressed,
+                  alignment: alignment,
+                )
+              : single != null
+              ? HeaderLink(
+                  key: single.key,
+                  label: single.label,
+                  onPressed: single.onPressed,
+                  alignment: alignment,
+                )
+              : null;
+          // The title has priority and never breaks inside a word: when the
+          // title on one line and the link don't fit side by side, the link
+          // takes its own line under the header text, start-aligned.
+          final leadWidth = switch (leading) {
+            null => 0.0,
+            PaymentIcon(:final size) =>
+              size.resolve(context) + theme.space(PaymentSpace.block),
+            _ => kMediaTile + theme.space(PaymentSpace.block),
+          };
+          final linkOnRow =
+              linkLabel != null &&
+              oneLineWidth(context, title, type.title) +
+                      space +
+                      HeaderLink.naturalWidth(context, linkLabel) +
+                      (hasMenu ? kMinInteractiveDimension : 0) <=
+                  k.maxWidth - leadWidth;
           final nav = [
-            if (link != null)
-              HeaderLink(
-                key: link!.key,
-                label: link!.label,
-                semanticLabel: link!.semanticLabel,
-                external: link!.external,
-                onPressed: link!.onPressed,
-              ),
-            if (compact && actions.length == 1 && link == null)
-              headerLink(actions.single)
-            else if (compact && actions.isNotEmpty)
-              menu,
+            if (linkOnRow) headerLink(AlignmentDirectional.centerEnd)!,
+            if (hasMenu) menu,
             if (!compact && inlineActions && !large && actions.isNotEmpty)
               PaymentButtonGroup(
                 children: [for (final a in actions) hugButton(a)],
@@ -346,16 +403,28 @@ class ViewHeader extends StatelessWidget {
                 text: copy,
                 trailing: nav.isEmpty
                     ? null
-                    // Navigation never takes more than half the row, so a
+                    // A link on the row already fits beside the title; other
+                    // navigation never takes more than half the row, so a
                     // long label at large text can't squeeze the title out.
                     : ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: k.maxWidth / 2),
+                        constraints: BoxConstraints(
+                          maxWidth: linkOnRow
+                              ? double.infinity
+                              : k.maxWidth / 2,
+                        ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [for (final n in nav) Flexible(child: n)],
                         ),
                       ),
               ),
+              if (linkLabel != null && !linkOnRow) ...[
+                SizedBox(height: theme.space(PaymentSpace.related)),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: headerLink(AlignmentDirectional.centerStart),
+                ),
+              ],
               if (actionsBelow && actions.isNotEmpty) ...[
                 SizedBox(height: theme.space(PaymentSpace.block)),
                 Align(

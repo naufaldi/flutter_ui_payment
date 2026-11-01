@@ -1,8 +1,10 @@
 // The deprecated pageAction must keep compiling until 0.2.0.
 // ignore_for_file: deprecated_member_use_from_same_package
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:flutter_ui_payment/src/foundation/tap_target.dart';
 import 'content_host.dart';
 
 Widget bounded(
@@ -159,20 +161,85 @@ void main() {
     await t.pumpWidget(
       framed(
         PaymentFullPageView(
-          title: 'Transactions',
+          // Short enough to share the row in the test font's wide glyphs.
+          title: 'Activity',
           pageLink: PaymentLink(label: 'Statement', onPressed: () {}),
           child: const Text('Body'),
         ),
       ),
     );
-    final title = t.getRect(find.text('Transactions'));
+    final title = t.getRect(find.text('Activity'));
     final link = t.getRect(find.text('Statement'));
-    // Centred on the title's first 24 dp line (the test font may wrap it).
+    // Centred on the title's first 24 dp line.
     expect((link.center.dy - (title.top + 12)).abs(), lessThan(1));
     expect(link.left, greaterThan(title.right));
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
     // No outlined button under the title any more.
     expect(find.byType(PaymentButton), findsNothing);
+  });
+
+  // P7a: the title has priority and never breaks inside a word; a link that
+  // doesn't fit beside it takes its own start-aligned line.
+  testWidgets('header title never breaks mid-word; link stacks at 320 2x', (
+    t,
+  ) async {
+    await setSurface(t, const Size(320, 700));
+    // Each word fits the 288 dp column at 2x in the test font, but not the
+    // half row the link used to leave it.
+    const title = 'Your money';
+    await t.pumpWidget(
+      framed(
+        PaymentFullPageView(
+          title: title,
+          pageLink: PaymentLink(label: 'Statement', onPressed: () {}),
+          child: const Text('Body'),
+        ),
+        scale: 2,
+      ),
+    );
+    final paragraph = t.renderObject<RenderParagraph>(find.text(title));
+    final style = DefaultTextStyle.of(
+      t.element(find.text(title)),
+    ).style.merge(t.widget<Text>(find.text(title)).style);
+    TextPainter painter(String text, double width) => TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: TextDirection.ltr,
+      textScaler: const TextScaler.linear(2),
+    )..layout(maxWidth: width);
+    final words = title.split(' ');
+    final longest = words
+        .map((w) => painter(w, double.infinity).width)
+        .reduce((a, b) => a > b ? a : b);
+    // The title has room for its longest word, so it wraps only at spaces:
+    // at most one line per word, and every line ends on a space.
+    final width = paragraph.constraints.maxWidth;
+    expect(width, greaterThanOrEqualTo(longest));
+    final laid = painter(title, width);
+    final lines = laid.computeLineMetrics();
+    expect(lines.length, lessThanOrEqualTo(words.length));
+    expect(paragraph.size.height, closeTo(laid.height, 0.5));
+    for (final line in lines.take(lines.length - 1)) {
+      final end = laid
+          .getLineBoundary(laid.getPositionForOffset(Offset(1, line.baseline)))
+          .end;
+      expect(
+        title[end - 1] == ' ' || title[end] == ' ',
+        isTrue,
+        reason: 'a line ends mid-word at $end',
+      );
+    }
+    // The link has its own line under the title, on the start edge, with
+    // its full 48 dp target.
+    final titleRect = t.getRect(find.text(title));
+    final link = find.text('Statement');
+    expect(t.getRect(link).top, greaterThanOrEqualTo(titleRect.bottom));
+    expect(t.getRect(link).left, titleRect.left);
+    final target = t.getRect(
+      find.ancestor(of: link, matching: find.byType(MinTapTarget)).first,
+    );
+    expect(target.height, greaterThanOrEqualTo(48));
+    expect(target.left, titleRect.left);
+    expect(link.hitTestable(), findsOneWidget);
   });
 
   testWidgets('full page primary is pinned above a long body (D62)', (t) async {
