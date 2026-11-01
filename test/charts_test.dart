@@ -261,6 +261,13 @@ void main() {
       final tapped = valueText(tester);
       expect(tapped, isNot('W4 · Rp420.000'));
       expect(tapped, contains('Rp'));
+      // The painter receives the tapped period, not the rest one.
+      ChartPainter painter() => tester
+          .widgetList<CustomPaint>(find.byType(CustomPaint))
+          .map((p) => p.painter)
+          .whereType<ChartPainter>()
+          .single;
+      expect(painter().selected, isNot(3));
       await tester.tapAt(Offset(plot.left + 90, plot.center.dy));
       await tester.pump();
       expect(valueText(tester), tapped);
@@ -280,13 +287,8 @@ void main() {
         label.bottom,
       );
       expect(tester.getSize(find.byType(SizedBox).first).height, height);
-      final painter = tester
-          .widgetList<CustomPaint>(find.byType(CustomPaint))
-          .map((p) => p.painter)
-          .whereType<ChartPainter>()
-          .single;
-      expect(painter.markEvery, isTrue);
-      expect(painter.selected, 3);
+      expect(painter().markEvery, isTrue);
+      expect(painter().selected, 3);
     });
     testWidgets('$kind chart without inspection still labels its rest value', (
       tester,
