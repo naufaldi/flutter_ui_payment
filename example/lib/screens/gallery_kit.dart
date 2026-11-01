@@ -692,7 +692,6 @@ class _PromoDemoState extends State<_PromoDemo> {
                 footer: PaymentButton(
                   key: const Key('promo-about-close'),
                   label: t('Close', 'Tutup'),
-                  variant: PaymentButtonVariant.quiet,
                   onPressed: () => Navigator.pop(sheet),
                 ),
               ),

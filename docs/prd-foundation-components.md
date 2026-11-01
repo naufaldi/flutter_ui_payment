@@ -2107,7 +2107,7 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Internal `ActionFrame`: bounded height pins the primary and at most one quiet action through `ViewFrame` / `ViewFooter` / `PinnedFooter`; unbounded keeps the inline layout
 - [x] Adopted by `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentStatusView`, `VerificationIntro`, `VerificationStatusView`; additive `header`, `PaymentStatusView.secondaryAction` (quiet)
 - [x] Example: KYC intro / status, confirm, authorize, status and receipt are view steps; tab bar hidden from KYC through the receipt; host tools in an app-bar "Demo tools" sheet
-- [x] Receipt: "Selesai" primary, quiet "Lihat detail" (#49-1); checkout bar holds only the action (#64, #58-2); cancel / back / close quiet (#49-3)
+- [x] Receipt: "Selesai" primary, quiet "Lihat detail" (#49-1); checkout bar holds only the action (#64, #58-2); cancel / back / close quiet beside another action (#49-3)
 - [ ] KYC identity, documents and review steps pin their submit (needs an external submit for `IdentityForm` and a footer slot in `PaymentOnboardingView`; follow-up)
 ```
 
