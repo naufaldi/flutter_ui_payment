@@ -17,6 +17,7 @@ import 'token_resolvers.dart';
 import 'tap_target.dart';
 import 'first_line.dart';
 import 'button_copy.dart';
+import 'section_layout.dart';
 
 /// The five amount looks. Nothing else exists.
 enum AmountTextVariant {
@@ -920,34 +921,18 @@ class PaymentSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: theme.space(PaymentSpace.related),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (title != null) ...[
-            Row(
-              children: [
-                Expanded(
-                  child: Semantics(
-                    header: true,
-                    child: Text(title!, style: PaymentType.of(context).heading),
-                  ),
-                ),
-                if (trailing != null) TextActionEdge.end(child: trailing!),
-              ],
-            ),
-            SizedBox(
-              height: trailing == null
-                  ? theme.space(PaymentSpace.related) * 0.5
-                  : 0,
-            ),
-          ],
-          child,
-        ],
-      ),
+    final type = PaymentType.of(context);
+    // One 36 dp header band with or without an action; the action's 48 dp
+    // target overhangs the band into the section padding (#62).
+    return SectionLayout(
+      padding: theme.space(PaymentSpace.related),
+      line: lineHeightOf(context, type.heading),
+      gap: theme.space(PaymentSpace.related),
+      title: title == null
+          ? null
+          : Semantics(header: true, child: Text(title!, style: type.heading)),
+      trailing: trailing == null ? null : TextActionEdge.end(child: trailing!),
+      body: child,
     );
   }
 }
