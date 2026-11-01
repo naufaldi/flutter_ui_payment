@@ -11,6 +11,7 @@ import '../controls/button_group.dart';
 import '../controls/actions.dart';
 import '../layout/content.dart';
 import '../overlay/sheets.dart';
+import '../foundation/payment_tokens.dart';
 
 /// Supplemental explanation presented separately in a focus view.
 @immutable
@@ -125,7 +126,7 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
           constraints: const BoxConstraints(maxWidth: 420),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: PaymentTheme.of(context).spacing * 2,
+            spacing: PaymentTheme.of(context).space(PaymentSpace.group),
             children: [
               if (w.brand != null)
                 Align(
@@ -171,7 +172,7 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
               ),
               if (w.legalLinks.isNotEmpty)
                 Wrap(
-                  spacing: PaymentTheme.of(context).spacing * 2,
+                  spacing: PaymentTheme.of(context).space(PaymentSpace.group),
                   children: w.legalLinks,
                 ),
               if (w.footnote != null) Text(w.footnote!, style: type.caption),

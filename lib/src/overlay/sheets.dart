@@ -11,6 +11,7 @@ import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/layout_rules.dart';
+import '../foundation/payment_tokens.dart';
 
 /// Title row for a [PaymentSheet] with an optional close button.
 ///
@@ -37,10 +38,10 @@ class PaymentSheetHeader extends StatelessWidget {
     final type = PaymentType.of(context);
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(
-        theme.spacing * 2,
-        theme.spacing,
-        theme.spacing,
-        theme.spacing,
+        theme.space(PaymentSpace.group),
+        theme.space(PaymentSpace.related),
+        theme.space(PaymentSpace.related),
+        theme.space(PaymentSpace.related),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +58,7 @@ class PaymentSheetHeader extends StatelessWidget {
                     child: Text(title, style: type.title),
                   ),
                   if (subtitle != null) ...[
-                    SizedBox(height: theme.spacing * 0.5),
+                    SizedBox(height: theme.space(PaymentSpace.inline)),
                     Text(subtitle!, style: type.caption),
                   ],
                 ],
@@ -96,10 +97,10 @@ class PaymentSheet extends StatelessWidget {
     final keyboard = MediaQuery.viewInsetsOf(context).bottom;
     final scrollBody = SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(
-        theme.spacing * 2,
+        theme.space(PaymentSpace.group),
         0,
-        theme.spacing * 2,
-        theme.spacing * 2,
+        theme.space(PaymentSpace.group),
+        theme.space(PaymentSpace.group),
       ),
       child: body,
     );
@@ -121,7 +122,7 @@ class PaymentSheet extends StatelessWidget {
               ),
               child: SafeArea(
                 top: false,
-                minimum: EdgeInsets.all(theme.spacing * 2),
+                minimum: EdgeInsets.all(theme.space(PaymentSpace.group)),
                 child: footer!,
               ),
             )

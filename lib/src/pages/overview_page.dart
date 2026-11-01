@@ -5,6 +5,7 @@ import 'page_module.dart';
 import 'detail_page_property_list.dart';
 import 'detail_page_table.dart';
 import '../charts/charts.dart';
+import '../foundation/payment_tokens.dart';
 
 /// Non-scrolling page modules; place inside a FullPageView.
 class PaymentOverviewPage extends StatelessWidget {
@@ -48,7 +49,7 @@ class PaymentOverviewPage extends StatelessWidget {
         if (k.maxWidth >= 840 && secondary != null) {
           return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: PaymentTheme.of(context).spacing * 3,
+            spacing: PaymentTheme.of(context).space(PaymentSpace.section),
             children: [
               Expanded(flex: 2, child: column(primary, 2)),
               Expanded(child: column(secondary!, 1)),

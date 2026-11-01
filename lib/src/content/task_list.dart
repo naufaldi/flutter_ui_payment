@@ -4,6 +4,7 @@ import '../foundation/payment_type.dart';
 import '../foundation/row_shell.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
+import '../foundation/payment_tokens.dart';
 
 /// Host-owned task progress.
 enum PaymentTaskStatus {
@@ -84,7 +85,7 @@ class PaymentTaskList extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: theme.spacing * 1.5),
+                SizedBox(width: theme.space(PaymentSpace.block)),
                 Expanded(
                   child: Semantics(
                     container: true,
@@ -109,7 +110,7 @@ class PaymentTaskList extends StatelessWidget {
           if (!done && item.subTasks.isNotEmpty)
             Padding(
               padding: EdgeInsetsDirectional.only(
-                start: 24 + theme.spacing * 1.5,
+                start: 24 + theme.space(PaymentSpace.block),
               ),
               child: Column(
                 children: [for (final sub in item.subTasks) row(sub)],

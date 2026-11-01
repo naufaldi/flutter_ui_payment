@@ -6,6 +6,7 @@ import '../foundation/view_frame.dart';
 import '../controls/button_group.dart';
 import '../controls/actions.dart';
 import '../layout/content.dart';
+import '../foundation/payment_tokens.dart';
 
 /// A contextual panel beside host content.
 class PaymentContextView extends StatelessWidget {
@@ -70,7 +71,7 @@ class PaymentContextView extends StatelessWidget {
         leading: brand,
         below: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: PaymentTheme.of(context).spacing * 2,
+          spacing: PaymentTheme.of(context).space(PaymentSpace.group),
           children: [
             if (actions.isNotEmpty) PaymentButtonGroup(children: actions),
             ?banner,
@@ -79,7 +80,7 @@ class PaymentContextView extends StatelessWidget {
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: PaymentTheme.of(context).spacing * 2,
+        spacing: PaymentTheme.of(context).space(PaymentSpace.group),
         children: [
           child,
           if (externalLink != null)

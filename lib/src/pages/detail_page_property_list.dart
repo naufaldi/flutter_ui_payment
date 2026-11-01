@@ -147,7 +147,9 @@ class PaymentDetailPagePropertyList extends StatelessWidget {
                   MergeSemantics(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                        vertical: PaymentTheme.of(context).spacing,
+                        vertical: PaymentTheme.of(
+                          context,
+                        ).space(PaymentSpace.related),
                       ),
                       child: PaymentType.isLarge(context)
                           ? Wrap(
