@@ -151,6 +151,8 @@ void main() {
         'Controls': 'Kontrol',
         'Forms': 'Formulir',
         'Feedback': 'Umpan balik',
+        'Layout': 'Tata letak',
+        'Charts': 'Grafik',
       };
       // slug → (page, caption, steps before the shot, cleanup after it).
       final specimens =
@@ -271,7 +273,38 @@ void main() {
               null,
               null,
             ),
+            // UI review P3.
+            'info_row': ('Kit components', 'InfoRow', null, null),
+            'section': ('Kit components', 'PaymentSection', null, null),
+            'navigation': ('Kit components', 'AdaptiveNavShell', null, null),
+            'chart_module': ('Kit components', 'ChartModule', null, null),
+            'property_list': ('Content', 'PaymentPropertyList', null, null),
+            'table': ('Content', 'PaymentTable', null, null),
+            'data_table': ('Content', 'PaymentDataTable', null, null),
+            'task_list': ('Content', 'PaymentTaskList', null, null),
+            'code': ('Layout', 'PaymentCode', null, null),
+            'image': ('Layout', 'PaymentImage', null, null),
+            'line_chart': ('Charts', 'PaymentLineChart', null, null),
+            'bar_chart': ('Charts', 'PaymentBarChart', null, null),
+            'meter_chart': ('Charts', 'PaymentMeterChart', null, null),
+            'sparkline': ('Charts', 'PaymentSparkline', null, null),
           };
+      // State captures named `<slug><suffix>` rather than `_variants`.
+      final states = <String, (String, Future<void> Function())>{
+        // D58: the latest value is labelled with no pointer at all.
+        'chart_line_rest': ('Charts', () => top('PaymentLineChart')),
+        'chart_bar_selected': (
+          'Charts',
+          () async {
+            await top('PaymentBarChart');
+            final bar = tester.getRect(find.byType(PaymentBarChart).first);
+            await tester.tapAt(
+              Offset(bar.left + bar.width * .45, bar.center.dy),
+            );
+            await settle(tester);
+          },
+        ),
+      };
       for (final (look, settings) in [
         ('light', const DemoSettings(locale: Locale('en'))),
         (
@@ -286,6 +319,7 @@ void main() {
         final suffix = look == 'light' ? '' : '_$look';
         final wanted = [
           ...specimens.keys.where((slug) => want(slug, look)),
+          ...states.keys.where((slug) => want(slug, look)),
           if (want('tooltip', look)) 'tooltip',
         ];
         if (wanted.isEmpty) continue;
@@ -329,6 +363,12 @@ void main() {
                   : 'Payment time: 29 Oct 2026, 14:05',
               'tooltip_variants$suffix',
             );
+            continue;
+          }
+          if (states[slug] case (final page, final steps)?) {
+            await openPage(page);
+            await steps();
+            await shot('$slug$suffix');
             continue;
           }
           final (page, entry, before, after) = specimens[slug]!;
@@ -881,17 +921,14 @@ void main() {
         await top('ChartModule · states');
         await shot('chart_states_$state');
       }
+      // D58: the latest value is labelled at rest; a tap selects a bar.
       await top('PaymentLineChart');
-      final inspectMouse = await tester.createGesture(
-        kind: PointerDeviceKind.mouse,
-      );
-      await inspectMouse.addPointer(location: Offset.zero);
-      await inspectMouse.moveTo(
-        tester.getCenter(find.byType(PaymentLineChart).first),
-      );
-      await tester.pump(const Duration(milliseconds: 400));
-      await shot('chart_line_inspect');
-      await inspectMouse.removePointer();
+      await shot('chart_line_rest');
+      await top('PaymentBarChart');
+      final bar = tester.getRect(find.byType(PaymentBarChart).first);
+      await tester.tapAt(Offset(bar.left + bar.width * .45, bar.center.dy));
+      await settle(tester);
+      await shot('chart_bar_selected');
       await open('Verification (KYC)');
       await top('KycCaptureGuide');
       for (final state in ['review', 'rejected', 'permission']) {
