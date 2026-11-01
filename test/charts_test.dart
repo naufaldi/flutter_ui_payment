@@ -527,6 +527,28 @@ void main() {
       );
       expect(tester.takeException(), isNull);
     });
+    testWidgets('$kind readout keeps full names at iPhone SE width (#78)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(module(2, 375));
+      final readout = find.byKey(const ValueKey('payment-chart-value'));
+      for (final name in ['W4 · This month', 'Last month']) {
+        final text = find.descendant(of: readout, matching: find.text(name));
+        expect(text, findsOneWidget);
+        expect(
+          tester.renderObject<RenderParagraph>(text).didExceedMaxLines,
+          isFalse,
+        );
+      }
+      final chart = tester.getRect(
+        find.byType(bars ? PaymentBarChart : PaymentLineChart),
+      );
+      final label = tester.getRect(readout);
+      expect(label.left, greaterThanOrEqualTo(chart.left));
+      expect(label.right, lessThanOrEqualTo(chart.right));
+      expect(label.top, greaterThanOrEqualTo(chart.top));
+      expect(tester.takeException(), isNull);
+    });
     testWidgets('$kind readout keeps one line per series where it fits', (
       tester,
     ) async {
