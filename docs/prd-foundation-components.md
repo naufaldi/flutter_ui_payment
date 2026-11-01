@@ -2100,7 +2100,7 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Account-linking sign-in: tiles, can / cannot, legal sentence and pinned Continue / Cancel; `learnMore` and `footnote` deprecated (D61)
 - [x] Breadcrumb chevron hangs at the title edge; one breadcrumb → title gap; table outer cells on the content edge
 - [x] Transaction detail: "Lihat struk" primary, quiet "Laporkan masalah", no phone breadcrumb; history "Laporan ›"
-- [x] Settings legend → first control: one 8 dp gap for fields and selection rows (#66)
+- [x] Settings legend → first control: one 16 dp gap for fields and selection rows (#66; 8 dp was tried first, see `docs/decisions.md`)
 - [x] One pinned footer for views, the action bar and sheets (P4's `KitSheetFooter` merged into `PinnedFooter`)
 
 **UI review P7b: readable field labels, quiet buttons on the edge** (#73, #65)
@@ -2120,6 +2120,13 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Header title never breaks inside a word; a link that doesn't fit beside it takes its own start-aligned line
 - [x] History lists transactions before the month's figures; "Demo tools" folded into the settings sheet
 - [ ] History at SE 200% shows a transaction row on the first screen (needs an owner choice, see `docs/decisions.md`)
+
+**UI review P7c: full capture refresh and decision record** (D45–D62; #46, #64)
+- [x] One `CAPTURE_ONLY` sweep covers every registered catalog look; the full session shoots only the states without a slug
+- [x] Catalog (light, dark, 200, id, id_200), kit and flow captures on iPhone 16 Pro; the SE 200% set; the iPad mini set
+- [x] iPad mini KYC details, documents and review captures (#64)
+- [x] Copy failure label under the glyph (#46 follow-up); document tile badge under the limits at large text; documents scenarios start with the details done
+- [x] Design decisions page: "UI review, 1 November 2026" with D45–D62, after captures and issue links; Surfaces shows the phone menu sheet
 ```
 
 ### Phase 2E implementation notes

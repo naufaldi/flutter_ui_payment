@@ -63,6 +63,63 @@ At 200% text the status screen's only action used to fall below the bottom bar. 
 
 The PRD budget is p95 build and raster each under 16.7 ms on a recorded 60 Hz target. On an Android 11 arm64 emulator (profile mode, Impeller on OpenGL ES), checkout at 200% text measured a p95 build of 2.02 ms and a p95 raster of 20.41 ms. A plain Material list with no kit widgets also missed the raster budget in the same session (20.66 ms), which suggests a substantial environment effect but does not prove the kit has no rendering cost. **The raster budget is not met in this environment.** No physical device was profiled, and there are no iOS performance numbers.
 
+## UI review, 1 November 2026
+
+On 1 November 2026 the owner reviewed every component and flow against the 8 pt grid and a design-engineering checklist. Each problem became a GitHub issue with annotated "before" captures, and each answer became a decision, D45 to D62. The full wording is in the PRD decision table (<RepoLink path="docs/prd-foundation-components.md" label="docs/prd-foundation-components.md" />), and the implementation notes are in <RepoLink path="docs/decisions.md" label="docs/decisions.md" />.
+
+| Decision | In plain words | Before |
+| --- | --- | --- |
+| D45 | On a phone, a confirmation is a bottom sheet: full-width actions, the confirm on top and Cancel below. Wide screens get a centred dialog. | [#45](https://github.com/naufaldi/flutter_ui_payment/issues/45) |
+| D46 | Spacing keeps 4 / 8 / 12 / 16 / 24 / 32. Every gap goes through a named role, and one role uses one value. | [#50](https://github.com/naufaldi/flutter_ui_payment/issues/50) |
+| D47 | There is no warning button. A warning is a banner, badge or toast next to the action. | Owner decision, no issue |
+| D48 | A banner's actions sit on its text column. A banner about a changed total states old → new and can't be dismissed while the payment is open. | [#52](https://github.com/naufaldi/flutter_ui_payment/issues/52) |
+| D48a | One banner layout for every tone: icon and close on the title's first line, one text column, at most one small button and one link. | [#52](https://github.com/naufaldi/flutter_ui_payment/issues/52) |
+| D49 | Tooltips open on tap too, and hold one line. Longer explanations open a sheet. | [#53](https://github.com/naufaldi/flutter_ui_payment/issues/53) |
+| D50 | On a phone, search opens a full-height sheet. Wide screens show a floating list under the field. | [#54](https://github.com/naufaldi/flutter_ui_payment/issues/54) |
+| D51 | A custom date range opens a kit calendar sheet with Apply at the bottom. | [#55](https://github.com/naufaldi/flutter_ui_payment/issues/55) |
+| D52 | A single date opens a kit date sheet with a full-width "Choose date". Date of birth starts with typed entry. | [#56](https://github.com/naufaldi/flutter_ui_payment/issues/56) |
+| D52a | Far dates, such as a date of birth, use a scrolling wheel; near dates use a month calendar. | [#56](https://github.com/naufaldi/flutter_ui_payment/issues/56) |
+| D53 | From 600 dp wide, pages sit in a centred column about 640 dp wide. | [#57](https://github.com/naufaldi/flutter_ui_payment/issues/57) |
+| D54 | One primary button per screen, sheet or dialog. A button that only opens something is secondary. | [#61](https://github.com/naufaldi/flutter_ui_payment/issues/61) |
+| D55 | On a phone, a menu is a bottom action sheet. Wide screens keep the floating menu. | [#61](https://github.com/naufaldi/flutter_ui_payment/issues/61) |
+| D56 | In a row, title, value and control share one centre line. In a multi-line row, the icon and control line up with the first line. | [#62](https://github.com/naufaldi/flutter_ui_payment/issues/62) |
+| D57 | IDs and references in rows are plain monospace text on the value edge with a copy action, not grey chips. | [#62](https://github.com/naufaldi/flutter_ui_payment/issues/62) |
+| D58 | Charts show the latest exact value at rest; tap or drag to read another point or bar. | [#62](https://github.com/naufaldi/flutter_ui_payment/issues/62), [#63](https://github.com/naufaldi/flutter_ui_payment/issues/63) |
+| D59 | On a phone, only actions that finish or advance the task are full width. Everything else hugs its label. | [#63](https://github.com/naufaldi/flutter_ui_payment/issues/63) |
+| D59a | A page header holds navigation only. One action is a "Label ›" link on the title row; more go behind ⋮. | [#64](https://github.com/naufaldi/flutter_ui_payment/issues/64) |
+| D60 | On a phone, table rows read like a property list: label on the left, value on the end edge. | [#63](https://github.com/naufaldi/flutter_ui_payment/issues/63) |
+| D61 | Sign-in is an account-linking screen: both apps, what the app can and can't do, one legal sentence and a pinned Continue. | [#63](https://github.com/naufaldi/flutter_ui_payment/issues/63) |
+| D62 | Every phone screen with a priority action pins it at the bottom, full width, with at most one quiet action. The tab bar hides during a payment. | [#64](https://github.com/naufaldi/flutter_ui_payment/issues/64) |
+
+The captures below show the result, from the final capture refresh on an iPhone 16 Pro unless noted.
+
+<Screens>
+  <Screen name="ios_catalog_dialog_variants" alt="A confirmation on a phone as a bottom sheet with the confirm on top and Cancel below, both full width." caption="D45: confirm sheet" />
+  <Screen name="ios_catalog_menu_sheet" alt="A menu on a phone as a bottom action sheet with full-width rows and Cancel at the bottom." caption="D55: menu sheet" />
+  <Screen name="ios_catalog_tooltip_tap" alt="A one-line tooltip opened by a tap." caption="D49: tap tooltip" />
+</Screens>
+
+<Screens>
+  <Screen name="ios_catalog_search_field_sheet" alt="Search on a phone as a full-height sheet with the field on top and 48 dp result rows." caption="D50: search sheet" />
+  <Screen name="ios_catalog_date_range_calendar" alt="A kit range calendar sheet with the range summary and a full-width Apply at the bottom." caption="D51: range calendar" />
+  <Screen name="ios_catalog_date_field_sheet_wheel" alt="A date-of-birth wheel with day, month and year columns and a full-width Choose date." caption="D52a: date wheel" />
+</Screens>
+
+<Screens>
+  <Screen name="ios_catalog_banner_variants" alt="Banners in every tone with the icon and close on the title's first line and actions on the text column." caption="D48a: banner anatomy" />
+  <Screen name="ios_catalog_chart_line_rest" alt="A line chart with the latest point selected at rest and its exact amount in the band above the plot." caption="D58: exact value at rest" />
+  <Screen name="ios_catalog_table_variants" alt="Table rows on a phone laid out like a property list, values on the end edge." caption="D60: table rows" />
+</Screens>
+
+<Screens>
+  <Screen name="ios_sign_in_light" alt="The account-linking sign-in with both app tiles, the can and cannot lists and a pinned Lanjutkan." caption="D61: sign-in" />
+  <Screen name="ios_authorize_light" alt="The authorize step with Konfirmasi pembayaran pinned at the bottom and no tab bar." caption="D62: action at the bottom" />
+  <Screen name="ios_history_light" alt="History with the Laporan link on the title row." caption="D59a: header link" />
+  <Screen name="ios_ipad_checkout_light" alt="Checkout on an iPad mini in a centred content column." caption="D53: iPad mini column" />
+</Screens>
+
+Still open after the review: on an iPhone SE at 200% text, history does not show a transaction row on the first screen ([#58](https://github.com/naufaldi/flutter_ui_payment/issues/58)). It needs an owner choice between folding the chart, moving the date range or accepting a row that peeks.
+
 ## Open items
 
 From the decision record, still to confirm with the owner: whether expired amounts should be struck through, `BalanceCard`'s 20 px balance, side padding of rows listed edge to edge, and making the internal type scale public. Hairline and the Lumen/Contrast preset are still close to each other.
