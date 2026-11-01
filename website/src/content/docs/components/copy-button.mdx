@@ -52,6 +52,8 @@ Use Icon button for actions without copy feedback.
 
 Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
 
+**Layout.** The button keeps its 48 dp box in every state. A failed copy shows an error glyph in the danger tone and a persistent "Copy failed" label under the button's end edge, laid over the content below so nothing moves; the next press or a new value clears it.
+
 ## Do and don't
 
 **Do**: Supply the exact reference and return whether host copying succeeded.
