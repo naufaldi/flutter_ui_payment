@@ -133,7 +133,7 @@ Variants: primary, secondary, quiet, destructive. Nothing else exists.
 | medium (default) | 48 dp | Material default: 24 dp; quiet 12 dp | 20 dp |
 | large | 56 dp | 24 dp | 20 dp |
 
-Every size occupies a hit box of at least 48 × 48 dp. The small visual is centered inside it; the keyboard ring follows the visual. Use small for a module-header action such as Add card. Keep the main Pay action medium or large. Material density is pinned to standard, so desktop and web now also draw medium buttons at 48 dp.
+Every size occupies a hit box of at least 48 × 48 dp. The small visual is centered inside it; the keyboard ring follows the visual. Use small for a module-header action such as Add card. Keep the main Pay action medium or large. Material density is pinned to standard, so medium buttons draw at 48 dp. Product targets are iOS and Android phones and tablets (D64).
 
 `width: PaymentWidth.fill` fills the parent by default. `PaymentWidth.hug` sizes to the label with a 112 dp minimum; a quiet hug button outside a button group hugs its label with only the 48 dp floor, so its text can start on the column edge. Put hug buttons inside an Align or Wrap; a stretching parent overrides hug. Long labels wrap and never truncate.
 

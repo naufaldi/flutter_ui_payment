@@ -72,7 +72,7 @@ Create the controller in your state, pass it to `PaymentVideoPlayer`, and dispos
 ```sh
 cd example
 flutter run                    # Android emulator/device (API 24+) or iOS simulator
-flutter run -d chrome          # web gallery
+flutter run -d chrome          # web gallery (documentation preview, D64)
 flutter build web --release    # static build in example/build/web
 ```
 
