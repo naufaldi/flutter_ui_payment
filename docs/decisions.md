@@ -472,10 +472,11 @@ Review of every component and flow against the 8 pt grid and the emil-ui-review 
 - **D48a — one banner anatomy:** icon on the title's first line, one text column for title, message and actions, close without extra height, at most one small button plus one link (issue #52).
 - **D52a — picker by purpose:** typed entry plus an iOS-style wheel for far dates, calendar grid for near dates, scrolling month calendar for ranges (issue #56).
 
+- **D56 — row alignment:** one centre line for single-line rows; first-line alignment for multi-line rows (issue #62).
+- **D57 — references and IDs in rows** are end-aligned monospace text without a fill, with a copy action (issue #62).
+
 **Proposed, pending owner decision** (do not implement until decided):
 
-- **D56 — row alignment:** single-line rows centre title, value and trailing control on one line; multi-line rows centre the leading icon and trailing control on the title's first line (issue #62).
-- **D57 — references and IDs in rows** are end-aligned monospace text without a fill, with a copy action; the filled code block is for multi-line technical text only (issue #62).
-- **D58 — charts on mobile:** markers on every point for series of ≤ 12 points, otherwise only the last and selected points; the last value is emphasised and labelled; tap or drag selects a point or bar and shows a tabular readout; no permanent labels on every point (issue #62).
+- **D58 — exact chart values on mobile.** The owner wants people to read the exact amount, not estimate it from a point. Option A (recommended): the latest point is selected at rest, with a guide line from the point to one label in a band above the plot showing the exact amount ("29 Okt · Rp420.000"); tap or drag moves it; markers on points for series of ≤ 12 points. Option B: an exact amount with a short leader line on every point; fits only ~5–6 points at normal text and collides at 200% and in Indonesian, so it would fall back to A (issue #62).
 
 Problems found in the review are recorded as issues before any work: #45–#50, #52–#62.
