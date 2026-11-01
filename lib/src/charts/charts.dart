@@ -411,7 +411,7 @@ class _PointChartState extends State<_PointChart> {
                                             return '${p.label} · ${series.length > 1 ? '${s.label} ' : ''}${reading == null ? l10n.chartNoData : formatChartValue(l10n, reading, widget.unit, currency: p.value?.currency ?? 'IDR')}${p.status == ChartPointStatus.settled ? '' : ' · ${p.status == ChartPointStatus.pending ? l10n.chartPendingKey : l10n.chartUnknownKey}'}';
                                           })
                                           .join(' · '),
-                                      style: type.caption,
+                                      style: type.caption.tabular,
                                       maxLines: 1 + series.length,
                                     ),
                                   ),
@@ -587,7 +587,7 @@ class PaymentMeterChart extends StatelessWidget {
                           unit,
                           currency: s.value?.currency ?? 'IDR',
                         ),
-                        style: type.caption,
+                        style: type.caption.tabular,
                       ),
                       if (s.status != ChartPointStatus.settled)
                         Text(

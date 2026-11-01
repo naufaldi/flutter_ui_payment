@@ -43,54 +43,63 @@ class PaymentActionBar extends StatelessWidget {
     final motion = PaymentMotion.of(context);
     Widget? totalBlock;
     if (total != null) {
+      final amount = MergeSemantics(
+        // Label above the amount beside the button; one baseline row when
+        // stacked over a full-width button.
+        child: Flex(
+          direction: large ? Axis.horizontal : Axis.vertical,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: large
+              ? CrossAxisAlignment.baseline
+              : CrossAxisAlignment.start,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(totalLabel ?? l10n.totalLabel, style: type.caption),
+            if (large) SizedBox(width: theme.space(PaymentSpace.related)),
+            // A step below the 32 px headline: the bar repeats the total,
+            // it does not compete with it. Capped at 1.6x like other
+            // display amounts; the clamp sits inside Flexible so the Flex
+            // still gets its parent data.
+            Flexible(
+              child: MediaQuery.withClampedTextScaling(
+                maxScaleFactor: 1.6,
+                child: AmountText(total!, variant: AmountTextVariant.large),
+              ),
+            ),
+          ],
+        ),
+      );
+      // The total stays laid out under the "Updating" caption, so the bar
+      // keeps one height while the total refreshes (#46).
+      Widget fade(bool visible, Widget child) => ExcludeSemantics(
+        excluding: !visible,
+        child: AnimatedOpacity(
+          opacity: visible ? 1 : 0,
+          duration: motion.quick,
+          curve: PaymentMotion.easeOut,
+          child: child,
+        ),
+      );
       totalBlock = Semantics(
         liveRegion: true,
-        child: AnimatedSwitcher(
-          duration: motion.quick,
-          transitionBuilder: (child, animation) =>
-              FadeTransition(opacity: animation, child: child),
-          layoutBuilder: (current, previous) => Stack(
-            alignment: AlignmentDirectional.centerStart,
-            children: [...previous, ?current],
-          ),
-          child: updating
-              ? Text(
-                  l10n.updatingTotal,
-                  key: const ValueKey('updating'),
-                  style: type.caption,
-                )
-              : MergeSemantics(
-                  key: ValueKey(total),
-                  // Label above the amount beside the button; one baseline
-                  // row when stacked over a full-width button.
-                  child: Flex(
-                    direction: large ? Axis.horizontal : Axis.vertical,
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: large
-                        ? CrossAxisAlignment.baseline
-                        : CrossAxisAlignment.start,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Text(totalLabel ?? l10n.totalLabel, style: type.caption),
-                      if (large)
-                        SizedBox(width: theme.space(PaymentSpace.related)),
-                      // A step below the 32 px headline: the bar repeats
-                      // the total, it does not compete with it. Capped at
-                      // 1.6x like other display amounts; the clamp sits
-                      // inside Flexible so the Flex still gets its parent
-                      // data.
-                      Flexible(
-                        child: MediaQuery.withClampedTextScaling(
-                          maxScaleFactor: 1.6,
-                          child: AmountText(
-                            total!,
-                            variant: AmountTextVariant.large,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+        child: Stack(
+          alignment: AlignmentDirectional.centerStart,
+          children: [
+            fade(
+              !updating,
+              AnimatedSwitcher(
+                duration: motion.quick,
+                transitionBuilder: (child, animation) =>
+                    FadeTransition(opacity: animation, child: child),
+                layoutBuilder: (current, previous) => Stack(
+                  alignment: AlignmentDirectional.centerStart,
+                  children: [...previous, ?current],
                 ),
+                child: KeyedSubtree(key: ValueKey(total), child: amount),
+              ),
+            ),
+            fade(updating, Text(l10n.updatingTotal, style: type.caption)),
+          ],
         ),
       );
     }

@@ -1120,6 +1120,7 @@ class CountdownText extends StatefulWidget {
 
 class _CountdownTextState extends State<CountdownText> {
   Timer? _timer;
+  String _widest = '';
   bool _elapsedReported = false;
 
   @override
@@ -1139,6 +1140,11 @@ class _CountdownTextState extends State<CountdownText> {
 
   void _schedule() {
     _timer?.cancel();
+    // The remaining time only gets shorter, so its format now is the widest
+    // it will be; every digit is 0 because figures are tabular.
+    _widest = CountdownText.formatDuration(
+      _left,
+    ).replaceAll(RegExp('[0-9]'), '0');
     if (_left == Duration.zero) {
       _reportElapsed();
       return;
@@ -1175,12 +1181,24 @@ class _CountdownTextState extends State<CountdownText> {
     final l10n = PaymentLocalizations.of(context);
     final type = PaymentType.of(context);
     final left = _left;
+    final style = type.tabular(type.label.merge(widget.style));
     return Semantics(
       label: l10n.timeRemaining(CountdownText.formatDuration(left)),
       excludeSemantics: true,
-      child: Text(
-        CountdownText.formatDuration(left),
-        style: type.tabular(type.label.merge(widget.style)),
+      // Reserves the widest format, so 1:00:00 → 59:59 keeps one width
+      // (#46).
+      child: Stack(
+        alignment: AlignmentDirectional.centerStart,
+        children: [
+          Visibility(
+            visible: false,
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            child: Text(_widest, style: style),
+          ),
+          Text(CountdownText.formatDuration(left), style: style),
+        ],
       ),
     );
   }
