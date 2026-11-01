@@ -1,17 +1,23 @@
 ---
 title: Date range picker
-description: A complete calendar range for payment history filters.
+description: A complete calendar range for payment history filters, from presets or a kit range calendar.
 ---
 
 import Props from '../../../components/Props.astro';
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 
-A complete calendar range for payment history filters.
+A complete calendar range for payment history filters. Presets come first; "Custom range" opens a full-height kit range calendar with a pinned Apply footer (D51).
 
 <Screens>
   <Screen name="ios_catalog_date_range_picker_variants" dark="ios_catalog_date_range_picker_variants_dark" alt="date range picker payment component specimens" caption="Light and dark variants" />
   <Screen name="ios_catalog_date_range_picker_variants_200" alt="date range picker at 200 percent text" caption="200% text" />
+  <Screen name="ios_catalog_date_range_presets" alt="presets sheet with Custom range on the text column" caption="Presets sheet" />
+  <Screen name="ios_catalog_date_range_presets_200" alt="presets sheet at 200 percent text" caption="Presets sheet, 200% text" />
+  <Screen name="ios_catalog_date_range_calendar" dark="ios_catalog_date_range_calendar_dark" alt="range calendar with 1 to 31 October selected and Apply and Clear pinned at the bottom" caption="Range calendar" />
+  <Screen name="ios_catalog_date_range_calendar_200" alt="range calendar at 200 percent text" caption="Range calendar, 200% text" />
+  <Screen name="ios_catalog_date_range_calendar_id" alt="Indonesian range calendar with weeks starting on Monday" caption="Range calendar, Indonesian" />
+  <Screen name="ios_catalog_date_range_calendar_id_200" alt="Indonesian range calendar at 200 percent text" caption="Range calendar, Indonesian, 200% text" />
 </Screens>
 
 ## Usage
@@ -24,7 +30,7 @@ PaymentDateRangePicker(
           enabled: false,
           onChanged: (_) {},
           firstDate: DateTime(2020),
-          lastDate: DateTime(2030),
+          lastDate: DateUtils.dateOnly(DateTime.now()),
         );
 ```
 
@@ -37,7 +43,9 @@ PaymentDateRangePicker(
 | granularity | PaymentDateGranularity tabs |
 | timeZone / PartialDateRange | host zone / complete ranges only |
 
-Presets live in a kit sheet before the calendar, since the Flutter calendar cannot embed kit rows. Partial ranges and timeZone are not mirrored. The host owns zone interpretation. Granularity tabs remain below the trigger. fromPreset preserves the named range. formatDateRange produces shared localized text for fields and chips. History filter integration arrives in Phase 5.
+Presets live in a kit sheet before the calendar; "Custom range" is a radio row on the presets' text column. Partial ranges and timeZone are not mirrored. The host owns zone interpretation. Granularity tabs remain below the trigger. fromPreset preserves the named range. formatDateRange produces shared localized text for fields and chips.
+
+**Range calendar (D51).** A full-height sheet with a scrolling list of months from `firstDate` to `lastDate`, opened at the range's start or today. The first tap sets the start, the second the end; a tap before the start, or after a complete range, starts again. The range is shown in the accent: filled circles on its ends and a band between them. "Type dates" in the header swaps the calendar for two typed date fields (start on or before end, both in range). The pinned footer shows the range (or "Choose an end date"), a full-width "Apply" that is enabled once a start exists (a start alone applies a one-day range) and a quiet "Clear" that reports `null`. Pass `lastDate: today` for history, so future days are disabled.
 
 ## Variants
 
@@ -53,7 +61,7 @@ Use Date field for a single birthday.
 
 ## States
 
-Empty, selected, disabled and error states use semantic tokens. Search additionally supports loading and no matches.
+Empty, selected, disabled and error states use semantic tokens. In the calendar, days outside `firstDate`–`lastDate` are disabled and today has a ring.
 
 ## Do and don't
 
@@ -69,7 +77,7 @@ Offer last seven days and month presets; custom range handles other periods.
 
 ## Accessibility
 
-Targets are at least 48 dp. Pickers restore focus; result counts announce without platform calls. Keyboard navigation preserves Tab traversal.
+Targets are at least 48 dp. The sheets return focus to the trigger. Each day is read as its full date with its state ("Monday, 5 October 2026, selected, range start"); arrow keys move by a day or a week and Enter picks. The footer summary is a live region. Weeks start on Monday in Indonesian and Sunday in English.
 
 ## Used in
 

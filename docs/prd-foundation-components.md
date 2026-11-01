@@ -1188,14 +1188,14 @@ PaymentCode(String text, {Key? key, PaymentCodeKind kind = PaymentCodeKind.code,
 
 **`PaymentDateField`** (Stripe DateField; D36)
 
-- **Anatomy:** typed entry in `dateInputPattern` (`DD/MM/YYYY`) plus a trailing `PaymentIconButton` (`calendar_today_outlined`) that opens Flutter's `showDatePicker`.
+- **Anatomy:** typed entry in `dateInputPattern` (`DD/MM/YYYY`) plus a trailing `PaymentIconButton` (`calendar_today_outlined`) that opens a kit date sheet with a full-width "Choose date" footer (D52). The sheet is picked by the span (D52a, Q2 default): more than five years (`DateTime(first.year + 5, first.month, first.day)` before `lastDate`) opens a day / month / year wheel at the value or `lastDate`; otherwise a full-height month calendar. No picker parameter. *Supersedes `showDatePicker` (UI review P4).*
 - **Variants:** `value` → `DateTime?` (date only); the field set. Kit: `firstDate`, `lastDate` and `validator`, all host-owned rules (for example, "17 or older for KTP").
 - **States:** empty, partial (still typing; no error), invalid date (kit error "Enter a valid date"), out of range or host rule (host `errorText`), filled.
 - **Payment use:** date of birth in `IdentityForm`.
 
 **`PaymentDateRangePicker`** (Stripe DateRangePicker; D36)
 
-- **Anatomy:** a field showing "1–31 Okt 2026" that opens `showDateRangePicker`, with optional preset chips above the calendar.
+- **Anatomy:** a field showing "1–31 Okt 2026" that opens a presets sheet (radio rows, "Custom range" on the same text column) or, for a custom range, a full-height kit range calendar: scrolling months, two-tap selection with the accent band, "Type dates" in the header, and a pinned footer with the summary, a full-width "Apply" and a quiet "Clear" (D51). *Supersedes `showDateRangePicker` (UI review P4).*
 - **Variants:**
   - `value` (range or preset) → `PaymentDateRange` (`start`, `end`, or a `PaymentDatePreset`).
   - `onChange` → `onChanged`.
@@ -1207,7 +1207,7 @@ PaymentCode(String text, {Key? key, PaymentCodeKind kind = PaymentCodeKind.code,
 
 **`PaymentFormFieldGroup`** (Stripe FormFieldGroup)
 
-- **Variants:** `legend`, `description`, `disabled` (disables every child), `layout: Axis` (Stripe horizontal / vertical). Horizontal falls back to vertical below 360 dp of available width or at large text (B4).
+- **Variants:** `legend`, `description`, `disabled` (disables every child), `layout: Axis` (Stripe horizontal / vertical). Horizontal falls back to vertical when a field would get less than 140 dp (two fields need 296 dp, so Month / Year fit a 329 dp phone card) or at large text (B4; #65, UI review P4). Hosts put `section` (24) between groups and `group` (16) between fields.
 - **Payment use:** place and date of birth in `IdentityForm`; an expiry month and year pair in a specimen.
 - **A11y:** the legend is a header and is read before the first field. A group error is a `PaymentBanner` above the fields, or each field's own error.
 
@@ -1600,7 +1600,7 @@ New in revision 3 (parity; for review):
 | D33 | **Token primitives.** `PaymentBox`, `PaymentInline` and `PaymentIcon` accept only **New** token enums: `PaymentSpace`, `PaymentRadius`, `PaymentTextRole`, `PaymentTextColor`, `PaymentFontWeight`, `PaymentIconSize`, `PaymentKeyline`. Supersedes D16 and D26. `PaymentType` itself gains no roles. | Parity, without opening a raw-value escape hatch that would break B2. |
 | D34 | **Naming.** Stripe entries are `Payment<StripeName>` (Img → `PaymentImage`). Renamed classes on `main` (`ExpandableSection`, `StatusBadge`, `NoticeBanner`, `ActionMenu`/`ActionMenuEntry`, `AmountInput`, `ActionTile`/`ActionTileGroup`, `showPaymentSnackBar`) stay for one minor release: as a `@Deprecated` typedef when the constructor is unchanged, otherwise as a deprecated wrapper. Names only on #1/#4 change freely. Kit-specific names (`InfoRow`, `PaymentSheet` …) stay. Docs slugs follow the Stripe name, with redirects. | One naming scheme that a reader can map to Stripe's sidebar; §9 rule 6 for anything on `main`. |
 | D35 | **Inline roles map onto the nine `PaymentType` roles** (§3.2 table); no new roles. | D15 froze nine roles; `lead` and `kicker` would add looks with no second use. Q11 confirms. |
-| D36 | **Dates.** `PaymentDateField` and `PaymentDateRangePicker` delegate the calendar to Flutter's `showDatePicker` / `showDateRangePicker` and offer typed entry. The kit formats (`formatDate`, en and id) and validates the date's form; the host supplies ranges, presets and rules. No time-zone math. `IdentityFieldSpec` gains **New** `kind` (`text`, `date`, `choice`). Supersedes D4 and Q1. | SDK-only, host-owned business rules; the date of birth gets a real date control. |
+| D36 | **Dates.** `PaymentDateField` and `PaymentDateRangePicker` delegate the calendar to Flutter's `showDatePicker` / `showDateRangePicker` and offer typed entry. The kit formats (`formatDate`, en and id) and validates the date's form; the host supplies ranges, presets and rules. No time-zone math. `IdentityFieldSpec` gains **New** `kind` (`text`, `date`, `choice`). Supersedes D4 and Q1. **Amended by D51/D52/D52a: kit sheets, not Flutter pickers** (UI review P4). | SDK-only, host-owned business rules; the date of birth gets a real date control. |
 | D37 | **`PaymentSearchField<T>` is Stripe's combobox**: it filters host options locally, or the host searches remotely through `onQueryChanged`. Single and `.multiple` selection. `PaymentTextField.search` stays the list filter. | Stripe's SearchField picks values from a list; the history search filters a visible list. Two jobs, two names. |
 | D38 | **Feedback parity.** Badge `urgent` → `PaymentBadge.urgent` (solid danger), with no new `StatusTone`. Banner types map to tones and gain `onDismiss` (host removes it). Toast gains `pending` and a controller with `update` and `dismiss`; the 30-character limit is guidance. | `StatusTone` stays five values, so every exhaustive switch is untouched. A named constructor makes "urgent but not danger" unrepresentable. |
 | D39 | **Charts parity:** `axis`, `grid`, `showLegend`, `inspectable`, `series` (≤ 3; ramp + dash, never tones), `unit` (+ `ChartPoint.measure`), meter `onSegmentPressed` through the legend rows. | Stripe's chart props; the charts decisions (no tone categories, paint-only) still hold. |
@@ -2078,6 +2078,10 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 
 **UI review P4: search and date pickers** (D50, D51, D52, D52a; #54, #55, #56, #65)
 - [x] Search: phone full-height sheet with a focused field, 48 dp rows and a multiple-selection Done; wide floating list in an overlay (D50)
+- [x] Kit range calendar sheet: two-tap range, typed entry, pinned summary / Apply / Clear; "Custom range" on the presets' text column (D51)
+- [x] Kit date sheet: wheel for spans over five years, calendar otherwise, full-width Choose date (D52, D52a, Q2 default)
+- [x] `PaymentLocalizations.monthName`, `formatMonthYear`, `formatDateLong`, `weekdayShort`, `firstDayOfWeek`; no `showDatePicker` / `showDateRangePicker` in `lib`
+- [x] Radio group error once; one-line select hint at 200%; field groups side by side at 329 dp, 24 between groups (#65)
 ```
 
 ### Phase 2E implementation notes

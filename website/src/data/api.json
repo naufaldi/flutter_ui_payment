@@ -1494,7 +1494,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "errorText",
-            "doc": "Validation message, with a danger icon and edge."
+            "doc": "Validation message, with a danger icon and edge. A group's error\n(\"Choose how to get your receipt\") goes on the last option only, so it\nshows once under the group instead of under every option (#65)."
           },
           {
             "name": "required",
@@ -1551,7 +1551,7 @@
         "kind": "field",
         "static": false,
         "type": "String?",
-        "doc": "Validation message, with a danger icon and edge."
+        "doc": "Validation message, with a danger icon and edge. A group's error\n(\"Choose how to get your receipt\") goes on the last option only, so it\nshows once under the group instead of under every option (#65)."
       },
       {
         "name": "required",
@@ -2356,6 +2356,21 @@
       "chooseDates",
       "customRange",
       "clearDates",
+      "typeDates",
+      "useCalendar",
+      "startDate",
+      "endDate",
+      "chooseEndDate",
+      "applyDates",
+      "clear",
+      "day",
+      "month",
+      "year",
+      "today",
+      "rangeStart",
+      "rangeEnd",
+      "startAfterEnd",
+      "dateOutOfRange",
       "removeItem",
       "done",
       "resultsCount",
@@ -3740,6 +3755,11 @@
         "name": "kycUnknownMessage",
         "type": "String",
         "doc": ""
+      },
+      {
+        "name": "firstDayOfWeek",
+        "type": "int",
+        "doc": "First column of the calendar, as a `DateTime.weekday` value: Monday\nin Indonesian, Sunday in English."
       }
     ],
     "statics": [
@@ -4689,6 +4709,45 @@
         "type": "String",
         "signature": "String verificationActionLabel(VerificationAction action)",
         "doc": ""
+      },
+      {
+        "name": "monthName",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String monthName(int month)",
+        "doc": "Full month name for `month` 1–12: \"October\" / \"Oktober\"."
+      },
+      {
+        "name": "formatMonthYear",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String formatMonthYear(DateTime value)",
+        "doc": "Calendar month heading: \"October 2026\" / \"Oktober 2026\"."
+      },
+      {
+        "name": "formatDateLong",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String formatDateLong(DateTime value)",
+        "doc": "Spoken calendar day: \"Tuesday, 14 October 2026\" /\n\"Selasa, 14 Oktober 2026\"."
+      },
+      {
+        "name": "weekdayShort",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String weekdayShort(int weekday)",
+        "doc": "Weekday column heading for `weekday` as in `DateTime.weekday`\n(1 = Monday … 7 = Sunday): \"Mon\" / \"Sen\"."
+      },
+      {
+        "name": "firstDayOfWeek",
+        "kind": "getter",
+        "static": false,
+        "type": "int",
+        "doc": "First column of the calendar, as a `DateTime.weekday` value: Monday\nin Indonesian, Sunday in English."
       }
     ],
     "copyWith": null
@@ -18979,7 +19038,7 @@
   "PaymentDateField": {
     "kind": "class",
     "file": "lib/src/forms/date_field.dart",
-    "doc": "Typed calendar date with a calendar-only picker. Host owns range rules.",
+    "doc": "Typed calendar date with a kit date sheet. Host owns range rules.\n\nTyping DD/MM/YYYY is the primary path. The calendar button opens a wheel\nwhen the allowed span is more than five years (date of birth), otherwise\na month calendar; both end in a full-width \"Choose date\" (D52, D52a).",
     "extends": "StatefulWidget",
     "constructors": [
       {
@@ -19251,7 +19310,7 @@
   "PaymentFormFieldGroup": {
     "kind": "class",
     "file": "lib/src/forms/field_group.dart",
-    "doc": "Related fields under a legend; horizontal falls back below 360 dp or at large text.",
+    "doc": "Related fields under a legend. A horizontal group stacks when its fields\nwould be narrower than 140 dp each, or at large text. Hosts put 24 dp\n(`PaymentSpace.section`) between groups; fields inside sit 16 apart.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -20213,7 +20272,7 @@
   "PaymentDateRangePicker": {
     "kind": "class",
     "file": "lib/src/forms/date_range_picker.dart",
-    "doc": "Preset sheet or Flutter range calendar; performs no zone conversion.",
+    "doc": "Preset sheet or the kit range calendar (D51); performs no zone\nconversion.\n\n\"Custom range\" opens a full-height sheet with a scrolling month calendar\n(first tap the start, second tap the end), typed entry from its header,\nand a pinned footer with the range, a full-width Apply and Clear.",
     "extends": "StatefulWidget",
     "constructors": [
       {
