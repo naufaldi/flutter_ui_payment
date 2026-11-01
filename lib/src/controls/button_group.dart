@@ -5,6 +5,7 @@ import '../foundation/primitives.dart';
 import '../foundation/payment_tokens.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/button_copy.dart';
+import '../foundation/tap_target.dart';
 import '../interaction/interaction.dart';
 
 /// Responsive action overflow policy.
@@ -45,8 +46,13 @@ class PaymentButtonGroup extends StatefulWidget {
 
 class _PaymentButtonGroupState extends State<PaymentButtonGroup> {
   int? _visible;
+  // In a row, or stacked full width, a quiet button keeps its centred label
+  // instead of starting it on the column edge (#65).
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      TextActionEdge.none(child: _group(context));
+
+  Widget _group(BuildContext context) {
     final buttons = widget.children;
     assert(buttons.isNotEmpty);
     final primary = buttons

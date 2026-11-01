@@ -2,6 +2,7 @@ import '../foundation/payment_icons.dart';
 import '../foundation/payment_tokens.dart';
 import '../controls/actions.dart';
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -421,6 +422,34 @@ class _PaymentButtonState extends State<PaymentButton> {
         icon: 20.0,
       ),
     };
+    // A quiet button that hugs its label is a text action: its text sits on
+    // the column edge (or the end edge inside a row's trailing slot) and
+    // its box hangs outward by its padding, like PaymentLink. It hugs the
+    // label with a 48 dp floor instead of 112, so a short label is not
+    // centred away from the edge. Button rows keep it centred (#65).
+    final edge =
+        widget.variant == PaymentButtonVariant.quiet &&
+            widget.width == PaymentWidth.hug
+        ? TextActionEdge.of(context).resolve(Directionality.of(context))
+        : Alignment.center;
+    final onEdge = edge.x != 0;
+    // The hang is the button's own start padding, so the text lands on the
+    // edge at every text scale; the large size's 24 is capped at `block` so
+    // the box stays inside a 16 dp gutter.
+    late final edgePadding = () {
+      final padding =
+          (metrics.padding ??
+                  const TextButton(
+                    onPressed: null,
+                    child: SizedBox(),
+                  ).defaultStyleOf(context).padding!.resolve(const {})!)
+              .resolve(Directionality.of(context));
+      final cap = theme.space(PaymentSpace.block);
+      return padding.copyWith(
+        left: math.min(padding.left, cap),
+        right: math.min(padding.right, cap),
+      );
+    }();
     final content = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -428,7 +457,16 @@ class _PaymentButtonState extends State<PaymentButton> {
           Icon(widget.icon, size: metrics.icon),
           SizedBox(width: theme.space(PaymentSpace.related)),
         ],
-        Flexible(child: Text(widget.label, textAlign: TextAlign.center)),
+        Flexible(
+          child: Text(
+            widget.label,
+            textAlign: !onEdge
+                ? TextAlign.center
+                : edge.x < 0
+                ? TextAlign.left
+                : TextAlign.right,
+          ),
+        ),
       ],
     );
     final child = Stack(
@@ -547,8 +585,8 @@ class _PaymentButtonState extends State<PaymentButton> {
           TextButton.styleFrom(
             foregroundColor: theme.accent,
             disabledForegroundColor: theme.disabled,
-            minimumSize: minimumSize,
-            padding: metrics.padding,
+            minimumSize: onEdge ? Size(48, metrics.height) : minimumSize,
+            padding: onEdge ? edgePadding : metrics.padding,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             visualDensity: VisualDensity.standard,
             shape: shape,
@@ -571,7 +609,11 @@ class _PaymentButtonState extends State<PaymentButton> {
               width: double.infinity,
               child: MinTapTarget(child: ring),
             )
-          : MinTapTarget(child: ring),
+          : MinTapTarget(
+              alignment: edge,
+              hang: onEdge ? edgePadding.left : 0,
+              child: ring,
+            ),
     );
   }
 }
