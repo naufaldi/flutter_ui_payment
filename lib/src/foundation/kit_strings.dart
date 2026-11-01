@@ -162,6 +162,53 @@ extension KitStrings on PaymentLocalizations {
   /// Clear range action.
   String get clearDates => _k('Clear dates', 'Hapus tanggal');
 
+  // Kit date sheets (D51, D52, D52a).
+
+  /// Switches the range sheet to typed entry.
+  String get typeDates => _k('Type dates', 'Ketik tanggal');
+
+  /// Switches the range sheet back to the calendar.
+  String get useCalendar => _k('Use calendar', 'Pakai kalender');
+
+  /// First typed date of a range.
+  String get startDate => _k('Start date', 'Tanggal mulai');
+
+  /// Last typed date of a range.
+  String get endDate => _k('End date', 'Tanggal akhir');
+
+  /// Range summary while only the start is chosen.
+  String get chooseEndDate => _k('Choose an end date', 'Pilih tanggal akhir');
+
+  /// Applies the chosen range.
+  String get applyDates => _k('Apply', 'Terapkan');
+
+  /// Clears the chosen dates.
+  String get clear => _k('Clear', 'Hapus');
+
+  /// Wheel column names.
+  String get day => _k('Day', 'Hari');
+  String get month => _k('Month', 'Bulan');
+  String get year => _k('Year', 'Tahun');
+
+  /// Spoken marker on today's date.
+  String get today => _k('today', 'hari ini');
+
+  /// Spoken markers on the ends of a range.
+  String get rangeStart => _k('range start', 'awal rentang');
+  String get rangeEnd => _k('range end', 'akhir rentang');
+
+  /// Typed range whose start is after its end.
+  String get startAfterEnd => _k(
+    'The start date must be on or before the end date.',
+    'Tanggal mulai harus sebelum atau sama dengan tanggal akhir.',
+  );
+
+  /// Typed date outside the allowed range.
+  String dateOutOfRange(String first, String last) => _k(
+    'Choose a date from $first to $last.',
+    'Pilih tanggal dari $first sampai $last.',
+  );
+
   /// Chip remove action.
   String removeItem(String label) => _k('Remove $label', 'Hapus $label');
 
