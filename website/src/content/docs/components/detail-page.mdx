@@ -51,6 +51,16 @@ PaymentDetailPage(
       );
 ```
 
+## Header and footer (D59a, D62)
+
+- **Priority action at the bottom.** `primaryAction` pins in the footer, full width on phones, with at most one quiet `secondaryAction` under it. Transaction detail uses "Lihat struk" as the primary and "Laporkan masalah" as the quiet action.
+- **Header actions are navigation.** On phones one entry in `actions` shows on the title row as "Label ›"; two or more go behind ⋮, which opens the action sheet with destructive items last. Wide headers keep hug buttons under the title.
+- **Breadcrumb.** On phones only the parent shows, with its chevron hanging outside the column so the glyph starts on the title edge, one gap above the title. Drop it when the app bar already has a back button, so the screen has one back control.
+- **Width.** One column is capped at 640 dp from 600 dp; with `secondary`, two columns from 840 dp, capped at 1040 dp (D53).
+
+<Screen name="ios_se_transaction_detail_light_200" alt="Transaction detail on iPhone SE at 200% text: Lihat struk pinned as the primary with Laporkan masalah under it" caption="iPhone SE, 200%, Indonesian" />
+<Screen name="ios_ipad_transaction_detail_en" alt="Transaction detail on iPad mini in a centred column with the footer actions aligned to it" caption="iPad mini, English" />
+
 ## Stripe → kit
 
 | Stripe | Kit |

@@ -338,6 +338,22 @@ const screens = {
   ios_catalog_date_range_calendar_200: 'PaymentDateRangePicker range calendar at 200% text, English',
   ios_catalog_date_range_calendar_id: 'PaymentDateRangePicker range calendar, Indonesian',
   ios_catalog_date_range_calendar_id_200: 'PaymentDateRangePicker range calendar at 200% text, Indonesian',
+  // UI review P5: views at 200% in Indonesian, small phone and iPad sets.
+  ios_catalog_sign_in_view_variants_id_200: 'sign in view specimen at 200% text, Indonesian',
+  ios_catalog_settings_view_variants_id_200: 'settings view specimen at 200% text, Indonesian',
+  ios_catalog_context_view_variants_id_200: 'context view specimen at 200% text, Indonesian',
+  ios_se_sign_in_light_200: 'Example sign in on iPhone SE at 200% text, Indonesian',
+  ios_se_sign_in_en_200: 'Example sign in on iPhone SE at 200% text, English',
+  ios_se_history_light_200: 'Example history on iPhone SE at 200% text, Indonesian',
+  ios_se_history_en_200: 'Example history on iPhone SE at 200% text, English',
+  ios_se_transaction_detail_light_200: 'Example transaction detail on iPhone SE at 200% text, Indonesian',
+  ios_se_transaction_detail_en_200: 'Example transaction detail on iPhone SE at 200% text, English',
+  ios_ipad_checkout_light: 'Example checkout on iPad mini, Indonesian',
+  ios_ipad_checkout_en: 'Example checkout on iPad mini, English',
+  ios_ipad_transaction_detail_light: 'Example transaction detail on iPad mini, Indonesian',
+  ios_ipad_transaction_detail_en: 'Example transaction detail on iPad mini, English',
+  ios_ipad_history_light: 'Example history on iPad mini, Indonesian',
+  ios_ipad_history_en: 'Example history on iPad mini, English',
 };
 
 mkdirSync(target, { recursive: true });

@@ -49,6 +49,12 @@ TransactionHistory(
 
 `TransactionRecord.where` is a local search and filter for hosts that already hold the records (it matches title, merchant and reference). If you search on the server, pass your results straight to `records`.
 
+## Statement link
+
+The history page opens the statement from its title row: `PaymentFullPageView(pageLink: PaymentLink(label: 'Laporan', …))` shows "Laporan ›" beside the title (D59a). History has no priority action, so it has no footer.
+
+<Screen name="ios_se_history_light_200" alt="History on iPhone SE at 200% text with Laporan › on the title row" caption="iPhone SE, 200%, Indonesian" />
+
 ## Behavior
 
 - A record with `status: null` is "not confirmed yet". It falls under **In progress**, never **Unsuccessful**, and its detail should offer a status check, never paying again.
