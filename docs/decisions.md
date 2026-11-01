@@ -451,7 +451,7 @@ Capture-glance corrections: the harness resets descendant scroll positions befor
 
 ## UI review, 1 November 2026
 
-Review of every component and flow against the 8 pt grid and the emil-ui-review bar (captures from `main` @ c6cf131). Findings are tracked in issues #45–#50, each with annotated screenshots.
+Review of every component and flow against the 8 pt grid and the emil-ui-review bar (captures from `main` @ c6cf131). Findings are tracked in issues #45–#50 and #52–#55, each with annotated screenshots.
 
 **Decided** (do not reopen without a new reason; details in the PRD decision table):
 
