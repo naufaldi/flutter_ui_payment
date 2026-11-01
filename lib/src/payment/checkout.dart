@@ -1,5 +1,6 @@
 import '../forms/select.dart';
 import '../foundation/kit_strings.dart';
+import '../foundation/action_frame.dart';
 import '../foundation/field_decoration.dart';
 import '../foundation/first_line.dart';
 import 'dart:async';
@@ -529,6 +530,10 @@ class _MethodTile extends StatelessWidget {
 /// When [previousQuote] has different terms the customer must explicitly
 /// accept the new total before [onConfirm] becomes available. Only one
 /// [onConfirm] call can be active at a time.
+///
+/// Given a bounded height, e.g. as a screen's body, the review scrolls and
+/// the pay button pins to a footer at the bottom (D62). Inside a scroll view
+/// it follows the review, as before.
 class PaymentConfirmation extends StatefulWidget {
   const PaymentConfirmation({
     super.key,
@@ -538,6 +543,7 @@ class PaymentConfirmation extends StatefulWidget {
     this.previousQuote,
     this.busy = false,
     this.footnote,
+    this.header,
   });
 
   final PaymentQuote quote;
@@ -546,6 +552,10 @@ class PaymentConfirmation extends StatefulWidget {
   final Future<void> Function()? onConfirm;
   final bool busy;
   final String? footnote;
+
+  /// Host content shown above this widget's content, inside its scroll
+  /// region (D62), e.g. a banner.
+  final Widget? header;
 
   @override
   State<PaymentConfirmation> createState() => _PaymentConfirmationState();
@@ -575,51 +585,58 @@ class _PaymentConfirmationState extends State<PaymentConfirmation> {
     final type = PaymentType.of(context);
     final canConfirm =
         widget.onConfirm != null && (!_needsReapproval || _acceptedChange);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        PaymentSummary(
-          quote: widget.quote,
-          previousQuote: widget.previousQuote,
-        ),
-        // Sections stack flush; their own padding makes the gap.
-        PaymentSection(
-          title: l10n.payWithTitle,
-          // The method name is the information; its detail supports it.
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: theme.space(PaymentSpace.inline)),
-              Text(widget.method.label, style: type.label),
-              if (widget.method.detail != null)
-                Text(widget.method.detail!, style: type.caption),
-            ],
+    final pay = PaymentButton(
+      label: l10n.payAmount(l10n.moneyFormat.format(widget.quote.total)),
+      busyLabel: l10n.sendingPayment,
+      busy: widget.busy,
+      onPressed: canConfirm ? widget.onConfirm : null,
+    );
+    return ActionFrame(
+      header: widget.header,
+      primaryAction: pay,
+      builder: (context, pinned) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PaymentSummary(
+            quote: widget.quote,
+            previousQuote: widget.previousQuote,
           ),
-        ),
-        if (_needsReapproval) ...[
-          SizedBox(height: theme.space(PaymentSpace.related)),
-          PaymentCheckbox(
-            value: _acceptedChange,
-            onChanged: widget.busy
-                ? null
-                : (v) => setState(() => _acceptedChange = v),
-            label: l10n.acceptNewTotal(
-              l10n.moneyFormat.format(widget.quote.total),
+          // Sections stack flush; their own padding makes the gap.
+          PaymentSection(
+            title: l10n.payWithTitle,
+            // The method name is the information; its detail supports it.
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: theme.space(PaymentSpace.inline)),
+                Text(widget.method.label, style: type.label),
+                if (widget.method.detail != null)
+                  Text(widget.method.detail!, style: type.caption),
+              ],
             ),
           ),
+          if (_needsReapproval) ...[
+            SizedBox(height: theme.space(PaymentSpace.related)),
+            PaymentCheckbox(
+              value: _acceptedChange,
+              onChanged: widget.busy
+                  ? null
+                  : (v) => setState(() => _acceptedChange = v),
+              label: l10n.acceptNewTotal(
+                l10n.moneyFormat.format(widget.quote.total),
+              ),
+            ),
+          ],
+          if (widget.footnote != null) ...[
+            SizedBox(height: theme.space(PaymentSpace.related)),
+            Text(widget.footnote!, style: type.caption),
+          ],
+          if (!pinned) ...[
+            SizedBox(height: theme.space(PaymentSpace.section)),
+            pay,
+          ],
         ],
-        if (widget.footnote != null) ...[
-          SizedBox(height: theme.space(PaymentSpace.related)),
-          Text(widget.footnote!, style: type.caption),
-        ],
-        SizedBox(height: theme.space(PaymentSpace.section)),
-        PaymentButton(
-          label: l10n.payAmount(l10n.moneyFormat.format(widget.quote.total)),
-          busyLabel: l10n.sendingPayment,
-          busy: widget.busy,
-          onPressed: canConfirm ? widget.onConfirm : null,
-        ),
-      ],
+      ),
     );
   }
 }
@@ -628,6 +645,10 @@ class _PaymentConfirmationState extends State<PaymentConfirmation> {
 ///
 /// The library never collects the PIN, OTP or biometric result: [onStart]
 /// hands control to the host, which reports back a new [phase].
+///
+/// Given a bounded height, the status scrolls and the authorize button pins
+/// to a footer, with the quiet back-to-review under it (D62). Inside a
+/// scroll view they follow the status, as before.
 class AuthorizationPrompt extends StatelessWidget {
   const AuthorizationPrompt({
     super.key,
@@ -635,12 +656,17 @@ class AuthorizationPrompt extends StatelessWidget {
     required this.onStart,
     required this.onBackToReview,
     this.methodLabel,
+    this.header,
   });
 
   final AuthorizationPhase phase;
   final FutureOr<void> Function()? onStart;
   final VoidCallback? onBackToReview;
   final String? methodLabel;
+
+  /// Host content shown above this widget's content, inside its scroll
+  /// region (D62), e.g. the total being authorized.
+  final Widget? header;
 
   @override
   Widget build(BuildContext context) {
@@ -696,41 +722,8 @@ class AuthorizationPrompt extends StatelessWidget {
         phase == AuthorizationPhase.canceled ||
         phase == AuthorizationPhase.failed ||
         phase == AuthorizationPhase.expired;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (exception)
-          PaymentBanner(
-            tone: tone,
-            icon: icon,
-            title: title,
-            message: message,
-            announce: true,
-          )
-        else
-          Semantics(
-            liveRegion: phase != AuthorizationPhase.ready,
-            container: true,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Semantics(
-                  header: true,
-                  child: Text(title, style: type.heading),
-                ),
-                SizedBox(height: theme.space(PaymentSpace.inline)),
-                Text(
-                  message,
-                  style: type
-                      .bodyFor(context)
-                      .copyWith(color: theme.textSecondary),
-                ),
-              ],
-            ),
-          ),
-        SizedBox(height: theme.space(PaymentSpace.section)),
-        if (retryable || phase == AuthorizationPhase.inProgress)
-          PaymentButton(
+    final start = retryable || phase == AuthorizationPhase.inProgress
+        ? PaymentButton(
             label: phase == AuthorizationPhase.ready
                 ? l10n.authorize
                 : l10n.authorizeAgain,
@@ -738,18 +731,64 @@ class AuthorizationPrompt extends StatelessWidget {
             busyLabel: l10n.authInProgressTitle,
             icon: Icons.fingerprint,
             onPressed: onStart,
-          ),
-        if (phase != AuthorizationPhase.inProgress &&
+          )
+        : null;
+    final back =
+        phase != AuthorizationPhase.inProgress &&
             phase != AuthorizationPhase.approved &&
-            onBackToReview != null) ...[
-          SizedBox(height: theme.space(PaymentSpace.related)),
-          PaymentButton(
+            onBackToReview != null
+        ? PaymentButton(
             label: l10n.backToReview,
             variant: PaymentButtonVariant.quiet,
             onPressed: onBackToReview,
-          ),
+          )
+        : null;
+    return ActionFrame(
+      header: header,
+      primaryAction: start,
+      secondaryAction: back,
+      builder: (context, pinned) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (exception)
+            PaymentBanner(
+              tone: tone,
+              icon: icon,
+              title: title,
+              message: message,
+              announce: true,
+            )
+          else
+            Semantics(
+              liveRegion: phase != AuthorizationPhase.ready,
+              container: true,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Semantics(
+                    header: true,
+                    child: Text(title, style: type.heading),
+                  ),
+                  SizedBox(height: theme.space(PaymentSpace.inline)),
+                  Text(
+                    message,
+                    style: type
+                        .bodyFor(context)
+                        .copyWith(color: theme.textSecondary),
+                  ),
+                ],
+              ),
+            ),
+          if (!pinned) ...[
+            SizedBox(height: theme.space(PaymentSpace.section)),
+            ?start,
+            if (back != null) ...[
+              SizedBox(height: theme.space(PaymentSpace.related)),
+              back,
+            ],
+          ],
         ],
-      ],
+      ),
     );
   }
 }

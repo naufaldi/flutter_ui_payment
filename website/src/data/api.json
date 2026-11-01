@@ -10595,7 +10595,7 @@
   "PaymentConfirmation": {
     "kind": "class",
     "file": "lib/src/payment/checkout.dart",
-    "doc": "Final review before the host authorizes and submits.\n\nWhen `previousQuote` has different terms the customer must explicitly\naccept the new total before `onConfirm` becomes available. Only one\n`onConfirm` call can be active at a time.",
+    "doc": "Final review before the host authorizes and submits.\n\nWhen `previousQuote` has different terms the customer must explicitly\naccept the new total before `onConfirm` becomes available. Only one\n`onConfirm` call can be active at a time.\n\nGiven a bounded height, e.g. as a screen's body, the review scrolls and\nthe pay button pins to a footer at the bottom (D62). Inside a scroll view\nit follows the review, as before.",
     "extends": "StatefulWidget",
     "constructors": [
       {
@@ -10667,6 +10667,17 @@
             "isSuper": false,
             "fieldName": "footnote",
             "doc": ""
+          },
+          {
+            "name": "header",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "header",
+            "doc": "Host content shown above this widget's content, inside its scroll\nregion (D62), e.g. a banner."
           }
         ],
         "doc": ""
@@ -10709,6 +10720,13 @@
         "static": false,
         "type": "String?",
         "doc": ""
+      },
+      {
+        "name": "header",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Host content shown above this widget's content, inside its scroll\nregion (D62), e.g. a banner."
       }
     ],
     "copyWith": null
@@ -10716,7 +10734,7 @@
   "AuthorizationPrompt": {
     "kind": "class",
     "file": "lib/src/payment/checkout.dart",
-    "doc": "Shows the state of the host's authorization challenge.\n\nThe library never collects the PIN, OTP or biometric result: `onStart`\nhands control to the host, which reports back a new `phase`.",
+    "doc": "Shows the state of the host's authorization challenge.\n\nThe library never collects the PIN, OTP or biometric result: `onStart`\nhands control to the host, which reports back a new `phase`.\n\nGiven a bounded height, the status scrolls and the authorize button pins\nto a footer, with the quiet back-to-review under it (D62). Inside a\nscroll view they follow the status, as before.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -10766,6 +10784,17 @@
             "isSuper": false,
             "fieldName": "methodLabel",
             "doc": ""
+          },
+          {
+            "name": "header",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "header",
+            "doc": "Host content shown above this widget's content, inside its scroll\nregion (D62), e.g. the total being authorized."
           }
         ],
         "doc": ""
@@ -10794,6 +10823,13 @@
         "static": false,
         "type": "String?",
         "doc": ""
+      },
+      {
+        "name": "header",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Host content shown above this widget's content, inside its scroll\nregion (D62), e.g. the total being authorized."
       }
     ],
     "copyWith": null
@@ -12820,7 +12856,7 @@
   "PaymentStatusView": {
     "kind": "class",
     "file": "lib/src/payment/payment_status.dart",
-    "doc": "Renders an attempt from host-authoritative data.\n\nThe view never infers success, never polls and never offers paying again\nwhile the outcome is unresolved. Actions come from\n`PaymentAttempt.availableActions`.",
+    "doc": "Renders an attempt from host-authoritative data.\n\nThe view never infers success, never polls and never offers paying again\nwhile the outcome is unresolved. Actions come from\n`PaymentAttempt.availableActions`.\n\nGiven a bounded height, e.g. as a screen's body, the status scrolls and\nthe first action pins to a footer at the bottom, with `secondaryAction`\nor the quiet contact-support under it; other actions stay in the content\nas hug buttons (D62). Inside a scroll view all actions follow the status,\nas before.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -12880,7 +12916,29 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "instructions",
-            "doc": "Manual payment instructions, shown after the explanation and before the\nactions, so the account to pay into comes before Check status.\n\nAbove 1.5× text they move after the actions. Not shown while the\noutcome is unknown, where an account to pay into would read as an\ninvitation to pay again."
+            "doc": "Manual payment instructions, shown after the explanation and before the\nactions, so the account to pay into comes before Check status.\n\nAbove 1.5× text, inside a scroll view, they move after the actions;\nwith a pinned footer they keep their place. Not shown while the\noutcome is unknown, where an account to pay into would read as an\ninvitation to pay again."
+          },
+          {
+            "name": "header",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "header",
+            "doc": "Host content shown above this widget's content, inside its scroll\nregion (D62), e.g. a banner."
+          },
+          {
+            "name": "secondaryAction",
+            "type": "PaymentButton?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "secondaryAction",
+            "doc": "One quiet host action under the primary, e.g. \"Done\". It takes the\nfooter's quiet slot; contact support then stays in the content."
           }
         ],
         "doc": ""
@@ -12908,7 +12966,7 @@
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": "Manual payment instructions, shown after the explanation and before the\nactions, so the account to pay into comes before Check status.\n\nAbove 1.5× text they move after the actions. Not shown while the\noutcome is unknown, where an account to pay into would read as an\ninvitation to pay again."
+        "doc": "Manual payment instructions, shown after the explanation and before the\nactions, so the account to pay into comes before Check status.\n\nAbove 1.5× text, inside a scroll view, they move after the actions;\nwith a pinned footer they keep their place. Not shown while the\noutcome is unknown, where an account to pay into would read as an\ninvitation to pay again."
       },
       {
         "name": "busyAction",
@@ -12916,6 +12974,20 @@
         "static": false,
         "type": "PaymentAction?",
         "doc": "Action whose host call is running, shown as busy."
+      },
+      {
+        "name": "header",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Host content shown above this widget's content, inside its scroll\nregion (D62), e.g. a banner."
+      },
+      {
+        "name": "secondaryAction",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButton?",
+        "doc": "One quiet host action under the primary, e.g. \"Done\". It takes the\nfooter's quiet slot; contact support then stays in the content."
       }
     ],
     "copyWith": null
@@ -15799,7 +15871,7 @@
   "VerificationIntro": {
     "kind": "class",
     "file": "lib/src/verification/verification_widgets.dart",
-    "doc": "Explains what data the host requests and why, then asks for consent.\n\nConsent always starts unchecked; `onContinue` is unreachable without it.",
+    "doc": "Explains what data the host requests and why, then asks for consent.\n\nConsent always starts unchecked; `onContinue` is unreachable without it.\n\nGiven a bounded height, the explanation and consent scroll and Continue\npins to a footer at the bottom (D62). Inside a scroll view it follows the\nconsent, as before.",
     "extends": "StatefulWidget",
     "constructors": [
       {
@@ -15849,6 +15921,17 @@
             "isSuper": false,
             "fieldName": "consentLabel",
             "doc": ""
+          },
+          {
+            "name": "header",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "header",
+            "doc": "Host content shown above this widget's content, inside its scroll\nregion (D62)."
           }
         ],
         "doc": ""
@@ -15884,6 +15967,13 @@
         "static": false,
         "type": "String?",
         "doc": ""
+      },
+      {
+        "name": "header",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Host content shown above this widget's content, inside its scroll\nregion (D62)."
       }
     ],
     "copyWith": null
@@ -16243,7 +16333,7 @@
   "VerificationStatusView": {
     "kind": "class",
     "file": "lib/src/verification/verification_widgets.dart",
-    "doc": "Explains a verification state and offers only host-allowed actions.\nThere is never a bypass action.",
+    "doc": "Explains a verification state and offers only host-allowed actions.\nThere is never a bypass action.\n\nGiven a bounded height, the status scrolls and the first action pins to a\nfooter at the bottom; the others stay in the content as hug buttons (D62).\nInside a scroll view all actions follow the status, as before.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -16293,6 +16383,17 @@
             "isSuper": false,
             "fieldName": "busyAction",
             "doc": ""
+          },
+          {
+            "name": "header",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "header",
+            "doc": "Host content shown above this widget's content, inside its scroll\nregion (D62), e.g. a banner."
           }
         ],
         "doc": ""
@@ -16321,6 +16422,13 @@
         "static": false,
         "type": "VerificationAction?",
         "doc": ""
+      },
+      {
+        "name": "header",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Host content shown above this widget's content, inside its scroll\nregion (D62), e.g. a banner."
       }
     ],
     "copyWith": null
@@ -19312,7 +19420,7 @@
   "PaymentFormFieldGroup": {
     "kind": "class",
     "file": "lib/src/forms/field_group.dart",
-    "doc": "Related fields under a legend. A horizontal group stacks when its fields\nwould be narrower than 140 dp each, or at large text. Hosts put 24 dp\n(`PaymentSpace.section`) between groups; fields inside sit 16 apart.\nThe legend sits 8 dp (`related`) above the first control's visible top:\na field's edge, or a checkbox, radio or switch row's label (#66).",
+    "doc": "Related fields under a legend. A horizontal group stacks when its fields\nwould be narrower than 140 dp each, or at large text. Hosts put 24 dp\n(`PaymentSpace.section`) between groups; fields inside sit 16 apart.\nThe legend sits 16 dp (`group`) above the first control's visible top:\na field's edge, or a checkbox, radio or switch row's label (#66). A row's\n48 dp target reaches into that gap but never onto the legend.",
     "extends": "StatelessWidget",
     "constructors": [
       {

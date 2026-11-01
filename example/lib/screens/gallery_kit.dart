@@ -493,7 +493,7 @@ class _SheetsDemo extends StatelessWidget {
         ),
         footer: PaymentButton(
           label: t('Close', 'Tutup'),
-          variant: PaymentButtonVariant.secondary,
+          variant: PaymentButtonVariant.quiet,
           onPressed: () => Navigator.pop(panel),
         ),
       ),

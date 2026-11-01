@@ -239,19 +239,26 @@ class _Shell extends StatelessWidget {
         ),
       );
     }
-    return Scaffold(
-      body: body,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: app.tab,
-        onDestinationSelected: app.selectTab,
-        destinations: [
-          for (final (icon, selected, label) in destinations)
-            NavigationDestination(
-              icon: Icon(icon),
-              selectedIcon: Icon(selected),
-              label: label,
-            ),
-        ],
+    // Inside the payment flow the tab bar is hidden, so the step's pinned
+    // action is the only thing at the bottom (D62); back leaves the flow.
+    return ListenableBuilder(
+      listenable: app.coordinator,
+      builder: (context, _) => Scaffold(
+        body: body,
+        bottomNavigationBar: app.tab == 0 && inPaymentFlow(app.coordinator.step)
+            ? null
+            : NavigationBar(
+                selectedIndex: app.tab,
+                onDestinationSelected: app.selectTab,
+                destinations: [
+                  for (final (icon, selected, label) in destinations)
+                    NavigationDestination(
+                      icon: Icon(icon),
+                      selectedIcon: Icon(selected),
+                      label: label,
+                    ),
+                ],
+              ),
       ),
     );
   }

@@ -5,6 +5,20 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## UI review P6 (2026-11-01)
+
+- **Pinned priority action on the payment path (D62, #49, #64).** `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentStatusView`, `VerificationIntro` and `VerificationStatusView` pin their priority action when their height is bounded, for example as a screen's body. The content scrolls in the 640 dp column. A footer at the bottom, inside the safe area, holds a full-width primary on phones, with at most one quiet action under it (D59): "Back to review" under authorize, and the host's `secondaryAction` or the quiet "Contact support" under the status primary. The status view's other actions, and every verification status action after the first, stay in the content as hug buttons. `VerificationIntro` shows its consent hint with the pinned Continue. Inside a scroll view (unbounded height) the layout is unchanged. New `header` on all five widgets (host content above the widget's own, inside its scroll region) and `PaymentStatusView.secondaryAction` (one quiet host action, e.g. "Done"; asserted quiet). All additive. **Migration:** a host that already gives one of these widgets a bounded height, such as `Scaffold(body: PaymentStatusView(…))` or an `Expanded`, now gets a pinned footer and an internal scroll. To keep the old inline layout, put the widget in a `SingleChildScrollView` or `ListView`. To keep a banner or summary above it in the same scroll, pass it as `header` instead of wrapping both in a `Column`:
+
+  ```dart
+  // Before: a Column hands the status view an unbounded height
+  Column(children: [PaymentBanner(tone: StatusTone.info, title: 'Cancellation requested'), PaymentStatusView(attempt: a, onAction: act)])
+  // After: the banner scrolls with the status and the action is pinned
+  PaymentStatusView(header: PaymentBanner(tone: StatusTone.info, title: 'Cancellation requested'), attempt: a, onAction: act)
+  ```
+
+- **Example flow (D62, #49, #58, #64).** From KYC through the receipt the app's tab bar is hidden, and back leaves the flow. KYC intro and status, confirm, authorize, payment status and receipt fill the screen with their pinned action. The receipt's "Selesai" is the primary, with a quiet "Lihat detail" under it (#49-1). The checkout bar holds only "Tinjau pembayaran", busy while the total updates, so the total isn't repeated a third time and the bar is compact at 200% (#64, #58). Host tools move from the end of each step to a "Demo tools" sheet in the app bar. Cancel, back and close are quiet wherever they sit beside another action, including the footer Close of the gallery's order-details sheet, which repeated the header close (#49-3). A sheet whose only action is Close keeps it primary (D54).
+- **Receipt share hugs its label (D59).** `PaymentReceipt`'s "Share receipt" is a start-aligned hug button instead of a full-width one, so under a screen's pinned "Done" it reads as an inline action, not a second footer action. No API change.
+
 ## UI review P5 (2026-11-01)
 
 - **Centred content column (D53, #57).** At 600 dp and wider, views and pages keep their header, body and footer content in a centred column up to 640 dp; hairlines and scroll bars still span the window. From 840 dp, a page with a secondary column (`PaymentDetailPage` with `secondary`, `PaymentFullPageView` around a `PaymentOverviewPage` with `secondary`) keeps two columns up to 1040 dp. `PaymentOnboardingView`'s wide sidebar layout is centred up to 1040 dp. `PaymentActionBar` keeps its content in the 640 dp column. Phones are unchanged.

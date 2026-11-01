@@ -1031,32 +1031,32 @@
   },
   "ios_kyc_intro_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios kyc intro light, Indonesian"
   },
   "ios_kyc_intro_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios kyc intro dark, Indonesian"
   },
   "ios_kyc_intro_light_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios kyc intro light 200, Indonesian"
   },
   "ios_methods_unavailable_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios methods unavailable light, Indonesian"
   },
   "ios_methods_unavailable_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios methods unavailable dark, Indonesian"
   },
   "ios_methods_unavailable_light_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios methods unavailable light 200, Indonesian"
   },
   "ios_catalog_video_loading": {
@@ -1196,77 +1196,77 @@
   },
   "ios_refined_checkout_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Checkout, light, English"
   },
   "ios_refined_checkout_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Checkout, dark, Indonesian"
   },
   "ios_refined_checkout_light_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Checkout at 200% text, Indonesian"
   },
   "ios_refined_status_unknown_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Unknown outcome, light, English"
   },
   "ios_refined_status_unknown_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Unknown outcome, dark, Indonesian"
   },
   "ios_refined_status_unknown_light_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Unknown outcome at 200% text, Indonesian"
   },
   "ios_refined_kyc_review_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "KYC review, light, English"
   },
   "ios_refined_kyc_review_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "KYC review, dark"
   },
   "ios_status_pending_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Pending payment, Indonesian"
   },
   "ios_status_va_pending_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Virtual account pending, Indonesian"
   },
   "ios_status_va_pending_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Virtual account pending, dark, Indonesian"
   },
   "ios_receipt_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Receipt, Indonesian"
   },
   "ios_receipt_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Receipt, dark, Indonesian"
   },
   "ios_authorize_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Host authorization, Indonesian"
   },
   "ios_requote_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Changed total needs re-approval, Indonesian"
   },
   "ios_kit_checkout": {
@@ -1578,6 +1578,46 @@
     "width": 640,
     "height": 1138,
     "caption": "Example transaction detail on iPhone SE at 200% text, English"
+  },
+  "ios_se_checkout_light_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example checkout on iPhone SE at 200% text, Indonesian"
+  },
+  "ios_se_checkout_en_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example checkout on iPhone SE at 200% text, English"
+  },
+  "ios_se_authorize_light_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example authorize on iPhone SE at 200% text, Indonesian"
+  },
+  "ios_se_authorize_en_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example authorize on iPhone SE at 200% text, English"
+  },
+  "ios_se_status_pending_light_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example pending status on iPhone SE at 200% text, Indonesian"
+  },
+  "ios_se_status_pending_en_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example pending status on iPhone SE at 200% text, English"
+  },
+  "ios_se_receipt_light_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example receipt on iPhone SE at 200% text, Indonesian"
+  },
+  "ios_se_receipt_en_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example receipt on iPhone SE at 200% text, English"
   },
   "ios_ipad_checkout_light": {
     "width": 640,

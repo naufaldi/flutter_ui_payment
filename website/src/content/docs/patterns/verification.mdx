@@ -14,7 +14,7 @@ KYC is optional and composes with checkout; not every payment has to pass throug
 
 <Screens>
   <Screen name="ios_refined_kyc_review_light" dark="ios_refined_kyc_review_dark" alt="KYC review: identity details with masked values, document slots with file names shortened in the middle, and Edit actions in the section headers." caption="VerificationReview" />
-  <Screen name="ios_kyc_intro_light" dark="ios_kyc_intro_dark" alt="Verification intro in Indonesian: requirement icons and the consent checkbox share the content gutter; Continue is disabled until consent." caption="VerificationIntro consent (Indonesian)" />
+  <Screen name="ios_kyc_intro_light" dark="ios_kyc_intro_dark" alt="Verification intro in Indonesian: requirement icons and the consent checkbox share the content gutter; Continue is pinned at the bottom, disabled until consent, with the consent hint above it." caption="VerificationIntro consent (Indonesian)" />
   <Screen name="ios_kyc_intro_light_200" alt="Verification consent at 200% text with a wrapping label and disabled Continue." caption="Consent at 200% text (Indonesian)" />
 </Screens>
 
@@ -104,6 +104,7 @@ VerificationStatusView(
 - The form validates every field on submit, shows errors on the relevant fields and moves focus to the first invalid one. Names accept any script; nothing limits them to ASCII.
 - Fields the host asks to correct (`highlightFields`, or `fieldsToFix` on the snapshot) are highlighted, and still-valid data does not have to be entered again.
 - Review shows only the last four characters of fields marked `maskInReview`. "Edit" sits in each section header and is spoken with its section name.
+- **Pinned action (D62).** Given a bounded height, for example as a screen's body, `VerificationIntro` pins Continue to a footer at the bottom, with the consent hint above it, and `VerificationStatusView` pins its first allowed action; the other actions stay in the content as hug buttons. Both take a `header` for host content that scrolls with them. Inside a scroll view the actions follow the content as before. `IdentityForm` and `VerificationReview` keep their submit at the end of the form inside `PaymentOnboardingView`.
 - The status view offers only `allowedActions` from your `VerificationSnapshot`. There is never a bypass action, and a network failure never turns into "rejected".
 - A submit that timed out (`outcomeUnknown: true`) is shown as not confirmed yet; hold new submits until your host has checked the previous request.
 
