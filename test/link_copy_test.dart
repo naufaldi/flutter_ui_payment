@@ -185,6 +185,32 @@ void main() {
       expect(ink.width, 300);
       expect(t.getCenter(find.text('Cancel')).dx, ink.center.dx);
     });
+
+    testWidgets('app bar actions keep the centred label', (t) async {
+      await t.pumpWidget(
+        host(
+          AdaptiveNavShell(
+            title: const Text('Shell'),
+            sections: const [
+              PaymentNavSection(
+                items: [
+                  PaymentNavItem(id: 'a', label: 'Home', icon: Icons.home),
+                ],
+              ),
+            ],
+            selectedId: 'a',
+            onSelected: (_) {},
+            actions: [quiet('Done')],
+            body: const SizedBox(),
+          ),
+          1,
+        ),
+      );
+      final ink = t.getRect(find.byType(TextButton));
+      expect(ink.width, greaterThanOrEqualTo(112));
+      expect(t.getRect(find.byType(PaymentButton)), ink);
+      expect(t.getCenter(find.text('Done')).dx, ink.center.dx);
+    });
   });
   testWidgets('icon action is 48 dp and disabled actions do nothing', (
     tester,

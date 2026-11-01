@@ -1,6 +1,7 @@
 import '../foundation/payment_icons.dart';
 import '../foundation/payment_tokens.dart';
 import '../controls/actions.dart';
+import '../foundation/tap_target.dart';
 import 'package:flutter/material.dart';
 
 import '../foundation/focus_ring.dart';
@@ -338,7 +339,10 @@ class _AdaptiveNavShellState extends State<AdaptiveNavShell> {
                 onPressed: () => _scaffold.currentState?.openDrawer(),
               ),
         title: widget.title,
-        actions: widget.actions,
+        // A row of actions: a quiet button keeps its centred label (#65).
+        actions: [
+          for (final a in widget.actions) TextActionEdge.none(child: a),
+        ],
       ),
       drawer: wide
           ? null
