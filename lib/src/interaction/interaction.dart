@@ -574,6 +574,8 @@ class _MenuSheet extends StatelessWidget {
           textStyle: type.label,
         ),
         onPressed: enabled ? () => Navigator.pop(context, item) : null,
+        // Long labels wrap inside the full-width row.
+        overflowAxis: Axis.vertical,
         child: Text(item.label, softWrap: true),
       );
     }
