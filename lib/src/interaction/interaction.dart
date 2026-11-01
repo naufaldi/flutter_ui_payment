@@ -17,6 +17,7 @@ import '../foundation/payment_type.dart';
 import '../foundation/payment_tokens.dart';
 import '../foundation/token_resolvers.dart';
 import '../foundation/primitives.dart';
+import '../foundation/layout_rules.dart';
 
 /// A tappable row for settings, menus and action lists.
 ///
@@ -125,21 +126,21 @@ class PaymentListItem extends StatelessWidget {
           if (image != null) ...[
             SizedBox(
               width: size == PaymentListItemSize.large
-                  ? theme.spacing * 5
+                  ? theme.space(PaymentSpace.related) * 5
                   : PaymentIconSize.medium.resolve(context),
               height: size == PaymentListItemSize.large
-                  ? theme.spacing * 5
+                  ? theme.space(PaymentSpace.related) * 5
                   : line,
               child: Center(
                 child: SizedBox.square(
                   dimension: size == PaymentListItemSize.large
-                      ? theme.spacing * 5
+                      ? theme.space(PaymentSpace.related) * 5
                       : PaymentIconSize.medium.resolve(context),
                   child: image,
                 ),
               ),
             ),
-            SizedBox(width: theme.spacing * 1.5),
+            SizedBox(width: theme.space(PaymentSpace.block)),
           ],
           if (icon != null) ...[
             PaymentIcon(
@@ -148,7 +149,7 @@ class PaymentListItem extends StatelessWidget {
                   ? PaymentTextColor.danger
                   : PaymentTextColor.secondary,
             ),
-            SizedBox(width: theme.spacing * 1.5),
+            SizedBox(width: theme.space(PaymentSpace.block)),
           ],
           Expanded(
             flex: value == null ? 1 : 3,
@@ -168,7 +169,7 @@ class PaymentListItem extends StatelessWidget {
             ),
           ),
           if (value != null) ...[
-            SizedBox(width: theme.spacing * 2),
+            SizedBox(width: theme.space(PaymentSpace.group)),
             Flexible(
               flex: 2,
               child: ConstrainedBox(
@@ -183,7 +184,7 @@ class PaymentListItem extends StatelessWidget {
                 ),
               ),
             ),
-            if (enabled) SizedBox(width: theme.spacing),
+            if (enabled) SizedBox(width: theme.space(PaymentSpace.related)),
           ],
           if (trailing != null)
             // A minimum, never a fixed height, so a switch or a 48 dp
@@ -426,10 +427,10 @@ class _PaymentMenuState extends State<PaymentMenu> {
             if (entry.title != null)
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(
-                  theme.spacing * 1.5,
-                  theme.spacing,
-                  theme.spacing * 1.5,
-                  theme.spacing * 0.5,
+                  theme.space(PaymentSpace.block),
+                  theme.space(PaymentSpace.related),
+                  theme.space(PaymentSpace.block),
+                  theme.space(PaymentSpace.inline),
                 ),
                 child: Semantics(
                   header: true,
@@ -483,7 +484,7 @@ Future<bool> showPaymentConfirmDialog(
           message,
           style: type.bodyFor(context).copyWith(color: theme.textSecondary),
         ),
-        actionsPadding: EdgeInsets.all(theme.spacing * 2),
+        actionsPadding: EdgeInsets.all(theme.space(PaymentSpace.group)),
         actions: [
           PaymentButtonGroup(
             collapse: PaymentButtonGroupCollapse.none,
@@ -629,7 +630,6 @@ PaymentToastController _showToast(
   VoidCallback? onAction,
 }) {
   final theme = PaymentTheme.of(context);
-  final s = theme.spacing;
   final hasAction = actionLabel != null && onAction != null;
   final controller = PaymentToastController._(
     ValueNotifier(_ToastState(message, tone, pending)),
@@ -644,12 +644,19 @@ PaymentToastController _showToast(
       backgroundColor: theme.textPrimary,
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: theme.controlBorderRadius),
-      margin: EdgeInsets.fromLTRB(s * 2, 0, s * 2, s * 2),
+      margin: EdgeInsets.fromLTRB(
+        theme.space(PaymentSpace.group),
+        0,
+        theme.space(PaymentSpace.group),
+        theme.space(PaymentSpace.group),
+      ),
       padding: EdgeInsetsDirectional.fromSTEB(
-        s * 2,
-        s,
-        hasAction ? s : s * 2,
-        s,
+        theme.space(PaymentSpace.group),
+        theme.space(PaymentSpace.related),
+        hasAction
+            ? theme.space(PaymentSpace.related)
+            : theme.space(PaymentSpace.group),
+        theme.space(PaymentSpace.related),
       ),
       onVisible: controller._onVisible,
       content: _ToastContent(
@@ -690,7 +697,6 @@ class _ToastContentState extends State<_ToastContent> {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
-    final s = theme.spacing;
     final iconSize = PaymentIconSize.medium.resolve(context);
     return ValueListenableBuilder<_ToastState>(
       valueListenable: widget.controller._state,
@@ -717,15 +723,17 @@ class _ToastContentState extends State<_ToastContent> {
                 ),
               ),
             ),
-            SizedBox(width: s * 1.5),
+            SizedBox(width: theme.space(PaymentSpace.block)),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: s * 0.5),
+                padding: EdgeInsets.symmetric(
+                  vertical: theme.space(PaymentSpace.inline),
+                ),
                 child: Text(state.message),
               ),
             ),
             if (widget.actionLabel != null && widget.onAction != null) ...[
-              SizedBox(width: s),
+              SizedBox(width: theme.space(PaymentSpace.related)),
               PaymentFocusRing(
                 radius: theme.controlBorderRadius,
                 color: theme.surface,
@@ -743,7 +751,9 @@ class _ToastContentState extends State<_ToastContent> {
                       minimumSize: const Size(48, 48),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       visualDensity: VisualDensity.standard,
-                      padding: EdgeInsets.symmetric(horizontal: s * 1.5),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: theme.space(PaymentSpace.block),
+                      ),
                     ),
                   ),
                   child: Text(widget.actionLabel!),
@@ -867,17 +877,16 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 48),
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: theme.spacing * 1.5),
+              padding: EdgeInsets.symmetric(
+                vertical: theme.space(PaymentSpace.block),
+              ),
               child: Row(
                 children: [
                   if (_media != null) ...[
                     _media is PaymentImage
-                        ? SizedBox.square(
-                            dimension: theme.spacing * 5,
-                            child: _media,
-                          )
+                        ? SizedBox.square(dimension: kMediaTile, child: _media)
                         : _media!,
-                    SizedBox(width: theme.spacing * 1.5),
+                    SizedBox(width: theme.space(PaymentSpace.block)),
                   ],
                   Expanded(
                     child: Column(
@@ -889,7 +898,7 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
                       ],
                     ),
                   ),
-                  SizedBox(width: theme.spacing),
+                  SizedBox(width: theme.space(PaymentSpace.related)),
                   // Rotation is a transform: no layout, no repaint of
                   // the row. 150 ms, the same as other state changes.
                   AnimatedRotation(
@@ -926,10 +935,12 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
                       children: [
                         header,
                         Padding(
-                          padding: EdgeInsets.only(bottom: theme.spacing),
+                          padding: EdgeInsets.only(
+                            bottom: theme.space(PaymentSpace.related),
+                          ),
                           child: Wrap(
-                            spacing: theme.spacing,
-                            runSpacing: theme.spacing,
+                            spacing: theme.space(PaymentSpace.related),
+                            runSpacing: theme.space(PaymentSpace.related),
                             children: widget.actions,
                           ),
                         ),
@@ -939,13 +950,16 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(child: header),
-                        SizedBox(width: theme.spacing),
+                        SizedBox(width: theme.space(PaymentSpace.related)),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             for (final (i, action)
                                 in widget.actions.indexed) ...[
-                              if (i > 0) SizedBox(width: theme.spacing),
+                              if (i > 0)
+                                SizedBox(
+                                  width: theme.space(PaymentSpace.related),
+                                ),
                               action,
                             ],
                           ],
@@ -962,7 +976,9 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
             alignment: Alignment.topCenter,
             child: open
                 ? Padding(
-                    padding: EdgeInsets.only(bottom: theme.spacing * 2),
+                    padding: EdgeInsets.only(
+                      bottom: theme.space(PaymentSpace.group),
+                    ),
                     child: widget.child,
                   )
                 : const SizedBox(width: double.infinity),
@@ -1049,7 +1065,8 @@ class LoadingSkeleton extends StatelessWidget {
             );
           }
           final height =
-              PaymentType.firstLineHeight(context) + 2 * theme.spacing * 1.5;
+              PaymentType.firstLineHeight(context) +
+              2 * theme.space(PaymentSpace.block);
           return Semantics(
             label: semanticLabel ?? l10n.loading,
             container: true,
@@ -1069,7 +1086,9 @@ class LoadingSkeleton extends StatelessWidget {
                           for (var c = 0; c < columns!; c++)
                             Expanded(
                               child: Padding(
-                                padding: EdgeInsets.all(theme.spacing),
+                                padding: EdgeInsets.all(
+                                  theme.space(PaymentSpace.related),
+                                ),
                                 child: bar(0.5, r == 0 ? 10 : 14),
                               ),
                             ),
@@ -1091,7 +1110,9 @@ class LoadingSkeleton extends StatelessWidget {
           children: [
             for (var i = 0; i < rows; i++)
               Padding(
-                padding: EdgeInsets.symmetric(vertical: theme.spacing),
+                padding: EdgeInsets.symmetric(
+                  vertical: theme.space(PaymentSpace.related),
+                ),
                 child: Row(
                   children: [
                     if (leading) ...[
@@ -1103,14 +1124,14 @@ class LoadingSkeleton extends StatelessWidget {
                           borderRadius: theme.tagBorderRadius,
                         ),
                       ),
-                      SizedBox(width: theme.spacing * 1.5),
+                      SizedBox(width: theme.space(PaymentSpace.block)),
                     ],
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           bar(i.isEven ? 0.7 : 0.55, 14),
-                          SizedBox(height: theme.spacing),
+                          SizedBox(height: theme.space(PaymentSpace.related)),
                           bar(0.4, 10),
                         ],
                       ),
@@ -1158,28 +1179,30 @@ class StateMessage extends StatelessWidget {
       container: true,
       liveRegion: tone == StatusTone.danger,
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: theme.spacing * 2),
+        padding: EdgeInsets.symmetric(
+          vertical: theme.space(PaymentSpace.group),
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ExcludeSemantics(
               child: PaymentIcon(icon, color: PaymentTextColor.secondary),
             ),
-            SizedBox(width: theme.spacing * 1.5),
+            SizedBox(width: theme.space(PaymentSpace.block)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: type.heading),
                   if (message != null) ...[
-                    SizedBox(height: theme.spacing * 0.5),
+                    SizedBox(height: theme.space(PaymentSpace.inline)),
                     Text(
                       message!,
                       style: type.body.copyWith(color: theme.textSecondary),
                     ),
                   ],
                   if (actionLabel != null && onAction != null) ...[
-                    SizedBox(height: theme.spacing * 1.5),
+                    SizedBox(height: theme.space(PaymentSpace.block)),
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 280),
                       child: PaymentButton(
