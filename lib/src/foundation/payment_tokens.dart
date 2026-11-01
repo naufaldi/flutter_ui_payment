@@ -20,26 +20,37 @@ enum PaymentWidth {
 }
 
 /// Spacing roles resolved by PaymentTheme.space; nothing else exists.
+///
+/// The scale is 4 / 8 / 12 / 16 / 24 / 32 on the 8 base (D46). Each role
+/// below has one value; a gap that serves a listed role uses that role and
+/// no other. Component sizes (36, 40, 48, 52, 56, 60, 64 dp) are sizes, not
+/// spacing roles.
 enum PaymentSpace {
   /// Zero gap. Stripe has no equivalent.
   none,
 
-  /// spacing × 0.5 (4): label to caption, title to meta, icon to badge. Stripe xxsmall.
+  /// spacing × 0.5 (4): label → caption, title → message, title → meta,
+  /// a small glyph beside its text. Stripe xxsmall.
   inline,
 
-  /// spacing (8): row padding and stacked actions. Stripe xsmall.
+  /// spacing (8): between stacked or adjacent actions and chips, text →
+  /// trailing control, compact control padding. Stripe xsmall.
   related,
 
-  /// spacing × 1.5 (12): row padding, icon to text, notices. Stripe small.
+  /// spacing × 1.5 (12): icon → text, list row and header padding, notice
+  /// and banner padding. Stripe small.
   block,
 
-  /// spacing × 2 (16): gutters, label to value, state message padding. Stripe medium.
+  /// spacing × 2 (16): screen, sheet and field gutters, label → value,
+  /// state message padding. Stripe medium.
   group,
 
-  /// spacing × 3 (24): content to primary action, ruled gaps. Stripe large.
+  /// spacing × 3 (24): content → primary action, between field groups,
+  /// ruled section gaps. Stripe large.
   section,
 
-  /// spacing × 4 (32): largest gap; unused by kit widgets today. Stripe xlarge and xxlarge.
+  /// spacing × 4 (32): largest gap; unused by kit widgets today. Stripe
+  /// xlarge and xxlarge.
   major,
 }
 

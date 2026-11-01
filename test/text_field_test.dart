@@ -148,4 +148,62 @@ void main() {
     );
     semantics.dispose();
   });
+  for (final scale in [1.0, 2.0]) {
+    testWidgets('text, currency, date and select share heights at $scale', (
+      tester,
+    ) async {
+      double boxHeight() => tester
+          .getSize(
+            find
+                .byWidgetPredicate(
+                  (w) => w.runtimeType.toString() == '_BorderContainer',
+                )
+                .first,
+          )
+          .height;
+      for (final size in PaymentSize.values) {
+        final heights = <String, double>{};
+        final fields = <String, Widget>{
+          'text': PaymentTextField(label: 'Name', size: size),
+          'currency': PaymentCurrencyField(
+            currency: 'IDR',
+            size: size,
+            initialText: '102500',
+            onChanged: (_) {},
+          ),
+          'date': PaymentDateField(
+            label: 'Date',
+            value: DateTime(2026, 10, 1),
+            onChanged: (_) {},
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2030),
+            size: size,
+          ),
+          'select': PaymentSelect<int>(
+            label: 'Province',
+            options: const [PaymentSelectOption(value: 1, label: 'Bali')],
+            value: 1,
+            onChanged: (_) {},
+            size: size,
+          ),
+        };
+        for (final entry in fields.entries) {
+          await tester.pumpWidget(host(entry.value, scale));
+          heights[entry.key] = boxHeight();
+        }
+        expect(
+          heights.values.toSet(),
+          hasLength(1),
+          reason: '$size at $scale: $heights',
+        );
+        if (scale == 1) {
+          expect(heights['text'], switch (size) {
+            PaymentSize.small => 48,
+            PaymentSize.medium => 56,
+            PaymentSize.large => 64,
+          });
+        }
+      }
+    });
+  }
 }

@@ -9,6 +9,8 @@ import Screen from '../../../components/Screen.astro';
 
 Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
 
+The scale is **4 / 8 / 12 / 16 / 24 / 32** on the 8 base: an 8 pt grid with 4 pt half-steps, so `block` (12) is on the grid (D46). Every kit spacing value resolves through `theme.space(PaymentSpace.<role>)`, and **one role uses one value**: icon → text is always `block` (12) — in the toast, banner, state message, accordion, skeleton, list row and status header alike.
+
 ```text
 No gap? → none
 Within one label? → inline
@@ -27,27 +29,27 @@ Largest reserved gap? → major
   },
   {
     "token": "inline",
-    "use": "Label to caption, title to meta, icon to badge.",
+    "use": "Label to caption, title to message, title to meta, a small glyph beside its text.",
     "dont": "Not between rows."
   },
   {
     "token": "related",
-    "use": "Row padding and stacked actions.",
-    "dont": "Use only for this role."
+    "use": "Between stacked or adjacent actions and chips, text to a trailing control, compact control padding.",
+    "dont": "Not icon to text: that is block."
   },
   {
     "token": "block",
-    "use": "Row padding, icon to text, notice padding.",
+    "use": "Icon to text, list row and header padding, notice and banner padding.",
     "dont": "Use only for this role."
   },
   {
     "token": "group",
-    "use": "Screen/sheet gutters, label to value, state message padding.",
+    "use": "Screen, sheet and field gutters, label to value, state message padding.",
     "dont": "No other screen gutter at any width."
   },
   {
     "token": "section",
-    "use": "Content to primary action, ruled section gaps.",
+    "use": "Content to primary action, between field groups, ruled section gaps.",
     "dont": "Use only for this role."
   },
   {
@@ -88,6 +90,10 @@ Largest reserved gap? → major
     "dont": "Use only for this role."
   }
 ]} />
+
+## Component sizes
+
+Heights and boxes are component sizes, not spacing roles, so they are not `PaymentSpace` values. They sit on the 4 grid: **36** (small button, `InfoRow` pitch), **40** (media tile), **48** (minimum target, list row, small field), **52**, **56** (medium field, large button), **60** (video play disc) and **64** (large list row, large field). A two-line list row is 62 dp (12 + 20 + 18 + 12): its parts are on the grid, and the loading skeleton copies it. Values that are not multiples of 4 (such as 7) are not used.
 
 ## Stripe mapping
 

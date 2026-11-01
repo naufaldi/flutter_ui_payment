@@ -28,7 +28,7 @@ class HistoryStep extends StatelessWidget {
     List<ChartPoint> weekly(DateTime start) => [
       for (var w = 0; w < 4; w++)
         ChartPoint(
-          label: 'W${w + 1}',
+          label: s.weekLabel(w + 1),
           value: c.history
               .where(
                 (r) =>
@@ -93,19 +93,17 @@ class HistoryStep extends StatelessWidget {
                 pending: c.historyLoading,
                 items: [
                   PaymentDetailProperty(
-                    label: 'Payments',
+                    label: s.historyPayments,
                     values: [PaymentDetailValue('${paid.length}')],
                   ),
                   PaymentDetailProperty(
-                    label: 'Refunds',
+                    label: s.historyRefunds,
                     values: [
-                      PaymentDetailValue(
-                        MoneyFormat(s.languageCode).format(refunded),
-                      ),
+                      PaymentDetailValue(l.moneyFormat.format(refunded)),
                     ],
                   ),
                   PaymentDetailProperty(
-                    label: 'Most used',
+                    label: s.historyMostUsed,
                     values: [PaymentDetailValue(ranked.firstOrNull ?? '—')],
                   ),
                 ],

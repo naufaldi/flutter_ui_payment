@@ -4,6 +4,7 @@ import 'payment_type.dart';
 import 'primitives.dart';
 import 'payment_icons.dart';
 import 'payment_tokens.dart';
+import 'layout_rules.dart';
 import 'button_copy.dart';
 import '../controls/button_group.dart';
 
@@ -20,7 +21,7 @@ class ViewFrame extends StatelessWidget {
   final EdgeInsetsGeometry? bodyPadding;
   @override
   Widget build(BuildContext context) {
-    final space = PaymentTheme.of(context).spacing * 2;
+    final space = PaymentTheme.of(context).space(PaymentSpace.group);
     return LayoutBuilder(
       builder: (context, k) => Column(
         mainAxisSize: k.hasBoundedHeight ? MainAxisSize.max : MainAxisSize.min,
@@ -74,7 +75,7 @@ class ViewHeader extends StatelessWidget {
     final type = PaymentType.of(context);
     Widget copy() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: theme.spacing * .5,
+      spacing: theme.space(PaymentSpace.inline),
       children: [
         Semantics(header: true, child: Text(title, style: type.title)),
         if (description != null)
@@ -85,13 +86,14 @@ class ViewHeader extends StatelessWidget {
       ],
     );
     return Padding(
-      padding: EdgeInsets.all(theme.spacing * 2),
+      padding: EdgeInsets.all(theme.space(PaymentSpace.group)),
       child: LayoutBuilder(
         builder: (context, k) {
-          final stack = k.maxWidth < 600 || PaymentType.isLarge(context);
+          final stack =
+              k.maxWidth < kCompactBreakpoint || PaymentType.isLarge(context);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: theme.spacing * 1.5,
+            spacing: theme.space(PaymentSpace.block),
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +101,7 @@ class ViewHeader extends StatelessWidget {
                   if (leading != null)
                     Padding(
                       padding: EdgeInsetsDirectional.only(
-                        end: theme.spacing * 1.5,
+                        end: theme.space(PaymentSpace.block),
                       ),
                       child: SizedBox.square(
                         dimension: 40,

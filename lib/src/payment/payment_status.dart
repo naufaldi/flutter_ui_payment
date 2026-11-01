@@ -50,7 +50,7 @@ class PaymentInstructions extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: theme.spacing * 0.5),
+          SizedBox(height: theme.space(PaymentSpace.inline)),
           PaymentBox(
             gap: PaymentSpace.inline,
             children: [
@@ -66,7 +66,7 @@ class PaymentInstructions extends StatelessWidget {
               ),
             ],
           ),
-          PaymentDivider(height: theme.spacing * 2),
+          PaymentDivider(height: theme.space(PaymentSpace.group)),
           // A total row, not a second display amount: the status header
           // already shows the one large figure on this screen.
           PaymentPropertyList(
@@ -92,7 +92,7 @@ class PaymentInstructions extends StatelessWidget {
             ],
           ),
           if (elapsed) ...[
-            SizedBox(height: theme.spacing),
+            SizedBox(height: theme.space(PaymentSpace.related)),
             PaymentBanner(
               tone: StatusTone.warning,
               icon: Icons.timer_off_outlined,
@@ -112,7 +112,7 @@ class PaymentInstructions extends StatelessWidget {
                   for (final (i, step) in instructions.steps.indexed)
                     Padding(
                       padding: EdgeInsets.symmetric(
-                        vertical: theme.spacing * 0.5,
+                        vertical: theme.space(PaymentSpace.inline),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +132,7 @@ class PaymentInstructions extends StatelessWidget {
                                   .copyWith(color: theme.textSecondary),
                             ),
                           ),
-                          SizedBox(width: theme.spacing),
+                          SizedBox(width: theme.space(PaymentSpace.related)),
                           Expanded(
                             child: Text(step, style: type.bodyFor(context)),
                           ),
@@ -300,24 +300,24 @@ class PaymentStatusView extends StatelessWidget {
           ),
         ),
         if (amount != null) ...[
-          SizedBox(height: theme.spacing * 1.5),
+          SizedBox(height: theme.space(PaymentSpace.block)),
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: AmountText(amount!, variant: AmountTextVariant.display),
           ),
         ],
-        SizedBox(height: theme.spacing * 1.5),
+        SizedBox(height: theme.space(PaymentSpace.block)),
         if (unknown) ...[
           Text(
             l10n.statusUnknownLead,
             style: body.copyWith(fontWeight: FontWeight.w600),
           ),
-          SizedBox(height: theme.spacing * 0.5),
+          SizedBox(height: theme.space(PaymentSpace.inline)),
           Text(l10n.statusUnknownDetail, style: body),
         ] else
           Text(look.message, style: body),
         if (attempt.observation == Observation.unavailable) ...[
-          SizedBox(height: theme.spacing * 2),
+          SizedBox(height: theme.space(PaymentSpace.group)),
           PaymentBanner(
             tone: StatusTone.neutral,
             icon: Icons.cloud_off_outlined,
@@ -334,15 +334,15 @@ class PaymentStatusView extends StatelessWidget {
         // text the instructions are taller than the first screen, so they
         // follow the actions to keep the action visible without scrolling.
         if (slot != null && !large) ...[
-          SizedBox(height: theme.spacing * 2),
+          SizedBox(height: theme.space(PaymentSpace.group)),
           slot,
         ],
         // What to do now comes before the reference numbers, so the action
         // stays on the first screen at large text.
-        SizedBox(height: theme.spacing * 3),
+        SizedBox(height: theme.space(PaymentSpace.section)),
         if (actions.isNotEmpty)
           Padding(
-            padding: EdgeInsets.only(bottom: theme.spacing),
+            padding: EdgeInsets.only(bottom: theme.space(PaymentSpace.related)),
             child: PaymentButtonGroup(
               direction: Axis.vertical,
               children: [
@@ -363,8 +363,11 @@ class PaymentStatusView extends StatelessWidget {
               ],
             ),
           ),
-        if (slot != null && large) ...[SizedBox(height: theme.spacing), slot],
-        PaymentDivider(height: theme.spacing * 3),
+        if (slot != null && large) ...[
+          SizedBox(height: theme.space(PaymentSpace.related)),
+          slot,
+        ],
+        PaymentDivider(height: theme.space(PaymentSpace.section)),
         PaymentPropertyList(
           items: [
             PaymentPropertyListItem(
@@ -390,7 +393,7 @@ class PaymentStatusView extends StatelessWidget {
         ),
         if (snapshot != null &&
             snapshot.refund.status != RefundStatus.none) ...[
-          PaymentDivider(height: theme.spacing * 3),
+          PaymentDivider(height: theme.space(PaymentSpace.section)),
           RefundSection(refund: snapshot.refund, paidAmount: amount),
         ],
       ],
@@ -445,13 +448,13 @@ class RefundSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: theme.spacing * 0.5),
+          SizedBox(height: theme.space(PaymentSpace.inline)),
           PaymentBadge(
             tone: tone,
             icon: icon,
             label: l10n.refundStatusLabel(refund.status),
           ),
-          SizedBox(height: theme.spacing),
+          SizedBox(height: theme.space(PaymentSpace.related)),
           PaymentPropertyList(
             items: [
               if (amount != null)

@@ -33,37 +33,37 @@ class StatementStep extends StatelessWidget {
             columns: [
               PaymentDataColumn(
                 key: 'id',
-                label: 'ID',
+                label: s.columnId,
                 value: (r) => r.id,
                 cell: PaymentCellType.id,
                 pinned: true,
               ),
               PaymentDataColumn(
                 key: 'date',
-                label: 'Date',
+                label: s.columnDate,
                 value: (r) => r.date,
                 cell: PaymentCellType.date,
                 sortable: true,
               ),
               PaymentDataColumn(
                 key: 'description',
-                label: 'Description',
+                label: s.columnDescription,
                 value: (r) => r.description,
               ),
               PaymentDataColumn(
                 key: 'status',
-                label: 'Status',
-                value: (r) => r.status,
+                label: s.columnStatus,
+                value: (r) => s.settlementStatus(r.status),
                 cell: PaymentCellType.status,
-                statusMap: const {
-                  'Paid': StatusTone.success,
-                  'Pending': StatusTone.warning,
-                  'Failed': StatusTone.danger,
+                statusMap: {
+                  s.settlementStatus('Paid'): StatusTone.success,
+                  s.settlementStatus('Pending'): StatusTone.warning,
+                  s.settlementStatus('Failed'): StatusTone.danger,
                 },
               ),
               PaymentDataColumn(
                 key: 'amount',
-                label: 'Amount',
+                label: s.columnAmount,
                 value: (r) => r.amount,
                 cell: PaymentCellType.currency,
                 sortable: true,

@@ -91,10 +91,14 @@ class _CaptureGuideDemoState extends State<_CaptureGuideDemo> {
         progress: .45,
       ),
       'uploaded' => const DocumentSlotState.uploaded(file, requestId: 'demo'),
-      'rejected' => const DocumentSlotState.failed(
+      'rejected' => DocumentSlotState.failed(
         DocumentIssue(
           DocumentIssueKind.rejectedByHost,
-          safeMessage: 'Foto KTP buram. Ambil ulang di tempat yang terang.',
+          safeMessage: _t(
+            context,
+            'The ID photo is blurry. Retake it in good light.',
+            'Foto KTP buram. Ambil ulang di tempat yang terang.',
+          ),
         ),
       ),
       'permission' => const DocumentSlotState.failed(

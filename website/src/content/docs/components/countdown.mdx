@@ -60,6 +60,8 @@ Use Status header for payment outcome.
 
 Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
 
+**Layout.** The countdown reserves the width of the longest format it will show, so the text does not jump when 1:00:00 becomes 59:59.
+
 ## Do and don't
 
 **Do**: Pass the host expiry and clock; elapsed is a display state, not a payment verdict.

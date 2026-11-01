@@ -4,9 +4,10 @@ import 'payment_theme.dart';
 import 'payment_type.dart';
 import 'payment_tokens.dart';
 import 'edge_fade.dart';
+import 'layout_rules.dart';
 
 bool tableIsNarrow(BuildContext c, BoxConstraints k) =>
-    k.maxWidth < 600 || PaymentType.isLarge(c);
+    k.maxWidth < kCompactBreakpoint || PaymentType.isLarge(c);
 
 enum TablePin { start, none, end }
 

@@ -12,32 +12,35 @@ class _MenuSpecimen extends StatelessWidget {
           child: PaymentMenu(
             key: const Key('menu-specimen'),
             onAction: (id) => _hostSays(context, id, id),
-            entries: const [
+            entries: [
               PaymentMenuGroup(
-                title: 'Receipt',
+                title: _t(context, 'Receipt', 'Struk'),
                 items: [
                   PaymentMenuItem(
                     id: 'download',
-                    label: 'Download PDF',
+                    label: _t(context, 'Download PDF', 'Unduh PDF'),
                     icon: Icons.download_outlined,
                   ),
                   PaymentMenuItem(
                     id: 'share',
-                    label: 'Share',
+                    label: _t(context, 'Share', 'Bagikan'),
                     icon: Icons.share_outlined,
                   ),
                 ],
               ),
               PaymentMenuGroup(
                 items: [
-                  PaymentMenuItem(label: 'Export history', disabled: true),
+                  PaymentMenuItem(
+                    label: _t(context, 'Export history', 'Ekspor riwayat'),
+                    disabled: true,
+                  ),
                 ],
               ),
               PaymentMenuGroup(
                 items: [
                   PaymentMenuItem(
                     id: 'cancel',
-                    label: 'Cancel payment',
+                    label: _t(context, 'Cancel payment', 'Batalkan pembayaran'),
                     destructive: true,
                     icon: Icons.cancel_outlined,
                   ),
@@ -49,14 +52,19 @@ class _MenuSpecimen extends StatelessWidget {
         PaymentMenu(
           key: const Key('menu-trigger'),
           trigger: (toggle, node) => PaymentButton(
-            label: 'Options',
+            label: _t(context, 'Options', 'Opsi'),
             width: PaymentWidth.hug,
             variant: PaymentButtonVariant.secondary,
             size: PaymentSize.small,
             focusNode: node,
             onPressed: toggle,
           ),
-          entries: [PaymentMenuItem(label: 'Download', onSelected: () {})],
+          entries: [
+            PaymentMenuItem(
+              label: _t(context, 'Download', 'Unduh'),
+              onSelected: () {},
+            ),
+          ],
         ),
       ],
     ),
@@ -70,25 +78,45 @@ class _AccordionSpecimen extends StatelessWidget {
     name: 'PaymentAccordion · variants',
     child: PaymentAccordion(
       children: [
-        const PaymentAccordionItem(
-          title: 'When will my payment arrive?',
-          child: Text('Most transfers arrive within a few minutes.'),
+        PaymentAccordionItem(
+          title: _t(
+            context,
+            'When will my payment arrive?',
+            'Kapan pembayaran saya masuk?',
+          ),
+          child: Text(
+            _t(
+              context,
+              'Most transfers arrive within a few minutes.',
+              'Sebagian besar transfer masuk dalam beberapa menit.',
+            ),
+          ),
         ),
-        const PaymentAccordionItem(
-          title: 'Receipt details',
-          subtitle: 'Keep a copy for your records',
-          media: PaymentIcon(
+        PaymentAccordionItem(
+          title: _t(context, 'Receipt details', 'Rincian struk'),
+          subtitle: _t(
+            context,
+            'Keep a copy for your records',
+            'Simpan salinan untuk catatan Anda',
+          ),
+          media: const PaymentIcon(
             Icons.receipt_long_outlined,
             color: PaymentTextColor.secondary,
           ),
           initiallyExpanded: true,
-          child: Text('The reference identifies this payment.'),
+          child: Text(
+            _t(
+              context,
+              'The reference identifies this payment.',
+              'Referensi ini mengenali pembayaran ini.',
+            ),
+          ),
         ),
         PaymentAccordionItem(
-          title: 'Saved method',
+          title: _t(context, 'Saved method', 'Metode tersimpan'),
           actions: [
             PaymentButton(
-              label: 'Edit',
+              label: _t(context, 'Edit', 'Ubah'),
               size: PaymentSize.small,
               width: PaymentWidth.hug,
               variant: PaymentButtonVariant.secondary,
@@ -98,13 +126,16 @@ class _AccordionSpecimen extends StatelessWidget {
               entries: [
                 PaymentMenuGroup(
                   items: [
-                    PaymentMenuItem(label: 'View details', onSelected: () {}),
+                    PaymentMenuItem(
+                      label: _t(context, 'View details', 'Lihat rincian'),
+                      onSelected: () {},
+                    ),
                   ],
                 ),
                 PaymentMenuGroup(
                   items: [
                     PaymentMenuItem(
-                      label: 'Remove method',
+                      label: _t(context, 'Remove method', 'Hapus metode'),
                       destructive: true,
                       onSelected: () {},
                     ),
@@ -128,49 +159,53 @@ class _ListSpecimen extends StatelessWidget {
     child: PaymentList(
       onAction: (id) => _hostSays(context, id, id),
       children: [
-        const PaymentListItem(
+        PaymentListItem(
           id: 'history',
-          title: 'Transaction history',
-          secondaryTitle: 'Last 90 days',
+          title: _t(context, 'Transaction history', 'Riwayat transaksi'),
+          secondaryTitle: _t(context, 'Last 90 days', '90 hari terakhir'),
           icon: Icons.receipt_long_outlined,
         ),
-        const PaymentListItem(
+        PaymentListItem(
           id: 'balance',
-          title: 'Balance',
+          title: _t(context, 'Balance', 'Saldo'),
           icon: Icons.account_balance_wallet_outlined,
-          value: AmountText(Money.idr(250000)),
-        ),
-        const PaymentListItem(
-          title: 'Available balance',
-          icon: Icons.account_balance_wallet_outlined,
-          value: AmountText(Money.idr(250000)),
+          value: const AmountText(Money.idr(250000)),
         ),
         PaymentListItem(
-          title: 'Saved method',
+          title: _t(context, 'Available balance', 'Saldo tersedia'),
+          icon: Icons.account_balance_wallet_outlined,
+          value: const AmountText(Money.idr(250000)),
+        ),
+        PaymentListItem(
+          title: _t(context, 'Saved method', 'Metode tersimpan'),
           icon: Icons.credit_card_outlined,
           trailing: PaymentButton(
-            label: 'Change',
+            label: _t(context, 'Change', 'Ganti'),
             variant: PaymentButtonVariant.secondary,
             size: PaymentSize.small,
             width: PaymentWidth.hug,
             onPressed: () {},
           ),
         ),
-        const PaymentListItem(
+        PaymentListItem(
           id: 'cancel',
-          title: 'Cancel payment',
+          title: _t(context, 'Cancel payment', 'Batalkan pembayaran'),
           icon: Icons.cancel_outlined,
           destructive: true,
         ),
-        const PaymentListItem(
-          title: 'Change PIN',
+        PaymentListItem(
+          title: _t(context, 'Change PIN', 'Ubah PIN'),
           icon: Icons.password_outlined,
-          disabledReason: 'Managed by your bank app',
+          disabledReason: _t(
+            context,
+            'Managed by your bank app',
+            'Diatur oleh aplikasi bank Anda',
+          ),
         ),
-        const PaymentListItem(
+        PaymentListItem(
           id: 'bank',
           title: 'Bank Contoh · •••• 8890',
-          secondaryTitle: 'Savings',
+          secondaryTitle: _t(context, 'Savings', 'Tabungan'),
           icon: Icons.account_balance_outlined,
           size: PaymentListItemSize.large,
         ),

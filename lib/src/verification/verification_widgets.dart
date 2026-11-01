@@ -59,10 +59,12 @@ class _VerificationIntroState extends State<VerificationIntro> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(l10n.kycIntroMessage, style: type.bodyFor(context)),
-              SizedBox(height: theme.spacing),
+              SizedBox(height: theme.space(PaymentSpace.related)),
               for (final r in widget.requirements)
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: theme.spacing),
+                  padding: EdgeInsets.symmetric(
+                    vertical: theme.space(PaymentSpace.related),
+                  ),
                   child: MergeSemantics(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +74,7 @@ class _VerificationIntroState extends State<VerificationIntro> {
                           Icons.check_circle_outline,
                           color: PaymentTextColor.secondary,
                         ),
-                        SizedBox(width: theme.spacing * 1.5),
+                        SizedBox(width: theme.space(PaymentSpace.block)),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +91,7 @@ class _VerificationIntroState extends State<VerificationIntro> {
             ],
           ),
         ),
-        SizedBox(height: theme.spacing * 1.5),
+        SizedBox(height: theme.space(PaymentSpace.block)),
         if (widget.onOpenPolicy != null)
           Align(
             alignment: AlignmentDirectional.centerStart,
@@ -104,14 +106,14 @@ class _VerificationIntroState extends State<VerificationIntro> {
           onChanged: (v) => setState(() => _consented = v),
           label: widget.consentLabel ?? l10n.consentLabel,
         ),
-        SizedBox(height: theme.spacing),
+        SizedBox(height: theme.space(PaymentSpace.related)),
         PaymentButton(
           label: l10n.continueLabel,
           onPressed: _consented ? widget.onContinue : null,
         ),
         if (!_consented)
           Padding(
-            padding: EdgeInsets.only(top: theme.spacing),
+            padding: EdgeInsets.only(top: theme.space(PaymentSpace.related)),
             child: Text(l10n.consentRequiredHint, style: type.caption),
           ),
       ],
@@ -341,7 +343,7 @@ class _IdentityFormState extends State<IdentityForm> {
         }
         grouped.add(PaymentFormFieldGroup(legend: group, children: children));
       }
-      grouped.add(SizedBox(height: theme.spacing * 2));
+      grouped.add(SizedBox(height: theme.space(PaymentSpace.group)));
     }
     return Form(
       key: _formKey,
@@ -458,21 +460,21 @@ class DocumentUploadTile extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(width: theme.spacing),
+              SizedBox(width: theme.space(PaymentSpace.related)),
               Flexible(
                 child: PaymentBadge(tone: tone, icon: icon, label: statusLabel),
               ),
             ],
           ),
           if (needsUpdate && state.phase != DocumentSlotPhase.uploaded) ...[
-            SizedBox(height: theme.spacing),
+            SizedBox(height: theme.space(PaymentSpace.related)),
             Text(
               l10n.fieldNeedsUpdate,
               style: type.caption.copyWith(color: theme.warning.foreground),
             ),
           ],
           if (file != null) ...[
-            SizedBox(height: theme.spacing),
+            SizedBox(height: theme.space(PaymentSpace.related)),
             Row(
               children: [
                 const PaymentIcon(
@@ -480,7 +482,7 @@ class DocumentUploadTile extends StatelessWidget {
                   size: PaymentIconSize.medium,
                   color: PaymentTextColor.secondary,
                 ),
-                SizedBox(width: theme.spacing),
+                SizedBox(width: theme.space(PaymentSpace.related)),
                 Flexible(
                   child: MiddleEllipsisText(
                     file.name,
@@ -498,7 +500,7 @@ class DocumentUploadTile extends StatelessWidget {
             ),
           ],
           if (state.phase == DocumentSlotPhase.uploading) ...[
-            SizedBox(height: theme.spacing),
+            SizedBox(height: theme.space(PaymentSpace.related)),
             Semantics(
               label: l10n.documentUploading,
               value: state.progress == null
@@ -518,7 +520,7 @@ class DocumentUploadTile extends StatelessWidget {
             ),
           ],
           if (issue != null) ...[
-            SizedBox(height: theme.spacing),
+            SizedBox(height: theme.space(PaymentSpace.related)),
             PaymentBanner(
               tone: StatusTone.danger,
               announce: true,
@@ -528,11 +530,11 @@ class DocumentUploadTile extends StatelessWidget {
                   l10n.documentIssueMessage(issue.kind, limits),
             ),
           ],
-          SizedBox(height: theme.spacing * 1.5),
+          SizedBox(height: theme.space(PaymentSpace.block)),
           // Controls use the theme's control radius, never the default pill.
           Wrap(
-            spacing: theme.spacing,
-            runSpacing: theme.spacing,
+            spacing: theme.space(PaymentSpace.related),
+            runSpacing: theme.space(PaymentSpace.related),
             children: [
               if (issue?.canOpenSettings == true && onOpenSettings != null)
                 OutlinedButton(
@@ -639,7 +641,7 @@ class VerificationReview extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: theme.spacing * 1.5),
+        SizedBox(height: theme.space(PaymentSpace.block)),
         PaymentSection(
           title: l10n.reviewDocumentsTitle,
           trailing: editButton(onEditDocuments, l10n.reviewDocumentsTitle),
@@ -656,10 +658,10 @@ class VerificationReview extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: theme.spacing * 2),
+        SizedBox(height: theme.space(PaymentSpace.group)),
         if (!ready)
           Padding(
-            padding: EdgeInsets.only(bottom: theme.spacing),
+            padding: EdgeInsets.only(bottom: theme.space(PaymentSpace.related)),
             child: PaymentBanner(
               tone: StatusTone.warning,
               title: l10n.documentsIncomplete,
@@ -761,10 +763,10 @@ class VerificationStatusView extends StatelessWidget {
                   hatched: outcomeUnknown,
                 ),
               ),
-              SizedBox(height: theme.spacing * 1.5),
+              SizedBox(height: theme.space(PaymentSpace.block)),
               Text(message, style: type.bodyFor(context)),
               if (snapshot.updatedAt != null && !outcomeUnknown) ...[
-                SizedBox(height: theme.spacing),
+                SizedBox(height: theme.space(PaymentSpace.related)),
                 Text(
                   l10n.updatedAt(l10n.formatDateTime(snapshot.updatedAt!)),
                   style: type.caption,
@@ -773,10 +775,10 @@ class VerificationStatusView extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: theme.spacing * 3),
+        SizedBox(height: theme.space(PaymentSpace.section)),
         for (final (i, action) in actions.indexed)
           Padding(
-            padding: EdgeInsets.only(bottom: theme.spacing),
+            padding: EdgeInsets.only(bottom: theme.space(PaymentSpace.related)),
             child: PaymentButton(
               label: l10n.verificationActionLabel(action),
               variant: i == 0

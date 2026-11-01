@@ -8,6 +8,54 @@ import 'first_line_test.dart' show host;
 
 void main() {
   testWidgets(
+    'at 2x and 320 dp the selected last tab scrolls fully into view',
+    (t) async {
+      await phase4.setSurface(t, const Size(320, 800));
+      var selected = 0;
+      late StateSetter update;
+      await t.pumpWidget(
+        phase4.contentHost(
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                update = setState;
+                return PaymentTabs(
+                  tabs: const [
+                    PaymentTab(label: 'All payments'),
+                    PaymentTab(label: 'Succeeded'),
+                    PaymentTab(label: 'Unsuccessful'),
+                    PaymentTab(label: 'Refunded'),
+                  ],
+                  selectedIndex: selected,
+                  onSelected: (i) => setState(() => selected = i),
+                );
+              },
+            ),
+          ),
+          scale: 2,
+        ),
+      );
+      await t.pumpAndSettle();
+      final row = find.byType(PaymentTabs);
+      expect(
+        find.descendant(of: row, matching: find.byType(ShaderMask)),
+        findsOneWidget,
+      );
+      final scroll = t.state<ScrollableState>(
+        find.descendant(of: row, matching: find.byType(Scrollable)),
+      );
+      expect(scroll.position.maxScrollExtent, greaterThan(0));
+      update(() => selected = 3);
+      await t.pumpAndSettle();
+      final viewport = t.getRect(row);
+      final last = t.getRect(find.text('Refunded'));
+      expect(last.left, greaterThanOrEqualTo(viewport.left));
+      expect(last.right, lessThanOrEqualTo(viewport.right));
+      expect(t.takeException(), isNull);
+    },
+  );
+  testWidgets(
     'fitted tabs retain equal widths when fitting and scroll at 200 percent',
     (t) async {
       await phase4.setSurface(t, const Size(800, 1000));

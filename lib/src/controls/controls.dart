@@ -8,6 +8,7 @@ import '../foundation/tooltip_geometry.dart';
 import 'package:flutter/material.dart';
 
 import '../foundation/row_shell.dart';
+import '../foundation/edge_fade.dart';
 import '../foundation/focus_ring.dart';
 import '../foundation/radio_mark.dart';
 import '../foundation/payment_theme.dart';
@@ -348,7 +349,7 @@ class _ControlRow extends StatelessWidget {
               height: line,
               child: OverflowBox(maxWidth: 48, maxHeight: 48, child: painted),
             ),
-            SizedBox(width: theme.spacing * 1.5),
+            SizedBox(width: theme.space(PaymentSpace.block)),
           ],
           Expanded(
             child: Column(
@@ -370,7 +371,9 @@ class _ControlRow extends StatelessWidget {
                     Text(detail!, style: type.caption),
                 if (errorText != null)
                   Padding(
-                    padding: EdgeInsets.only(top: theme.spacing * .5),
+                    padding: EdgeInsets.only(
+                      top: theme.space(PaymentSpace.inline),
+                    ),
                     child: FieldMessage(
                       errorText!,
                       tone: StatusTone.danger,
@@ -381,7 +384,7 @@ class _ControlRow extends StatelessWidget {
             ),
           ),
           if (markAtEnd) ...[
-            SizedBox(width: theme.spacing * 2),
+            SizedBox(width: theme.space(PaymentSpace.group)),
             SizedBox(
               width: 52,
               height: line,
@@ -440,7 +443,11 @@ class _PaymentTabsState extends State<PaymentTabs> {
   final List<FocusNode> _nodes = [];
   void _syncNodes() {
     while (_nodes.length < widget.tabs.length) {
-      _nodes.add(FocusNode());
+      final node = FocusNode();
+      node.addListener(() {
+        if (node.hasFocus) _reveal(_nodes.indexOf(node));
+      });
+      _nodes.add(node);
     }
     while (_nodes.length > widget.tabs.length) {
       _nodes.removeLast().dispose();
@@ -451,12 +458,39 @@ class _PaymentTabsState extends State<PaymentTabs> {
   void initState() {
     super.initState();
     _syncNodes();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _reveal(widget.selectedIndex, animate: false),
+    );
   }
 
   @override
   void didUpdateWidget(PaymentTabs oldWidget) {
     super.didUpdateWidget(oldWidget);
     _syncNodes();
+    if (oldWidget.selectedIndex != widget.selectedIndex) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _reveal(widget.selectedIndex),
+      );
+    }
+  }
+
+  // Scrolls only the tab row, never the page, so the selected or focused
+  // tab is fully visible (#60).
+  void _reveal(int index, {bool animate = true}) {
+    if (!mounted || index < 0 || index >= _nodes.length) return;
+    final tab = _nodes[index].context;
+    final box = tab?.findRenderObject();
+    final position = tab == null ? null : Scrollable.maybeOf(tab)?.position;
+    if (box == null || position == null || position.axis != Axis.horizontal) {
+      return;
+    }
+    final motion = PaymentMotion.of(context);
+    position.ensureVisible(
+      box,
+      alignment: 0.5,
+      duration: animate && !motion.reduced ? motion.quick : Duration.zero,
+      curve: PaymentMotion.easeOut,
+    );
   }
 
   @override
@@ -495,9 +529,18 @@ class _PaymentTabsState extends State<PaymentTabs> {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     final metrics = switch (widget.size) {
-      PaymentSize.small => (style: type.caption, pad: theme.spacing),
-      PaymentSize.medium => (style: type.label, pad: theme.spacing * 1.5),
-      PaymentSize.large => (style: type.heading, pad: theme.spacing * 2),
+      PaymentSize.small => (
+        style: type.caption,
+        pad: theme.space(PaymentSpace.related),
+      ),
+      PaymentSize.medium => (
+        style: type.label,
+        pad: theme.space(PaymentSpace.block),
+      ),
+      PaymentSize.large => (
+        style: type.heading,
+        pad: theme.space(PaymentSpace.group),
+      ),
     };
     Widget tab(int i) => _Tab(
       tab: widget.tabs[i],
@@ -541,11 +584,11 @@ class _PaymentTabsState extends State<PaymentTabs> {
             clipper: const _SidesClipper(),
             child: fitted
                 ? row
-                : SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
+                // An end fade shows that more tabs scroll into view.
+                : EdgeFadeScroll(
                     clipBehavior: Clip.none,
                     padding: EdgeInsets.symmetric(
-                      horizontal: theme.spacing * 0.5,
+                      horizontal: theme.space(PaymentSpace.inline),
                     ),
                     child: row,
                   ),
@@ -846,7 +889,7 @@ class _PaymentTooltipState extends State<PaymentTooltip> {
                       ),
                       widget.placement,
                       Directionality.of(context),
-                      theme.spacing,
+                      theme.space(PaymentSpace.related),
                     ),
                     child: IgnorePointer(
                       child: ExcludeSemantics(
@@ -864,8 +907,8 @@ class _PaymentTooltipState extends State<PaymentTooltip> {
                               ),
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: theme.spacing,
-                                  vertical: theme.spacing * 0.5,
+                                  horizontal: theme.space(PaymentSpace.related),
+                                  vertical: theme.space(PaymentSpace.inline),
                                 ),
                                 child: Text(
                                   widget.message,

@@ -100,4 +100,53 @@ void main() {
     );
     expect(tester.takeException(), isAssertionError);
   });
+  testWidgets('large text keeps the amount at label size under the title', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      host(
+        const PaymentList(
+          children: [
+            PaymentListItem(
+              title: 'Groceries at the corner shop',
+              secondaryTitle: 'Paid 2 days ago',
+              value: AmountText(Money(250000, 'IDR')),
+            ),
+          ],
+        ),
+        2,
+      ),
+    );
+    final title = tester.getRect(find.text('Groceries at the corner shop'));
+    final amount = tester.getRect(find.byType(AmountText));
+    expect(tester.takeException(), isNull);
+    expect(amount.height, greaterThanOrEqualTo(40));
+    expect(amount.top, greaterThanOrEqualTo(title.bottom));
+  });
+  testWidgets('a 48 dp trailing control keeps its size beside a title', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        PaymentListItem(
+          title: 'Card ending 4242',
+          trailing: PaymentButton(
+            label: 'Change',
+            variant: PaymentButtonVariant.quiet,
+            size: PaymentSize.small,
+            width: PaymentWidth.hug,
+            onPressed: () {},
+          ),
+        ),
+        1,
+      ),
+    );
+    final button = tester.getRect(find.byType(PaymentButton));
+    final title = tester.getRect(find.text('Card ending 4242'));
+    expect(button.height, greaterThanOrEqualTo(48));
+    expect(button.center.dy, moreOrLessEquals(title.center.dy, epsilon: 0.5));
+  });
 }

@@ -5106,7 +5106,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "spacing",
-            "doc": "Base spacing unit; use `space` to resolve named roles:\n\n* inline, `spacing * 0.5` (4): label → caption, title → meta.\n* related, `spacing` (8): row padding, between stacked actions.\n* block, `spacing * 1.5` (12): band → title, notice padding.\n* group, `spacing * 2` (16): screen and sheet gutter, groups, state message padding.\n* section, `spacing * 3` (24): content → primary action, ruled gaps.\n* major, `spacing * 4` (32): the largest gap; no kit widget uses it today."
+            "doc": "Base spacing unit. Kit widgets never multiply it by hand; they resolve\na named role with `space` (D46), one value per role:\n\n* inline (4): label → caption, title → message, title → meta.\n* related (8): between actions and chips, text → trailing control.\n* block (12): icon → text, list row and header padding, notice padding.\n* group (16): screen, sheet and field gutters, label → value.\n* section (24): content → primary action, between field groups.\n* major (32): the largest gap; no kit widget uses it today."
           },
           {
             "name": "amountWeight",
@@ -5327,7 +5327,7 @@
         "kind": "field",
         "static": false,
         "type": "double",
-        "doc": "Base spacing unit; use `space` to resolve named roles:\n\n* inline, `spacing * 0.5` (4): label → caption, title → meta.\n* related, `spacing` (8): row padding, between stacked actions.\n* block, `spacing * 1.5` (12): band → title, notice padding.\n* group, `spacing * 2` (16): screen and sheet gutter, groups, state message padding.\n* section, `spacing * 3` (24): content → primary action, ruled gaps.\n* major, `spacing * 4` (32): the largest gap; no kit widget uses it today."
+        "doc": "Base spacing unit. Kit widgets never multiply it by hand; they resolve\na named role with `space` (D46), one value per role:\n\n* inline (4): label → caption, title → message, title → meta.\n* related (8): between actions and chips, text → trailing control.\n* block (12): icon → text, list row and header padding, notice padding.\n* group (16): screen, sheet and field gutters, label → value.\n* section (24): content → primary action, between field groups.\n* major (32): the largest gap; no kit widget uses it today."
       },
       {
         "name": "space",
@@ -5491,7 +5491,7 @@
   "PaymentSpace": {
     "kind": "enum",
     "file": "lib/src/foundation/payment_tokens.dart",
-    "doc": "Spacing roles resolved by PaymentTheme.space; nothing else exists.",
+    "doc": "Spacing roles resolved by PaymentTheme.space; nothing else exists.\n\nThe scale is 4 / 8 / 12 / 16 / 24 / 32 on the 8 base (D46). Each role\nbelow has one value; a gap that serves a listed role uses that role and\nno other. Component sizes (36, 40, 48, 52, 56, 60, 64 dp) are sizes, not\nspacing roles.",
     "values": [
       {
         "name": "none",
@@ -5499,27 +5499,27 @@
       },
       {
         "name": "inline",
-        "doc": "spacing × 0.5 (4): label to caption, title to meta, icon to badge. Stripe xxsmall."
+        "doc": "spacing × 0.5 (4): label → caption, title → message, title → meta,\na small glyph beside its text. Stripe xxsmall."
       },
       {
         "name": "related",
-        "doc": "spacing (8): row padding and stacked actions. Stripe xsmall."
+        "doc": "spacing (8): between stacked or adjacent actions and chips, text →\ntrailing control, compact control padding. Stripe xsmall."
       },
       {
         "name": "block",
-        "doc": "spacing × 1.5 (12): row padding, icon to text, notices. Stripe small."
+        "doc": "spacing × 1.5 (12): icon → text, list row and header padding, notice\nand banner padding. Stripe small."
       },
       {
         "name": "group",
-        "doc": "spacing × 2 (16): gutters, label to value, state message padding. Stripe medium."
+        "doc": "spacing × 2 (16): screen, sheet and field gutters, label → value,\nstate message padding. Stripe medium."
       },
       {
         "name": "section",
-        "doc": "spacing × 3 (24): content to primary action, ruled gaps. Stripe large."
+        "doc": "spacing × 3 (24): content → primary action, between field groups,\nruled section gaps. Stripe large."
       },
       {
         "name": "major",
-        "doc": "spacing × 4 (32): largest gap; unused by kit widgets today. Stripe xlarge and xxlarge."
+        "doc": "spacing × 4 (32): largest gap; unused by kit widgets today. Stripe\nxlarge and xxlarge."
       }
     ]
   },
@@ -6470,7 +6470,7 @@
   "PaymentDivider": {
     "kind": "class",
     "file": "lib/src/foundation/primitives.dart",
-    "doc": "A 1 px hairline in `PaymentTheme.outline` that separates rows or groups.\nDecorative: screen readers skip it.\n\nBetween rows of a list use the default `height` of 1, as\n`PaymentList` does. Between sections use `spacing * 3` so the rule\nsits in the middle of a section gap.",
+    "doc": "A 1 px hairline in `PaymentTheme.outline` that separates rows or groups.\nDecorative: screen readers skip it.\n\nBetween rows of a list use the default `height` of 1, as\n`PaymentList` does. Between sections use the `section` gap (24) so the rule\nsits in the middle of a section gap.",
     "extends": "StatelessWidget",
     "constructors": [
       {

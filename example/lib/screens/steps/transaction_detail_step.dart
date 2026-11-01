@@ -21,7 +21,7 @@ class TransactionDetailStep extends StatelessWidget {
       l.paymentStatusShort(null): StatusTone.neutral,
     };
     return PaymentDetailPage(
-      title: '${MoneyFormat(s.languageCode).format(r.amount)} to ${r.merchant}',
+      title: s.detailTitle(l.moneyFormat.format(r.amount), r.merchant),
       description: '${r.methodLabel} · ${l.formatDate(r.createdAt)}',
       breadcrumbs: [
         PaymentBreadcrumb(label: s.transactions, onPressed: c.openHistory),
@@ -54,32 +54,32 @@ class TransactionDetailStep extends StatelessWidget {
           columns: [
             PaymentDataColumn(
               key: 'id',
-              label: 'ID',
+              label: s.columnId,
               value: (r) => r.id,
               cell: PaymentCellType.id,
               pinned: true,
             ),
             PaymentDataColumn(
               key: 'date',
-              label: 'Date',
+              label: s.columnDate,
               value: (r) => r.at,
               cell: PaymentCellType.date,
             ),
             PaymentDataColumn(
               key: 'method',
-              label: 'Method',
+              label: s.columnMethod,
               value: (r) => r.method,
             ),
             PaymentDataColumn(
               key: 'status',
-              label: 'Status',
+              label: s.columnStatus,
               value: (r) => l.paymentStatusShort(r.status),
               cell: PaymentCellType.status,
               statusMap: statuses,
             ),
             PaymentDataColumn(
               key: 'amount',
-              label: 'Amount',
+              label: s.columnAmount,
               value: (r) => r.amount,
               cell: PaymentCellType.currency,
             ),
@@ -94,19 +94,19 @@ class TransactionDetailStep extends StatelessWidget {
           pending: false,
           items: [
             PaymentDetailProperty(
-              label: 'Name',
+              label: s.propertyName,
               values: [PaymentDetailValue(r.merchant ?? 'Toko Contoh')],
             ),
-            const PaymentDetailProperty(
-              label: 'Order',
-              values: [PaymentDetailValue('DEMO-42')],
+            PaymentDetailProperty(
+              label: s.propertyOrder,
+              values: const [PaymentDetailValue('DEMO-42')],
             ),
             PaymentDetailProperty(
-              label: 'Support',
+              label: s.propertySupport,
               values: [
                 PaymentDetailValue.link(
                   PaymentLink(
-                    label: 'Help centre',
+                    label: s.helpCentre,
                     external: true,
                     onPressed: () =>
                         showPaymentToast(context, message: s.supportOpened),

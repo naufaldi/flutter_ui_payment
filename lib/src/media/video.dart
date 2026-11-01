@@ -307,7 +307,9 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
             Center(
               child: PaymentFocusRing(
                 // Half the disc: the 36 px icon plus its padding.
-                radius: BorderRadius.circular(18 + theme.spacing * 1.5),
+                radius: BorderRadius.circular(
+                  18 + theme.space(PaymentSpace.block),
+                ),
                 color: Colors.white,
                 child: PaymentPressScale(
                   child: Material(
@@ -318,7 +320,9 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
                       focusColor: Colors.transparent,
                       onTap: _toggle,
                       child: Padding(
-                        padding: EdgeInsets.all(theme.spacing * 1.5),
+                        padding: EdgeInsets.all(
+                          theme.space(PaymentSpace.block),
+                        ),
                         child: Icon(
                           playIcon,
                           size: 36,
@@ -359,10 +363,10 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
                 if (v.phase == VideoPhase.error)
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(
-                      theme.spacing * 1.5,
-                      theme.spacing * 1.5,
-                      theme.spacing * 1.5,
-                      theme.spacing * 0.5,
+                      theme.space(PaymentSpace.block),
+                      theme.space(PaymentSpace.block),
+                      theme.space(PaymentSpace.block),
+                      theme.space(PaymentSpace.inline),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,7 +386,12 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
                   // The 4 px side inset keeps the slider's focus ring inside
                   // the frame's clip.
                   Padding(
-                    padding: EdgeInsets.fromLTRB(4, theme.spacing * 0.5, 4, 0),
+                    padding: EdgeInsets.fromLTRB(
+                      4,
+                      theme.space(PaymentSpace.inline),
+                      4,
+                      0,
+                    ),
                     child: Semantics(
                       label: l10n.seek,
                       value: l10n.videoPosition(
@@ -430,10 +439,10 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
                   ),
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(
-                      theme.spacing * 0.5,
+                      theme.space(PaymentSpace.inline),
                       0,
-                      theme.spacing * 0.5,
-                      theme.spacing * 0.5,
+                      theme.space(PaymentSpace.inline),
+                      theme.space(PaymentSpace.inline),
                     ),
                     child: Row(
                       children: [

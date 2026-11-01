@@ -288,7 +288,7 @@ class KycCaptureGuide extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: theme.spacing),
+        SizedBox(height: theme.space(PaymentSpace.related)),
         if (state.phase != DocumentSlotPhase.empty)
           PaymentBadge(
             icon: Icons.cloud_outlined,
@@ -305,7 +305,9 @@ class KycCaptureGuide extends StatelessWidget {
           ),
         if (state.phase == DocumentSlotPhase.uploading)
           Padding(
-            padding: EdgeInsets.symmetric(vertical: theme.spacing),
+            padding: EdgeInsets.symmetric(
+              vertical: theme.space(PaymentSpace.related),
+            ),
             child: LinearProgressIndicator(
               value: state.progress,
               color: theme.accent,
@@ -327,7 +329,7 @@ class KycCaptureGuide extends StatelessWidget {
                 issue.safeMessage ??
                 l10n.documentIssueMessage(issue.kind, limits),
           ),
-        SizedBox(height: theme.spacing),
+        SizedBox(height: theme.space(PaymentSpace.related)),
         Text(
           l10n.captureFramingHint(kind),
           style: PaymentType.of(context).heading,
@@ -351,10 +353,10 @@ class KycCaptureGuide extends StatelessWidget {
               ],
             ),
           ),
-        SizedBox(height: theme.spacing),
+        SizedBox(height: theme.space(PaymentSpace.related)),
         Wrap(
-          spacing: theme.spacing,
-          runSpacing: theme.spacing,
+          spacing: theme.space(PaymentSpace.related),
+          runSpacing: theme.space(PaymentSpace.related),
           children: [
             if (framing && (issue == null || issue.canRetry))
               PaymentButton(label: l10n.captureTake, onPressed: onCapture),

@@ -8,22 +8,36 @@ class _BadgeSpecimen extends StatelessWidget {
     child: Wrap(
       spacing: PaymentTheme.of(context).spacing,
       runSpacing: PaymentTheme.of(context).spacing,
-      children: const [
-        PaymentBadge(tone: StatusTone.neutral, label: 'Canceled'),
-        PaymentBadge(tone: StatusTone.info, label: 'In review'),
-        PaymentBadge(tone: StatusTone.success, label: 'Paid'),
+      children: [
+        PaymentBadge(
+          tone: StatusTone.neutral,
+          label: _t(context, 'Canceled', 'Dibatalkan'),
+        ),
+        PaymentBadge(
+          tone: StatusTone.info,
+          label: _t(context, 'In review', 'Ditinjau'),
+        ),
+        PaymentBadge(
+          tone: StatusTone.success,
+          label: _t(context, 'Paid', 'Dibayar'),
+        ),
         PaymentBadge(
           tone: StatusTone.warning,
-          label: 'Pending',
+          label: _t(context, 'Pending', 'Tertunda'),
           icon: Icons.schedule,
         ),
-        PaymentBadge(tone: StatusTone.danger, label: 'Failed'),
+        PaymentBadge(
+          tone: StatusTone.danger,
+          label: _t(context, 'Failed', 'Gagal'),
+        ),
         PaymentBadge(
           tone: StatusTone.warning,
-          label: 'Not confirmed',
+          label: _t(context, 'Not confirmed', 'Belum dikonfirmasi'),
           icon: Icons.help_outline,
         ),
-        PaymentBadge.urgent(label: 'Action required'),
+        PaymentBadge.urgent(
+          label: _t(context, 'Action required', 'Perlu tindakan'),
+        ),
       ],
     ),
   );
@@ -39,24 +53,32 @@ class _BannerSpecimen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const PaymentBanner(
+          PaymentBanner(
             tone: StatusTone.info,
-            title: 'Review in progress',
-            message: 'We will show the outcome here.',
+            title: _t(context, 'Review in progress', 'Sedang ditinjau'),
+            message: _t(
+              context,
+              'We will show the outcome here.',
+              'Hasilnya akan kami tampilkan di sini.',
+            ),
           ),
           SizedBox(height: s),
-          const PaymentBanner(
+          PaymentBanner(
             tone: StatusTone.success,
-            title: 'Payment received',
+            title: _t(context, 'Payment received', 'Pembayaran diterima'),
           ),
           SizedBox(height: s),
           PaymentBanner(
             tone: StatusTone.warning,
-            title: 'Total changed',
-            message: 'Review the updated total before paying.',
+            title: _t(context, 'Total changed', 'Total berubah'),
+            message: _t(
+              context,
+              'Review the updated total before paying.',
+              'Periksa total terbaru sebelum membayar.',
+            ),
             actions: [
               PaymentButton(
-                label: 'Review total',
+                label: _t(context, 'Review total', 'Periksa total'),
                 size: PaymentSize.small,
                 width: PaymentWidth.hug,
                 variant: PaymentButtonVariant.secondary,
@@ -67,12 +89,22 @@ class _BannerSpecimen extends StatelessWidget {
           SizedBox(height: s),
           PaymentBanner(
             tone: StatusTone.danger,
-            title: 'Payment failed',
-            message: 'Your balance has not changed.',
+            title: _t(context, 'Payment failed', 'Pembayaran gagal'),
+            message: _t(
+              context,
+              'Your balance has not changed.',
+              'Saldo Anda tidak berubah.',
+            ),
             actions: [
               for (final (label, variant) in [
-                ('Try again', PaymentButtonVariant.secondary),
-                ('Contact support', PaymentButtonVariant.quiet),
+                (
+                  _t(context, 'Try again', 'Coba lagi'),
+                  PaymentButtonVariant.secondary,
+                ),
+                (
+                  _t(context, 'Contact support', 'Hubungi bantuan'),
+                  PaymentButtonVariant.quiet,
+                ),
               ])
                 PaymentButton(
                   label: label,
@@ -84,9 +116,9 @@ class _BannerSpecimen extends StatelessWidget {
             ],
           ),
           SizedBox(height: s),
-          const PaymentBanner(
+          PaymentBanner(
             tone: StatusTone.neutral,
-            title: 'Request canceled',
+            title: _t(context, 'Request canceled', 'Permintaan dibatalkan'),
           ),
         ],
       ),
@@ -118,11 +150,23 @@ class _ToastSpecimenState extends State<_ToastSpecimen> {
       runSpacing: PaymentTheme.of(context).spacing,
       children: [
         for (final (label, message, tone) in [
-          ('Neutral', 'Promo hidden', StatusTone.neutral),
-          ('Success', 'Reference copied', StatusTone.success),
           (
-            'Warning',
-            'Share canceled. Your receipt is still here.',
+            _t(context, 'Neutral', 'Netral'),
+            _t(context, 'Promo hidden', 'Promo disembunyikan'),
+            StatusTone.neutral,
+          ),
+          (
+            _t(context, 'Success', 'Berhasil'),
+            _t(context, 'Reference copied', 'Referensi disalin'),
+            StatusTone.success,
+          ),
+          (
+            _t(context, 'Warning', 'Peringatan'),
+            _t(
+              context,
+              'Share canceled. Your receipt is still here.',
+              'Berbagi dibatalkan. Struk Anda masih di sini.',
+            ),
             StatusTone.warning,
           ),
         ])
@@ -138,19 +182,20 @@ class _ToastSpecimenState extends State<_ToastSpecimen> {
             ),
           ),
         PaymentButton(
-          label: 'With undo',
+          label: _t(context, 'With undo', 'Dengan urungkan'),
           size: PaymentSize.small,
           width: PaymentWidth.hug,
           variant: PaymentButtonVariant.secondary,
           onPressed: () => _toast = showPaymentToast(
             context,
-            message: 'Promo hidden',
-            actionLabel: 'Undo',
+            message: _t(context, 'Promo hidden', 'Promo disembunyikan'),
+            actionLabel: _t(context, 'Undo', 'Urungkan'),
             onAction: () {},
           ),
         ),
         PaymentButton(
-          label: 'Pending',
+          key: const Key('toast-pending'),
+          label: _t(context, 'Pending', 'Tertunda'),
           size: PaymentSize.small,
           width: PaymentWidth.hug,
           variant: PaymentButtonVariant.secondary,
@@ -158,13 +203,14 @@ class _ToastSpecimenState extends State<_ToastSpecimen> {
             _work?.cancel();
             _toast = showPaymentToast(
               context,
-              message: 'Refreshing balance…',
+              message: _t(context, 'Refreshing balance…', 'Memperbarui saldo…'),
               pending: true,
             );
             final toast = _toast!;
+            final updated = _t(context, 'Balance updated', 'Saldo diperbarui');
             _work = Timer(
               const Duration(milliseconds: 1200),
-              () => toast.update('Balance updated', tone: StatusTone.success),
+              () => toast.update(updated, tone: StatusTone.success),
             );
           },
         ),
@@ -213,7 +259,7 @@ class _SpinnerSpecimenState extends State<_SpinnerSpecimen> {
               children: [
                 PaymentSpinner(size: size),
                 SizedBox(width: PaymentTheme.of(context).spacing),
-                Text(size.name),
+                Text(_sizeLabel(context, size)),
               ],
             ),
           ),
@@ -222,8 +268,22 @@ class _SpinnerSpecimenState extends State<_SpinnerSpecimen> {
           runSpacing: PaymentTheme.of(context).spacing,
           children: [
             for (final (label, ms) in [
-              ('Start a fast wait (100 ms)', 100),
-              ('Start a slow wait (2 s)', 2000),
+              (
+                _t(
+                  context,
+                  'Start a fast wait (100 ms)',
+                  'Mulai tunggu singkat (100 md)',
+                ),
+                100,
+              ),
+              (
+                _t(
+                  context,
+                  'Start a slow wait (2 s)',
+                  'Mulai tunggu lama (2 dtk)',
+                ),
+                2000,
+              ),
             ])
               PaymentButton(
                 label: label,
@@ -254,11 +314,19 @@ class _TooltipSpecimen extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Expanded(child: Text('Paid 2 days ago')),
+            Expanded(
+              child: Text(
+                _t(context, 'Paid 2 days ago', 'Dibayar 2 hari lalu'),
+              ),
+            ),
             PaymentTooltip(
               key: const Key('tooltip-label'),
               type: PaymentTooltipType.label,
-              message: 'Payment time: 29 Oct 2026, 14:05',
+              message: _t(
+                context,
+                'Payment time: 29 Oct 2026, 14:05',
+                'Waktu pembayaran: 29 Okt 2026, 14.05',
+              ),
               child: IconButton(
                 onPressed: () {},
                 icon: const Icon(Icons.info_outline),
@@ -266,18 +334,26 @@ class _TooltipSpecimen extends StatelessWidget {
             ),
           ],
         ),
-        const PaymentTooltip(
-          key: Key('tooltip-description'),
+        PaymentTooltip(
+          key: const Key('tooltip-description'),
           placement: PaymentTooltipPlacement.top,
-          message: 'Paid on 29 Oct 2026, 14:05',
-          child: Text('2d ago'),
+          message: _t(
+            context,
+            'Paid on 29 Oct 2026, 14:05',
+            'Dibayar 29 Okt 2026, 14.05',
+          ),
+          child: Text(_t(context, '2d ago', '2 hr lalu')),
         ),
         Align(
           alignment: AlignmentDirectional.centerEnd,
           child: PaymentTooltip(
             key: const Key('tooltip-flip'),
             placement: PaymentTooltipPlacement.end,
-            message: 'Flips to the start when there is no room',
+            message: _t(
+              context,
+              'Flips to the start when there is no room',
+              'Pindah ke awal jika tidak ada ruang',
+            ),
             child: IconButton(
               onPressed: () {},
               icon: const Icon(Icons.info_outline),

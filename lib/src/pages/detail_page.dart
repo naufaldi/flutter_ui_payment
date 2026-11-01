@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../foundation/primitives.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
+import '../foundation/layout_rules.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/kit_strings.dart';
 import '../controls/actions.dart';
@@ -12,6 +13,7 @@ import 'detail_page_property_list.dart';
 import 'detail_page_table.dart';
 import '../charts/charts.dart';
 import 'overview_page.dart';
+import '../foundation/payment_tokens.dart';
 
 /// Detail body owning one scroll region; do not nest in FullPageView.
 class PaymentDetailPage extends StatelessWidget {
@@ -64,10 +66,13 @@ class PaymentDetailPage extends StatelessWidget {
         children: [
           if (breadcrumbs.isNotEmpty)
             Padding(
-              padding: EdgeInsets.all(PaymentTheme.of(context).spacing * 2),
+              padding: EdgeInsets.all(
+                PaymentTheme.of(context).space(PaymentSpace.group),
+              ),
               child: LayoutBuilder(
                 builder: (context, k) {
-                  if (k.maxWidth < 600 || PaymentType.isLarge(context)) {
+                  if (k.maxWidth < kCompactBreakpoint ||
+                      PaymentType.isLarge(context)) {
                     final b = breadcrumbs.last;
                     return Row(
                       children: [

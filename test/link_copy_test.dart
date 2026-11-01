@@ -5,6 +5,39 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
+  testWidgets('link text sits on the column edge, the target extends out', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: PaymentLink(label: 'Edit', onPressed: () {}),
+              ),
+              PaymentSection(
+                title: 'Your details',
+                trailing: PaymentLink(label: 'Edit', onPressed: () {}),
+                child: const SizedBox(height: 8),
+              ),
+            ],
+          ),
+        ),
+        1,
+      ),
+    );
+    final texts = find.text('Edit');
+    expect(tester.getTopLeft(texts.first).dx, 16);
+    expect(tester.getTopRight(texts.last).dx, 800 - 16);
+    expect(
+      tester.getSize(find.byType(PaymentLink).first).width,
+      greaterThanOrEqualTo(48),
+    );
+  });
   testWidgets('icon action is 48 dp and disabled actions do nothing', (
     tester,
   ) async {
@@ -72,6 +105,35 @@ void main() {
       await tester.pump(const Duration(seconds: 3));
       expect(find.text('Copy failed'), findsOneWidget);
     }
+  });
+  testWidgets('a failed copy keeps the button size and clears on retry', (
+    tester,
+  ) async {
+    var ok = false;
+    await tester.pumpWidget(
+      host(
+        Row(
+          children: [
+            PaymentCopyButton(value: 'DEMO', onCopy: (_) async => ok),
+            const Text('After'),
+          ],
+        ),
+        1,
+      ),
+    );
+    final before = tester.getRect(find.byType(PaymentCopyButton));
+    final after = tester.getTopLeft(find.text('After'));
+    await tester.tap(find.byTooltip('Copy'));
+    await tester.pump();
+    expect(find.text('Copy failed'), findsOneWidget);
+    expect(find.byIcon(PaymentIcons.danger), findsOneWidget);
+    expect(tester.getRect(find.byType(PaymentCopyButton)), before);
+    expect(tester.getTopLeft(find.text('After')), after);
+    ok = true;
+    await tester.tap(find.byTooltip('Copy'));
+    await tester.pump();
+    expect(find.text('Copy failed'), findsNothing);
+    await tester.pump(const Duration(seconds: 2));
   });
   testWidgets('pending copy ignores repeated presses and stale completion', (
     tester,

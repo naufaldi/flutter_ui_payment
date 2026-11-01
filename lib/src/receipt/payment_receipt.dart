@@ -9,6 +9,7 @@ import '../foundation/primitives.dart';
 import '../payment/payment_models.dart';
 import '../payment/payment_status.dart';
 import 'receipt_models.dart';
+import '../foundation/payment_tokens.dart';
 
 /// Receipt for a payment the host confirmed as succeeded.
 ///
@@ -82,19 +83,19 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
           icon: Icons.check_circle_outline,
           title: l10n.statusSucceededTitle,
         ),
-        SizedBox(height: theme.spacing * 1.5),
+        SizedBox(height: theme.space(PaymentSpace.block)),
         Text(
           data.merchantName,
           style: type.label.copyWith(color: theme.textSecondary),
         ),
-        SizedBox(height: theme.spacing * 0.5),
+        SizedBox(height: theme.space(PaymentSpace.inline)),
         Align(
           alignment: AlignmentDirectional.centerStart,
           child: AmountText(data.total, variant: AmountTextVariant.display),
         ),
-        SizedBox(height: theme.spacing * 0.5),
+        SizedBox(height: theme.space(PaymentSpace.inline)),
         Text(l10n.formatDateTime(data.paidAt), style: type.caption),
-        SizedBox(height: theme.spacing * 2),
+        SizedBox(height: theme.space(PaymentSpace.group)),
         PaymentSection(
           title: l10n.detailsTitle,
           child: Column(
@@ -108,7 +109,7 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
                     ),
                 ],
               ),
-              PaymentDivider(height: theme.spacing * 2),
+              PaymentDivider(height: theme.space(PaymentSpace.group)),
               PaymentPropertyList(
                 items: [
                   PaymentPropertyListItem(
@@ -145,21 +146,21 @@ class _PaymentReceiptState extends State<PaymentReceipt> {
           ),
         ),
         if (data.refund.status != RefundStatus.none) ...[
-          PaymentDivider(height: theme.spacing * 3),
+          PaymentDivider(height: theme.space(PaymentSpace.section)),
           RefundSection(refund: data.refund, paidAmount: data.total),
         ],
         if (_feedback != null) ...[
-          SizedBox(height: theme.spacing * 1.5),
+          SizedBox(height: theme.space(PaymentSpace.block)),
           PaymentBanner(tone: _feedbackTone, title: _feedback!, announce: true),
         ],
         if (widget.onShare != null) ...[
-          SizedBox(height: theme.spacing * 2),
+          SizedBox(height: theme.space(PaymentSpace.group)),
           PaymentButton(
             label: l10n.shareReceipt,
             variant: PaymentButtonVariant.secondary,
             onPressed: _share,
           ),
-          SizedBox(height: theme.spacing),
+          SizedBox(height: theme.space(PaymentSpace.related)),
           Text(l10n.shareAllowlistNote, style: type.caption),
         ],
       ],

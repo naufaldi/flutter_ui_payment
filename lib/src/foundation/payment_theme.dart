@@ -103,14 +103,15 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
   /// inputs use three quarters of it.
   final double radius;
 
-  /// Base spacing unit; use [space] to resolve named roles:
+  /// Base spacing unit. Kit widgets never multiply it by hand; they resolve
+  /// a named role with [space] (D46), one value per role:
   ///
-  /// * inline, `spacing * 0.5` (4): label → caption, title → meta.
-  /// * related, `spacing` (8): row padding, between stacked actions.
-  /// * block, `spacing * 1.5` (12): band → title, notice padding.
-  /// * group, `spacing * 2` (16): screen and sheet gutter, groups, state message padding.
-  /// * section, `spacing * 3` (24): content → primary action, ruled gaps.
-  /// * major, `spacing * 4` (32): the largest gap; no kit widget uses it today.
+  /// * inline (4): label → caption, title → message, title → meta.
+  /// * related (8): between actions and chips, text → trailing control.
+  /// * block (12): icon → text, list row and header padding, notice padding.
+  /// * group (16): screen, sheet and field gutters, label → value.
+  /// * section (24): content → primary action, between field groups.
+  /// * major (32): the largest gap; no kit widget uses it today.
   final double spacing;
 
   /// Resolves a semantic spacing role using this theme's base unit.

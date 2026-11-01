@@ -630,7 +630,7 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
                             child: MergeSemantics(
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
-                                  vertical: theme.spacing * 1.5,
+                                  vertical: theme.space(PaymentSpace.block),
                                 ),
                                 child: Column(
                                   crossAxisAlignment:
@@ -645,7 +645,9 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
                                           ))
                                         Padding(
                                           padding: EdgeInsets.only(
-                                            top: theme.spacing * .5,
+                                            top: theme.space(
+                                              PaymentSpace.inline,
+                                            ),
                                           ),
                                           child: c.cell == PaymentCellType.link
                                               ? cell(c, row)
@@ -654,9 +656,12 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
                                                         PaymentCellType
                                                             .currency)
                                               ? Wrap(
-                                                  spacing: theme.spacing * .5,
-                                                  runSpacing:
-                                                      theme.spacing * .5,
+                                                  spacing: theme.space(
+                                                    PaymentSpace.inline,
+                                                  ),
+                                                  runSpacing: theme.space(
+                                                    PaymentSpace.inline,
+                                                  ),
                                                   crossAxisAlignment:
                                                       WrapCrossAlignment.center,
                                                   children: [

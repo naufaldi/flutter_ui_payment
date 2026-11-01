@@ -77,19 +77,22 @@ class NavSidebar extends StatelessWidget {
       child: FocusTraversalGroup(
         child: ListView(
           padding: EdgeInsets.symmetric(
-            horizontal: theme.spacing * 1.5,
-            vertical: theme.spacing * 2,
+            horizontal: theme.space(PaymentSpace.block),
+            vertical: theme.space(PaymentSpace.group),
           ),
           children: [
-            if (header != null) ...[header!, SizedBox(height: theme.spacing)],
+            if (header != null) ...[
+              header!,
+              SizedBox(height: theme.space(PaymentSpace.related)),
+            ],
             for (final section in sections) ...[
               if (section.title != null)
                 Padding(
                   padding: EdgeInsets.fromLTRB(
-                    theme.spacing * 1.5,
-                    theme.spacing * 1.5,
-                    theme.spacing * 1.5,
-                    theme.spacing * 0.5,
+                    theme.space(PaymentSpace.block),
+                    theme.space(PaymentSpace.block),
+                    theme.space(PaymentSpace.block),
+                    theme.space(PaymentSpace.inline),
                   ),
                   child: Semantics(
                     header: true,
@@ -106,7 +109,10 @@ class NavSidebar extends StatelessWidget {
                   onTap: item.enabled ? () => onSelected(item) : null,
                 ),
             ],
-            if (footer != null) ...[SizedBox(height: theme.spacing), footer!],
+            if (footer != null) ...[
+              SizedBox(height: theme.space(PaymentSpace.related)),
+              footer!,
+            ],
           ],
         ),
       ),
@@ -144,7 +150,7 @@ class _NavTile extends StatelessWidget {
     // shown by color and a muted fill (a shape, so not by color alone), never
     // by a change of weight, so the label does not shift.
     return Padding(
-      padding: EdgeInsets.only(bottom: theme.spacing * 0.5),
+      padding: EdgeInsets.only(bottom: theme.space(PaymentSpace.inline)),
       child: Semantics(
         selected: selected,
         enabled: enabled,
@@ -165,8 +171,8 @@ class _NavTile extends StatelessWidget {
                   alignment: AlignmentDirectional.centerStart,
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: theme.spacing * 1.5,
-                      vertical: theme.spacing,
+                      horizontal: theme.space(PaymentSpace.block),
+                      vertical: theme.space(PaymentSpace.related),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,7 +187,7 @@ class _NavTile extends StatelessWidget {
                               ? PaymentTextColor.primary
                               : PaymentTextColor.secondary,
                         ),
-                        SizedBox(width: theme.spacing * 1.5),
+                        SizedBox(width: theme.space(PaymentSpace.block)),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,13 +202,13 @@ class _NavTile extends StatelessWidget {
                           ),
                         ),
                         if (item.badge != null) ...[
-                          SizedBox(width: theme.spacing),
+                          SizedBox(width: theme.space(PaymentSpace.related)),
                           ConstrainedBox(
                             constraints: BoxConstraints(minHeight: line),
                             child: Center(
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 7,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: theme.space(PaymentSpace.related),
                                   vertical: 1,
                                 ),
                                 decoration: BoxDecoration(

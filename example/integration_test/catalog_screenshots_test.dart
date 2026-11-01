@@ -127,6 +127,201 @@ void main() {
     app.updateSettings(const DemoSettings(locale: Locale('en')));
     app.selectTab(2);
     await settle(tester);
+    // Selective session: --dart-define=CAPTURE_ONLY=<entries> with entries
+    // `slug` (every look in CAPTURE_LOOKS) or `slug@look` (that look only),
+    // and CAPTURE_LOOKS from light,dark,200,id,id_200 (default: all). Files
+    // are `<slug>_variants` plus '', _dark, _200, _id or _id_200. Without
+    // CAPTURE_ONLY the modes below run as before.
+    const only = String.fromEnvironment('CAPTURE_ONLY');
+    if (only.isNotEmpty) {
+      const looksDefine = String.fromEnvironment('CAPTURE_LOOKS');
+      final entries = only.split(',').map((e) => e.trim()).toSet();
+      final looks = looksDefine.isEmpty
+          ? const ['light', 'dark', '200', 'id', 'id_200']
+          : looksDefine.split(',').map((e) => e.trim()).toList();
+      bool want(String slug, String look) =>
+          looks.contains(look) &&
+          (entries.contains(slug) || entries.contains('$slug@$look'));
+      // Drawer pages by their English and Indonesian labels.
+      const pages = {
+        'Kit components': 'Komponen kit',
+        'Content': 'Konten',
+        'Interaction': 'Interaksi',
+        'Controls': 'Kontrol',
+        'Forms': 'Formulir',
+        'Feedback': 'Umpan balik',
+      };
+      // slug → (page, caption, steps before the shot, cleanup after it).
+      final specimens =
+          <
+            String,
+            (
+              String,
+              String,
+              Future<void> Function(bool id)?,
+              Future<void> Function()?,
+            )
+          >{
+            'text_field': ('Controls', 'PaymentTextField', null, null),
+            'currency_field': ('Controls', 'PaymentCurrencyField', null, null),
+            'tabs': ('Controls', 'PaymentTabs', null, null),
+            'copy_button': (
+              'Controls',
+              'PaymentCopyButton',
+              (_) async {
+                await tapVisible(tester, find.byKey(const Key('copy-failed')));
+                await top('PaymentCopyButton · variants');
+              },
+              null,
+            ),
+            'select': ('Forms', 'PaymentSelect', null, null),
+            'date_field': ('Forms', 'PaymentDateField', null, null),
+            'chip': ('Forms', 'PaymentChip', null, null),
+            'search_field': (
+              'Forms',
+              'PaymentSearchField',
+              (_) async {
+                final field = find.descendant(
+                  of: find.byKey(const Key('search-province')),
+                  matching: find.byType(EditableText),
+                );
+                await tester.tap(field);
+                await tester.enterText(field, 'jawa');
+                await top('PaymentSearchField · variants');
+              },
+              () async {
+                FocusManager.instance.primaryFocus?.unfocus();
+                await settle(tester);
+              },
+            ),
+            'list': ('Interaction', 'PaymentList', null, null),
+            'accordion': ('Interaction', 'PaymentAccordion', null, null),
+            'menu': (
+              'Interaction',
+              'PaymentMenu',
+              (_) async {
+                await tester.tap(
+                  find.descendant(
+                    of: find.byKey(const Key('menu-specimen')),
+                    matching: find.byType(IconButton),
+                  ),
+                );
+                await settle(tester);
+              },
+              () async {
+                await tester.tapAt(const Offset(10, 10));
+                await settle(tester);
+              },
+            ),
+            'banner': ('Feedback', 'PaymentBanner', null, null),
+            'toast': (
+              'Feedback',
+              'showPaymentToast',
+              (_) => tapVisible(tester, find.byKey(const Key('toast-pending'))),
+              () async {
+                clearSnackBars();
+                await settle(tester);
+              },
+            ),
+            'button_group': ('Content', 'PaymentButtonGroup', null, null),
+            'dialog': (
+              'Kit components',
+              'showPaymentConfirmDialog',
+              (_) => tapVisible(
+                tester,
+                find.byKey(const Key('phase6-dialog-open')),
+              ),
+              // The scrim resolves false, so no localized Cancel label.
+              () async {
+                await tester.tapAt(const Offset(10, 10));
+                await settle(tester);
+              },
+            ),
+            'action_bar': ('Kit components', 'PaymentActionBar', null, null),
+            'loading_skeleton': (
+              'Kit components',
+              'LoadingSkeleton',
+              null,
+              null,
+            ),
+            'countdown': ('Kit components', 'CountdownText', null, null),
+            'status_header': ('Kit components', 'StatusHeader', null, null),
+            'state_message': (
+              'Kit components',
+              'StateMessage · PaymentEmptyMessage',
+              null,
+              null,
+            ),
+          };
+      for (final (look, settings) in [
+        ('light', const DemoSettings(locale: Locale('en'))),
+        (
+          'dark',
+          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+        ),
+        ('200', const DemoSettings(locale: Locale('en'), textScale: 2)),
+        ('id', const DemoSettings(locale: Locale('id'))),
+        ('id_200', const DemoSettings(locale: Locale('id'), textScale: 2)),
+      ]) {
+        final id = look.startsWith('id');
+        final suffix = look == 'light' ? '' : '_$look';
+        final wanted = [
+          ...specimens.keys.where((slug) => want(slug, look)),
+          if (want('tooltip', look)) 'tooltip',
+        ];
+        if (wanted.isEmpty) continue;
+        app.updateSettings(settings);
+        await settle(tester);
+        String? current;
+        Future<void> openPage(String page) async {
+          if (current == page) return;
+          await tester.tap(
+            find.byTooltip(id ? 'Buka navigasi' : 'Open navigation'),
+          );
+          await settle(tester);
+          final item = find.descendant(
+            of: find.byType(Drawer),
+            matching: find.text(id ? pages[page]! : page),
+          );
+          await tester.scrollUntilVisible(
+            item,
+            180,
+            scrollable: find
+                .descendant(
+                  of: find.byType(Drawer),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          );
+          await tester.ensureVisible(item);
+          await tester.tap(item);
+          await settle(tester);
+          current = page;
+        }
+
+        for (final slug in wanted) {
+          if (slug == 'tooltip') {
+            await openPage('Feedback');
+            await top('PaymentTooltip · variants');
+            await hoverShot(
+              'tooltip-label',
+              id
+                  ? 'Waktu pembayaran: 29 Okt 2026, 14.05'
+                  : 'Payment time: 29 Oct 2026, 14:05',
+              'tooltip_variants$suffix',
+            );
+            continue;
+          }
+          final (page, entry, before, after) = specimens[slug]!;
+          await openPage(page);
+          await top('$entry · variants');
+          await before?.call(id);
+          await shot('${slug}_variants$suffix');
+          await after?.call();
+        }
+      }
+      return;
+    }
     if (const bool.fromEnvironment('CAPTURE_PHASE6_ONLY')) {
       const onlyEntry = String.fromEnvironment('CAPTURE_PHASE6_ENTRY');
       const onlyLook = String.fromEnvironment('CAPTURE_PHASE6_LOOK');

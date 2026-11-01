@@ -7,6 +7,7 @@ import '../foundation/payment_localizations.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/page_module_frame.dart';
 import '../controls/actions.dart';
+import '../foundation/tap_target.dart';
 import '../interaction/interaction.dart';
 import '../content/empty_message.dart';
 import '../content/property_list.dart';
@@ -147,7 +148,9 @@ class PaymentDetailPagePropertyList extends StatelessWidget {
                   MergeSemantics(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                        vertical: PaymentTheme.of(context).spacing,
+                        vertical: PaymentTheme.of(
+                          context,
+                        ).space(PaymentSpace.related),
                       ),
                       child: PaymentType.isLarge(context)
                           ? Wrap(
@@ -185,7 +188,9 @@ class PaymentDetailPagePropertyList extends StatelessWidget {
                                     context,
                                   ).space(PaymentSpace.group),
                                 ),
-                                p.values.single.link!,
+                                TextActionEdge.end(
+                                  child: p.values.single.link!,
+                                ),
                               ],
                             ),
                     ),

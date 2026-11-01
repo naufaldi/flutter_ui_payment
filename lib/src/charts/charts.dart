@@ -411,7 +411,7 @@ class _PointChartState extends State<_PointChart> {
                                             return '${p.label} · ${series.length > 1 ? '${s.label} ' : ''}${reading == null ? l10n.chartNoData : formatChartValue(l10n, reading, widget.unit, currency: p.value?.currency ?? 'IDR')}${p.status == ChartPointStatus.settled ? '' : ' · ${p.status == ChartPointStatus.pending ? l10n.chartPendingKey : l10n.chartUnknownKey}'}';
                                           })
                                           .join(' · '),
-                                      style: type.caption,
+                                      style: type.caption.tabular,
                                       maxLines: 1 + series.length,
                                     ),
                                   ),
@@ -442,8 +442,8 @@ class _PointChartState extends State<_PointChart> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SizedBox(
-                            width: theme.spacing * 2,
-                            height: theme.spacing * 1.5,
+                            width: theme.space(PaymentSpace.group),
+                            height: theme.space(PaymentSpace.block),
                             child: CustomPaint(
                               painter: _SeriesKey(
                                 meterColors(theme, series.length)[i],
@@ -452,7 +452,7 @@ class _PointChartState extends State<_PointChart> {
                               ),
                             ),
                           ),
-                          SizedBox(width: theme.spacing * .5),
+                          SizedBox(width: theme.space(PaymentSpace.inline)),
                           Text(
                             series[i].label,
                             style: type.caption,
@@ -570,14 +570,14 @@ class PaymentMeterChart extends StatelessWidget {
                   : MainAxisSize.max,
               children: [
                 Container(
-                  width: theme.spacing * 1.5,
-                  height: theme.spacing * 1.5,
+                  width: theme.space(PaymentSpace.block),
+                  height: theme.space(PaymentSpace.block),
                   color: colors[i],
                 ),
-                SizedBox(width: theme.spacing * .5),
+                SizedBox(width: theme.space(PaymentSpace.inline)),
                 Flexible(
                   child: Wrap(
-                    spacing: theme.spacing * .5,
+                    spacing: theme.space(PaymentSpace.inline),
                     children: [
                       Text(s.label, style: type.caption),
                       Text(
@@ -587,7 +587,7 @@ class PaymentMeterChart extends StatelessWidget {
                           unit,
                           currency: s.value?.currency ?? 'IDR',
                         ),
-                        style: type.caption,
+                        style: type.caption.tabular,
                       ),
                       if (s.status != ChartPointStatus.settled)
                         Text(
@@ -614,7 +614,7 @@ class PaymentMeterChart extends StatelessWidget {
     final legend = onSegmentPressed == null
         ? Wrap(
             spacing: theme.space(PaymentSpace.group),
-            runSpacing: theme.spacing,
+            runSpacing: theme.space(PaymentSpace.related),
             children: List.generate(segments.length, entry),
           )
         : Column(children: List.generate(segments.length, entry));
@@ -631,7 +631,7 @@ class PaymentMeterChart extends StatelessWidget {
         children: [
           ExcludeSemantics(
             child: SizedBox(
-              height: theme.spacing * 1.5,
+              height: theme.space(PaymentSpace.block),
               width: double.infinity,
               child: CustomPaint(
                 painter: MeterPainter(segments, colors, theme.surface, unit),
@@ -640,7 +640,7 @@ class PaymentMeterChart extends StatelessWidget {
           ),
           if (showLegend)
             Padding(
-              padding: EdgeInsets.only(top: theme.spacing),
+              padding: EdgeInsets.only(top: theme.space(PaymentSpace.related)),
               child: onSegmentPressed == null
                   ? ExcludeSemantics(child: legend)
                   : legend,
@@ -730,7 +730,7 @@ class ChartModule extends StatelessWidget {
       ChartState.loading => ClipRect(
         child: SingleChildScrollView(
           child: LoadingSkeleton(
-            rows: math.max(1, ((height ?? compactHeight) / 48).floor()),
+            rows: math.max(1, ((height ?? compactHeight) / 62).floor()),
             leading: false,
           ),
         ),
@@ -777,16 +777,22 @@ class ChartModule extends StatelessWidget {
                   if (headline != null)
                     AmountText(headline!, variant: AmountTextVariant.large)
                   else if (state == ChartState.loading)
+                    // A skeleton row is a two-line list row (62 dp); the
+                    // 48 dp headline slot shows its top and clips the rest.
                     const SizedBox(
                       height: 48,
                       child: ClipRect(
-                        child: LoadingSkeleton(rows: 1, leading: false),
+                        child: OverflowBox(
+                          alignment: AlignmentDirectional.topStart,
+                          maxHeight: double.infinity,
+                          child: LoadingSkeleton(rows: 1, leading: false),
+                        ),
                       ),
                     )
                   else
                     Text('—', style: type.amountLarge),
                   Wrap(
-                    spacing: theme.spacing,
+                    spacing: theme.space(PaymentSpace.related),
                     children: [
                       if (headlineCaption != null)
                         Text(headlineCaption!, style: type.caption),

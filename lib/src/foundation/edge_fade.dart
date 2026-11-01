@@ -3,14 +3,24 @@ import 'payment_theme.dart';
 
 /// Internal horizontal overflow affordance.
 class EdgeFadeScroll extends StatefulWidget {
-  const EdgeFadeScroll({super.key, required this.child});
+  const EdgeFadeScroll({
+    super.key,
+    required this.child,
+    this.padding,
+    this.clipBehavior = Clip.hardEdge,
+  });
   final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final Clip clipBehavior;
   @override
   State<EdgeFadeScroll> createState() => _EdgeFadeScrollState();
 }
 
 class _EdgeFadeScrollState extends State<EdgeFadeScroll> {
   final _controller = ScrollController();
+  // The mask comes and goes with overflow; the key moves the scroll view
+  // with its offset instead of rebuilding it at 0.
+  final _scrollKey = GlobalKey();
   bool _start = false, _end = false;
   void _update() {
     if (!mounted || !_controller.hasClients) return;
@@ -40,8 +50,11 @@ class _EdgeFadeScrollState extends State<EdgeFadeScroll> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _update());
     final scroll = SingleChildScrollView(
+      key: _scrollKey,
       controller: _controller,
       scrollDirection: Axis.horizontal,
+      padding: widget.padding,
+      clipBehavior: widget.clipBehavior,
       child: widget.child,
     );
     if (!_start && !_end) return scroll;

@@ -92,9 +92,9 @@ const expected = <String, List<Rect>>{
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
     Rect.fromLTRB(149.0, 4.0, 239.0, 44.0),
   ],
-  '2.0 action false': [
-    Rect.fromLTRB(16.0, 61.89999961853027, 344.0, 109.89999961853027),
-  ],
+  // The bar reserves the taller of the total and the "Updating total"
+  // caption (#46); in the test font the caption wraps to two lines.
+  '2.0 action false': [Rect.fromLTRB(16.0, 92.0, 344.0, 140.0)],
 };
 void main() {
   for (final scale in [1.0, 2.0]) {

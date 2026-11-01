@@ -5,6 +5,19 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## UI review P1 (2026-11-01)
+
+- **Spacing roles (D46, #50).** Every kit spacing value resolves through `PaymentTheme.space(PaymentSpace.<role>)`; one role uses one value. StatusHeader's icon → text gap moves from 8 to `block` (12), like toast, banner, state message, accordion and skeleton. The chart's unknown-point square and the navigation badge padding move from 7 to 8. No API change.
+- **First-line alignment (D56).** List rows, accordion headers, toasts, state messages, status headers and the task list centre their icon and trailing control on the title's first line: a single-line list row shares one centre line with a 48 dp control, and the toast icon no longer sits 4 pt above its message.
+- **List values at large text (#60).** Above 1.5× text a `PaymentListItem` value moves under the title at label size instead of shrinking beside it.
+- **Tabs (#60).** A tab row that scrolls shows an end fade, and the selected or focused tab scrolls into view.
+- **Fields (#47).** Every field size has explicit padding: text starts 16 in and fields are 48, 56 and 64 dp. Search suggestions share the field's text edge. The currency field matches the text field's height.
+- **Chips (#48).** Labels centre in the 48 dp box with 16 dp side padding; a chip that wraps becomes a rounded rectangle so text never enters the pill's ends.
+- **Stable layouts (#46).** The action bar keeps one height while the total updates. Loading skeleton rows match a two-line list row and use the outline fill. The countdown reserves its widest format. Chart readouts and meter legends use tabular figures. **Migration:** a host that sized a box around `LoadingSkeleton` needs about 62 dp per row (12 + 20 + 18 + 12) instead of 48.
+- **Copy failure (#46).** `PaymentCopyButton` keeps its 48 dp box: failure shows a danger glyph and a persistent "Copy failed" label under the button, cleared by the next press or a new value. **Migration:** hosts that laid out space for the old inline label under the button no longer need it.
+- **Link edges (#65).** `PaymentLink` text starts on the column edge and its 48 dp target extends past a short label; trailing links in section headers sit on the end edge.
+- **Demo (#59).** Every gallery specimen and the flow screens' table, property and chart labels are bilingual; captures add Indonesian looks (`_id`, `_id_200`).
+
 ## Design system Phase 4D-2 (2026-11-01)
 
 - Delivers the 4C–4D specimen captures: 45 new images and 6 refreshed Code/Tabs images.

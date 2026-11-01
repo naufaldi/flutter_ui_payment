@@ -355,13 +355,13 @@ The scale is `PaymentType` (`payment_type.dart:14`). It has 9 roles on 7 sizes a
 
 ### 3.3 Spacing
 
-`PaymentTheme.spacing` (default 8) is used only in these multiples. The role names are already in dartdoc (`payment_theme.dart:105-113`).
+`PaymentTheme.spacing` (default 8) is used only in these multiples, and kit widgets resolve every value with `PaymentTheme.space(PaymentSpace.<role>)` instead of multiplying by hand (D46; UI review P1). One role uses one value. The role names are in the `PaymentSpace` dartdoc.
 
 | Role | Value | Expression | Use for | Don't |
 | --- | --- | --- | --- | --- |
-| inline | 4 | `spacing * 0.5` | Label → caption, title → meta, icon → badge text | Between rows |
-| related | 8 | `spacing` | `InfoRow` vertical padding, between stacked buttons, section padding | — |
-| block | 12 | `spacing * 1.5` | Row vertical padding (`ActionTile`, controls), icon → row text, notice padding, band → title | — |
+| inline | 4 | `spacing * 0.5` | Label → caption, title → message, title → meta, a small glyph beside its text | Between rows |
+| related | 8 | `spacing` | Between stacked or adjacent actions and chips, text → trailing control, `InfoRow` and compact control padding | Icon → text |
+| block | 12 | `spacing * 1.5` | Icon → text (every component), list row and header padding, notice and banner padding, band → title | — |
 | group | 16 | `spacing * 2` | Screen and sheet gutter, label ↔ value gap, sheet footer inset | A gutter other than 16 at any width |
 | section | 24 | `spacing * 3` | Content → primary action, ruled section gap (divider in the middle) | — |
 | major | 32 | `spacing * 4` | Largest gap; no kit widget uses it today | — |
@@ -2049,6 +2049,15 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Patterns: loading, empty and error, forms, views and pages, tables on phones
 - [x] "Not in the kit": D28 non-mirrored props only
 - [x] PRD.md §16a row updated to full Stripe parity (revision 3)
+
+**UI review P1: foundations and a bilingual demo** (D46, D56; #46, #47, #48, #50, #59, #60)
+- [x] Every `lib/src` spacing value through `PaymentTheme.space`; role dartdoc lists its uses; StatusHeader gap 8 → 12; 7 → 8 (D46)
+- [x] Internal `FirstLineRow` for list item, accordion, toast, state message, status header; task-list icon on the first line (D56)
+- [x] Fields 48 / 56 / 64 with one 16 text edge; currency field height; search row inset
+- [x] Chip centring and wrapped radius; tab edge fade and reveal; list value under the title at large text
+- [x] Stable action bar, skeleton, copy failure, countdown and chart figures
+- [x] Link text on the column edge (#65, part)
+- [x] Gallery and flow screens bilingual; `_id` / `_id_200` captures
 ```
 
 ### Phase 2E implementation notes

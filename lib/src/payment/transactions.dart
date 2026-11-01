@@ -16,6 +16,7 @@ import '../foundation/primitives.dart';
 import '../interaction/interaction.dart';
 import 'payment_models.dart';
 import 'payment_status.dart';
+import '../foundation/payment_tokens.dart';
 
 /// One past or ongoing payment as the host's history API reports it.
 ///
@@ -173,11 +174,11 @@ class TransactionListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(child: title),
-                  SizedBox(width: theme.spacing * 2),
+                  SizedBox(width: theme.space(PaymentSpace.group)),
                   amount,
                 ],
               ),
-            SizedBox(height: theme.spacing * 0.5),
+            SizedBox(height: theme.space(PaymentSpace.inline)),
             // Two lines so the date is never elided at large text.
             Text(
               [
@@ -196,10 +197,10 @@ class TransactionListItem extends StatelessWidget {
                 child: const SizedBox.shrink(),
               ),
             if (tags.isNotEmpty) ...[
-              SizedBox(height: theme.spacing),
+              SizedBox(height: theme.space(PaymentSpace.related)),
               Wrap(
-                spacing: theme.spacing,
-                runSpacing: theme.spacing * 0.5,
+                spacing: theme.space(PaymentSpace.related),
+                runSpacing: theme.space(PaymentSpace.inline),
                 children: tags,
               ),
             ],
@@ -300,7 +301,7 @@ class TransactionHistory extends StatelessWidget {
           onChanged: onQueryChanged,
           label: l10n.searchTransactions,
         ),
-        SizedBox(height: theme.spacing),
+        SizedBox(height: theme.space(PaymentSpace.related)),
         PaymentTabs(
           tabs: [
             for (final f in filters)
@@ -353,32 +354,33 @@ class TransactionDetail extends StatelessWidget {
           title: l10n.paymentStatusShort(record.status),
           hatched: unknown,
         ),
-        SizedBox(height: theme.spacing * 1.5),
+        SizedBox(height: theme.space(PaymentSpace.block)),
         Align(
           alignment: AlignmentDirectional.centerStart,
           child: AmountText(record.amount, variant: AmountTextVariant.display),
         ),
-        SizedBox(height: theme.spacing * 0.5),
+        SizedBox(height: theme.space(PaymentSpace.inline)),
         Text(
           record.title,
           style: type.label.copyWith(color: theme.textSecondary),
         ),
         if (unknown) ...[
-          SizedBox(height: theme.spacing * 1.5),
+          SizedBox(height: theme.space(PaymentSpace.block)),
           Text(
             l10n.statusUnknownLead,
             style: body.copyWith(fontWeight: FontWeight.w600),
           ),
-          SizedBox(height: theme.spacing * 0.5),
+          SizedBox(height: theme.space(PaymentSpace.inline)),
           Text(l10n.statusUnknownDetail, style: body),
         ],
         // Actions come before the details, as in the status view.
-        if (actions.isNotEmpty) SizedBox(height: theme.spacing * 3),
+        if (actions.isNotEmpty)
+          SizedBox(height: theme.space(PaymentSpace.section)),
         for (final (i, action) in actions.indexed) ...[
-          if (i > 0) SizedBox(height: theme.spacing),
+          if (i > 0) SizedBox(height: theme.space(PaymentSpace.related)),
           action,
         ],
-        SizedBox(height: theme.spacing * 2),
+        SizedBox(height: theme.space(PaymentSpace.group)),
         PaymentPropertyList(
           title: l10n.detailsTitle,
           items: [
@@ -415,7 +417,7 @@ class TransactionDetail extends StatelessWidget {
         // The refund is its own ruled section with its own state; the
         // original payment above keeps its success.
         if (record.refund.status != RefundStatus.none) ...[
-          PaymentDivider(height: theme.spacing * 3),
+          PaymentDivider(height: theme.space(PaymentSpace.section)),
           RefundSection(refund: record.refund, paidAmount: record.amount),
         ],
       ],

@@ -1,9 +1,13 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import '../foundation/first_line.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/row_shell.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
+import '../foundation/payment_tokens.dart';
 
 /// Host-owned task progress.
 enum PaymentTaskStatus {
@@ -33,6 +37,12 @@ class PaymentTaskList extends StatelessWidget {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     final strings = PaymentLocalizations.of(context);
+    // The icon centres on the label's first line: the 48 dp row centre at
+    // normal text, the first line inside the row padding when it wraps.
+    final iconBand = math.max(
+      48.0,
+      lineHeightOf(context, type.label) + 2 * theme.space(PaymentSpace.block),
+    );
     Widget row(PaymentTaskListItem item, {bool last = true}) {
       final done = item.status == PaymentTaskStatus.complete;
       final label = [
@@ -64,7 +74,7 @@ class PaymentTaskList extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: 48,
+                        height: iconBand,
                         child: Icon(
                           icon,
                           color:
@@ -84,7 +94,7 @@ class PaymentTaskList extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: theme.spacing * 1.5),
+                SizedBox(width: theme.space(PaymentSpace.block)),
                 Expanded(
                   child: Semantics(
                     container: true,
@@ -109,7 +119,7 @@ class PaymentTaskList extends StatelessWidget {
           if (!done && item.subTasks.isNotEmpty)
             Padding(
               padding: EdgeInsetsDirectional.only(
-                start: 24 + theme.spacing * 1.5,
+                start: 24 + theme.space(PaymentSpace.block),
               ),
               child: Column(
                 children: [for (final sub in item.subTasks) row(sub)],

@@ -264,6 +264,11 @@ class _PaymentSearchFieldState<T> extends State<PaymentSearchField<T>> {
     final visible = _visible;
     final enabled =
         widget.enabled && !(FieldGroupScope.of(context)?.disabled ?? false);
+    // Suggestion text starts on the field's text edge (group, 16) (#47).
+    final rowPadding = EdgeInsets.symmetric(
+      horizontal: t.space(PaymentSpace.group),
+      vertical: t.space(PaymentSpace.block),
+    );
     final rowHeight = math.max(
       48.0,
       PaymentType.firstLineHeight(context) + t.space(PaymentSpace.section),
@@ -336,8 +341,9 @@ class _PaymentSearchFieldState<T> extends State<PaymentSearchField<T>> {
                 ),
                 if (widget.loading)
                   Padding(
-                    padding: EdgeInsets.all(t.space(PaymentSpace.block)),
+                    padding: rowPadding,
                     child: Row(
+                      spacing: t.space(PaymentSpace.block),
                       children: [
                         const PaymentSpinner(size: PaymentSize.small),
                         Text(l.loading, style: type.label),
@@ -346,8 +352,9 @@ class _PaymentSearchFieldState<T> extends State<PaymentSearchField<T>> {
                   )
                 else if (visible.isEmpty)
                   Padding(
-                    padding: EdgeInsets.all(t.space(PaymentSpace.block)),
+                    padding: rowPadding,
                     child: Row(
+                      spacing: t.space(PaymentSpace.block),
                       children: [
                         const PaymentIcon(PaymentIcons.noMatches),
                         Text(l.noMatchesTitle, style: type.label),
@@ -382,9 +389,7 @@ class _PaymentSearchFieldState<T> extends State<PaymentSearchField<T>> {
                                   minHeight: rowHeight,
                                 ),
                                 child: Padding(
-                                  padding: EdgeInsets.all(
-                                    t.space(PaymentSpace.block),
-                                  ),
+                                  padding: rowPadding,
                                   child: Row(
                                     children: [
                                       Expanded(

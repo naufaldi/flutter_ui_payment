@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'first_line_test.dart' show host;
 
 Widget app(Widget home, {bool reduceMotion = false}) => MaterialApp(
   locale: const Locale('en'),
@@ -63,6 +64,81 @@ class FakeVideo extends PaymentVideoController {
 }
 
 void main() {
+  testWidgets('action bar at 2x keeps one height while updating toggles', (
+    tester,
+  ) async {
+    Widget bar(bool updating) => host(
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: PaymentActionBar(
+          total: const Money.idr(102500),
+          updating: updating,
+          action: PaymentButton(
+            label: 'Pay',
+            width: PaymentWidth.hug,
+            onPressed: updating ? null : () {},
+          ),
+        ),
+      ),
+      2,
+    );
+    await tester.pumpWidget(bar(false));
+    await tester.pumpAndSettle();
+    final settled = tester.getSize(find.byType(PaymentActionBar)).height;
+    await tester.pumpWidget(bar(true));
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(PaymentActionBar)).height, settled);
+    expect(find.text('Updating total…'), findsOneWidget);
+  });
+  testWidgets('countdown keeps one width from 1:00:00 to 59:59', (
+    tester,
+  ) async {
+    var now = DateTime(2026, 11, 1, 10);
+    await tester.pumpWidget(
+      host(
+        Align(
+          alignment: Alignment.topLeft,
+          child: CountdownText(
+            expiresAt: DateTime(2026, 11, 1, 11),
+            clock: () => now,
+          ),
+        ),
+        1,
+      ),
+    );
+    expect(find.text('1:00:00'), findsOneWidget);
+    final width = tester.getSize(find.byType(CountdownText)).width;
+    now = now.add(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('59:59'), findsOneWidget);
+    expect(tester.getSize(find.byType(CountdownText)).width, width);
+  });
+  testWidgets('skeleton rows are as tall as two-line list rows', (
+    tester,
+  ) async {
+    for (final scale in [1.0, 2.0]) {
+      await tester.pumpWidget(
+        host(
+          const Column(
+            children: [
+              PaymentListItem(
+                title: 'Groceries',
+                secondaryTitle: 'Paid 2 days ago',
+                icon: Icons.receipt_long_outlined,
+              ),
+              LoadingSkeleton(rows: 1),
+            ],
+          ),
+          scale,
+        ),
+      );
+      expect(
+        tester.getSize(find.byType(LoadingSkeleton)).height,
+        tester.getSize(find.byType(PaymentListItem)).height,
+        reason: 'scale $scale',
+      );
+    }
+  });
   group('AdaptiveNavShell', () {
     final sections = [
       const PaymentNavSection(
