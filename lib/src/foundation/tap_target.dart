@@ -4,28 +4,59 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-/// Internal minimum hit box, centered around the visual button.
+/// Internal minimum hit box around the visual button: centred by default;
+/// text actions pass a start alignment so their text sits on the column
+/// edge and the box extends past its end (#65).
 class MinTapTarget extends SingleChildRenderObjectWidget {
   const MinTapTarget({
     super.key,
     required super.child,
     this.minSize = const Size.square(48),
+    this.alignment = Alignment.center,
   });
   final Size minSize;
+  final AlignmentGeometry alignment;
   @override
-  RenderObject createRenderObject(BuildContext context) =>
-      _RenderMinTapTarget(minSize);
+  RenderObject createRenderObject(BuildContext context) => _RenderMinTapTarget(
+    minSize,
+    alignment.resolve(Directionality.maybeOf(context)),
+  );
   @override
   void updateRenderObject(
     BuildContext context,
     covariant RenderObject renderObject,
   ) {
-    (renderObject as _RenderMinTapTarget).minSize = minSize;
+    (renderObject as _RenderMinTapTarget)
+      ..minSize = minSize
+      ..alignment = alignment.resolve(Directionality.maybeOf(context));
   }
 }
 
+/// Internal: the edge a text action's text sits on inside its 48 dp
+/// target. Text actions start on the column edge by default; a container
+/// that places one at the end of a row wraps it in [TextActionEdge.end].
+class TextActionEdge extends InheritedWidget {
+  const TextActionEdge.end({super.key, required super.child})
+    : alignment = AlignmentDirectional.centerEnd;
+  final AlignmentGeometry alignment;
+  static AlignmentGeometry of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<TextActionEdge>()?.alignment ??
+      AlignmentDirectional.centerStart;
+  @override
+  bool updateShouldNotify(TextActionEdge old) => alignment != old.alignment;
+}
+
 class _RenderMinTapTarget extends RenderShiftedBox {
-  _RenderMinTapTarget(this._minSize, [RenderBox? child]) : super(child);
+  _RenderMinTapTarget(this._minSize, this._alignment, [RenderBox? child])
+    : super(child);
+
+  Alignment get alignment => _alignment;
+  Alignment _alignment;
+  set alignment(Alignment value) {
+    if (_alignment == value) return;
+    _alignment = value;
+    markNeedsLayout();
+  }
 
   Size get minSize => _minSize;
   Size _minSize;
@@ -105,7 +136,7 @@ class _RenderMinTapTarget extends RenderShiftedBox {
     }
     final Size childSize = child.getDryLayout(constraints);
     return result +
-        Alignment.center
+        alignment
             .alongOffset(getDryLayout(constraints) - childSize as Offset)
             .dy;
   }
@@ -118,7 +149,7 @@ class _RenderMinTapTarget extends RenderShiftedBox {
     );
     if (child != null) {
       final childParentData = child!.parentData! as BoxParentData;
-      childParentData.offset = Alignment.center.alongOffset(
+      childParentData.offset = alignment.alongOffset(
         size - child!.size as Offset,
       );
     }

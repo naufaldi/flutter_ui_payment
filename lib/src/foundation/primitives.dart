@@ -922,7 +922,7 @@ class PaymentSection extends StatelessWidget {
                     child: Text(title!, style: PaymentType.of(context).heading),
                   ),
                 ),
-                ?trailing,
+                if (trailing != null) TextActionEdge.end(child: trailing!),
               ],
             ),
             SizedBox(

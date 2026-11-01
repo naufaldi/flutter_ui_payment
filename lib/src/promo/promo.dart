@@ -11,6 +11,7 @@ import '../foundation/payment_type.dart';
 import '../foundation/primitives.dart';
 import '../interaction/interaction.dart';
 import '../foundation/payment_tokens.dart';
+import '../foundation/tap_target.dart';
 
 /// Whether content is paid placement or the host's own offer. Both are
 /// always labeled; a sponsored item also names who paid for it.
@@ -138,7 +139,7 @@ class PromoCard extends StatelessWidget {
             ),
           ),
         ),
-        if (!stacked) ?why,
+        if (!stacked && why != null) TextActionEdge.end(child: why),
         if (onDismiss != null)
           PaymentIconButton(
             icon: PaymentIcons.close,

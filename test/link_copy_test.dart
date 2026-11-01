@@ -5,6 +5,39 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
+  testWidgets('link text sits on the column edge, the target extends out', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: PaymentLink(label: 'Edit', onPressed: () {}),
+              ),
+              PaymentSection(
+                title: 'Your details',
+                trailing: PaymentLink(label: 'Edit', onPressed: () {}),
+                child: const SizedBox(height: 8),
+              ),
+            ],
+          ),
+        ),
+        1,
+      ),
+    );
+    final texts = find.text('Edit');
+    expect(tester.getTopLeft(texts.first).dx, 16);
+    expect(tester.getTopRight(texts.last).dx, 800 - 16);
+    expect(
+      tester.getSize(find.byType(PaymentLink).first).width,
+      greaterThanOrEqualTo(48),
+    );
+  });
   testWidgets('icon action is 48 dp and disabled actions do nothing', (
     tester,
   ) async {

@@ -157,7 +157,11 @@ class PaymentLink extends StatelessWidget {
       label: semanticLabel ?? label,
       hint: external ? PaymentLocalizations.of(context).opensExternally : null,
       onTap: onPressed,
+      // The text sits on the column edge (the start, or the end inside
+      // TextActionEdge.end); the 48 dp target extends past the other side
+      // of a short label instead of centring it (#65).
       child: MinTapTarget(
+        alignment: TextActionEdge.of(context),
         child: PaymentFocusRing(
           radius: theme.controlBorderRadius,
           child: PaymentPressScale(
