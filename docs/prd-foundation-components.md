@@ -2103,6 +2103,10 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Settings legend → first control: one 8 dp gap for fields and selection rows (#66)
 - [x] One pinned footer for views, the action bar and sheets (P4's `KitSheetFooter` merged into `PinnedFooter`)
 
+**UI review P7b: readable field labels, quiet buttons on the edge** (#73, #65)
+- [x] Above 1.5× text every field's label sits above the box and wraps; box heights unchanged; label stays the spoken name; hint on focus only (#73)
+- [x] Quiet hug `PaymentButton` text on the column edge (end edge in trailing slots), box hanging ≤ 12 dp outward; button groups, accordion actions and full-width buttons stay centred (#65)
+
 **UI review P6: payment path, priority action at the bottom** (D62; #49, #58, #64)
 - [x] Internal `ActionFrame`: bounded height pins the primary and at most one quiet action through `ViewFrame` / `ViewFooter` / `PinnedFooter`; unbounded keeps the inline layout
 - [x] Adopted by `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentStatusView`, `VerificationIntro`, `VerificationStatusView`; additive `header`, `PaymentStatusView.secondaryAction` (quiet)
@@ -2155,7 +2159,7 @@ Views own their body scroll with an unbounded non-scrolling fallback; hosts own 
 
 ### Phase 4D-2 implementation notes
 
-DetailPage owns its vertical scroll and must not be nested in FullPageView; OverviewPage and modules never scroll vertically. Primary/secondary columns use 2:1 at 840 dp and otherwise stack. Breadcrumbs collapse to the immediate parent. Pending uses skeleton blocks. Module errors use warning tone (D25). DetailValue adds subText, and extraActions use a menu. Code wraps by default and noWrap fades overflowing edges. Fitted tabs measure labels at the current text scale and fall back to horizontal scrolling. Material-owned exception: outlined floating labels are single-line; keep labels short (24 characters or fewer) and put detail in description. The attempted two-line 60-character label at 320 dp and 200% still exceeded max lines, so it was reverted. Test deviation: the synthetic Flutter test font makes Bank transfer too wide for three equal tabs at 393 dp; the fitting test uses 800 dp while the final captures inspect real simulator typography. Captures are refreshed only for the 4C–4D set plus Code/Tabs under the owner one-run rule.
+DetailPage owns its vertical scroll and must not be nested in FullPageView; OverviewPage and modules never scroll vertically. Primary/secondary columns use 2:1 at 840 dp and otherwise stack. Breadcrumbs collapse to the immediate parent. Pending uses skeleton blocks. Module errors use warning tone (D25). DetailValue adds subText, and extraActions use a menu. Code wraps by default and noWrap fades overflowing edges. Fitted tabs measure labels at the current text scale and fall back to horizontal scrolling. Material-owned exception: outlined floating labels are single-line; keep labels short (24 characters or fewer) and put detail in description. The attempted two-line 60-character label at 320 dp and 200% still exceeded max lines, so it was reverted. *UI review P7b (#73): above 1.5× text the label moves above the box and wraps.* Test deviation: the synthetic Flutter test font makes Bank transfer too wide for three equal tabs at 393 dp; the fitting test uses 800 dp while the final captures inspect real simulator typography. Captures are refreshed only for the 4C–4D set plus Code/Tabs under the owner one-run rule.
 
 The Phase 4C–4D API sketches above are synchronized with the implemented optional sort/filter, focus size placement, menu trigger builder, detail values and scroll ownership.
 

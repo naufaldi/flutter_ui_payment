@@ -62,6 +62,8 @@ PaymentButton(
 
 A low-emphasis action such as "Not now" or "Cancel": text only.
 
+A quiet button that hugs its label is a text action, like a [link](/components/link/): its text starts on the column edge, and its box (the press and focus state) hangs outward by its padding, at most 12 dp, into the gutter. Inside a row's trailing slot the text sits on the end edge instead. In a [button group](/components/button-group/), and when it fills the width (footers, confirm sheets), its label stays centred (#65). Put quiet buttons that sit side by side in a `PaymentButtonGroup` rather than your own `Row`.
+
 ```dart
 PaymentButton(
   label: 'Not now',
@@ -133,7 +135,7 @@ Variants: primary, secondary, quiet, destructive. Nothing else exists.
 
 Every size occupies a hit box of at least 48 × 48 dp. The small visual is centered inside it; the keyboard ring follows the visual. Use small for a module-header action such as Add card. Keep the main Pay action medium or large. Material density is pinned to standard, so desktop and web now also draw medium buttons at 48 dp.
 
-`width: PaymentWidth.fill` fills the parent by default. `PaymentWidth.hug` sizes to the label with a 112 dp minimum. Put hug buttons inside an Align or Wrap; a stretching parent overrides hug. Long labels wrap and never truncate.
+`width: PaymentWidth.fill` fills the parent by default. `PaymentWidth.hug` sizes to the label with a 112 dp minimum; a quiet hug button outside a button group hugs its label with only the 48 dp floor, so its text can start on the column edge. Put hug buttons inside an Align or Wrap; a stretching parent overrides hug. Long labels wrap and never truncate.
 
 `autofocus` focuses the action when its route opens. Focus Cancel in a destructive confirmation; focus Confirm for an ordinary confirmation.
 

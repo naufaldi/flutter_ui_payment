@@ -2,6 +2,7 @@ import '../controls/button_group.dart';
 import '../foundation/table_grid.dart';
 import '../layout/content.dart';
 import '../controls/actions.dart';
+import '../foundation/tap_target.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -1172,45 +1173,48 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
           if (widget.actions.isEmpty)
             header
           else
-            LayoutBuilder(
-              builder: (context, box) =>
-                  box.maxWidth < 400 || PaymentType.isLarge(context)
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        header,
-                        Padding(
-                          padding: EdgeInsets.only(
-                            bottom: theme.space(PaymentSpace.related),
+            // A button row: quiet actions keep their centred labels (#65).
+            TextActionEdge.none(
+              child: LayoutBuilder(
+                builder: (context, box) =>
+                    box.maxWidth < 400 || PaymentType.isLarge(context)
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          header,
+                          Padding(
+                            padding: EdgeInsets.only(
+                              bottom: theme.space(PaymentSpace.related),
+                            ),
+                            child: Wrap(
+                              spacing: theme.space(PaymentSpace.related),
+                              runSpacing: theme.space(PaymentSpace.related),
+                              children: widget.actions,
+                            ),
                           ),
-                          child: Wrap(
-                            spacing: theme.space(PaymentSpace.related),
-                            runSpacing: theme.space(PaymentSpace.related),
-                            children: widget.actions,
-                          ),
-                        ),
-                      ],
-                    )
-                  : Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(child: header),
-                        SizedBox(width: theme.space(PaymentSpace.related)),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            for (final (i, action)
-                                in widget.actions.indexed) ...[
-                              if (i > 0)
-                                SizedBox(
-                                  width: theme.space(PaymentSpace.related),
-                                ),
-                              action,
+                        ],
+                      )
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: header),
+                          SizedBox(width: theme.space(PaymentSpace.related)),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              for (final (i, action)
+                                  in widget.actions.indexed) ...[
+                                if (i > 0)
+                                  SizedBox(
+                                    width: theme.space(PaymentSpace.related),
+                                  ),
+                                action,
+                              ],
                             ],
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+              ),
             ),
           // Size eases so the content below does not jump; collapses to an
           // instant change under reduced motion.

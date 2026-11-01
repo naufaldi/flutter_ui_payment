@@ -264,5 +264,38 @@ void main() {
       await tester.pumpAndSettle();
       expect(picked, 'barat');
     });
+
+    testWidgets('at 2× the list opens under the box, clear of the label', (
+      tester,
+    ) async {
+      // The label sits above the box at large text (#73).
+      surface(tester, wide);
+      await tester.pumpWidget(
+        host(
+          PaymentSearchField<String>(
+            label: 'Province',
+            options: _options,
+            selected: null,
+            onSelected: (_) {},
+          ),
+          2,
+        ),
+      );
+      await tester.tap(find.byType(EditableText));
+      await tester.pumpAndSettle();
+      final list = tester.getRect(
+        find
+            .ancestor(
+              of: find.byType(ListView),
+              matching: find.byType(Material),
+            )
+            .first,
+      );
+      final label = tester.getRect(find.text('Province'));
+      final box = tester.getRect(find.byType(InputDecorator));
+      expect(label.bottom, lessThanOrEqualTo(box.top));
+      expect(list.top, greaterThanOrEqualTo(box.bottom));
+      expect(tester.takeException(), isNull);
+    });
   });
 }

@@ -192,7 +192,12 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
     final amountStyle = type.amountLarge.copyWith(
       height: lineHeightOf(context, type.input) / amountSize,
     );
-    final field = MediaQuery.withClampedTextScaling(
+    final label = widget.label ?? l10n.amountLabel;
+    final hideLabel = widget.hiddenElements.contains(PaymentFieldPart.label);
+    // At large text the label sits above the box at full scale, outside the
+    // 1.6× clamp, like every other field's (#73).
+    final above = !hideLabel && fieldLabelAbove(context);
+    final input = MediaQuery.withClampedTextScaling(
       maxScaleFactor: 1.6,
       child: TextField(
         enabled: !(FieldGroupScope.of(context)?.disabled ?? false),
@@ -211,9 +216,14 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
         decoration:
             paymentFieldDecoration(
               context,
-              label: widget.label ?? l10n.amountLabel,
-              hideLabel: widget.hiddenElements.contains(PaymentFieldPart.label),
-              contentPadding: fieldContentPadding(theme, widget.size),
+              label: label,
+              hideLabel: hideLabel,
+              labelAbove: above,
+              contentPadding: fieldContentPadding(
+                theme,
+                widget.size,
+                labelAbove: above,
+              ),
               prefixText: '${spec.symbol} ',
               prefixStyle: amountStyle.copyWith(color: theme.textSecondary),
               helper: widget.description == null && limits.isEmpty
@@ -244,6 +254,12 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
                     ),
             ),
       ),
+    );
+    final field = FieldLabelAbove(
+      label: above ? label : null,
+      enabled: !(FieldGroupScope.of(context)?.disabled ?? false),
+      onTap: _focus.requestFocus,
+      child: Semantics(label: above ? label : null, child: input),
     );
     assert(
       widget.currencies.length < 2 ||

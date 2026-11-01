@@ -154,7 +154,8 @@ class PaymentTextField extends StatefulWidget {
   final int? _maxLines;
   final int? _maxLength;
 
-  /// Always visible; floats above the value.
+  /// Always visible; floats above the value, or sits above the box and
+  /// wraps when text is scaled above 1.5×.
   final String label;
 
   /// Host-owned editing controller.
@@ -309,119 +310,137 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
     };
     final hidden = widget.hiddenElements;
     final error = _hideHostError ? null : widget.errorText;
-    final field = Semantics(
-      label: hidden.contains(PaymentFieldPart.label) ? label : null,
-      isRequired: widget.required ? true : null,
-      validationResult: error != null
-          ? SemanticsValidationResult.invalid
-          : SemanticsValidationResult.none,
-      child: TextFormField(
-        controller: widget.query == null ? widget.controller : _search,
-        initialValue: widget.query == null ? widget.initialValue : null,
-        focusNode: _focus,
-        enabled: enabled,
-        readOnly: widget.readOnly,
-        minLines: widget._minLines,
-        maxLines: widget._maxLines,
-        maxLength: widget._maxLength,
-        buildCounter: widget._maxLength == null
-            ? null
-            : (
-                context, {
-                required currentLength,
-                required isFocused,
-                maxLength,
-              }) => Semantics(
-                liveRegion: currentLength >= (maxLength! * .9).floor(),
-                label: l10n.charactersLeft(maxLength - currentLength),
-                child: ExcludeSemantics(
-                  child: Text(
-                    '$currentLength/$maxLength',
-                    style: type.caption.tabular,
+    final above =
+        !hidden.contains(PaymentFieldPart.label) && fieldLabelAbove(context);
+    final input = ListenableBuilder(
+      listenable: _focus,
+      builder: (context, _) => Semantics(
+        label: hidden.contains(PaymentFieldPart.label) || above ? label : null,
+        isRequired: widget.required ? true : null,
+        validationResult: error != null
+            ? SemanticsValidationResult.invalid
+            : SemanticsValidationResult.none,
+        child: TextFormField(
+          controller: widget.query == null ? widget.controller : _search,
+          initialValue: widget.query == null ? widget.initialValue : null,
+          focusNode: _focus,
+          enabled: enabled,
+          readOnly: widget.readOnly,
+          minLines: widget._minLines,
+          maxLines: widget._maxLines,
+          maxLength: widget._maxLength,
+          buildCounter: widget._maxLength == null
+              ? null
+              : (
+                  context, {
+                  required currentLength,
+                  required isFocused,
+                  maxLength,
+                }) => Semantics(
+                  liveRegion: currentLength >= (maxLength! * .9).floor(),
+                  label: l10n.charactersLeft(maxLength - currentLength),
+                  child: ExcludeSemantics(
+                    child: Text(
+                      '$currentLength/$maxLength',
+                      style: type.caption.tabular,
+                    ),
                   ),
                 ),
-              ),
-        keyboardType: widget._multiline
-            ? TextInputType.multiline
-            : widget.keyboardType ?? keyboard,
-        autofillHints: widget.autofillHints ?? hints,
-        autocorrect: correct,
-        enableSuggestions: correct,
-        smartDashesType: correct
-            ? SmartDashesType.enabled
-            : SmartDashesType.disabled,
-        smartQuotesType: correct
-            ? SmartQuotesType.enabled
-            : SmartQuotesType.disabled,
-        textCapitalization: widget._multiline
-            ? TextCapitalization.sentences
-            : widget.textCapitalization,
-        inputFormatters: widget.inputFormatters,
-        textInputAction:
-            (widget._multiline
-                ? TextInputAction.newline
-                : widget.textInputAction) ??
-            (widget.type == PaymentTextFieldType.search
-                ? TextInputAction.search
-                : null),
-        style:
-            (widget.reference
-                    ? type.input.reference(theme)
-                    : tabular
-                    ? type.input.tabular
-                    : type.input)
-                .copyWith(color: enabled ? theme.textPrimary : theme.disabled),
-        onChanged: (value) {
-          if (widget.errorText != null && !_hideHostError) {
-            setState(() => _hideHostError = true);
-          }
-          widget.onChanged?.call(value);
-        },
-        onFieldSubmitted: widget.onSubmitted,
-        validator: widget.validator,
-        forceErrorText: error,
-        errorBuilder: (_, text) => FieldMessage(
-          text,
-          tone: StatusTone.danger,
-          hidden: hidden.contains(PaymentFieldPart.error),
+          keyboardType: widget._multiline
+              ? TextInputType.multiline
+              : widget.keyboardType ?? keyboard,
+          autofillHints: widget.autofillHints ?? hints,
+          autocorrect: correct,
+          enableSuggestions: correct,
+          smartDashesType: correct
+              ? SmartDashesType.enabled
+              : SmartDashesType.disabled,
+          smartQuotesType: correct
+              ? SmartQuotesType.enabled
+              : SmartQuotesType.disabled,
+          textCapitalization: widget._multiline
+              ? TextCapitalization.sentences
+              : widget.textCapitalization,
+          inputFormatters: widget.inputFormatters,
+          textInputAction:
+              (widget._multiline
+                  ? TextInputAction.newline
+                  : widget.textInputAction) ??
+              (widget.type == PaymentTextFieldType.search
+                  ? TextInputAction.search
+                  : null),
+          style:
+              (widget.reference
+                      ? type.input.reference(theme)
+                      : tabular
+                      ? type.input.tabular
+                      : type.input)
+                  .copyWith(
+                    color: enabled ? theme.textPrimary : theme.disabled,
+                  ),
+          onChanged: (value) {
+            if (widget.errorText != null && !_hideHostError) {
+              setState(() => _hideHostError = true);
+            }
+            widget.onChanged?.call(value);
+          },
+          onFieldSubmitted: widget.onSubmitted,
+          validator: widget.validator,
+          forceErrorText: error,
+          errorBuilder: (_, text) => FieldMessage(
+            text,
+            tone: StatusTone.danger,
+            hidden: hidden.contains(PaymentFieldPart.error),
+          ),
+          decoration: paymentFieldDecoration(
+            context,
+            label: label,
+            hideLabel: hidden.contains(PaymentFieldPart.label),
+            labelAbove: above,
+            hint: above && !_focus.hasFocus ? null : widget.hint,
+            enabled: enabled,
+            contentPadding: fieldContentPadding(
+              theme,
+              widget.size,
+              labelAbove: above,
+            ),
+            helper: widget.description == null
+                ? null
+                : FieldMessage(
+                    widget.description!,
+                    tone: widget.descriptionTone == StatusTone.neutral
+                        ? null
+                        : widget.descriptionTone,
+                    hidden: hidden.contains(PaymentFieldPart.description),
+                  ),
+            prefixText: widget.prefixText,
+            prefixIcon: widget.query == null
+                ? widget.prefixIcon
+                : const PaymentIcon(
+                    Icons.search,
+                    color: PaymentTextColor.secondary,
+                  ),
+            suffixIcon: widget.query == null
+                ? widget.suffix
+                : widget.query!.isEmpty
+                ? null
+                : PaymentIconButton(
+                    icon: PaymentIcons.close,
+                    tooltip: l10n.clearSearch,
+                    onPressed: () {
+                      widget.onChanged!('');
+                      _focus.requestFocus();
+                    },
+                  ),
+          ).copyWith(alignLabelWithHint: widget._multiline),
         ),
-        decoration: paymentFieldDecoration(
-          context,
-          label: label,
-          hideLabel: hidden.contains(PaymentFieldPart.label),
-          hint: widget.hint,
-          enabled: enabled,
-          contentPadding: fieldContentPadding(theme, widget.size),
-          helper: widget.description == null
-              ? null
-              : FieldMessage(
-                  widget.description!,
-                  tone: widget.descriptionTone == StatusTone.neutral
-                      ? null
-                      : widget.descriptionTone,
-                  hidden: hidden.contains(PaymentFieldPart.description),
-                ),
-          prefixText: widget.prefixText,
-          prefixIcon: widget.query == null
-              ? widget.prefixIcon
-              : const PaymentIcon(
-                  Icons.search,
-                  color: PaymentTextColor.secondary,
-                ),
-          suffixIcon: widget.query == null
-              ? widget.suffix
-              : widget.query!.isEmpty
-              ? null
-              : PaymentIconButton(
-                  icon: PaymentIcons.close,
-                  tooltip: l10n.clearSearch,
-                  onPressed: () {
-                    widget.onChanged!('');
-                    _focus.requestFocus();
-                  },
-                ),
-        ).copyWith(alignLabelWithHint: widget._multiline),
       ),
+    );
+    final field = FieldLabelAbove(
+      label: above ? label : null,
+      enabled: enabled,
+      onTap: _focus.requestFocus,
+      child: input,
     );
     if (!widget._multiline || widget.onSubmitted == null) return field;
     void submit() => widget.onSubmitted!(widget.controller?.text ?? '');

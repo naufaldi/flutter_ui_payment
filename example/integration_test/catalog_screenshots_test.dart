@@ -316,6 +316,34 @@ void main() {
               },
             ),
             'button_group': ('Content', 'PaymentButtonGroup', null, null),
+            // Focus on the medium Edit, as the full session shoots it.
+            'button': (
+              'Controls',
+              'PaymentButton',
+              (_) async {
+                FocusManager.instance.highlightStrategy =
+                    FocusHighlightStrategy.alwaysTraditional;
+                Focus.of(
+                  tester.element(
+                    find
+                        .descendant(
+                          of: find.byKey(
+                            const ValueKey('button-specimen-focus'),
+                          ),
+                          matching: find.byType(Text),
+                        )
+                        .first,
+                  ),
+                ).requestFocus();
+                await settle(tester);
+              },
+              () async {
+                FocusManager.instance.highlightStrategy =
+                    FocusHighlightStrategy.automatic;
+                FocusManager.instance.primaryFocus?.unfocus();
+                await settle(tester);
+              },
+            ),
             'dialog': (
               'Kit components',
               'showPaymentConfirmDialog',

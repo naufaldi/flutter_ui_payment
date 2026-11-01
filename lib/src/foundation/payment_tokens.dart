@@ -30,7 +30,8 @@ enum PaymentSpace {
   none,
 
   /// spacing × 0.5 (4): label → caption, title → message, title → meta,
-  /// a small glyph beside its text. Stripe xxsmall.
+  /// a small glyph beside its text, a field's label above its box at large
+  /// text. Stripe xxsmall.
   inline,
 
   /// spacing (8): between stacked or adjacent actions and chips, text →

@@ -5572,7 +5572,7 @@
       },
       {
         "name": "inline",
-        "doc": "spacing × 0.5 (4): label → caption, title → message, title → meta,\na small glyph beside its text. Stripe xxsmall."
+        "doc": "spacing × 0.5 (4): label → caption, title → message, title → meta,\na small glyph beside its text, a field's label above its box at large\ntext. Stripe xxsmall."
       },
       {
         "name": "related",
@@ -6347,7 +6347,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "width",
-            "doc": "Fill the parent or hug the wrapped label, at least 112 dp wide."
+            "doc": "Fill the parent or hug the wrapped label, at least 112 dp wide. A\nquiet button that hugs, outside a `PaymentButtonGroup`, keeps only the\n48 dp floor and starts its text on the column edge."
           },
           {
             "name": "autofocus",
@@ -6433,7 +6433,7 @@
         "kind": "field",
         "static": false,
         "type": "PaymentWidth",
-        "doc": "Fill the parent or hug the wrapped label, at least 112 dp wide."
+        "doc": "Fill the parent or hug the wrapped label, at least 112 dp wide. A\nquiet button that hugs, outside a `PaymentButtonGroup`, keeps only the\n48 dp floor and starts its text on the column edge."
       },
       {
         "name": "autofocus",
@@ -16483,7 +16483,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "label",
-            "doc": "Always visible; floats above the value."
+            "doc": "Always visible; floats above the value, or sits above the box and\nwraps when text is scaled above 1.5×."
           },
           {
             "name": "controller",
@@ -16823,7 +16823,7 @@
         "kind": "field",
         "static": false,
         "type": "String",
-        "doc": "Always visible; floats above the value."
+        "doc": "Always visible; floats above the value, or sits above the box and\nwraps when text is scaled above 1.5×."
       },
       {
         "name": "controller",

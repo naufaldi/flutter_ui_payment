@@ -47,6 +47,61 @@ class _FieldTriggerState extends State<FieldTrigger> {
   Widget build(BuildContext context) {
     final t = PaymentTheme.of(context);
     final label = fieldLabel(context, widget.label, required: widget.required);
+    final hideLabel = widget.hiddenElements.contains(PaymentFieldPart.label);
+    final above = !hideLabel && fieldLabelAbove(context);
+    final field = InkWell(
+      focusNode: widget.focusNode,
+      canRequestFocus: widget.enabled,
+      onTap: widget.enabled ? widget.onPressed : null,
+      onFocusChange: (v) => setState(() => focused = v),
+      focusColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      borderRadius: t.controlBorderRadius,
+      child: InputDecorator(
+        isFocused: focused,
+        isEmpty: widget.value == null,
+        decoration:
+            paymentFieldDecoration(
+              context,
+              label: label,
+              hideLabel: hideLabel,
+              labelAbove: above,
+              hint: above && !focused ? null : widget.hint,
+              enabled: widget.enabled,
+              contentPadding: fieldContentPadding(
+                t,
+                widget.size,
+                labelAbove: above,
+              ),
+              suffixIcon: widget.trailing,
+              helper: widget.description == null
+                  ? null
+                  : FieldMessage(
+                      widget.description!,
+                      hidden: widget.hiddenElements.contains(
+                        PaymentFieldPart.description,
+                      ),
+                    ),
+            ).copyWith(
+              hintMaxLines: 1,
+              error: widget.errorText == null
+                  ? null
+                  : FieldMessage(
+                      widget.errorText!,
+                      tone: StatusTone.danger,
+                      hidden: widget.hiddenElements.contains(
+                        PaymentFieldPart.error,
+                      ),
+                    ),
+            ),
+        child: Text(
+          widget.value ?? '',
+          style: PaymentType.of(
+            context,
+          ).input.copyWith(color: widget.enabled ? t.textPrimary : t.disabled),
+        ),
+      ),
+    );
     return Semantics(
       container: true,
       button: true,
@@ -60,55 +115,11 @@ class _FieldTriggerState extends State<FieldTrigger> {
           : SemanticsValidationResult.none,
       onTap: widget.enabled ? widget.onPressed : null,
       excludeSemantics: true,
-      child: InkWell(
-        focusNode: widget.focusNode,
-        canRequestFocus: widget.enabled,
-        onTap: widget.enabled ? widget.onPressed : null,
-        onFocusChange: (v) => setState(() => focused = v),
-        focusColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        borderRadius: t.controlBorderRadius,
-        child: InputDecorator(
-          isFocused: focused,
-          isEmpty: widget.value == null,
-          decoration:
-              paymentFieldDecoration(
-                context,
-                label: label,
-                hideLabel: widget.hiddenElements.contains(
-                  PaymentFieldPart.label,
-                ),
-                hint: widget.hint,
-                enabled: widget.enabled,
-                contentPadding: fieldContentPadding(t, widget.size),
-                suffixIcon: widget.trailing,
-                helper: widget.description == null
-                    ? null
-                    : FieldMessage(
-                        widget.description!,
-                        hidden: widget.hiddenElements.contains(
-                          PaymentFieldPart.description,
-                        ),
-                      ),
-              ).copyWith(
-                hintMaxLines: 1,
-                error: widget.errorText == null
-                    ? null
-                    : FieldMessage(
-                        widget.errorText!,
-                        tone: StatusTone.danger,
-                        hidden: widget.hiddenElements.contains(
-                          PaymentFieldPart.error,
-                        ),
-                      ),
-              ),
-          child: Text(
-            widget.value ?? '',
-            style: PaymentType.of(context).input.copyWith(
-              color: widget.enabled ? t.textPrimary : t.disabled,
-            ),
-          ),
-        ),
+      child: FieldLabelAbove(
+        label: above ? label : null,
+        enabled: widget.enabled,
+        onTap: widget.onPressed,
+        child: field,
       ),
     );
   }

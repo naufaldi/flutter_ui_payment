@@ -215,4 +215,225 @@ void main() {
       }
     });
   }
+
+  // #73: a floating label keeps one line, so above 1.5× it moves above the
+  // box and wraps instead of ellipsizing.
+  group('labels at large text (#73)', () {
+    const labels = {
+      'en': 'Date of birth as shown on your identity card (optional)',
+      'id': 'Tanggal lahir sesuai kartu identitas Anda (opsional)',
+    };
+    Map<String, Widget> fields(String label) => {
+      'text': PaymentTextField(label: label),
+      'currency': PaymentCurrencyField(
+        label: label,
+        currency: 'IDR',
+        initialText: '102500',
+        onChanged: (_) {},
+      ),
+      'date': PaymentDateField(
+        label: label,
+        value: DateTime(2026, 10, 1),
+        onChanged: (_) {},
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2030),
+      ),
+      'select': PaymentSelect<int>(
+        label: label,
+        options: const [PaymentSelectOption(value: 1, label: 'Bali')],
+        value: 1,
+        onChanged: (_) {},
+      ),
+      'select empty': PaymentSelect<int>(
+        label: label,
+        hint: 'Choose',
+        options: const [PaymentSelectOption(value: 1, label: 'Bali')],
+        value: null,
+        onChanged: (_) {},
+      ),
+      'search': PaymentSearchField<int>(
+        label: label,
+        options: const [PaymentSearchOption(value: 1, label: 'Bali')],
+        selected: null,
+        onSelected: (_) {},
+      ),
+    };
+    Finder box() => find
+        .byWidgetPredicate(
+          (w) => w.runtimeType.toString() == '_BorderContainer',
+        )
+        .first;
+
+    for (final MapEntry(key: locale, value: label) in labels.entries) {
+      testWidgets('long labels wrap above the box at 2× and 320 dp, $locale', (
+        t,
+      ) async {
+        await phase4.setSurface(t, const Size(320, 1000));
+        final boxes = <String, double>{};
+        final totals = <String, double>{};
+        for (final MapEntry(key: name, value: field) in fields(label).entries) {
+          await t.pumpWidget(
+            phase4.contentHost(
+              KeyedSubtree(key: const Key('field'), child: field),
+              scale: 2,
+              locale: Locale(locale),
+            ),
+          );
+          expect(t.takeException(), isNull, reason: name);
+          final text = find.text(label);
+          expect(text, findsOneWidget, reason: name);
+          final paragraph = t.renderObject<RenderParagraph>(text);
+          expect(paragraph.didExceedMaxLines, isFalse, reason: name);
+          // Wrapped, not clipped: more than one 40 dp line, all of it above
+          // the box.
+          expect(t.getSize(text).height, greaterThan(40), reason: name);
+          expect(
+            t.getBottomLeft(text).dy,
+            lessThanOrEqualTo(t.getTopLeft(box()).dy),
+            reason: name,
+          );
+          boxes[name] = t.getSize(box()).height;
+          totals[name] = t.getSize(find.byKey(const Key('field'))).height;
+        }
+        expect(boxes.values.toSet(), hasLength(1), reason: '$boxes');
+        // Same label, same box: the text, date, select and search fields
+        // are the same height overall too (#47). The currency and date
+        // fields add their limits and format captions below.
+        expect(
+          {
+            totals['text'],
+            totals['select'],
+            totals['select empty'],
+            totals['search'],
+          },
+          hasLength(1),
+          reason: '$totals',
+        );
+      });
+    }
+
+    testWidgets('the field keeps its name when the label is above', (t) async {
+      final semantics = t.ensureSemantics();
+      await phase4.setSurface(t, const Size(320, 1000));
+      await t.pumpWidget(
+        phase4.contentHost(
+          Column(
+            children: [
+              const PaymentTextField(label: 'Full name'),
+              PaymentCurrencyField(
+                label: 'Top-up amount',
+                currency: 'IDR',
+                onChanged: (_) {},
+              ),
+              PaymentSelect<int>(
+                label: 'Province',
+                options: const [PaymentSelectOption(value: 1, label: 'Bali')],
+                value: null,
+                onChanged: (_) {},
+              ),
+            ],
+          ),
+          scale: 2,
+        ),
+      );
+      expect(
+        t.getSemantics(find.byType(EditableText).first).label,
+        contains('Full name'),
+      );
+      expect(
+        t.getSemantics(find.byType(EditableText).last).label,
+        contains('Top-up amount'),
+      );
+      expect(find.bySemanticsLabel('Province'), findsOneWidget);
+      // The visible label is not read twice.
+      expect(find.bySemanticsLabel('Full name'), findsOneWidget);
+      semantics.dispose();
+    });
+
+    testWidgets('tapping the label above focuses the field', (t) async {
+      await phase4.setSurface(t, const Size(320, 1000));
+      await t.pumpWidget(
+        phase4.contentHost(
+          const PaymentTextField(label: 'Full name'),
+          scale: 2,
+        ),
+      );
+      await t.tap(find.text('Full name'));
+      await t.pump();
+      expect(
+        t.widget<EditableText>(find.byType(EditableText)).focusNode.hasFocus,
+        isTrue,
+      );
+    });
+
+    testWidgets('the hint shows on focus, never ellipsized at rest', (t) async {
+      await phase4.setSurface(t, const Size(320, 1000));
+      const hint = 'Choose your occupation from the list';
+      await t.pumpWidget(
+        phase4.contentHost(
+          Column(
+            children: [
+              const PaymentTextField(label: 'Full name', hint: hint),
+              PaymentSelect<int>(
+                label: 'Occupation',
+                hint: hint,
+                options: const [PaymentSelectOption(value: 1, label: 'Bali')],
+                value: null,
+                onChanged: (_) {},
+              ),
+            ],
+          ),
+          scale: 2,
+        ),
+      );
+      InputDecoration decoration(int i) => t
+          .widgetList<InputDecorator>(find.byType(InputDecorator))
+          .elementAt(i)
+          .decoration;
+      expect(decoration(0).hintText, isNull);
+      expect(decoration(1).hintText, isNull);
+      await t.tap(find.byType(EditableText));
+      await t.pump();
+      expect(decoration(0).hintText, hint);
+    });
+
+    testWidgets('typed text survives crossing 1.5×', (t) async {
+      await phase4.setSurface(t, const Size(320, 1000));
+      Future<void> pump(double scale) => t.pumpWidget(
+        phase4.contentHost(
+          const PaymentTextField(label: 'Full name', initialValue: 'Ana'),
+          scale: scale,
+        ),
+      );
+      await pump(1);
+      await t.enterText(find.byType(EditableText), 'Ana Putri');
+      await pump(2);
+      expect(find.text('Ana Putri'), findsOneWidget);
+      await pump(1);
+      expect(find.text('Ana Putri'), findsOneWidget);
+    });
+
+    testWidgets('normal text keeps the floating label', (t) async {
+      for (final scale in [1.0, 1.5]) {
+        await t.pumpWidget(
+          host(const PaymentTextField(label: 'Full name'), scale),
+        );
+        expect(
+          t
+              .widget<InputDecorator>(find.byType(InputDecorator))
+              .decoration
+              .labelText,
+          'Full name',
+        );
+      }
+      await t.pumpWidget(host(const PaymentTextField(label: 'Full name'), 2));
+      expect(
+        t
+            .widget<InputDecorator>(find.byType(InputDecorator))
+            .decoration
+            .labelText,
+        isNull,
+      );
+    });
+  });
 }
