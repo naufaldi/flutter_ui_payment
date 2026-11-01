@@ -10,6 +10,7 @@ import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/primitives.dart';
 import '../interaction/interaction.dart';
+import '../foundation/payment_tokens.dart';
 
 /// Whether content is paid placement or the host's own offer. Both are
 /// always labeled; a sponsored item also names who paid for it.
@@ -114,12 +115,12 @@ class PromoCard extends StatelessWidget {
       children: [
         Expanded(
           child: Padding(
-            padding: EdgeInsets.only(top: theme.spacing * 2),
+            padding: EdgeInsets.only(top: theme.space(PaymentSpace.group)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Wrap(
-                  spacing: theme.spacing * 0.5,
+                  spacing: theme.space(PaymentSpace.inline),
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Text(
@@ -152,14 +153,14 @@ class PromoCard extends StatelessWidget {
       children: [
         Text(content.title, style: type.heading),
         if (content.message != null) ...[
-          SizedBox(height: theme.spacing * 0.5),
+          SizedBox(height: theme.space(PaymentSpace.inline)),
           Text(
             content.message!,
             style: type.bodyFor(context).copyWith(color: theme.textSecondary),
           ),
         ],
         if (content.terms != null) ...[
-          SizedBox(height: theme.spacing * 0.5),
+          SizedBox(height: theme.space(PaymentSpace.inline)),
           Text(content.terms!, style: caption),
         ],
       ],
@@ -179,7 +180,9 @@ class PromoCard extends StatelessWidget {
         // already says what the offer is.
         : null;
     final leadingGap = SizedBox(
-      width: content.media != null ? theme.spacing * 1.5 : theme.spacing,
+      width: content.media != null
+          ? theme.space(PaymentSpace.related) * 1.5
+          : theme.space(PaymentSpace.related),
     );
 
     final quietCta = PaymentLink(label: content.ctaLabel, onPressed: onAction);
@@ -195,17 +198,19 @@ class PromoCard extends StatelessWidget {
           border: Border.all(color: theme.outline),
         ),
         padding: EdgeInsetsDirectional.fromSTEB(
-          theme.spacing * 2,
+          theme.space(PaymentSpace.group),
           0,
-          theme.spacing * 0.5,
-          theme.spacing * 2,
+          theme.space(PaymentSpace.inline),
+          theme.space(PaymentSpace.group),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             label,
             Padding(
-              padding: EdgeInsetsDirectional.only(end: theme.spacing * 1.5),
+              padding: EdgeInsetsDirectional.only(
+                end: theme.space(PaymentSpace.block),
+              ),
               child: banner
                   ? (stacked
                         ? Column(
@@ -219,7 +224,9 @@ class PromoCard extends StatelessWidget {
                                   Expanded(child: body),
                                 ],
                               ),
-                              SizedBox(height: theme.spacing),
+                              SizedBox(
+                                height: theme.space(PaymentSpace.related),
+                              ),
                               quietCta,
                             ],
                           )
@@ -232,7 +239,9 @@ class PromoCard extends StatelessWidget {
                                 ?leading,
                                 if (leading != null) leadingGap,
                                 Expanded(child: body),
-                                SizedBox(width: theme.spacing),
+                                SizedBox(
+                                  width: theme.space(PaymentSpace.related),
+                                ),
                                 ConstrainedBox(
                                   constraints: BoxConstraints(
                                     maxWidth: constraints.maxWidth * 0.4,
@@ -253,7 +262,7 @@ class PromoCard extends StatelessWidget {
                             Expanded(child: body),
                           ],
                         ),
-                        SizedBox(height: theme.spacing * 2),
+                        SizedBox(height: theme.space(PaymentSpace.group)),
                         PaymentButton(
                           label: content.ctaLabel,
                           variant: PaymentButtonVariant.secondary,
@@ -306,7 +315,9 @@ class PromoSlot extends StatelessWidget {
     switch (state) {
       case PromoSlotState.loading:
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: theme.spacing * 1.5),
+          padding: EdgeInsets.symmetric(
+            horizontal: theme.space(PaymentSpace.block),
+          ),
           decoration: BoxDecoration(
             borderRadius: theme.borderRadius,
             border: Border.all(color: theme.outline),

@@ -72,7 +72,8 @@ class PaymentActionBar extends StatelessWidget {
                     textBaseline: TextBaseline.alphabetic,
                     children: [
                       Text(totalLabel ?? l10n.totalLabel, style: type.caption),
-                      if (large) SizedBox(width: theme.spacing),
+                      if (large)
+                        SizedBox(width: theme.space(PaymentSpace.related)),
                       // A step below the 32 px headline: the bar repeats
                       // the total, it does not compete with it. Capped at
                       // 1.6x like other display amounts; the clamp sits
@@ -102,10 +103,10 @@ class PaymentActionBar extends StatelessWidget {
         child: SafeArea(
           top: false,
           minimum: EdgeInsets.fromLTRB(
-            theme.spacing * 2,
-            theme.spacing * 1.5,
-            theme.spacing * 2,
-            theme.spacing * 1.5,
+            theme.space(PaymentSpace.group),
+            theme.space(PaymentSpace.block),
+            theme.space(PaymentSpace.group),
+            theme.space(PaymentSpace.block),
           ),
           // Side by side at normal text sizes; stacked when text is large so
           // the amount never shrinks to fit beside the button.
@@ -117,14 +118,14 @@ class PaymentActionBar extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     totalBlock,
-                    SizedBox(height: theme.spacing),
+                    SizedBox(height: theme.space(PaymentSpace.related)),
                     action,
                   ],
                 )
               : Row(
                   children: [
                     Expanded(child: totalBlock),
-                    SizedBox(width: theme.spacing * 2),
+                    SizedBox(width: theme.space(PaymentSpace.group)),
                     // The button hugs its label (up to 240) so it never
                     // wraps; the total takes the rest.
                     ConstrainedBox(
@@ -205,7 +206,9 @@ class MerchantHeader extends StatelessWidget {
                         // Initials shrink to the box at large text sizes; the
                         // name next to it carries the readable label.
                         child: Padding(
-                          padding: EdgeInsets.all(theme.spacing),
+                          padding: EdgeInsets.all(
+                            theme.space(PaymentSpace.related),
+                          ),
                           child: Center(
                             child: FittedBox(
                               child: Text(
@@ -222,7 +225,7 @@ class MerchantHeader extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: theme.spacing * 1.5),
+          SizedBox(width: theme.space(PaymentSpace.block)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +241,7 @@ class MerchantHeader extends StatelessWidget {
                           alignment: PlaceholderAlignment.middle,
                           child: Padding(
                             padding: EdgeInsetsDirectional.only(
-                              start: theme.spacing * 0.5,
+                              start: theme.space(PaymentSpace.inline),
                             ),
                             child: PaymentIcon(
                               Icons.verified_outlined,
@@ -292,7 +295,7 @@ class PaymentStepIndicator extends StatelessWidget {
           Row(
             children: [
               for (var i = 0; i < steps.length; i++) ...[
-                if (i > 0) SizedBox(width: theme.spacing * 0.5),
+                if (i > 0) SizedBox(width: theme.space(PaymentSpace.inline)),
                 Expanded(
                   child: AnimatedContainer(
                     duration: motion.quick,
@@ -307,7 +310,7 @@ class PaymentStepIndicator extends StatelessWidget {
               ],
             ],
           ),
-          SizedBox(height: theme.spacing),
+          SizedBox(height: theme.space(PaymentSpace.related)),
           Text(
             '${current + 1}/${steps.length} · ${steps[current]}',
             style: type.caption.tabular,
@@ -363,7 +366,7 @@ class BalanceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: theme.spacing * 0.5),
+          SizedBox(height: theme.space(PaymentSpace.inline)),
           if (state == BalanceState.unavailable || balance == null)
             Text(
               l10n.balanceUnavailable,
@@ -377,7 +380,7 @@ class BalanceCard extends StatelessWidget {
               child: AmountText(balance!, variant: AmountTextVariant.large),
             ),
           if (state == BalanceState.insufficient) ...[
-            SizedBox(height: theme.spacing),
+            SizedBox(height: theme.space(PaymentSpace.related)),
             PaymentBanner(
               tone: StatusTone.warning,
               icon: Icons.account_balance_wallet_outlined,
@@ -388,7 +391,7 @@ class BalanceCard extends StatelessWidget {
             ),
           ],
           if (limit != null) ...[
-            SizedBox(height: theme.spacing * 1.5),
+            SizedBox(height: theme.space(PaymentSpace.block)),
             ClipRRect(
               borderRadius: BorderRadius.circular(2),
               child: LinearProgressIndicator(
@@ -402,7 +405,7 @@ class BalanceCard extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: theme.spacing),
+            SizedBox(height: theme.space(PaymentSpace.related)),
             ExcludeSemantics(
               child: Text(
                 l10n.limitUsed(fmt.format(limitUsed!), fmt.format(limitTotal!)),
@@ -518,7 +521,7 @@ class _PromoCodeInputState extends State<PromoCodeInput> {
               : Row(
                   children: [
                     Expanded(child: code),
-                    SizedBox(width: theme.spacing),
+                    SizedBox(width: theme.space(PaymentSpace.related)),
                     discount,
                   ],
                 ),
@@ -558,7 +561,7 @@ class _PromoCodeInputState extends State<PromoCodeInput> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           field,
-          SizedBox(height: theme.spacing),
+          SizedBox(height: theme.space(PaymentSpace.related)),
           button,
         ],
       );
@@ -567,7 +570,7 @@ class _PromoCodeInputState extends State<PromoCodeInput> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(child: field),
-        SizedBox(width: theme.spacing),
+        SizedBox(width: theme.space(PaymentSpace.related)),
         SizedBox(width: 112, child: button),
       ],
     );

@@ -310,7 +310,7 @@ class PaymentSummary extends StatelessWidget {
                 variant: AmountTextVariant.display,
               ),
             ),
-            SizedBox(height: theme.spacing),
+            SizedBox(height: theme.space(PaymentSpace.related)),
           ],
           if (changed) ...[
             PaymentBanner(
@@ -322,7 +322,7 @@ class PaymentSummary extends StatelessWidget {
                 l10n.moneyFormat.format(quote.total),
               ),
             ),
-            SizedBox(height: theme.spacing),
+            SizedBox(height: theme.space(PaymentSpace.related)),
           ],
           for (final line in quote.items)
             InfoRow(
@@ -336,7 +336,7 @@ class PaymentSummary extends StatelessWidget {
               caption: line.detail,
               value: AmountText(line.amount),
             ),
-          PaymentDivider(height: theme.spacing * 2),
+          PaymentDivider(height: theme.space(PaymentSpace.group)),
           InfoRow(
             label: l10n.totalLabel,
             emphasis: true,
@@ -393,7 +393,7 @@ class PaymentMethodPicker extends StatelessWidget {
     return PaymentSection(
       title: l10n.methodTitle,
       child: Padding(
-        padding: EdgeInsets.only(top: theme.spacing * 0.5),
+        padding: EdgeInsets.only(top: theme.space(PaymentSpace.inline)),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: theme.surface,
@@ -468,13 +468,13 @@ class _MethodTile extends StatelessWidget {
                 constraints: const BoxConstraints(minHeight: 48),
                 child: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: theme.spacing * 1.5,
-                    vertical: theme.spacing * 1.5,
+                    horizontal: theme.space(PaymentSpace.block),
+                    vertical: theme.space(PaymentSpace.block),
                   ),
                   child: Row(
                     children: [
                       RadioMark(selected: selected, enabled: enabled),
-                      SizedBox(width: theme.spacing * 1.5),
+                      SizedBox(width: theme.space(PaymentSpace.block)),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -494,7 +494,7 @@ class _MethodTile extends StatelessWidget {
                             if (!method.isAvailable)
                               Padding(
                                 padding: EdgeInsets.only(
-                                  top: theme.spacing * 0.5,
+                                  top: theme.space(PaymentSpace.inline),
                                 ),
                                 child: Text(
                                   '${l10n.unavailable}: ${method.unavailableReason}',
@@ -583,7 +583,7 @@ class _PaymentConfirmationState extends State<PaymentConfirmation> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: theme.spacing * 0.5),
+              SizedBox(height: theme.space(PaymentSpace.inline)),
               Text(widget.method.label, style: type.label),
               if (widget.method.detail != null)
                 Text(widget.method.detail!, style: type.caption),
@@ -591,7 +591,7 @@ class _PaymentConfirmationState extends State<PaymentConfirmation> {
           ),
         ),
         if (_needsReapproval) ...[
-          SizedBox(height: theme.spacing),
+          SizedBox(height: theme.space(PaymentSpace.related)),
           PaymentCheckbox(
             value: _acceptedChange,
             onChanged: widget.busy
@@ -603,10 +603,10 @@ class _PaymentConfirmationState extends State<PaymentConfirmation> {
           ),
         ],
         if (widget.footnote != null) ...[
-          SizedBox(height: theme.spacing),
+          SizedBox(height: theme.space(PaymentSpace.related)),
           Text(widget.footnote!, style: type.caption),
         ],
-        SizedBox(height: theme.spacing * 3),
+        SizedBox(height: theme.space(PaymentSpace.section)),
         PaymentButton(
           label: l10n.payAmount(l10n.moneyFormat.format(widget.quote.total)),
           busyLabel: l10n.sendingPayment,
@@ -712,7 +712,7 @@ class AuthorizationPrompt extends StatelessWidget {
                   header: true,
                   child: Text(title, style: type.heading),
                 ),
-                SizedBox(height: theme.spacing * 0.5),
+                SizedBox(height: theme.space(PaymentSpace.inline)),
                 Text(
                   message,
                   style: type
@@ -722,7 +722,7 @@ class AuthorizationPrompt extends StatelessWidget {
               ],
             ),
           ),
-        SizedBox(height: theme.spacing * 3),
+        SizedBox(height: theme.space(PaymentSpace.section)),
         if (retryable || phase == AuthorizationPhase.inProgress)
           PaymentButton(
             label: phase == AuthorizationPhase.ready
@@ -736,7 +736,7 @@ class AuthorizationPrompt extends StatelessWidget {
         if (phase != AuthorizationPhase.inProgress &&
             phase != AuthorizationPhase.approved &&
             onBackToReview != null) ...[
-          SizedBox(height: theme.spacing),
+          SizedBox(height: theme.space(PaymentSpace.related)),
           PaymentButton(
             label: l10n.backToReview,
             variant: PaymentButtonVariant.quiet,
