@@ -523,6 +523,48 @@ class PaymentLocalizations {
       'Lanjut ke pembayaran',
     ),
   };
+
+  // Calendar (D51, D52, D52a). Day, month and year are joined with no-break
+  // spaces so a date never wraps inside itself.
+
+  /// Full month name for [month] 1–12: "October" / "Oktober".
+  String monthName(int month) =>
+      (_id ? _monthsLongId : _monthsLongEn)[month - 1];
+
+  /// Calendar month heading: "October 2026" / "Oktober 2026".
+  String formatMonthYear(DateTime value) =>
+      '${monthName(value.month)}\u00A0${value.year}';
+
+  /// Spoken calendar day: "Tuesday, 14 October 2026" /
+  /// "Selasa, 14 Oktober 2026".
+  String formatDateLong(DateTime value) =>
+      '${_weekdaysLong[_id ? 1 : 0][value.weekday - 1]}, '
+      '${value.day}\u00A0${monthName(value.month)}\u00A0${value.year}';
+
+  /// Weekday column heading for [weekday] as in [DateTime.weekday]
+  /// (1 = Monday … 7 = Sunday): "Mon" / "Sen".
+  String weekdayShort(int weekday) =>
+      _weekdaysLong[_id ? 1 : 0][weekday - 1].substring(0, 3);
+
+  /// First column of the calendar, as a [DateTime.weekday] value: Monday
+  /// in Indonesian, Sunday in English.
+  int get firstDayOfWeek => _id ? DateTime.monday : DateTime.sunday;
+
+  static const _monthsLongEn = [
+    'January', 'February', 'March', 'April', 'May', 'June', //
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+  static const _monthsLongId = [
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', //
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+  ];
+  static const _weekdaysLong = [
+    [
+      'Monday', 'Tuesday', 'Wednesday', 'Thursday', //
+      'Friday', 'Saturday', 'Sunday',
+    ],
+    ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+  ];
 }
 
 class _PaymentLocalizationsDelegate
