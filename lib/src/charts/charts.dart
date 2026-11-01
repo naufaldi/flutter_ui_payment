@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/money.dart';
 import '../foundation/payment_localizations.dart';
@@ -244,6 +245,13 @@ class _PointChartState extends State<_PointChart> {
   /// The period a tap, drag or hover picked; null is the rest state.
   int? selected;
 
+  // Readout layouts by width, measured for [_readoutKey] and
+  // [_readoutData]. A tap, drag or hover only changes the selection, so it
+  // reuses them (#78).
+  Object? _readoutKey;
+  List<Object?>? _readoutData;
+  final _readoutLayouts = <double, ({bool stacked, int lines})>{};
+
   static List<String> _periods(_PointChart chart) => [
     for (final p
         in chart.series.isEmpty ? chart.points : chart.series.first.points)
@@ -317,6 +325,156 @@ class _PointChartState extends State<_PointChart> {
     if (all.any((p) => chartReading(p, widget.unit) == null)) {
       keys.add('┄ ${l10n.chartNoData}');
     }
+    final style = type.caption.tabular;
+    final scaler = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.5);
+    final direction = Directionality.of(context);
+    // The readout's own Text style: the band's merged caption, bold when the
+    // platform asks for bold text.
+    var readoutStyle = DefaultTextStyle.of(context).style.merge(style);
+    if (MediaQuery.boldTextOf(context)) {
+      readoutStyle = readoutStyle.merge(
+        const TextStyle(fontWeight: FontWeight.bold),
+      );
+    }
+    ChartPainter painterFor(int? shown, [int? bandLines]) => ChartPainter(
+      series: series,
+      unit: widget.unit,
+      colors: meterColors(theme, series.length),
+      showX:
+          widget.axis == PaymentChartAxis.x ||
+          widget.axis == PaymentChartAxis.both,
+      showY:
+          widget.axis == PaymentChartAxis.y ||
+          widget.axis == PaymentChartAxis.both,
+      gridX:
+          widget.grid == PaymentChartAxis.x ||
+          widget.grid == PaymentChartAxis.both,
+      gridY:
+          widget.grid == PaymentChartAxis.y ||
+          widget.grid == PaymentChartAxis.both,
+      theme: theme,
+      l10n: l10n,
+      style: style,
+      scaler: scaler,
+      bars: widget.bars,
+      spark: widget.spark,
+      zeroBased: widget.zeroBased,
+      selected: shown,
+      bandLines: bandLines,
+    );
+    // One line per series: the period and series name, then the value. Only
+    // the first line repeats the period.
+    List<(String, String)> readout(int i) => [
+      for (final (j, s) in series.indexed)
+        (
+          [
+            if (j == 0) s.points[i].label,
+            if (series.length > 1) s.label,
+          ].join(' · '),
+          '${switch (chartReading(s.points[i], widget.unit)) {
+            null => l10n.chartNoData,
+            final reading => formatChartValue(l10n, reading, widget.unit, currency: s.points[i].value?.currency ?? 'IDR'),
+          }}${s.points[i].status == ChartPointStatus.settled ? '' : ' · ${s.points[i].status == ChartPointStatus.pending ? l10n.chartPendingKey : l10n.chartUnknownKey}'}',
+        ),
+    ];
+    // #78: when any period's series name and value don't fit on one line at
+    // the clamped scale, every line stacks the name over the value, and a
+    // name wraps to two lines rather than losing its end. The band takes the
+    // worst case over all periods, so selection never moves it. A
+    // single-series readout keeps its one line.
+    ({bool stacked, int lines}) measureReadout(double width) {
+      final oneLine = (stacked: false, lines: series.length);
+      if (widget.spark || series.length < 2 || points.isEmpty) return oneLine;
+      assert(() {
+        debugReadoutMeasures++;
+        return true;
+      }());
+      final room = math.max(0.0, painterFor(null).plot(Size(width, 0)).width);
+      double measure(String text, {bool lines = false}) {
+        final painter = TextPainter(
+          text: TextSpan(text: text, style: readoutStyle),
+          textDirection: direction,
+          textScaler: scaler,
+          maxLines: 2,
+        )..layout(maxWidth: lines ? room : double.infinity);
+        final result = lines
+            ? painter.computeLineMetrics().length.toDouble()
+            : painter.width;
+        painter.dispose();
+        return result;
+      }
+
+      final rows = [for (var i = 0; i < points.length; i++) readout(i)];
+      if (rows.every(
+        (row) => row.every(
+          (line) =>
+              line.$1.isEmpty ||
+              measure('${line.$1} · ') + measure(line.$2) <= room,
+        ),
+      )) {
+        return oneLine;
+      }
+      return (
+        stacked: true,
+        lines: rows
+            .map(
+              (row) => row.fold(
+                0,
+                (sum, line) =>
+                    sum +
+                    1 +
+                    (line.$1.isEmpty
+                        ? 0
+                        : measure(line.$1, lines: true).toInt()),
+              ),
+            )
+            .reduce(math.max),
+      );
+    }
+
+    // Everything the readout's text, the ticks and the y gutter depend on.
+    // The data is a value snapshot, not list identity, because a host can
+    // change the lists in place.
+    final readoutKey = (
+      widget.unit,
+      widget.spark,
+      widget.bars,
+      widget.zeroBased,
+      widget.axis,
+      Localizations.maybeLocaleOf(context),
+      direction,
+      style,
+      readoutStyle,
+      scaler,
+    );
+    final readoutData = [
+      for (final s in series) ...[
+        s.label,
+        for (final p in s.points) ...[
+          p.label,
+          p.value,
+          _ExactNumber(p.measure),
+          p.status,
+        ],
+      ],
+    ];
+    if (readoutKey != _readoutKey || !listEquals(readoutData, _readoutData)) {
+      _readoutKey = readoutKey;
+      _readoutData = readoutData;
+      _readoutLayouts.clear();
+    }
+    ({bool stacked, int lines}) readoutLayout(double width) {
+      // Hosts that keep resizing don't grow the cache without bound.
+      if (_readoutLayouts.length > 4) _readoutLayouts.clear();
+      return _readoutLayouts.putIfAbsent(width, () => measureReadout(width));
+    }
+
+    // In a ChartModule the plot slot grows by the lines a stacked readout
+    // adds, so the plot keeps its height.
+    _ReadoutScope.maybeOf(context)?.extra = (width) => math.max(
+      0,
+      (readoutLayout(width).lines - series.length) * painterFor(null).line,
+    );
     return Semantics(
       container: true,
       label:
@@ -348,33 +506,8 @@ class _PointChartState extends State<_PointChart> {
                       final shown = widget.spark || points.isEmpty
                           ? selected
                           : (selected ?? (latest < 0 ? null : latest));
-                      final painter = ChartPainter(
-                        series: series,
-                        unit: widget.unit,
-                        colors: meterColors(theme, series.length),
-                        showX:
-                            widget.axis == PaymentChartAxis.x ||
-                            widget.axis == PaymentChartAxis.both,
-                        showY:
-                            widget.axis == PaymentChartAxis.y ||
-                            widget.axis == PaymentChartAxis.both,
-                        gridX:
-                            widget.grid == PaymentChartAxis.x ||
-                            widget.grid == PaymentChartAxis.both,
-                        gridY:
-                            widget.grid == PaymentChartAxis.y ||
-                            widget.grid == PaymentChartAxis.both,
-                        theme: theme,
-                        l10n: l10n,
-                        style: type.caption.tabular,
-                        scaler: MediaQuery.textScalerOf(
-                          context,
-                        ).clamp(maxScaleFactor: 1.5),
-                        bars: widget.bars,
-                        spark: widget.spark,
-                        zeroBased: widget.zeroBased,
-                        selected: shown,
-                      );
+                      final layout = readoutLayout(box.maxWidth);
+                      final painter = painterFor(shown, layout.lines);
                       void inspect(Offset position, bool toggle) {
                         if (!widget.inspectable || points.isEmpty) {
                           return;
@@ -401,22 +534,6 @@ class _PointChartState extends State<_PointChart> {
                       final message = index < 0
                           ? l10n.chartNoData
                           : '${points[index].label} · ${formatChartValue(l10n, chartReading(points[index], widget.unit) ?? 0, widget.unit, currency: points[index].value?.currency ?? 'IDR')}';
-                      // One line per series: the period and series name
-                      // may truncate, the amount never does. Only the first
-                      // line repeats the period.
-                      List<(String, String)> readout(int i) => [
-                        for (final (j, s) in series.indexed)
-                          (
-                            [
-                              if (j == 0) s.points[i].label,
-                              if (series.length > 1) s.label,
-                            ].join(' · '),
-                            '${switch (chartReading(s.points[i], widget.unit)) {
-                              null => l10n.chartNoData,
-                              final reading => formatChartValue(l10n, reading, widget.unit, currency: s.points[i].value?.currency ?? 'IDR'),
-                            }}${s.points[i].status == ChartPointStatus.settled ? '' : ' · ${s.points[i].status == ChartPointStatus.pending ? l10n.chartPendingKey : l10n.chartUnknownKey}'}',
-                          ),
-                      ];
                       if (widget.spark) {
                         final plot = MouseRegion(
                           onHover: (event) =>
@@ -479,7 +596,29 @@ class _PointChartState extends State<_PointChart> {
                                     children: [
                                       if (shown == null)
                                         Text(l10n.chartNoData)
+                                      else if (layout.stacked)
+                                        for (final (name, value) in readout(
+                                          shown,
+                                        )) ...[
+                                          if (name.isNotEmpty)
+                                            // Only a name longer than
+                                            // two lines at the plot width
+                                            // ends in an ellipsis.
+                                            Text(
+                                              name,
+                                              maxLines: 2,
+                                              softWrap: true,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          Text(
+                                            value,
+                                            overflow: TextOverflow.ellipsis,
+                                            softWrap: false,
+                                          ),
+                                        ]
                                       else
+                                        // The name gives way before the
+                                        // amount does.
                                         for (final (name, value) in readout(
                                           shown,
                                         ))
@@ -833,6 +972,7 @@ class ChartModule extends StatelessWidget {
     final type = PaymentType.of(context);
     final theme = PaymentTheme.of(context);
     final large = PaymentType.isLarge(context);
+    final room = _ReadoutRoom();
     final plot = switch (state) {
       ChartState.ready => chart!,
       ChartState.loading => ClipRect(
@@ -927,17 +1067,131 @@ class ChartModule extends StatelessWidget {
               ),
             ),
           // At large text the plot never grows past the compact height, so
-          // the rows under a chart stay on the first screen (#58-3).
-          SizedBox(
+          // the rows under a chart stay on the first screen (#58-3). The one
+          // exception is a readout that stacks: the slot grows by the lines
+          // it adds, so the plot keeps its height (#78).
+          _ChartSlot(
             key: const ValueKey('payment-chart-plot'),
             height: height == null || !large
                 ? height
                 : math.min(height!, compactHeight),
-            child: plot,
+            room: room,
+            child: _ReadoutScope(room: room, child: plot),
           ),
         ],
       ),
     );
+  }
+}
+
+/// A measure in the readout snapshot, equal only to the exact same value:
+/// 0.0 and -0.0 format differently, and NaN must not invalidate the cache
+/// on every build (#78).
+@immutable
+class _ExactNumber {
+  const _ExactNumber(this.value);
+  final num? value;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! _ExactNumber) return false;
+    final a = value, b = other.value;
+    if (a == null || b == null) return a == b;
+    return (a == b && a.isNegative == b.isNegative) || (a.isNaN && b.isNaN);
+  }
+
+  @override
+  int get hashCode => switch (value) {
+    null => 0,
+    final v when v.isNaN => 1,
+    final v => Object.hash(v, v.isNegative),
+  };
+}
+
+/// The height a chart in a [ChartModule] adds to the plot slot: the lines
+/// its stacked readout needs beyond one per series (#78).
+class _ReadoutRoom {
+  /// Set by the chart as it builds, read by the slot as it lays out.
+  double Function(double width)? extra;
+}
+
+class _ReadoutScope extends InheritedWidget {
+  const _ReadoutScope({required this.room, required super.child});
+  final _ReadoutRoom room;
+
+  static _ReadoutRoom? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_ReadoutScope>()?.room;
+
+  @override
+  bool updateShouldNotify(_ReadoutScope oldWidget) => room != oldWidget.room;
+}
+
+/// A fixed-height plot slot, like a `SizedBox`, plus the room its chart asks
+/// for at the slot's width.
+class _ChartSlot extends SingleChildRenderObjectWidget {
+  const _ChartSlot({
+    super.key,
+    required this.height,
+    required this.room,
+    super.child,
+  });
+  final double? height;
+  final _ReadoutRoom room;
+
+  @override
+  _RenderChartSlot createRenderObject(BuildContext context) =>
+      _RenderChartSlot(height, room);
+
+  @override
+  void updateRenderObject(BuildContext context, _RenderChartSlot slot) => slot
+    ..height = height
+    ..room = room;
+}
+
+class _RenderChartSlot extends RenderProxyBox {
+  _RenderChartSlot(this._height, this._room);
+  double? _height;
+  set height(double? value) {
+    if (value == _height) return;
+    _height = value;
+    markNeedsLayout();
+  }
+
+  _ReadoutRoom _room;
+  set room(_ReadoutRoom value) {
+    if (identical(value, _room)) return;
+    _room = value;
+    markNeedsLayout();
+  }
+
+  BoxConstraints _inner(BoxConstraints constraints) => _height == null
+      ? constraints
+      : BoxConstraints.tightFor(
+          height: _height! + (_room.extra?.call(constraints.maxWidth) ?? 0),
+        ).enforce(constraints);
+
+  @override
+  double computeMinIntrinsicHeight(double width) =>
+      _height ?? super.computeMinIntrinsicHeight(width);
+
+  @override
+  double computeMaxIntrinsicHeight(double width) =>
+      _height ?? super.computeMaxIntrinsicHeight(width);
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) =>
+      child?.getDryLayout(_inner(constraints)) ??
+      _inner(constraints).constrain(Size.zero);
+
+  @override
+  void performLayout() {
+    final inner = _inner(constraints);
+    if (child == null) {
+      size = inner.constrain(Size.zero);
+      return;
+    }
+    child!.layout(inner, parentUsesSize: true);
+    size = child!.size;
   }
 }
 

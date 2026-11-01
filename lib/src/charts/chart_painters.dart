@@ -6,6 +6,11 @@ import '../foundation/payment_theme.dart';
 import 'chart_geometry.dart';
 import 'chart_models.dart';
 
+/// How many times a chart has measured its readout layout (#78); tests
+/// check that a selection change reuses the measurement. This file is not
+/// exported, so it stays out of the public API.
+int debugReadoutMeasures = 0;
+
 class ChartPainter extends CustomPainter {
   ChartPainter({
     required this.series,
@@ -23,15 +28,15 @@ class ChartPainter extends CustomPainter {
     this.spark = false,
     this.zeroBased = false,
     this.selected,
+    this.bandLines,
   });
 
-  /// Line height of the value label band above the plot (D58): one caption
-  /// line per series at the clamped text scale. Zero for sparklines.
-  double get band => spark
-      ? 0
-      : series.length *
-            scaler.scale(style.fontSize ?? 13) *
-            (style.height ?? 1);
+  /// Height of the value label band above the plot (D58): [bandLines]
+  /// clamped caption lines, one per series by default. Zero for sparklines.
+  double get band => spark ? 0 : (bandLines ?? series.length) * line;
+
+  /// One caption line at the clamped text scale.
+  double get line => scaler.scale(style.fontSize ?? 13) * (style.height ?? 1);
 
   /// Whether every settled point gets a marker (D58: series of ≤ 12 points);
   /// longer series mark the last point and the selected one.
@@ -82,6 +87,10 @@ class ChartPainter extends CustomPainter {
   final bool zeroBased;
   final int? selected;
 
+  /// Lines the value label needs; a stacked readout needs more than one
+  /// per series (#78).
+  final int? bandLines;
+
   Rect plot(Size size) {
     final top = spark ? 5.0 : band + 4;
     return Rect.fromLTRB(
@@ -93,10 +102,7 @@ class ChartPainter extends CustomPainter {
   }
 
   // Room under the plot for the x labels at the clamped text scale.
-  double get _xBand => math.max(
-    28,
-    scaler.scale(style.fontSize ?? 13) * (style.height ?? 1) + 8,
-  );
+  double get _xBand => math.max(28, line + 8);
 
   TextPainter text(String value) => TextPainter(
     text: TextSpan(
