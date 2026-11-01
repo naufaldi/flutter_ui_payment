@@ -8,7 +8,7 @@
   ```
 
 - **Header title never breaks inside a word (D59a, P5 regression).** When a header's title on one line and its "Label ›" link don't fit side by side, the link takes its own line under the header text, start-aligned with its 48 dp target, instead of taking half the row and breaking the title mid-word ("Transacti / ons" at 200% on a small phone). A ⋮ menu stays on the title row. No API change.
-- **History: list before the month's figures (#58).** The example's history page shows the month's payments, refunds and most-used method after the transaction list, so a transaction row is on the first screen at 100%. At 200% on an iPhone SE the first screen still ends before the first row (see #58).
+- **History: list before the month's figures (#58).** The example's history page shows the month's payments, refunds and most-used method after the transaction list, so at 100% on an iPhone 16 Pro the first row's title, amount and date are on the first screen. At 200% on an iPhone SE the first screen still ends before the first row (see #58).
 - **Example app bar.** "Demo tools" moved from its own app-bar icon into the settings sheet, so the bar keeps at most two trailing actions and step titles such as "Konfirmasi pembayaran" fit at 100%.
 
 ## UI review P7b (2026-11-01)

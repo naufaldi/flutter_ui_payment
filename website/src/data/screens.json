@@ -1619,6 +1619,51 @@
     "height": 1138,
     "caption": "Example receipt on iPhone SE at 200% text, English"
   },
+  "ios_kyc_documents_light": {
+    "width": 640,
+    "height": 1391,
+    "caption": "Example KYC documents step with the pinned Continue to review"
+  },
+  "ios_kyc_documents_dark": {
+    "width": 640,
+    "height": 1391,
+    "caption": "Example KYC documents step, dark"
+  },
+  "ios_kyc_documents_light_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "Example KYC documents step at 200% text"
+  },
+  "ios_se_kyc_onboarding_light_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example KYC details on iPhone SE at 200% text, Indonesian"
+  },
+  "ios_se_kyc_onboarding_en_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example KYC details on iPhone SE at 200% text, English"
+  },
+  "ios_se_kyc_documents_light_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example KYC documents on iPhone SE at 200% text, Indonesian"
+  },
+  "ios_se_kyc_documents_en_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example KYC documents on iPhone SE at 200% text, English"
+  },
+  "ios_se_kyc_review_light_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example KYC review on iPhone SE at 200% text, Indonesian"
+  },
+  "ios_se_kyc_review_en_200": {
+    "width": 640,
+    "height": 1138,
+    "caption": "Example KYC review on iPhone SE at 200% text, English"
+  },
   "ios_ipad_checkout_light": {
     "width": 640,
     "height": 975,
