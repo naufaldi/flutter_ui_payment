@@ -1,5 +1,7 @@
 # Website plan: landing, documentation and Flutter gallery
 
+> **D64 (1 Nov 2026):** web is documentation only. The site and its `/play/` gallery preview the kit; web is not a product target.
+
 Date: 30 October 2026. Scope: a static website for `flutter_ui_payment` under `website/`, built into one deployable folder. Authorized: local, ready-to-deploy output. Not authorized: hosting, a domain, a public repository, pub.dev publication or deployment. `publish_to: none` stays.
 
 ## 1. Benchmark and gap
