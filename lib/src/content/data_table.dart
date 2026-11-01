@@ -502,9 +502,11 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
         PaymentCellType.date => Text(l.formatDate(value as DateTime)),
         PaymentCellType.id => SizedBox(
           width: _widths[c.key] ?? 160,
+          // Starts on the column edge, as its header does (#57-2).
           child: MiddleEllipsisText(
             value.toString(),
             style: type.label.reference(theme),
+            textAlign: TextAlign.start,
           ),
         ),
         PaymentCellType.status => PaymentBadge(

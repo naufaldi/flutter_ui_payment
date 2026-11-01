@@ -52,6 +52,14 @@ class TableGrid extends StatelessWidget {
           2 * theme.space(PaymentSpace.block),
     );
     final first = columns.indexWhere((c) => c.pin == TablePin.start);
+    // Visual order is start-pinned, scrolling, end-pinned. The outer cells
+    // sit on the content edge, so headers, cells and the page's other values
+    // share one start and one end edge (#57-2).
+    final order = [
+      for (final pin in TablePin.values)
+        for (var i = 0; i < columns.length; i++)
+          if (columns[i].pin == pin) i,
+    ];
     Widget grid(List<int> indexes) => Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       columnWidths: {
@@ -77,11 +85,16 @@ class TableGrid extends StatelessWidget {
                     Widget child = SizedBox(
                       height: h,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: col.width == 48
-                              ? 0
-                              : theme.space(PaymentSpace.block),
-                        ),
+                        padding: col.width == 48
+                            ? EdgeInsets.zero
+                            : EdgeInsetsDirectional.only(
+                                start: i == order.first
+                                    ? 0
+                                    : theme.space(PaymentSpace.block),
+                                end: i == order.last
+                                    ? 0
+                                    : theme.space(PaymentSpace.block),
+                              ),
                         child: Align(
                           alignment: col.numeric
                               ? AlignmentDirectional.centerEnd

@@ -133,6 +133,18 @@ class PaymentDetailPagePropertyList extends StatelessWidget {
               reference: p.values.single.reference,
               trailing: copy(p.values.single),
             )
+          // One link value rides InfoRow's first-line trailing slot, so the
+          // link text shares the label's line instead of sitting 14 dp
+          // lower in its 48 dp target (#66).
+          else if (p.values.length == 1 &&
+              p.values.single.link != null &&
+              p.values.single.subText == null)
+            PaymentPropertyListItem(
+              label: p.label,
+              caption: p.description,
+              value: const SizedBox.shrink(),
+              trailing: p.values.single.link,
+            )
           else
             PaymentPropertyListItem(
               label: p.label,
