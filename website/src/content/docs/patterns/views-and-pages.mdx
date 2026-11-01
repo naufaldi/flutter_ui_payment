@@ -15,11 +15,11 @@ SizedBox.expand(
 );
 ```
 
-Use DetailPage at the top level, never inside FullPageView. Put non-scrolling OverviewPage inside FullPageView, as A01 history does. Primary/secondary module lists accept page modules, detail property lists, detail tables and chart modules. Do not wrap an already titled module in another title.
+Use DetailPage at the top level, never inside FullPageView. Put non-scrolling OverviewPage inside FullPageView, as A01 history does after its list. Primary/secondary module lists accept page modules, detail property lists, detail tables and chart modules. Do not wrap an already titled module in another title.
 
 | Task | Composition |
 | --- | --- |
-| History and spending (A01) | FullPageView → OverviewPage → ChartModule, followed by filters and TransactionHistory |
+| History and spending (A01) | FullPageView → active-filter chips → TransactionHistory (search with the date-range button, tabs, rows), then OverviewPage → ChartModule and the month's figures (D63, D63a) |
 | Transaction (A02) | DetailPage → payment module, attempts table, merchant properties |
 | Edit settings (A05) | SettingsView → grouped controls, one Save footer |
 | Report (A02) | FocusView → facts, category, message, Send and Cancel |

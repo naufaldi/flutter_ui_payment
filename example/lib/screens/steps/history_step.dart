@@ -69,57 +69,6 @@ class HistoryStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: t.space(PaymentSpace.group),
         children: [
-          PaymentOverviewPage(
-            primary: [
-              ChartModule(
-                title: s.spendingTitle,
-                state: c.historyLoading ? ChartState.loading : ChartState.ready,
-                headline: total,
-                headlineCaption: s.thisMonth,
-                chart: SizedBox(
-                  height: 200,
-                  child: PaymentBarChart(
-                    series: [
-                      PaymentChartSeries(
-                        label: s.thisMonth,
-                        points: weekly(month),
-                      ),
-                      PaymentChartSeries(
-                        label: s.lastMonth,
-                        points: weekly(previous),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          PaymentDateRangePicker(
-            label: s.dateRange,
-            value: c.historyRange,
-            onChanged: c.setHistoryRange,
-            firstDate: DateTime(2026),
-            lastDate: now,
-            presets: [
-              PaymentDatePreset(
-                label: s.last7Days,
-                start: DateUtils.dateOnly(
-                  now,
-                ).subtract(const Duration(days: 6)),
-                end: now,
-              ),
-              PaymentDatePreset(
-                label: s.presetThisMonth,
-                start: month,
-                end: now,
-              ),
-              PaymentDatePreset(
-                label: s.presetLastMonth,
-                start: previous,
-                end: month.subtract(const Duration(days: 1)),
-              ),
-            ],
-          ),
           if (active) ...[
             PaymentChipList(
               children: [
@@ -181,10 +130,67 @@ class HistoryStep extends StatelessWidget {
                 ? null
                 : c.historyError!.safeMessage ?? s.historyFailed,
             onRetry: c.retryHistory,
+            // The date range is a calendar button on the search line, so the
+            // filters take one line at every text size; the chosen range
+            // shows as the date chip above (D63a).
+            searchActions: [
+              PaymentDateRangePicker.button(
+                key: const Key('history-range'),
+                label: s.dateRange,
+                value: c.historyRange,
+                onChanged: c.setHistoryRange,
+                firstDate: DateTime(2026),
+                lastDate: now,
+                presets: [
+                  PaymentDatePreset(
+                    label: s.last7Days,
+                    start: DateUtils.dateOnly(
+                      now,
+                    ).subtract(const Duration(days: 6)),
+                    end: now,
+                  ),
+                  PaymentDatePreset(
+                    label: s.presetThisMonth,
+                    start: month,
+                    end: now,
+                  ),
+                  PaymentDatePreset(
+                    label: s.presetLastMonth,
+                    start: previous,
+                    end: month.subtract(const Duration(days: 1)),
+                  ),
+                ],
+              ),
+            ],
           ),
-          // The month's figures follow the list, so the first screen
-          // reaches a transaction row (#58-3); the headline above already
-          // carries the month's total.
+          // History is for finding a payment, so the list leads at every
+          // text size and the spending chart and the month's figures follow
+          // it (D63, #58-3).
+          PaymentOverviewPage(
+            primary: [
+              ChartModule(
+                title: s.spendingTitle,
+                state: c.historyLoading ? ChartState.loading : ChartState.ready,
+                headline: total,
+                headlineCaption: s.thisMonth,
+                chart: SizedBox(
+                  height: 200,
+                  child: PaymentBarChart(
+                    series: [
+                      PaymentChartSeries(
+                        label: s.thisMonth,
+                        points: weekly(month),
+                      ),
+                      PaymentChartSeries(
+                        label: s.lastMonth,
+                        points: weekly(previous),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
           PaymentDetailPagePropertyList(
             title: s.thisMonth,
             pending: c.historyLoading,

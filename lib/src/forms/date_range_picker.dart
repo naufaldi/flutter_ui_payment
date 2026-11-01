@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../controls/controls.dart';
+import '../controls/actions.dart';
 import '../foundation/field_decoration.dart';
 import '../foundation/field_trigger.dart';
 import '../foundation/kit_strings.dart';
@@ -101,7 +102,31 @@ class PaymentDateRangePicker extends StatefulWidget {
     this.errorText,
     this.size = PaymentSize.medium,
     this.enabled = true,
-  });
+  }) : _button = false;
+
+  /// A calendar icon button that opens the same presets and range sheet,
+  /// for a filter line such as `TransactionHistory.searchActions`.
+  ///
+  /// [label] is its tooltip and spoken name. While a range is set the glyph
+  /// fills, takes the accent and reads as selected; show the range itself
+  /// as an active-filter chip, since the button has no visible value.
+  const PaymentDateRangePicker.button({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+    required this.firstDate,
+    required this.lastDate,
+    this.presets = const [],
+    this.enabled = true,
+  }) : granularity = null,
+       onGranularityChanged = null,
+       description = null,
+       errorText = null,
+       size = PaymentSize.medium,
+       _button = true;
+
+  final bool _button;
 
   /// Visible name identifying this value or control.
   final String label;
@@ -224,13 +249,31 @@ class _PaymentDateRangePickerState extends State<PaymentDateRangePicker> {
     final range = v == null ? null : l.formatDateRange(v.start, v.end);
     final enabled =
         widget.enabled && !(FieldGroupScope.of(context)?.disabled ?? false);
+    final shown = v?.preset == null ? range : '${v!.preset!.label} · $range';
+    if (widget._button) {
+      return MergeSemantics(
+        child: Semantics(
+          selected: v != null,
+          value: shown,
+          child: PaymentIconButton(
+            icon: v == null ? Icons.date_range_outlined : Icons.date_range,
+            tooltip: widget.label,
+            variant: v == null
+                ? PaymentIconButtonVariant.neutral
+                : PaymentIconButtonVariant.accent,
+            focusNode: _focus,
+            onPressed: enabled ? _open : null,
+          ),
+        ),
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: PaymentTheme.of(context).space(PaymentSpace.related),
       children: [
         FieldTrigger(
           label: widget.label,
-          value: v?.preset == null ? range : '${v!.preset!.label} · $range',
+          value: shown,
           hint: l.chooseDates,
           description: widget.description,
           errorText: widget.errorText,

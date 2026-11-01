@@ -231,6 +231,7 @@ class TransactionHistory extends StatelessWidget {
     this.error,
     this.onRetry,
     this.filters = TransactionFilter.values,
+    this.searchActions = const [],
   });
 
   /// Already filtered for [query] and [filter].
@@ -246,6 +247,14 @@ class TransactionHistory extends StatelessWidget {
   final String? error;
   final FutureOr<void> Function()? onRetry;
   final List<TransactionFilter> filters;
+
+  /// Host filter controls on the search line, after the box, such as
+  /// `PaymentDateRangePicker.button`. Show the active filter as a chip too.
+  ///
+  /// With actions the search line is one compact row at every text size
+  /// (D63a): the search label shows as the placeholder, not above the box,
+  /// and stays the field's spoken name.
+  final List<Widget> searchActions;
 
   @override
   Widget build(BuildContext context) {
@@ -300,6 +309,10 @@ class TransactionHistory extends StatelessWidget {
           query: query,
           onChanged: onQueryChanged,
           label: l10n.searchTransactions,
+          actions: searchActions,
+          hiddenElements: searchActions.isEmpty
+              ? const {}
+              : const {PaymentFieldPart.label},
         ),
         SizedBox(height: theme.space(PaymentSpace.related)),
         PaymentTabs(

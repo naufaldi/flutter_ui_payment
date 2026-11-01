@@ -65,7 +65,7 @@ The PRD budget is p95 build and raster each under 16.7 ms on a recorded 60 Hz ta
 
 ## UI review, 1 November 2026
 
-On 1 November 2026 the owner reviewed every component and flow against the 8 pt grid and a design-engineering checklist. Each problem became a GitHub issue with annotated "before" captures, and each answer became a decision, D45 to D62. The full wording is in the PRD decision table (<RepoLink path="docs/prd-foundation-components.md" label="docs/prd-foundation-components.md" />), and the implementation notes are in <RepoLink path="docs/decisions.md" label="docs/decisions.md" />.
+On 1 November 2026 the owner reviewed every component and flow against the 8 pt grid and a design-engineering checklist. Each problem became a GitHub issue with annotated "before" captures, and each answer became a decision, D45 to D63a. The full wording is in the PRD decision table (<RepoLink path="docs/prd-foundation-components.md" label="docs/prd-foundation-components.md" />), and the implementation notes are in <RepoLink path="docs/decisions.md" label="docs/decisions.md" />.
 
 | Decision | In plain words | Before |
 | --- | --- | --- |
@@ -90,6 +90,8 @@ On 1 November 2026 the owner reviewed every component and flow against the 8 pt 
 | D60 | On a phone, table rows read like a property list: label on the left, value on the end edge. | [#63](https://github.com/naufaldi/flutter_ui_payment/issues/63) |
 | D61 | Sign-in is an account-linking screen: both apps, what the app can and can't do, one legal sentence and a pinned Continue. | [#63](https://github.com/naufaldi/flutter_ui_payment/issues/63) |
 | D62 | Every phone screen with a priority action pins it at the bottom, full width, with at most one quiet action. The tab bar hides during a payment. | [#64](https://github.com/naufaldi/flutter_ui_payment/issues/64) |
+| D63 | History leads with the list at every text size: filters, then the transactions, then the spending chart and the month's figures. | [#58](https://github.com/naufaldi/flutter_ui_payment/issues/58) |
+| D63a | History's date range is a calendar button at the end of the search line, and the range shows as a filter chip. Beside the button, the search shows its label as the placeholder. | [#58](https://github.com/naufaldi/flutter_ui_payment/issues/58) |
 
 The captures below show the result, from the final capture refresh on an iPhone 16 Pro unless noted.
 
@@ -118,7 +120,12 @@ The captures below show the result, from the final capture refresh on an iPhone 
   <Screen name="ios_ipad_checkout_light" alt="Checkout on an iPad mini in a centred content column." caption="D53: iPad mini column" />
 </Screens>
 
-Still open after the review: on an iPhone SE at 200% text, history does not show a transaction row on the first screen ([#58](https://github.com/naufaldi/flutter_ui_payment/issues/58)). It needs an owner choice between folding the chart, moving the date range or accepting a row that peeks.
+The last open item, history on an iPhone SE at 200% text ([#58](https://github.com/naufaldi/flutter_ui_payment/issues/58)), was closed by D63 and D63a. The list now comes before the chart, and the date range is a button on the search line, so a whole first transaction (title, amount, date and status) sits above the tab bar in English and Indonesian.
+
+<Screens>
+  <Screen name="ios_se_history_en_200" alt="History on an iPhone SE at 200% text in English: the search line with its calendar button, the tabs and a whole first row with its Refunded badge above the tab bar." caption="D63, D63a: iPhone SE, 200%, English" />
+  <Screen name="ios_se_history_light_200" alt="History on an iPhone SE at 200% text in Indonesian: a whole first row and the start of the second above the tab bar." caption="D63, D63a: iPhone SE, 200%, Indonesian" />
+</Screens>
 
 ## Open items
 
