@@ -13,6 +13,7 @@ import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/primitives.dart';
+import '../foundation/view_frame.dart';
 
 /// Pinned bottom bar with the total and the step's main action, so both
 /// stay reachable however long the page is.
@@ -28,7 +29,8 @@ class PaymentActionBar extends StatelessWidget {
     this.updating = false,
   });
 
-  /// Main action; pass width: PaymentWidth.hug on PaymentButton.
+  /// Main action; pass width: PaymentWidth.hug on PaymentButton. With no
+  /// [total] the action fills the bar, so pass a full-width button.
   final Widget action;
   final Money? total;
   final String? totalLabel;
@@ -105,48 +107,44 @@ class PaymentActionBar extends StatelessWidget {
     }
     return Material(
       color: theme.surface,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: theme.outline)),
+      // At 600 dp and wider the bar's content keeps the page's 640 dp
+      // column while the hairline spans the window (D53).
+      child: PinnedFooter(
+        padding: EdgeInsets.fromLTRB(
+          theme.space(PaymentSpace.group),
+          theme.space(PaymentSpace.block),
+          theme.space(PaymentSpace.group),
+          theme.space(PaymentSpace.block),
         ),
-        child: SafeArea(
-          top: false,
-          minimum: EdgeInsets.fromLTRB(
-            theme.space(PaymentSpace.group),
-            theme.space(PaymentSpace.block),
-            theme.space(PaymentSpace.group),
-            theme.space(PaymentSpace.block),
-          ),
-          // Side by side at normal text sizes; stacked when text is large so
-          // the amount never shrinks to fit beside the button.
-          child: totalBlock == null
-              ? action
-              : large
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    totalBlock,
-                    SizedBox(height: theme.space(PaymentSpace.related)),
-                    action,
-                  ],
-                )
-              : Row(
-                  children: [
-                    Expanded(child: totalBlock),
-                    SizedBox(width: theme.space(PaymentSpace.group)),
-                    // The button hugs its label (up to 240) so it never
-                    // wraps; the total takes the rest.
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minWidth: 112,
-                        maxWidth: 240,
-                      ),
-                      child: IntrinsicWidth(child: action),
+        // Side by side at normal text sizes; stacked when text is large so
+        // the amount never shrinks to fit beside the button.
+        child: totalBlock == null
+            ? action
+            : large
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  totalBlock,
+                  SizedBox(height: theme.space(PaymentSpace.related)),
+                  action,
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(child: totalBlock),
+                  SizedBox(width: theme.space(PaymentSpace.group)),
+                  // The button hugs its label (up to 240) so it never
+                  // wraps; the total takes the rest.
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minWidth: 112,
+                      maxWidth: 240,
                     ),
-                  ],
-                ),
-        ),
+                    child: IntrinsicWidth(child: action),
+                  ),
+                ],
+              ),
       ),
     );
   }

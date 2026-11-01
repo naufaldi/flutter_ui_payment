@@ -287,6 +287,135 @@ void main() {
       }
     }
   });
+
+  // UI review P5: D59a header actions, D62 footer actions, #66 gaps.
+  Widget page({
+    List<PaymentButton> actions = const [],
+    PaymentButton? primaryAction,
+    PaymentButton? secondaryAction,
+    List<PaymentBreadcrumb> breadcrumbs = const [],
+  }) => contentHostBoundedPage(
+    PaymentDetailPage(
+      title: 'Rp12.500 to Toko',
+      breadcrumbs: breadcrumbs,
+      actions: actions,
+      primaryAction: primaryAction,
+      secondaryAction: secondaryAction,
+      primary: const [PaymentPageModule(title: 'Payment', child: Text('Body'))],
+    ),
+  );
+  PaymentButton action(String label, [VoidCallback? onPressed]) =>
+      PaymentButton(
+        label: label,
+        variant: PaymentButtonVariant.secondary,
+        onPressed: onPressed ?? () {},
+      );
+
+  testWidgets('one header action is a title-row link on phones (D59a)', (
+    t,
+  ) async {
+    await setSurface(t, const Size(393, 844));
+    var calls = 0;
+    await t.pumpWidget(page(actions: [action('Receipt', () => calls++)]));
+    expect(find.byType(PaymentButton), findsNothing);
+    expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+    final title = t.getRect(find.text('Rp12.500 to Toko'));
+    final link = t.getRect(find.text('Receipt'));
+    expect((link.center.dy - (title.top + 12)).abs(), lessThan(1));
+    await t.tap(find.text('Receipt'));
+    expect(calls, 1);
+  });
+
+  testWidgets('three header actions go behind ⋮, a sheet on phones', (t) async {
+    await setSurface(t, const Size(393, 844));
+    var calls = 0;
+    await t.pumpWidget(
+      page(
+        actions: [
+          action('Receipt'),
+          action('Report', () => calls++),
+          PaymentButton(
+            label: 'Refund',
+            variant: PaymentButtonVariant.destructive,
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+    expect(find.text('Receipt'), findsNothing);
+    await t.tap(find.byTooltip('More actions'));
+    await t.pumpAndSettle();
+    expect(find.byType(BottomSheet), findsOneWidget);
+    await t.tap(find.text('Report'));
+    await t.pumpAndSettle();
+    expect(calls, 1);
+    expect(find.byType(BottomSheet), findsNothing);
+  });
+
+  testWidgets('wide header keeps its hug buttons', (t) async {
+    await setSurface(t, const Size(1024, 768));
+    await t.pumpWidget(page(actions: [action('Receipt'), action('Report')]));
+    expect(find.widgetWithText(PaymentButton, 'Receipt'), findsOneWidget);
+    expect(find.widgetWithText(PaymentButton, 'Report'), findsOneWidget);
+    expect(find.byIcon(Icons.chevron_right), findsNothing);
+  });
+
+  testWidgets('footer holds the primary and one quiet action (D62)', (t) async {
+    await setSurface(t, const Size(393, 844));
+    var calls = 0;
+    await t.pumpWidget(
+      page(
+        primaryAction: PaymentButton(
+          label: 'View receipt',
+          onPressed: () => calls++,
+        ),
+        secondaryAction: PaymentButton(
+          label: 'Report a problem',
+          variant: PaymentButtonVariant.quiet,
+          onPressed: () {},
+        ),
+      ),
+    );
+    final primary = t.getRect(
+      find.widgetWithText(PaymentButton, 'View receipt'),
+    );
+    final quiet = t.getRect(
+      find.widgetWithText(PaymentButton, 'Report a problem'),
+    );
+    expect(primary.top, greaterThan(t.getRect(find.text('Body')).bottom));
+    expect(primary.top, lessThan(quiet.top));
+    expect(primary.width, quiet.width);
+    expect(primary.width, greaterThan(393 - 33));
+    await t.tap(find.text('View receipt'));
+    expect(calls, 1);
+  });
+
+  testWidgets('breadcrumb chevron hangs at the title edge, one gap (#66)', (
+    t,
+  ) async {
+    await setSurface(t, const Size(393, 844));
+    await t.pumpWidget(
+      page(
+        breadcrumbs: [
+          PaymentBreadcrumb(label: 'Transactions', onPressed: () {}),
+        ],
+      ),
+    );
+    final chevron = t.getRect(find.byIcon(Icons.chevron_left));
+    final title = t.getRect(find.text('Rp12.500 to Toko'));
+    final crumb = t.getRect(find.text('Transactions'));
+    // The 24 dp glyph box starts 8 dp outside the column; the glyph's ink
+    // starts on the title edge.
+    expect(chevron.left, title.left - 8);
+    expect(crumb.left, title.left + 16);
+    expect(title.top - crumb.bottom, lessThan(20));
+  });
 }
+
+Widget contentHostBoundedPage(Widget child) => MaterialApp(
+  theme: ThemeData(platform: TargetPlatform.iOS),
+  localizationsDelegates: const [PaymentLocalizations.delegate],
+  home: Scaffold(body: child),
+);
 
 String keyOf(int row) => '$row';
