@@ -10853,7 +10853,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "action",
-            "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton. With no\n`total` the action fills the bar on phones and at large text, so pass\na full-width button. From 600 dp of available footer width (about\n632 dp of window with the default gutters) it hugs at the end edge of\nthe `maxContentWidth` column, like other pinned footers (D59, D62)."
+            "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton. With no\n`total` the action fills the bar on phones and at large text, so pass\na full-width button. From 600 dp of available footer width (632 dp of\nbar without side insets, with the default gutters) it hugs at the end\nedge of the `maxContentWidth` column, like other pinned footers (D59,\nD62). Side safe-area insets add to the 16 dp gutters, so the bar's\ncontent edges match a body in a `SafeArea` with the same gutters."
           },
           {
             "name": "total",
@@ -10911,7 +10911,7 @@
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton. With no\n`total` the action fills the bar on phones and at large text, so pass\na full-width button. From 600 dp of available footer width (about\n632 dp of window with the default gutters) it hugs at the end edge of\nthe `maxContentWidth` column, like other pinned footers (D59, D62)."
+        "doc": "Main action; pass width: PaymentWidth.hug on PaymentButton. With no\n`total` the action fills the bar on phones and at large text, so pass\na full-width button. From 600 dp of available footer width (632 dp of\nbar without side insets, with the default gutters) it hugs at the end\nedge of the `maxContentWidth` column, like other pinned footers (D59,\nD62). Side safe-area insets add to the 16 dp gutters, so the bar's\ncontent edges match a body in a `SafeArea` with the same gutters."
       },
       {
         "name": "total",

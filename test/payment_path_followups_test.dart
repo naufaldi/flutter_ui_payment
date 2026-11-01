@@ -251,9 +251,12 @@ void main() {
 
     for (final (size, left, right) in [
       // iPhone 16 Pro sizes, notch either side; an Android cutout on one.
+      // With even insets and a capped column both centre, so 852 at 59/59
+      // lined up before #88 too; under the cap it didn't (740 at 48/48).
       (const Size(852, 393), 59.0, 59.0),
       (const Size(852, 393), 59.0, 0.0),
       (const Size(812, 375), 0.0, 48.0),
+      (const Size(740, 360), 48.0, 48.0),
       // Portrait, no side insets: unchanged.
       (const Size(393, 852), 0.0, 0.0),
     ]) {

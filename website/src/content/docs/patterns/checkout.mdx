@@ -24,39 +24,43 @@ Everything between "what am I paying for" and "send it": every fee shown before 
 
 ```dart
 Scaffold(
-  body: ListView(
-    padding: const EdgeInsets.all(16),
-    children: [
-      const MerchantHeader(
-        name: 'Ruang Bayar Akademi',
-        category: 'Education',
-        orderReference: 'RB-118',
-        verified: true, // your verification flag
-      ),
-      const PaymentStepIndicator(
-        steps: ['Verify', 'Checkout', 'Pay'],
-        current: 1,
-      ),
-      PaymentSummary(quote: quote, previousQuote: previousQuote),
-      PaymentMethodPicker(
-        methods: methods,
-        selectedId: selectedId,
-        onChanged: (method) => requote(method.id),
-      ),
-      BalanceCard(
-        state: host.balanceState, // sufficient, insufficient, unavailable
-        balance: balance,
-        shortfall: host.shortfall,
-      ),
-      PromoCodeInput(
-        status: codeStatus, // idle, checking, applied, rejected
-        onApply: host.applyCode, // Future<void> Function(String code)
-        appliedCode: code,
-        discount: discount,
-        message: codeError,
-        onRemove: host.removeCode,
-      ),
-    ],
+  // In landscape the side insets go to the SafeArea, then the 16 dp gutter;
+  // the action bar adds the same gutter to them, so the edges match.
+  body: SafeArea(
+    child: ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const MerchantHeader(
+          name: 'Ruang Bayar Akademi',
+          category: 'Education',
+          orderReference: 'RB-118',
+          verified: true, // your verification flag
+        ),
+        const PaymentStepIndicator(
+          steps: ['Verify', 'Checkout', 'Pay'],
+          current: 1,
+        ),
+        PaymentSummary(quote: quote, previousQuote: previousQuote),
+        PaymentMethodPicker(
+          methods: methods,
+          selectedId: selectedId,
+          onChanged: (method) => requote(method.id),
+        ),
+        BalanceCard(
+          state: host.balanceState, // sufficient, insufficient, unavailable
+          balance: balance,
+          shortfall: host.shortfall,
+        ),
+        PromoCodeInput(
+          status: codeStatus, // idle, checking, applied, rejected
+          onApply: host.applyCode, // Future<void> Function(String code)
+          appliedCode: code,
+          discount: discount,
+          message: codeError,
+          onRemove: host.removeCode,
+        ),
+      ],
+    ),
   ),
   // The summary already shows the total, so the bar holds only the action.
   bottomNavigationBar: PaymentActionBar(
@@ -105,7 +109,7 @@ Inside a `ListView` or `SingleChildScrollView` the height is unbounded, and the 
 - **Pinned action (D62).** With a bounded height, `PaymentConfirmation` pins pay and `AuthorizationPrompt` pins its confirm button, with the quiet "Back to review" under it, in a footer inside the bottom safe area: full width on phones, hug buttons at the end edge from 600 dp. An approved authorization has no footer. Hide your app's tab bar on these screens so the action is the only thing at the bottom.
 - After a re-quote, `PaymentSummary` shows a warning [banner](/components/banner/) that states old → new ("Was Rp102.500, now Rp104.000"). It has no close button while the payment is open (D48), so the only cue that the total changed cannot be hidden before paying.
 - `AuthorizationPrompt` never receives a PIN, OTP or biometric result. Your SDK runs the challenge; you set the `AuthorizationPhase`. Canceled and failed have different copy, and neither is shown as a payment.
-- `PaymentActionBar` pins the main action, with an optional total. While `updating` is true it says "Updating total…"; disable the action yourself. When the summary above already shows the total, leave `total` out and show the update on the button (`busy` with a `busyLabel`), so the total isn't on the screen three times.
+- `PaymentActionBar` pins the main action, with an optional total. On a phone in landscape it adds the side safe-area insets to its 16 dp gutters, the way a body in a `SafeArea` with 16 dp padding does, so the bar's content edges match the body's (#88). While `updating` is true it says "Updating total…"; disable the action yourself. When the summary above already shows the total, leave `total` out and show the update on the button (`busy` with a `busyLabel`), so the total isn't on the screen three times.
 - For free-form amounts, such as a top-up, use [`PaymentCurrencyField`](/components/currency-field/).
 - `BalanceCard` never compares the balance with the total, and `PromoCodeInput` never computes a discount. A discount reaches the price only as a new host quote with a `QuoteLineKind.discount` line.
 
