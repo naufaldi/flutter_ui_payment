@@ -2357,6 +2357,7 @@
       "customRange",
       "clearDates",
       "removeItem",
+      "done",
       "resultsCount",
       "dateGranularity",
       "close",
@@ -19600,7 +19601,7 @@
   "PaymentSearchField": {
     "kind": "class",
     "file": "lib/src/forms/search_field.dart",
-    "doc": "Locally filtered or host-searched inline listbox with keyboard selection.",
+    "doc": "Locally filtered or host-searched listbox with keyboard selection (D50).\n\nBelow 600 dp the field is a trigger that opens a full-height search sheet:\nthe search field on top, 48 dp result rows under it and, for multiple\nselection, the chosen chips and a full-width Done in the footer. At\n600 dp and wider it is an inline field with an anchored, elevated list\nthat floats over the page instead of pushing it down.",
     "extends": "StatefulWidget",
     "constructors": [
       {

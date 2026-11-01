@@ -671,12 +671,12 @@
   },
   "ios_catalog_search_field_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "search field specimen_dark, English"
   },
   "ios_catalog_search_field_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "search field specimen_200, English"
   },
   "ios_catalog_chip_variants": {
@@ -1458,5 +1458,15 @@
     "width": 640,
     "height": 1391,
     "caption": "PaymentTooltip opened by tap, English"
+  },
+  "ios_catalog_search_field_sheet": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentSearchField sheet on a phone, English"
+  },
+  "ios_catalog_search_field_sheet_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "PaymentSearchField sheet on a phone at 200% text, Indonesian"
   }
 }
