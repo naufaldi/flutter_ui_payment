@@ -375,4 +375,79 @@ void main() {
     await t.pump();
     expect(called, 2);
   });
+  testWidgets('narrow rows are property rows with the ⋮ on the title line', (
+    t,
+  ) async {
+    await setSurface(t, const Size(393, 844));
+    final semantics = t.ensureSemantics();
+    var action = 0;
+    await t.pumpWidget(
+      contentHost(
+        PaymentDataTable<int>(
+          columns: [
+            PaymentDataColumn<int>(
+              key: 'id',
+              label: 'Reference',
+              value: (r) => 'STL-2026-$r',
+              cell: PaymentCellType.id,
+              pinned: true,
+            ),
+            PaymentDataColumn<int>(
+              key: 'status',
+              label: 'Status',
+              value: (r) => 'Pending',
+            ),
+            PaymentDataColumn<int>(
+              key: 'amount',
+              label: 'Amount',
+              value: (r) => Money.idr(r * 1000),
+              cell: PaymentCellType.currency,
+            ),
+          ],
+          rows: const [1, 2],
+          rowKey: (r) => '$r',
+          selection: const {},
+          onSelectionChanged: (_) {},
+          rowActions: [
+            PaymentRowAction<int>(
+              id: 'view',
+              label: 'View receipt',
+              onPressed: (r) => action = r,
+            ),
+          ],
+        ),
+      ),
+    );
+    // No "Label: value" text; each value is present.
+    expect(find.textContaining(':'), findsNothing);
+    expect(find.text('Pending'), findsNWidgets(2));
+    expect(find.text('Rp1,000'), findsOneWidget);
+    expect(find.text('Rp2,000'), findsOneWidget);
+    // The ID title shows non-breaking hyphens and speaks the original.
+    expect(find.text('STL\u20112026\u20111'), findsOneWidget);
+    expect(find.bySemanticsLabel('STL-2026-1'), findsOneWidget);
+    // Values end on the table's value edge, which the ⋮ also ends on.
+    final edge = t.getRect(find.byType(PaymentDataTable<int>)).right;
+    expect(t.getTopRight(find.text('Rp1,000')).dx, edge);
+    final menu = find.byTooltip('Actions for STL-2026-1');
+    expect(t.getRect(menu).right, edge);
+    // The ⋮ centres on the title's first line.
+    expect(
+      t.getCenter(menu).dy,
+      closeTo(t.getCenter(find.text('STL\u20112026\u20111')).dy, 0.5),
+    );
+    // Select-all starts its label on the row titles' inset.
+    expect(
+      t.getTopLeft(find.text('Select all on this page')).dx,
+      t.getTopLeft(find.text('STL\u20112026\u20111')).dx,
+    );
+    // The row ⋮ opens its actions.
+    await t.tap(menu);
+    await t.pumpAndSettle();
+    await t.tap(find.text('View receipt'));
+    await t.pumpAndSettle();
+    expect(action, 1);
+    expect(t.takeException(), isNull);
+    semantics.dispose();
+  });
 }

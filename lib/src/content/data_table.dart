@@ -8,6 +8,8 @@ import '../foundation/kit_strings.dart';
 import '../foundation/payment_tokens.dart';
 import '../foundation/money.dart';
 import '../foundation/table_grid.dart';
+import '../foundation/first_line.dart';
+import '../foundation/tap_target.dart';
 import '../controls/controls.dart';
 import '../controls/actions.dart';
 import '../controls/button_group.dart';
@@ -484,12 +486,11 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
       ),
       mixed: selectedOnPage > 0 && selectedOnPage < keys.length,
     );
-    String title(T row) =>
-        (cols
-                    .firstWhere((c) => c.pinned, orElse: () => cols.first)
-                    .value(row) ??
-                '')
-            .toString();
+    final titleColumn = cols.firstWhere(
+      (c) => c.pinned,
+      orElse: () => cols.first,
+    );
+    String title(T row) => (titleColumn.value(row) ?? '').toString();
     Widget cell(PaymentDataColumn<T> c, T row) {
       final value = c.value(row);
       return switch (c.cell) {
@@ -527,17 +528,32 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // The label starts on the same inset as row titles: after the
+            // 48 dp checkbox box (#62).
             if (narrow && w.selection != null)
-              PaymentCheckbox(
-                label: l.selectAllOnPage,
-                value: keys.isNotEmpty && selectedOnPage == keys.length,
-                indeterminate:
-                    selectedOnPage > 0 && selectedOnPage < keys.length,
-                onChanged: (v) => w.onSelectionChanged!(
-                  {...selected}
-                    ..removeAll(v ? <String>{} : keys)
-                    ..addAll(v ? keys : <String>{}),
-                ),
+              Row(
+                children: [
+                  selectAll(),
+                  Expanded(
+                    child: ExcludeSemantics(
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => w.onSelectionChanged!(
+                          selectedOnPage == keys.length && keys.isNotEmpty
+                              ? ({...selected}..removeAll(keys))
+                              : ({...selected}..addAll(keys)),
+                        ),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(minHeight: 48),
+                          child: Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Text(l.selectAllOnPage, style: type.label),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             if (w.selection != null && selected.isNotEmpty)
               Row(
@@ -603,126 +619,84 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
               ),
             if (narrow)
               Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   for (final row in rows) ...[
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (w.selection != null)
-                          checkbox(
-                            l.selectRow(title(row)),
-                            selected.contains(w.rowKey(row)),
-                            (v) {
-                              final next = {...selected};
-                              if (v) {
-                                next.add(w.rowKey(row));
-                              } else {
-                                next.remove(w.rowKey(row));
-                              }
-                              w.onSelectionChanged!(next);
-                            },
-                          ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: w.onRowPressed == null
-                                ? null
-                                : () => w.onRowPressed!(row),
-                            child: MergeSemantics(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: theme.space(PaymentSpace.block),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Text(title(row), style: type.heading),
-                                    for (final c in cols)
-                                      if (c !=
-                                          cols.firstWhere(
-                                            (c) => c.pinned,
-                                            orElse: () => cols.first,
-                                          ))
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            top: theme.space(
-                                              PaymentSpace.inline,
-                                            ),
+                    // D60: the title and its ⋮ share the first line (D56);
+                    // every other column, the amount included, is a label on
+                    // the start edge and its value on the one value edge.
+                    InkWell(
+                      onTap: w.onRowPressed == null
+                          ? null
+                          : () => w.onRowPressed!(row),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: theme.space(PaymentSpace.related),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            FirstLineRow(
+                              gap: 0,
+                              leading: w.selection == null
+                                  ? null
+                                  : checkbox(
+                                      l.selectRow(title(row)),
+                                      selected.contains(w.rowKey(row)),
+                                      (v) {
+                                        final next = {...selected};
+                                        if (v) {
+                                          next.add(w.rowKey(row));
+                                        } else {
+                                          next.remove(w.rowKey(row));
+                                        }
+                                        w.onSelectionChanged!(next);
+                                      },
+                                    ),
+                              text: Text(
+                                // An ID title wraps as a whole, never at
+                                // its hyphens (U+2011); speech keeps the
+                                // original text.
+                                titleColumn.cell == PaymentCellType.id
+                                    ? title(row).replaceAll('-', '\u2011')
+                                    : title(row),
+                                semanticsLabel: title(row),
+                                style: titleColumn.cell == PaymentCellType.id
+                                    ? type.reference(type.heading)
+                                    : type.heading,
+                              ),
+                              trailing: w.rowActions.isEmpty
+                                  ? null
+                                  : rowMenu(row),
+                              trailingGap: theme.space(PaymentSpace.related),
+                            ),
+                            Padding(
+                              padding: EdgeInsetsDirectional.only(
+                                start: w.selection == null ? 0 : 48,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  for (final c in cols)
+                                    if (c != titleColumn)
+                                      InfoRow(
+                                        label: c.label,
+                                        value: DefaultTextStyle(
+                                          style:
+                                              c.cell == PaymentCellType.currency
+                                              ? type.label.tabular
+                                              : type.label,
+                                          child: TextActionEdge.end(
+                                            child: cell(c, row),
                                           ),
-                                          child: c.cell == PaymentCellType.link
-                                              ? cell(c, row)
-                                              : (PaymentType.isLarge(context) ||
-                                                    c.cell !=
-                                                        PaymentCellType
-                                                            .currency)
-                                              ? Wrap(
-                                                  spacing: theme.space(
-                                                    PaymentSpace.inline,
-                                                  ),
-                                                  runSpacing: theme.space(
-                                                    PaymentSpace.inline,
-                                                  ),
-                                                  crossAxisAlignment:
-                                                      WrapCrossAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      '${c.label}:',
-                                                      style: type.caption,
-                                                    ),
-                                                    DefaultTextStyle(
-                                                      style:
-                                                          c.cell ==
-                                                              PaymentCellType
-                                                                  .currency
-                                                          ? type.label.tabular
-                                                          : type.caption,
-                                                      child: cell(c, row),
-                                                    ),
-                                                  ],
-                                                )
-                                              : Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      '${c.label}: ',
-                                                      style: type.caption,
-                                                    ),
-                                                    Expanded(
-                                                      child: DefaultTextStyle(
-                                                        style:
-                                                            c.cell ==
-                                                                PaymentCellType
-                                                                    .currency
-                                                            ? type.label.tabular
-                                                            : type.caption,
-                                                        child: Align(
-                                                          alignment:
-                                                              c.cell ==
-                                                                      PaymentCellType
-                                                                          .currency &&
-                                                                  !PaymentType.isLarge(
-                                                                    context,
-                                                                  )
-                                                              ? AlignmentDirectional
-                                                                    .centerEnd
-                                                              : AlignmentDirectional
-                                                                    .centerStart,
-                                                          child: cell(c, row),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
                                         ),
-                                  ],
-                                ),
+                                      ),
+                                ],
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                        if (w.rowActions.isNotEmpty) rowMenu(row),
-                      ],
+                      ),
                     ),
                     const PaymentDivider(),
                   ],
