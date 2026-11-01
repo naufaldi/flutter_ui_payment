@@ -729,4 +729,43 @@ void main() {
     );
     handle.dispose();
   });
+  testWidgets('state message action hugs its label inside the column', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        StateMessage(
+          icon: Icons.cloud_off_outlined,
+          title: 'Could not load transactions',
+          message: 'Check your connection and try again.',
+          actionLabel: 'Retry',
+          onAction: () {},
+        ),
+        1,
+      ),
+    );
+    final button = tester.getSize(find.byType(PaymentButton)).width;
+    final column = tester.getSize(find.byType(Column).first).width;
+    expect(button, lessThan(column));
+    expect(button, greaterThanOrEqualTo(112));
+  });
+  testWidgets('privacy mask lock keeps its padding in a short strip', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        const SizedBox(
+          height: 48,
+          width: 300,
+          child: PrivacyMask(obscured: true, child: Text('8808 1234')),
+        ),
+        1,
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    final mask = tester.getRect(find.byType(PrivacyMask));
+    final lock = tester.getRect(find.byIcon(Icons.lock_outline));
+    expect(lock.top - mask.top, greaterThanOrEqualTo(16));
+    expect(mask.bottom - lock.bottom, greaterThanOrEqualTo(16));
+  });
 }

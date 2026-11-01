@@ -1451,18 +1451,19 @@ class StateMessage extends StatelessWidget {
                 SizedBox(height: theme.space(PaymentSpace.inline)),
                 Text(
                   message!,
-                  style: type.body.copyWith(color: theme.textSecondary),
+                  style: type
+                      .bodyFor(context)
+                      .copyWith(color: theme.textSecondary),
                 ),
               ],
+              // Inside a module the action hugs its label (D59, #61-5).
               if (actionLabel != null && onAction != null) ...[
                 SizedBox(height: theme.space(PaymentSpace.block)),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 280),
-                  child: PaymentButton(
-                    label: actionLabel!,
-                    variant: PaymentButtonVariant.secondary,
-                    onPressed: onAction,
-                  ),
+                PaymentButton(
+                  label: actionLabel!,
+                  variant: PaymentButtonVariant.secondary,
+                  width: PaymentWidth.hug,
+                  onPressed: onAction,
                 ),
               ],
             ],
