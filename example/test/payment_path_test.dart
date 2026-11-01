@@ -103,6 +103,21 @@ void main() {
     await drain(t);
   });
 
+  testWidgets('a scenario that opens on documents has the details done', (
+    t,
+  ) async {
+    surface(t, const Size(393, 852));
+    final app = await launch(
+      t,
+      settings: const DemoSettings(locale: Locale('en')),
+    );
+    final c = await runScenario(t, app, 'K05');
+    expect(c.step, FlowStep.kycDocuments);
+    expect(c.identity, isNotEmpty);
+    expect(find.text('Step 2 of 3: Documents'), findsOneWidget);
+    await drain(t);
+  });
+
   testWidgets('authorize: the primary sits in the pinned footer', (t) async {
     surface(t, const Size(393, 852));
     final app = await launch(t);

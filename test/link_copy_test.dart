@@ -309,6 +309,27 @@ void main() {
     expect(find.text('Copy failed'), findsNothing);
     await tester.pump(const Duration(seconds: 2));
   });
+  testWidgets('the failure label starts under the glyph, not the box', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        Center(
+          child: PaymentCopyButton(value: 'DEMO', onCopy: (_) async => false),
+        ),
+        1,
+      ),
+    );
+    await tester.tap(find.byTooltip('Copy'));
+    await tester.pump();
+    final box = tester.getRect(find.byType(PaymentCopyButton));
+    final glyph = tester.getRect(find.byIcon(PaymentIcons.danger));
+    final label = tester.getRect(find.text('Copy failed'));
+    expect(label.top, closeTo(glyph.bottom, 0.5));
+    expect(label.right, closeTo(box.right, 0.5));
+    // A 16 dp line under a glyph that sits 14 dp above the box's bottom.
+    expect(label.bottom - box.bottom, lessThanOrEqualTo(2.5));
+  });
   testWidgets('pending copy ignores repeated presses and stale completion', (
     tester,
   ) async {

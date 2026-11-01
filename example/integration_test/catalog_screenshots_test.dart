@@ -47,7 +47,9 @@ void main() {
             )
             .first,
       );
-      await tester.ensureVisible(item);
+      // Centre the item: one at the drawer's bottom edge misses the tap.
+      await Scrollable.ensureVisible(tester.element(item), alignment: .5);
+      await settle(tester);
       await tester.tap(item);
       await settle(tester);
     }
@@ -155,6 +157,7 @@ void main() {
       // Drawer pages by their English and Indonesian labels.
       const pages = {
         'Kit components': 'Komponen kit',
+        'Foundation': 'Fondasi',
         'Content': 'Konten',
         'Interaction': 'Interaksi',
         'Controls': 'Kontrol',
@@ -198,6 +201,47 @@ void main() {
             'text_field': ('Controls', 'PaymentTextField', null, null),
             'currency_field': ('Controls', 'PaymentCurrencyField', null, null),
             'tabs': ('Controls', 'PaymentTabs', null, null),
+            'checkbox': ('Controls', 'PaymentCheckbox', null, null),
+            'switch': ('Controls', 'PaymentSwitch', null, null),
+            'link': ('Controls', 'PaymentLink', null, null),
+            'icon_button': (
+              'Controls',
+              'PaymentIconButton',
+              (_) async {
+                FocusManager.instance.highlightStrategy =
+                    FocusHighlightStrategy.alwaysTraditional;
+                Focus.of(
+                  tester.element(
+                    find.descendant(
+                      of: find.byKey(const Key('icon-button-focus')),
+                      matching: find.byType(Icon),
+                    ),
+                  ),
+                ).requestFocus();
+                await settle(tester);
+              },
+              () async {
+                FocusManager.instance.highlightStrategy =
+                    FocusHighlightStrategy.automatic;
+                FocusManager.instance.primaryFocus?.unfocus();
+                await settle(tester);
+              },
+            ),
+            'amount_text': ('Foundation', 'AmountText', null, null),
+            'badge': ('Feedback', 'PaymentBadge', null, null),
+            'spinner': ('Feedback', 'PaymentSpinner', null, null),
+            'step_indicator': (
+              'Kit components',
+              'PaymentStepIndicator',
+              null,
+              null,
+            ),
+            'media': ('Kit components', 'PaymentVideoPlayer', null, null),
+            'box': ('Layout', 'PaymentBox', null, null),
+            'inline': ('Layout', 'PaymentInline', null, null),
+            'icon': ('Layout', 'PaymentIcon', null, null),
+            'divider': ('Layout', 'PaymentDivider', null, null),
+            'text_area': ('Forms', 'PaymentTextArea', null, null),
             'copy_button': (
               'Controls',
               'PaymentCopyButton',
@@ -336,6 +380,11 @@ void main() {
                   ),
                 ).requestFocus();
                 await settle(tester);
+                // Half a 1333 ms ring cycle later the busy rings draw a
+                // long arc; the shot otherwise lands on the cycle's dash.
+                await tester.runAsync(
+                  () => Future<void>.delayed(const Duration(milliseconds: 650)),
+                );
               },
               () async {
                 FocusManager.instance.highlightStrategy =
@@ -941,104 +990,9 @@ void main() {
       }
       return;
     }
+    // The `_variants` captures come from CAPTURE_ONLY, in every look; the
+    // full session shoots what has no slug there.
     if (!const bool.fromEnvironment('CAPTURE_TAIL_ONLY')) {
-      const buttons = 'PaymentButton · variants';
-      for (final (look, settings) in [
-        ('', const DemoSettings(locale: Locale('en'))),
-        ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
-        (
-          '_dark',
-          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
-        ),
-      ]) {
-        app.updateSettings(settings);
-        app.selectTab(2);
-        await settle(tester);
-        await open('Controls');
-        await top(buttons);
-        FocusManager.instance.highlightStrategy =
-            FocusHighlightStrategy.alwaysTraditional;
-        Focus.of(
-          tester.element(
-            find.descendant(
-              of: find.byKey(const ValueKey('button-specimen-focus')),
-              matching: find.text('Edit'),
-            ),
-          ),
-        ).requestFocus();
-        await shot('button_variants$look');
-        FocusManager.instance.highlightStrategy =
-            FocusHighlightStrategy.automatic;
-        FocusManager.instance.primaryFocus?.unfocus();
-        for (final (entry, name) in [
-          ('PaymentTabs', 'tabs'),
-          ('PaymentCheckbox', 'checkbox'),
-          ('PaymentRadio', 'radio'),
-          ('PaymentSwitch', 'switch'),
-          ('PaymentCurrencyField', 'currency_field'),
-          ('PaymentTextField', 'text_field'),
-          ('PaymentLink', 'link'),
-          if (look != '_200') ('PaymentIconButton', 'icon_button'),
-          if (look != '_200') ('PaymentCopyButton', 'copy_button'),
-        ]) {
-          await top('$entry · variants');
-          if (name == 'copy_button') {
-            await tapVisible(tester, find.byKey(const Key('copy-failed')));
-            await top('$entry · variants');
-          }
-          await shot('${name}_variants$look');
-        }
-        await open('Foundation');
-        await top('AmountText · variants');
-        await shot('amount_text_variants$look');
-        await open('Feedback');
-        await top('PaymentBadge · variants');
-        await shot('badge_variants$look');
-        await top('PaymentBanner · variants');
-        await shot('banner_variants$look');
-        if (look != '_200') {
-          await top('PaymentSpinner · variants');
-          await shot('spinner_variants$look');
-        }
-        await top('showPaymentToast · variants');
-        await tapVisible(tester, find.widgetWithText(PaymentButton, 'Pending'));
-        await shot('toast_variants$look');
-        clearSnackBars();
-        await settle(tester);
-        await top('PaymentTooltip · variants');
-        await hoverShot(
-          'tooltip-label',
-          'Payment time: 29 Oct 2026, 14:05',
-          'tooltip_variants$look',
-        );
-        await open('Interaction');
-        await top('PaymentMenu · variants');
-        await tester.tap(
-          find.descendant(
-            of: find.byKey(const Key('menu-specimen')),
-            matching: find.byType(IconButton),
-          ),
-        );
-        await settle(tester);
-        await shot('menu_variants$look');
-        await tester.tapAt(const Offset(10, 10));
-        await settle(tester);
-        await top('PaymentAccordion · variants');
-        await shot('accordion_variants$look');
-        await top('PaymentList · variants');
-        await shot('list_variants$look');
-        await open('Charts');
-        for (final (entry, name) in [
-          ('PaymentLineChart', 'line_chart'),
-          ('PaymentBarChart', 'bar_chart'),
-          ('PaymentMeterChart', 'meter_chart'),
-          if (look != '_200') ('PaymentSparkline', 'sparkline'),
-        ]) {
-          await top('$entry · variants');
-          await shot('${name}_variants$look');
-        }
-      }
-
       for (final dark in [false, true]) {
         final suffix = dark ? '_dark' : '';
         app.updateSettings(
@@ -1150,8 +1104,6 @@ void main() {
         .jumpTo(0);
     await shot('foundation');
 
-    await open('Interaction');
-    await top('PaymentList · PaymentMenu · showPaymentConfirmDialog');
     if (const bool.fromEnvironment('CAPTURE_TAIL_ONLY')) {
       for (final (look, settings) in [
         ('', const DemoSettings(locale: Locale('en'))),
@@ -1173,15 +1125,7 @@ void main() {
       }
       app.updateSettings(const DemoSettings(locale: Locale('en')));
       await settle(tester);
-      await open('Interaction');
-      await top('PaymentList · PaymentMenu · showPaymentConfirmDialog');
     }
-    await tester.tap(find.byTooltip('More actions').first);
-    await settle(tester);
-    await shot('menu_open');
-    await tester.tapAt(const Offset(8, 8));
-    await settle(tester);
-
     await open('Video');
     await top('PaymentVideoPlayer + video_player adapter');
     await tapVisible(tester, find.text('Loading'));

@@ -303,7 +303,9 @@ class _PaymentCopyButtonState extends State<PaymentCopyButton> {
     final rtl = Directionality.of(context) == TextDirection.rtl;
     // The button keeps its 48 dp box in every state; failure swaps the
     // glyph and hangs a persistent label under the button's end edge, over
-    // the content below, so nothing moves (#46).
+    // the content below, so nothing moves (#46). The label starts under the
+    // 20 dp glyph, not under the box, so it overhangs the box by 2 dp at 1×
+    // and stays inside a container's padding.
     return OverlayPortal(
       controller: _failure,
       overlayChildBuilder: (context) => CompositedTransformFollower(
@@ -311,6 +313,7 @@ class _PaymentCopyButtonState extends State<PaymentCopyButton> {
         // Scrolled out of paint, the label hides instead of jumping to the
         // overlay's corner.
         showWhenUnlinked: false,
+        offset: const Offset(0, -(48 - 20) / 2),
         targetAnchor: rtl ? Alignment.bottomLeft : Alignment.bottomRight,
         followerAnchor: rtl ? Alignment.topLeft : Alignment.topRight,
         child: Align(

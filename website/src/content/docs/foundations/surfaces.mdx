@@ -15,8 +15,8 @@ Just separate content? → ruled outline
 Selectable grouped box? → bordered box
 Status requiring attention? → tinted tone
 Disabled, loading or selected nav? → muted
-Action menu? → floating
-Sheet or dialog? → overlay
+Action menu at ≥ 600 dp? → floating
+Sheet, dialog, or an action menu on a phone? → overlay
 ```
 
 | Surface | Recipe | Where | Don't |
@@ -27,7 +27,7 @@ Sheet or dialog? → overlay
 | Tinted | `tone.container` fill, no edge | `PaymentBanner`, `PaymentBadge` | Use for the normal path (decisions.md: "tinted boxes are for problems") |
 | Muted | `surfaceMuted` fill | Disabled fill, skeleton, selected nav item | — |
 | Ink | textPrimary fill, surface text, elevation 0, control radius | Toast and tooltip | Add a shadow |
-| Floating | `surface` + `outline` edge + elevation 2 | `PaymentMenu` only (`interaction.dart:211`) | Add a shadow anywhere else |
+| Floating | `surface` + `outline` edge + elevation 2 | `PaymentMenu` at ≥ 600 dp only (`interaction.dart:472`); below 600 dp the menu is an overlay action sheet (D55) | Add a shadow anywhere else |
 | Overlay | `surface`, elevation 0, top radius 12, scrim | Bottom sheet (`sheets.dart:163`), side sheet with `Colors.black54` barrier (`:192`), dialog | Tint the surface (`surfaceTintColor` is transparent everywhere) |
 
 Do: a flat `PaymentSection` as in checkout. Don't: wrap every section in a Material Card. Nested boxes compete with the primary action and make host composition harder.
@@ -37,7 +37,7 @@ Do: a flat `PaymentSection` as in checkout. Don't: wrap every section in a Mater
 Stripe Box backgroundColor maps to semantic surface or tone fills; keyline maps to the existing outline, border or danger foreground; boxShadow is refused (D28). **New** `PaymentBox` and **New** `PaymentKeyline` will expose these recipes. They do not exist yet. No new shadows or elevation tokens are added. The seven recipes above are closed. Nothing else exists.
 
 <Screen name="ios_refined_checkout_light" alt="Checkout with flat sections and ruled action area." />
-<Screen name="ios_catalog_menu_open" alt="Action menu as the existing floating surface exception." />
+<Screen name="ios_catalog_menu_sheet" alt="On a phone the action menu opens as a bottom action sheet: the overlay recipe, with full-width rows and Cancel at the bottom." caption="A phone's action menu is an overlay sheet (D55)" />
 
 ## Layout foundation
 
