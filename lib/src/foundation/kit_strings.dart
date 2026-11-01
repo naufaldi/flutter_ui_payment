@@ -165,6 +165,9 @@ extension KitStrings on PaymentLocalizations {
   /// Chip remove action.
   String removeItem(String label) => _k('Remove $label', 'Hapus $label');
 
+  /// Finishes a multiple-choice search sheet.
+  String get done => _k('Done', 'Selesai');
+
   /// Search result count.
   String resultsCount(int n) =>
       _k(n == 1 ? '1 result' : '$n results', '$n hasil');

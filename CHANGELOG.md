@@ -1,3 +1,7 @@
+## UI review P4 (2026-11-01)
+
+- **Search sheet on phones (D50, #54).** Below 600 dp `PaymentSearchField` is a field trigger that opens a full-height search sheet: a focused search field, 48 dp result rows and, for `.multiple`, the draft chips and a full-width "Done" ("Selesai") that applies them; close discards the draft. Focus returns to the field, and focusing it from code never opens the sheet. At 600 dp and wider the list floats in an overlay with the surface fill, the control edge and elevation instead of pushing the page down. The API is unchanged. **Migration:** a phone-sized test that typed into the field's `EditableText` now taps the field and types into the sheet's.
+
 ## UI review P3 (2026-11-01)
 
 - **Reference rows (D57, #62).** `InfoRow.reference`, `PaymentPropertyListItem.reference` and `PaymentDetailValue.reference` show an ID or reference as monospace tabular text on the value edge, with no fill. A trailing copy button centres on the first line and its glyph sits on the value edge while the 48 dp target stays in the row. `PaymentDetailValue.onCopy` adds that copy button. Keep `PaymentCode` for multi-line technical text. All additive.

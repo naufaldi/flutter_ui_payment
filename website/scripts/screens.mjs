@@ -321,6 +321,9 @@ const screens = {
   ios_catalog_menu_sheet: 'PaymentMenu action sheet on a phone, English',
   ios_catalog_menu_sheet_id: 'PaymentMenu action sheet on a phone, Indonesian',
   ios_catalog_tooltip_tap: 'PaymentTooltip opened by tap, English',
+  // UI review P4: phone search sheet (D50).
+  ios_catalog_search_field_sheet: 'PaymentSearchField sheet on a phone, English',
+  ios_catalog_search_field_sheet_id_200: 'PaymentSearchField sheet on a phone at 200% text, Indonesian',
 };
 
 mkdirSync(target, { recursive: true });

@@ -107,14 +107,40 @@ Future<void> fillIdentity(WidgetTester tester) async {
         .first,
   );
   await tapVisible(tester, find.text('Employee'));
-  final search = find.descendant(
-    of: find.byType(PaymentSearchField<String>),
+  // On a phone the province field is a trigger for the search sheet (D50);
+  // at 600 dp and wider it is an inline field with a floating list.
+  final province = find.byType(PaymentSearchField<String>);
+  await tester.ensureVisible(province);
+  await settle(tester);
+  final inline = find.descendant(
+    of: province,
     matching: find.byType(EditableText),
   );
-  await tester.ensureVisible(search);
-  await tester.enterText(search, 'Jawa B');
-  await settle(tester);
-  await tapVisible(tester, find.text('Jawa Barat'));
+  if (inline.evaluate().isNotEmpty) {
+    await tester.enterText(inline, 'Jawa B');
+    await settle(tester);
+    await tapVisible(tester, find.text('Jawa Barat').last);
+  } else {
+    await tapVisible(
+      tester,
+      find.descendant(of: province, matching: find.byType(InkWell)).first,
+    );
+    final search = find.descendant(
+      of: find.byType(BottomSheet),
+      matching: find.byType(EditableText),
+    );
+    await settle(tester);
+    await pumpUntilFound(tester, search);
+    await tester.enterText(search, 'Jawa B');
+    await settle(tester);
+    await tapVisible(
+      tester,
+      find.descendant(
+        of: find.byType(BottomSheet),
+        matching: find.text('Jawa Barat'),
+      ),
+    );
+  }
   FocusManager.instance.primaryFocus?.unfocus();
   await settle(tester);
 }

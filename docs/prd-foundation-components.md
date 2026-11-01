@@ -1213,7 +1213,7 @@ PaymentCode(String text, {Key? key, PaymentCodeKind kind = PaymentCodeKind.code,
 
 **`PaymentSearchField<T>`** (Stripe SearchField; D37)
 
-- **Anatomy:** a `PaymentTextField(type: search)` plus a listbox of matching options below it, inline rather than in an overlay, so it works at 200% and with the keyboard up.
+- **Anatomy (D50, UI review P4):** below 600 dp a field trigger that opens a full-height search sheet (label and close, a focused `PaymentTextField(type: search)`, 48 dp result rows above the keyboard; `.multiple` adds the draft chips and a full-width Done in the footer). At ≥ 600 dp a `PaymentTextField(type: search)` with the listbox floating under it in an overlay (surface fill, `border` edge, elevation), so the page doesn't move. *Supersedes the inline listbox.*
 - **Variants:**
   - `data` → `options: List<PaymentSearchOption<T>>` (`value`, `label`). The kit filters them locally by case- and diacritic-insensitive substring. For remote search, the host passes `onQueryChanged` and replaces `options` (with `loading` while it fetches).
   - `selectionMode` single / multiple → `PaymentSearchField` / `PaymentSearchField.multiple`.
@@ -2075,6 +2075,9 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Narrow `PaymentTable` / `PaymentDataTable` rows as property rows with the ⋮ on the title line; Total divider; select-all inset; non-breaking ID hyphens (D60)
 - [x] `PaymentSection` 36 dp header band; navigation selection weight + indicator, 48 dp pitch; task-list connector documented
 - [x] Dates joined with U+00A0; range dash glued with U+2060 (#63-6, #65)
+
+**UI review P4: search and date pickers** (D50, D51, D52, D52a; #54, #55, #56, #65)
+- [x] Search: phone full-height sheet with a focused field, 48 dp rows and a multiple-selection Done; wide floating list in an overlay (D50)
 ```
 
 ### Phase 2E implementation notes

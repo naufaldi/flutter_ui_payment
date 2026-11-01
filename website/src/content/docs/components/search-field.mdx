@@ -1,16 +1,18 @@
 ---
 title: Search field
-description: Pick provinces or banks from an inline listbox.
+description: Pick provinces or banks from a search sheet on phones or a floating list on wide screens.
 ---
 
 import Props from '../../../components/Props.astro';
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 
-Pick provinces or banks from an inline listbox.
+Pick provinces or banks from a long list. On a phone (below 600 dp) the field is a trigger that opens a full-height search sheet; at 600 dp and wider it is an inline field with a floating list (D50).
 
 <Screens>
-  <Screen name="ios_catalog_search_field_variants" dark="ios_catalog_search_field_variants_dark" alt="search field payment component specimens" caption="Light and dark variants" />
+  <Screen name="ios_catalog_search_field_variants" dark="ios_catalog_search_field_variants_dark" alt="search field payment component specimens" caption="Light and dark variants, at rest" />
+  <Screen name="ios_catalog_search_field_sheet" alt="search sheet with the query jawa and three provinces" caption="Phone search sheet" />
+  <Screen name="ios_catalog_search_field_sheet_id_200" alt="Indonesian search sheet at 200 percent text" caption="Search sheet, Indonesian, 200% text" />
   <Screen name="ios_catalog_search_field_variants_200" alt="search field at 200 percent text" caption="200% text" />
 </Screens>
 
@@ -36,7 +38,11 @@ PaymentSearchField<String>(
 | multiple | PaymentSearchField.multiple |
 | onSearch | onQueryChanged |
 
-Use the combobox for selecting values; PaymentTextField.search filters a host list. Local filtering folds common Latin diacritics. onQueryChanged delegates searching to the host and accepts replacement options. Any edit clears a single selection; clearing the text clears multiple selections. Arrow keys navigate, Enter selects, Escape closes. Counts announce through a live region. Multiple selections render removable chips.
+Use the combobox for selecting values; PaymentTextField.search filters a host list. Local filtering folds common Latin diacritics. onQueryChanged delegates searching to the host and accepts replacement options; new options and `loading` reach an open sheet. Arrow keys navigate, Enter selects, Escape closes. Counts announce through a live region. Multiple selections render removable chips under the field.
+
+**Phones (D50).** Tapping the field, or Enter or Space on it, opens a full-height sheet: the label and close on top, a focused search field, then 48 dp result rows above the keyboard. A single choice closes the sheet. Multiple selection keeps a draft, with its chips and a full-width Done in the footer; close discards the draft, as `PaymentSelect.multiple` does. Focus returns to the field. Focusing the field from code (for example the form's first error) never opens the sheet.
+
+**Wide screens.** The field stays inline and the list floats under it in an overlay with the surface fill, the control edge and elevation, so the page doesn't move. Any edit clears a single selection; clearing the text clears multiple selections.
 
 ## Variants
 
@@ -54,7 +60,7 @@ Use TextField.search to filter history without selecting an option.
 
 Empty, selected, disabled and error states use semantic tokens. Search additionally supports loading and no matches.
 
-**Layout.** Suggestion text starts on the field's 16 dp text edge. The loading and no-matches rows keep a 12 dp gap between the spinner or icon and the text.
+**Layout.** Result rows are at least 48 dp with text on a 16 dp inset: the field's text edge in the floating list, the sheet gutter in the phone sheet. The loading and no-matches rows keep a 12 dp gap between the spinner or icon and the text.
 
 ## Do and don't
 
