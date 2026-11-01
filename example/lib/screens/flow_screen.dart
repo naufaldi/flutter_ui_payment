@@ -30,7 +30,10 @@ class FlowScreen extends StatelessWidget {
   final String scenarioLabel;
   final VoidCallback onRestart;
   final VoidCallback onBackground;
-  final VoidCallback onOpenSettings;
+
+  /// Opens the settings sheet with a "Demo tools" entry, so the app bar keeps
+  /// at most two trailing actions and step titles fit (P7a).
+  final void Function(VoidCallback demoTools) onOpenSettings;
 
   @override
   Widget build(BuildContext context) {
@@ -55,21 +58,18 @@ class FlowScreen extends StatelessWidget {
               actions: [
                 if (c.signedIn) _AccountMenu(coordinator: c),
                 IconButton(
-                  key: const Key('demo-tools'),
-                  tooltip: s.demoTools,
-                  icon: const Icon(Icons.science_outlined),
-                  onPressed: () => _showDemoTools(
-                    context,
-                    coordinator: c,
-                    scenarioLabel: scenarioLabel,
-                    onRestart: onRestart,
-                    onBackground: onBackground,
-                  ),
-                ),
-                IconButton(
+                  key: const Key('settings'),
                   tooltip: s.settings,
                   icon: const Icon(Icons.tune),
-                  onPressed: onOpenSettings,
+                  onPressed: () => onOpenSettings(
+                    () => _showDemoTools(
+                      context,
+                      coordinator: c,
+                      scenarioLabel: scenarioLabel,
+                      onRestart: onRestart,
+                      onBackground: onBackground,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -748,8 +748,9 @@ Widget? _supportNotice(BuildContext context, DemoCoordinator c) =>
         announce: true,
       );
 
-/// Host tools in a sheet from the app bar, so they never sit in the step's
-/// content or between the content and its pinned action (D62).
+/// Host tools in a sheet, opened from the settings sheet's "Demo tools", so
+/// they never sit in the step's content or between the content and its
+/// pinned action (D62).
 Future<void> _showDemoTools(
   BuildContext context, {
   required DemoCoordinator coordinator,

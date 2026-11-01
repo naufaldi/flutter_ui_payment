@@ -75,6 +75,34 @@ void main() {
     await drain(t);
   });
 
+  testWidgets('KYC steps pin their submit at 375x667, 2x (#64)', (t) async {
+    surface(t, const Size(375, 667));
+    final app = await launch(
+      t,
+      settings: const DemoSettings(locale: Locale('en'), textScale: 2),
+    );
+    var c = await runScenario(t, app, 'K01');
+    if (c.step == FlowStep.kycIntro) {
+      c.acceptConsent();
+      await settle(t);
+    }
+    expect(c.step, FlowStep.kycIdentity);
+    final go = find.byKey(const Key('identity-continue'));
+    expectPinnedPrimary(t, height: 667);
+    expect(find.text('Continue'), findsOneWidget);
+    // The pinned Continue validates the form like the inline one did.
+    await t.tap(go);
+    await settle(t);
+    expect(c.step, FlowStep.kycIdentity);
+    expect(t.widget<PaymentButton>(go).busy, isFalse);
+
+    c = await runScenario(t, app, 'K06');
+    expect(c.step, FlowStep.kycReview);
+    expectPinnedPrimary(t, height: 667);
+    expect(find.byKey(const Key('submit-kyc')).hitTestable(), findsOneWidget);
+    await drain(t);
+  });
+
   testWidgets('authorize: the primary sits in the pinned footer', (t) async {
     surface(t, const Size(393, 852));
     final app = await launch(t);
@@ -132,13 +160,19 @@ void main() {
     await drain(t);
   });
 
-  testWidgets('demo tools open from the app bar on a pinned step', (t) async {
+  testWidgets('demo tools open from settings on a pinned step', (t) async {
     surface(t, const Size(393, 852));
     final app = await launch(t);
     final c = await runScenario(t, app, 'P15');
     await pumpUntil(t, () => c.attempt?.status == PaymentStatus.succeeded);
     await settle(t);
     expect(find.byKey(const Key('host-stats')), findsNothing);
+    // At most two trailing app-bar actions (account, settings), so step
+    // titles keep their width (P7a).
+    final bar = find.byType(AppBar).first;
+    expect(t.widget<AppBar>(bar).actions, hasLength(2));
+    await t.tap(find.byKey(const Key('settings')));
+    await settle(t);
     await t.tap(find.byKey(const Key('demo-tools')));
     await settle(t);
     expect(find.byKey(const Key('host-stats')), findsOneWidget);
