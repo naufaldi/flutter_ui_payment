@@ -297,7 +297,6 @@ const screens = {
   ios_kit_video_ready: 'Gallery: video player',
   // English catalog captures (example/integration_test/catalog_screenshots_test.dart).
   ios_catalog_foundation: 'Gallery: foundation specimen (English formatting, Indonesian row labels)',
-  ios_catalog_menu_open: 'Gallery: action menu open, English',
   // Indonesian catalog looks (UI review P1, #59): real Indonesian lengths.
   ios_catalog_banner_variants_id: 'banner specimen, Indonesian',
   ios_catalog_banner_variants_id_200: 'banner specimen at 200% text, Indonesian',
@@ -372,6 +371,13 @@ const screens = {
   ios_ipad_transaction_detail_en: 'Example transaction detail on iPad mini, English',
   ios_ipad_history_light: 'Example history on iPad mini, Indonesian',
   ios_ipad_history_en: 'Example history on iPad mini, English',
+  // UI review P7c: pinned KYC steps on iPad mini (#64).
+  ios_ipad_kyc_onboarding_light: 'Example KYC details on iPad mini, Indonesian',
+  ios_ipad_kyc_onboarding_en: 'Example KYC details on iPad mini, English',
+  ios_ipad_kyc_documents_light: 'Example KYC documents on iPad mini, Indonesian',
+  ios_ipad_kyc_documents_en: 'Example KYC documents on iPad mini, English',
+  ios_ipad_kyc_review_light: 'Example KYC review on iPad mini, Indonesian',
+  ios_ipad_kyc_review_en: 'Example KYC review on iPad mini, English',
   // UI review P7b: field labels above the box at 200%, Indonesian (#73).
   ios_catalog_text_field_variants_id_200: 'text field specimen at 200% text, Indonesian',
   ios_catalog_currency_field_variants_id_200: 'currency field specimen at 200% text, Indonesian',
