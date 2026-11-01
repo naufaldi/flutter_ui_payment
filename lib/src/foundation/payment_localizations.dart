@@ -38,9 +38,12 @@ class PaymentLocalizations {
     return match != null && {match[1], match[3], match[4]}.length == 3;
   }
 
-  /// Calendar date in the host zone; unlike [formatDateTime], no conversion
-  /// to the device zone occurs and the time is ignored.
   /// Compact calendar range using the same localized month names as formatDate.
+  ///
+  /// Each date keeps its no-break spaces. The short same-month form
+  /// ("1–31 Oct 2026") never breaks at its dash (U+2060 joins it); the
+  /// spaced form keeps one break after "– " so a long range can wrap at
+  /// large text without splitting a date (#65).
   String formatDateRange(DateTime start, DateTime end) {
     if ((start.year == end.year &&
         start.month == end.month &&
@@ -48,14 +51,22 @@ class PaymentLocalizations {
       return formatDate(start);
     }
     final e = formatDate(end);
-    if (start.year != end.year) return '${formatDate(start)} – $e';
-    if (start.month == end.month) return '${start.day}–$e';
-    final from = formatDate(start).split(' ').take(2).join(' ');
-    return '$from – $e';
+    if (start.year != end.year) return '${formatDate(start)}$_nbsp– $e';
+    if (start.month == end.month) return '${start.day}$_wj–$_wj$e';
+    return '${start.day}$_nbsp${_month(start)}$_nbsp– $e';
   }
 
+  /// Calendar date in the host zone; unlike [formatDateTime], no conversion
+  /// to the device zone occurs and the time is ignored. Day, month and year
+  /// are joined by no-break spaces (U+00A0), so "1 Oct 2026" never wraps
+  /// inside the date.
   String formatDate(DateTime value) =>
-      '${value.day} ${(_id ? _monthsId : _monthsEn)[value.month - 1]} ${value.year}';
+      '${value.day}$_nbsp${_month(value)}$_nbsp${value.year}';
+
+  static const _nbsp = '\u00A0';
+  static const _wj = '\u2060';
+  String _month(DateTime value) =>
+      (_id ? _monthsId : _monthsEn)[value.month - 1];
 
   final String languageCode;
   final MoneyFormat moneyFormat;
@@ -88,12 +99,12 @@ class PaymentLocalizations {
   ];
 
   /// "30 Oct 2026, 14:05" / "30 Okt 2026, 14.05" in the device time zone.
+  /// The date part uses [formatDate]'s no-break spaces.
   String formatDateTime(DateTime value) {
     final local = value.toLocal();
-    final month = (_id ? _monthsId : _monthsEn)[local.month - 1];
     final hh = local.hour.toString().padLeft(2, '0');
     final mm = local.minute.toString().padLeft(2, '0');
-    return '${local.day} $month ${local.year}, $hh${_id ? '.' : ':'}$mm';
+    return '${formatDate(local)}, $hh${_id ? '.' : ':'}$mm';
   }
 
   String formatBytes(int bytes) {
