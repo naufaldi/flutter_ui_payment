@@ -35,6 +35,7 @@ class FirstLineRow
     this.gap,
     this.trailingGap,
     this.line,
+    this.hug = false,
   });
 
   final Widget? leading;
@@ -58,6 +59,11 @@ class FirstLineRow
   /// Height of the text's first line box; defaults to one 15/20 line.
   final double? line;
 
+  /// Size to the content instead of the full width, for a centred group
+  /// such as a button label. The text gets loose constraints, so a `Text`
+  /// with [TextWidthBasis.longestLine] hugs its longest line.
+  final bool hug;
+
   @override
   Iterable<FirstLineSlot> get slots => FirstLineSlot.values;
 
@@ -77,6 +83,7 @@ class FirstLineRow
         gap: gap ?? 12,
         trailingGap: trailingGap ?? gap ?? 12,
         textDirection: Directionality.of(context),
+        hug: hug,
       );
 
   @override
@@ -90,7 +97,8 @@ class FirstLineRow
       ..trailingExtent = trailingExtent
       ..gap = gap ?? 12
       ..trailingGap = trailingGap ?? gap ?? 12
-      ..textDirection = Directionality.of(context);
+      ..textDirection = Directionality.of(context)
+      ..hug = hug;
   }
 }
 
@@ -103,6 +111,7 @@ class RenderFirstLineRow extends RenderBox
     required this._gap,
     required this._trailingGap,
     required this._textDirection,
+    this._hug = false,
   });
 
   double _line;
@@ -120,6 +129,8 @@ class RenderFirstLineRow extends RenderBox
   TextDirection _textDirection;
   set textDirection(TextDirection v) =>
       _set(_textDirection != v, () => _textDirection = v);
+  bool _hug;
+  set hug(bool v) => _set(_hug != v, () => _hug = v);
 
   void _set(bool changed, VoidCallback apply) {
     if (!changed) return;
@@ -137,9 +148,10 @@ class RenderFirstLineRow extends RenderBox
   double _leadingSpan(double w) => w == 0 ? 0 : w + _gap;
   double _trailingSpan(double w) => w == 0 ? 0 : w + _trailingGap;
 
-  // Lays every child out (or measures it dry) and returns the row height
-  // plus each child's offset from the start edge and top.
-  ({double height, List<(RenderBox, double, double)> places}) _arrange(
+  // Lays every child out (or measures it dry) and returns the row width and
+  // height plus each child's offset from the start edge and top.
+  ({double width, double height, List<(RenderBox, double, double)> places})
+  _arrange(
     BoxConstraints constraints,
     Size Function(RenderBox, BoxConstraints) size,
   ) {
@@ -162,30 +174,38 @@ class RenderFirstLineRow extends RenderBox
     final top = (band - _line) / 2;
     final text = _text == null
         ? Size.zero
-        : size(_text!, BoxConstraints.tightFor(width: textWidth));
+        : size(
+            _text!,
+            _hug
+                ? BoxConstraints(maxWidth: textWidth)
+                : BoxConstraints.tightFor(width: textWidth),
+          );
+    final width = _hug
+        ? _leadingSpan(lead.width) + text.width + _trailingSpan(trail.width)
+        : constraints.maxWidth;
     return (
+      width: width,
       height: math.max(band, top + text.height),
       places: [
         if (_leading != null) (_leading!, 0, (band - lead.height) / 2),
         if (_text != null) (_text!, _leadingSpan(lead.width), top),
         if (_trailing != null)
-          (
-            _trailing!,
-            constraints.maxWidth - trail.width,
-            (band - trail.height) / 2,
-          ),
+          (_trailing!, width - trail.width, (band - trail.height) / 2),
       ],
     );
   }
 
   @override
   void performLayout() {
-    assert(constraints.hasBoundedWidth, 'FirstLineRow needs a bounded width.');
+    assert(
+      _hug || constraints.hasBoundedWidth,
+      'FirstLineRow needs a bounded width.',
+    );
     final result = _arrange(
       constraints,
       (child, c) => (child..layout(c, parentUsesSize: true)).size,
     );
-    size = constraints.constrain(Size(constraints.maxWidth, result.height));
+    size = constraints.constrain(Size(result.width, result.height));
     for (final (child, start, top) in result.places) {
       final x = _textDirection == TextDirection.ltr
           ? start
@@ -197,7 +217,7 @@ class RenderFirstLineRow extends RenderBox
   @override
   Size computeDryLayout(BoxConstraints constraints) {
     final result = _arrange(constraints, (child, c) => child.getDryLayout(c));
-    return constraints.constrain(Size(constraints.maxWidth, result.height));
+    return constraints.constrain(Size(result.width, result.height));
   }
 
   double _width(double Function(RenderBox) of) {

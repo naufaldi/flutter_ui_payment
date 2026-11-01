@@ -444,6 +444,11 @@ class ViewHeader extends StatelessWidget {
   }
 }
 
+/// Internal: the footer rule (D59, D62). A footer [width] below 600 dp, or
+/// large text, stacks full-width actions; wider, they hug at the end edge.
+bool footerStacks(BuildContext context, double width) =>
+    width < kCompactBreakpoint || PaymentType.isLarge(context);
+
 /// Footer actions (D59): below 600 dp, and at large text, a full-width
 /// stack with the primary on top; wider, hug buttons at the end edge.
 class ViewFooter extends StatelessWidget {
@@ -473,7 +478,7 @@ class ViewFooter extends StatelessWidget {
                 collapse: PaymentButtonGroupCollapse.none,
                 children: actions,
               );
-        if (k.maxWidth < kCompactBreakpoint || PaymentType.isLarge(context)) {
+        if (footerStacks(context, k.maxWidth)) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: PaymentTheme.of(context).space(PaymentSpace.related),

@@ -6,6 +6,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../foundation/button_copy.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/money.dart';
 import '../foundation/payment_localizations.dart';
@@ -30,7 +31,9 @@ class PaymentActionBar extends StatelessWidget {
   });
 
   /// Main action; pass width: PaymentWidth.hug on PaymentButton. With no
-  /// [total] the action fills the bar, so pass a full-width button.
+  /// [total] the action fills the bar on phones and at large text, so pass
+  /// a full-width button; from 600 dp it hugs at the end edge, like other
+  /// pinned footers (D59, D62).
   final Widget action;
   final Money? total;
   final String? totalLabel;
@@ -116,10 +119,26 @@ class PaymentActionBar extends StatelessWidget {
           theme.space(PaymentSpace.group),
           theme.space(PaymentSpace.block),
         ),
-        // Side by side at normal text sizes; stacked when text is large so
-        // the amount never shrinks to fit beside the button.
+        // An action alone follows ViewFooter's rule: full width below 600 dp
+        // and at large text, hugging at the end edge wider (#79). With a
+        // total: side by side at normal text sizes; stacked when text is
+        // large so the amount never shrinks to fit beside the button.
         child: totalBlock == null
-            ? action
+            ? LayoutBuilder(
+                builder: (context, k) => footerStacks(context, k.maxWidth)
+                    ? action
+                    : Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        heightFactor: 1,
+                        child: switch (action) {
+                          final PaymentButton button => hugButton(button),
+                          _ => ConstrainedBox(
+                            constraints: const BoxConstraints(minWidth: 112),
+                            child: IntrinsicWidth(child: action),
+                          ),
+                        },
+                      ),
+              )
             : large
             ? Column(
                 mainAxisSize: MainAxisSize.min,

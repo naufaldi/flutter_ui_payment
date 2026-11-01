@@ -57,10 +57,12 @@ const expected = <String, List<Rect>>{
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
     Rect.fromLTRB(135.0, 4.0, 225.0, 44.0),
   ],
+  // At 2x the icon is 32 dp (the medium icon token), so the centred label
+  // sits 6 dp further right than with a 20 dp icon (#80).
   '2.0 primary true': [
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
-    Rect.fromLTRB(149.0, 4.0, 239.0, 44.0),
+    Rect.fromLTRB(155.0, 4.0, 245.0, 44.0),
   ],
   '2.0 secondary false': [
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
@@ -70,7 +72,7 @@ const expected = <String, List<Rect>>{
   '2.0 secondary true': [
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
-    Rect.fromLTRB(149.0, 4.0, 239.0, 44.0),
+    Rect.fromLTRB(155.0, 4.0, 245.0, 44.0),
   ],
   '2.0 quiet false': [
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
@@ -80,7 +82,7 @@ const expected = <String, List<Rect>>{
   '2.0 quiet true': [
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
-    Rect.fromLTRB(149.0, 4.0, 239.0, 44.0),
+    Rect.fromLTRB(155.0, 4.0, 245.0, 44.0),
   ],
   '2.0 destructive false': [
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
@@ -90,7 +92,7 @@ const expected = <String, List<Rect>>{
   '2.0 destructive true': [
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
     Rect.fromLTRB(0.0, 0.0, 360.0, 48.0),
-    Rect.fromLTRB(149.0, 4.0, 239.0, 44.0),
+    Rect.fromLTRB(155.0, 4.0, 245.0, 44.0),
   ],
   // The bar reserves the taller of the total and the "Updating total"
   // caption (#46); in the test font the caption wraps to two lines.
