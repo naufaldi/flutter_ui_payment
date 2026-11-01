@@ -15983,7 +15983,14 @@
     "file": "lib/src/verification/verification_widgets.dart",
     "doc": "Submits an `IdentityForm` from outside it, so a host can pin the submit\nin a footer, e.g. `PaymentOnboardingView.primaryAction` (D62).\n\n`submit` runs the same validation as the form's own button: it shows the\nerrors, moves focus to the first invalid field and resolves `false`, or\ncalls `IdentityForm.onSubmit` and resolves `true` once it completes. The\nhost owns the controller and disposes it.",
     "extends": "ChangeNotifier",
-    "constructors": [],
+    "constructors": [
+      {
+        "name": "IdentityFormController",
+        "factory": false,
+        "params": [],
+        "doc": "Creates a controller with no form attached."
+      }
+    ],
     "getters": [
       {
         "name": "busy",

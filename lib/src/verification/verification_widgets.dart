@@ -153,6 +153,9 @@ class _VerificationIntroState extends State<VerificationIntro> {
 /// calls [IdentityForm.onSubmit] and resolves `true` once it completes. The
 /// host owns the controller and disposes it.
 class IdentityFormController extends ChangeNotifier {
+  /// Creates a controller with no form attached.
+  IdentityFormController();
+
   _IdentityFormState? _form;
   bool _busy = false;
   bool _disposed = false;
