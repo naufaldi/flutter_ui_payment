@@ -1,7 +1,7 @@
 # PRD: Design system — foundations, components, patterns
 
 Date: 31 October 2026 (revision 3, owner decision "full Stripe parity")
-Status: **revision 3, for owner review in PR #5.** Revision 2 was approved on 31 October 2026 (Q1–Q10). Later that day the owner decided **full Stripe Apps component parity** (§1). Every revision-2 decision not listed below stays approved. The adaptations D28–D44 and Q11–Q12 are accepted (D45–D57, D48a and D52a added from the 1 Nov 2026 UI review) for Phase 1 implementation. Phase 1A foundation APIs are implemented; other items marked **New** remain planned.
+Status: **revision 3, for owner review in PR #5.** Revision 2 was approved on 31 October 2026 (Q1–Q10). Later that day the owner decided **full Stripe Apps component parity** (§1). Every revision-2 decision not listed below stays approved. The adaptations D28–D44 and Q11–Q12 are accepted (D45–D58, D48a and D52a added from the 1 Nov 2026 UI review) for Phase 1 implementation. Phase 1A foundation APIs are implemented; other items marked **New** remain planned.
 Builds on: `PRD.md` §2, §4, §7, §10, §11 and §16a; `docs/decisions.md`; `docs/foundation-plan.md`; the docs catalog in PR #1; the charts and KYC capture work in PR #4; Stripe's component pages (`https://docs.stripe.com/stripe-apps/components/<slug>.md?app-sdk-version=9`, read 31 Oct 2026).
 Tracked by: issue #2.
 
@@ -1624,6 +1624,7 @@ New in revision 3 (parity; for review):
 | D52a | **Date picker by purpose** (amends D52). Far dates (date of birth, card expiry) open with typed entry and an iOS-style scrolling wheel (day / month / year, or month / year); near dates use the calendar grid; ranges use D51's scrolling month calendar. Owner decision, UI review 1 Nov 2026 (issue #56). | A wheel reaches a distant year in one flick; a grid shows weekdays for near dates; a wheel cannot show a range. |
 | D56 | **Row alignment.** In a single-line row, title, value and trailing control share one vertical centre; in a multi-line row the leading icon and the trailing control centre on the title's first line. Owner decision, UI review 1 Nov 2026 (issue #62). | `PaymentListItem` aligned to the top, so a 48 dp "Change" button sat ≈14 pt below its title; same rule as D48a. |
 | D57 | **References and IDs in rows** (transaction ID, VA number, order reference) are monospace text without a fill, end-aligned with the other values, with a copy action. The large VA number keeps its emphasis and copy action. The filled code block is for multi-line technical text only. Owner decision, UI review 1 Nov 2026 (issue #62). | The grey chip read as a disabled field and started mid-row in the property list. |
+| D58 | **Exact values on mobile charts.** The latest point or bar is selected at rest: a guide line runs from it to one label in a band above the plot with the exact amount ("29 Okt · Rp420.000", tabular). Tap or drag selects another point or bar. Series of ≤ 12 points draw a small marker on every point. No permanent label on every point. Applies to line and bar charts. Owner decision, UI review 1 Nov 2026 (issues #62, #63). | People must read the exact amount, not estimate it from a dot; one label survives 200% text and Indonesian where per-point labels collide. |
 
 ## 9. Variant governance
 

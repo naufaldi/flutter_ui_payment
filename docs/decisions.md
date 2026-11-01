@@ -475,8 +475,12 @@ Review of every component and flow against the 8 pt grid and the emil-ui-review 
 - **D56 — row alignment:** one centre line for single-line rows; first-line alignment for multi-line rows (issue #62).
 - **D57 — references and IDs in rows** are end-aligned monospace text without a fill, with a copy action (issue #62).
 
+- **D58 — exact chart values:** the latest point or bar is selected at rest with a guide line to one exact-amount label; tap or drag moves it; markers on series of ≤ 12 points; line and bar charts (issues #62, #63).
+
 **Proposed, pending owner decision** (do not implement until decided):
 
-- **D58 — exact chart values on mobile.** The owner wants people to read the exact amount, not estimate it from a point. Option A (recommended): the latest point is selected at rest, with a guide line from the point to one label in a band above the plot showing the exact amount ("29 Okt · Rp420.000"); tap or drag moves it; markers on points for series of ≤ 12 points. Option B: an exact amount with a short leader line on every point; fits only ~5–6 points at normal text and collides at 200% and in Indonesian, so it would fall back to A (issue #62).
+- **D59 — button width:** full width on phones only for actions that finish or advance the task in a footer, sheet or dialog; hug for page-header actions and actions inside rows, cards, banners, state messages and tables (issue #63).
+- **D60 — table rows on phones** render like a property list: label left, value on the one value edge, tabular money; the row title and its ⋮ share the first line (issue #63).
+- **D61 — sign-in as account linking:** app tiles, one specific headline, a visible can / cannot list, one legal sentence, and a pinned footer with a short "Lanjutkan" and a quiet "Batal" (issue #63; mock on the issue).
 
-Problems found in the review are recorded as issues before any work: #45–#50, #52–#62.
+Problems found in the review are recorded as issues before any work: #45–#50, #52–#63.
