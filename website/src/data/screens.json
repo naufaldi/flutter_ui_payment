@@ -36,7 +36,7 @@
   },
   "ios_catalog_section_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PaymentSection specimen_dark, English"
   },
   "ios_catalog_navigation_variants": {
@@ -51,12 +51,12 @@
   },
   "ios_catalog_step_indicator_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PaymentStepIndicator specimen, English"
   },
   "ios_catalog_step_indicator_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PaymentStepIndicator specimen_dark, English"
   },
   "ios_catalog_info_row_variants": {
@@ -66,7 +66,7 @@
   },
   "ios_catalog_info_row_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "InfoRow specimen_dark, English"
   },
   "ios_catalog_info_row_variants_200": {
@@ -81,7 +81,7 @@
   },
   "ios_catalog_countdown_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "CountdownText specimen_dark, English"
   },
   "ios_catalog_privacy_mask_variants": {
@@ -96,12 +96,12 @@
   },
   "ios_catalog_action_bar_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PaymentActionBar specimen, English"
   },
   "ios_catalog_action_bar_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PaymentActionBar specimen_dark, English"
   },
   "ios_catalog_action_bar_variants_200": {
@@ -111,12 +111,12 @@
   },
   "ios_catalog_media_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PaymentVideoPlayer specimen, English"
   },
   "ios_catalog_media_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PaymentVideoPlayer specimen_dark, English"
   },
   "ios_catalog_status_header_variants": {
@@ -126,7 +126,7 @@
   },
   "ios_catalog_status_header_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "StatusHeader specimen_dark, English"
   },
   "ios_catalog_loading_skeleton_variants": {
@@ -161,7 +161,7 @@
   },
   "ios_catalog_chart_module_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ChartModule specimen_dark, English"
   },
   "ios_catalog_chart_module_variants_200": {
@@ -231,17 +231,17 @@
   },
   "ios_report_problem_light": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example report problem light, Indonesian"
   },
   "ios_report_problem_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example report problem dark, Indonesian"
   },
   "ios_report_problem_light_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Example report problem light_200, Indonesian"
   },
   "ios_statement_light": {
@@ -296,12 +296,12 @@
   },
   "ios_catalog_property_list_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "property list specimen_dark, English"
   },
   "ios_catalog_property_list_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "property list specimen_200, English"
   },
   "ios_catalog_table_variants": {
@@ -311,7 +311,7 @@
   },
   "ios_catalog_table_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "table specimen_dark, English"
   },
   "ios_catalog_table_variants_200": {
@@ -326,7 +326,7 @@
   },
   "ios_catalog_data_table_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "data table specimen_dark, English"
   },
   "ios_catalog_data_table_variants_id_200": {
@@ -346,12 +346,12 @@
   },
   "ios_catalog_task_list_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "task list specimen_dark, English"
   },
   "ios_catalog_task_list_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "task list specimen_200, English"
   },
   "ios_catalog_button_group_variants": {
@@ -521,22 +521,22 @@
   },
   "ios_catalog_box_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "box specimen, English"
   },
   "ios_catalog_box_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "box specimen_dark, English"
   },
   "ios_catalog_icon_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "icon specimen, English"
   },
   "ios_catalog_icon_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "icon specimen_dark, English"
   },
   "ios_catalog_image_variants": {
@@ -546,32 +546,32 @@
   },
   "ios_catalog_image_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "image specimen_dark, English"
   },
   "ios_catalog_divider_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "divider specimen, English"
   },
   "ios_catalog_divider_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "divider specimen_dark, English"
   },
   "ios_catalog_inline_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "inline specimen, English"
   },
   "ios_catalog_inline_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "inline specimen_dark, English"
   },
   "ios_catalog_inline_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "inline specimen_200, English"
   },
   "ios_catalog_code_variants": {
@@ -581,27 +581,27 @@
   },
   "ios_catalog_code_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "code specimen_dark, English"
   },
   "ios_catalog_code_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "code specimen_200, English"
   },
   "ios_catalog_text_area_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "text area specimen, English"
   },
   "ios_catalog_text_area_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "text area specimen_dark, English"
   },
   "ios_catalog_text_area_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "text area specimen_200, English"
   },
   "ios_catalog_select_variants": {
@@ -686,7 +686,7 @@
   },
   "ios_catalog_chip_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "chip specimen_dark, English"
   },
   "ios_catalog_chip_variants_200": {
@@ -701,7 +701,7 @@
   },
   "ios_catalog_line_chart_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog line_chart variants_dark, English"
   },
   "ios_catalog_line_chart_variants_200": {
@@ -731,12 +731,12 @@
   },
   "ios_catalog_meter_chart_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog meter_chart variants_dark, English"
   },
   "ios_catalog_meter_chart_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog meter_chart variants_200, English"
   },
   "ios_catalog_text_field_variants": {
@@ -746,7 +746,7 @@
   },
   "ios_catalog_text_field_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog text_field variants_dark, English"
   },
   "ios_catalog_text_field_variants_200": {
@@ -756,17 +756,17 @@
   },
   "ios_catalog_link_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog link variants, English"
   },
   "ios_catalog_link_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog link variants_dark, English"
   },
   "ios_catalog_link_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog link variants_200, English"
   },
   "ios_catalog_sparkline_variants": {
@@ -776,17 +776,17 @@
   },
   "ios_catalog_sparkline_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog sparkline variants_dark, English"
   },
   "ios_catalog_icon_button_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog icon_button variants, English"
   },
   "ios_catalog_icon_button_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog icon_button variants_dark, English"
   },
   "ios_catalog_copy_button_variants": {
@@ -796,22 +796,22 @@
   },
   "ios_catalog_copy_button_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog copy_button variants_dark, English"
   },
   "ios_catalog_badge_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog badge variants, English"
   },
   "ios_catalog_badge_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog badge variants dark, English"
   },
   "ios_catalog_badge_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog badge variants 200, English"
   },
   "ios_catalog_banner_variants": {
@@ -836,12 +836,12 @@
   },
   "ios_catalog_toast_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog toast variants dark, English"
   },
   "ios_catalog_toast_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog toast variants 200, English"
   },
   "ios_catalog_tooltip_variants": {
@@ -876,12 +876,12 @@
   },
   "ios_catalog_accordion_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog accordion variants, English"
   },
   "ios_catalog_accordion_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog accordion variants dark, English"
   },
   "ios_catalog_accordion_variants_200": {
@@ -896,7 +896,7 @@
   },
   "ios_catalog_list_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog list variants dark, English"
   },
   "ios_catalog_list_variants_200": {
@@ -911,7 +911,7 @@
   },
   "ios_catalog_tabs_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog tabs variants dark, English"
   },
   "ios_catalog_tabs_variants_200": {
@@ -921,17 +921,17 @@
   },
   "ios_catalog_checkbox_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog checkbox variants, English"
   },
   "ios_catalog_checkbox_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog checkbox variants dark, English"
   },
   "ios_catalog_checkbox_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog checkbox variants 200, English"
   },
   "ios_catalog_radio_variants": {
@@ -951,17 +951,17 @@
   },
   "ios_catalog_switch_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog switch variants, English"
   },
   "ios_catalog_switch_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog switch variants dark, English"
   },
   "ios_catalog_switch_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog switch variants 200, English"
   },
   "ios_catalog_currency_field_variants": {
@@ -971,7 +971,7 @@
   },
   "ios_catalog_currency_field_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog currency field variants dark, English"
   },
   "ios_catalog_currency_field_variants_200": {
@@ -981,22 +981,22 @@
   },
   "ios_catalog_spinner_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog spinner variants, English"
   },
   "ios_catalog_spinner_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog spinner variants dark, English"
   },
   "ios_catalog_toast_updated": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog toast updated, English"
   },
   "ios_catalog_tooltip_flip": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog tooltip flip, English"
   },
   "ios_catalog_button_variants": {
@@ -1006,7 +1006,7 @@
   },
   "ios_catalog_button_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog button variants dark, English"
   },
   "ios_catalog_button_variants_200": {
@@ -1016,17 +1016,17 @@
   },
   "ios_catalog_amount_text_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog amount text variants, English"
   },
   "ios_catalog_amount_text_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog amount text variants dark, English"
   },
   "ios_catalog_amount_text_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog amount text variants 200, English"
   },
   "ios_kyc_intro_light": {
@@ -1061,102 +1061,102 @@
   },
   "ios_catalog_video_loading": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog video loading, English"
   },
   "ios_catalog_chart_line": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart line, English"
   },
   "ios_catalog_chart_line_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart line dark, English"
   },
   "ios_catalog_chart_bar": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart bar, English"
   },
   "ios_catalog_chart_bar_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart bar dark, English"
   },
   "ios_catalog_chart_meter": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart meter, English"
   },
   "ios_catalog_chart_meter_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart meter dark, English"
   },
   "ios_catalog_chart_sparkline": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart sparkline, English"
   },
   "ios_catalog_chart_sparkline_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart sparkline dark, English"
   },
   "ios_catalog_chart_in_context": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart in context, English"
   },
   "ios_catalog_chart_in_context_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart in context dark, English"
   },
   "ios_catalog_capture_source_sheet": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: capture source sheet, English"
   },
   "ios_catalog_capture_source_sheet_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: capture source sheet dark, English"
   },
   "ios_catalog_capture_ktp": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: capture ktp, English"
   },
   "ios_catalog_capture_ktp_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: capture ktp dark, English"
   },
   "ios_catalog_capture_selfie": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: capture selfie, English"
   },
   "ios_catalog_capture_selfie_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: capture selfie dark, English"
   },
   "ios_catalog_chart_states": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart states, English"
   },
   "ios_catalog_chart_states_error": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart states error, English"
   },
   "ios_catalog_chart_states_empty": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart states empty, English"
   },
   "ios_catalog_chart_line_rest": {
@@ -1171,27 +1171,27 @@
   },
   "ios_catalog_capture_review": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: capture review, English"
   },
   "ios_catalog_capture_rejected": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: capture rejected, English"
   },
   "ios_catalog_capture_permission": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: capture permission, English"
   },
   "ios_catalog_chart_in_context_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: chart in context 200, English"
   },
   "ios_catalog_capture_selfie_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: capture selfie 200, English"
   },
   "ios_refined_checkout_light": {
@@ -1271,57 +1271,57 @@
   },
   "ios_kit_checkout": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: checkout components, Indonesian"
   },
   "ios_kit_checkout_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: checkout components, dark"
   },
   "ios_kit_checkout_lumen": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: checkout in the Lumen brand"
   },
   "ios_kit_history": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: transaction history, Indonesian"
   },
   "ios_kit_history_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: transaction history, dark"
   },
   "ios_kit_history_detail_unknown": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: transaction detail, unknown outcome"
   },
   "ios_kit_interaction": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: interaction components, Indonesian"
   },
   "ios_kit_interaction_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: interaction at 200% text"
   },
   "ios_kit_navigation_drawer": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: navigation drawer"
   },
   "ios_kit_sheets": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: sheets"
   },
   "ios_kit_sheet_pending": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: pending-payment sheet"
   },
   "ios_kit_sheet_confirm": {
@@ -1331,28 +1331,23 @@
   },
   "ios_kit_promo": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: promotions, Indonesian"
   },
   "ios_kit_promo_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: promotions at 200% text"
   },
   "ios_kit_video_ready": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: video player"
   },
   "ios_catalog_foundation": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "Gallery: foundation specimen (English formatting, Indonesian row labels)"
-  },
-  "ios_catalog_menu_open": {
-    "width": 640,
-    "height": 1387,
-    "caption": "Gallery: action menu open, English"
   },
   "ios_catalog_banner_variants_id": {
     "width": 640,
@@ -1693,6 +1688,36 @@
     "width": 640,
     "height": 975,
     "caption": "Example history on iPad mini, English"
+  },
+  "ios_ipad_kyc_onboarding_light": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example KYC details on iPad mini, Indonesian"
+  },
+  "ios_ipad_kyc_onboarding_en": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example KYC details on iPad mini, English"
+  },
+  "ios_ipad_kyc_documents_light": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example KYC documents on iPad mini, Indonesian"
+  },
+  "ios_ipad_kyc_documents_en": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example KYC documents on iPad mini, English"
+  },
+  "ios_ipad_kyc_review_light": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example KYC review on iPad mini, Indonesian"
+  },
+  "ios_ipad_kyc_review_en": {
+    "width": 640,
+    "height": 975,
+    "caption": "Example KYC review on iPad mini, English"
   },
   "ios_catalog_text_field_variants_id_200": {
     "width": 640,
