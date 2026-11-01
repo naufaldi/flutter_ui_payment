@@ -192,7 +192,12 @@ class _FormsSpecimenState extends State<_FormsSpecimen> {
       name: '${widget.name} · variants',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: PaymentTheme.of(context).space(PaymentSpace.group),
+        // Field groups sit a section apart (#65); single fields a group.
+        spacing: PaymentTheme.of(context).space(
+          widget.name == 'PaymentFormFieldGroup'
+              ? PaymentSpace.section
+              : PaymentSpace.group,
+        ),
         children: children,
       ),
     );

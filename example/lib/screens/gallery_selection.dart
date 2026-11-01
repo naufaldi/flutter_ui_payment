@@ -169,16 +169,19 @@ class _SelectionSpecimenState extends State<_SelectionSpecimen> {
                   'Kirim struk lewat ${method == 'SMS' ? 'SMS' : 'email'}',
                 ),
               ),
+            // A group error shows once, under the last option (#65).
             for (final method in ['Email', 'SMS'])
               PaymentRadio(
                 value: method,
                 groupValue: null,
                 onChanged: (_) {},
                 label: method,
-                errorText: t(
-                  'Choose how to get your receipt',
-                  'Pilih cara menerima struk',
-                ),
+                errorText: method == 'SMS'
+                    ? t(
+                        'Choose how to get your receipt',
+                        'Pilih cara menerima struk',
+                      )
+                    : null,
               ),
             PaymentRadio(
               value: 'Paper',

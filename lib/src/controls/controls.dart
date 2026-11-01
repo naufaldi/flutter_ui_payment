@@ -146,7 +146,9 @@ class PaymentRadio<T> extends StatelessWidget {
   /// Called with [value] when this option is chosen. Null disables it.
   final ValueChanged<T>? onChanged;
 
-  /// Validation message, with a danger icon and edge.
+  /// Validation message, with a danger icon and edge. A group's error
+  /// ("Choose how to get your receipt") goes on the last option only, so it
+  /// shows once under the group instead of under every option (#65).
   final String? errorText;
 
   /// Spoken as required; the host gates the next step.
