@@ -76,7 +76,7 @@
   },
   "ios_catalog_countdown_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "CountdownText specimen, English"
   },
   "ios_catalog_countdown_variants_dark": {
@@ -106,7 +106,7 @@
   },
   "ios_catalog_action_bar_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "PaymentActionBar specimen_200, English"
   },
   "ios_catalog_media_variants": {
@@ -121,7 +121,7 @@
   },
   "ios_catalog_status_header_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "StatusHeader specimen, English"
   },
   "ios_catalog_status_header_variants_dark": {
@@ -131,17 +131,17 @@
   },
   "ios_catalog_loading_skeleton_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "LoadingSkeleton specimen, English"
   },
   "ios_catalog_loading_skeleton_variants_dark": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "LoadingSkeleton specimen_dark, English"
   },
   "ios_catalog_state_message_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "StateMessage · PaymentEmptyMessage specimen, English"
   },
   "ios_catalog_state_message_variants_dark": {
@@ -601,7 +601,7 @@
   },
   "ios_catalog_select_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "select specimen, English"
   },
   "ios_catalog_select_variants_dark": {
@@ -616,7 +616,7 @@
   },
   "ios_catalog_date_field_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "date field specimen, English"
   },
   "ios_catalog_date_field_variants_dark": {
@@ -661,7 +661,7 @@
   },
   "ios_catalog_search_field_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "search field specimen, English"
   },
   "ios_catalog_search_field_variants_dark": {
@@ -676,7 +676,7 @@
   },
   "ios_catalog_chip_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "chip specimen, English"
   },
   "ios_catalog_chip_variants_dark": {
@@ -686,7 +686,7 @@
   },
   "ios_catalog_chip_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "chip specimen_200, English"
   },
   "ios_catalog_line_chart_variants": {
@@ -736,7 +736,7 @@
   },
   "ios_catalog_text_field_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog text_field variants, English"
   },
   "ios_catalog_text_field_variants_dark": {
@@ -786,7 +786,7 @@
   },
   "ios_catalog_copy_button_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog copy_button variants, English"
   },
   "ios_catalog_copy_button_variants_dark": {
@@ -826,7 +826,7 @@
   },
   "ios_catalog_toast_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog toast variants, English"
   },
   "ios_catalog_toast_variants_dark": {
@@ -881,12 +881,12 @@
   },
   "ios_catalog_accordion_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog accordion variants 200, English"
   },
   "ios_catalog_list_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog list variants, English"
   },
   "ios_catalog_list_variants_dark": {
@@ -896,12 +896,12 @@
   },
   "ios_catalog_list_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog list variants 200, English"
   },
   "ios_catalog_tabs_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog tabs variants, English"
   },
   "ios_catalog_tabs_variants_dark": {
@@ -911,7 +911,7 @@
   },
   "ios_catalog_tabs_variants_200": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog tabs variants 200, English"
   },
   "ios_catalog_checkbox_variants": {
@@ -961,7 +961,7 @@
   },
   "ios_catalog_currency_field_variants": {
     "width": 640,
-    "height": 1387,
+    "height": 1391,
     "caption": "ios catalog currency field variants, English"
   },
   "ios_catalog_currency_field_variants_dark": {
@@ -1343,5 +1343,95 @@
     "width": 640,
     "height": 1387,
     "caption": "Gallery: action menu open, English"
+  },
+  "ios_catalog_banner_variants_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "banner specimen, Indonesian"
+  },
+  "ios_catalog_banner_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "banner specimen at 200% text, Indonesian"
+  },
+  "ios_catalog_list_variants_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "list specimen, Indonesian"
+  },
+  "ios_catalog_list_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "list specimen at 200% text, Indonesian"
+  },
+  "ios_catalog_menu_variants_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "menu specimen, Indonesian"
+  },
+  "ios_catalog_menu_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "menu specimen at 200% text, Indonesian"
+  },
+  "ios_catalog_toast_variants_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "toast specimen, Indonesian"
+  },
+  "ios_catalog_toast_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "toast specimen at 200% text, Indonesian"
+  },
+  "ios_catalog_dialog_variants_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "showPaymentConfirmDialog specimen, Indonesian"
+  },
+  "ios_catalog_dialog_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "showPaymentConfirmDialog specimen at 200% text, Indonesian"
+  },
+  "ios_catalog_tabs_variants_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "tabs specimen, Indonesian"
+  },
+  "ios_catalog_tabs_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "tabs specimen at 200% text, Indonesian"
+  },
+  "ios_catalog_chip_variants_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "chip specimen, Indonesian"
+  },
+  "ios_catalog_chip_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "chip specimen at 200% text, Indonesian"
+  },
+  "ios_catalog_button_group_variants_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "button group specimen, Indonesian"
+  },
+  "ios_catalog_button_group_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "button group specimen at 200% text, Indonesian"
+  },
+  "ios_catalog_tooltip_variants_id": {
+    "width": 640,
+    "height": 1391,
+    "caption": "tooltip specimen, Indonesian"
+  },
+  "ios_catalog_tooltip_variants_id_200": {
+    "width": 640,
+    "height": 1391,
+    "caption": "tooltip specimen at 200% text, Indonesian"
   }
 }
