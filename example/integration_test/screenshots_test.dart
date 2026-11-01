@@ -133,6 +133,10 @@ void main() {
           await settle(tester);
         }
       },
+      // The documents step's "Continue to review" pins at the bottom (D62).
+      'kyc_documents': () async {
+        await runScenario(tester, app, 'K05');
+      },
       'history': () async {
         final c = await runScenario(tester, app, 'A01');
         await pumpUntil(tester, () => !c.historyLoading);

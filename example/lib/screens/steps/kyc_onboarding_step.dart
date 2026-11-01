@@ -6,12 +6,41 @@ import '../../adapters/fake_host.dart';
 import '../capture_screen.dart';
 import 'kyc_fields.dart';
 
-class KycOnboardingStep extends StatelessWidget {
+class KycOnboardingStep extends StatefulWidget {
   const KycOnboardingStep(this.c, {super.key});
   final DemoCoordinator c;
+
+  @override
+  State<KycOnboardingStep> createState() => _KycOnboardingStepState();
+}
+
+class _KycOnboardingStepState extends State<KycOnboardingStep> {
+  // Submits the identity form from the pinned footer (D62).
+  final _identity = IdentityFormController();
+
+  @override
+  void initState() {
+    super.initState();
+    // The pinned button shows the form's busy state, including a submit
+    // started from the keyboard's done action.
+    _identity.addListener(_changed);
+  }
+
+  void _changed() => setState(() {});
+
+  @override
+  void dispose() {
+    _identity.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final c = widget.c;
     final s = DemoStrings.of(context);
+    final l10n = PaymentLocalizations.of(context);
+    final reqs = documentRequirements(s);
+    final documents = [for (final r in reqs) (r, c.documents[r.key]!)];
     final review = c.step == FlowStep.kycReview;
     final details = c.step == FlowStep.kycIdentity;
     PaymentTaskStatus slot(String key) => switch (c.documents[key]?.phase) {
@@ -20,7 +49,29 @@ class KycOnboardingStep extends StatelessWidget {
       DocumentSlotPhase.uploading => PaymentTaskStatus.inProgress,
       _ => PaymentTaskStatus.notStarted,
     };
+    // Each step's submit pins at the bottom of the view (D62).
+    final action = switch (c.step) {
+      FlowStep.kycIdentity => PaymentButton(
+        key: const Key('identity-continue'),
+        label: l10n.continueLabel,
+        busy: _identity.busy,
+        onPressed: _identity.submit,
+      ),
+      FlowStep.kycDocuments => PaymentButton(
+        key: const Key('to-review'),
+        label: s.continueToReview,
+        onPressed: VerificationReview.isReady(documents) ? c.goToReview : null,
+      ),
+      _ => VerificationReview.submitButton(
+        context,
+        key: const Key('submit-kyc'),
+        documents: documents,
+        onSubmit: c.submitKyc,
+        busy: c.kycSubmitting,
+      ),
+    };
     return PaymentOnboardingView(
+      primaryAction: action,
       title: s.verifyTitle,
       description: s.verifyDescription,
       tasks: [
@@ -55,7 +106,7 @@ class KycOnboardingStep extends StatelessWidget {
           ? null
           : PaymentBanner(tone: StatusTone.warning, title: s.fixHighlighted),
       child: switch (c.step) {
-        FlowStep.kycIdentity => _KycIdentity(c),
+        FlowStep.kycIdentity => _KycIdentity(c, controller: _identity),
         FlowStep.kycDocuments => _KycDocuments(c),
         _ => _KycReview(c),
       },
@@ -64,8 +115,9 @@ class KycOnboardingStep extends StatelessWidget {
 }
 
 class _KycIdentity extends StatelessWidget {
-  const _KycIdentity(this.c);
+  const _KycIdentity(this.c, {required this.controller});
   final DemoCoordinator c;
+  final IdentityFormController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +127,7 @@ class _KycIdentity extends StatelessWidget {
       initialValues: c.identity,
       highlightFields: c.kyc.fieldsToFix,
       onSubmit: c.submitIdentity,
+      controller: controller,
     );
   }
 }
@@ -144,14 +197,11 @@ class _KycDocuments extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = DemoStrings.of(context);
-    final reqs = documentRequirements(s);
-    final ready = reqs.every(
-      (r) => c.documents[r.key]?.phase == DocumentSlotPhase.uploaded,
-    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 12,
       children: [
-        for (final req in reqs) ...[
+        for (final req in documentRequirements(s))
           DocumentUploadTile(
             key: Key('slot-${req.key}'),
             requirement: req,
@@ -160,14 +210,6 @@ class _KycDocuments extends StatelessWidget {
             onPick: () => _pick(context, req),
             onOpenSettings: () => c.openSettings(req.key),
           ),
-          const SizedBox(height: 12),
-        ],
-        const SizedBox(height: 12),
-        PaymentButton(
-          key: const Key('to-review'),
-          label: s.continueToReview,
-          onPressed: ready ? c.goToReview : null,
-        ),
       ],
     );
   }
@@ -188,6 +230,7 @@ class _KycReview extends StatelessWidget {
       ],
       busy: c.kycSubmitting,
       onSubmit: c.submitKyc,
+      inlineSubmit: false,
       onEditDetails: c.editIdentity,
       onEditDocuments: c.editDocuments,
     );

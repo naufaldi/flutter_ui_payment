@@ -196,7 +196,8 @@ class _Shell extends StatelessWidget {
         scenarioLabel: app.activeScenario.id,
         onRestart: app.simulateRestart,
         onBackground: app.simulateBackground,
-        onOpenSettings: () => showSettingsSheet(context, app),
+        onOpenSettings: (demoTools) =>
+            showSettingsSheet(context, app, onDemoTools: demoTools),
       ),
       ScenarioPicker(
         onRun: app.runScenario,
@@ -264,7 +265,13 @@ class _Shell extends StatelessWidget {
   }
 }
 
-Future<void> showSettingsSheet(BuildContext context, DemoAppState app) {
+/// The app's settings. [onDemoTools] adds a "Demo tools" entry that closes
+/// this sheet and opens the host tools (the Demo tab only).
+Future<void> showSettingsSheet(
+  BuildContext context,
+  DemoAppState app, {
+  VoidCallback? onDemoTools,
+}) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -357,6 +364,18 @@ Future<void> showSettingsSheet(BuildContext context, DemoAppState app) {
                   value: settings.reduceMotion,
                   onChanged: (v) => update(settings.copyWith(reduceMotion: v)),
                 ),
+                if (onDemoTools != null)
+                  ListTile(
+                    key: const Key('demo-tools'),
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.science_outlined),
+                    title: Text(s.demoTools),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.pop(context);
+                      onDemoTools();
+                    },
+                  ),
               ],
             ),
           ),

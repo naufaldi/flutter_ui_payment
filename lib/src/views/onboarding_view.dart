@@ -10,6 +10,14 @@ import '../interaction/interaction.dart';
 import '../content/task_list.dart';
 
 /// Host-guided setup with current content before the task list on phones.
+///
+/// [primaryAction], with at most one quiet [secondaryAction], is the current
+/// step's submit. Given a bounded height the content scrolls and the actions
+/// pin to a footer at the bottom (D62); inside a scroll view they follow the
+/// content. A step's form then leaves its own button out: [IdentityForm]
+/// takes an [IdentityFormController], and [VerificationReview] takes
+/// `inlineSubmit: false` with [VerificationReview.submitButton] here. Without
+/// actions the step's content keeps its own inline button, as before.
 class PaymentOnboardingView extends StatefulWidget {
   const PaymentOnboardingView({
     super.key,
@@ -21,6 +29,8 @@ class PaymentOnboardingView extends StatefulWidget {
     this.error,
     this.completed = false,
     this.onCompleted,
+    this.primaryAction,
+    this.secondaryAction,
   });
 
   /// Heading displayed above the content.
@@ -46,6 +56,13 @@ class PaymentOnboardingView extends StatefulWidget {
 
   /// Host action for leaving the completed onboarding flow.
   final VoidCallback? onCompleted;
+
+  /// The current step's submit, pinned at the bottom (D62). Hidden while
+  /// [pending] or [completed], when the step's content isn't shown.
+  final PaymentButton? primaryAction;
+
+  /// Quiet only (D59), under [primaryAction].
+  final PaymentButton? secondaryAction;
   @override
   State<PaymentOnboardingView> createState() => _PaymentOnboardingViewState();
 }
@@ -72,6 +89,14 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
   @override
   Widget build(BuildContext context) {
     final w = widget;
+    assert(
+      w.secondaryAction == null ||
+          w.secondaryAction!.variant == PaymentButtonVariant.quiet,
+    );
+    final showActions =
+        !w.completed &&
+        !w.pending &&
+        (w.primaryAction != null || w.secondaryAction != null);
 
     final l = PaymentLocalizations.of(context);
 
@@ -127,6 +152,12 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
                 ),
             ],
           ),
+          footer: showActions
+              ? ViewFooter(
+                  primaryAction: w.primaryAction,
+                  secondaryAction: w.secondaryAction,
+                )
+              : null,
         );
         if (!wide) return frame;
         // Two columns stay two columns, centred up to 1040 dp (D53, Q1).

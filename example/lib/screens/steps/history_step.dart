@@ -93,28 +93,6 @@ class HistoryStep extends StatelessWidget {
                 ),
               ),
             ],
-            secondary: [
-              PaymentDetailPagePropertyList(
-                title: s.thisMonth,
-                pending: c.historyLoading,
-                items: [
-                  PaymentDetailProperty(
-                    label: s.historyPayments,
-                    values: [PaymentDetailValue('${paid.length}')],
-                  ),
-                  PaymentDetailProperty(
-                    label: s.historyRefunds,
-                    values: [
-                      PaymentDetailValue(l.moneyFormat.format(refunded)),
-                    ],
-                  ),
-                  PaymentDetailProperty(
-                    label: s.historyMostUsed,
-                    values: [PaymentDetailValue(ranked.firstOrNull ?? '—')],
-                  ),
-                ],
-              ),
-            ],
           ),
           PaymentDateRangePicker(
             label: s.dateRange,
@@ -203,6 +181,27 @@ class HistoryStep extends StatelessWidget {
                 ? null
                 : c.historyError!.safeMessage ?? s.historyFailed,
             onRetry: c.retryHistory,
+          ),
+          // The month's figures follow the list, so the first screen
+          // reaches a transaction row (#58-3); the headline above already
+          // carries the month's total.
+          PaymentDetailPagePropertyList(
+            title: s.thisMonth,
+            pending: c.historyLoading,
+            items: [
+              PaymentDetailProperty(
+                label: s.historyPayments,
+                values: [PaymentDetailValue('${paid.length}')],
+              ),
+              PaymentDetailProperty(
+                label: s.historyRefunds,
+                values: [PaymentDetailValue(l.moneyFormat.format(refunded))],
+              ),
+              PaymentDetailProperty(
+                label: s.historyMostUsed,
+                values: [PaymentDetailValue(ranked.firstOrNull ?? '—')],
+              ),
+            ],
           ),
         ],
       ),

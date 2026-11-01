@@ -274,7 +274,13 @@ void main() {
     await pumpUntil(t, () => !c.historyLoading);
     await settle(t);
     expect(find.text('Spending, this month vs last'), findsOneWidget);
-    await tapVisible(t, find.text('Refunds').last);
+    await tapVisible(
+      t,
+      find.descendant(
+        of: find.byType(PaymentTabs),
+        matching: find.text('Refunds'),
+      ),
+    );
     expect(c.historyFilter, TransactionFilter.refunds);
     expect(find.byType(PaymentChip), findsOneWidget);
     final close = find.descendant(

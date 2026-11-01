@@ -145,10 +145,77 @@ class _VerificationIntroState extends State<VerificationIntro> {
   }
 }
 
+/// Submits an [IdentityForm] from outside it, so a host can pin the submit
+/// in a footer, e.g. [PaymentOnboardingView.primaryAction] (D62).
+///
+/// [submit] runs the same validation as the form's own button: it shows the
+/// errors, moves focus to the first invalid field and resolves `false`, or
+/// calls [IdentityForm.onSubmit] and resolves `true` once it completes. The
+/// host owns the controller and disposes it.
+class IdentityFormController extends ChangeNotifier {
+  /// Creates a controller with no form attached.
+  IdentityFormController();
+
+  _IdentityFormState? _form;
+  bool _busy = false;
+  bool _disposed = false;
+
+  /// True while [IdentityForm.onSubmit] runs.
+  bool get busy => _busy;
+
+  /// A form is attached and no submit is running.
+  bool get canSubmit => _form != null && !_busy;
+
+  /// Validates the attached form and submits it when valid. Resolves `false`
+  /// when the form is invalid, detached or already submitting.
+  Future<bool> submit() async {
+    final form = _form;
+    if (form == null || _busy) return false;
+    _setBusy(true);
+    try {
+      return await form._submit();
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  void _setBusy(bool value) {
+    _busy = value;
+    if (!_disposed) notifyListeners();
+  }
+
+  void _attach(_IdentityFormState form) {
+    _form = form;
+    _notifyAfterFrame();
+  }
+
+  void _detach(_IdentityFormState form) {
+    if (_form != form) return;
+    _form = null;
+    _notifyAfterFrame();
+  }
+
+  // Attaching happens while the tree builds; a host listener rebuilding
+  // then would mark itself dirty mid-build.
+  void _notifyAfterFrame() => WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (!_disposed) notifyListeners();
+  });
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+}
+
 /// Identity form driven by host [IdentityFieldSpec]s.
 ///
 /// Submit validates every field, shows errors on the relevant fields and
 /// moves focus to the first invalid one. Names accept any script.
+///
+/// With a [controller] the form has no submit button of its own: the host
+/// places one that calls [IdentityFormController.submit], e.g. pinned in
+/// [PaymentOnboardingView.primaryAction] (D62).
 class IdentityForm extends StatefulWidget {
   const IdentityForm({
     super.key,
@@ -158,6 +225,7 @@ class IdentityForm extends StatefulWidget {
     this.serverErrors = const {},
     this.highlightFields = const {},
     this.submitLabel,
+    this.controller,
   });
 
   final List<IdentityFieldSpec> fields;
@@ -169,7 +237,12 @@ class IdentityForm extends StatefulWidget {
 
   /// Fields the host asked to correct (actionRequired).
   final Set<String> highlightFields;
+
+  /// The inline button's label; unused with a [controller].
   final String? submitLabel;
+
+  /// Submits the form from a host button and hides the inline one.
+  final IdentityFormController? controller;
 
   @override
   State<IdentityForm> createState() => _IdentityFormState();
@@ -215,15 +288,26 @@ class _IdentityFormState extends State<IdentityForm> {
   final Set<String> _editedSinceServerErrors = {};
 
   @override
+  void initState() {
+    super.initState();
+    widget.controller?._attach(this);
+  }
+
+  @override
   void didUpdateWidget(IdentityForm oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.serverErrors != widget.serverErrors) {
       _editedSinceServerErrors.clear();
     }
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?._detach(this);
+      widget.controller?._attach(this);
+    }
   }
 
   @override
   void dispose() {
+    widget.controller?._detach(this);
     for (final c in _controllers.values) {
       c.dispose();
     }
@@ -233,7 +317,12 @@ class _IdentityFormState extends State<IdentityForm> {
     super.dispose();
   }
 
-  Future<void> _submit() async {
+  bool _submitting = false;
+
+  /// The one submit path for the inline button, the keyboard's done action
+  /// and [IdentityFormController.submit].
+  Future<bool> _submit() async {
+    if (_submitting) return false;
     setState(() => _submitted = true);
     for (final f in widget.fields.where(
       (f) => f.kind == IdentityFieldKind.search,
@@ -249,10 +338,23 @@ class _IdentityFormState extends State<IdentityForm> {
           break;
         }
       }
-      return;
+      return false;
     }
-    await widget.onSubmit({for (final f in widget.fields) f.key: _valueOf(f)});
+    _submitting = true;
+    try {
+      await widget.onSubmit({
+        for (final f in widget.fields) f.key: _valueOf(f),
+      });
+      return true;
+    } finally {
+      _submitting = false;
+    }
   }
+
+  /// The keyboard's done action goes through the controller when there is
+  /// one, so a pinned button shows the same busy state.
+  void _requestSubmit() =>
+      widget.controller == null ? _submit() : widget.controller!.submit();
 
   @override
   Widget build(BuildContext context) {
@@ -338,7 +440,7 @@ class _IdentityFormState extends State<IdentityForm> {
             ? TextInputAction.done
             : TextInputAction.next,
         onSubmitted: (_) {
-          if (i == widget.fields.length - 1) _submit();
+          if (i == widget.fields.length - 1) _requestSubmit();
         },
         onChanged: (_) {
           if (widget.serverErrors.containsKey(f.key) &&
@@ -370,6 +472,7 @@ class _IdentityFormState extends State<IdentityForm> {
       // 24 around a field group and before the action, 16 between fields
       // (D46, #65).
       final next = i < widget.fields.length ? widget.fields[i] : null;
+      if (next == null && widget.controller != null) break;
       grouped.add(
         SizedBox(
           height: theme.space(
@@ -390,10 +493,11 @@ class _IdentityFormState extends State<IdentityForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ...grouped,
-            PaymentButton(
-              label: widget.submitLabel ?? l10n.continueLabel,
-              onPressed: _submit,
-            ),
+            if (widget.controller == null)
+              PaymentButton(
+                label: widget.submitLabel ?? l10n.continueLabel,
+                onPressed: _submit,
+              ),
           ],
         ),
       ),
@@ -599,6 +703,10 @@ class DocumentUploadTile extends StatelessWidget {
 ///
 /// Values marked [IdentityFieldSpec.maskInReview] show only the last four
 /// characters, keeping identity data to the minimum needed.
+///
+/// With [inlineSubmit] false the review leaves its submit to the host, which
+/// pins [submitButton] in a footer, e.g. [PaymentOnboardingView.primaryAction]
+/// (D62).
 class VerificationReview extends StatelessWidget {
   const VerificationReview({
     super.key,
@@ -609,6 +717,7 @@ class VerificationReview extends StatelessWidget {
     this.onEditDetails,
     this.onEditDocuments,
     this.busy = false,
+    this.inlineSubmit = true,
   });
 
   final List<IdentityFieldSpec> fields;
@@ -621,6 +730,34 @@ class VerificationReview extends StatelessWidget {
   final VoidCallback? onEditDocuments;
   final bool busy;
 
+  /// Shows the submit button at the end of the review. False when the host
+  /// places [submitButton] itself.
+  final bool inlineSubmit;
+
+  /// Whether every document slot is uploaded, so submitting is allowed.
+  static bool isReady(
+    List<(DocumentRequirement, DocumentSlotState)> documents,
+  ) => documents.every((d) => d.$2.phase == DocumentSlotPhase.uploaded);
+
+  /// The review's submit button: disabled until [isReady], busy with the
+  /// submitting label. The inline button is this one.
+  static PaymentButton submitButton(
+    BuildContext context, {
+    Key? key,
+    required List<(DocumentRequirement, DocumentSlotState)> documents,
+    required Future<void> Function()? onSubmit,
+    bool busy = false,
+  }) {
+    final l10n = PaymentLocalizations.of(context);
+    return PaymentButton(
+      key: key,
+      label: l10n.submitVerification,
+      busy: busy,
+      busyLabel: l10n.submitting,
+      onPressed: isReady(documents) ? onSubmit : null,
+    );
+  }
+
   static String mask(String value) {
     if (value.length <= 4) return value;
     return '${'•' * (value.length - 4)}${value.substring(value.length - 4)}';
@@ -631,9 +768,7 @@ class VerificationReview extends StatelessWidget {
     final l10n = PaymentLocalizations.of(context);
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
-    final ready = documents.every(
-      (d) => d.$2.phase == DocumentSlotPhase.uploaded,
-    );
+    final ready = isReady(documents);
     // Two "Edit" buttons on one screen: the spoken label names the section.
     Widget? editButton(VoidCallback? onTap, String section) => onTap == null
         ? null
@@ -693,21 +828,25 @@ class VerificationReview extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: theme.space(PaymentSpace.group)),
+        if (!ready || inlineSubmit)
+          SizedBox(height: theme.space(PaymentSpace.group)),
         if (!ready)
           Padding(
-            padding: EdgeInsets.only(bottom: theme.space(PaymentSpace.related)),
+            padding: EdgeInsets.only(
+              bottom: inlineSubmit ? theme.space(PaymentSpace.related) : 0,
+            ),
             child: PaymentBanner(
               tone: StatusTone.warning,
               title: l10n.documentsIncomplete,
             ),
           ),
-        PaymentButton(
-          label: l10n.submitVerification,
-          busy: busy,
-          busyLabel: l10n.submitting,
-          onPressed: ready ? onSubmit : null,
-        ),
+        if (inlineSubmit)
+          submitButton(
+            context,
+            documents: documents,
+            onSubmit: onSubmit,
+            busy: busy,
+          ),
       ],
     );
   }

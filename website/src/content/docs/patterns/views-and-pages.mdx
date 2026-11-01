@@ -28,7 +28,7 @@ The phone footer stacks full-width primary then secondary actions. Supporting co
 
 ## Header, footer and column (UI review P5)
 
-- **The header holds navigation (D59a).** On phones, one action is a title-row link "Label ›"; two or more go behind ⋮. Nothing stacks under the title.
+- **The header holds navigation (D59a).** On phones, one action is a title-row link "Label ›"; two or more go behind ⋮. No button stacks under the title. The title never breaks inside a word: when it doesn't fit on one line beside the link, the link moves to its own start-aligned line under the title (UI review P7a).
 - **The priority action sits at the bottom (D62).** Full-page views and detail pages pin `primaryAction` with at most one quiet `secondaryAction` in a footer above the bottom safe area. An operation that was the only header action becomes the footer primary (Q3).
 - **One back control.** On phones, drop the breadcrumb when the app bar already goes back.
 - **Centred column (D53).** From 600 dp the content sits in a centred column up to 640 dp; two-column pages keep two columns from 840 dp, capped at 1040 dp. Hairlines and scroll bars span the window.

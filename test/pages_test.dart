@@ -290,13 +290,14 @@ void main() {
 
   // UI review P5: D59a header actions, D62 footer actions, #66 gaps.
   Widget page({
+    String title = 'Rp12.500 to Toko',
     List<PaymentButton> actions = const [],
     PaymentButton? primaryAction,
     PaymentButton? secondaryAction,
     List<PaymentBreadcrumb> breadcrumbs = const [],
   }) => contentHostBoundedPage(
     PaymentDetailPage(
-      title: 'Rp12.500 to Toko',
+      title: title,
       breadcrumbs: breadcrumbs,
       actions: actions,
       primaryAction: primaryAction,
@@ -316,10 +317,13 @@ void main() {
   ) async {
     await setSurface(t, const Size(393, 844));
     var calls = 0;
-    await t.pumpWidget(page(actions: [action('Receipt', () => calls++)]));
+    // Short enough to share the row in the test font's wide glyphs.
+    await t.pumpWidget(
+      page(title: 'Rp12.500', actions: [action('Receipt', () => calls++)]),
+    );
     expect(find.byType(PaymentButton), findsNothing);
     expect(find.byIcon(Icons.chevron_right), findsOneWidget);
-    final title = t.getRect(find.text('Rp12.500 to Toko'));
+    final title = t.getRect(find.text('Rp12.500'));
     final link = t.getRect(find.text('Receipt'));
     expect((link.center.dy - (title.top + 12)).abs(), lessThan(1));
     await t.tap(find.text('Receipt'));

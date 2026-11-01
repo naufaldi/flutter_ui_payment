@@ -51,7 +51,9 @@ TransactionHistory(
 
 ## Statement link
 
-The history page opens the statement from its title row: `PaymentFullPageView(pageLink: PaymentLink(label: 'Laporan', …))` shows "Laporan ›" beside the title (D59a). History has no priority action, so it has no footer.
+The history page opens the statement from its title row: `PaymentFullPageView(pageLink: PaymentLink(label: 'Laporan', …))` shows "Laporan ›" beside the title (D59a). The title has priority and never breaks inside a word: when the title on one line and the link don't fit side by side, as with "Transactions" and "Statement ›" on a small phone at 200%, the link takes its own line under the title, start-aligned in its 48 dp target. History has no priority action, so it has no footer.
+
+The month's figures (payments, refunds, most-used method) follow the transaction list, so the list starts on the first screen of a phone; the chart's headline already carries the month's total.
 
 <Screen name="ios_se_history_light_200" alt="History on iPhone SE at 200% text with Laporan › on the title row" caption="iPhone SE, 200%, Indonesian" />
 

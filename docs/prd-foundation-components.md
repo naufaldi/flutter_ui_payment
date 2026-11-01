@@ -1555,7 +1555,7 @@ Cross-cutting pattern pages:
 - **Chart layout:** this page already exists.
 - **New: Views and pages:** hosting a view in a `Scaffold`, a tab or a sheet without a router (D31).
 - **New: Tables on phones:** the D30 collapse, with the statement example.
-- **Payment path, pinned action (D62, UI review P6):** `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentStatusView`, `VerificationIntro` and `VerificationStatusView` pin their priority action in a footer when their height is bounded, with at most one quiet action under it; inside a scroll view they lay out inline as before. Each takes a `header` (host content in the same scroll region); `PaymentStatusView` also takes a quiet `secondaryAction`. `IdentityForm` and `VerificationReview` keep their submit at the end of the form inside `PaymentOnboardingView` (exception, see `docs/decisions.md`).
+- **Payment path, pinned action (D62, UI review P6):** `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentStatusView`, `VerificationIntro` and `VerificationStatusView` pin their priority action in a footer when their height is bounded, with at most one quiet action under it; inside a scroll view they lay out inline as before. Each takes a `header` (host content in the same scroll region); `PaymentStatusView` also takes a quiet `secondaryAction`. `PaymentOnboardingView` pins the KYC form steps' submit the same way through `primaryAction` / `secondaryAction`: `IdentityForm` takes an `IdentityFormController` whose `submit()` runs the form's validation, and `VerificationReview` takes `inlineSubmit: false` with `VerificationReview.submitButton` (UI review P7a).
 
 ## 8. Decisions
 
@@ -2112,7 +2112,14 @@ The owner accepted every recommendation below on 31 Oct 2026. The parity decisio
 - [x] Adopted by `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentStatusView`, `VerificationIntro`, `VerificationStatusView`; additive `header`, `PaymentStatusView.secondaryAction` (quiet)
 - [x] Example: KYC intro / status, confirm, authorize, status and receipt are view steps; tab bar hidden from KYC through the receipt; host tools in an app-bar "Demo tools" sheet
 - [x] Receipt: "Selesai" primary, quiet "Lihat detail" (#49-1); checkout bar holds only the action (#64, #58-2); cancel / back / close quiet beside another action (#49-3)
-- [ ] KYC identity, documents and review steps pin their submit (needs an external submit for `IdentityForm` and a footer slot in `PaymentOnboardingView`; follow-up)
+- [x] KYC identity, documents and review steps pin their submit (P7a: `IdentityFormController`, `PaymentOnboardingView.primaryAction`, `VerificationReview.inlineSubmit`)
+
+**UI review P7a: flow leftovers** (D62, D59a; #58, #64)
+- [x] `IdentityFormController` (`submit()`, `busy`, `canSubmit`), `IdentityForm.controller`, `VerificationReview.inlineSubmit` / `submitButton` / `isReady`, `PaymentOnboardingView.primaryAction` / `secondaryAction`
+- [x] Example KYC details, documents and review pin their submit
+- [x] Header title never breaks inside a word; a link that doesn't fit beside it takes its own start-aligned line
+- [x] History lists transactions before the month's figures; "Demo tools" folded into the settings sheet
+- [ ] History at SE 200% shows a transaction row on the first screen (needs an owner choice, see `docs/decisions.md`)
 ```
 
 ### Phase 2E implementation notes

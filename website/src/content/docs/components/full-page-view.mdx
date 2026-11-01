@@ -31,7 +31,7 @@ PaymentFullPageView(
 
 ## Header, footer and width
 
-- **Phones (below 600 dp).** `pageLink` sits on the title row as "Label ›" with its 48 dp target; nothing stacks under the title. `primaryAction` and `secondaryAction` pin in a footer above the bottom safe area, full width, primary on top (D59, D62).
+- **Phones (below 600 dp).** `pageLink` sits on the title row as "Label ›" with its 48 dp target. When the title on one line and the link don't fit side by side, the link takes its own start-aligned line under the title, so the title never breaks inside a word. `primaryAction` and `secondaryAction` pin in a footer above the bottom safe area, full width, primary on top (D59, D62).
 - **Wide (600 dp and wider).** Header, body and footer content sit in a centred column up to 640 dp; the hairlines and scroll bar still span the window (D53). A `PaymentOverviewPage` child with a secondary column keeps two columns from 840 dp, capped at 1040 dp. Footer actions hug their labels at the end edge.
 - **Large text.** Above 1.5× the header scrolls away with the body instead of staying pinned.
 
