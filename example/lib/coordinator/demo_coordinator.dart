@@ -396,7 +396,10 @@ class DemoCoordinator extends ChangeNotifier {
     final seedDocuments =
         start == FlowStep.kycReview ||
         kyc.status == VerificationStatus.actionRequired;
-    if (config.prefillIdentity || seedDocuments) {
+    // Documents come after the details step, so the details are done.
+    if (config.prefillIdentity ||
+        seedDocuments ||
+        start == FlowStep.kycDocuments) {
       identity = Map.of(demoIdentity);
     }
     if (seedDocuments) {
