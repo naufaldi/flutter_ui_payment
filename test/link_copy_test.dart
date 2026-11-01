@@ -73,6 +73,35 @@ void main() {
       expect(find.text('Copy failed'), findsOneWidget);
     }
   });
+  testWidgets('a failed copy keeps the button size and clears on retry', (
+    tester,
+  ) async {
+    var ok = false;
+    await tester.pumpWidget(
+      host(
+        Row(
+          children: [
+            PaymentCopyButton(value: 'DEMO', onCopy: (_) async => ok),
+            const Text('After'),
+          ],
+        ),
+        1,
+      ),
+    );
+    final before = tester.getRect(find.byType(PaymentCopyButton));
+    final after = tester.getTopLeft(find.text('After'));
+    await tester.tap(find.byTooltip('Copy'));
+    await tester.pump();
+    expect(find.text('Copy failed'), findsOneWidget);
+    expect(find.byIcon(PaymentIcons.danger), findsOneWidget);
+    expect(tester.getRect(find.byType(PaymentCopyButton)), before);
+    expect(tester.getTopLeft(find.text('After')), after);
+    ok = true;
+    await tester.tap(find.byTooltip('Copy'));
+    await tester.pump();
+    expect(find.text('Copy failed'), findsNothing);
+    await tester.pump(const Duration(seconds: 2));
+  });
   testWidgets('pending copy ignores repeated presses and stale completion', (
     tester,
   ) async {

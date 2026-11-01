@@ -29,7 +29,19 @@ class PaymentIconButton extends StatelessWidget {
     required this.onPressed,
     this.variant = PaymentIconButtonVariant.neutral,
     this.focusNode,
-  }) : assert(tooltip != '');
+  }) : assert(tooltip != ''),
+       _danger = false;
+
+  // The copy button's failure glyph, in the danger tone.
+  const PaymentIconButton._danger({
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
+  }) : variant = PaymentIconButtonVariant.neutral,
+       focusNode = null,
+       _danger = true;
+
+  final bool _danger;
 
   /// Semantic glyph.
   final IconData icon;
@@ -51,6 +63,8 @@ class PaymentIconButton extends StatelessWidget {
     final type = PaymentType.of(context);
     final color = onPressed == null
         ? theme.disabled
+        : _danger
+        ? theme.danger.foreground
         : switch (variant) {
             PaymentIconButtonVariant.neutral => theme.textSecondary,
             PaymentIconButtonVariant.accent => theme.accent,
@@ -227,9 +241,12 @@ class _PaymentCopyButtonState extends State<PaymentCopyButton> {
   _CopyState _state = _CopyState.idle;
   Timer? _revert;
   int _generation = 0;
+  final _failure = OverlayPortalController();
+  final _link = LayerLink();
   Future<void> _press() async {
     if (_state == _CopyState.pending) return;
     _revert?.cancel();
+    _failure.hide();
     final generation = ++_generation;
     setState(() => _state = _CopyState.pending);
     bool ok;
@@ -244,6 +261,8 @@ class _PaymentCopyButtonState extends State<PaymentCopyButton> {
       _revert = Timer(const Duration(milliseconds: 1500), () {
         if (mounted) setState(() => _state = _CopyState.idle);
       });
+    } else {
+      _failure.show();
     }
   }
 
@@ -254,6 +273,7 @@ class _PaymentCopyButtonState extends State<PaymentCopyButton> {
       _generation++;
       _revert?.cancel();
       _state = _CopyState.idle;
+      _failure.hide();
     }
   }
 
@@ -267,12 +287,37 @@ class _PaymentCopyButtonState extends State<PaymentCopyButton> {
   @override
   Widget build(BuildContext context) {
     final l10n = PaymentLocalizations.of(context);
+    final theme = PaymentTheme.of(context);
     final failed = _state == _CopyState.failed;
     final copied = _state == _CopyState.copied;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Semantics(
+    final tooltip = widget.tooltip ?? l10n.copy;
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    // The button keeps its 48 dp box in every state; failure swaps the
+    // glyph and hangs a persistent label under the button's end edge, over
+    // the content below, so nothing moves (#46).
+    return OverlayPortal(
+      controller: _failure,
+      overlayChildBuilder: (context) => CompositedTransformFollower(
+        link: _link,
+        targetAnchor: rtl ? Alignment.bottomLeft : Alignment.bottomRight,
+        followerAnchor: rtl ? Alignment.topLeft : Alignment.topRight,
+        child: Align(
+          alignment: rtl ? Alignment.topLeft : Alignment.topRight,
+          child: IgnorePointer(
+            child: ExcludeSemantics(
+              child: Text(
+                l10n.copyFailed,
+                style: PaymentType.of(
+                  context,
+                ).tag.copyWith(color: theme.danger.foreground),
+              ),
+            ),
+          ),
+        ),
+      ),
+      child: CompositedTransformTarget(
+        link: _link,
+        child: Semantics(
           container: true,
           liveRegion: copied || failed,
           value: copied
@@ -280,21 +325,20 @@ class _PaymentCopyButtonState extends State<PaymentCopyButton> {
               : failed
               ? l10n.copyFailed
               : null,
-          child: PaymentIconButton(
-            icon: copied ? PaymentIcons.copied : PaymentIcons.copy,
-            tooltip: widget.tooltip ?? l10n.copy,
-            variant: PaymentIconButtonVariant.accent,
-            onPressed: _press,
-          ),
+          child: failed
+              ? PaymentIconButton._danger(
+                  icon: PaymentIcons.danger,
+                  tooltip: tooltip,
+                  onPressed: _press,
+                )
+              : PaymentIconButton(
+                  icon: copied ? PaymentIcons.copied : PaymentIcons.copy,
+                  tooltip: tooltip,
+                  variant: PaymentIconButtonVariant.accent,
+                  onPressed: _press,
+                ),
         ),
-        if (failed)
-          Text(
-            l10n.copyFailed,
-            style: PaymentType.of(
-              context,
-            ).tag.copyWith(color: PaymentTheme.of(context).danger.foreground),
-          ),
-      ],
+      ),
     );
   }
 }
