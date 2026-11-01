@@ -3,7 +3,6 @@ import 'dart:ui' show Tristate;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter/semantics.dart';
 import 'package:flutter_ui_payment/src/foundation/date_input.dart';
 import 'package:flutter_ui_payment/src/forms/calendar/month_grid.dart';
 import 'first_line_test.dart' show host;
@@ -132,11 +131,7 @@ void main() {
       final year = find.bySemanticsLabel('Year');
       expect(tester.getSemantics(year).value, '2008');
       for (var i = 0; i < 3; i++) {
-        final node = tester.getSemantics(year);
-        tester.binding.pipelineOwner.semanticsOwner!.performAction(
-          node.id,
-          SemanticsAction.decrease,
-        );
+        tester.semantics.decrease(find.semantics.byLabel('Year'));
         await tester.pumpAndSettle();
       }
       expect(tester.getSemantics(year).value, '2005');
@@ -158,11 +153,7 @@ void main() {
       );
       await tester.tap(find.byTooltip('Choose date'));
       await tester.pumpAndSettle();
-      final year = find.bySemanticsLabel('Year');
-      tester.binding.pipelineOwner.semanticsOwner!.performAction(
-        tester.getSemantics(year).id,
-        SemanticsAction.increase,
-      );
+      tester.semantics.increase(find.semantics.byLabel('Year'));
       await tester.pumpAndSettle();
       await tester.tap(chooseButton);
       await tester.pumpAndSettle();
