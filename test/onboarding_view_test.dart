@@ -79,4 +79,30 @@ void main() {
     expect(find.text('Loading'), findsOneWidget);
     expect(t.takeException(), isNull);
   });
+  testWidgets('phone gaps: spinner → text 12, content → accordion 16 (#66)', (
+    t,
+  ) async {
+    await setSurface(t, const Size(393, 1000));
+    await t.pumpWidget(
+      contentHost(
+        const SizedBox(
+          height: 700,
+          child: PaymentOnboardingView(
+            title: 'Setup',
+            tasks: tasks,
+            pending: true,
+            child: Text('Content'),
+          ),
+        ),
+      ),
+    );
+    final spinner = t.getRect(find.byType(PaymentSpinner));
+    final loading = t.getRect(find.text('Loading'));
+    expect(loading.left - spinner.right, 12);
+    final accordion = t.getRect(find.byType(PaymentAccordionItem));
+    final row = t.getRect(
+      find.ancestor(of: find.text('Loading'), matching: find.byType(Row)).first,
+    );
+    expect(accordion.top - row.bottom, 16);
+  });
 }

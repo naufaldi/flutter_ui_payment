@@ -13,6 +13,8 @@ import '../controls/button_group.dart';
 import '../interaction/interaction.dart';
 import '../controls/actions.dart';
 import 'token_resolvers.dart';
+import 'payment_localizations.dart';
+import 'kit_strings.dart';
 
 /// Internal: centres [child] in a column at most [maxWidth] wide (D53).
 /// Phones are narrower than the cap, so they are unchanged.
@@ -158,10 +160,14 @@ class HeaderLink extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.semanticLabel,
+    this.external = false,
   });
   final String label;
   final VoidCallback? onPressed;
   final String? semanticLabel;
+
+  /// Opens outside the app: link role and the "opens externally" hint.
+  final bool external;
   @override
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
@@ -170,9 +176,11 @@ class HeaderLink extends StatelessWidget {
     return Semantics(
       container: true,
       excludeSemantics: true,
-      button: true,
+      button: !external,
+      link: external,
       enabled: onPressed != null,
       label: semanticLabel ?? label,
+      hint: external ? PaymentLocalizations.of(context).opensExternally : null,
       onTap: onPressed,
       child: MinTapTarget(
         alignment: AlignmentDirectional.centerEnd,
@@ -307,6 +315,7 @@ class ViewHeader extends StatelessWidget {
                 key: link!.key,
                 label: link!.label,
                 semanticLabel: link!.semanticLabel,
+                external: link!.external,
                 onPressed: link!.onPressed,
               ),
             if (compact && actions.length == 1 && link == null)
