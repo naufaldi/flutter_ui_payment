@@ -103,23 +103,26 @@ void main() {
       final provider = ControlledImage(result.future);
       final reduced = ValueNotifier(true);
       addTearDown(reduced.dispose);
+      final image = PaymentImage(
+        image: provider,
+        alt: 'Bank logo',
+        width: 96,
+        height: 64,
+        placeholder: const SizedBox(key: Key('ph')),
+      );
       final app = host(
-        ValueListenableBuilder<bool>(
-          valueListenable: reduced,
-          builder: (context, value, child) => MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              disableAnimations: setup == ReducedMotion.mediaQuery && value,
-            ),
-            child: child!,
-          ),
-          child: PaymentImage(
-            image: provider,
-            alt: 'Bank logo',
-            width: 96,
-            height: 64,
-            placeholder: const SizedBox(key: Key('ph')),
-          ),
-        ),
+        setup == ReducedMotion.mediaQuery
+            ? ValueListenableBuilder<bool>(
+                valueListenable: reduced,
+                builder: (context, value, child) => MediaQuery(
+                  data: MediaQuery.of(
+                    context,
+                  ).copyWith(disableAnimations: value),
+                  child: child!,
+                ),
+                child: image,
+              )
+            : image,
         1,
       );
       await t.pumpWidget(
