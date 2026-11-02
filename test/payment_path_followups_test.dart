@@ -58,6 +58,25 @@ Finder _inButton(Finder of) =>
     find.descendant(of: _authorizeButton(), matching: of);
 
 void main() {
+  testWidgets('total crossfade uses easeOut', (t) async {
+    Widget bar(int amount) => screen(
+      const SizedBox.expand(),
+      bar: PaymentActionBar(
+        total: Money.idr(amount),
+        action: PaymentButton(label: 'Pay', onPressed: () {}),
+      ),
+    );
+    await t.pumpWidget(bar(100));
+    await t.pumpWidget(bar(200));
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 75));
+    final incoming = find.byType(AmountText).last;
+    final fade = find
+        .ancestor(of: incoming, matching: find.byType(FadeTransition))
+        .first;
+    expect(t.widget<FadeTransition>(fade).opacity.value, greaterThan(.8));
+    await t.pumpAndSettle();
+  });
   group('PaymentActionBar on wide windows (#79)', () {
     testWidgets('1024x768: the action hugs at the end of the 640 column', (
       t,

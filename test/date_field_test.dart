@@ -1,4 +1,6 @@
 import 'dart:ui' show Tristate;
+import 'helpers/reduced_motion.dart';
+import 'package:flutter_ui_payment/src/forms/calendar/date_wheel.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,6 +34,42 @@ Widget field({
 Finder get chooseButton => find.widgetWithText(PaymentButton, 'Choose date');
 
 void main() {
+  for (final setup in [null, ...ReducedMotion.values]) {
+    testWidgets('day wheel uses enter timing (${setup?.name ?? 'motion'})', (
+      t,
+    ) async {
+      DateTime? selected;
+      final wheel = DateWheel(
+        initial: DateTime(2000, 1, 10),
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2030),
+        onChanged: (d) => selected = d,
+      );
+      await t.pumpWidget(
+        host(setup == null ? wheel : setup.apply(t, wheel), 1),
+      );
+      await t.pumpAndSettle();
+      final day = t
+          .widgetList<Semantics>(find.byType(Semantics))
+          .firstWhere(
+            (w) =>
+                w.properties.label == 'Day' && w.properties.onIncrease != null,
+          );
+      if (setup != null) {
+        await expectStill(t, () => day.properties.onIncrease!());
+      } else {
+        day.properties.onIncrease!();
+        await t.pump();
+        await t.pump(const Duration(milliseconds: 200, microseconds: 1));
+        // Flush scroll-end callbacks without advancing the animation clock.
+        await t.pump();
+        expect(t.hasRunningAnimations, isTrue);
+        await t.pump(const Duration(milliseconds: 25));
+        expect(t.hasRunningAnimations, isFalse);
+      }
+      expect(selected, DateTime(2000, 1, 11));
+    });
+  }
   test('date parsing rejects invalid dates and supports token order', () {
     expect(parseDateInput('31/02/2000', 'DD/MM/YYYY'), isNull);
     expect(parseDateInput('17-08-1995', 'DD/MM/YYYY'), DateTime(1995, 8, 17));

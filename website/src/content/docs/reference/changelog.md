@@ -5,6 +5,11 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Motion review Phase 4 (2026-11-02)
+
+- **Press scale cancels when the touch becomes a scroll (#101).** Compact controls (icon and copy buttons, links, chips, tabs, video controls) return to full size once the touch moves past the platform touch slop, so a control under a scrolling finger no longer stays shrunk until lift. Disabled tabs no longer shrink. Keyboard focus and selection in a scrolling tab row reveal the tab at once instead of scrolling over 150 ms. No API change.
+- **Motion values come only from the tokens (B2, #102).** The date wheel settles over `enter` on `easeInOut` instead of a fixed 200 ms ease-out. The action-bar total cross-fades on `easeOut` instead of linearly. Tooltips fade in on `easeOut` and now fade out over `exit` instead of vanishing. All instant under reduced motion. No API change. **Migration:** a tooltip stays in the tree for `exit` (150 ms) after it closes; pump past it before expecting it gone.
+
 ## Motion review Phase 3 (2026-11-02)
 
 - **Toasts: the newest wins (D77, #114).** Showing a toast replaces the kit toast on screen and drops any kit toast still waiting, with or without reduced motion. A toast no longer waits behind another toast's reading time. The toast on screen leaves over 150 ms, then the new one enters. Replaced waiting toasts paint no surface and expose no message to screen readers, including with reduced motion or accessible navigation. A replaced controller ignores `update` and `dismiss`, and its `closed` completes when it leaves or a later kit toast reaches the front after a host clears the queue. Disposing a messenger with kit content mounted completes every outstanding kit controller. Host-themed close icons stay inside the pill, and a toast keeps its content during exit rebuilds (#127). No API change. **Migration:** several toasts shown in a row now show only the last.

@@ -123,8 +123,8 @@ class _DateWheelState extends State<DateWheel> {
     } else {
       c.animateToItem(
         index,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
+        duration: PaymentMotion.of(context).enter,
+        curve: PaymentMotion.easeInOut,
       );
     }
   }

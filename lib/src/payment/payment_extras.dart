@@ -104,6 +104,8 @@ class PaymentActionBar extends StatelessWidget {
               !updating,
               AnimatedSwitcher(
                 duration: motion.quick,
+                switchInCurve: PaymentMotion.easeOut,
+                switchOutCurve: PaymentMotion.easeOut,
                 transitionBuilder: (child, animation) =>
                     FadeTransition(opacity: animation, child: child),
                 layoutBuilder: (current, previous) => Stack(
