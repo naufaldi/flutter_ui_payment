@@ -412,11 +412,10 @@ starlight-theme-select select {
 .fup-radius-bottom > span { top: auto; bottom: 0; }
 .fup-radius-circle { border-radius: 50%; outline: none; }
 .fup-radius-circle > span { width: 64px; height: 64px; border-radius: 50%; }
-.fup-fixed-radii a { overflow-wrap: anywhere; }
+.fup-fixed-radii a { overflow-wrap: break-word; }
 .fup-radius-pair { display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: var(--sl-text-xs); }
 /* Keep every dimension value and rule visible on narrow screens. */
 @media (max-width: 40rem) {
-  .fup-dimension-tokens table { min-width: 0; }
   .fup-dimension-tokens thead { display: none; }
   .fup-dimension-tokens tr { display: grid; grid-template-columns: 1fr; padding-block: 0.75rem; border-bottom: 1px solid var(--fup-rule); }
   .fup-dimension-tokens td { border: 0; padding: 0.25rem 0; }

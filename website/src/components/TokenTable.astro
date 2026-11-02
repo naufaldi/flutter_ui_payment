@@ -39,4 +39,7 @@ const display = (value: any) => Array.isArray(value) ? `Cubic(${value.join(', ')
 <style>
   .fup-tokens { overflow-x: auto; margin-block: 1.5rem; }
   .fup-tokens table { min-width: 34rem; width: 100%; }
+  @media (max-width: 40rem) {
+    .fup-dimension-tokens table { min-width: 0; }
+  }
 </style>

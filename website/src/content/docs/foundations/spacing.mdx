@@ -53,7 +53,7 @@ Values use the default 8 dp base. Each bar shows the value at 4 CSS pixels per d
   {
     "token": "section",
     "use": "Content to primary action, between field groups, ruled section gaps.",
-    "dont": "Not inside a row."
+    "dont": "—"
   },
   {
     "token": "major",
@@ -94,23 +94,25 @@ Each 64 CSS pixel square shows the top-left corner of a 48 dp tile at **8× magn
   {
     "token": "circle",
     "use": "Existing navigation pill; round controls.",
-    "dont": "Not on rectangular controls."
+    "dont": "—"
   }
 ]} />
 
 ## Fixed radii
 
-These component details are fixed literals in `lib/`, not `PaymentRadius` roles or exported tokens. This static list links to each source; the 24 dp focus ring is separate from the 999 pill token. Corner details use the same **8× magnification (8 CSS pixels per dp)** in 64 px windows. The meter / chart row shows top-left and bottom-left details: chart bars round only their top corners.
+These component details are fixed literals in `lib/`, not `PaymentRadius` roles or exported tokens. This static list links to each source; the 24 dp focus ring is separate from the 999 pill token. Except for the focus ring, corner details use the same **8× magnification (8 CSS pixels per dp)** in 64 px windows. The meter / chart row shows top-left and bottom-left details: chart bars round only their top corners.
+
+24 on a 48 dp square is a circle; it differs from 999 only on wider shapes.
 
 <div class="fup-fixed-radii">
 
 | Component detail | Radius (dp) | Corner detail | Source |
 | --- | --- | --- | --- |
-| Icon-button focus ring | 24 | <span class="fup-radius-tile" style="--fup-radius:192px" aria-hidden="true"><span /></span> | [actions.dart:101](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/controls/actions.dart#L101) |
-| Status band | 3 | <span class="fup-radius-tile" style="--fup-radius:24px" aria-hidden="true"><span /></span> | [primitives.dart:1066](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/foundation/primitives.dart#L1066) |
-| Meter / chart bar tops | 2 | <div class="fup-radius-pair" aria-hidden="true"><span>Top<span class="fup-radius-tile" style="--fup-radius:16px 16px 0 0"><span /></span></span><span>Bottom<span class="fup-radius-tile fup-radius-bottom" style="--fup-radius:16px 16px 0 0"><span /></span></span></div> | [BalanceCard:442](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/payment/payment_extras.dart#L442), [verification meter:668](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/verification/verification_widgets.dart#L668), [chart bar:407](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/charts/chart_painters.dart#L407) |
-| Step bar | 1.5 | <span class="fup-radius-tile" style="--fup-radius:12px" aria-hidden="true"><span /></span> | [payment_extras.dart:352](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/payment/payment_extras.dart#L352) |
-| Navigation indicator | 1 | <span class="fup-radius-tile" style="--fup-radius:8px" aria-hidden="true"><span /></span> | [navigation.dart:181](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/navigation/navigation.dart#L181) |
+| Icon-button focus ring | 24 | Whole 48 dp control at 4/3× (64 px)<span class="fup-radius-tile fup-radius-circle" aria-hidden="true"><span /></span> | [actions.dart<wbr />:101](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/controls/actions.dart#L101) |
+| Status band | 3 | <span class="fup-radius-tile" style="--fup-radius:24px" aria-hidden="true"><span /></span> | [primitives.dart<wbr />:1066](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/foundation/primitives.dart#L1066) |
+| Meter / chart bar tops | 2 | <div class="fup-radius-pair" aria-hidden="true"><span>Top<span class="fup-radius-tile" style="--fup-radius:16px 16px 0 0"><span /></span></span><span>Bottom<span class="fup-radius-tile fup-radius-bottom" style="--fup-radius:16px 16px 0 0"><span /></span></span></div> | [BalanceCard<wbr />:442](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/payment/payment_extras.dart#L442), [verification meter<wbr />:668](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/verification/verification_widgets.dart#L668), [chart bar<wbr />:407](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/charts/chart_painters.dart#L407) |
+| Step bar | 1.5 | <span class="fup-radius-tile" style="--fup-radius:12px" aria-hidden="true"><span /></span> | [payment_extras.dart<wbr />:352](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/payment/payment_extras.dart#L352) |
+| Navigation indicator | 1 | <span class="fup-radius-tile" style="--fup-radius:8px" aria-hidden="true"><span /></span> | [navigation.dart<wbr />:181](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/navigation/navigation.dart#L181) |
 
 </div>
 
