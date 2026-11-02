@@ -488,10 +488,14 @@ class _PaymentTabsState extends State<PaymentTabs> {
       return;
     }
     final motion = PaymentMotion.of(context);
+    final keyboard =
+        FocusManager.instance.highlightMode == FocusHighlightMode.traditional;
     position.ensureVisible(
       box,
       alignment: 0.5,
-      duration: animate && !motion.reduced ? motion.quick : Duration.zero,
+      duration: animate && !keyboard && !motion.reduced
+          ? motion.quick
+          : Duration.zero,
       curve: PaymentMotion.easeOut,
     );
   }
@@ -630,6 +634,7 @@ class _Tab extends StatelessWidget {
       child: PaymentFocusRing(
         radius: BorderRadius.zero,
         child: PaymentPressScale(
+          enabled: enabled,
           child: InkWell(
             focusNode: focusNode,
             focusColor: Colors.transparent,
@@ -828,37 +833,58 @@ class PaymentTooltip extends StatefulWidget {
   State<PaymentTooltip> createState() => _PaymentTooltipState();
 }
 
-class _PaymentTooltipState extends State<PaymentTooltip> {
+class _PaymentTooltipState extends State<PaymentTooltip>
+    with SingleTickerProviderStateMixin {
+  late final _fade = AnimationController(vsync: this);
+  late final _opacity = CurvedAnimation(
+    parent: _fade,
+    curve: PaymentMotion.easeOut,
+  );
+  bool _visible = false;
   final _portal = OverlayPortalController();
   final _triggerFocus = FocusNode(debugLabel: 'PaymentTooltip trigger');
   Timer? _showTimer;
   Timer? _hideTimer;
   static _PaymentTooltipState? _open;
+
+  @override
+  void initState() {
+    super.initState();
+    _fade.addStatusListener((status) {
+      if (status.isDismissed && !_visible) _portal.hide();
+    });
+  }
+
   void _show() {
     _showTimer?.cancel();
     _hideTimer?.cancel();
     if (_open != this) _open?._hide();
     _open = this;
-    if (!_portal.isShowing) HardwareKeyboard.instance.addHandler(_onKey);
+    if (!_visible) HardwareKeyboard.instance.addHandler(_onKey);
+    _visible = true;
     _portal.show();
+    _fade.duration = PaymentMotion.of(context).quick;
+    _fade.forward();
   }
 
   void _hide() {
     _showTimer?.cancel();
     _hideTimer?.cancel();
     HardwareKeyboard.instance.removeHandler(_onKey);
-    _portal.hide();
+    _visible = false;
+    _fade.reverseDuration = PaymentMotion.of(context).exit;
+    _fade.reverse();
     if (_open == this) _open = null;
   }
 
-  void _toggle() => _portal.isShowing ? _hide() : _show();
+  void _toggle() => _visible ? _hide() : _show();
 
   // Escape closes a hint opened by tap, where focus is not on the trigger.
   // Handled only while this hint shows, so other Escape users are untouched.
   bool _onKey(KeyEvent event) {
     if (event is! KeyDownEvent ||
         event.logicalKey != LogicalKeyboardKey.escape ||
-        !_portal.isShowing) {
+        !_visible) {
       return false;
     }
     _hide();
@@ -871,6 +897,8 @@ class _PaymentTooltipState extends State<PaymentTooltip> {
     _hideTimer?.cancel();
     HardwareKeyboard.instance.removeHandler(_onKey);
     _triggerFocus.dispose();
+    _opacity.dispose();
+    _fade.dispose();
     if (_open == this) _open = null;
     super.dispose();
   }
@@ -906,7 +934,7 @@ class _PaymentTooltipState extends State<PaymentTooltip> {
           onKeyEvent: (_, event) {
             if (event is KeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.escape &&
-                _portal.isShowing) {
+                _visible) {
               _hide();
               return KeyEventResult.handled;
             }
@@ -947,11 +975,8 @@ class _PaymentTooltipState extends State<PaymentTooltip> {
                     ),
                     child: IgnorePointer(
                       child: ExcludeSemantics(
-                        child: TweenAnimationBuilder<double>(
-                          tween: Tween(begin: 0, end: 1),
-                          duration: PaymentMotion.of(context).quick,
-                          builder: (_, opacity, child) =>
-                              Opacity(opacity: opacity, child: child),
+                        child: FadeTransition(
+                          opacity: _opacity,
                           child: ConstrainedBox(
                             constraints: const BoxConstraints(maxWidth: 280),
                             child: DecoratedBox(

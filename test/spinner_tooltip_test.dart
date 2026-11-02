@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'helpers/reduced_motion.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -6,6 +7,99 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
+  testWidgets('tooltip re-show resumes exit opacity and disposes mid-fade', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      host(const PaymentTooltip(message: 'Hint', child: Text('Term')), 1),
+    );
+    await t.tap(find.text('Term'));
+    await t.pumpAndSettle();
+    final text = t.element(find.text('Hint'));
+    final fade = find
+        .ancestor(of: find.text('Hint'), matching: find.byType(FadeTransition))
+        .first;
+    double opacity() => t.widget<FadeTransition>(fade).opacity.value;
+    expect(opacity(), 1);
+    await t.tap(find.text('Term'));
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 75));
+    final exiting = opacity();
+    expect(exiting, inExclusiveRange(0, 1));
+    expect(t.element(find.text('Hint')), same(text));
+    await t.tap(find.text('Term'));
+    await t.pump();
+    expect(opacity(), closeTo(exiting, .000001));
+    expect(t.element(find.text('Hint')), same(text));
+    await t.pump(const Duration(milliseconds: 20));
+    expect(opacity(), greaterThan(exiting));
+    expect(t.element(find.text('Hint')), same(text));
+    await t.pumpAndSettle();
+    expect(opacity(), 1);
+    expect(t.element(find.text('Hint')), same(text));
+    await t.tap(find.text('Term'));
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 50));
+    expect(opacity(), inExclusiveRange(0, 1));
+    await t.pumpWidget(const SizedBox());
+    await t.pump(const Duration(seconds: 1));
+    expect(t.takeException(), isNull);
+  });
+
+  testWidgets('tooltip remains partially visible during exit', (t) async {
+    await t.pumpWidget(
+      host(const PaymentTooltip(message: 'Hint', child: Text('Term')), 1),
+    );
+    await t.tap(find.text('Term'));
+    await t.pumpAndSettle();
+    await t.tap(find.text('Term'));
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 75));
+    expect(find.text('Hint'), findsOneWidget);
+    final fade = find
+        .ancestor(of: find.text('Hint'), matching: find.byType(FadeTransition))
+        .first;
+    expect(
+      t.widget<FadeTransition>(fade).opacity.value,
+      inExclusiveRange(0, 1),
+    );
+    await t.pump(const Duration(milliseconds: 75, microseconds: 1));
+    expect(find.text('Hint'), findsNothing);
+  });
+  for (final setup in ReducedMotion.values) {
+    testWidgets('tooltip shows and hides still (${setup.name})', (t) async {
+      await t.pumpWidget(
+        host(
+          setup.apply(
+            t,
+            const PaymentTooltip(message: 'Hint', child: Text('Term')),
+          ),
+          1,
+        ),
+      );
+      await t.pumpAndSettle();
+      // SDK OverlayPortal keeps a non-animation layout callback while visible.
+      await t.tap(find.text('Term'));
+      await t.pump();
+      final opacity =
+          t
+                  .widget<FadeTransition>(
+                    find
+                        .ancestor(
+                          of: find.text('Hint'),
+                          matching: find.byType(FadeTransition),
+                        )
+                        .first,
+                  )
+                  .opacity
+              as CurvedAnimation;
+      expect(opacity.value, 1);
+      expect((opacity.parent as AnimationController).isAnimating, isFalse);
+      expect(find.text('Hint'), findsOneWidget);
+      await expectStill(t, () => t.tap(find.text('Term')));
+      expect(find.text('Hint'), findsNothing);
+    });
+  }
   for (final (size, dimension) in [
     (PaymentSize.small, 16.0),
     (PaymentSize.medium, 20.0),
@@ -76,6 +170,7 @@ void main() {
     expect(find.text('Payment time'), findsOneWidget);
     await mouse.moveTo(const Offset(700, 500));
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 150, microseconds: 1));
     expect(find.text('Payment time'), findsNothing);
     await mouse.removePointer();
     FocusManager.instance.highlightStrategy =
@@ -85,6 +180,7 @@ void main() {
     expect(find.text('Payment time'), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 150));
     expect(find.text('Payment time'), findsNothing);
     FocusManager.instance.highlightStrategy = FocusHighlightStrategy.automatic;
   });
@@ -108,17 +204,20 @@ void main() {
     expect(find.text('Paid on 29 Oct'), findsOneWidget);
     await tester.tap(find.text('2d ago'));
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 150));
     expect(find.text('Paid on 29 Oct'), findsNothing);
     await tester.tap(find.text('2d ago'));
     await tester.pump();
     await tester.tap(find.text('Elsewhere'));
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 150));
     expect(find.text('Paid on 29 Oct'), findsNothing);
     await tester.tap(find.text('2d ago'));
     await tester.pump();
     expect(find.text('Paid on 29 Oct'), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 150));
     expect(find.text('Paid on 29 Oct'), findsNothing);
   });
   testWidgets('Escape is left alone while no hint shows', (tester) async {
@@ -172,6 +271,7 @@ void main() {
       expect(find.text('About fees'), findsNothing);
       await tester.tap(button);
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 150));
       expect(find.text('Fees are set by your bank'), findsNothing);
       // Long press shows only the kit hint.
       await tester.longPress(button);
