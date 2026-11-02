@@ -33,9 +33,11 @@ class PaymentActionBar extends StatelessWidget {
 
   /// Main action; pass width: PaymentWidth.hug on PaymentButton. With no
   /// [total] the action fills the bar on phones and at large text, so pass
-  /// a full-width button. From 600 dp of available footer width (about
-  /// 632 dp of window with the default gutters) it hugs at the end edge of
-  /// the [maxContentWidth] column, like other pinned footers (D59, D62).
+  /// a full-width button. From 600 dp of available footer width (632 dp of
+  /// bar without side insets, with the default gutters) it hugs at the end
+  /// edge of the [maxContentWidth] column, like other pinned footers (D59,
+  /// D62). Side safe-area insets add to the 16 dp gutters, so the bar's
+  /// content edges match a body in a `SafeArea` with the same gutters.
   final Widget action;
   final Money? total;
   final String? totalLabel;
@@ -116,6 +118,12 @@ class PaymentActionBar extends StatelessWidget {
         ),
       );
     }
+    // The bar sits beside the host's body, not inside it, so it still sees
+    // the side safe-area insets. Its gutter goes on top of them, as a body
+    // in a `SafeArea` adds its gutter inside them, so in phone landscape
+    // both content edges line up (#88). The bottom keeps the larger of the
+    // inset and `block`.
+    final side = MediaQuery.paddingOf(context);
     return Material(
       color: theme.surface,
       // At 600 dp and wider the bar's content keeps the page's column
@@ -123,9 +131,9 @@ class PaymentActionBar extends StatelessWidget {
       child: PinnedFooter(
         maxContentWidth: maxContentWidth,
         padding: EdgeInsets.fromLTRB(
-          theme.space(PaymentSpace.group),
+          theme.space(PaymentSpace.group) + side.left,
           theme.space(PaymentSpace.block),
-          theme.space(PaymentSpace.group),
+          theme.space(PaymentSpace.group) + side.right,
           theme.space(PaymentSpace.block),
         ),
         // An action alone follows ViewFooter's rule: full width below 600 dp

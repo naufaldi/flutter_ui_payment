@@ -39,15 +39,21 @@ class FlowScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // The column is measured from the width this screen gets, not the
     // window: from 840 dp the app's side rail takes part of the window
-    // (#84). The list and the checkout bar share it.
+    // (#84). Side safe-area insets come off it too, since the list, the
+    // checkout bar and the app bar each sit inside them (#88). The list,
+    // the bar and the title fit share this one width (#87).
     return LayoutBuilder(
       builder: (context, k) => ListenableBuilder(
         listenable: coordinator,
-        builder: (context, _) => _build(context, k.maxWidth),
+        builder: (context, _) {
+          final side = MediaQuery.paddingOf(context);
+          return _build(context, k.maxWidth - side.left - side.right);
+        },
       ),
     );
   }
 
+  /// [width] is the screen's width inside the side safe-area insets.
   Widget _build(BuildContext context, double width) {
     final c = coordinator;
     final s = DemoStrings.of(context);
@@ -59,8 +65,11 @@ class FlowScreen extends StatelessWidget {
         : _appBarTitleLines(
             context,
             title,
-            leading: !atRoot,
-            actions: c.signedIn ? 2 : 1,
+            room: appBarTitleRoom(
+              width,
+              leading: !atRoot,
+              actions: c.signedIn ? 2 : 1,
+            ),
           );
     return PopScope(
       canPop: atRoot,
@@ -901,14 +910,16 @@ class _HostTools extends StatelessWidget {
   }
 }
 
-/// Widest content column for [step] in a flow screen [width] wide (D53):
+/// Widest content column for [step] in a flow screen [width] wide inside
+/// its side safe-area insets (D53):
 /// 640 dp, or 1040 dp for checkout's two columns from 840 dp of content
 /// (Q1). The checkout bar takes the same cap, so its action ends where the
 /// content does (#84).
 double contentCap(double width, FlowStep step) =>
     step == FlowStep.checkout && width - 32 >= 840 ? 1040 : 640;
 
-/// Side inset that centres the content column in the flow screen (D53).
+/// Side inset that centres the content column in the flow screen [width]
+/// wide inside its side safe-area insets, added to the 16 dp gutter (D53).
 double listInset(double width, FlowStep step) {
   final content = width - 32;
   if (content < 600 - 32) return 0;
@@ -925,14 +936,27 @@ double _appBarTitleLine(BuildContext context) {
   return _appBarTitleScaler(context).scale(style.fontSize!) * style.height!;
 }
 
-/// 1 when [title] fits on one line between the back button and the
-/// [actions] 48 dp buttons, else 2. Breaks fall between words; step titles
-/// are two words at most.
+/// The width the app bar gives its title in a flow screen whose content is
+/// [width] wide inside the side safe-area insets (the bar's own `SafeArea`
+/// takes them): less the back button and [actions] 48 dp buttons, and the
+/// two 16 dp title gaps. Beside the side rail [width] is already the
+/// screen's, not the window's (#87).
+double appBarTitleRoom(
+  double width, {
+  required bool leading,
+  required int actions,
+}) =>
+    width -
+    (leading ? kToolbarHeight : 0) -
+    actions * kMinInteractiveDimension -
+    NavigationToolbar.kMiddleSpacing * 2;
+
+/// 1 when [title] fits on one line in [room], else 2. Breaks fall between
+/// words; step titles are two words at most.
 int _appBarTitleLines(
   BuildContext context,
   String title, {
-  required bool leading,
-  required int actions,
+  required double room,
 }) {
   final painter = TextPainter(
     text: TextSpan(
@@ -945,11 +969,6 @@ int _appBarTitleLines(
   )..layout();
   final width = painter.width;
   painter.dispose();
-  final room =
-      MediaQuery.sizeOf(context).width -
-      (leading ? kToolbarHeight : 0) -
-      actions * kMinInteractiveDimension -
-      NavigationToolbar.kMiddleSpacing * 2;
   return width <= room ? 1 : 2;
 }
 

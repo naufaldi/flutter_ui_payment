@@ -147,10 +147,16 @@ void main() {
   // of ending in "Konfirmasi pe…". The test font's glyphs are an em wide,
   // much wider than San Francisco, so a 484 dp window gives a word the room
   // a 375 pt iPhone SE gives it on the device; at 1024 dp it fits one line.
+  // #87: from 840 dp the side rail (about 212 dp in the test font at 200%)
+  // takes part of the window, so the fit is measured on the flow screen's
+  // width. At 844 and 852 dp the title needs two lines beside the rail; at
+  // 1024 dp it still fits the 627 dp the bar gives it.
   for (final (language, title, width, lines) in [
     ('id', 'Konfirmasi pembayaran', 484.0, 2),
     ('en', 'Confirm payment', 484.0, 2),
     ('id', 'Konfirmasi pembayaran', 1024.0, 1),
+    ('id', 'Konfirmasi pembayaran', 852.0, 2),
+    ('id', 'Konfirmasi pembayaran', 844.0, 2),
   ]) {
     testWidgets('authorize title is not clipped at ${width}dp, 2x, $language', (
       t,
@@ -170,6 +176,15 @@ void main() {
       final text = find.descendant(of: bar, matching: find.text(title));
       final paragraph = t.renderObject<RenderParagraph>(text);
       expect(paragraph.didExceedMaxLines, isFalse);
+      // The fit is measured on the width the bar gives its title (#87).
+      expect(
+        appBarTitleRoom(
+          t.getSize(find.byType(FlowScreen)).width,
+          leading: true,
+          actions: c.signedIn ? 2 : 1,
+        ),
+        paragraph.constraints.maxWidth,
+      );
       // The whole title is laid out, broken only between words.
       final boxes = paragraph.getBoxesForSelection(
         TextSelection(baseOffset: 0, extentOffset: title.length),
@@ -296,6 +311,105 @@ void main() {
       expect(r.content.width, moreOrLessEquals(393 - 32, epsilon: 1));
       await drain(t);
     });
+  });
+
+  // #88: in phone landscape the side safe-area insets reach the list (in
+  // the body's SafeArea), the checkout bar (beside the body) and the app
+  // bar. Each applies them once and adds the same 16 dp gutter, so the
+  // bar's content edges are the list's. From 840 dp the rail takes the
+  // inset on its own side.
+  group('landscape side insets (#88)', () {
+    for (final (size, left, right, direction) in [
+      // iPhone 16 Pro landscape (the example shows the rail), notch on
+      // either side, and an Android cutout on one side.
+      (const Size(852, 393), 59.0, 59.0, TextDirection.ltr),
+      (const Size(852, 393), 59.0, 59.0, TextDirection.rtl),
+      (const Size(852, 393), 59.0, 0.0, TextDirection.ltr),
+      (const Size(852, 393), 59.0, 0.0, TextDirection.rtl),
+      // Under 840 dp: no rail, the bar alone meets the insets.
+      (const Size(812, 375), 50.0, 50.0, TextDirection.ltr),
+      (const Size(812, 375), 0.0, 48.0, TextDirection.rtl),
+      // Portrait, no side insets: unchanged.
+      (const Size(393, 852), 0.0, 0.0, TextDirection.ltr),
+    ]) {
+      testWidgets('${size.width.toInt()}x${size.height.toInt()}, insets '
+          '${left.toInt()}/${right.toInt()}, ${direction.name}: the bar '
+          'shares the list\'s edges', (t) async {
+        surface(t, size);
+        final landscape = size.width > size.height;
+        t.view.padding = t.view.viewPadding = FakeViewPadding(
+          left: left,
+          right: right,
+          top: landscape ? 0 : 59,
+          bottom: landscape ? 21 : 34,
+        );
+        final app = await launch(
+          t,
+          settings: DemoSettings(
+            locale: const Locale('en'),
+            textDirection: direction,
+          ),
+        );
+        final c = await runScenario(t, app, 'H02');
+        await pumpUntil(t, () => c.quote != null && !c.quoting);
+        await settle(t);
+        expect(c.step, FlowStep.checkout);
+        final rail = size.width >= 840;
+        expect(
+          find.byType(NavigationRail),
+          rail ? findsOneWidget : findsNothing,
+        );
+        // The method picker spans the list's column.
+        final list = t.getRect(find.byType(PaymentMethodPicker));
+        final bar = t.getRect(
+          find
+              .descendant(
+                of: find.byType(PaymentActionBar),
+                matching: find.byType(LayoutBuilder),
+              )
+              .first,
+        );
+        final action = t.getRect(find.byKey(const Key('review-order')));
+        expect(bar.left, moreOrLessEquals(list.left, epsilon: 1));
+        expect(bar.right, moreOrLessEquals(list.right, epsilon: 1));
+        final ltr = direction == TextDirection.ltr;
+        // Under 600 dp of bar the action spans the column; from 600 dp it
+        // hugs at the end edge (#79).
+        if (bar.width < 600 || ltr) {
+          expect(action.right, moreOrLessEquals(list.right, epsilon: 1));
+        }
+        if (bar.width < 600 || !ltr) {
+          expect(action.left, moreOrLessEquals(list.left, epsilon: 1));
+        }
+        // Each inset is applied once: beside the rail the flow screen no
+        // longer sees the inset on the rail's side; the other side keeps it.
+        final screen = t.getRect(find.byType(FlowScreen));
+        final side = MediaQuery.paddingOf(t.element(find.byType(FlowScreen)));
+        expect(side.left, rail && ltr ? 0 : left);
+        expect(side.right, rail && !ltr ? 0 : right);
+        expect(screen.left, rail && ltr ? greaterThanOrEqualTo(left + 80) : 0);
+        // Then the gutter, then the centred column (D53).
+        final start = screen.left + side.left + 16;
+        final end = screen.right - side.right - 16;
+        expect(list.width, moreOrLessEquals(math.min(end - start, 640.0)));
+        expect(list.left - start, moreOrLessEquals(end - list.right));
+        // The app bar's title is measured on the same width (#87).
+        final title = find.descendant(
+          of: find.byType(AppBar),
+          matching: find.text('Checkout'),
+        );
+        expect(
+          appBarTitleRoom(
+            screen.width - side.left - side.right,
+            leading: true,
+            actions: c.signedIn ? 2 : 1,
+          ),
+          t.renderObject<RenderParagraph>(title).constraints.maxWidth,
+        );
+        expect(t.takeException(), isNull);
+        await drain(t);
+      });
+    }
   });
 
   testWidgets('status: the quiet Done joins the pinned primary', (t) async {
