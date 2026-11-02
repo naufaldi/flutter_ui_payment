@@ -76,10 +76,12 @@ void main() {
             );
             await settle(tester);
             final icon = find.byIcon(Icons.close);
-            // Measured with 1812ba1's interaction.dart at 320 x 640 dp.
-            final top = scale == 1 ? 560.0 : (action ? 360.0 : 520.0);
+            // Measured with 1812ba1's interaction.dart at 320 x 640 dp. At 200%
+            // the close button centres on the first line and the action wraps
+            // under the message (D88); the test font breaks "Copied" mid-word.
+            final top = scale == 1 ? 560.0 : (action ? 472.0 : 520.0);
             final iconX = action ? 259 + 1 / 3 : 250 + 2 / 3;
-            final iconY = scale == 1 ? 580.0 : (action ? 480.0 : 560.0);
+            final iconY = scale == 1 ? 580.0 : (action ? 492.0 : 540.0);
             expect(
               tester.getRect(pill().first),
               Rect.fromLTRB(16, top, 304, 624),

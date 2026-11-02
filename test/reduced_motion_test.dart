@@ -304,8 +304,9 @@ void main() {
             message: 'Toast B',
             pending: pending,
           );
-          await tester.pump();
-          await tester.pump();
+          // Two device frames: the 1 µs reduced snack bar settles (D89).
+          await tester.pump(const Duration(milliseconds: 16));
+          await tester.pump(const Duration(milliseconds: 16));
           expect(find.text('Toast A'), findsNothing);
           expect(find.text('Toast B'), findsOneWidget);
           expect(await first.closed, SnackBarClosedReason.hide);
@@ -346,7 +347,7 @@ void main() {
           ),
         );
         PaymentToastController? toast;
-        await expectStill(tester, () {
+        await (kind == 'toast' ? expectToastStill : expectStill)(tester, () {
           switch (kind) {
             case 'bottom sheet':
               showPaymentSheet<void>(
@@ -402,7 +403,7 @@ void main() {
             findsNothing,
           );
         }
-        await expectStill(tester, () {
+        await (toast != null ? expectToastStill : expectStill)(tester, () {
           if (toast != null) {
             toast!.dismiss();
           } else {
@@ -459,13 +460,15 @@ void main() {
             reduce,
           ),
         );
-        await expectStill(tester, () {
+        await expectToastStill(tester, () {
           showPaymentToast(context, message: 'Copied');
         });
         await tester.pump(const Duration(milliseconds: 3999));
         expect(find.text('Copied'), findsOneWidget);
-        await tester.pump(const Duration(milliseconds: 1));
-        await tester.pump();
+        await expectToastStill(
+          tester,
+          () => tester.pump(const Duration(milliseconds: 1)),
+        );
         expect(find.byType(SnackBar), findsNothing);
       },
     );

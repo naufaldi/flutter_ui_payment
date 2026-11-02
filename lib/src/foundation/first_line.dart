@@ -11,18 +11,35 @@ double lineHeightOf(BuildContext context, TextStyle style) =>
     (style.height ?? 1);
 
 /// Child slots of [FirstLineRow].
-enum FirstLineSlot { leading, text, trailing }
+enum FirstLineSlot { leading, text, trailing, end }
+
+/// When [FirstLineRow.trailing] moves to its own line under the text.
+enum FirstLineWrap {
+  /// Trailing always stays beside the text.
+  never,
+
+  /// Trailing moves under the text when a word of the text would otherwise
+  /// break across lines beside it.
+  whenWordsBreak,
+
+  /// Trailing moves under the text when the text would otherwise need more
+  /// than one line beside it.
+  whenTextWraps,
+}
 
 /// Internal row that centres its leading and trailing widgets on the first
 /// line of [text] (D56, D48a).
 ///
-/// The band is the tallest of [line], the leading and trailing heights and
-/// the two extents. Leading and trailing centre in the band, and the text
-/// starts `(band − line) / 2` below the top, so a single-line row shares one
-/// centre line and a multi-line row keeps its icon and control beside the
+/// The band is the tallest of [line], the leading, trailing and end heights
+/// and the two extents. Leading, trailing and end centre in the band, and the
+/// text starts `(band − line) / 2` below the top, so a single-line row shares
+/// one centre line and a multi-line row keeps its icon and control beside the
 /// first line. Leading and trailing keep their own size: a 48 dp control is
 /// never squeezed, and nothing paints outside the row, so hit-testing stays
 /// inside it.
+///
+/// With [wrap], trailing can move under the text instead, on the end edge of
+/// the text column, while [end] stays in the first-line band (D88).
 class FirstLineRow
     extends SlottedMultiChildRenderObjectWidget<FirstLineSlot, RenderBox> {
   const FirstLineRow({
@@ -36,6 +53,8 @@ class FirstLineRow
     this.trailingGap,
     this.line,
     this.hug = false,
+    this.end,
+    this.wrap = FirstLineWrap.never,
   });
 
   final Widget? leading;
@@ -64,6 +83,13 @@ class FirstLineRow
   /// with [TextWidthBasis.longestLine] hugs its longest line.
   final bool hug;
 
+  /// A widget after [trailing], flush with the end edge and centred in the
+  /// first-line band even when [trailing] wraps. It adds no gap.
+  final Widget? end;
+
+  /// When [trailing] moves under the text. Ignored with [hug].
+  final FirstLineWrap wrap;
+
   @override
   Iterable<FirstLineSlot> get slots => FirstLineSlot.values;
 
@@ -72,6 +98,7 @@ class FirstLineRow
     FirstLineSlot.leading => leading,
     FirstLineSlot.text => text,
     FirstLineSlot.trailing => trailing,
+    FirstLineSlot.end => end,
   };
 
   @override
@@ -84,6 +111,7 @@ class FirstLineRow
         trailingGap: trailingGap ?? gap ?? 12,
         textDirection: Directionality.of(context),
         hug: hug,
+        wrap: wrap,
       );
 
   @override
@@ -98,7 +126,8 @@ class FirstLineRow
       ..gap = gap ?? 12
       ..trailingGap = trailingGap ?? gap ?? 12
       ..textDirection = Directionality.of(context)
-      ..hug = hug;
+      ..hug = hug
+      ..wrap = wrap;
   }
 }
 
@@ -112,6 +141,7 @@ class RenderFirstLineRow extends RenderBox
     required this._trailingGap,
     required this._textDirection,
     this._hug = false,
+    this._wrap = FirstLineWrap.never,
   });
 
   double _line;
@@ -131,6 +161,8 @@ class RenderFirstLineRow extends RenderBox
       _set(_textDirection != v, () => _textDirection = v);
   bool _hug;
   set hug(bool v) => _set(_hug != v, () => _hug = v);
+  FirstLineWrap _wrap;
+  set wrap(FirstLineWrap v) => _set(_wrap != v, () => _wrap = v);
 
   void _set(bool changed, VoidCallback apply) {
     if (!changed) return;
@@ -141,12 +173,26 @@ class RenderFirstLineRow extends RenderBox
   RenderBox? get _leading => childForSlot(FirstLineSlot.leading);
   RenderBox? get _text => childForSlot(FirstLineSlot.text);
   RenderBox? get _trailing => childForSlot(FirstLineSlot.trailing);
+  RenderBox? get _end => childForSlot(FirstLineSlot.end);
 
   @override
-  Iterable<RenderBox> get children => [?_leading, ?_text, ?_trailing];
+  Iterable<RenderBox> get children => [?_leading, ?_text, ?_trailing, ?_end];
 
   double _leadingSpan(double w) => w == 0 ? 0 : w + _gap;
   double _trailingSpan(double w) => w == 0 ? 0 : w + _trailingGap;
+
+  // Whether trailing goes under the text, given the text width beside it.
+  bool _wraps(double inline) {
+    final text = _text;
+    if (_hug || _trailing == null || text == null) return false;
+    return switch (_wrap) {
+      FirstLineWrap.never => false,
+      FirstLineWrap.whenWordsBreak =>
+        text.getMinIntrinsicWidth(double.infinity) > inline,
+      FirstLineWrap.whenTextWraps =>
+        text.getMaxIntrinsicWidth(double.infinity) > inline,
+    };
+  }
 
   // Lays every child out (or measures it dry) and returns the row width and
   // height plus each child's offset from the start edge and top.
@@ -158,19 +204,23 @@ class RenderFirstLineRow extends RenderBox
     final loose = BoxConstraints(maxWidth: constraints.maxWidth);
     final lead = _leading == null ? Size.zero : size(_leading!, loose);
     final trail = _trailing == null ? Size.zero : size(_trailing!, loose);
+    final end = _end == null ? Size.zero : size(_end!, loose);
+    final start = _leadingSpan(lead.width);
+    final inline = math.max(
+      0.0,
+      constraints.maxWidth - start - _trailingSpan(trail.width) - end.width,
+    );
+    final wrapped = _wraps(inline);
     final band = [
       _line,
       lead.height,
-      trail.height,
+      if (!wrapped) ...[trail.height, _trailingExtent],
+      end.height,
       _leadingExtent,
-      _trailingExtent,
     ].reduce(math.max);
-    final textWidth = math.max(
-      0.0,
-      constraints.maxWidth -
-          _leadingSpan(lead.width) -
-          _trailingSpan(trail.width),
-    );
+    final textWidth = wrapped
+        ? math.max(0.0, constraints.maxWidth - start - end.width)
+        : inline;
     final top = (band - _line) / 2;
     final text = _text == null
         ? Size.zero
@@ -181,16 +231,22 @@ class RenderFirstLineRow extends RenderBox
                 : BoxConstraints.tightFor(width: textWidth),
           );
     final width = _hug
-        ? _leadingSpan(lead.width) + text.width + _trailingSpan(trail.width)
+        ? start + text.width + _trailingSpan(trail.width) + end.width
         : constraints.maxWidth;
+    final firstRow = math.max(band, top + text.height);
     return (
       width: width,
-      height: math.max(band, top + text.height),
+      height: wrapped ? firstRow + trail.height : firstRow,
       places: [
         if (_leading != null) (_leading!, 0, (band - lead.height) / 2),
-        if (_text != null) (_text!, _leadingSpan(lead.width), top),
+        if (_text != null) (_text!, start, top),
         if (_trailing != null)
-          (_trailing!, width - trail.width, (band - trail.height) / 2),
+          (
+            _trailing!,
+            width - end.width - trail.width,
+            wrapped ? firstRow : (band - trail.height) / 2,
+          ),
+        if (_end != null) (_end!, width - end.width, (band - end.height) / 2),
       ],
     );
   }
@@ -223,9 +279,11 @@ class RenderFirstLineRow extends RenderBox
   double _width(double Function(RenderBox) of) {
     final lead = _leading == null ? 0.0 : of(_leading!);
     final trail = _trailing == null ? 0.0 : of(_trailing!);
+    final end = _end == null ? 0.0 : of(_end!);
     return _leadingSpan(lead) +
         (_text == null ? 0.0 : of(_text!)) +
-        _trailingSpan(trail);
+        _trailingSpan(trail) +
+        end;
   }
 
   @override
@@ -237,27 +295,27 @@ class RenderFirstLineRow extends RenderBox
       _width((c) => c.getMaxIntrinsicWidth(height));
 
   double _height(double width, double Function(RenderBox, double) of) {
+    double widthOf(RenderBox? box) =>
+        box == null ? 0.0 : box.getMaxIntrinsicWidth(double.infinity);
+    final start = _leadingSpan(widthOf(_leading));
+    final trailW = widthOf(_trailing);
+    final endW = widthOf(_end);
+    final inline = math.max(0.0, width - start - _trailingSpan(trailW) - endW);
+    final wrapped = _wraps(inline);
     final lead = _leading == null ? 0.0 : of(_leading!, width);
     final trail = _trailing == null ? 0.0 : of(_trailing!, width);
+    final end = _end == null ? 0.0 : of(_end!, width);
     final band = [
       _line,
       lead,
-      trail,
+      if (!wrapped) ...[trail, _trailingExtent],
+      end,
       _leadingExtent,
-      _trailingExtent,
     ].reduce(math.max);
-    final leadW = _leading == null
-        ? 0.0
-        : _leading!.getMaxIntrinsicWidth(double.infinity);
-    final trailW = _trailing == null
-        ? 0.0
-        : _trailing!.getMaxIntrinsicWidth(double.infinity);
-    final textW = math.max(
-      0.0,
-      width - _leadingSpan(leadW) - _trailingSpan(trailW),
-    );
+    final textW = wrapped ? math.max(0.0, width - start - endW) : inline;
     final text = _text == null ? 0.0 : of(_text!, textW);
-    return math.max(band, (band - _line) / 2 + text);
+    final firstRow = math.max(band, (band - _line) / 2 + text);
+    return wrapped ? firstRow + trail : firstRow;
   }
 
   @override

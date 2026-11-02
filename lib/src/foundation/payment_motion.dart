@@ -64,7 +64,7 @@ class PaymentMotion {
 
   /// Fade plus a slight scale-up from 0.95, never from nothing.
   static Widget fadeScale(Widget child, Animation<double> animation) {
-    final curved = CurvedAnimation(parent: animation, curve: easeOut);
+    final curved = _eased(animation);
     return FadeTransition(
       opacity: curved,
       child: ScaleTransition(
@@ -73,6 +73,12 @@ class PaymentMotion {
       ),
     );
   }
+
+  // AnimatedSwitcher runs its transitionBuilder on every child update. A
+  // CurvedAnimation would add a status listener to the parent each time
+  // (#116); a driven CurveTween registers listeners only while they're used.
+  static Animation<double> _eased(Animation<double> animation) =>
+      animation.drive(CurveTween(curve: easeOut));
 
   /// Fade plus a fixed 8 dp rise, on every screen size, used when a flow
   /// moves to its next step. Pass `back: true` when the flow moves back: the
@@ -83,7 +89,7 @@ class PaymentMotion {
     Animation<double> animation, {
     bool back = false,
   }) {
-    final curved = CurvedAnimation(parent: animation, curve: easeOut);
+    final curved = _eased(animation);
     return FadeTransition(
       opacity: curved,
       child: AnimatedBuilder(

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// The three ways reduced motion reaches the kit (D65, D66). Run a B9 test
@@ -92,5 +92,24 @@ Future<void> expectStill(
 ) async {
   await act();
   await tester.pump();
+  expect(tester.hasRunningAnimations, isFalse, reason: 'B9: nothing animates');
+}
+
+/// [expectStill] for a toast showing or leaving (D89). The SDK snack bar
+/// animation runs 1 µs each way under reduced motion, so it settles within
+/// two device frames, and on every frame each snack bar is fully shown or
+/// fully hidden: no in-between value is ever painted.
+Future<void> expectToastStill(
+  WidgetTester tester,
+  FutureOr<void> Function() act,
+) async {
+  await act();
+  for (var frame = 0; frame < 2; frame++) {
+    await tester.pump(const Duration(milliseconds: 16));
+    for (final element in find.byType(SnackBar).evaluate()) {
+      final value = (element.widget as SnackBar).animation?.value;
+      expect(value, anyOf(0, 1), reason: 'D89: no in-between toast frame');
+    }
+  }
   expect(tester.hasRunningAnimations, isFalse, reason: 'B9: nothing animates');
 }
