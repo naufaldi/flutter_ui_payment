@@ -335,7 +335,9 @@ class KycCaptureGuide extends StatelessWidget {
         PaymentBanner(
           tone: StatusTone.warning,
           title: l10n.fieldNeedsUpdate,
-          message: updateReason ?? l10n.fieldNeedsUpdate,
+          // Without a reason, the title alone says it; repeating it as the
+          // body would read the same sentence twice.
+          message: updateReason,
         ),
       if (issue != null)
         PaymentBanner(
@@ -416,14 +418,7 @@ class KycCaptureGuide extends StatelessWidget {
         final permanentlyDenied =
             issue?.kind == DocumentIssueKind.permissionPermanentlyDenied;
         final canRetake = !framing && (issue == null || issue.canRetry);
-        final primary = permanentlyDenied
-            ? (settings
-                  ? PaymentButton(
-                      label: l10n.openSettings,
-                      onPressed: onOpenSettings,
-                    )
-                  : null)
-            : framing && (issue == null || issue.canRetry)
+        final step = framing && (issue == null || issue.canRetry)
             ? PaymentButton(label: l10n.captureTake, onPressed: onCapture)
             : review || retryUpload
             ? PaymentButton(
@@ -433,7 +428,14 @@ class KycCaptureGuide extends StatelessWidget {
             : canRetake
             ? PaymentButton(label: l10n.captureRetake, onPressed: onRetake)
             : null;
-        final secondary = !permanentlyDenied && framing && settings
+        // Settings lead when the camera is blocked for good, or when it is
+        // the only way forward; otherwise the next capture step does
+        // (D62: one primary in the footer).
+        final settingsPrimary = settings && (permanentlyDenied || step == null);
+        final primary = settingsPrimary
+            ? PaymentButton(label: l10n.openSettings, onPressed: onOpenSettings)
+            : step;
+        final secondary = !settingsPrimary && framing && settings
             ? PaymentButton(
                 label: l10n.openSettings,
                 onPressed: onOpenSettings,

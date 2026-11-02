@@ -17,6 +17,7 @@ void main() {
           title: 'Transactions',
           pageLink: PaymentLink(
             label: 'Statement',
+            semanticLabel: 'Open monthly statement',
             external: external,
             onPressed: () {},
           ),
@@ -45,6 +46,8 @@ void main() {
     await t.tap(menu);
     await t.pumpAndSettle();
     expect(find.text('Statement'), findsOneWidget);
+    // The menu entry keeps the link's screen-reader label (#163).
+    expect(find.bySemanticsLabel('Open monthly statement'), findsOneWidget);
   });
 
   testWidgets('normal text keeps a fitting link on the title row', (t) async {
@@ -64,6 +67,32 @@ void main() {
     expect(
       t.getRect(find.byType(HeaderLink)).top,
       lessThan(t.getRect(find.text('History')).bottom),
+    );
+  });
+
+  testWidgets('a fitting external link keeps its own line at normal text', (
+    t,
+  ) async {
+    // D83: the external cue keeps its own line even where it would fit.
+    await setSurface(t, const Size(360, 640));
+    await t.pumpWidget(
+      contentHost(
+        PaymentFullPageView(
+          title: 'History',
+          pageLink: PaymentLink(
+            label: 'Statement',
+            external: true,
+            onPressed: () {},
+          ),
+          child: const Text('Body'),
+        ),
+      ),
+    );
+    expect(find.byType(HeaderLink), findsOneWidget);
+    expect(find.byType(PaymentMenu), findsNothing);
+    expect(
+      t.getRect(find.byType(HeaderLink)).top,
+      greaterThan(t.getRect(find.text('History')).bottom),
     );
   });
 

@@ -7832,6 +7832,17 @@
             "isSuper": false,
             "fieldName": "destructive",
             "doc": ""
+          },
+          {
+            "name": "semanticLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "semanticLabel",
+            "doc": "What screen readers announce instead of `label`, when the visible\nlabel needs more context. Null announces `label`."
           }
         ],
         "doc": ""
@@ -7867,6 +7878,13 @@
         "static": false,
         "type": "IconData?",
         "doc": ""
+      },
+      {
+        "name": "semanticLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "What screen readers announce instead of `label`, when the visible\nlabel needs more context. Null announces `label`."
       },
       {
         "name": "onSelected",
