@@ -27,10 +27,23 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
 - After a public API change, regenerate `website/src/data/api.json` with `pnpm gen:api` in `website/`.
 - A PR closes its issues with one `Closes #N` line per issue.
 
+## Review and verification
+
+- Merge gate: only medium or higher review findings block a merge. Put low findings and nits in a follow-up GitHub issue and merge the PR.
+- Small follow-ups: text-only fixes or a few lines with no behaviour change do not need another review round. The orchestrator checks the diff and merges.
+- Treat a rebase that only resolves `CHANGELOG.md` or decision-table conflicts the same way. Check code identity: the PR's code diff must equal the approved one.
+- Checks run once: the executor runs the full suite once on the final head: format, both analyzers, root `flutter test`, example tests, and website checks when docs or dartdoc change.
+- The reviewer runs `flutter analyze` and only tests relevant to the change, then reads the executor's results. Re-run the full suite only when code changed after the last full run.
+- Flow test: run it once on the final head for each PR that affects its path. Do not repeat it in review when the head has not changed.
+- Batch related small fixes in one PR instead of several.
+- Parallel work: use up to 3 delegates at once. Device runs stay one at a time behind the device lock.
+
 ## Checks
 
+On Windows, formatting `.` fails on Android build output under `example/build`.
+
 ```sh
-dart format --output=none --set-exit-if-changed .
+dart format --output=none --set-exit-if-changed lib test example/lib example/test example/integration_test example/test_driver
 flutter analyze                       # root
 (cd example && flutter analyze)
 flutter test                          # package tests
