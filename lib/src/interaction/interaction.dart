@@ -808,7 +808,16 @@ class _ConfirmDialogRoute<T> extends DialogRoute<T> {
 
 /// Controls one toast from [showPaymentToast].
 class PaymentToastController {
-  PaymentToastController._(this._state, this._hasAction, this._waitForUser);
+  PaymentToastController._(
+    this._state,
+    this._hasAction,
+    this._waitForUser,
+    this._messenger,
+  );
+  final ScaffoldMessengerState _messenger;
+  final _done = Completer<void>();
+  bool _superseded = false;
+  bool _left = false;
   final ValueNotifier<_ToastState> _state;
   final bool _hasAction;
   final bool _waitForUser;
@@ -818,8 +827,12 @@ class PaymentToastController {
   bool _closed = false;
   bool _dismissRequested = false;
 
-  /// Completes when the toast leaves the screen.
-  Future<void> get closed => _feature.closed.then((_) {});
+  /// Completes when the toast leaves the screen, or when a newer toast or a
+  /// motion change drops it before it shows.
+  /// A host-cleared waiting toast completes when a later kit toast reaches the
+  /// front. If the messenger is disposed while only host bars are mounted,
+  /// waiting kit toasts have no disposal callback; their futures may stay open.
+  Future<void> get closed => _done.future;
 
   /// Replaces the entire state in place and restarts its reading time.
   void update(
@@ -843,13 +856,43 @@ class PaymentToastController {
     _feature.close();
   }
 
+  void _dismissFromCloseIcon() {
+    if (_closed) return;
+    _timer?.cancel();
+    _messenger.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+  }
+
   void _detach() {
+    _timer?.cancel();
+    _closed = true;
+    // I5: closing and disposal may meet; complete exactly once.
+    if (!_done.isCompleted) _done.complete();
+  }
+
+  void _supersede() {
+    _superseded = true;
     _timer?.cancel();
     _closed = true;
   }
 
+  void _leave() {
+    if (_left || _done.isCompleted || !_messenger.mounted) return;
+    _left = true;
+    _messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
+  }
+
   void _onVisible() {
     if (_closed || _visible) return;
+    // Reaching the front proves all older kit bars have left the SDK queue,
+    // including waiting bars silently dropped by a host's clearSnackBars().
+    final queue = _toastQueues[_messenger];
+    if (queue != null) {
+      final older = queue.open.takeWhile((toast) => toast != this).toList();
+      for (final toast in older) {
+        toast._detach();
+        queue.open.remove(toast);
+      }
+    }
     _visible = true;
     if (_dismissRequested) {
       dismiss();
@@ -882,6 +925,9 @@ class _ToastState {
 /// Short feedback after an action. Failures requiring a fix use [PaymentBanner].
 /// Neutral, success, warning, or pending. Reading time is 4–10 seconds,
 /// at least 6 with an action; pending and accessible actions never time out.
+/// The newest toast wins: showing one replaces the kit toast on screen and
+/// drops any kit toast still waiting (D77). When reduced motion changes, the
+/// whole snack bar queue is cleared first, host snack bars included (D78).
 PaymentToastController showPaymentToast(
   BuildContext context, {
   required String message,
@@ -932,26 +978,36 @@ PaymentToastController _showToast(
   final theme = PaymentTheme.of(context);
   final motion = PaymentMotion.of(context);
   final hasAction = actionLabel != null && onAction != null;
+  final messenger = ScaffoldMessenger.of(context);
   final controller = PaymentToastController._(
     ValueNotifier(_ToastState(message, tone, pending)),
     hasAction,
     MediaQuery.maybeAccessibleNavigationOf(context) ?? false,
+    messenger,
   );
-  final messenger = ScaffoldMessenger.of(context);
   final queue = _toastQueues[messenger] ??= _ToastQueue();
-  if (motion.reduced ||
-      (queue.reduced != null && queue.reduced != motion.reduced)) {
-    // Removing a head starts the next queued bar on the old SDK controller.
-    // Drain kit toasts before a style change can dispose that controller.
-    // Host snack bars outside the kit cannot be tracked by this registry.
-    final count = queue.open.length;
+  final older = List.of(queue.open);
+  // I1: only the newest controller stays live on this messenger.
+  for (final toast in older) {
+    toast._supersede();
+  }
+  if (queue.reduced != motion.reduced) {
+    // I3: empty the SDK queue before changing its shared animation style,
+    // including the first kit style replacing the SDK default (D78).
+    for (var i = 0; i < older.length; i++) {
+      messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
+    }
+    messenger
+      ..clearSnackBars()
+      ..removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
     queue.open.clear();
-    for (var i = 0; i < count; i++) {
-      messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
+    // I6: mark dropped bars done synchronously so a scheduled _leave cannot
+    // remove the new toast. The SDK never completes dropped waiting bars.
+    for (final toast in older) {
+      toast._detach();
     }
-    if (count == 0) {
-      messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
-    }
+  } else if (motion.reduced) {
+    messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
   } else {
     messenger.hideCurrentSnackBar();
   }
@@ -960,23 +1016,17 @@ PaymentToastController _showToast(
     SnackBar(
       behavior: SnackBarBehavior.floating,
       persist: true,
-      backgroundColor: theme.textPrimary,
+      backgroundColor: Colors.transparent,
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: theme.controlBorderRadius),
+      showCloseIcon: false,
+      shape: const RoundedRectangleBorder(),
       margin: EdgeInsets.fromLTRB(
         theme.space(PaymentSpace.group),
         0,
         theme.space(PaymentSpace.group),
         theme.space(PaymentSpace.group),
       ),
-      padding: EdgeInsetsDirectional.fromSTEB(
-        theme.space(PaymentSpace.group),
-        theme.space(PaymentSpace.related),
-        hasAction
-            ? theme.space(PaymentSpace.related)
-            : theme.space(PaymentSpace.group),
-        theme.space(PaymentSpace.related),
-      ),
+      padding: EdgeInsets.zero,
       onVisible: controller._onVisible,
       content: _ToastContent(
         controller: controller,
@@ -1014,15 +1064,22 @@ class _ToastContentState extends State<_ToastContent>
   // Keeps the row, and the action's state, when reduced motion turns on or
   // off and the AnimatedSize around it comes or goes.
   final _row = GlobalKey();
+  late final bool _leave;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _leave = widget.controller._superseded;
     // A zero-duration entrance completes before SnackBar attaches its status
     // listener. Check the mounted bar too, so dismissal and reading time work.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      // I2: a superseded waiting bar leaves before its first visible frame.
+      if (_leave) {
+        widget.controller._leave();
+        return;
+      }
       final bar = context.findAncestorWidgetOfExactType<SnackBar>();
       if (bar?.animation?.isCompleted ?? false) widget.controller._onVisible();
     });
@@ -1036,16 +1093,40 @@ class _ToastContentState extends State<_ToastContent>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    widget.controller._detach();
+    final controller = widget.controller;
+    // I4: one Scaffold copy disappearing must not detach a messenger's toast.
+    // If only host bars were mounted at messenger disposal, no kit content
+    // has a dispose callback. Waiting kit futures can remain open in that case.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!controller._messenger.mounted) {
+        final queue = _toastQueues[controller._messenger];
+        if (queue != null) {
+          for (final toast in queue.open) {
+            toast._detach();
+          }
+          queue.open.clear();
+        }
+      }
+    });
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_leave) {
+      return const ExcludeSemantics(child: SizedBox.shrink());
+    }
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     final motion = PaymentMotion.of(context);
     final iconSize = PaymentIconSize.medium.resolve(context);
+    final snackBarTheme = SnackBarTheme.of(context);
+    // The kit has no close-icon override; both SDK defaults are false.
+    final showCloseIcon = snackBarTheme.showCloseIcon ?? false;
+    final materialTheme = Theme.of(context);
+    final endPadding = widget.controller._hasAction
+        ? theme.space(PaymentSpace.related)
+        : theme.space(PaymentSpace.group);
     return ValueListenableBuilder<_ToastState>(
       valueListenable: widget.controller._state,
       builder: (context, state, _) {
@@ -1126,12 +1207,63 @@ class _ToastContentState extends State<_ToastContent>
         // AnimatedSize can't run at zero duration (it re-dirties its own
         // layout), so reduced motion leaves it out and the height changes
         // at once.
-        if (motion.reduced) return row;
-        return AnimatedSize(
-          duration: motion.enter,
-          curve: PaymentMotion.easeInOut,
-          alignment: Alignment.topCenter,
-          child: row,
+        final content = motion.reduced
+            ? row
+            : AnimatedSize(
+                duration: motion.enter,
+                curve: PaymentMotion.easeInOut,
+                alignment: Alignment.topCenter,
+                child: row,
+              );
+        return Material(
+          color: theme.textPrimary,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: theme.controlBorderRadius,
+          ),
+          clipBehavior: Clip.hardEdge,
+          child: Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(
+              theme.space(PaymentSpace.group),
+              theme.space(PaymentSpace.related),
+              endPadding,
+              theme.space(PaymentSpace.related),
+            ),
+            child: showCloseIcon
+                ? Row(
+                    children: [
+                      Expanded(child: content),
+                      Padding(
+                        // Match SnackBar's explicit-padding close-icon margin.
+                        padding: EdgeInsets.symmetric(
+                          horizontal: endPadding / 12,
+                        ),
+                        child: IconButton(
+                          key: StandardComponentType.closeButton.key,
+                          icon: const Icon(Icons.close),
+                          iconSize: 24,
+                          color:
+                              snackBarTheme.closeIconColor ??
+                              (materialTheme.useMaterial3
+                                  ? materialTheme.colorScheme.onInverseSurface
+                                  // SnackBar has already inverted the M2 theme.
+                                  : materialTheme.colorScheme.surface),
+                          tooltip: MaterialLocalizations.of(
+                            context,
+                          ).closeButtonTooltip,
+                          constraints: const BoxConstraints(
+                            minWidth: 48,
+                            minHeight: 48,
+                          ),
+                          onPressed: () {
+                            widget.controller._dismissFromCloseIcon();
+                          },
+                        ),
+                      ),
+                    ],
+                  )
+                : content,
+          ),
         );
       },
     );

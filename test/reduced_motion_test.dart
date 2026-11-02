@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'helpers/reduced_motion.dart';
+import 'helpers/toast.dart';
 
 Widget motionHost(Widget child, ValueNotifier<bool> reduce) => MaterialApp(
   localizationsDelegates: const [PaymentLocalizations.delegate],
@@ -31,6 +32,78 @@ void enable(
 
 void main() {
   for (final setup in ReducedMotion.values) {
+    testWidgets('controller survives route pop (${setup.name})', (
+      tester,
+    ) async {
+      final reduce = ValueNotifier(false);
+      addTearDown(reduce.dispose);
+      enable(tester, setup, reduce);
+      late BuildContext context;
+      await tester.pumpWidget(
+        motionHost(
+          Builder(
+            builder: (c) {
+              context = c;
+              return const SizedBox();
+            },
+          ),
+          reduce,
+        ),
+      );
+      await routePopToast(tester, context);
+    });
+    testWidgets('motion change clears host and kit queue (${setup.name})', (
+      tester,
+    ) async {
+      final reduce = ValueNotifier(false);
+      addTearDown(reduce.dispose);
+      late BuildContext context;
+      await tester.pumpWidget(
+        motionHost(
+          Builder(
+            builder: (c) {
+              context = c;
+              return const SizedBox();
+            },
+          ),
+          reduce,
+        ),
+      );
+      final a = showPaymentToast(context, message: 'Toast A', pending: true);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Host H')));
+      await tester.pump();
+      final b = showPaymentToast(context, message: 'Toast B', pending: true);
+      await tester.pump();
+      enable(tester, setup, reduce);
+      await tester.pump();
+      final newest = showPaymentToast(
+        context,
+        message: 'Newest',
+        pending: true,
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump();
+      expect(find.text('Newest'), findsOneWidget);
+      for (final name in ['Toast A', 'Toast B', 'Host H']) {
+        expect(find.text(name), findsNothing);
+      }
+      await Future.wait([a.closed, b.closed]);
+      b.update('Stale');
+      b.dismiss();
+      await tester.pump(const Duration(seconds: 30));
+      expect(find.text('Newest'), findsOneWidget);
+      expect(find.text('Stale'), findsNothing);
+      expect(tester.takeException(), isNull);
+      newest.dismiss();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump();
+    });
     testWidgets('toast drain survives a popped scaffold (${setup.name})', (
       tester,
     ) async {
@@ -123,7 +196,7 @@ void main() {
           } else {
             await tester.pumpAndSettle();
             await tester.pump(const Duration(seconds: 1));
-            expect(find.text('Toast B'), findsOneWidget);
+            expect(find.text('Toast C'), findsOneWidget);
           }
           enable(tester, setup, reduce);
           await tester.pump();
