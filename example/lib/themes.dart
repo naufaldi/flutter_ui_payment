@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 
@@ -73,6 +74,11 @@ ThemeData _base(
   return ThemeData(
     colorScheme: scheme,
     useMaterial3: true,
+    splashFactory: switch (defaultTargetPlatform) {
+      TargetPlatform.iOS => NoSplash.splashFactory,
+      TargetPlatform.android when !kIsWeb => InkSparkle.splashFactory,
+      _ => null,
+    },
     scaffoldBackgroundColor: background,
     extensions: [payment],
     dividerTheme: DividerThemeData(color: payment.outline, space: 1),

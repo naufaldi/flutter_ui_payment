@@ -29,6 +29,27 @@ Compact controls shrink to 0.96 while held and return to full size on release, o
 - **Full-width buttons and rows do not.** Scaling a 320 dp slab moves its edges by several pixels, which reads as a lurch rather than a press. They use Material's pressed layer instead.
 - **Reduced motion turns it off.** Under reduced motion `pressedScale` is 1.
 
+## Press splash
+
+Press splash is host-owned through `ThemeData.splashFactory` (D72). The kit inherits it. The example turns the splash off on iOS, including iPadOS, and keeps `InkSparkle` on Android:
+
+```dart
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+final theme = ThemeData(
+  splashFactory: switch (defaultTargetPlatform) {
+    TargetPlatform.iOS => NoSplash.splashFactory,
+    TargetPlatform.android when !kIsWeb => InkSparkle.splashFactory,
+    _ => null,
+  },
+);
+```
+
+`ThemeData.platform` also defaults to `defaultTargetPlatform`. A null splash factory keeps the SDK default on other platforms.
+
+`NoSplash` removes the ripple, but the iOS pressed highlight remains. It still fades in over the SDK's 200 ms, even under reduced motion. This is an SDK ink exception under D67. Target sizes stay the same.
+
 ## In your own screens
 
 The ring and press widgets are internal to the package. To match them on your own controls:
