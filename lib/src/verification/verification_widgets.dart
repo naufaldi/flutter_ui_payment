@@ -583,7 +583,23 @@ class DocumentUploadTile extends StatelessWidget {
         Icons.error_outline,
       ),
     };
-    final badge = PaymentBadge(tone: tone, icon: icon, label: statusLabel);
+    // Unknown progress under reduced motion (D76): the still busy glyph
+    // beside "Uploading" and no bar, never a made-up value.
+    final busyStill =
+        state.phase == DocumentSlotPhase.uploading &&
+        state.progress == null &&
+        PaymentMotion.of(context).reduced;
+    final badge = Semantics(
+      value:
+          state.phase == DocumentSlotPhase.uploading && state.progress != null
+          ? '${(state.progress! * 100).round()}%'
+          : null,
+      child: PaymentBadge(
+        tone: tone,
+        icon: busyStill ? PaymentIcons.busy : icon,
+        label: statusLabel,
+      ),
+    );
     return PaymentSection(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -645,19 +661,13 @@ class DocumentUploadTile extends StatelessWidget {
               ],
             ),
           ],
-          if (state.phase == DocumentSlotPhase.uploading) ...[
+          if (state.phase == DocumentSlotPhase.uploading && !busyStill) ...[
             SizedBox(height: theme.space(PaymentSpace.related)),
-            Semantics(
-              label: l10n.documentUploading,
-              value: state.progress == null
-                  ? null
-                  : '${(state.progress! * 100).round()}%',
+            ExcludeSemantics(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(2),
                 child: LinearProgressIndicator(
-                  value: PaymentMotion.of(context).reduced
-                      ? (state.progress ?? 0.5)
-                      : state.progress,
+                  value: state.progress,
                   minHeight: 4,
                   color: theme.accent,
                   backgroundColor: theme.surfaceMuted,
@@ -946,35 +956,32 @@ class VerificationStatusView extends StatelessWidget {
           Semantics(
             container: true,
             liveRegion: true,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                AnimatedSwitcher(
-                  duration: motion.enter,
-                  reverseDuration: motion.exit,
-                  switchInCurve: PaymentMotion.easeOut,
-                  transitionBuilder: PaymentMotion.fadeScale,
-                  layoutBuilder: PaymentMotion.topLayout,
+            // The whole status swaps as one change: it fades, never scales
+            // (D69), and its height eases, so the actions below glide.
+            child: motion.fullWidthSwap(
+              Column(
+                key: ValueKey(title),
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
                   // As in the payment status view: a hatched band when the
                   // submit may not have arrived, solid otherwise.
-                  child: StatusHeader(
-                    key: ValueKey(title),
+                  StatusHeader(
                     tone: tone,
                     icon: icon,
                     title: title,
                     hatched: outcomeUnknown,
                   ),
-                ),
-                SizedBox(height: theme.space(PaymentSpace.block)),
-                Text(message, style: type.bodyFor(context)),
-                if (snapshot.updatedAt != null && !outcomeUnknown) ...[
-                  SizedBox(height: theme.space(PaymentSpace.related)),
-                  Text(
-                    l10n.updatedAt(l10n.formatDateTime(snapshot.updatedAt!)),
-                    style: type.caption,
-                  ),
+                  SizedBox(height: theme.space(PaymentSpace.block)),
+                  Text(message, style: type.bodyFor(context)),
+                  if (snapshot.updatedAt != null && !outcomeUnknown) ...[
+                    SizedBox(height: theme.space(PaymentSpace.related)),
+                    Text(
+                      l10n.updatedAt(l10n.formatDateTime(snapshot.updatedAt!)),
+                      style: type.caption,
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
           if (!pinned) ...[

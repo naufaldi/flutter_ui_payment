@@ -336,15 +336,11 @@ class PaymentStatusView extends StatelessWidget {
           Semantics(
             container: true,
             liveRegion: true,
-            // A status change is the one moment worth animating here: the new
-            // state fades and scales in from 0.95; exits are faster.
-            child: AnimatedSwitcher(
-              duration: motion.enter,
-              reverseDuration: motion.exit,
-              switchInCurve: PaymentMotion.easeOut,
-              transitionBuilder: PaymentMotion.fadeScale,
-              layoutBuilder: PaymentMotion.topLayout,
-              child: StatusHeader(
+            // A status change is the one moment worth animating here: the
+            // header fades, never scales (D69), and its height eases, so the
+            // amount below glides when the title's line count changes.
+            child: motion.fullWidthSwap(
+              StatusHeader(
                 key: ValueKey(look.title),
                 tone: look.tone,
                 icon: look.icon,
@@ -361,15 +357,28 @@ class PaymentStatusView extends StatelessWidget {
             ),
           ],
           SizedBox(height: theme.space(PaymentSpace.block)),
-          if (unknown) ...[
-            Text(
-              l10n.statusUnknownLead,
-              style: body.copyWith(fontWeight: FontWeight.w600),
+          // The explanation swaps with the header, keyed on the same look, so
+          // the status reads as one change. The amount between them is the
+          // same payment in every state, so it stays put (D74).
+          // Stretched, so the text keeps the column's start edge in the
+          // swap's stack.
+          motion.fullWidthSwap(
+            Column(
+              key: ValueKey(look.title),
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (unknown) ...[
+                  Text(
+                    l10n.statusUnknownLead,
+                    style: body.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  SizedBox(height: theme.space(PaymentSpace.inline)),
+                  Text(l10n.statusUnknownDetail, style: body),
+                ] else
+                  Text(look.message, style: body),
+              ],
             ),
-            SizedBox(height: theme.space(PaymentSpace.inline)),
-            Text(l10n.statusUnknownDetail, style: body),
-          ] else
-            Text(look.message, style: body),
+          ),
           if (attempt.observation == Observation.unavailable) ...[
             SizedBox(height: theme.space(PaymentSpace.group)),
             PaymentBanner(
