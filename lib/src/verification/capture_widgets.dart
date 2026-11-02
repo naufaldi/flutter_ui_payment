@@ -460,24 +460,40 @@ class KycCaptureGuide extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.all(group),
                 child: ContentColumn(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        flex: 2,
-                        child: Center(heightFactor: 1, child: frame),
-                      ),
-                      SizedBox(height: theme.space(PaymentSpace.related)),
-                      ...status,
-                      Expanded(
-                        child: SingleChildScrollView(
+                  child: LayoutBuilder(
+                    builder: (context, viewport) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ConstrainedBox(
+                          // Reserve a usable photo while leaving most of the
+                          // viewport for status at large text sizes.
+                          constraints: BoxConstraints(
+                            minHeight: 96,
+                            maxHeight: (viewport.maxHeight / 4).clamp(
+                              96,
+                              double.infinity,
+                            ),
+                          ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: guidanceContent,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Center(heightFactor: 1, child: frame),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: theme.space(PaymentSpace.related)),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [...status, ...guidanceContent],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

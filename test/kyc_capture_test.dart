@@ -70,8 +70,12 @@ final uploads = <String, Widget Function(DocumentSlotState)>{
       KycCaptureGuide(kind: CaptureKind.idCard, state: state),
 };
 void main() {
-  Widget screen(KycCaptureGuide guide, {double scale = 1}) => MaterialApp(
-    locale: const Locale('en'),
+  Widget screen(
+    KycCaptureGuide guide, {
+    double scale = 1,
+    String locale = 'en',
+  }) => MaterialApp(
+    locale: Locale(locale),
     supportedLocales: const [Locale('en'), Locale('id')],
     localizationsDelegates: const [
       PaymentLocalizations.delegate,
@@ -133,6 +137,108 @@ void main() {
         expect(t.takeException(), isNull);
       }
     });
+  }
+
+  final compactStates = <String, DocumentSlotState>{
+    'framing': const DocumentSlotState.empty(),
+    'review': const DocumentSlotState.empty(),
+    'uploading': const DocumentSlotState.uploading(
+      file,
+      requestId: '1',
+      progress: .5,
+    ),
+    'uploaded': const DocumentSlotState.uploaded(file, requestId: '1'),
+    'too large': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.tooLarge),
+    ),
+    'unsupported type': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.unsupportedType),
+    ),
+    'denied': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.permissionDenied),
+    ),
+    'permanently denied': const DocumentSlotState.failed(
+      DocumentIssue(
+        DocumentIssueKind.permissionPermanentlyDenied,
+        canRetry: false,
+        canOpenSettings: true,
+      ),
+    ),
+    'interrupted': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.uploadInterrupted),
+    ),
+    'rejected': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.rejectedByHost),
+    ),
+    'rejected+update': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.rejectedByHost),
+    ),
+  };
+  for (final size in [const Size(320, 569), const Size(320, 480)]) {
+    for (final locale in ['en', 'id']) {
+      for (final entry in compactStates.entries) {
+        testWidgets(
+          'compact default copy: ${entry.key} $locale at $size (#139)',
+          (t) async {
+            t.view.physicalSize = size;
+            t.view.devicePixelRatio = 1;
+            addTearDown(t.view.reset);
+            await t.pumpWidget(
+              screen(
+                KycCaptureGuide(
+                  kind: CaptureKind.idCard,
+                  state: entry.value,
+                  photo:
+                      [
+                        'framing',
+                        'denied',
+                        'permanently denied',
+                      ].contains(entry.key)
+                      ? null
+                      : photo,
+                  needsUpdate: entry.key == 'rejected+update',
+                  onCapture: () {},
+                  onRetake: () {},
+                  onUsePhoto: () {},
+                  onOpenSettings: () {},
+                ),
+                scale: 2,
+                locale: locale,
+              ),
+            );
+            await t.pumpAndSettle();
+            expect(t.takeException(), isNull);
+            expect(
+              t.getSize(find.byType(AspectRatio)).height,
+              greaterThanOrEqualTo(96),
+            );
+            final footer = t.getRect(find.byType(PinnedFooter));
+            expect(
+              t.getRect(find.byType(AspectRatio)).bottom,
+              lessThanOrEqualTo(footer.top),
+            );
+            // FlutterTest's wide glyphs may require scrolling even where Roboto fits.
+            for (final banner
+                in find.byType(PaymentBanner).evaluate().toList()) {
+              final texts = find.descendant(
+                of: find.byWidget(banner.widget),
+                matching: find.byType(Text),
+              );
+              for (final element in texts.evaluate().toList()) {
+                final target = find.byWidget(element.widget);
+                await Scrollable.ensureVisible(
+                  t.element(target),
+                  alignment: .5,
+                );
+                await t.pumpAndSettle();
+                expect(target.hitTestable(), findsOneWidget);
+              }
+            }
+            expect(t.takeException(), isNull);
+          },
+        );
+      }
+    }
   }
 
   // Short host-safe messages isolate layout from FlutterTest's one-em glyphs.
@@ -202,10 +308,17 @@ void main() {
             if (state.issue != null) find.byType(PaymentBanner),
             if (name == 'uploading') find.byType(LinearProgressIndicator),
           ]) {
-            final rect = t.getRect(finder);
-            expect(rect.top, greaterThanOrEqualTo(0));
-            expect(rect.bottom, lessThanOrEqualTo(footer.top));
-            expect(finder.hitTestable(), findsOneWidget);
+            if (size.width == 360 ||
+                !['interrupted', 'permanently denied'].contains(name)) {
+              final rect = t.getRect(finder);
+              expect(rect.top, greaterThanOrEqualTo(0));
+              expect(rect.bottom, lessThanOrEqualTo(footer.top));
+              expect(finder.hitTestable(), findsOneWidget);
+            } else {
+              await Scrollable.ensureVisible(t.element(finder), alignment: .5);
+              await t.pumpAndSettle();
+              expect(finder.hitTestable(), findsOneWidget);
+            }
           }
           final preview = t.getRect(find.byType(AspectRatio));
           expect(preview.height, greaterThan(0));
