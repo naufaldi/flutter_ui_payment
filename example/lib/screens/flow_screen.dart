@@ -251,8 +251,14 @@ class _StepEntry {
   Widget child;
   final AnimationController controller;
   bool back;
+
+  /// The rise an interrupted entry had reached, held while it fades out.
+  double heldRise = 0;
   late final Key key = ObjectKey(this);
 }
+
+/// PaymentMotion.fadeRise starts a forward step this far below rest.
+const double _stepRise = 8;
 
 class _FlowStepSwitcherState extends State<_FlowStepSwitcher>
     with TickerProviderStateMixin, WidgetsBindingObserver {
@@ -330,6 +336,13 @@ class _FlowStepSwitcherState extends State<_FlowStepSwitcher>
     final motion = PaymentMotion.of(context);
     final leaving = _current;
     // Only the incoming forward step rises; outgoing content fades in place.
+    // A step interrupted mid-rise holds its current offset instead of
+    // snapping to rest (#129).
+    if (!leaving.back) {
+      leaving.heldRise =
+          _stepRise *
+          (1 - PaymentMotion.easeOut.transform(leaving.controller.value));
+    }
     leaving.back = true;
     _current = _StepEntry(
       widget.child,
@@ -371,12 +384,17 @@ class _FlowStepSwitcherState extends State<_FlowStepSwitcher>
     super.dispose();
   }
 
+  // The outer translate is always present, so a step keeps its state when it
+  // moves from current to leaving.
   Widget _transition(_StepEntry entry) => KeyedSubtree(
     key: entry.key,
-    child: PaymentMotion.fadeRise(
-      entry.child,
-      entry.controller,
-      back: entry.back,
+    child: Transform.translate(
+      offset: Offset(0, entry.heldRise),
+      child: PaymentMotion.fadeRise(
+        entry.child,
+        entry.controller,
+        back: entry.back,
+      ),
     ),
   );
   @override

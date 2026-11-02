@@ -266,6 +266,9 @@ class _Shell extends StatelessWidget {
                 selectedIndex: app.tab,
                 onDestinationSelected: app.selectTab,
                 labelType: NavigationRailLabelType.all,
+                // A landscape phone with the keyboard open leaves the rail
+                // too short for its destinations, so it scrolls (#153).
+                scrollable: true,
                 destinations: [
                   for (final (icon, selected, label) in destinations)
                     NavigationRailDestination(

@@ -73,6 +73,29 @@ void main() {
     },
   );
 
+  testWidgets('short landscape rail stays usable with the keyboard (#153)', (
+    t,
+  ) async {
+    surface(t, const Size(900, 400));
+    final app = await launch(t);
+    await runScenario(t, app, 'P01');
+    t.view.viewInsets = const FakeViewPadding(bottom: 200);
+    await settle(t);
+    expect(t.takeException(), isNull);
+
+    final gallery = find.descendant(
+      of: find.byType(NavigationRail),
+      matching: find.text('Gallery'),
+    );
+    await t.ensureVisible(gallery);
+    await settle(t);
+    await t.tap(gallery);
+    await settle(t);
+    expect(app.tab, 2);
+    expect(t.takeException(), isNull);
+    await drain(t);
+  });
+
   testWidgets('phone checkout keeps a nonempty viewport above the keyboard', (
     t,
   ) async {
