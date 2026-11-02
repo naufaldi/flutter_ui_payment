@@ -27,8 +27,23 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
 - After a public API change, regenerate `website/src/data/api.json` with `pnpm gen:api` in `website/`.
 - A PR closes its issues with one `Closes #N` line per issue.
 
+## Testing scope
+
+- **This repo is a design system, not an app.** Tests prove what a host developer and an end user rely on. Don't test every internal combination.
+- **Test the user story.** For each behaviour a change adds or fixes, write one focused widget test that shows the story: what a person sees or can do. For example, "the person can read why the upload failed and tap Retake". Add a regression test for the bug that was fixed.
+- **Test the kit rules where the change touches them.** Semantic tokens, 48 dp targets (B5), 200% text at 320 dp with nothing clipped (B4), reduced motion (B9/D66), and host ownership (B11). Use one representative case each, not a matrix.
+- **Avoid:**
+  - exhaustive matrices, such as every state × size × locale × theme × nav mode;
+  - pixel or rect-identity sweeps;
+  - throwaway probe batteries;
+  - repeated fail-before proofs. One fail-before for the main story is enough.
+  - new integration or end-to-end tests for kit internals.
+- **Devices:** use a device capture or recording only when the story is visual on a device, such as a layout or motion change on Android. Run the flow test only when the change is on its path.
+- **Plans and reviews use the same scale.** A plan lists the user stories and the few tests that prove them. A reviewer judges against those stories, and asks for a new test only when a real user story breaks.
+
 ## Review and verification
 
+- Judge and test against the user stories in Testing scope.
 - Merge gate: only medium or higher review findings block a merge. Put low findings and nits in a follow-up GitHub issue and merge the PR.
 - Small follow-ups: text-only fixes or a few lines with no behaviour change do not need another review round. The orchestrator checks the diff and merges.
 - Treat a rebase that only resolves `CHANGELOG.md` or decision-table conflicts the same way. Check code identity: the PR's code diff must equal the approved one.
@@ -39,6 +54,8 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
 - Parallel work: use up to 3 delegates at once. Device runs stay one at a time behind the device lock.
 
 ## Checks
+
+Run the checks relevant to the changed user stories and kit rules.
 
 On Windows, formatting `.` fails on Android build output under `example/build`.
 
