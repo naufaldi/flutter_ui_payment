@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 
 import 'payment_motion.dart';
 import 'payment_theme.dart';
@@ -139,6 +140,14 @@ class PaymentPressScale extends StatefulWidget {
 
 class _PaymentPressScaleState extends State<PaymentPressScale> {
   bool _pressed = false;
+  int? _pointer;
+  Offset _origin = Offset.zero;
+
+  void _release(PointerEvent event) {
+    if (event.pointer != _pointer) return;
+    _set(false);
+    _pointer = null;
+  }
 
   void _set(bool pressed) {
     if (pressed != _pressed) setState(() => _pressed = pressed);
@@ -148,9 +157,24 @@ class _PaymentPressScaleState extends State<PaymentPressScale> {
   Widget build(BuildContext context) {
     final motion = PaymentMotion.of(context);
     return Listener(
-      onPointerDown: (_) => _set(widget.enabled),
-      onPointerUp: (_) => _set(false),
-      onPointerCancel: (_) => _set(false),
+      onPointerDown: (event) {
+        if (_pointer != null) return;
+        _pointer = event.pointer;
+        _origin = event.position;
+        _set(widget.enabled);
+      },
+      onPointerMove: (event) {
+        if (event.pointer == _pointer &&
+            (event.position - _origin).distance >
+                computeHitSlop(
+                  event.kind,
+                  MediaQuery.maybeGestureSettingsOf(context),
+                )) {
+          _release(event);
+        }
+      },
+      onPointerUp: _release,
+      onPointerCancel: _release,
       child: AnimatedScale(
         scale: _pressed ? motion.pressedScale : 1,
         duration: motion.press,

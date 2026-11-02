@@ -23,7 +23,7 @@ Buttons, action rows, the action menu button, checkbox, radio and switch rows, t
 
 ## Press scale
 
-Compact controls shrink to 0.96 while held and return to full size on release, over 100 ms (`PaymentMotion.press`). It says the press was heard.
+Compact controls shrink to 0.96 while held and return to full size on release, over 100 ms (`PaymentMotion.press`). It says the press was heard. The press releases as soon as the touch moves past the platform's touch slop, so a control under a scrolling finger returns to full size. Disabled controls don't scale. There is no press delay inside scroll views, so a touch that starts a scroll dips for a few frames before slop.
 
 - **Compact only.** Copy buttons, the sheet close button, tabs, promotion actions, the video controls and the review's edit actions scale.
 - **Full-width buttons and rows do not.** Scaling a 320 dp slab moves its edges by several pixels, which reads as a lurch rather than a press. They use Material's pressed layer instead.

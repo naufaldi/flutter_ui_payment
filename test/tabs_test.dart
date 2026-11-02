@@ -7,6 +7,33 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
+  testWidgets('keyboard reveals offscreen tabs immediately', (t) async {
+    await phase4.setSurface(t, const Size(320, 800));
+    await t.pumpWidget(
+      host(
+        PaymentTabs(
+          tabs: List.generate(10, (i) => PaymentTab(label: 'Payment $i')),
+          selectedIndex: 0,
+          onSelected: (_) {},
+        ),
+        1,
+      ),
+    );
+    await t.pumpAndSettle();
+    await t.sendKeyEvent(LogicalKeyboardKey.tab);
+    await t.pumpAndSettle();
+    expect(FocusManager.instance.highlightMode, FocusHighlightMode.traditional);
+    final position = t.state<ScrollableState>(find.byType(Scrollable)).position;
+    final start = position.pixels;
+    for (var i = 0; i < 4; i++) {
+      await t.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await t.pump();
+    }
+    final immediate = position.pixels;
+    await t.pumpAndSettle();
+    expect(position.pixels, immediate);
+    expect(immediate, isNot(start));
+  });
   testWidgets(
     'at 2x and 320 dp the selected last tab scrolls fully into view',
     (t) async {

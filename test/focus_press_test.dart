@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'helpers/reduced_motion.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,7 +20,10 @@ Widget host(
     ...GlobalMaterialLocalizations.delegates,
   ],
   builder: (context, child) => MediaQuery(
-    data: MediaQuery.of(context).copyWith(disableAnimations: reduceMotion),
+    data: MediaQuery.of(context).copyWith(
+      disableAnimations:
+          reduceMotion || MediaQuery.of(context).disableAnimations,
+    ),
     child: child!,
   ),
   home: Scaffold(
@@ -58,6 +63,110 @@ double _copyScale(WidgetTester tester) => tester
     .scale;
 
 void main() {
+  for (final horizontal in [true, false]) {
+    testWidgets('press releases past slop, horizontal=$horizontal', (t) async {
+      t.view.physicalSize = const Size(320, 600);
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.resetPhysicalSize);
+      addTearDown(t.view.resetDevicePixelRatio);
+      var calls = 0;
+      await t.pumpWidget(
+        host(
+          SizedBox(
+            height: 200,
+            child: ListView(
+              scrollDirection: horizontal ? Axis.horizontal : Axis.vertical,
+              children: [
+                if (horizontal)
+                  PaymentChip(label: 'Chip', onDropdown: () => calls++)
+                else
+                  PaymentCopyButton(
+                    value: '123',
+                    onCopy: (_) async {
+                      calls++;
+                      return true;
+                    },
+                  ),
+                const SizedBox(width: 1000, height: 1000),
+              ],
+            ),
+          ),
+        ),
+      );
+      final control = find.byType(horizontal ? PaymentChip : PaymentCopyButton);
+      final scale = find
+          .descendant(of: control, matching: find.byType(AnimatedScale))
+          .first;
+      final gesture = await t.startGesture(t.getCenter(control));
+      await t.pump();
+      expect(t.widget<AnimatedScale>(scale).scale, .96);
+      final delta = horizontal
+          ? const Offset(-(kTouchSlop + 2), 0)
+          : const Offset(0, -(kTouchSlop + 2));
+      await gesture.moveBy(delta);
+      await t.pump();
+      expect(t.widget<AnimatedScale>(scale).scale, 1);
+      await gesture.moveBy(delta);
+      await t.pump();
+      expect(t.widget<AnimatedScale>(scale).scale, 1);
+      await gesture.up();
+      await t.pumpAndSettle();
+      expect(calls, 0);
+    });
+  }
+  testWidgets('150 ms hold keeps press feedback until release', (t) async {
+    await t.pumpWidget(_copyButton());
+    final gesture = await t.startGesture(t.getCenter(find.byType(IconButton)));
+    await t.pump(const Duration(milliseconds: 150));
+    expect(_copyScale(t), .96);
+    await gesture.up();
+    await t.pumpAndSettle();
+    expect(_copyScale(t), 1);
+  });
+  testWidgets('disabled tab never shrinks', (t) async {
+    await t.pumpWidget(
+      host(
+        PaymentTabs(
+          tabs: const [
+            PaymentTab(label: 'Disabled', disabledReason: 'Unavailable'),
+          ],
+          selectedIndex: 0,
+          onSelected: (_) {},
+        ),
+      ),
+    );
+    final gesture = await t.startGesture(t.getCenter(find.text('Disabled')));
+    await t.pump();
+    expect(t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale, 1);
+    await gesture.up();
+    await t.pumpAndSettle();
+  });
+  for (final setup in ReducedMotion.values) {
+    testWidgets('chip stays full size and still (${setup.name})', (t) async {
+      await t.pumpWidget(
+        host(setup.apply(t, PaymentChip(label: 'Chip', onDropdown: () {}))),
+      );
+      await t.pumpAndSettle();
+      // Drive the kit listener directly: Material ink is a D67 exception.
+      final listener = t.widget<Listener>(
+        find
+            .descendant(
+              of: find.byType(PaymentPressScale),
+              matching: find.byType(Listener),
+            )
+            .first,
+      );
+      await expectStill(
+        t,
+        () => listener.onPointerDown!(const PointerDownEvent(pointer: 1)),
+      );
+      expect(t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale, 1);
+      await expectStill(
+        t,
+        () => listener.onPointerCancel!(const PointerCancelEvent(pointer: 1)),
+      );
+    });
+  }
   void useStrategy(FocusHighlightStrategy strategy) {
     FocusManager.instance.highlightStrategy = strategy;
     addTearDown(

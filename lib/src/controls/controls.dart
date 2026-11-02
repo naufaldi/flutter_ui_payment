@@ -488,10 +488,14 @@ class _PaymentTabsState extends State<PaymentTabs> {
       return;
     }
     final motion = PaymentMotion.of(context);
+    final keyboard =
+        FocusManager.instance.highlightMode == FocusHighlightMode.traditional;
     position.ensureVisible(
       box,
       alignment: 0.5,
-      duration: animate && !motion.reduced ? motion.quick : Duration.zero,
+      duration: animate && !keyboard && !motion.reduced
+          ? motion.quick
+          : Duration.zero,
       curve: PaymentMotion.easeOut,
     );
   }
@@ -630,6 +634,7 @@ class _Tab extends StatelessWidget {
       child: PaymentFocusRing(
         radius: BorderRadius.zero,
         child: PaymentPressScale(
+          enabled: enabled,
           child: InkWell(
             focusNode: focusNode,
             focusColor: Colors.transparent,
