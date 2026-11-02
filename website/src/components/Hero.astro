@@ -10,16 +10,16 @@ const all = screens as Record<string, { width: number; height: number }>;
 const shot = (name: string) => ({ src: `/screens/${name}.webp`, ...all[name] });
 const pairs = [
   {
-    light: shot('ios_refined_status_unknown_light'),
-    dark: shot('ios_refined_status_unknown_dark'),
+    light: shot('android_refined_status_unknown_light'),
+    dark: shot('android_refined_status_unknown_dark'),
     alt: 'Payment screen with a hatched amber band, the title "Result not confirmed yet", the amount Rp102,500, the line "Don\'t pay again." and one action, Check status.',
     darkAlt: 'The same unknown-outcome screen in dark mode, in Indonesian: hatched amber band, "Hasil belum terkonfirmasi", Rp102.500, "Jangan bayar lagi." and one action, Cek status.',
     caption: 'Submit timed out after the server accepted it',
   },
   {
-    light: shot('ios_refined_checkout_light'),
-    dark: shot('ios_refined_checkout_dark'),
-    alt: 'Checkout screen with the order summary led by the total Rp102,500, a service fee line, a bordered payment-method list and a pinned bar with the total and a Review payment button.',
+    light: shot('android_refined_checkout_light'),
+    dark: shot('android_refined_checkout_dark'),
+    alt: 'Checkout screen with the order summary led by the total Rp102,500, a service fee line, a bordered payment-method list and a pinned Review payment button.',
     darkAlt: 'The same checkout in dark mode, in Indonesian: order summary led by Rp102.500, payment-method list and a pinned bar with Tinjau pembayaran.',
     caption: 'The checkout it came from',
   },

@@ -123,26 +123,22 @@ class _ContentSpecimen extends StatelessWidget {
             for (final (method, fee, arrives) in [
               (
                 t('Virtual account', 'Virtual account'),
-                'Rp2.500',
+                2500,
                 t('Within 10 min', 'Dalam 10 menit'),
               ),
-              ('QRIS', 'Rp0', t('Instant', 'Instan')),
-              (t('Card', 'Kartu'), 'Rp4.000', t('Instant', 'Instan')),
-              (
-                t('Wallet', 'Dompet digital'),
-                'Rp1.500',
-                t('Instant', 'Instan'),
-              ),
+              ('QRIS', 0, t('Instant', 'Instan')),
+              (t('Card', 'Kartu'), 4000, t('Instant', 'Instan')),
+              (t('Wallet', 'Dompet digital'), 1500, t('Instant', 'Instan')),
             ])
               PaymentTableRow([
                 PaymentTableCell(Text(method)),
-                PaymentTableCell(Text(fee)),
+                PaymentTableCell(AmountText(Money.idr(fee)), numeric: true),
                 PaymentTableCell(Text(arrives)),
               ]),
           ],
           footer: PaymentTableRow([
             PaymentTableCell(Text(t('Total', 'Total'))),
-            const PaymentTableCell(Text('Rp8.000')),
+            const PaymentTableCell(AmountText(Money.idr(8000)), numeric: true),
             PaymentTableCell(Text(t('Host computed', 'Dihitung host'))),
           ]),
         ),

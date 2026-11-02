@@ -286,7 +286,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _CaptureGuideDemo(),
         _KycStatusDemo(),
       ],
-      _ => const [_Foundation(), _AmountTextVariantsDemo(), _AmountDemo()],
+      _ => const [
+        _Foundation(),
+        _SpacingRolesDemo(),
+        _AmountTextVariantsDemo(),
+        _AmountDemo(),
+      ],
     };
     return AdaptiveNavShell(
       title: Text(s.tabGallery),
@@ -484,6 +489,49 @@ PaymentQuote _quote({bool changed = false, String methodId = 'balance'}) {
     expiresAt: _now.add(const Duration(minutes: 10)),
     methodId: methodId,
   );
+}
+
+class _SpacingRolesDemo extends StatelessWidget {
+  const _SpacingRolesDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    return _Entry(
+      name: 'PaymentSpace · variants',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final role in PaymentSpace.values)
+            Padding(
+              padding: EdgeInsets.only(bottom: theme.space(PaymentSpace.group)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text('${role.name} · ${theme.space(role).toInt()} dp'),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      ColoredBox(
+                        key: ValueKey('space:${role.name}:before'),
+                        color: theme.textPrimary,
+                        child: const SizedBox(width: 24, height: 24),
+                      ),
+                      SizedBox(width: theme.space(role)),
+                      ColoredBox(
+                        key: ValueKey('space:${role.name}:after'),
+                        color: theme.textPrimary,
+                        child: const SizedBox(width: 24, height: 24),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 class _Foundation extends StatelessWidget {

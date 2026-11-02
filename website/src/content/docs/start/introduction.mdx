@@ -11,9 +11,9 @@ import Screens from '../../../components/Screens.astro';
 Around that core it ships the pieces a payment app is built from: action rows and menus, confirmations and feedback, a responsive sidebar/drawer shell, sheets, a host-driven video player, labeled promotions, and transaction history.
 
 <Screens>
-  <Screen name="ios_refined_checkout_light" dark="ios_refined_checkout_dark" alt="Checkout with the order summary led by the total, a fee line, the method list and a pinned total with the Review payment action." caption="Checkout (light: English, dark: Indonesian)" />
-  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="Payment result not confirmed yet: hatched band, amount, Don't pay again, and Check status." caption="Unknown outcome (light: English, dark: Indonesian)" />
-  <Screen name="ios_refined_kyc_review_light" dark="ios_refined_kyc_review_dark" alt="KYC review screen with masked identity details, document file names and Edit actions in the section headers." caption="KYC review (optional module)" />
+  <Screen name="android_refined_checkout_light" dark="android_refined_checkout_dark" alt="Checkout with the order summary led by the total, a fee line, the method list and a pinned Review payment action." caption="Checkout (light: English, dark: Indonesian)" />
+  <Screen name="android_refined_status_unknown_light" dark="android_refined_status_unknown_dark" alt="Payment result not confirmed yet: hatched band, amount, Don't pay again, and Check status." caption="Unknown outcome (light: English, dark: Indonesian)" />
+  <Screen name="android_refined_kyc_review_light" dark="android_refined_kyc_review_dark" alt="KYC review screen with masked identity details, document file names and Edit actions in the section headers." caption="KYC review (optional module)" />
 </Screens>
 
 ## What the kit owns, and what you keep
@@ -46,7 +46,7 @@ The package renders structured data from your app and reports user intent throug
 
 **`0.1.0`, not on pub.dev yet.** Install it from the [GitHub repository](https://github.com/naufaldi/flutter_ui_payment); it is not on pub.dev, and the package name has not been checked for availability. All data in the example app is synthetic.
 
-Checked so far (30 October 2026, Flutter 3.44.6): formatter and analyzer are clean, the 89 package tests pass when run file by file, the 12 integration flow tests pass on the iPhone 16 simulator, and native screenshots were captured and inspected on an iPhone 16 simulator (iOS 18.1) and an Android 11 emulator. [Compatibility](/reference/compatibility/) has the details.
+Documentation captures use Flutter 3.44.6 on the 360×640 dp Android API 37 phone (2 November 2026). The formatter, analyzers, example widget tests and website checks cover this docs update. Earlier platform runs remain recorded in [Compatibility](/reference/compatibility/).
 
 Targets iOS and Android, phones and tablets ([D64](/reference/design-decisions/)). The web build is a documentation preview, not a product target; desktop is out of scope.
 
@@ -55,7 +55,7 @@ Not done yet:
 - An external developer integrating a checkout from these docs (the 30-minute goal is unproven).
 - A browser check of the web gallery.
 - Android 7–10 runtime tests.
-- The Android phone and tablet capture and review pass (D64); the 1 November UI review was done on iOS.
+- The Android tablet capture pass (D64); phone documentation now uses Android captures.
 - Package name availability and `flutter pub publish --dry-run`.
 
 ## Where to go next

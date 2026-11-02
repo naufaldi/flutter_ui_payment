@@ -50,12 +50,12 @@ The screen says who is connecting and what that allows, then puts one short acti
 - **One specific headline**, such as "Masuk dengan Ruang Bayar", not "Sign in to continue".
 - **Can and can never, in plain view:** `canDo` (✓) under "Aplikasi ini bisa" and `cannotDo` (✕) under "Aplikasi ini tidak bisa", in one outlined box. Put reassurance such as "never sees your PIN" here instead of a footnote.
 - **One legal sentence** in the pinned footer, right above the action: `legalNotice` with `{0}`, `{1}` replaced by inline links to `legalLinks`. Inline links in a sentence are exempt from the 48 dp target rule and keep link semantics.
-- **Pinned footer:** a short primary ("Lanjutkan") and a quiet "Batal", so the action is on the first screen of a 375 × 667 phone at 200% in Indonesian.
+- **Pinned footer:** a short primary ("Lanjutkan") and a quiet "Batal", the body scrolls independently of the footer on the 360×640 dp Android phone at 200% text.
 
 `learnMore` and `footnote` are deprecated and removed in 0.2.0; they still render in the body.
 
-<Screen name="ios_se_sign_in_light_200" alt="Sign-in on iPhone SE at 200% text in Indonesian: tiles, headline, can and cannot lists, and the pinned legal sentence with Lanjutkan and Batal" caption="iPhone SE, 200%, Indonesian" />
-<Screen name="ios_se_sign_in_en_200" alt="Sign-in on iPhone SE at 200% text in English with the pinned Continue button" caption="iPhone SE, 200%, English" />
+<Screen name="android_sign_in_light_200" alt="Sign-in on 360×640 dp Android phone at 200% text in Indonesian: scrollable account-linking content and the pinned legal sentence with Lanjutkan and Batal" caption="360×640 dp Android phone, 200%, Indonesian" />
+<Screen name="android_sign_in_en_200" alt="Sign-in on 360×640 dp Android phone at 200% text in English with the pinned Continue button" caption="360×640 dp Android phone, 200%, English" />
 
 ## Stripe → kit
 
@@ -108,7 +108,7 @@ Used in H04: the fake host handles sign-in and cancellation retry; no credential
 
 H04 signed-out scenario. Real composition: `example/lib/screens/gallery_views.dart`.
 
-<Screen name="ios_sign_in_light" dark="ios_sign_in_dark" alt="Example sign in screen with synthetic data" caption="Example: sign in" />
+<Screen name="android_sign_in_light" dark="android_sign_in_dark" alt="Example sign in screen with synthetic data" caption="Example: sign in" />
 
 ## API
 

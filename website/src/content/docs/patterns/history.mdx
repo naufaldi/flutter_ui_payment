@@ -13,8 +13,8 @@ A fully controlled list of past payments with search, filter tabs, loading, erro
 <HostOwns>the records, the query and filter state, server-side search if you have it, and what each detail action does.</HostOwns>
 
 <Screens>
-  <Screen name="ios_kit_history" dark="ios_kit_history_dark" alt="Transaction history in Indonesian: search field, text-tab filters with an underline, and rows with status tags." caption="TransactionHistory (Indonesian)" />
-  <Screen name="ios_kit_history_detail_unknown" alt="Transaction detail in a sheet, in Indonesian: hatched band, Hasil belum terkonfirmasi, Jangan bayar lagi, Cek status and details." caption="TransactionDetail for an unconfirmed payment (Indonesian)" />
+  <Screen name="android_kit_history" dark="android_kit_history_dark" alt="Transaction history in Indonesian: search field, text-tab filters with an underline, and rows with status tags." caption="TransactionHistory (Indonesian)" />
+  <Screen name="android_kit_history_detail_unknown" alt="Transaction detail in a sheet, in Indonesian: hatched band, Hasil belum terkonfirmasi, Jangan bayar lagi, Cek status and details." caption="TransactionDetail for an unconfirmed payment (Indonesian)" />
 </Screens>
 
 ## Usage
@@ -57,9 +57,9 @@ History is for finding a payment, so the list leads at every text size and local
 
 ## Filters on one line
 
-The date range is a calendar button at the end of the search line, not a labelled field above it (D63a): pass `PaymentDateRangePicker.button` in `searchActions`. It opens the same presets and range calendar, reads "Rentang tanggal" / "Date range" as its tooltip and spoken name, and fills with the accent while a range is set. The chosen range shows as the "Tanggal: …" chip with ×, so nothing is hidden. With actions on the line, the search shows its label as the placeholder, and the label stays its spoken name. The labelled field repeated the chip's value and took about 140 pt at 200%; with the placeholder too, a whole first row (title, amount, date and status) sits above the tab bar at 200% on an iPhone SE in English and Indonesian.
+The date range is a calendar button at the end of the search line, not a labelled field above it (D63a): pass `PaymentDateRangePicker.button` in `searchActions`. It opens the same presets and range calendar, reads "Rentang tanggal" / "Date range" as its tooltip and spoken name, and fills with the accent while a range is set. The chosen range shows as the "Tanggal: …" chip with ×, so nothing is hidden. With actions on the line, the search shows its label as the placeholder, and the label stays its spoken name. At 200% on the 360×640 dp Android phone, the header link stays beside the title when it fits and moves into the menu when it cannot (D83). The first transaction fits above the tab bar. The narrower 320 dp limit is tracked in [#161](https://github.com/naufaldi/flutter_ui_payment/issues/161) and documented in [the Android history evidence](/reference/design-decisions/#d83-acceptance-measurements-2-nov-2026).
 
-<Screen name="ios_se_history_light_200" alt="History on iPhone SE at 200% text: the search line with its calendar button, the tabs and a whole first transaction row above the tab bar" caption="iPhone SE, 200%, Indonesian" />
+<Screen name="android_history_light_200" alt="History on 360×640 dp Android phone at 200% text: the search line with its calendar button, the tabs and a whole first transaction row above the tab bar" caption="360×640 dp Android phone, 200%, Indonesian" />
 
 ## Behavior
 
@@ -89,4 +89,4 @@ Date range filters and chips arrive in Phase 5.
 
 Phase 5 composes the detail and overview pages into transaction history.
 
-<Screen name="ios_history_light" dark="ios_history_dark" alt="Example history with synthetic data" />
+<Screen name="android_history_light" dark="android_history_dark" alt="Example history with synthetic data" />

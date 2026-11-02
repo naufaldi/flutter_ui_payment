@@ -22,9 +22,9 @@ When a submit times out before a server reference arrives, the attempt keeps goi
 "Unknown" is not a provider status; it is the client admitting it has no answer yet. The screen leads with "Don't pay again.", shows a hatched band so it never looks like an ordinary pending state, and offers exactly one action: check status.
 
 <Screens>
-  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="Unknown outcome: hatched amber band, Result not confirmed yet, the amount, Don't pay again, Check status." caption="Unknown: hatched band" />
-  <Screen name="ios_status_pending_light" alt="Pending in Indonesian: solid amber band, Menunggu, the amount and an explanation." caption="Pending: solid band (Indonesian)" />
-  <Screen name="ios_kit_history_detail_unknown" alt="Transaction detail sheet in Indonesian for an unconfirmed payment: hatched band, Jangan bayar lagi, and Cek status." caption="The same rule in transaction history (Indonesian)" />
+  <Screen name="android_refined_status_unknown_light" dark="android_refined_status_unknown_dark" alt="Unknown outcome: hatched amber band, Result not confirmed yet, the amount, Don't pay again, Check status." caption="Unknown: hatched band" />
+  <Screen name="android_status_pending_light" alt="Pending in Indonesian: solid amber band, Menunggu, the amount and an explanation." caption="Pending: solid band (Indonesian)" />
+  <Screen name="android_kit_history_detail_unknown" alt="Transaction detail sheet in Indonesian for an unconfirmed payment: hatched band, Jangan bayar lagi, and Cek status." caption="The same rule in transaction history (Indonesian)" />
 </Screens>
 
 The same rule holds everywhere: a timeout, an offline refresh or an elapsed countdown never becomes "failed" or "paid". In transaction history a record with `status: null` is "not confirmed yet" and falls under **In progress**, never **Unsuccessful**.

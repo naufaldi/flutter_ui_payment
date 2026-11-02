@@ -13,9 +13,9 @@ KYC is optional and composes with checkout; not every payment has to pass throug
 <HostOwns>the identity rules and consent policy, field validators, document limits, the picker or camera, uploads, server-side document validation, and the verification decision itself. `verified` comes only from your snapshot, never from a finished upload.</HostOwns>
 
 <Screens>
-  <Screen name="ios_refined_kyc_review_light" dark="ios_refined_kyc_review_dark" alt="KYC review: identity details with masked values, document slots with file names shortened in the middle, and Edit actions in the section headers." caption="VerificationReview" />
-  <Screen name="ios_kyc_intro_light" dark="ios_kyc_intro_dark" alt="Verification intro in Indonesian: requirement icons and the consent checkbox share the content gutter; Continue is pinned at the bottom, disabled until consent, with the consent hint above it." caption="VerificationIntro consent (Indonesian)" />
-  <Screen name="ios_kyc_intro_light_200" alt="Verification consent at 200% text with a wrapping label and disabled Continue." caption="Consent at 200% text (Indonesian)" />
+  <Screen name="android_refined_kyc_review_light" dark="android_refined_kyc_review_dark" alt="KYC review: identity details with masked values, document slots with file names shortened in the middle, and Edit actions in the section headers." caption="VerificationReview" />
+  <Screen name="android_kyc_intro_light" dark="android_kyc_intro_dark" alt="Verification intro in Indonesian: requirement icons and the consent checkbox share the content gutter; Continue is pinned at the bottom, disabled until consent, with the consent hint above it." caption="VerificationIntro consent (Indonesian)" />
+  <Screen name="android_kyc_intro_light_200" alt="Verification consent at 200% text with a wrapping label and disabled Continue." caption="Consent at 200% text (Indonesian)" />
 </Screens>
 
 ## Usage
@@ -126,8 +126,8 @@ PaymentOnboardingView(
 ```
 
 <Screens>
-  <Screen name="ios_se_kyc_onboarding_en_200" alt="KYC details on iPhone SE at 200% text: the form scrolls and Continue is pinned at the bottom." caption="Details, iPhone SE, 200%" />
-  <Screen name="ios_se_kyc_review_en_200" alt="KYC review on iPhone SE at 200% text: Submit for verification is pinned at the bottom." caption="Review, iPhone SE, 200%" />
+  <Screen name="android_kyc_onboarding_en_200" alt="KYC details on 360×640 dp Android phone at 200% text: the form scrolls and Continue is pinned at the bottom." caption="Details, 360×640 dp Android phone, 200%" />
+  <Screen name="android_kyc_review_en_200" alt="KYC review on 360×640 dp Android phone at 200% text: Submit for verification is pinned at the bottom." caption="Review, 360×640 dp Android phone, 200%" />
 </Screens>
 
 Identity fields support the search kind for long host option lists. Consecutive fields with the same group share one field-group legend.
@@ -152,4 +152,4 @@ The policy action uses an external PaymentLink with a trailing glyph, flush with
 
 IdentityFieldSpec.kind selects text, date or choice. Date values and initial values are ISO calendar dates (yyyy-MM-dd); choice values are host option values. VerificationReview shows localized dates and option labels.
 
-<Screen name="ios_kyc_onboarding_light" dark="ios_kyc_onboarding_dark" alt="Example kyc onboarding with synthetic data" />
+<Screen name="android_kyc_onboarding_light" dark="android_kyc_onboarding_dark" alt="Example kyc onboarding with synthetic data" />

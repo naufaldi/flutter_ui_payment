@@ -265,6 +265,7 @@ void main() {
               },
             ),
             'amount_text': ('Foundation', 'AmountText', null, null),
+            'spacing_roles': ('Foundation', 'PaymentSpace', null, null),
             'badge': ('Feedback', 'PaymentBadge', null, null),
             'spinner': ('Feedback', 'PaymentSpinner', null, null),
             'step_indicator': (
@@ -626,7 +627,9 @@ void main() {
           await before?.call(id);
           // State captures are named `<slug><look>`, not `_variants`.
           await shot(
-            states.contains(slug) ? '$slug$suffix' : '${slug}_variants$suffix',
+            states.contains(slug) || slug == 'spacing_roles'
+                ? '$slug$suffix'
+                : '${slug}_variants$suffix',
           );
           await after?.call();
         }

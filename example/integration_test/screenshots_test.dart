@@ -67,13 +67,11 @@ void main() {
         c.reviewOrder();
         await c.confirm();
         await pumpUntil(tester, () => c.quote?.revision == 2 && !c.confirming);
-        if ((app.settings.textScale ?? 1) > 1) {
-          await settle(tester);
-          await Scrollable.ensureVisible(
-            tester.element(find.byType(PaymentCheckbox)),
-            alignment: 0.5,
-          );
-        }
+        await settle(tester);
+        await Scrollable.ensureVisible(
+          tester.element(find.byType(PaymentCheckbox)),
+          alignment: 0.5,
+        );
       },
       'authorize': () async {
         final c = await runScenario(tester, app, 'P06');
@@ -160,7 +158,7 @@ void main() {
     // Selective session: --dart-define=CAPTURE_ONLY=history,transaction_detail
     // captures only those screens, in every look of CAPTURE_LOOKS (default
     // light, dark, light_200). The app is Indonesian by default; en and
-    // en_200 are the English looks used by the SE and iPad sets.
+    // en_200 are the English looks used by the phone large-text set.
     const only = String.fromEnvironment('CAPTURE_ONLY');
     const looksDefine = String.fromEnvironment('CAPTURE_LOOKS');
     final selected = {

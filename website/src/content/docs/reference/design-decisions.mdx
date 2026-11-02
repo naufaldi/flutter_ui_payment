@@ -30,8 +30,8 @@ What it keeps from the earlier "Statement" direction, because Stripe shows no pu
 Why not all of Stripe: it is the most imitated payment look, its finish depends on Stripe's own font and brand tuning (the kit ships no fonts), and it has no pattern for the unknown outcome, which is this kit's main job.
 
 <Screens>
-  <Screen name="ios_refined_checkout_light" dark="ios_refined_checkout_dark" alt="Hairline checkout: flat summary, bordered method list, pinned total and action." caption="Hairline checkout" />
-  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="Hatched band and Don't pay again on the unknown outcome." caption="The hatched band for unknown" />
+  <Screen name="android_refined_checkout_light" dark="android_refined_checkout_dark" alt="Hairline checkout: flat summary, bordered method list, pinned primary action." caption="Hairline checkout" />
+  <Screen name="android_refined_status_unknown_light" dark="android_refined_status_unknown_dark" alt="Hatched band and Don't pay again on the unknown outcome." caption="The hatched band for unknown" />
 </Screens>
 
 ## Design constraints
@@ -92,9 +92,9 @@ On 1 November 2026 the owner reviewed every component and flow against the 8 pt 
 | D62 | Every phone screen with a priority action pins it at the bottom, full width, with at most one quiet action. The tab bar hides during a payment; D84 extends this to pushed detail screens. | [#64](https://github.com/naufaldi/flutter_ui_payment/issues/64) |
 | D63 | History leads with the list at every text size: filters, then the transactions, then the spending chart and the month's figures. | [#58](https://github.com/naufaldi/flutter_ui_payment/issues/58) |
 | D63a | History's date range is a calendar button at the end of the search line, and the range shows as a filter chip. Beside the button, the search shows its label as the placeholder. | [#58](https://github.com/naufaldi/flutter_ui_payment/issues/58) |
-| D64 | Phase 1 targets iOS (iPhone, iPad) and Android (phones, tablets). Tablets use the wide-screen rules above (D45, D53, D55, D59, D62). Web is the docs site and its gallery preview only, not a product target; desktop is out of scope. This review was checked on iOS; an Android phone and tablet pass is next. | Owner decision, no issue |
+| D64 | Phase 1 targets iOS (iPhone, iPad) and Android (phones, tablets). Tablets use the wide-screen rules above (D45, D53, D55, D59, D62). Web is the docs site and its gallery preview only, not a product target; desktop is out of scope. The original review used iOS; the documentation phone captures now use Android, and the tablet capture pass is pending. | Owner decision, no issue |
 
-The catalog captures below show the result on an Android phone. The tablet and history captures retain their labelled source devices until their scheduled recapture.
+The catalog captures below show the result on an Android phone. The tablet captures retain their labelled source devices until their scheduled recapture.
 
 <Screens>
   <Screen name="android_catalog_dialog_variants" alt="Remove card confirmation sheet with the destructive action above Cancel." caption="D45: confirm sheet" />
@@ -115,17 +115,17 @@ The catalog captures below show the result on an Android phone. The tablet and h
 </Screens>
 
 <Screens>
-  <Screen name="ios_sign_in_light" alt="The account-linking sign-in with both app tiles, the can and cannot lists and a pinned Lanjutkan." caption="D61: sign-in" />
-  <Screen name="ios_authorize_light" alt="The authorize step with Konfirmasi pembayaran pinned at the bottom and no tab bar." caption="D62: action at the bottom" />
-  <Screen name="ios_history_light" alt="History with the Laporan link on the title row." caption="D59a: header link" />
+  <Screen name="android_sign_in_light" alt="The account-linking sign-in with both app tiles, the start of the permissions list and a pinned Lanjutkan." caption="D61: sign-in" />
+  <Screen name="android_authorize_light" alt="The authorize step with Konfirmasi pembayaran pinned at the bottom and no tab bar." caption="D62: action at the bottom" />
+  <Screen name="android_history_light" alt="History with the Laporan link on the title row." caption="D59a: header link" />
   <Screen name="ios_ipad_checkout_light" alt="Checkout on an iPad mini in a centred content column." caption="D53: iPad mini column" />
 </Screens>
 
-The last open item, history on an iPhone SE at 200% text ([#58](https://github.com/naufaldi/flutter_ui_payment/issues/58)), was closed by D63 and D63a. The list now comes before the chart, and the date range is a button on the search line, so a whole first transaction (title, amount, date and status) sits above the tab bar in English and Indonesian.
+D63 and D63a moved history before the chart and put the date range on the search line. D83 moves the Statement link into the header menu when it cannot fit beside the title at large text. The captures below show the 360×640 dp Android phone at 200%; the measured 320 dp limit is recorded below and tracked in [#161](https://github.com/naufaldi/flutter_ui_payment/issues/161).
 
 <Screens>
-  <Screen name="ios_se_history_en_200" alt="History on an iPhone SE at 200% text in English: the search line with its calendar button, the tabs and a whole first row with its Refunded badge above the tab bar." caption="D63, D63a: iPhone SE, 200%, English" />
-  <Screen name="ios_se_history_light_200" alt="History on an iPhone SE at 200% text in Indonesian: a whole first row and the start of the second above the tab bar." caption="D63, D63a: iPhone SE, 200%, Indonesian" />
+  <Screen name="android_history_en_200" alt="History on a 360×640 dp Android phone at 200% text in English: the search line with its calendar button, the tabs and a whole first row with its Refunded badge above the tab bar." caption="D63, D63a: 360×640 dp Android phone, 200%, English" />
+  <Screen name="android_history_light_200" alt="History on a 360×640 dp Android phone at 200% text in Indonesian: the search line, filter tabs and first transaction above the tab bar." caption="D63, D63a: 360×640 dp Android phone, 200%, Indonesian" />
 </Screens>
 
 ## Motion review, 2 November 2026

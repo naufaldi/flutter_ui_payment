@@ -31,7 +31,11 @@ void main() {
       'dark': DemoSettings(themeMode: ThemeMode.dark),
       'light_200': DemoSettings(textScale: 2),
     };
+    const selected = String.fromEnvironment('CAPTURE_LOOKS');
+    bool wants(String look) =>
+        selected.isEmpty || selected.split(',').contains(look);
     for (final MapEntry(key: look, value: settings) in looks.entries) {
+      if (!wants(look)) continue;
       app.updateSettings(settings);
       await tester.pump();
 
@@ -54,6 +58,8 @@ void main() {
       );
       await shot('refined_status_unknown_$look');
     }
+
+    if (!wants('kit')) return;
 
     // Gallery, Indonesian, Lumen brand for one pass to show theming.
     Future<void> section(String label, String name, {String look = ''}) async {

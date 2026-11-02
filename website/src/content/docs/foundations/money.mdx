@@ -3,9 +3,13 @@ title: Money and dates
 description: Money is an integer number of minor units plus a currency code. MoneyFormat formats per locale, speaks amounts for screen readers and parses strictly.
 ---
 
+import Screen from '../../../components/Screen.astro';
+
 import Props from '../../../components/Props.astro';
 
 Every amount in the kit is a `Money`: an integer number of minor units and a currency code. There is no floating point anywhere between your API and the screen, so `0.1 + 0.2` problems cannot reach a total.
+
+<Screen name="android_catalog_amount_text_variants" dark="android_catalog_amount_text_variants_dark" alt="Formatted rupiah amounts in caption, row, total, large and display roles." />
 
 ## Money
 
