@@ -483,7 +483,7 @@ Review of every component and flow against the 8 pt grid and the emil-ui-review 
 
 **Evidence method.** Annotated review images are real simulator captures with guide lines and boxes drawn on top at measured coordinates (±2 pt); mocks are HTML drawings of a proposal, not app screens. The red / orange / green thumb-zone bands (issue #64) are an illustration chosen by the reviewer, not a rule from any skill: three equal horizontal strips following the common thumb-zone convention (Hoober; Clark, *Designing for Touch*). Real reach is arc-shaped and depends on hand and phone size, so the bands show direction, not measurement. All images live on the image-only `ui-review-evidence` branch.
 
-- **D59a — the header holds navigation, not the priority action:** one action is a title-row link with ›; more go behind ⋮ (issue #64).
+- **D59a — the header holds navigation, not the priority action:** one action is a title-row link with ›; more go behind ⋮ (issue #64). Large-text page-link overflow is refined by D83.
 - **D62 — the priority action sits at the bottom** of every phone screen that has one, full width with at most one quiet secondary; the tab bar is hidden inside the payment flow (issue #64). D84 extends this to pushed detail screens.
 - **D63 — history leads with the list:** header, filters (date range, chips), the list, then the spending chart and the month's figures, at every text size and locale; no large-text mode, no chart toggle. The screen's job is finding a payment. Not chosen: a "Show chart" fold at large text (a mode that hides content), a first row that only peeks (still no transaction on the first screen at 200% on an iPhone SE), search and date range below the list (filters below what they filter). Cost: at normal text the chart is no longer first; the report stays one tap away via "Laporan ›". Owner decision delegated to the orchestrator (issue #58).
 - **D63a — history filters on one line** (refines D63): the date range is a calendar icon button at the end of the search line, at every text size and locale, with the date-range label as its tooltip and spoken name and a selected look while a range is set; it opens the kit's presets and range sheet, and the range shows as the active-filter chip. D63 alone left no whole row on the first screen at 200% on an iPhone SE. The button alone still cut the English row's badge, so the search shows its label as the placeholder beside the button (the one further step allowed). Cost: less discoverable than a labelled field; the placeholder goes once the customer types; needs an additive kit slot (`TransactionHistory.searchActions`). Orchestrator decision (issue #58).
@@ -639,4 +639,24 @@ Motion Phase 4 package B (#103, #115) implements D66, D69 and D70: copy glyphs u
 
 ### Android pass fixes, 2 November 2026
 
+- **D83 — At large text, a page link that does not fit goes behind ⋮ (#141).** At large text, when a non-external page link cannot fit beside the title, it becomes the first item in the header’s ⋮ menu (the D55 action sheet on phones), merged with any other actions. At normal text a non-fitting link keeps its own line. External links always keep their own line so the external-navigation cue stays. Refines D59a and D63a. Orchestrator decision C2(b), Android UI pass, 2 Nov 2026 (#141). At 360 dp and 200%, “Transactions” plus “Statement ›” took two header lines and the tab bar cut off the first row’s badge. D63 and D63a were verified on a 375 pt iPhone SE. Moving the link saves about 56 dp; the statement is one tap deeper. No large-text mode (D63).
 - **D84 — detail screens hide the tab bar (#142).** Extends D62. On phones, the app's tab bar is hidden on screens pushed from a list or from the account menu: transaction detail, statement, fees and account settings. This matches the payment flow. Lists and tab roots (overview, history) keep it. Back returns to a screen that shows it. The side rail at ≥ 840 dp is unchanged. Align this with #107. Source: orchestrator decision (C3, option a), Android UI pass on 2 Nov 2026. At 360×640 with 3-button navigation, a pinned footer plus the tab bar left about 312 dp for detail content, and at 200% only the title showed. Hiding the bar gives back about 80 dp.
+- **D85 — The host styles the Android system bars (#140).** The kit sets no SystemUiOverlayStyle. The example wraps the app in AnnotatedRegion<SystemUiOverlayStyle>: transparent navigation bar and divider, systemNavigationBarContrastEnforced: false, and navigation icon brightness from the resolved app theme. The app bar keeps control of the status bar. Concepts/Theming documents the host pattern. Applies B11. Orchestrator decision C4(a), issue #140. On Android 15+ edge-to-edge, the contrast scrim follows the window theme rather than the in-app ThemeMode, leaving a light strip under dark screens in three-button navigation. System chrome is host-owned (B11).
+
+
+#### D83 acceptance measurements (2 Nov 2026)
+
+A01 on the Android 17/API 37 phone at 200% app text, system Light. Native dpr 2 is 360×640 dp; PASS_DPR=2.25 is 320×568.9 dp. Positive clearance is above the tab bar; negative clearance is obscured by it. Row clearance includes its bottom padding; badge clearance measures the badge bottom.
+
+| Width | Language | Navigation | Whole first row | Row clearance | Badge clearance |
+| --- | --- | --- | --- | ---: | ---: |
+| 360 dp | en | Gesture | Fits | +28.0 dp | +40.0 dp |
+| 360 dp | id | Gesture | Fits | +28.0 dp | +40.0 dp |
+| 360 dp | en | Three-button | Fits | +4.0 dp | +16.0 dp |
+| 360 dp | id | Three-button | Fits | +4.0 dp | +16.0 dp |
+| 320 dp | en | Gesture | Does not fit | −37.8 dp | −25.8 dp |
+| 320 dp | id | Gesture | Does not fit | −37.8 dp | −25.8 dp |
+| 320 dp | en | Three-button | Does not fit | −59.1 dp | −47.1 dp |
+| 320 dp | id | Three-button | Does not fit | −59.1 dp | −47.1 dp |
+
+Layer renders and system screenshots: C:/DevTools/android-fixes/pr-df/{gesture|threebutton}_{360|320}_history_{en|id}_light_200_{layer|system}.png. The complete first row fits at 360 dp in both languages and navigation modes. At 320 dp, the badge shortfall is 25.8 dp with gestures and 47.1 dp with three-button navigation, in both languages. The orchestrator approved a draft with these measured gaps and no further layout change in this PR; the owner will open a follow-up for the 320 dp remainder. No large-text mode was added (D63).

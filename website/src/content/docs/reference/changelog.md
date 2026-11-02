@@ -8,6 +8,8 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
 ## Android pass fixes (2026-11-02)
 
 - **Example: the keyboard no longer blanks the screen in the side-rail layout (#138, #144).** At 840 dp and wider, opening the keyboard keeps the flow visible, and the step swap no longer overflows while the keyboard closes. Example only; no kit change.
+- **Example and docs: Android navigation bar matches the app theme (D85, #140).** Concepts/Theming shows the `AnnotatedRegion` pattern. Example and docs only.
+- **Page links move behind ⋮ at large text when they don't fit (D83, #141).** No API change.
 - **Example: detail screens hide the tab bar (D84, #142).** Example only.
 - **Document badge on the row's end edge; "Contact support" on the text column (#145).** No API change.
 - **Example: the two-column checkout bar ends on the order summary's text edge (#146).** Example only.

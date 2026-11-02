@@ -86,7 +86,7 @@ On 1 November 2026 the owner reviewed every component and flow against the 8 pt 
 | D57 | IDs and references in rows are plain monospace text on the value edge with a copy action, not grey chips. | [#62](https://github.com/naufaldi/flutter_ui_payment/issues/62) |
 | D58 | Charts show the latest exact value at rest; tap or drag to read another point or bar. | [#62](https://github.com/naufaldi/flutter_ui_payment/issues/62), [#63](https://github.com/naufaldi/flutter_ui_payment/issues/63) |
 | D59 | On a phone, only actions that finish or advance the task are full width. Everything else hugs its label. | [#63](https://github.com/naufaldi/flutter_ui_payment/issues/63) |
-| D59a | On phones, headers hold navigation and optional actions; the priority action belongs in the footer. One action is a "Label ›" link on the title row; more go behind ⋮. | [#64](https://github.com/naufaldi/flutter_ui_payment/issues/64) |
+| D59a | On phones, headers hold navigation and optional actions; the priority action belongs in the footer. One action is a "Label ›" link on the title row; more go behind ⋮.  Large-text page-link overflow is refined by D83. | [#64](https://github.com/naufaldi/flutter_ui_payment/issues/64) |
 | D60 | On a phone, table rows read like a property list: label on the left, value on the end edge. | [#63](https://github.com/naufaldi/flutter_ui_payment/issues/63) |
 | D61 | Sign-in is an account-linking screen: both apps, what the app can and can't do, one legal sentence and a pinned Continue. | [#63](https://github.com/naufaldi/flutter_ui_payment/issues/63) |
 | D62 | Every phone screen with a priority action pins it at the bottom, full width, with at most one quiet action. The tab bar hides during a payment; D84 extends this to pushed detail screens. | [#64](https://github.com/naufaldi/flutter_ui_payment/issues/64) |
@@ -164,7 +164,27 @@ Docs captures moved to Android on 2 November 2026 (issue [#130](https://github.c
 
 | Decision | In plain words | Status |
 | --- | --- | --- |
+| D83 | At large text, when a non-external page link cannot fit beside the title, it becomes the first item in the header’s ⋮ menu (the D55 action sheet on phones), merged with any other actions. At normal text a non-fitting link keeps its own line. External links always keep their own line so the external-navigation cue stays. Refines D59a and D63a. Orchestrator decision C2(b), Android UI pass, 2 Nov 2026 (#141). At 360 dp and 200%, “Transactions” plus “Statement ›” took two header lines and the tab bar cut off the first row’s badge. D63 and D63a were verified on a 375 pt iPhone SE. Moving the link saves about 56 dp; the statement is one tap deeper. No large-text mode (D63). | Current behaviour |
 | D84 | On phones, transaction detail, statement, fees and account settings hide the app tab bar, as the payment flow does (D62). Overview and history keep it; Back restores it. The side rail at ≥ 840 dp is unchanged. Aligns with [#107](https://github.com/naufaldi/flutter_ui_payment/issues/107). At 360×640 with 3-button navigation this gives detail content about 80 dp back. Orchestrator decision (C3, option a), [#142](https://github.com/naufaldi/flutter_ui_payment/issues/142). | Current behaviour |
+| D85 | The kit sets no SystemUiOverlayStyle. The example wraps the app in AnnotatedRegion<SystemUiOverlayStyle>: transparent navigation bar and divider, systemNavigationBarContrastEnforced: false, and navigation icon brightness from the resolved app theme. The app bar keeps control of the status bar. Concepts/Theming documents the host pattern. Applies B11. Orchestrator decision C4(a), issue #140. On Android 15+ edge-to-edge, the contrast scrim follows the window theme rather than the in-app ThemeMode, leaving a light strip under dark screens in three-button navigation. System chrome is host-owned (B11). | Current behaviour |
+
+
+#### D83 acceptance measurements (2 Nov 2026)
+
+A01 on the Android 17/API 37 phone at 200% app text, system Light. Native dpr 2 is 360×640 dp; PASS_DPR=2.25 is 320×568.9 dp. Positive clearance is above the tab bar; negative clearance is obscured by it. Row clearance includes its bottom padding; badge clearance measures the badge bottom.
+
+| Width | Language | Navigation | Whole first row | Row clearance | Badge clearance |
+| --- | --- | --- | --- | ---: | ---: |
+| 360 dp | en | Gesture | Fits | +28.0 dp | +40.0 dp |
+| 360 dp | id | Gesture | Fits | +28.0 dp | +40.0 dp |
+| 360 dp | en | Three-button | Fits | +4.0 dp | +16.0 dp |
+| 360 dp | id | Three-button | Fits | +4.0 dp | +16.0 dp |
+| 320 dp | en | Gesture | Does not fit | −37.8 dp | −25.8 dp |
+| 320 dp | id | Gesture | Does not fit | −37.8 dp | −25.8 dp |
+| 320 dp | en | Three-button | Does not fit | −59.1 dp | −47.1 dp |
+| 320 dp | id | Three-button | Does not fit | −59.1 dp | −47.1 dp |
+
+Layer renders and system screenshots: C:/DevTools/android-fixes/pr-df/{gesture|threebutton}_{360|320}_history_{en|id}_light_200_{layer|system}.png. The complete first row fits at 360 dp in both languages and navigation modes. At 320 dp, the badge shortfall is 25.8 dp with gestures and 47.1 dp with three-button navigation, in both languages. The orchestrator approved a draft with these measured gaps and no further layout change in this PR; the owner will open a follow-up for the 320 dp remainder. No large-text mode was added (D63).
 
 ## Open items
 

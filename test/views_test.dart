@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment/src/foundation/tap_target.dart';
 import 'content_host.dart';
 
 Widget bounded(
@@ -178,9 +177,9 @@ void main() {
     expect(find.byType(PaymentButton), findsNothing);
   });
 
-  // P7a: the title has priority and never breaks inside a word; a link that
-  // doesn't fit beside it takes its own start-aligned line.
-  testWidgets('header title never breaks mid-word; link stacks at 320 2x', (
+  // D83: overflowing page navigation moves into the menu at large text;
+  // the title still has room for whole words.
+  testWidgets('header title never breaks mid-word; link in menu at 320 2x', (
     t,
   ) async {
     await setSurface(t, const Size(320, 700));
@@ -228,17 +227,17 @@ void main() {
         reason: 'a line ends mid-word at $end',
       );
     }
-    // The link has its own line under the title, on the start edge, with
-    // its full 48 dp target.
-    final titleRect = t.getRect(find.text(title));
+    expect(find.text('Statement'), findsNothing);
+    final menu = find.byType(PaymentMenu);
+    expect(menu, findsOneWidget);
+    expect(t.getSize(menu).height, greaterThanOrEqualTo(48));
+    await t.tap(menu);
+    await t.pumpAndSettle();
     final link = find.text('Statement');
-    expect(t.getRect(link).top, greaterThanOrEqualTo(titleRect.bottom));
-    expect(t.getRect(link).left, titleRect.left);
     final target = t.getRect(
-      find.ancestor(of: link, matching: find.byType(MinTapTarget)).first,
+      find.ancestor(of: link, matching: find.byType(MenuItemButton)).first,
     );
     expect(target.height, greaterThanOrEqualTo(48));
-    expect(target.left, titleRect.left);
     expect(link.hitTestable(), findsOneWidget);
   });
 

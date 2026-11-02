@@ -67,6 +67,43 @@ Pass `theme: buildTheme(Brightness.light)` and `darkTheme: buildTheme(Brightness
 
 The second brand, Lumen, is also in `example/lib/themes.dart`: pure black and white, `amountWeight: FontWeight.w700`, its own muted and outline colors. Both brands are applied from outside the package without forking it.
 
+## System bars on Android
+
+System chrome belongs to the host (B11, D85). On Android 15 and later, the navigation-bar contrast scrim can follow the window theme while your app uses another theme. Enable edge-to-edge in main(), then wrap the app in an AnnotatedRegion inside MaterialApp.builder. That context reads the resolved app theme, including an in-app theme switch.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  runApp(const MyApp());
+}
+
+// Inside MyApp.build:
+MaterialApp(
+  theme: buildTheme(Brightness.light),
+  darkTheme: buildTheme(Brightness.dark),
+  themeMode: themeMode,
+  builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+    value: SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarContrastEnforced: false,
+      systemNavigationBarIconBrightness:
+          Theme.of(context).brightness == Brightness.dark
+              ? Brightness.light
+              : Brightness.dark,
+    ),
+    child: child!,
+  ),
+  home: home,
+);
+```
+
+The transparent bar and divider let the app surface continue behind gesture and three-button navigation. Light icons belong on dark surfaces, dark icons on light surfaces. Status-bar fields stay null so the app bar keeps control of the status bar. The kit sets no SystemUiOverlayStyle.
+
 ## Tokens worth knowing
 
 The full token reference, with swatches and values, is in Foundations: [Color](/foundations/color/), [Typography](/foundations/typography/) and [Spacing and radius](/foundations/spacing/). The tokens that matter most when you set a brand:
