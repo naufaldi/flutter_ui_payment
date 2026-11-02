@@ -944,7 +944,7 @@ PaymentToastController _showToast(
     // Removing a head starts the next queued bar on the old SDK controller.
     // Drain kit toasts before a style change can dispose that controller.
     // Host snack bars outside the kit cannot be tracked by this registry.
-    final count = queue.open.where((toast) => !toast._closed).length;
+    final count = queue.open.length;
     queue.open.clear();
     for (var i = 0; i < count; i++) {
       messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);

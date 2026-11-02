@@ -31,6 +31,66 @@ void enable(
 
 void main() {
   for (final setup in ReducedMotion.values) {
+    testWidgets('toast drain survives a popped scaffold (${setup.name})', (
+      tester,
+    ) async {
+      final reduce = ValueNotifier(false);
+      addTearDown(reduce.dispose);
+      late BuildContext context;
+      await tester.pumpWidget(
+        motionHost(
+          Builder(
+            builder: (c) {
+              context = c;
+              return const SizedBox();
+            },
+          ),
+          reduce,
+        ),
+      );
+      final navigator = Navigator.of(context);
+      final pushed = navigator.push<void>(
+        MaterialPageRoute(builder: (_) => const Scaffold(body: SizedBox())),
+      );
+      await tester.pumpAndSettle();
+      final first = showPaymentToast(
+        context,
+        message: 'Toast A',
+        pending: true,
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('Toast A', skipOffstage: false), findsNWidgets(2));
+      navigator.pop();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump();
+      await pushed;
+      expect(find.text('Toast A'), findsOneWidget);
+      final second = showPaymentToast(context, message: 'Toast B');
+      final third = showPaymentToast(context, message: 'Toast C');
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+      enable(tester, setup, reduce);
+      await tester.pump();
+      final newest = showPaymentToast(
+        context,
+        message: 'Newest',
+        pending: true,
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Newest'), findsOneWidget);
+      for (final name in ['Toast A', 'Toast B', 'Toast C']) {
+        expect(find.text(name), findsNothing);
+      }
+      await Future.wait([first.closed, second.closed, third.closed]);
+      await tester.pump(const Duration(seconds: 30));
+      expect(find.text('Newest'), findsOneWidget);
+      newest.dismiss();
+      await tester.pumpAndSettle();
+      await newest.closed;
+      expect(find.byType(SnackBar), findsNothing);
+    });
     for (final duringExit in [true, false]) {
       testWidgets(
         'queued toast survives motion flip (${setup.name}, duringExit: $duringExit)',
@@ -96,50 +156,51 @@ void main() {
         },
       );
     }
-    testWidgets('queued toast survives motion re-enable (${setup.name})', (
-      tester,
-    ) async {
-      final reduce = ValueNotifier(false);
-      addTearDown(reduce.dispose);
-      enable(tester, setup, reduce);
-      late BuildContext context;
-      await tester.pumpWidget(
-        motionHost(
-          Builder(
-            builder: (c) {
-              context = c;
-              return const SizedBox();
-            },
+    testWidgets(
+      'next toast enters normally after motion re-enable following several reduced replacements (${setup.name})',
+      (tester) async {
+        final reduce = ValueNotifier(false);
+        addTearDown(reduce.dispose);
+        enable(tester, setup, reduce);
+        late BuildContext context;
+        await tester.pumpWidget(
+          motionHost(
+            Builder(
+              builder: (c) {
+                context = c;
+                return const SizedBox();
+              },
+            ),
+            reduce,
           ),
-          reduce,
-        ),
-      );
-      final first = showPaymentToast(context, message: 'Toast A');
-      await tester.pumpAndSettle();
-      final second = showPaymentToast(context, message: 'Toast B');
-      final third = showPaymentToast(context, message: 'Toast C');
-      reduce.value = false;
-      tester.platformDispatcher.accessibilityFeaturesTestValue =
-          const FakeAccessibilityFeatures(
-            autoPlayVideos: true,
-            autoPlayAnimatedImages: true,
-          );
-      addTearDown(
-        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
-      );
-      await tester.pump();
-      final newest = showPaymentToast(context, message: 'Newest');
-      await tester.pumpAndSettle();
-      expect(find.text('Newest'), findsOneWidget);
-      for (final name in ['Toast A', 'Toast B', 'Toast C']) {
-        expect(find.text(name), findsNothing);
-      }
-      await Future.wait([first.closed, second.closed, third.closed]);
-      newest.dismiss();
-      await tester.pumpAndSettle();
-      await newest.closed;
-      expect(find.byType(SnackBar), findsNothing);
-    });
+        );
+        final first = showPaymentToast(context, message: 'Toast A');
+        await tester.pumpAndSettle();
+        final second = showPaymentToast(context, message: 'Toast B');
+        final third = showPaymentToast(context, message: 'Toast C');
+        reduce.value = false;
+        tester.platformDispatcher.accessibilityFeaturesTestValue =
+            const FakeAccessibilityFeatures(
+              autoPlayVideos: true,
+              autoPlayAnimatedImages: true,
+            );
+        addTearDown(
+          tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+        );
+        await tester.pump();
+        final newest = showPaymentToast(context, message: 'Newest');
+        await tester.pumpAndSettle();
+        expect(find.text('Newest'), findsOneWidget);
+        for (final name in ['Toast A', 'Toast B', 'Toast C']) {
+          expect(find.text(name), findsNothing);
+        }
+        await Future.wait([first.closed, second.closed, third.closed]);
+        newest.dismiss();
+        await tester.pumpAndSettle();
+        await newest.closed;
+        expect(find.byType(SnackBar), findsNothing);
+      },
+    );
     for (final pending in [false, true]) {
       testWidgets(
         'next toast survives reduced-motion flip (${setup.name}, pending: $pending)',
