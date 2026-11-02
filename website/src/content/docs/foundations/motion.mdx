@@ -118,7 +118,7 @@ The kit reads both places reduced motion can come from (D65):
 - `MediaQueryData.disableAnimations`: a host or in-app override, or Android's "Remove animations".
 - `PlatformDispatcher.accessibilityFeatures.reduceMotion`: iOS Settings → Accessibility → Motion → Reduce Motion. iOS delivers it only here, and `MediaQueryData` doesn't carry it.
 
-Under either flag every kit duration is 0 and the press scale is 1 (D66). There is no cross-fade variant. One kit surface still animates under reduced motion: the wide confirm dialog ([#100](https://github.com/naufaldi/flutter_ui_payment/issues/100)). An upload whose progress the host doesn't report shows the still busy glyph beside "Uploading" instead of a bar (D76). A host can force reduced motion on, but can't turn the OS setting off. A widget reads the flags when it builds, so a setting changed while the app runs applies from the widget's next change.
+Under either flag every kit duration is 0 and the press scale is 1 (D66). There is no cross-fade variant. An upload whose progress the host doesn't report shows the still busy glyph beside "Uploading" instead of a bar (D76). A host can force reduced motion on, but can't turn the OS setting off. A widget reads the flags when it builds, so a setting changed while the app runs applies from the widget's next change.
 
 SDK widgets inside the kit that read `MediaQuery` don't see the iOS flag. A host that wants them to follow too can fold it into `MediaQuery` in `MaterialApp.builder`:
 
@@ -138,14 +138,14 @@ MaterialApp(
 )
 ```
 
-The SDK's own animation controllers still don't follow on iOS: they slow down only for the platform's `disableAnimations` flag, which iOS never sets.
+Sheets, wide confirm dialogs and toasts follow the kit tokens and reduced motion. The remaining SDK exceptions (D67) are the Checkbox and Switch stroke and thumb, ink ripple and sparkle, InputDecorator label float, Slider thumb, and the phone Drawer panel. Android's "Remove animations" compresses them. Nothing does on iOS.
 
 ## Rules the kit follows
 
 - Compact swaps fade and scale in from 0.95, never from nothing. Full-width content fades only, and its height eases.
 - Flow steps fade and rise a fixed 8 dp going forward, and fade only going back.
 - Compact controls press to 0.96 over 100 ms. Full-width buttons do not scale: scaling a wide slab moves its edges several pixels and reads as a lurch, so they rely on Material's pressed state.
-- Navigation selection, drawer items, menus and anything keyboard-driven are instant. They are used constantly, and animation would only add delay.
+- Navigation selection, drawer items, menus and anything keyboard-driven are instant. They are used constantly, and animation would only add delay. The drawer rule covers items and selection (D68). The phone Drawer panel keeps its platform slide and edge-swipe gesture.
 - Sheets take 280 ms in and 200 ms out on the drawer curve; disclosures 220/150 ms.
 - Implicit animations retarget when interrupted.
 - Amounts, balances, countdowns and totals change in place with tabular digits. They never count or roll, so a payment amount never shows an intermediate wrong value. The only allowed motion is the action-bar total's `quick` cross-fade after a re-quote (D74).

@@ -930,7 +930,11 @@ PaymentToastController _showToast(
     hasAction,
     MediaQuery.maybeAccessibleNavigationOf(context) ?? false,
   );
-  final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
+  final messenger = ScaffoldMessenger.of(context);
+  // Finish the exit before the SDK replaces its animation controller.
+  motion.reduced
+      ? messenger.removeCurrentSnackBar()
+      : messenger.hideCurrentSnackBar();
   controller._feature = messenger.showSnackBar(
     SnackBar(
       behavior: SnackBarBehavior.floating,

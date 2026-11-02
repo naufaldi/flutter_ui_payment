@@ -5,6 +5,13 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Motion review Phase 3 (2026-11-02)
+
+- **Disclosure (#98).** Accordion content stays mounted while it fades and collapses. It takes no taps, focus or screen-reader navigation while closing. Reopening reverses from the current height. Reduced motion ends the change at once and keeps content state.
+- **Side sheets (#99).** Panels leave over 200 ms on the drawer curve. The scrim follows the same curve. Reduced motion opens and closes them at once.
+- **Dialogs and toasts (#100).** Wide confirm dialogs and toasts enter over 220 ms and leave over 150 ms. Toast updates cross-fade the icon and ease the height. Reduced motion skips these animations and keeps the action state. Toast dismissal and reading time also work after a zero-duration entrance. Turning reduced motion on while a toast is showing no longer blocks later toasts. No public API change.
+- **Docs (D66–D68).** The Motion page names the SDK exceptions and explains that the drawer rule covers items, not the phone panel.
+
 ## Motion review Phase 2 (2026-11-02)
 
 - **Status swaps fade and ease their height (D69, #96).** `PaymentStatusView` and `VerificationStatusView` swap the status with `PaymentMotion.fullWidthSwap` instead of `fadeScale`. The full-width band keeps its width and the title its start edge throughout; before, the band started about 17 dp narrower on a phone and the title slid sideways. When the title's line count changes, as at 200% text or in Indonesian, the content below glides over `enter` instead of jumping on the first or last frame. The explanation fades with the header, so the status reads as one change: the verification view swaps its whole status block (header, message and update time), and the payment view swaps its header and explanation together while the amount between them stays put (D74). Actions, banners and the host's instructions don't swap, and the leaving status takes no taps. Instant under reduced motion. No API change. **Migration:** a test that pumps one frame after a status change finds the leaving and the entering message until the swap ends (`exit`, 150 ms); pump past it or `pumpAndSettle` before expecting one copy.

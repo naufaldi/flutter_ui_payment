@@ -37,13 +37,14 @@ void main() {
   testWidgets('re-tapping reverses collapse without a height jump', (
     tester,
   ) async {
+    final key = GlobalKey();
     await tester.pumpWidget(
       host(
-        const SingleChildScrollView(
+        SingleChildScrollView(
           child: PaymentAccordionItem(
             title: 'Receipt',
             initiallyExpanded: true,
-            child: SizedBox(height: 100, child: Text('Body')),
+            child: _Body(key: key),
           ),
         ),
         1,
@@ -56,17 +57,22 @@ void main() {
         )
         .first;
     final full = tester.getSize(item).height;
+    final state = key.currentState!;
     await tester.tap(find.text('Receipt'));
     await tester.pump();
+    expect(key.currentState, same(state));
     await tester.pump(const Duration(milliseconds: 75));
+    expect(key.currentState, same(state));
     final middle = tester.getSize(item).height;
     expect(middle, lessThan(full));
     await tester.tap(find.text('Receipt'));
     await tester.pump();
+    expect(key.currentState, same(state));
     expect(tester.getSize(item).height, closeTo(middle, 0.01));
     var previous = middle;
     for (var frame = 0; frame < 15; frame++) {
       await tester.pump(const Duration(milliseconds: 16));
+      expect(key.currentState, same(state));
       expect(find.text('Body'), findsOneWidget);
       final height = tester.getSize(item).height;
       expect(height, greaterThanOrEqualTo(previous));
@@ -185,4 +191,17 @@ void main() {
     );
     expect(tester.takeException(), isAssertionError);
   });
+}
+
+class _Body extends StatefulWidget {
+  const _Body({super.key});
+
+  @override
+  State<_Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<_Body> {
+  @override
+  Widget build(BuildContext context) =>
+      const SizedBox(height: 100, child: Text('Body'));
 }

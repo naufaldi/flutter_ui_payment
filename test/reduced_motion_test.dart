@@ -31,6 +31,55 @@ void enable(
 
 void main() {
   for (final setup in ReducedMotion.values) {
+    for (final pending in [false, true]) {
+      testWidgets(
+        'next toast survives reduced-motion flip (${setup.name}, pending: $pending)',
+        (tester) async {
+          final reduce = ValueNotifier(false);
+          addTearDown(reduce.dispose);
+          late BuildContext context;
+          await tester.pumpWidget(
+            motionHost(
+              Builder(
+                builder: (c) {
+                  context = c;
+                  return const SizedBox();
+                },
+              ),
+              reduce,
+            ),
+          );
+          // Exercise the legacy controller's close reason too.
+          // ignore: deprecated_member_use_from_same_package
+          final first = showPaymentSnackBar(context, message: 'Toast A');
+          await tester.pumpAndSettle();
+          expect(find.text('Toast A'), findsOneWidget);
+          enable(tester, setup, reduce);
+          await tester.pump();
+          final second = showPaymentToast(
+            context,
+            message: 'Toast B',
+            pending: pending,
+          );
+          await tester.pump();
+          await tester.pump();
+          expect(find.text('Toast A'), findsNothing);
+          expect(find.text('Toast B'), findsOneWidget);
+          expect(await first.closed, SnackBarClosedReason.remove);
+          if (pending) {
+            await tester.pump(const Duration(seconds: 10));
+            expect(find.text('Toast B'), findsOneWidget);
+            second.dismiss();
+          } else {
+            await tester.pump(const Duration(milliseconds: 3999));
+            expect(find.text('Toast B'), findsOneWidget);
+            await tester.pump(const Duration(milliseconds: 1));
+          }
+          await tester.pumpAndSettle();
+          expect(find.byType(SnackBar), findsNothing);
+        },
+      );
+    }
     for (final kind in ['bottom sheet', 'side sheet', 'dialog', 'toast']) {
       testWidgets('$kind opens and closes still (${setup.name})', (
         tester,
