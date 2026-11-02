@@ -18,19 +18,29 @@ for (const file of readdirSync(dir)) {
     console.error(`${file}: missing ${missing.join(', ')}`);
   }
 }
-console.log(`check-pages: ${pages} pages, ${problems} problems`);
-process.exitCode = problems ? 1 : 0;
 
-// Transitional warning across all docs pages; becomes an error in PR7.
-function warnLegacyScreens(directory) {
+// Retired capture names must never return to docs pages.
+function checkLegacyScreens(directory) {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     const path = new URL(entry.name + (entry.isDirectory() ? '/' : ''), directory);
-    if (entry.isDirectory()) warnLegacyScreens(path);
+    if (entry.isDirectory()) checkLegacyScreens(path);
     else if (/\.mdx?$/.test(entry.name)) {
       const text = readFileSync(path, 'utf8');
       const names = [...new Set([...text.matchAll(/\b(?:name|dark)=["'](ios_[a-z0-9_]+)["']/g)].map(m => m[1]))];
-      if (names.length) console.warn(path.pathname + ': legacy iOS screens: ' + names.join(', '));
+      if (names.length) {
+        problems++;
+        console.error(path.pathname + ': retired iOS screens: ' + names.join(', '));
+      }
     }
   }
 }
-warnLegacyScreens(new URL('../src/content/docs/', import.meta.url));
+checkLegacyScreens(new URL('../src/content/docs/', import.meta.url));
+const screens = JSON.parse(readFileSync(new URL('../src/data/screens.json', import.meta.url), 'utf8'));
+for (const name of Object.keys(screens)) {
+  if (!name.startsWith('ios_')) continue;
+  problems++;
+  console.error('screens.json: retired iOS screen: ' + name);
+}
+
+console.log(`check-pages: ${pages} pages, ${problems} problems`);
+process.exitCode = problems ? 1 : 0;

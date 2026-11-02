@@ -78,16 +78,16 @@ void main() {
             'KycCaptureGuide',
             'PaymentVideoPlayer + video_player adapter',
           ].any(entry.startsWith);
-      tester.view.physicalSize = device == 'tablet' || fullScreen
+      tester.view.physicalSize = fullScreen
           ? realSize
-          : catalogCaptureSize(tester);
+          : catalogCaptureSize(
+              tester,
+              physicalWidth: device == 'tablet' ? realSize.width : 720,
+            );
       await tester.pump();
       lastEntry = entry;
       final gallery = find
-          .descendant(
-            of: find.byType(ListView).first,
-            matching: find.byType(Scrollable),
-          )
+          .descendant(of: galleryList(), matching: find.byType(Scrollable))
           .first;
       final position = tester.state<ScrollableState>(gallery).position;
       position.jumpTo(position.minScrollExtent);
@@ -562,22 +562,21 @@ void main() {
         String? current;
         Future<void> openPage(String page) async {
           if (current == page) return;
-          await tester.tap(
-            find.byTooltip(id ? 'Buka navigasi' : 'Open navigation'),
-          );
-          await settle(tester);
+          final menu = find.byTooltip(id ? 'Buka navigasi' : 'Open navigation');
+          if (menu.evaluate().isNotEmpty) {
+            await tester.tap(menu);
+            await settle(tester);
+          }
+          final sidebar = find.byType(NavSidebar).first;
           final item = find.descendant(
-            of: find.byType(Drawer),
+            of: sidebar,
             matching: find.text(id ? pages[page]! : page),
           );
           await tester.scrollUntilVisible(
             item,
             180,
             scrollable: find
-                .descendant(
-                  of: find.byType(Drawer),
-                  matching: find.byType(Scrollable),
-                )
+                .descendant(of: sidebar, matching: find.byType(Scrollable))
                 .first,
           );
           // Centre the item: one at the drawer's bottom edge misses the tap.
@@ -1059,7 +1058,7 @@ void main() {
           .last;
       await Scrollable.ensureVisible(tester.element(action), alignment: 1);
       await settle(tester);
-      final gallery = tester.getRect(find.byType(ListView).first);
+      final gallery = tester.getRect(galleryList());
       final button = tester.getRect(action);
       expect(button.bottom, lessThanOrEqualTo(gallery.bottom));
       expect(button.top, greaterThanOrEqualTo(gallery.top));

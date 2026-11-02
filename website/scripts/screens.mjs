@@ -170,29 +170,21 @@ const screens = {
   android_catalog_chart_module_variants_200: 'Spending charts with host-provided headlines and explicit chart states at 200 percent text. Capture capped at 1200 dp.',
   android_sign_in_light: 'Example sign in light, Indonesian',
   android_sign_in_dark: 'Example sign in dark, Indonesian',
-  ios_sign_in_light_200: 'Example sign in light_200, Indonesian',
   android_kyc_onboarding_light: 'Example kyc onboarding light, Indonesian',
   android_kyc_onboarding_dark: 'Example kyc onboarding dark, Indonesian',
   android_kyc_onboarding_light_200: 'Example kyc onboarding light_200, Indonesian',
   android_history_light: 'Example history light, Indonesian',
   android_history_dark: 'Example history dark, Indonesian',
-  ios_history_light_200: 'Example history light_200, Indonesian',
   android_transaction_detail_light: 'Example transaction detail light, Indonesian',
   android_transaction_detail_dark: 'Example transaction detail dark, Indonesian',
-  ios_transaction_detail_light_200: 'Example transaction detail light_200, Indonesian',
   android_report_problem_light: 'Example report problem light, Indonesian',
   android_report_problem_dark: 'Example report problem dark, Indonesian',
-  ios_report_problem_light_200: 'Example report problem light_200, Indonesian',
   android_statement_light: 'Example statement light, Indonesian',
   android_statement_dark: 'Example statement dark, Indonesian',
-  ios_statement_light_200: 'Example statement light_200, Indonesian',
   android_fees_light: 'Example fees light, Indonesian',
   android_fees_dark: 'Example fees dark, Indonesian',
-  ios_fees_light_200: 'Example fees light_200, Indonesian',
   android_account_settings_light: 'Example account settings light, Indonesian',
   android_account_settings_dark: 'Example account settings dark, Indonesian',
-  ios_account_settings_light_200: 'Example account settings light_200, Indonesian',
-
   android_catalog_property_list_variants: 'Payment properties arranged vertically and horizontally.',
   android_catalog_property_list_variants_dark: 'Payment properties arranged vertically and horizontally. Dark mode.',
   android_catalog_property_list_variants_200: 'Payment properties arranged vertically and horizontally at 200 percent text.',
@@ -249,23 +241,18 @@ const screens = {
   android_catalog_sparkline_variants_dark: 'Compact spending trends beside host-provided amounts. Dark mode.',
   android_catalog_menu_variants: 'Overflow action triggers with grouped, disabled and destructive menu entries.',
   android_catalog_menu_variants_dark: 'Overflow action triggers with grouped, disabled and destructive menu entries. Dark mode.',
-  android_catalog_menu_variants_200: 'Overflow action triggers with grouped, disabled and destructive menu entries at 200 percent text.',
   android_catalog_accordion_variants: 'Transfer arrival instructions, expanded receipt details and a saved payment method with secondary actions.',
   android_catalog_accordion_variants_dark: 'Transfer arrival instructions, expanded receipt details and a saved payment method with secondary actions. Dark mode.',
   android_catalog_accordion_variants_200: 'Transfer arrival instructions, expanded receipt details and a saved payment method with secondary actions at 200 percent text.',
   android_catalog_list_variants: 'Payment method rows with icons, descriptions, actions and disabled states.',
   android_catalog_list_variants_dark: 'Payment method rows with icons, descriptions, actions and disabled states. Dark mode.',
   android_catalog_list_variants_200: 'Payment method rows with icons, descriptions, actions and disabled states at 200 percent text.',
-
-
   android_kyc_intro_light: 'Android kyc intro light, Indonesian',
   android_kyc_intro_dark: 'Android kyc intro dark, Indonesian',
   android_kyc_intro_light_200: 'Android kyc intro light 200, Indonesian',
   android_methods_unavailable_light: 'Android methods unavailable light, Indonesian',
   android_methods_unavailable_dark: 'Android methods unavailable dark, Indonesian',
-  ios_methods_unavailable_light_200: 'ios methods unavailable light 200, Indonesian',
   android_catalog_video_loading: 'Video adapter loading state with player controls.',
-
   android_catalog_chart_line: 'Spending line chart with its exact value band.',
   android_catalog_chart_line_dark: 'Spending line chart with its exact value band. Dark mode.',
   android_catalog_chart_bar: 'Weekly spending bar chart with labelled axes.',
@@ -313,83 +300,32 @@ const screens = {
   android_kit_history: 'Gallery: transaction history, Indonesian',
   android_kit_history_dark: 'Gallery: transaction history, dark',
   android_kit_history_detail_unknown: 'Gallery: transaction detail, unknown outcome',
-  ios_kit_interaction: 'Gallery: interaction components, Indonesian',
   android_kit_interaction_200: 'Gallery: interaction at 200% text',
-  ios_kit_navigation_drawer: 'Gallery: navigation drawer',
-  ios_kit_sheets: 'Gallery: sheets',
-  ios_kit_sheet_pending: 'Gallery: pending-payment sheet',
-  ios_kit_sheet_confirm: 'Gallery: destructive confirmation',
   android_kit_promo: 'Gallery: promotions, Indonesian',
   android_kit_promo_200: 'Gallery: promotions at 200% text',
-  ios_kit_video_ready: 'Gallery: video player',
-  // English catalog captures (example/integration_test/catalog_screenshots_test.dart).
   android_catalog_foundation: 'Foundation amount formatting, status badges and async payment actions.',
-  // Indonesian catalog looks (UI review P1, #59): real Indonesian lengths.
-  android_catalog_list_variants_id: 'Payment method rows with icons, descriptions, actions and disabled states, in Indonesian.',
-  android_catalog_list_variants_id_200: 'Payment method rows with icons, descriptions, actions and disabled states at 200 percent text, in Indonesian.',
-  android_catalog_menu_variants_id: 'Overflow action triggers with grouped, disabled and destructive menu entries, in Indonesian.',
-  android_catalog_menu_variants_id_200: 'Overflow action triggers with grouped, disabled and destructive menu entries at 200 percent text, in Indonesian.',
   android_catalog_dialog_variants_id: 'Remove card confirmation sheet with the destructive action above Cancel, in Indonesian.',
   android_catalog_dialog_variants_id_200: 'Remove card confirmation sheet with the destructive action above Cancel at 200 percent text, in Indonesian.',
-  android_catalog_button_group_variants_id: 'Grouped payment actions using different collapse rules and a long wrapping label, in Indonesian.',
-  android_catalog_button_group_variants_id_200: 'Grouped payment actions using different collapse rules and a long wrapping label at 200 percent text, in Indonesian.',
-  // UI review P2: phone action sheet (D55) and tap tooltip (D49).
   android_catalog_menu_sheet: 'Phone action menu with grouped rows, a destructive action and Cancel.',
   android_catalog_menu_sheet_id: 'Phone action menu with grouped rows, a destructive action and Cancel, in Indonesian.',
-  // UI review P4: phone search sheet (D50).
-  // UI review P4: kit date sheets (D51, D52, D52a).
-  // UI review P5: views at 200% in Indonesian, small phone and iPad sets.
-  android_catalog_sign_in_view_variants_id_200: 'External bank sign-in with requester branding, permissions, legal links and pinned Continue and Cancel actions at 200 percent text, in Indonesian.',
-  android_catalog_settings_view_variants_id_200: 'Payment settings grouped into labelled sections at 200 percent text, in Indonesian.',
-  android_catalog_context_view_variants_id_200: 'Context panels with titles, supporting content and footer actions at 200 percent text, in Indonesian.',
   android_sign_in_light_200: 'Example sign in on Android phone at 200% text, Indonesian',
   android_sign_in_en_200: 'Example sign in on Android phone at 200% text, English',
   android_history_light_200: 'Example history on Android phone at 200% text, Indonesian',
   android_history_en_200: 'Example history on Android phone at 200% text, English',
   android_transaction_detail_light_200: 'Example transaction detail on Android phone at 200% text, Indonesian',
-  ios_se_transaction_detail_en_200: 'Example transaction detail on iPhone SE at 200% text, English',
-  ios_se_checkout_light_200: 'Example checkout on iPhone SE at 200% text, Indonesian',
-  ios_se_checkout_en_200: 'Example checkout on iPhone SE at 200% text, English',
-  ios_se_authorize_light_200: 'Example authorize on iPhone SE at 200% text, Indonesian',
-  ios_se_authorize_en_200: 'Example authorize on iPhone SE at 200% text, English',
-  ios_se_status_pending_light_200: 'Example pending status on iPhone SE at 200% text, Indonesian',
-  ios_se_status_pending_en_200: 'Example pending status on iPhone SE at 200% text, English',
-  ios_se_receipt_light_200: 'Example receipt on iPhone SE at 200% text, Indonesian',
-  ios_se_receipt_en_200: 'Example receipt on iPhone SE at 200% text, English',
-  // UI review P7a: pinned KYC steps.
-  ios_kyc_documents_light: 'Example KYC documents step with the pinned Continue to review',
-  ios_kyc_documents_dark: 'Example KYC documents step, dark',
-  ios_kyc_documents_light_200: 'Example KYC documents step at 200% text',
-  ios_se_kyc_onboarding_light_200: 'Example KYC details on iPhone SE at 200% text, Indonesian',
   android_kyc_onboarding_en_200: 'Example KYC details on Android phone at 200% text, English',
-  ios_se_kyc_documents_light_200: 'Example KYC documents on iPhone SE at 200% text, Indonesian',
-  ios_se_kyc_documents_en_200: 'Example KYC documents on iPhone SE at 200% text, English',
-  ios_se_kyc_review_light_200: 'Example KYC review on iPhone SE at 200% text, Indonesian',
   android_kyc_review_en_200: 'Example KYC review on Android phone at 200% text, English',
-  ios_ipad_checkout_light: 'Example checkout on iPad mini, Indonesian',
-  ios_ipad_checkout_en: 'Example checkout on iPad mini, English',
-  ios_ipad_transaction_detail_light: 'Example transaction detail on iPad mini, Indonesian',
-  ios_ipad_transaction_detail_en: 'Example transaction detail on iPad mini, English',
-  ios_ipad_history_light: 'Example history on iPad mini, Indonesian',
-  ios_ipad_history_en: 'Example history on iPad mini, English',
-  // UI review P7c: pinned KYC steps on iPad mini (#64).
-  ios_ipad_kyc_onboarding_light: 'Example KYC details on iPad mini, Indonesian',
-  ios_ipad_kyc_onboarding_en: 'Example KYC details on iPad mini, English',
-  ios_ipad_kyc_documents_light: 'Example KYC documents on iPad mini, Indonesian',
-  ios_ipad_kyc_documents_en: 'Example KYC documents on iPad mini, English',
-  ios_ipad_kyc_review_light: 'Example KYC review on iPad mini, Indonesian',
-  ios_ipad_kyc_review_en: 'Example KYC review on iPad mini, English',
-  // UI review P7b: field labels above the box at 200%, Indonesian (#73).
+  android_tablet_checkout_light: 'Example checkout on Android tablet, Indonesian',
+  android_tablet_checkout_en: 'Example checkout on Android tablet, English',
+  android_tablet_transaction_detail_en: 'Example transaction detail on Android tablet, English',
+  android_tablet_history_en: 'Example history on Android tablet, English',
+  android_tablet_catalog_table_variants: 'Payment methods, fees, arrival times and total in a wide table, English on Android tablet.',
+  android_tablet_catalog_data_table_variants: 'Settlement table with search, selection, pagination, loading rows and an empty state; later examples extend beyond the 1200 dp crop cap, English on Android tablet.',
+  android_tablet_catalog_detail_page_variants: 'Payment details and merchant modules in two columns with receipt and report actions, English on Android tablet.',
+  android_tablet_catalog_focus_view_variants: 'Report form with Send and Cancel actions aligned in the wide footer, English on Android tablet.',
+  android_tablet_catalog_onboarding_view_variants: 'Identity verification with the step sidebar beside the documents content, English on Android tablet.',
+  android_tablet_catalog_overview_page_variants: 'Spending chart and recent transactions beside the balance module, English on Android tablet.',
 };
-
-// Derive future Android names while retaining the existing iOS registrations.
-for (const [name, caption] of Object.entries(screens)) {
-  if (!name.startsWith('ios_')) continue;
-  const android = name.replace(/^ios_(?:se_)?/, 'android_').replace(/^android_ipad_/, 'android_tablet_');
-  if (existsSync(join(source, android + '.png')) || existsSync(join(target, android + '.webp'))) {
-    screens[android] ??= caption.replaceAll('iPhone SE', 'Android phone').replaceAll('iPad mini', 'Android tablet');
-  }
-}
 
 mkdirSync(target, { recursive: true });
 // Captures are gitignored build output. When one is gone but its WebP is
@@ -406,7 +342,7 @@ for (const [name, caption] of Object.entries(screens)) {
     throw new Error(`Missing screenshot ${input}`);
   }
   const info = await sharp(input)
-    .resize({ width: 640 })
+    .resize({ width: name.startsWith('android_tablet_') ? 1280 : 640 })
     .webp({ quality: 82 })
     .toFile(join(target, `${name}.webp`));
   sizes[name] = { width: info.width, height: info.height, caption };

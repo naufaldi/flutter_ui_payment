@@ -5,6 +5,49 @@ import 'package:flutter_ui_payment_example/main.dart';
 import '../integration_test/support.dart';
 
 void main() {
+  testWidgets('tablet gallery shows detail modules side by side', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(2560, 1600);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.reset);
+    final app = await launch(tester);
+    app.selectTab(2);
+    await settle(tester);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavSidebar),
+        matching: find.text('Views & pages'),
+      ),
+    );
+    await settle(tester);
+    final detail = find.byType(PaymentDetailPage);
+    await tester.ensureVisible(detail);
+    await settle(tester);
+    final primary = tester.getRect(
+      find.descendant(
+        of: detail,
+        matching: find.byWidgetPredicate(
+          (w) =>
+              w is PaymentDetailPagePropertyList &&
+              w.title == 'Payment details',
+        ),
+      ),
+    );
+    final secondary = tester.getRect(
+      find.descendant(
+        of: detail,
+        matching: find.byWidgetPredicate(
+          (w) => w is PaymentDetailPagePropertyList && w.title == 'Merchant',
+        ),
+      ),
+    );
+    expect(secondary.left, greaterThan(primary.right));
+    expect(secondary.top, primary.top);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('English gallery table formats every fee and its total', (
     tester,
   ) async {

@@ -13,16 +13,23 @@ import 'package:integration_test/integration_test.dart';
 
 const catalogCaptureHeight = 1200.0;
 
+Finder galleryList() => find.byWidgetPredicate(
+  (widget) =>
+      widget is ListView &&
+      widget.key is PageStorageKey<String> &&
+      (widget.key! as PageStorageKey<String>).value.startsWith('gallery-'),
+);
+
 /// Leaves room for the crop cap between the measured app and navigation bars.
-Size catalogCaptureSize(WidgetTester tester) {
+Size catalogCaptureSize(WidgetTester tester, {double physicalWidth = 720}) {
   final view = tester.binding.renderViews.first;
   final dpr = view.flutterView.devicePixelRatio;
   final appBar = tester.getRect(find.byType(AppBar).first);
-  final gallery = tester.getRect(find.byType(ListView).first);
+  final gallery = tester.getRect(galleryList());
   final top = (appBar.bottom * dpr).ceil() / dpr + 1 / dpr;
   final bottomInset = view.size.height - gallery.bottom;
   return Size(
-    720,
+    physicalWidth,
     ((top + catalogCaptureHeight + bottomInset) * dpr).ceilToDouble(),
   );
 }
@@ -57,7 +64,7 @@ Future<void> capture(
     );
     final visibleBottom = math.min(
       view.size.height,
-      tester.getRect(find.byType(ListView).first).bottom,
+      tester.getRect(galleryList()).bottom,
     );
     final requestedBottom = specimen.bottom + 16;
     final bottom = math.min(
@@ -82,7 +89,12 @@ Future<void> capture(
       );
     }
     expect(bottom, greaterThan(top), reason: 'Specimen must be visible: $name');
-    bounds = Rect.fromLTRB(0, top, view.size.width, bottom);
+    bounds = Rect.fromLTRB(
+      math.max(0, specimen.left - 16),
+      top,
+      math.min(view.size.width, specimen.right + 16),
+      bottom,
+    );
   }
   // RenderView's root layer already contains the device-pixel transform.
   debugPrint('Capture bounds $name: $bounds; view=${view.size}; dpr=$dpr');
