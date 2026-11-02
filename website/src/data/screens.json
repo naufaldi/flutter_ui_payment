@@ -287,7 +287,13 @@
   "android_catalog_form_field_group_variants_200": {
     "width": 640,
     "height": 2133,
-    "caption": "Birthplace, date of birth, card expiry and disabled name and notes fields at 200 percent text; the bottom of the notes field is outside the capture."
+    "caption": "Birthplace, date of birth, card expiry and disabled name and notes fields at 200 percent text; the bottom of the notes field is outside the capture.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 305
+      }
+    ]
   },
   "android_catalog_form_field_group_variants_dark": {
     "width": 640,
@@ -297,7 +303,13 @@
   "android_catalog_form_field_group_variants_id_200": {
     "width": 640,
     "height": 2133,
-    "caption": "Birthplace, date of birth, card expiry and disabled name and notes fields at 200 percent text in Indonesian; the bottom of the notes field is outside the capture."
+    "caption": "Birthplace, date of birth, card expiry and disabled name and notes fields at 200 percent text in Indonesian; the bottom of the notes field is outside the capture.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 305
+      }
+    ]
   },
   "android_catalog_icon_button_variants": {
     "width": 640,
@@ -337,7 +349,13 @@
   "android_catalog_inline_variants_200": {
     "width": 640,
     "height": 2133,
-    "caption": "Inline weights, tabular digits, text roles and semantic colors at 200 percent text; later examples extend beyond the capture."
+    "caption": "Inline weights, tabular digits, text roles and semantic colors at 200 percent text; later examples extend beyond the capture.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 525
+      }
+    ]
   },
   "android_catalog_inline_variants_dark": {
     "width": 640,
@@ -492,7 +510,13 @@
   "android_catalog_text_field_variants_200": {
     "width": 640,
     "height": 2133,
-    "caption": "Name fields in three sizes, receipt email, an invalid phone number, promo code and order ID at 200 percent text; later fields extend beyond the capture."
+    "caption": "Name fields in three sizes, receipt email, an invalid phone number, promo code and order ID at 200 percent text; later fields extend beyond the capture.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 611
+      }
+    ]
   },
   "android_catalog_text_field_variants_dark": {
     "width": 640,
@@ -502,7 +526,13 @@
   "android_catalog_text_field_variants_id_200": {
     "width": 640,
     "height": 2133,
-    "caption": "Name, receipt email, phone, promo and order fields at 200 percent text in Indonesian; the company field body and search extend beyond the capture."
+    "caption": "Name, receipt email, phone, promo and order fields at 200 percent text in Indonesian; the company field body and search extend beyond the capture.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 547
+      }
+    ]
   },
   "android_catalog_toast_variants": {
     "width": 640,
@@ -712,22 +742,46 @@
   "android_catalog_state_message_variants_200": {
     "width": 640,
     "height": 2133,
-    "caption": "Empty transaction, spending failure, transaction failure and no-match messages with recovery actions at 200 percent text. Capture capped at 1200 dp."
+    "caption": "Empty transaction, spending failure, transaction failure and no-match messages with recovery actions at 200 percent text. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 198
+      }
+    ]
   },
   "android_catalog_chart_module_variants": {
     "width": 640,
     "height": 2133,
-    "caption": "Spending charts with host-provided headlines and explicit chart states. Capture capped at 1200 dp."
+    "caption": "Spending charts with host-provided headlines and explicit chart states. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 292
+      }
+    ]
   },
   "android_catalog_chart_module_variants_dark": {
     "width": 640,
     "height": 2133,
-    "caption": "Spending charts with host-provided headlines and explicit chart states. Dark mode. Capture capped at 1200 dp."
+    "caption": "Spending charts with host-provided headlines and explicit chart states. Dark mode. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 292
+      }
+    ]
   },
   "android_catalog_chart_module_variants_200": {
     "width": 640,
     "height": 2133,
-    "caption": "Spending charts with host-provided headlines and explicit chart states at 200 percent text. Capture capped at 1200 dp."
+    "caption": "Spending charts with host-provided headlines and explicit chart states at 200 percent text. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 588
+      }
+    ]
   },
   "android_sign_in_light": {
     "width": 640,
@@ -832,22 +886,78 @@
   "android_catalog_data_table_variants": {
     "width": 640,
     "height": 2133,
-    "caption": "Settlement records with labelled row values, selection and table actions. Capture capped at 1200 dp."
+    "caption": "Settlement records with labelled row values, selection and table actions. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 2133
+      },
+      {
+        "width": 640,
+        "height": 1395
+      }
+    ]
   },
   "android_catalog_data_table_variants_dark": {
     "width": 640,
     "height": 2133,
-    "caption": "Settlement records with labelled row values, selection and table actions. Dark mode. Capture capped at 1200 dp."
+    "caption": "Settlement records with labelled row values, selection and table actions. Dark mode. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 2133
+      },
+      {
+        "width": 640,
+        "height": 1395
+      }
+    ]
   },
   "android_catalog_data_table_variants_id_200": {
     "width": 640,
     "height": 2133,
-    "caption": "Settlement records with labelled row values, selection and table actions at 200 percent text, in Indonesian. Capture capped at 1200 dp."
+    "caption": "Settlement records with labelled row values, selection and table actions at 200 percent text, in Indonesian. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 2133
+      },
+      {
+        "width": 640,
+        "height": 2133
+      },
+      {
+        "width": 640,
+        "height": 2133
+      },
+      {
+        "width": 640,
+        "height": 1489
+      }
+    ]
   },
   "android_catalog_data_table_variants_200": {
     "width": 640,
     "height": 2133,
-    "caption": "Settlement records with labelled row values, selection and table actions at 200 percent text. Capture capped at 1200 dp."
+    "caption": "Settlement records with labelled row values, selection and table actions at 200 percent text. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 2133
+      },
+      {
+        "width": 640,
+        "height": 2133
+      },
+      {
+        "width": 640,
+        "height": 2133
+      },
+      {
+        "width": 640,
+        "height": 637
+      }
+    ]
   },
   "android_catalog_task_list_variants": {
     "width": 640,
@@ -1012,22 +1122,46 @@
   "android_catalog_detail_page_property_list_variants_200": {
     "width": 640,
     "height": 2133,
-    "caption": "Payment detail properties with labels, amounts and references at 200 percent text. Capture capped at 1200 dp."
+    "caption": "Payment detail properties with labels, amounts and references at 200 percent text. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 876
+      }
+    ]
   },
   "android_catalog_detail_page_table_variants": {
     "width": 640,
     "height": 2133,
-    "caption": "Payment detail table with labelled rows and supporting information. Capture capped at 1200 dp."
+    "caption": "Payment detail table with labelled rows and supporting information. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 422
+      }
+    ]
   },
   "android_catalog_detail_page_table_variants_dark": {
     "width": 640,
     "height": 2133,
-    "caption": "Payment detail table with labelled rows and supporting information. Dark mode. Capture capped at 1200 dp."
+    "caption": "Payment detail table with labelled rows and supporting information. Dark mode. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 422
+      }
+    ]
   },
   "android_catalog_detail_page_table_variants_200": {
     "width": 640,
     "height": 2133,
-    "caption": "Payment detail table with labelled rows and supporting information at 200 percent text. Capture capped at 1200 dp."
+    "caption": "Payment detail table with labelled rows and supporting information at 200 percent text. Capture capped at 1200 dp.",
+    "parts": [
+      {
+        "width": 640,
+        "height": 1540
+      }
+    ]
   },
   "android_catalog_line_chart_variants": {
     "width": 640,
