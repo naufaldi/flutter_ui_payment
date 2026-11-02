@@ -808,7 +808,16 @@ class _ConfirmDialogRoute<T> extends DialogRoute<T> {
 
 /// Controls one toast from [showPaymentToast].
 class PaymentToastController {
-  PaymentToastController._(this._state, this._hasAction, this._waitForUser);
+  PaymentToastController._(
+    this._state,
+    this._hasAction,
+    this._waitForUser,
+    this._messenger,
+  );
+  final ScaffoldMessengerState _messenger;
+  final _done = Completer<void>();
+  bool _superseded = false;
+  bool _left = false;
   final ValueNotifier<_ToastState> _state;
   final bool _hasAction;
   final bool _waitForUser;
@@ -818,8 +827,9 @@ class PaymentToastController {
   bool _closed = false;
   bool _dismissRequested = false;
 
-  /// Completes when the toast leaves the screen.
-  Future<void> get closed => _feature.closed.then((_) {});
+  /// Completes when the toast leaves the screen, or when a newer toast or a
+  /// motion change drops it before it shows.
+  Future<void> get closed => _done.future;
 
   /// Replaces the entire state in place and restarts its reading time.
   void update(
@@ -846,6 +856,20 @@ class PaymentToastController {
   void _detach() {
     _timer?.cancel();
     _closed = true;
+    // I5: closing and disposal may meet; complete exactly once.
+    if (!_done.isCompleted) _done.complete();
+  }
+
+  void _supersede() {
+    _superseded = true;
+    _timer?.cancel();
+    _closed = true;
+  }
+
+  void _leave() {
+    if (_left || _done.isCompleted || !_messenger.mounted) return;
+    _left = true;
+    _messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
   }
 
   void _onVisible() {
@@ -882,6 +906,9 @@ class _ToastState {
 /// Short feedback after an action. Failures requiring a fix use [PaymentBanner].
 /// Neutral, success, warning, or pending. Reading time is 4–10 seconds,
 /// at least 6 with an action; pending and accessible actions never time out.
+/// The newest toast wins: showing one replaces the kit toast on screen and
+/// drops any kit toast still waiting (D77). When reduced motion changes, the
+/// whole snack bar queue is cleared first, host snack bars included (D78).
 PaymentToastController showPaymentToast(
   BuildContext context, {
   required String message,
@@ -932,26 +959,36 @@ PaymentToastController _showToast(
   final theme = PaymentTheme.of(context);
   final motion = PaymentMotion.of(context);
   final hasAction = actionLabel != null && onAction != null;
+  final messenger = ScaffoldMessenger.of(context);
   final controller = PaymentToastController._(
     ValueNotifier(_ToastState(message, tone, pending)),
     hasAction,
     MediaQuery.maybeAccessibleNavigationOf(context) ?? false,
+    messenger,
   );
-  final messenger = ScaffoldMessenger.of(context);
   final queue = _toastQueues[messenger] ??= _ToastQueue();
-  if (motion.reduced ||
-      (queue.reduced != null && queue.reduced != motion.reduced)) {
-    // Removing a head starts the next queued bar on the old SDK controller.
-    // Drain kit toasts before a style change can dispose that controller.
-    // Host snack bars outside the kit cannot be tracked by this registry.
-    final count = queue.open.length;
+  final older = List.of(queue.open);
+  // I1: only the newest controller stays live on this messenger.
+  for (final toast in older) {
+    toast._supersede();
+  }
+  if (queue.reduced != motion.reduced) {
+    // I3: empty the SDK queue before changing its shared animation style,
+    // including the first kit style replacing the SDK default (D78).
+    for (var i = 0; i < older.length; i++) {
+      messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
+    }
+    messenger
+      ..clearSnackBars()
+      ..removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
     queue.open.clear();
-    for (var i = 0; i < count; i++) {
-      messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
+    // I6: mark dropped bars done synchronously so a scheduled _leave cannot
+    // remove the new toast. The SDK never completes dropped waiting bars.
+    for (final toast in older) {
+      toast._detach();
     }
-    if (count == 0) {
-      messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
-    }
+  } else if (motion.reduced) {
+    messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
   } else {
     messenger.hideCurrentSnackBar();
   }
@@ -1019,10 +1056,16 @@ class _ToastContentState extends State<_ToastContent>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    final leave = widget.controller._superseded;
     // A zero-duration entrance completes before SnackBar attaches its status
     // listener. Check the mounted bar too, so dismissal and reading time work.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      // I2: a superseded waiting bar leaves before its first visible frame.
+      if (leave) {
+        widget.controller._leave();
+        return;
+      }
       final bar = context.findAncestorWidgetOfExactType<SnackBar>();
       if (bar?.animation?.isCompleted ?? false) widget.controller._onVisible();
     });
@@ -1036,7 +1079,11 @@ class _ToastContentState extends State<_ToastContent>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    widget.controller._detach();
+    final controller = widget.controller;
+    // I4: one Scaffold copy disappearing must not detach a messenger's toast.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!controller._messenger.mounted) controller._detach();
+    });
     super.dispose();
   }
 

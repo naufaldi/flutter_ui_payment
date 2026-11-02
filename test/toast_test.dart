@@ -2,8 +2,144 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
+import 'helpers/toast.dart';
 
 void main() {
+  late BuildContext context;
+  Future<void> capture(WidgetTester tester) async {
+    await tester.pumpWidget(
+      host(
+        Builder(
+          builder: (c) {
+            context = c;
+            return const SizedBox();
+          },
+        ),
+        1,
+      ),
+    );
+  }
+
+  testWidgets('newest wins without painting the waiting toast', (tester) async {
+    final semantics = tester.ensureSemantics();
+
+    await capture(tester);
+    // ignore: deprecated_member_use_from_same_package
+    final a = showPaymentSnackBar(context, message: 'Toast A');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump();
+    // ignore: deprecated_member_use_from_same_package
+    final b = showPaymentSnackBar(context, message: 'Toast B');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 20));
+    final c = showPaymentToast(context, message: 'Toast C');
+    await tester.pump();
+    for (var frame = 0; frame < 40; frame++) {
+      expectInvisibleToast(tester, 'Toast B');
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    expect(find.text('Toast A'), findsNothing);
+    expect(find.text('Toast C'), findsOneWidget);
+    expect(await a.closed, SnackBarClosedReason.hide);
+    expect(await b.closed, SnackBarClosedReason.hide);
+    await tester.pump(const Duration(milliseconds: 3400));
+    expect(find.text('Toast C'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump();
+    await c.closed;
+    semantics.dispose();
+    expect(find.byType(SnackBar), findsNothing);
+  });
+
+  testWidgets('newest preserves the 150 ms exit and 220 ms enter', (
+    tester,
+  ) async {
+    await capture(tester);
+    showPaymentToast(context, message: 'Toast A', pending: true);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump();
+    showPaymentToast(context, message: 'Toast B', pending: true);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 20));
+    final c = showPaymentToast(context, message: 'Toast C', pending: true);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 129));
+    expect(find.text('Toast A'), findsOneWidget);
+    expect(find.text('Toast C'), findsNothing);
+    await tester.pump(const Duration(milliseconds: 1, microseconds: 1));
+    await tester.pump();
+    await tester.pump();
+    expect(find.text('Toast A'), findsNothing);
+    expect(find.text('Toast C'), findsOneWidget);
+    final bar = tester.widget<SnackBar>(find.byType(SnackBar));
+    expect(bar.animation!.value, lessThan(0.2));
+    await tester.pump(const Duration(milliseconds: 221));
+    expect(bar.animation!.value, 1);
+    c.dismiss();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump();
+  });
+
+  testWidgets('first kit toast replaces a host bar without freezing', (
+    tester,
+  ) async {
+    await capture(tester);
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Host')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump();
+    final c = showPaymentToast(context, message: 'Newest', pending: true);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump();
+    expect(find.text('Host'), findsNothing);
+    expect(find.text('Newest'), findsOneWidget);
+    c.dismiss();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump();
+  });
+
+  testWidgets('replaced toast behind a host bar never appears', (tester) async {
+    final semantics = tester.ensureSemantics();
+
+    await capture(tester);
+    showPaymentToast(context, message: 'Kit K', pending: true);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump();
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Host H')));
+    await tester.pump();
+    showPaymentToast(context, message: 'Toast Y', pending: true);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 151));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 221));
+    expect(find.text('Host H'), findsOneWidget);
+    final z = showPaymentToast(context, message: 'Toast Z', pending: true);
+    await tester.pump();
+    for (var frame = 0; frame < 40; frame++) {
+      expectInvisibleToast(tester, 'Toast Y');
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    expect(find.text('Host H'), findsNothing);
+    expect(find.text('Toast Z'), findsOneWidget);
+    semantics.dispose();
+    z.dismiss();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump();
+  });
+
+  testWidgets('controller survives a route pop', (tester) async {
+    await capture(tester);
+    await routePopToast(tester, context);
+  });
   late PaymentToastController controller;
   Future<void> show(
     WidgetTester tester, {
