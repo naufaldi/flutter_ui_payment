@@ -290,12 +290,17 @@ class PaymentMenuItem extends PaymentMenuEntry {
     this.disabled = false,
     this.icon,
     this.destructive = false,
+    this.semanticLabel,
   }) : super._();
 
   final String? id;
   final bool disabled;
   final String label;
   final IconData? icon;
+
+  /// What screen readers announce instead of [label], when the visible
+  /// label needs more context. Null announces [label].
+  final String? semanticLabel;
 
   /// Null shows the entry disabled.
   final VoidCallback? onSelected;
@@ -421,6 +426,7 @@ class _PaymentMenuState extends State<PaymentMenu> {
         textStyle: type.label,
       ),
       onPressed: _actionOf(entry),
+      semanticsLabel: entry.semanticLabel,
       child: Text(entry.label, softWrap: true),
     );
     // MenuAnchor clamps its panel flush to the window edge. The panel is a
@@ -575,6 +581,7 @@ class _MenuSheet extends StatelessWidget {
           textStyle: type.label,
         ),
         onPressed: enabled ? () => Navigator.pop(context, item) : null,
+        semanticsLabel: item.semanticLabel,
         // Long labels wrap inside the full-width row.
         overflowAxis: Axis.vertical,
         child: Text(item.label, softWrap: true),

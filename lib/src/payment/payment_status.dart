@@ -326,13 +326,7 @@ class PaymentStatusView extends StatelessWidget {
         : null;
     final inline = [
       for (final action in ordered)
-        if (action != primary && action != quiet)
-          button(
-            action,
-            width: action == PaymentAction.contactSupport
-                ? PaymentWidth.hug
-                : PaymentWidth.fill,
-          ),
+        if (action != primary && action != quiet) action,
     ];
 
     return ActionFrame(
@@ -417,12 +411,14 @@ class PaymentStatusView extends StatelessWidget {
             Align(
               alignment: AlignmentDirectional.centerStart,
               child:
+                  // A lone quiet action hugs its label; inside the group,
+                  // the group already hugs every button.
                   inline.length == 1 &&
-                      inline.single.variant == PaymentButtonVariant.quiet
-                  ? inline.single
+                      inline.single == PaymentAction.contactSupport
+                  ? button(inline.single, width: PaymentWidth.hug)
                   : PaymentButtonGroup(
                       collapse: PaymentButtonGroupCollapse.none,
-                      children: inline,
+                      children: [for (final a in inline) button(a)],
                     ),
             ),
           ],

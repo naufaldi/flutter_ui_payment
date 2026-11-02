@@ -443,6 +443,30 @@ void main() {
       ['Open settings'],
       <String>[],
     ),
+    // #157: without a way to settings, a retryable denial still offers
+    // the camera; with only settings left, settings is the primary.
+    (
+      'permanent denial, no settings',
+      const DocumentSlotState.failed(
+        DocumentIssue(DocumentIssueKind.permissionPermanentlyDenied),
+      ),
+      false,
+      ['Take photo'],
+      <String>[],
+    ),
+    (
+      'framing, retry disallowed, settings',
+      const DocumentSlotState.failed(
+        DocumentIssue(
+          DocumentIssueKind.permissionDenied,
+          canRetry: false,
+          canOpenSettings: true,
+        ),
+      ),
+      false,
+      ['Open settings'],
+      <String>[],
+    ),
     for (final kind in [
       DocumentIssueKind.tooLarge,
       DocumentIssueKind.unsupportedType,
@@ -741,6 +765,35 @@ void main() {
         }
       }
     }
+  });
+
+  testWidgets('needs update without a reason reads its title once (#166)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(const KycCaptureGuide(kind: CaptureKind.idCard, needsUpdate: true)),
+    );
+    expect(find.text('Please update this item.'), findsOneWidget);
+  });
+
+  testWidgets('the picked file reads as one stop: name and size (#112)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        DocumentUploadTile(
+          requirement: requirement,
+          state: const DocumentSlotState.uploaded(file, requestId: '1'),
+          onPick: () {},
+        ),
+        scale: 2,
+      ),
+    );
+    expect(find.semantics.byLabel('demo.jpg, 1 KB'), findsOneWidget);
+    // The visual separator and the bare size are not spoken on their own.
+    expect(find.semantics.byLabel(RegExp(r'^\s*·')), findsNothing);
+    expect(find.semantics.byLabel('demo.jpg'), findsNothing);
+    expect(tester.takeException(), isNull);
   });
 
   // Upload progress (D76, #97): the badge owns the label and known value.

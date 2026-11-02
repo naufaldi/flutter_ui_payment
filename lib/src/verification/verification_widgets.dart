@@ -642,28 +642,35 @@ class DocumentUploadTile extends StatelessWidget {
           ],
           if (file != null) ...[
             SizedBox(height: theme.space(PaymentSpace.related)),
-            Row(
-              children: [
-                const PaymentIcon(
-                  Icons.description_outlined,
-                  size: PaymentIconSize.medium,
-                  color: PaymentTextColor.secondary,
-                ),
-                SizedBox(width: theme.space(PaymentSpace.related)),
-                Flexible(
-                  child: MiddleEllipsisText(
-                    file.name,
-                    style: type.label,
-                    textAlign: TextAlign.start,
+            // One screen-reader stop for the file, without the visual
+            // separator glyph.
+            Semantics(
+              container: true,
+              label: '${file.name}, ${l10n.formatBytes(file.sizeBytes)}',
+              excludeSemantics: true,
+              child: Row(
+                children: [
+                  const PaymentIcon(
+                    Icons.description_outlined,
+                    size: PaymentIconSize.medium,
+                    color: PaymentTextColor.secondary,
                   ),
-                ),
-                // At large text the size may wrap, so the row never
-                // overflows; at normal sizes the name keeps the room.
-                if (PaymentType.isLarge(context))
-                  Flexible(child: fileSize!)
-                else
-                  ?fileSize,
-              ],
+                  SizedBox(width: theme.space(PaymentSpace.related)),
+                  Flexible(
+                    child: MiddleEllipsisText(
+                      file.name,
+                      style: type.label,
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  // At large text the size may wrap, so the row never
+                  // overflows; at normal sizes the name keeps the room.
+                  if (PaymentType.isLarge(context))
+                    Flexible(child: fileSize!)
+                  else
+                    ?fileSize,
+                ],
+              ),
             ),
           ],
           if (state.phase == DocumentSlotPhase.uploading && !busyStill) ...[

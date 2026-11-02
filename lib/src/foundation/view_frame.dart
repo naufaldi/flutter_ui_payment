@@ -382,6 +382,7 @@ class ViewHeader extends StatelessWidget {
               if (linkInMenu)
                 PaymentMenuItem(
                   label: link!.label,
+                  semanticLabel: link!.semanticLabel,
                   onSelected: link!.onPressed,
                 ),
               for (final a in actions)
