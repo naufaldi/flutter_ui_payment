@@ -2,7 +2,7 @@
 
 - **Disclosure (#98).** Accordion content stays mounted while it fades and collapses. It takes no taps, focus or screen-reader navigation while closing. Reopening reverses from the current height. Reduced motion ends the change at once and keeps content state.
 - **Side sheets (#99).** Panels leave over 200 ms on the drawer curve. The scrim follows the same curve. Reduced motion opens and closes them at once.
-- **Dialogs and toasts (#100).** Wide confirm dialogs and toasts enter over 220 ms and leave over 150 ms. Toast updates cross-fade the icon and ease the height. Reduced motion skips these animations and keeps the action state. Toast dismissal and reading time also work after a zero-duration entrance. Turning reduced motion on while a toast is showing no longer blocks later toasts. No public API change.
+- **Dialogs and toasts (#100).** Wide confirm dialogs and toasts enter over 220 ms and leave over 150 ms. Toast updates cross-fade the icon and ease the height. Reduced motion skips these animations and keeps the action state. Toast dismissal and reading time also work after a zero-duration entrance. Changing reduced motion no longer blocks later toasts, including queued replacements. No public API change.
 - **Docs (D66–D68).** The Motion page names the SDK exceptions and explains that the drawer rule covers items, not the phone panel.
 
 ## Motion review Phase 2 (2026-11-02)

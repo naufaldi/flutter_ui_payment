@@ -31,6 +31,115 @@ void enable(
 
 void main() {
   for (final setup in ReducedMotion.values) {
+    for (final duringExit in [true, false]) {
+      testWidgets(
+        'queued toast survives motion flip (${setup.name}, duringExit: $duringExit)',
+        (tester) async {
+          final reduce = ValueNotifier(false);
+          addTearDown(reduce.dispose);
+          late BuildContext context;
+          await tester.pumpWidget(
+            motionHost(
+              Builder(
+                builder: (c) {
+                  context = c;
+                  return const SizedBox();
+                },
+              ),
+              reduce,
+            ),
+          );
+          final older = <PaymentToastController>[
+            showPaymentToast(context, message: 'Toast A'),
+          ];
+          await tester.pumpAndSettle();
+          older.add(showPaymentToast(context, message: 'Toast B'));
+          if (!duringExit) {
+            older.add(showPaymentToast(context, message: 'Toast C'));
+          }
+          await tester.pump();
+          if (duringExit) {
+            await tester.pump(const Duration(milliseconds: 50));
+          } else {
+            await tester.pumpAndSettle();
+            await tester.pump(const Duration(seconds: 1));
+            expect(find.text('Toast B'), findsOneWidget);
+          }
+          enable(tester, setup, reduce);
+          await tester.pump();
+          final newest = showPaymentToast(
+            context,
+            message: 'Newest',
+            pending: duringExit,
+          );
+          await tester.pumpAndSettle();
+          expect(find.text('Newest'), findsOneWidget);
+          for (final name in ['Toast A', 'Toast B', 'Toast C']) {
+            expect(find.text(name), findsNothing);
+          }
+          await Future.wait(older.map((toast) => toast.closed));
+          // Removed controllers must be inert, even if never mounted.
+          for (final toast in older) {
+            toast.update('Stale');
+            toast.dismiss();
+          }
+          if (duringExit) {
+            await tester.pump(const Duration(seconds: 30));
+            expect(find.text('Newest'), findsOneWidget);
+            newest.dismiss();
+          } else {
+            await tester.pump(const Duration(seconds: 4));
+          }
+          await tester.pumpAndSettle();
+          await newest.closed;
+          expect(find.byType(SnackBar), findsNothing);
+        },
+      );
+    }
+    testWidgets('queued toast survives motion re-enable (${setup.name})', (
+      tester,
+    ) async {
+      final reduce = ValueNotifier(false);
+      addTearDown(reduce.dispose);
+      enable(tester, setup, reduce);
+      late BuildContext context;
+      await tester.pumpWidget(
+        motionHost(
+          Builder(
+            builder: (c) {
+              context = c;
+              return const SizedBox();
+            },
+          ),
+          reduce,
+        ),
+      );
+      final first = showPaymentToast(context, message: 'Toast A');
+      await tester.pumpAndSettle();
+      final second = showPaymentToast(context, message: 'Toast B');
+      final third = showPaymentToast(context, message: 'Toast C');
+      reduce.value = false;
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(
+            autoPlayVideos: true,
+            autoPlayAnimatedImages: true,
+          );
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      await tester.pump();
+      final newest = showPaymentToast(context, message: 'Newest');
+      await tester.pumpAndSettle();
+      expect(find.text('Newest'), findsOneWidget);
+      for (final name in ['Toast A', 'Toast B', 'Toast C']) {
+        expect(find.text(name), findsNothing);
+      }
+      await Future.wait([first.closed, second.closed, third.closed]);
+      newest.dismiss();
+      await tester.pumpAndSettle();
+      await newest.closed;
+      expect(find.byType(SnackBar), findsNothing);
+    });
     for (final pending in [false, true]) {
       testWidgets(
         'next toast survives reduced-motion flip (${setup.name}, pending: $pending)',
@@ -65,7 +174,7 @@ void main() {
           await tester.pump();
           expect(find.text('Toast A'), findsNothing);
           expect(find.text('Toast B'), findsOneWidget);
-          expect(await first.closed, SnackBarClosedReason.remove);
+          expect(await first.closed, SnackBarClosedReason.hide);
           if (pending) {
             await tester.pump(const Duration(seconds: 10));
             expect(find.text('Toast B'), findsOneWidget);

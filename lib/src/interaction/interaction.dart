@@ -914,6 +914,13 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showPaymentSnackBar(
   onAction: onAction,
 )._feature;
 
+final _toastQueues = Expando<_ToastQueue>();
+
+class _ToastQueue {
+  final open = <PaymentToastController>[];
+  bool? reduced;
+}
+
 PaymentToastController _showToast(
   BuildContext context, {
   required String message,
@@ -931,10 +938,24 @@ PaymentToastController _showToast(
     MediaQuery.maybeAccessibleNavigationOf(context) ?? false,
   );
   final messenger = ScaffoldMessenger.of(context);
-  // Finish the exit before the SDK replaces its animation controller.
-  motion.reduced
-      ? messenger.removeCurrentSnackBar()
-      : messenger.hideCurrentSnackBar();
+  final queue = _toastQueues[messenger] ??= _ToastQueue();
+  if (motion.reduced ||
+      (queue.reduced != null && queue.reduced != motion.reduced)) {
+    // Removing a head starts the next queued bar on the old SDK controller.
+    // Drain kit toasts before a style change can dispose that controller.
+    // Host snack bars outside the kit cannot be tracked by this registry.
+    final count = queue.open.where((toast) => !toast._closed).length;
+    queue.open.clear();
+    for (var i = 0; i < count; i++) {
+      messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
+    }
+    if (count == 0) {
+      messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
+    }
+  } else {
+    messenger.hideCurrentSnackBar();
+  }
+  queue.reduced = motion.reduced;
   controller._feature = messenger.showSnackBar(
     SnackBar(
       behavior: SnackBarBehavior.floating,
@@ -967,7 +988,11 @@ PaymentToastController _showToast(
         ? AnimationStyle.noAnimation
         : AnimationStyle(duration: motion.enter, reverseDuration: motion.exit),
   );
-  controller._feature.closed.then((_) => controller._detach());
+  queue.open.add(controller);
+  controller._feature.closed.then((_) {
+    queue.open.remove(controller);
+    controller._detach();
+  });
   return controller;
 }
 
