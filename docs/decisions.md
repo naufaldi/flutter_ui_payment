@@ -632,5 +632,7 @@ A read-only motion audit of the kit and the example at `main` 45b7ead, judged ag
 
 Motion Phase 4 package B (#103, #115) implements D66, D69 and D70: copy glyphs use a compact `quick` fade/scale; image loads keep the placeholder until the fade completes; reduced motion ends either swap immediately. `fadeRise` back mode keeps forward's wrapper structure with zero offset so a direction flip preserves leaving state. No new API or decision.
 
+### Docs captures (2 Nov 2026)
+
 - **D81 — docs captures are Android-only (#130).** Capture on the Android phone (360×640 dp, dpr 2) and landscape tablet (1280×800 dp), using `android_` names. This supersedes D27's `ios_` capture prefix and the iPhone simulator wording in §10, without changing D64 platform scope. Owner decision, 2 Nov 2026 (#130).
 - **D82 — catalog specimen crop (#130, #131).** Render phone specimens on a tall virtual 720 px-wide physical view at dpr 2, with height calculated from measured app-bar and gallery bottom insets to leave 1200 dp visible. Crop to the `ValueKey('specimen:<caption>')` wrapper, below the app bar, with a 1200 dp height cap. Overlay and state captures use the real phone size; flow captures omit the status band measured from the view's top padding. Tablet captures use native landscape. Approved docs-visuals plan, 2 Nov 2026 (#130, #131).

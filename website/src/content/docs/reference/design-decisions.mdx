@@ -94,7 +94,7 @@ On 1 November 2026 the owner reviewed every component and flow against the 8 pt 
 | D63a | History's date range is a calendar button at the end of the search line, and the range shows as a filter chip. Beside the button, the search shows its label as the placeholder. | [#58](https://github.com/naufaldi/flutter_ui_payment/issues/58) |
 | D64 | Phase 1 targets iOS (iPhone, iPad) and Android (phones, tablets). Tablets use the wide-screen rules above (D45, D53, D55, D59, D62). Web is the docs site and its gallery preview only, not a product target; desktop is out of scope. This review was checked on iOS; an Android phone and tablet pass is next. | Owner decision, no issue |
 
-The captures below show the result on an iPhone 16 Pro, except the Android D60 table specimen.
+The captures below show the result on an iPhone 16 Pro unless noted; the D60 table specimen is Android.
 
 <Screens>
   <Screen name="ios_catalog_dialog_variants" alt="A confirmation on a phone as a bottom sheet with the confirm on top and Cancel below, both full width." caption="D45: confirm sheet" />
@@ -150,7 +150,14 @@ On 2 November 2026 the kit's and the example's motion was reviewed against nativ
 | D78 | A reduced-motion change clears the snack bar queue, including the app's own snack bars. | Current behaviour |
 | D79 | On touch, a chart scrub returns to rest on lift; a tap keeps its period until tapped again. | Current behaviour |
 | D80 | A host theme's toast close icon stays inside the toast pill, matching the SDK button. | Current behaviour |
-| D81 | Docs captures come from Android only: a 360×640 dp phone at dpr 2 and a 1280×800 dp landscape tablet. Names use `android_`, replacing D27's `ios_` prefix. D64's product scope is unchanged. Legacy iOS images remain while pages migrate. | Current behaviour |
+
+## Docs captures, 2 November 2026
+
+Docs captures moved to Android on 2 November 2026 (issue [#130](https://github.com/naufaldi/flutter_ui_payment/issues/130)).
+
+| Decision | In plain words | Status |
+| --- | --- | --- |
+| D81 | Docs captures come from Android only: a 360×640 dp phone at dpr 2 and a 1280×800 dp landscape tablet. Names use `android_`, replacing D27's `ios_` prefix. D64's product scope is unchanged. Legacy iOS images remain while pages migrate. | In progress: iOS images are being replaced |
 | D82 | Phone catalog specimens use a 720 px-wide virtual view with height calculated from measured app-bar and gallery bottom insets to leave the full 1200 dp crop cap visible. Crops use the keyed specimen below the app bar. Overlays and states keep real device size. Flows omit the measured top status inset; tablets use native landscape. | Current behaviour |
 
 ## Open items
