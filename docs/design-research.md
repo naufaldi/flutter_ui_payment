@@ -267,6 +267,46 @@ Each step ends with native screenshots (light and dark, id and en, 100% and 200%
 4. **Gallery.** Introduce the workbench, specimen frame, outside-the-frame state selector, mono class captions and Preview / Code. Retire the pill fixture chips.
 5. **Landing and docs.** Only after the product language is approved. Lead with a large real specimen (the unknown-state switcher from `docs/web-plan.md`) and a left-aligned promise: no pill badge, no gradient, no three-card feature grid. Docs follow the Forui IA with state anchors and a "Host owns" note per component. `docs/web-plan.md`'s visual section is superseded by this document; its IA and product answers still stand.
 
+## 9. Showcase direction: Blocks and themes (planned, 2 Nov 2026)
+
+Status: direction agreed with the owner for later work. Nothing is built, and no decision in the PRD table changes. Items marked *to propose* become new D-numbers when the work starts.
+
+**Why.** The kit aims to be reused the way shadcn/ui is: a neutral base, theming through tokens, and complete example screens that show what the parts can do. Most people choose shadcn after seeing its Blocks, not its bare components. Hairline is a sound base but reads as plain and Stripe-like in a single image (section 0, "Risk"). The missing layer is the showcase, not a new base style.
+
+**Reference.** [Keitoto Studio, agency operations components](https://x.com/KeitotoStudio/status/2117134613290025081) (X, 2 Nov 2026, four images inspected). Summary: soft minimalism for a SaaS dashboard, with subtle tactile depth. Patterns: a pale grey shell with a white inset panel, thin borders and soft shadows, about 20 px corners, a neutral base with bright data colors, and copy that pairs "what changed" with the next action. Credit Keitoto when a block borrows from it. Take ideas, not layouts. Don't commit their images to `refs/`.
+
+**Model.**
+
+| Layer | shadcn | This kit |
+| --- | --- | --- |
+| Base | Neutral components | Hairline, unchanged as the default |
+| Themes | CSS variables, theme gallery | `PaymentTheme.copyWith` presets: Hairline and a new **Soft** preset inspired by Keitoto |
+| Blocks | Full screens with copyable source | **New:** full screens in `example/` and a docs "Blocks" page with Preview / Code, in both themes |
+
+**Rules.**
+
+- The shell and inset panel are **host styling inside the block**, not a kit component. A block shows that flat kit components sit inside any host card, which is the reason for Hairline (section 0). The flat-section and no-shadow rules (PRD §3.5) still hold in `lib/`. Shadows live in the example code only.
+- Soft is a token change only (B2): a larger `radius`, a colored `accent`, a tinted page. It must keep the contrast floor (tone foregrounds ≥ 5.8:1, `border` ≥ 3:1) and the B4/B5 checks. Keitoto's faint grey labels are not copied.
+- Status keeps every channel: band pattern, icon and words, never color alone. Blocks don't add tone colors to charts (D39).
+- Blocks use `Money`, the kit's status vocabulary and real Indonesian copy, and pass light, dark, 200% and id/en like any capture.
+
+**Blocks, in order.**
+
+1. **Merchant overview** (first; closest to the reference): a balance card with a revenue bar chart, a payment-method mix meter, a transactions table with status badges, and a banner in the "what changed → next action" form (for example "3 payments are not confirmed. Check with the bank before retrying.").
+2. **Checkout**: summary, method list and action bar, in a Soft host frame.
+3. **Payment result**: pending and unknown, keeping "Jangan bayar lagi." first.
+4. **KYC**: onboarding, documents and review.
+
+Login is not a first block. The kit takes no credentials (D1a, D32), so a login screen would mostly be host form fields. `PaymentSignInView` can appear as a small block later.
+
+**Known gaps (to propose).**
+
+- **Chart series palette.** Charts allow ink shades only, so Transfer and QRIS read alike. Proposal: a host-set series ramp on `PaymentTheme`, still never tone colors. It would be a new decision next to D39.
+- **Brand presets look the same.** Lumen and Contrast are still close to Hairline (decisions.md, redesign open items). Soft should be clearly different, or replace one of them.
+- **Distribution.** "Like shadcn" can also mean copy-in source through a CLI. This kit ships as a pub package. Blocks work either way. Copy-in distribution is a separate, larger decision and is not part of this plan.
+
+**Exit for the first block.** Merchant overview runs in `example/` in Hairline and Soft. It has native captures (light, dark, 200%, id/en), opened and inspected. The docs Blocks page has Preview / Code. The boundary grep (PRD §12) is clean, with no kit API change unless the chart palette is approved.
+
 ## Open uncertainties
 
 - Font choice: IBM Plex is a recommendation from this research, not owner-approved. Any OFL sans + mono superfamily with tabular figures and good Latin coverage satisfies the constraints.
