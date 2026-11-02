@@ -179,6 +179,9 @@ class FlowScreen extends StatelessWidget {
   };
 
   Future<void> _handleBack(BuildContext context, DemoCoordinator c) async {
+    // Keep parent returns in _FlowStepSwitcherState._goingBack aligned.
+    // This dispatch also has state-dependent targets, guarded actions and
+    // a confirmation dialog, so a static parent map cannot replace it.
     switch (c.step) {
       case FlowStep.signIn:
       case FlowStep.overview:
@@ -266,12 +269,15 @@ class _FlowStepSwitcherState extends State<_FlowStepSwitcher>
   bool _goingBack(FlowStep previous) {
     if (widget.step == previous) return false;
     final i = _path.lastIndexOf(widget.step);
-    // A correction starts a new pass. Scenario shortcuts can also start
+    // A correction or restart starts a new pass. Scenario shortcuts can start
     // beyond edit/resume destinations that have not been visited yet.
     final correction =
         previous == FlowStep.kycStatus &&
-        (widget.step == FlowStep.kycIdentity ||
+        (widget.step == FlowStep.kycIntro ||
+            widget.step == FlowStep.kycIdentity ||
             widget.step == FlowStep.kycDocuments);
+    // Mirrors the parent returns in FlowScreen._handleBack, whose dispatch
+    // also handles state-dependent targets, guarded actions and confirmation.
     final parentReturn = switch ((previous, widget.step)) {
       (FlowStep.kycDocuments, FlowStep.kycIdentity) ||
       (FlowStep.kycReview, FlowStep.kycDocuments) ||
@@ -284,8 +290,12 @@ class _FlowStepSwitcherState extends State<_FlowStepSwitcher>
     final back =
         !correction &&
         (i >= 0 || widget.step == FlowStep.overview || parentReturn);
-    if (correction && i >= 0) {
-      _path.removeRange(i, _path.length);
+    if (correction) {
+      // Every transition leaves its destination at the end of the path.
+      // A status-first shortcut has no earlier correction destination;
+      // remove the departed status itself so submitting is forward again.
+      final trimFrom = i >= 0 ? i : _path.lastIndexOf(previous);
+      if (trimFrom >= 0) _path.removeRange(trimFrom, _path.length);
       _path.add(widget.step);
     } else if (back && i >= 0) {
       _path.removeRange(i + 1, _path.length);

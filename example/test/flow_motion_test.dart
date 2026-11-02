@@ -17,6 +17,49 @@ Finder fadeOf(Finder child) =>
     find.ancestor(of: child, matching: find.byType(FadeTransition)).first;
 
 void main() {
+  testWidgets('status-first correction submits forward to status', (
+    tester,
+  ) async {
+    final app = await launch(tester);
+    final c = await runScenario(tester, app, 'K07', variant: 1);
+    final rest = tester.getTopLeft(body(FlowStep.kycStatus));
+    await c.kycAction(VerificationAction.fixDetails);
+    await settle(tester);
+    expect(c.step, FlowStep.kycDocuments);
+    c.goToReview();
+    await settle(tester);
+    unawaited(c.submitKyc());
+    await pumpUntil(tester, () => !c.kycSubmitting);
+    expect(c.step, FlowStep.kycStatus);
+    expect(tester.getTopLeft(body(FlowStep.kycStatus)).dy, rest.dy + 8);
+    await settle(tester);
+  });
+  for (final visitedIntro in [false, true]) {
+    testWidgets('status restart rises with visited intro: $visitedIntro', (
+      tester,
+    ) async {
+      final app = await launch(tester);
+      final c = await runScenario(tester, app, visitedIntro ? 'K01' : 'K08');
+      final rest = tester.getTopLeft(body(c.step));
+      if (visitedIntro) {
+        c.acceptConsent();
+        await settle(tester);
+        c.editDocuments();
+        await settle(tester);
+        c.goToReview();
+        await settle(tester);
+        unawaited(c.submitKyc());
+        await pumpUntil(tester, () => !c.kycSubmitting);
+        await settle(tester);
+        expect(c.step, FlowStep.kycStatus);
+      }
+      await c.kycAction(VerificationAction.start);
+      await tester.pump();
+      expect(c.step, FlowStep.kycIntro);
+      expect(tester.getTopLeft(body(FlowStep.kycIntro)).dy, rest.dy + 8);
+      await settle(tester);
+    });
+  }
   testWidgets('scenario shortcut edits back then advances to review', (
     tester,
   ) async {
