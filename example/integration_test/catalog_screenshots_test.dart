@@ -80,7 +80,7 @@ void main() {
           ].any(entry.startsWith);
       tester.view.physicalSize = device == 'tablet' || fullScreen
           ? realSize
-          : const Size(720, 2400);
+          : catalogCaptureSize(tester);
       await tester.pump();
       lastEntry = entry;
       final gallery = find
@@ -1092,7 +1092,7 @@ void main() {
         await shot('chart_states_$state');
       }
       // D58: the latest value is labelled at rest; a tap selects a bar.
-      await top('PaymentLineChart');
+      await top('PaymentLineChart', overlay: true);
       await shot('chart_line_rest');
       await top('PaymentBarChart', overlay: true);
       final bar = tester.getRect(
