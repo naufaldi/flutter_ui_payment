@@ -4,9 +4,15 @@ description: Add page modules and detail/overview pages; code wrapping, edge fad
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 A spending overview composes flat ruled modules. Variants: single column, primary/secondary columns at 840 dp. Nothing else exists. OverviewPage never scrolls vertically; place it in FullPageView or an existing host scroll region. Module actions are small hug buttons; extra actions collapse into a menu.
+
+<Screens>
+  <Screen name="android_catalog_overview_page_variants" dark="android_catalog_overview_page_variants_dark" alt="Payment overview with a header, summary and supporting sections." caption="Overview page" />
+  <Screen name="android_catalog_overview_page_variants_200" alt="Payment overview with a header, summary and supporting sections at 200 percent text." caption="200% text" />
+</Screens>
 
 ## Usage
 
@@ -120,7 +126,3 @@ History A01; detail composition. Real composition: `example/lib/screens/gallery_
 ## See also
 
 - [Components](/components/)
-
-<Screen name="ios_catalog_overview_page_variants" alt="overview page specimen" />
-<Screen name="ios_catalog_overview_page_variants_dark" alt="overview page specimen_dark" />
-<Screen name="ios_catalog_overview_page_variants_200" alt="overview page specimen_200" />

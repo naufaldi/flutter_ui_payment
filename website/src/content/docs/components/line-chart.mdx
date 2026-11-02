@@ -13,14 +13,12 @@ import HostOwns from '../../../components/HostOwns.astro';
 <HostOwns>amounts, currency, period labels, settled/pending/unknown status, and every headline or delta.</HostOwns>
 
 <Screens>
-  <Screen name="ios_catalog_chart_line" alt="Line chart specimen with synthetic spending amounts in light mode" caption="Line chart, English" />
-  <Screen name="ios_catalog_chart_line_dark" alt="Line chart specimen with synthetic spending amounts in dark mode" caption="Line chart, dark" />
+  <Screen name="android_catalog_chart_line" dark="android_catalog_chart_line_dark" alt="Spending line chart with its exact value band." caption="Line chart, English" />
 </Screens>
 
 <Screens>
-  <Screen name="ios_catalog_line_chart_variants" alt="line-chart variants" />
-  <Screen name="ios_catalog_line_chart_variants_dark" alt="line-chart variants_dark" />
-  <Screen name="ios_catalog_line_chart_variants_200" alt="line-chart variants_200" />
+  <Screen name="android_catalog_line_chart_variants" dark="android_catalog_line_chart_variants_dark" alt="Spending over time with labelled values and comparison periods." caption="Line chart" />
+  <Screen name="android_catalog_line_chart_variants_200" alt="Spending over time with labelled values and comparison periods at 200 percent text." caption="200% text" />
 </Screens>
 
 ## Usage
@@ -76,7 +74,7 @@ Use a line for direction, bars for period comparisons, a meter for category prop
 
 The latest settled period is selected when the chart appears. One label in a fixed band above the plot gives its exact amount, such as "29 Okt · Rp420.000" in tabular figures, and a guide line runs from the point or bar top up to that label. Tap a period to select it, and tap it again to return to the latest. Drag across the plot to scrub: the label follows your finger and returns to the latest when you lift it. With a mouse, hover selects and moving away returns to the latest. The band never changes height, so nothing below the chart moves. A multi-series chart gives each series one line, "29 Okt · Bulan ini · Rp420.000". When any period's series name and value don't fit on one line, as at 200% text on a phone or for a pending period's longer value, every series shows its name with the value under it. The name wraps to at most two lines, then ends in an ellipsis; a realistic name fits in two. Inside `ChartModule` the plot area grows by those extra lines, so the plot keeps its height. With `inspectable: false` the label still shows the latest value and the chart takes no gestures. Series of 12 points or fewer draw a small ring on every settled point; longer series ring the last point. There is no permanent label on every point: those collide at 200% text and in Indonesian.
 
-<Screen name="ios_catalog_chart_line_rest" alt="Line chart at rest with the latest value labelled above the plot" caption="At rest" />
+<Screen name="android_catalog_chart_line_rest" alt="Line chart at rest with the latest point selected and its exact amount above the plot." caption="At rest" />
 
 Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to read a value. Meter `onSegmentPressed` activates full-width legend rows; the painted bar takes no taps.
 

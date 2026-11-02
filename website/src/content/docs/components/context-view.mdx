@@ -4,9 +4,15 @@ description: Add context, full-page, focus, settings, sign-in and onboarding vie
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 Order context alongside a checkout. Views are bodies: the host supplies Scaffold and navigation. At most three header actions and one primary across visible actions; secondaryAction is not primary. Brand accepts only PaymentImage or PaymentIcon. externalLink must be external.
+
+<Screens>
+  <Screen name="android_catalog_context_view_variants" dark="android_catalog_context_view_variants_dark" alt="Context panels with titles, supporting content and footer actions." caption="Context view" />
+  <Screen name="android_catalog_context_view_variants_200" alt="Context panels with titles, supporting content and footer actions at 200 percent text." caption="200% text" />
+</Screens>
 
 ## Usage
 
@@ -95,7 +101,3 @@ Wide checkout H02/H04. Real composition: `example/lib/screens/gallery_views.dart
 ## See also
 
 - [Components](/components/)
-
-<Screen name="ios_catalog_context_view_variants" alt="context view specimen" />
-<Screen name="ios_catalog_context_view_variants_dark" alt="context view specimen_dark" />
-<Screen name="ios_catalog_context_view_variants_200" alt="context view specimen_200" />

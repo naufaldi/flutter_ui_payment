@@ -4,9 +4,15 @@ description: Add responsive ButtonGroup and host-owned TaskList; migrate status 
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 Related payment actions. Variants: horizontal auto overflow, horizontal none (stack on overflow), vertical. Nothing else exists. Use for payment status actions, confirmations and module headers. Horizontal buttons are normalized to hug width. The first action never collapses; destructive actions occupy a separate final overflow group.
+
+<Screens>
+  <Screen name="android_catalog_button_group_variants" dark="android_catalog_button_group_variants_dark" alt="Grouped payment actions using different collapse rules and a long wrapping label." caption="Button group" />
+  <Screen name="android_catalog_button_group_variants_200" alt="Grouped payment actions using different collapse rules and a long wrapping label at 200 percent text." caption="200% text" />
+</Screens>
 
 ## Usage
 
@@ -93,7 +99,3 @@ PaymentStatusView; detail A02; focus-view footer. Real composition: `example/lib
 ## See also
 
 - [Components](/components/)
-
-<Screen name="ios_catalog_button_group_variants" alt="button group specimen" />
-<Screen name="ios_catalog_button_group_variants_dark" alt="button group specimen_dark" />
-<Screen name="ios_catalog_button_group_variants_200" alt="button group specimen_200" />

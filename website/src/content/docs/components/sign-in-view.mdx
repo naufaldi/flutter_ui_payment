@@ -4,9 +4,15 @@ description: Add context, full-page, focus, settings, sign-in and onboarding vie
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 Entry point for external bank sign-in. Variants: ready, host error. Nothing else exists. D32: no credential inputs and no free widget slot. The widget test asserts no EditableText anywhere in its subtree with all slots filled. Brand accepts only PaymentImage or PaymentIcon. Supplemental learnMore content opens separately in FocusView and is outside that guarantee. A host error takes focus and is announced. The host handles sign-in, destinations and legal links.
+
+<Screens>
+  <Screen name="android_catalog_sign_in_view_variants" dark="android_catalog_sign_in_view_variants_dark" alt="External bank sign-in with requester branding, permissions, legal links and pinned Continue and Cancel actions." caption="Sign in view" />
+  <Screen name="android_catalog_sign_in_view_variants_200" alt="External bank sign-in with requester branding, permissions, legal links and pinned Continue and Cancel actions at 200 percent text." caption="200% text" />
+</Screens>
 
 ## Usage
 
@@ -111,7 +117,3 @@ H04 signed-out scenario. Real composition: `example/lib/screens/gallery_views.da
 ## See also
 
 - [Components](/components/)
-
-<Screen name="ios_catalog_sign_in_view_variants" alt="sign in view specimen" />
-<Screen name="ios_catalog_sign_in_view_variants_dark" alt="sign in view specimen_dark" />
-<Screen name="ios_catalog_sign_in_view_variants_200" alt="sign in view specimen_200" />

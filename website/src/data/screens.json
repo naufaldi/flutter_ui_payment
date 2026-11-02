@@ -1,29 +1,4 @@
 {
-  "ios_catalog_tooltip_tap": {
-    "width": 640,
-    "height": 1391,
-    "caption": "PaymentTooltip opened by tap, English"
-  },
-  "ios_catalog_search_field_sheet": {
-    "width": 640,
-    "height": 1391,
-    "caption": "PaymentSearchField sheet on a phone, English"
-  },
-  "ios_catalog_date_range_calendar": {
-    "width": 640,
-    "height": 1391,
-    "caption": "PaymentDateRangePicker range calendar, English"
-  },
-  "ios_catalog_date_field_sheet_wheel": {
-    "width": 640,
-    "height": 1391,
-    "caption": "PaymentDateField wheel sheet for a date of birth, English"
-  },
-  "ios_catalog_banner_variants": {
-    "width": 640,
-    "height": 1391,
-    "caption": "ios catalog banner variants, English"
-  },
   "android_catalog_amount_text_variants": {
     "width": 640,
     "height": 693,
@@ -574,175 +549,175 @@
     "height": 1507,
     "caption": "Payment methods, fees, arrival times and total at 200% text, English"
   },
-  "ios_catalog_dialog_variants": {
+  "android_catalog_dialog_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "showPaymentConfirmDialog specimen, English"
+    "height": 1138,
+    "caption": "Remove card confirmation sheet with the destructive action above Cancel."
   },
-  "ios_catalog_dialog_variants_dark": {
+  "android_catalog_dialog_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "showPaymentConfirmDialog specimen_dark, English"
+    "height": 1138,
+    "caption": "Remove card confirmation sheet with the destructive action above Cancel. Dark mode."
   },
-  "ios_catalog_dialog_variants_200": {
+  "android_catalog_dialog_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "showPaymentConfirmDialog specimen_200, English"
+    "height": 1138,
+    "caption": "Remove card confirmation sheet with the destructive action above Cancel at 200 percent text."
   },
-  "ios_catalog_sheets_variants": {
+  "android_catalog_sheets_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentSheet specimen, English"
+    "height": 1138,
+    "caption": "Payment sheet examples with headers, content and close controls."
   },
-  "ios_catalog_sheets_variants_dark": {
+  "android_catalog_sheets_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentSheet specimen_dark, English"
+    "height": 1138,
+    "caption": "Payment sheet examples with headers, content and close controls. Dark mode."
   },
-  "ios_catalog_sheets_variants_200": {
+  "android_catalog_sheets_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentSheet specimen_200, English"
+    "height": 1138,
+    "caption": "Payment sheet examples with headers, content and close controls at 200 percent text."
   },
-  "ios_catalog_section_variants": {
+  "android_catalog_section_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentSection specimen, English"
+    "height": 356,
+    "caption": "Payment sections with titles, supporting content and header actions."
   },
-  "ios_catalog_section_variants_dark": {
+  "android_catalog_section_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentSection specimen_dark, English"
+    "height": 356,
+    "caption": "Payment sections with titles, supporting content and header actions. Dark mode."
   },
-  "ios_catalog_navigation_variants": {
+  "android_catalog_navigation_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "AdaptiveNavShell specimen, English"
+    "height": 1138,
+    "caption": "Adaptive navigation with destinations and selected-state indicators."
   },
-  "ios_catalog_navigation_variants_dark": {
+  "android_catalog_navigation_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "AdaptiveNavShell specimen_dark, English"
+    "height": 1138,
+    "caption": "Adaptive navigation with destinations and selected-state indicators. Dark mode."
   },
-  "ios_catalog_step_indicator_variants": {
+  "android_catalog_step_indicator_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentStepIndicator specimen, English"
+    "height": 340,
+    "caption": "Order, review and pay progress at each of the three steps."
   },
-  "ios_catalog_step_indicator_variants_dark": {
+  "android_catalog_step_indicator_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentStepIndicator specimen_dark, English"
+    "height": 340,
+    "caption": "Order, review and pay progress at each of the three steps. Dark mode."
   },
-  "ios_catalog_info_row_variants": {
+  "android_catalog_info_row_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "InfoRow specimen, English"
+    "height": 630,
+    "caption": "Payment information rows with labels, values and supporting details."
   },
-  "ios_catalog_info_row_variants_dark": {
+  "android_catalog_info_row_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "InfoRow specimen_dark, English"
+    "height": 630,
+    "caption": "Payment information rows with labels, values and supporting details. Dark mode."
   },
-  "ios_catalog_info_row_variants_200": {
+  "android_catalog_info_row_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "InfoRow specimen_200, English"
+    "height": 959,
+    "caption": "Payment information rows with labels, values and supporting details at 200 percent text."
   },
-  "ios_catalog_countdown_variants": {
+  "android_catalog_countdown_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "CountdownText specimen, English"
+    "height": 292,
+    "caption": "Countdown values for long, short and expired payment deadlines."
   },
-  "ios_catalog_countdown_variants_dark": {
+  "android_catalog_countdown_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "CountdownText specimen_dark, English"
+    "height": 292,
+    "caption": "Countdown values for long, short and expired payment deadlines. Dark mode."
   },
-  "ios_catalog_privacy_mask_variants": {
+  "android_catalog_privacy_mask_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "PrivacyMask specimen, English"
+    "height": 292,
+    "caption": "Revealed virtual account reference beside the privacy lock control."
   },
-  "ios_catalog_privacy_mask_variants_dark": {
+  "android_catalog_privacy_mask_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "PrivacyMask specimen_dark, English"
+    "height": 292,
+    "caption": "Revealed virtual account reference beside the privacy lock control. Dark mode."
   },
-  "ios_catalog_action_bar_variants": {
+  "android_catalog_action_bar_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentActionBar specimen, English"
+    "height": 627,
+    "caption": "Pinned payment totals and primary actions in default, busy and disabled states."
   },
-  "ios_catalog_action_bar_variants_dark": {
+  "android_catalog_action_bar_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentActionBar specimen_dark, English"
+    "height": 627,
+    "caption": "Pinned payment totals and primary actions in default, busy and disabled states. Dark mode."
   },
-  "ios_catalog_action_bar_variants_200": {
+  "android_catalog_action_bar_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentActionBar specimen_200, English"
+    "height": 1021,
+    "caption": "Pinned payment totals and primary actions in default, busy and disabled states at 200 percent text."
   },
-  "ios_catalog_media_variants": {
+  "android_catalog_media_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentVideoPlayer specimen, English"
+    "height": 626,
+    "caption": "Video player loading indicator, disabled transport controls and progress track."
   },
-  "ios_catalog_media_variants_dark": {
+  "android_catalog_media_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentVideoPlayer specimen_dark, English"
+    "height": 626,
+    "caption": "Video player loading indicator, disabled transport controls and progress track. Dark mode."
   },
-  "ios_catalog_status_header_variants": {
+  "android_catalog_status_header_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "StatusHeader specimen, English"
+    "height": 477,
+    "caption": "Payment outcome headers with semantic icons, labels and status bands."
   },
-  "ios_catalog_status_header_variants_dark": {
+  "android_catalog_status_header_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "StatusHeader specimen_dark, English"
+    "height": 477,
+    "caption": "Payment outcome headers with semantic icons, labels and status bands. Dark mode."
   },
-  "ios_catalog_loading_skeleton_variants": {
+  "android_catalog_loading_skeleton_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "LoadingSkeleton specimen, English"
+    "height": 847,
+    "caption": "Loading placeholders for payment text, rows and cards."
   },
-  "ios_catalog_loading_skeleton_variants_dark": {
+  "android_catalog_loading_skeleton_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "LoadingSkeleton specimen_dark, English"
+    "height": 847,
+    "caption": "Loading placeholders for payment text, rows and cards. Dark mode."
   },
-  "ios_catalog_state_message_variants": {
+  "android_catalog_state_message_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "StateMessage · PaymentEmptyMessage specimen, English"
+    "height": 1347,
+    "caption": "Empty transaction, spending failure, transaction failure and no-match messages with recovery actions."
   },
-  "ios_catalog_state_message_variants_dark": {
+  "android_catalog_state_message_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "StateMessage · PaymentEmptyMessage specimen_dark, English"
+    "height": 1347,
+    "caption": "Empty transaction, spending failure, transaction failure and no-match messages with recovery actions. Dark mode."
   },
-  "ios_catalog_state_message_variants_200": {
+  "android_catalog_state_message_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "StateMessage · PaymentEmptyMessage specimen_200, English"
+    "height": 2133,
+    "caption": "Empty transaction, spending failure, transaction failure and no-match messages with recovery actions at 200 percent text. Capture capped at 1200 dp."
   },
-  "ios_catalog_chart_module_variants": {
+  "android_catalog_chart_module_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "ChartModule specimen, English"
+    "height": 2133,
+    "caption": "Spending charts with host-provided headlines and explicit chart states. Capture capped at 1200 dp."
   },
-  "ios_catalog_chart_module_variants_dark": {
+  "android_catalog_chart_module_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "ChartModule specimen_dark, English"
+    "height": 2133,
+    "caption": "Spending charts with host-provided headlines and explicit chart states. Dark mode. Capture capped at 1200 dp."
   },
-  "ios_catalog_chart_module_variants_200": {
+  "android_catalog_chart_module_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "ChartModule specimen_200, English"
+    "height": 2133,
+    "caption": "Spending charts with host-provided headlines and explicit chart states at 200 percent text. Capture capped at 1200 dp."
   },
   "ios_sign_in_light": {
     "width": 640,
@@ -864,320 +839,320 @@
     "height": 1391,
     "caption": "Example account settings light_200, Indonesian"
   },
-  "ios_catalog_property_list_variants": {
+  "android_catalog_property_list_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "property list specimen, English"
+    "height": 925,
+    "caption": "Payment properties arranged vertically and horizontally."
   },
-  "ios_catalog_property_list_variants_dark": {
+  "android_catalog_property_list_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "property list specimen_dark, English"
+    "height": 925,
+    "caption": "Payment properties arranged vertically and horizontally. Dark mode."
   },
-  "ios_catalog_property_list_variants_200": {
+  "android_catalog_property_list_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "property list specimen_200, English"
+    "height": 1613,
+    "caption": "Payment properties arranged vertically and horizontally at 200 percent text."
   },
-  "ios_catalog_data_table_variants": {
+  "android_catalog_data_table_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "data table specimen, English"
+    "height": 2133,
+    "caption": "Settlement records with labelled row values, selection and table actions. Capture capped at 1200 dp."
   },
-  "ios_catalog_data_table_variants_dark": {
+  "android_catalog_data_table_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "data table specimen_dark, English"
+    "height": 2133,
+    "caption": "Settlement records with labelled row values, selection and table actions. Dark mode. Capture capped at 1200 dp."
   },
-  "ios_catalog_data_table_variants_id_200": {
+  "android_catalog_data_table_variants_id_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentDataTable specimen_id_200, Indonesian"
+    "height": 2133,
+    "caption": "Settlement records with labelled row values, selection and table actions at 200 percent text, in Indonesian. Capture capped at 1200 dp."
   },
-  "ios_catalog_data_table_variants_200": {
+  "android_catalog_data_table_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "data table specimen_200, English"
+    "height": 2133,
+    "caption": "Settlement records with labelled row values, selection and table actions at 200 percent text. Capture capped at 1200 dp."
   },
-  "ios_catalog_task_list_variants": {
+  "android_catalog_task_list_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "task list specimen, English"
+    "height": 570,
+    "caption": "Verification tasks with completed, current, nested and blocked steps."
   },
-  "ios_catalog_task_list_variants_dark": {
+  "android_catalog_task_list_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "task list specimen_dark, English"
+    "height": 570,
+    "caption": "Verification tasks with completed, current, nested and blocked steps. Dark mode."
   },
-  "ios_catalog_task_list_variants_200": {
+  "android_catalog_task_list_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "task list specimen_200, English"
+    "height": 717,
+    "caption": "Verification tasks with completed, current, nested and blocked steps at 200 percent text."
   },
-  "ios_catalog_button_group_variants": {
+  "android_catalog_button_group_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "button group specimen, English"
+    "height": 755,
+    "caption": "Grouped payment actions using different collapse rules and a long wrapping label."
   },
-  "ios_catalog_button_group_variants_dark": {
+  "android_catalog_button_group_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "button group specimen_dark, English"
+    "height": 755,
+    "caption": "Grouped payment actions using different collapse rules and a long wrapping label. Dark mode."
   },
-  "ios_catalog_button_group_variants_200": {
+  "android_catalog_button_group_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "button group specimen_200, English"
+    "height": 760,
+    "caption": "Grouped payment actions using different collapse rules and a long wrapping label at 200 percent text."
   },
-  "ios_catalog_context_view_variants": {
+  "android_catalog_context_view_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "context view specimen, English"
+    "height": 1124,
+    "caption": "Context panels with titles, supporting content and footer actions."
   },
-  "ios_catalog_context_view_variants_dark": {
+  "android_catalog_context_view_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "context view specimen_dark, English"
+    "height": 1124,
+    "caption": "Context panels with titles, supporting content and footer actions. Dark mode."
   },
-  "ios_catalog_context_view_variants_200": {
+  "android_catalog_context_view_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "context view specimen_200, English"
+    "height": 1130,
+    "caption": "Context panels with titles, supporting content and footer actions at 200 percent text."
   },
-  "ios_catalog_full_page_view_variants": {
+  "android_catalog_full_page_view_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "full page view specimen, English"
+    "height": 1139,
+    "caption": "Full-page payment content with headers and footer actions."
   },
-  "ios_catalog_full_page_view_variants_dark": {
+  "android_catalog_full_page_view_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "full page view specimen_dark, English"
+    "height": 1139,
+    "caption": "Full-page payment content with headers and footer actions. Dark mode."
   },
-  "ios_catalog_full_page_view_variants_200": {
+  "android_catalog_full_page_view_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "full page view specimen_200, English"
+    "height": 1144,
+    "caption": "Full-page payment content with headers and footer actions at 200 percent text."
   },
-  "ios_catalog_focus_view_variants": {
+  "android_catalog_focus_view_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "focus view specimen, English"
+    "height": 1139,
+    "caption": "Focused payment content with a title, body and primary action."
   },
-  "ios_catalog_focus_view_variants_dark": {
+  "android_catalog_focus_view_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "focus view specimen_dark, English"
+    "height": 1139,
+    "caption": "Focused payment content with a title, body and primary action. Dark mode."
   },
-  "ios_catalog_focus_view_variants_200": {
+  "android_catalog_focus_view_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "focus view specimen_200, English"
+    "height": 1144,
+    "caption": "Focused payment content with a title, body and primary action at 200 percent text."
   },
-  "ios_catalog_settings_view_variants": {
+  "android_catalog_settings_view_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "settings view specimen, English"
+    "height": 1139,
+    "caption": "Payment settings grouped into labelled sections."
   },
-  "ios_catalog_settings_view_variants_dark": {
+  "android_catalog_settings_view_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "settings view specimen_dark, English"
+    "height": 1139,
+    "caption": "Payment settings grouped into labelled sections. Dark mode."
   },
-  "ios_catalog_settings_view_variants_200": {
+  "android_catalog_settings_view_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "settings view specimen_200, English"
+    "height": 1144,
+    "caption": "Payment settings grouped into labelled sections at 200 percent text."
   },
-  "ios_catalog_sign_in_view_variants": {
+  "android_catalog_sign_in_view_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "sign in view specimen, English"
+    "height": 1238,
+    "caption": "External bank sign-in with requester branding, permissions, legal links and pinned Continue and Cancel actions."
   },
-  "ios_catalog_sign_in_view_variants_dark": {
+  "android_catalog_sign_in_view_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "sign in view specimen_dark, English"
+    "height": 1238,
+    "caption": "External bank sign-in with requester branding, permissions, legal links and pinned Continue and Cancel actions. Dark mode."
   },
-  "ios_catalog_sign_in_view_variants_200": {
+  "android_catalog_sign_in_view_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "sign in view specimen_200, English"
+    "height": 1244,
+    "caption": "External bank sign-in with requester branding, permissions, legal links and pinned Continue and Cancel actions at 200 percent text."
   },
-  "ios_catalog_onboarding_view_variants": {
+  "android_catalog_onboarding_view_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "onboarding view specimen, English"
+    "height": 1238,
+    "caption": "Onboarding content with progress and continuation actions."
   },
-  "ios_catalog_onboarding_view_variants_dark": {
+  "android_catalog_onboarding_view_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "onboarding view specimen_dark, English"
+    "height": 1238,
+    "caption": "Onboarding content with progress and continuation actions. Dark mode."
   },
-  "ios_catalog_onboarding_view_variants_200": {
+  "android_catalog_onboarding_view_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "onboarding view specimen_200, English"
+    "height": 1329,
+    "caption": "Onboarding content with progress and continuation actions at 200 percent text."
   },
-  "ios_catalog_detail_page_variants": {
+  "android_catalog_detail_page_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "detail page specimen, English"
+    "height": 1281,
+    "caption": "Payment detail pages with headers, content and footer actions."
   },
-  "ios_catalog_detail_page_variants_dark": {
+  "android_catalog_detail_page_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "detail page specimen_dark, English"
+    "height": 1281,
+    "caption": "Payment detail pages with headers, content and footer actions. Dark mode."
   },
-  "ios_catalog_detail_page_variants_200": {
+  "android_catalog_detail_page_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "detail page specimen_200, English"
+    "height": 1286,
+    "caption": "Payment detail pages with headers, content and footer actions at 200 percent text."
   },
-  "ios_catalog_overview_page_variants": {
+  "android_catalog_overview_page_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "overview page specimen, English"
+    "height": 1281,
+    "caption": "Payment overview with a header, summary and supporting sections."
   },
-  "ios_catalog_overview_page_variants_dark": {
+  "android_catalog_overview_page_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "overview page specimen_dark, English"
+    "height": 1281,
+    "caption": "Payment overview with a header, summary and supporting sections. Dark mode."
   },
-  "ios_catalog_overview_page_variants_200": {
+  "android_catalog_overview_page_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "overview page specimen_200, English"
+    "height": 1286,
+    "caption": "Payment overview with a header, summary and supporting sections at 200 percent text."
   },
-  "ios_catalog_detail_page_property_list_variants": {
+  "android_catalog_detail_page_property_list_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "detail page property list specimen, English"
+    "height": 1956,
+    "caption": "Payment detail properties with labels, amounts and references."
   },
-  "ios_catalog_detail_page_property_list_variants_dark": {
+  "android_catalog_detail_page_property_list_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "detail page property list specimen_dark, English"
+    "height": 1956,
+    "caption": "Payment detail properties with labels, amounts and references. Dark mode."
   },
-  "ios_catalog_detail_page_property_list_variants_200": {
+  "android_catalog_detail_page_property_list_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "detail page property list specimen_200, English"
+    "height": 2133,
+    "caption": "Payment detail properties with labels, amounts and references at 200 percent text. Capture capped at 1200 dp."
   },
-  "ios_catalog_detail_page_table_variants": {
+  "android_catalog_detail_page_table_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "detail page table specimen, English"
+    "height": 2133,
+    "caption": "Payment detail table with labelled rows and supporting information. Capture capped at 1200 dp."
   },
-  "ios_catalog_detail_page_table_variants_dark": {
+  "android_catalog_detail_page_table_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "detail page table specimen_dark, English"
+    "height": 2133,
+    "caption": "Payment detail table with labelled rows and supporting information. Dark mode. Capture capped at 1200 dp."
   },
-  "ios_catalog_detail_page_table_variants_200": {
+  "android_catalog_detail_page_table_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "detail page table specimen_200, English"
+    "height": 2133,
+    "caption": "Payment detail table with labelled rows and supporting information at 200 percent text. Capture capped at 1200 dp."
   },
-  "ios_catalog_line_chart_variants": {
+  "android_catalog_line_chart_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog line_chart variants, English"
+    "height": 1032,
+    "caption": "Spending over time with labelled values and comparison periods."
   },
-  "ios_catalog_line_chart_variants_dark": {
+  "android_catalog_line_chart_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog line_chart variants_dark, English"
+    "height": 1032,
+    "caption": "Spending over time with labelled values and comparison periods. Dark mode."
   },
-  "ios_catalog_line_chart_variants_200": {
+  "android_catalog_line_chart_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog line_chart variants_200, English"
+    "height": 1148,
+    "caption": "Spending over time with labelled values and comparison periods at 200 percent text."
   },
-  "ios_catalog_bar_chart_variants": {
+  "android_catalog_bar_chart_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog bar_chart variants, English"
+    "height": 833,
+    "caption": "Weekly spending bars with amount labels and comparison periods."
   },
-  "ios_catalog_bar_chart_variants_dark": {
+  "android_catalog_bar_chart_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog bar_chart variants_dark, English"
+    "height": 833,
+    "caption": "Weekly spending bars with amount labels and comparison periods. Dark mode."
   },
-  "ios_catalog_bar_chart_variants_200": {
+  "android_catalog_bar_chart_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog bar_chart variants_200, English"
+    "height": 948,
+    "caption": "Weekly spending bars with amount labels and comparison periods at 200 percent text."
   },
-  "ios_catalog_meter_chart_variants": {
+  "android_catalog_meter_chart_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog meter_chart variants, English"
+    "height": 659,
+    "caption": "Category spending amounts shown as horizontal meters."
   },
-  "ios_catalog_meter_chart_variants_dark": {
+  "android_catalog_meter_chart_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog meter_chart variants_dark, English"
+    "height": 659,
+    "caption": "Category spending amounts shown as horizontal meters. Dark mode."
   },
-  "ios_catalog_meter_chart_variants_200": {
+  "android_catalog_meter_chart_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog meter_chart variants_200, English"
+    "height": 973,
+    "caption": "Category spending amounts shown as horizontal meters at 200 percent text."
   },
-  "ios_catalog_sparkline_variants": {
+  "android_catalog_sparkline_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog sparkline variants, English"
+    "height": 556,
+    "caption": "Compact spending trends beside host-provided amounts."
   },
-  "ios_catalog_sparkline_variants_dark": {
+  "android_catalog_sparkline_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog sparkline variants_dark, English"
+    "height": 556,
+    "caption": "Compact spending trends beside host-provided amounts. Dark mode."
   },
-  "ios_catalog_menu_variants": {
+  "android_catalog_menu_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog menu variants, English"
+    "height": 315,
+    "caption": "Overflow action triggers with grouped, disabled and destructive menu entries."
   },
-  "ios_catalog_menu_variants_dark": {
+  "android_catalog_menu_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog menu variants dark, English"
+    "height": 315,
+    "caption": "Overflow action triggers with grouped, disabled and destructive menu entries. Dark mode."
   },
-  "ios_catalog_menu_variants_200": {
+  "android_catalog_menu_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog menu variants 200, English"
+    "height": 319,
+    "caption": "Overflow action triggers with grouped, disabled and destructive menu entries at 200 percent text."
   },
-  "ios_catalog_accordion_variants": {
+  "android_catalog_accordion_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog accordion variants, English"
+    "height": 588,
+    "caption": "Transfer arrival instructions, expanded receipt details and a saved payment method with secondary actions."
   },
-  "ios_catalog_accordion_variants_dark": {
+  "android_catalog_accordion_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog accordion variants dark, English"
+    "height": 588,
+    "caption": "Transfer arrival instructions, expanded receipt details and a saved payment method with secondary actions. Dark mode."
   },
-  "ios_catalog_accordion_variants_200": {
+  "android_catalog_accordion_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog accordion variants 200, English"
+    "height": 959,
+    "caption": "Transfer arrival instructions, expanded receipt details and a saved payment method with secondary actions at 200 percent text."
   },
-  "ios_catalog_list_variants": {
+  "android_catalog_list_variants": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog list variants, English"
+    "height": 873,
+    "caption": "Payment method rows with icons, descriptions, actions and disabled states."
   },
-  "ios_catalog_list_variants_dark": {
+  "android_catalog_list_variants_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog list variants dark, English"
+    "height": 873,
+    "caption": "Payment method rows with icons, descriptions, actions and disabled states. Dark mode."
   },
-  "ios_catalog_list_variants_200": {
+  "android_catalog_list_variants_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog list variants 200, English"
+    "height": 1660,
+    "caption": "Payment method rows with icons, descriptions, actions and disabled states at 200 percent text."
   },
   "ios_kyc_intro_light": {
     "width": 640,
@@ -1209,140 +1184,140 @@
     "height": 1391,
     "caption": "ios methods unavailable light 200, Indonesian"
   },
-  "ios_catalog_video_loading": {
+  "android_catalog_video_loading": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios catalog video loading, English"
+    "height": 1138,
+    "caption": "Video adapter loading state with player controls."
   },
-  "ios_catalog_chart_line": {
+  "android_catalog_chart_line": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart line, English"
+    "height": 1138,
+    "caption": "Spending line chart with its exact value band."
   },
-  "ios_catalog_chart_line_dark": {
+  "android_catalog_chart_line_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart line dark, English"
+    "height": 1138,
+    "caption": "Spending line chart with its exact value band. Dark mode."
   },
-  "ios_catalog_chart_bar": {
+  "android_catalog_chart_bar": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart bar, English"
+    "height": 1138,
+    "caption": "Weekly spending bar chart with labelled axes."
   },
-  "ios_catalog_chart_bar_dark": {
+  "android_catalog_chart_bar_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart bar dark, English"
+    "height": 1138,
+    "caption": "Weekly spending bar chart with labelled axes. Dark mode."
   },
-  "ios_catalog_chart_meter": {
+  "android_catalog_chart_meter": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart meter, English"
+    "height": 1138,
+    "caption": "Spending headline and meter segments labelled with dates and amounts."
   },
-  "ios_catalog_chart_meter_dark": {
+  "android_catalog_chart_meter_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart meter dark, English"
+    "height": 1138,
+    "caption": "Spending headline and meter segments labelled with dates and amounts. Dark mode."
   },
-  "ios_catalog_chart_sparkline": {
+  "android_catalog_chart_sparkline": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart sparkline, English"
+    "height": 1138,
+    "caption": "Compact spending trend beside a headline amount."
   },
-  "ios_catalog_chart_sparkline_dark": {
+  "android_catalog_chart_sparkline_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart sparkline dark, English"
+    "height": 1138,
+    "caption": "Compact spending trend beside a headline amount. Dark mode."
   },
-  "ios_catalog_chart_in_context": {
+  "android_catalog_chart_in_context": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart in context, English"
+    "height": 1138,
+    "caption": "Spending headline, weekly bars and method totals in a phone viewport."
   },
-  "ios_catalog_chart_in_context_dark": {
+  "android_catalog_chart_in_context_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart in context dark, English"
+    "height": 1138,
+    "caption": "Spending headline, weekly bars and method totals in a phone viewport. Dark mode."
   },
-  "ios_catalog_capture_source_sheet": {
+  "android_catalog_capture_source_sheet": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: capture source sheet, English"
+    "height": 1138,
+    "caption": "Add a photo sheet offering camera, gallery and file sources."
   },
-  "ios_catalog_capture_source_sheet_dark": {
+  "android_catalog_capture_source_sheet_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: capture source sheet dark, English"
+    "height": 1138,
+    "caption": "Add a photo sheet offering camera, gallery and file sources. Dark mode."
   },
-  "ios_catalog_capture_ktp": {
+  "android_catalog_capture_ktp": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: capture ktp, English"
+    "height": 1138,
+    "caption": "Illustrated KTP card frame with framing tips."
   },
-  "ios_catalog_capture_ktp_dark": {
+  "android_catalog_capture_ktp_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: capture ktp dark, English"
+    "height": 1138,
+    "caption": "Illustrated KTP card frame with framing tips. Dark mode."
   },
-  "ios_catalog_capture_selfie": {
+  "android_catalog_capture_selfie": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: capture selfie, English"
+    "height": 1138,
+    "caption": "Selfie framing guidance and Take photo action in a scrolled phone viewport."
   },
-  "ios_catalog_capture_selfie_dark": {
+  "android_catalog_capture_selfie_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: capture selfie dark, English"
+    "height": 1138,
+    "caption": "Selfie framing guidance and Take photo action in a scrolled phone viewport. Dark mode."
   },
-  "ios_catalog_chart_states": {
+  "android_catalog_chart_states": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart states, English"
+    "height": 1138,
+    "caption": "Chart loading state with a heading and loading placeholders."
   },
-  "ios_catalog_chart_states_error": {
+  "android_catalog_chart_states_error": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart states error, English"
+    "height": 1138,
+    "caption": "Chart error message with a retry action."
   },
-  "ios_catalog_chart_states_empty": {
+  "android_catalog_chart_states_empty": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart states empty, English"
+    "height": 1138,
+    "caption": "Chart empty state with an explanatory message."
   },
-  "ios_catalog_chart_line_rest": {
+  "android_catalog_chart_line_rest": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: line chart at rest with the latest value labelled, English"
+    "height": 1138,
+    "caption": "Line chart at rest with the latest point selected and its exact amount above the plot."
   },
-  "ios_catalog_chart_bar_selected": {
+  "android_catalog_chart_bar_selected": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: bar chart with a tapped bar selected, English"
+    "height": 1138,
+    "caption": "Bar chart with a tapped bar selected and its exact value labelled."
   },
-  "ios_catalog_capture_review": {
+  "android_catalog_capture_review": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: capture review, English"
+    "height": 1138,
+    "caption": "Synthetic photo review with Use photo and Retake actions."
   },
-  "ios_catalog_capture_rejected": {
+  "android_catalog_capture_rejected": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: capture rejected, English"
+    "height": 1138,
+    "caption": "Rejected synthetic photo with the host rejection reason and a Retake action."
   },
-  "ios_catalog_capture_permission": {
+  "android_catalog_capture_permission": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: capture permission, English"
+    "height": 1138,
+    "caption": "Camera permission message with an Open settings action."
   },
-  "ios_catalog_chart_in_context_200": {
+  "android_catalog_chart_in_context_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: chart in context 200, English"
+    "height": 1138,
+    "caption": "Spending headline, weekly bars and method totals in a phone viewport at 200 percent text."
   },
-  "ios_catalog_capture_selfie_200": {
+  "android_catalog_capture_selfie_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: capture selfie 200, English"
+    "height": 1138,
+    "caption": "Selfie framing guidance and Take photo action in a scrolled phone viewport at 200 percent text."
   },
   "ios_refined_checkout_light": {
     "width": 640,
@@ -1494,75 +1469,75 @@
     "height": 1391,
     "caption": "Gallery: video player"
   },
-  "ios_catalog_foundation": {
+  "android_catalog_foundation": {
     "width": 640,
-    "height": 1391,
-    "caption": "Gallery: foundation specimen (English formatting, Indonesian row labels)"
+    "height": 1138,
+    "caption": "Foundation amount formatting, status badges and async payment actions."
   },
-  "ios_catalog_list_variants_id": {
+  "android_catalog_list_variants_id": {
     "width": 640,
-    "height": 1391,
-    "caption": "list specimen, Indonesian"
+    "height": 873,
+    "caption": "Payment method rows with icons, descriptions, actions and disabled states, in Indonesian."
   },
-  "ios_catalog_list_variants_id_200": {
+  "android_catalog_list_variants_id_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "list specimen at 200% text, Indonesian"
+    "height": 1732,
+    "caption": "Payment method rows with icons, descriptions, actions and disabled states at 200 percent text, in Indonesian."
   },
-  "ios_catalog_menu_variants_id": {
+  "android_catalog_menu_variants_id": {
     "width": 640,
-    "height": 1391,
-    "caption": "menu specimen, Indonesian"
+    "height": 315,
+    "caption": "Overflow action triggers with grouped, disabled and destructive menu entries, in Indonesian."
   },
-  "ios_catalog_menu_variants_id_200": {
+  "android_catalog_menu_variants_id_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "menu specimen at 200% text, Indonesian"
+    "height": 319,
+    "caption": "Overflow action triggers with grouped, disabled and destructive menu entries at 200 percent text, in Indonesian."
   },
-  "ios_catalog_dialog_variants_id": {
+  "android_catalog_dialog_variants_id": {
     "width": 640,
-    "height": 1391,
-    "caption": "showPaymentConfirmDialog specimen, Indonesian"
+    "height": 1138,
+    "caption": "Remove card confirmation sheet with the destructive action above Cancel, in Indonesian."
   },
-  "ios_catalog_dialog_variants_id_200": {
+  "android_catalog_dialog_variants_id_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "showPaymentConfirmDialog specimen at 200% text, Indonesian"
+    "height": 1138,
+    "caption": "Remove card confirmation sheet with the destructive action above Cancel at 200 percent text, in Indonesian."
   },
-  "ios_catalog_button_group_variants_id": {
+  "android_catalog_button_group_variants_id": {
     "width": 640,
-    "height": 1391,
-    "caption": "button group specimen, Indonesian"
+    "height": 755,
+    "caption": "Grouped payment actions using different collapse rules and a long wrapping label, in Indonesian."
   },
-  "ios_catalog_button_group_variants_id_200": {
+  "android_catalog_button_group_variants_id_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "button group specimen at 200% text, Indonesian"
+    "height": 817,
+    "caption": "Grouped payment actions using different collapse rules and a long wrapping label at 200 percent text, in Indonesian."
   },
-  "ios_catalog_menu_sheet": {
+  "android_catalog_menu_sheet": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentMenu action sheet on a phone, English"
+    "height": 1138,
+    "caption": "Phone action menu with grouped rows, a destructive action and Cancel."
   },
-  "ios_catalog_menu_sheet_id": {
+  "android_catalog_menu_sheet_id": {
     "width": 640,
-    "height": 1391,
-    "caption": "PaymentMenu action sheet on a phone, Indonesian"
+    "height": 1138,
+    "caption": "Phone action menu with grouped rows, a destructive action and Cancel, in Indonesian."
   },
-  "ios_catalog_sign_in_view_variants_id_200": {
+  "android_catalog_sign_in_view_variants_id_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "sign in view specimen at 200% text, Indonesian"
+    "height": 1244,
+    "caption": "External bank sign-in with requester branding, permissions, legal links and pinned Continue and Cancel actions at 200 percent text, in Indonesian."
   },
-  "ios_catalog_settings_view_variants_id_200": {
+  "android_catalog_settings_view_variants_id_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "settings view specimen at 200% text, Indonesian"
+    "height": 1144,
+    "caption": "Payment settings grouped into labelled sections at 200 percent text, in Indonesian."
   },
-  "ios_catalog_context_view_variants_id_200": {
+  "android_catalog_context_view_variants_id_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "context view specimen at 200% text, Indonesian"
+    "height": 1130,
+    "caption": "Context panels with titles, supporting content and footer actions at 200 percent text, in Indonesian."
   },
   "ios_se_sign_in_light_200": {
     "width": 640,

@@ -4,9 +4,17 @@ description: Add page modules and detail/overview pages; code wrapping, edge fad
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 Payment attempts as a detail module. Variants: pending, ready, empty, error. Nothing else exists. Composes DataTable with pagination null and no selection. The host owns row actions, retry and Create. Module errors use warning tone. Stripe extraActions render as a dropdown; dashboard-only showOpenAppAction is not mirrored.
+
+<Screens>
+  <Screen name="android_catalog_detail_page_table_variants" dark="android_catalog_detail_page_table_variants_dark" alt="Payment detail table with labelled rows and supporting information." caption="Detail page table" />
+  <Screen name="android_catalog_detail_page_table_variants_200" alt="Payment detail table with labelled rows and supporting information at 200 percent text." caption="200% text" />
+</Screens>
+
+The catalog captures stop at the 1200 dp limit before the later empty and error examples are fully visible. See [capture limitation #172](https://github.com/naufaldi/flutter_ui_payment/issues/172).
 
 ## Usage
 
@@ -115,7 +123,3 @@ Transaction detail A02/H04. Real composition: `example/lib/screens/gallery_views
 ## See also
 
 - [Components](/components/)
-
-<Screen name="ios_catalog_detail_page_table_variants" alt="detail page table specimen" />
-<Screen name="ios_catalog_detail_page_table_variants_dark" alt="detail page table specimen_dark" />
-<Screen name="ios_catalog_detail_page_table_variants_200" alt="detail page table specimen_200" />

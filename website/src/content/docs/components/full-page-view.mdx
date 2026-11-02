@@ -4,9 +4,15 @@ description: Add context, full-page, focus, settings, sign-in and onboarding vie
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 The transaction-history body for an AdaptiveNavShell. Variants: full page body. Nothing else exists. The header holds navigation only: `pageLink` sits on the title row as "Label ›" (D59a). The screen's priority action, if it has one, pins in a bottom footer as `primaryAction`, with at most one quiet `secondaryAction` under it (D62).
+
+<Screens>
+  <Screen name="android_catalog_full_page_view_variants" dark="android_catalog_full_page_view_variants_dark" alt="Full-page payment content with headers and footer actions." caption="Full page view" />
+  <Screen name="android_catalog_full_page_view_variants_200" alt="Full-page payment content with headers and footer actions at 200 percent text." caption="200% text" />
+</Screens>
 
 ## Usage
 
@@ -117,7 +123,3 @@ History A01; fees A04; statement A03. Real composition: `example/lib/screens/gal
 ## See also
 
 - [Components](/components/)
-
-<Screen name="ios_catalog_full_page_view_variants" alt="full page view specimen" />
-<Screen name="ios_catalog_full_page_view_variants_dark" alt="full page view specimen_dark" />
-<Screen name="ios_catalog_full_page_view_variants_200" alt="full page view specimen_200" />

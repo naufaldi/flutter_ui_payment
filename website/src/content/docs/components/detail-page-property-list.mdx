@@ -4,9 +4,17 @@ description: Add page modules and detail/overview pages; code wrapping, edge fad
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 Transaction facts with optional linked values and subText. Variants: vertical, horizontal; pending, ready, empty, error. Nothing else exists. Stripe values map to PaymentDetailValue text or link with optional subText; extraActions are links in an overflow dropdown. A failed module uses warning tone because it is secondary content. The host owns retry, Create and link destinations. Empty messages explain why and offer an action.
+
+<Screens>
+  <Screen name="android_catalog_detail_page_property_list_variants" dark="android_catalog_detail_page_property_list_variants_dark" alt="Payment detail properties with labels, amounts and references." caption="Detail page property list" />
+  <Screen name="android_catalog_detail_page_property_list_variants_200" alt="Payment detail properties with labels, amounts and references at 200 percent text." caption="200% text" />
+</Screens>
+
+The 200% capture stops at the 1200 dp limit during the empty example; the error and retry example is outside the capture. See [capture limitation #172](https://github.com/naufaldi/flutter_ui_payment/issues/172).
 
 ## Usage
 
@@ -96,7 +104,3 @@ Transaction detail A02; history summary A01. Real composition: `example/lib/scre
 ## See also
 
 - [Components](/components/)
-
-<Screen name="ios_catalog_detail_page_property_list_variants" alt="detail page property list specimen" />
-<Screen name="ios_catalog_detail_page_property_list_variants_dark" alt="detail page property list specimen_dark" />
-<Screen name="ios_catalog_detail_page_property_list_variants_200" alt="detail page property list specimen_200" />

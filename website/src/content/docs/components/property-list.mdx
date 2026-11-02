@@ -4,9 +4,15 @@ description: Host-provided payment facts in a responsive property list.
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 `PaymentPropertyList` presents host-provided payment facts. The host computes amounts and owns every action.
+
+<Screens>
+  <Screen name="android_catalog_property_list_variants" dark="android_catalog_property_list_variants_dark" alt="Payment properties arranged vertically and horizontally." caption="Property list" />
+  <Screen name="android_catalog_property_list_variants_200" alt="Payment properties arranged vertically and horizontally at 200 percent text." caption="200% text" />
+</Screens>
 
 ## Usage
 
@@ -74,7 +80,3 @@ Sign-in H04; CheckoutSummary; PaymentReceipt. Real composition: `example/lib/scr
 
 - [Info row](/components/info-row/)
 - [Loading skeleton](/components/loading-skeleton/)
-
-<Screen name="ios_catalog_property_list_variants" alt="property list specimen" />
-<Screen name="ios_catalog_property_list_variants_dark" alt="property list specimen_dark" />
-<Screen name="ios_catalog_property_list_variants_200" alt="property list specimen_200" />
