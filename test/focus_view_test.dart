@@ -41,6 +41,23 @@ void main() {
     await t.pumpAndSettle();
   }
 
+  testWidgets('wide panel pairs drawer barrier with 200 ms exit', (t) async {
+    await setSurface(t, const Size(1024, 900));
+    await open(t);
+    final route =
+        ModalRoute.of(t.element(find.byType(PaymentFocusView)))!
+            as RawDialogRoute;
+    expect(route.reverseTransitionDuration, const Duration(milliseconds: 200));
+    expect(route.barrierCurve, PaymentMotion.drawer);
+    await t.sendKeyEvent(LogicalKeyboardKey.escape);
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 199));
+    expect(find.byType(PaymentFocusView), findsOneWidget);
+    await t.pump(const Duration(milliseconds: 1, microseconds: 1));
+    await t.pump();
+    expect(find.byType(PaymentFocusView), findsNothing);
+  });
+
   testWidgets('phone sheet closes without a drag handle', (t) async {
     await setSurface(t, const Size(393, 844));
     await open(t);

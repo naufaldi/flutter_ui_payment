@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -65,6 +67,42 @@ void surface(WidgetTester tester, Size size) {
     );
 
 void main() {
+  testWidgets('wide dialog uses enter and reverse-duration exit', (
+    tester,
+  ) async {
+    surface(tester, wide);
+    late BuildContext context;
+    await tester.pumpWidget(
+      app(
+        Builder(
+          builder: (c) {
+            context = c;
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
+    unawaited(
+      showPaymentConfirmDialog(
+        context,
+        title: 'Confirm payment',
+        message: 'Continue?',
+        confirmLabel: 'Confirm',
+      ),
+    );
+    await tester.pumpAndSettle();
+    final route = ModalRoute.of(tester.element(find.byType(Dialog)))!;
+    expect(route.transitionDuration, const Duration(milliseconds: 220));
+    expect(route.reverseTransitionDuration, const Duration(milliseconds: 150));
+    await tester.tap(find.text('Cancel'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 149));
+    expect(find.byType(Dialog), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 1, microseconds: 1));
+    await tester.pump();
+    expect(find.byType(Dialog), findsNothing);
+  });
+
   for (final (name, size) in [('compact', compact), ('wide', wide)]) {
     for (final destructive in [false, true]) {
       for (final action in [

@@ -727,42 +727,83 @@ Future<bool> showPaymentConfirmDialog(
       },
     );
   } else {
-    result = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        final theme = PaymentTheme.of(context);
-        final inset = theme.space(PaymentSpace.group);
-        final [confirm, cancel] = actions(context);
-        return Dialog(
-          backgroundColor: theme.surface,
-          surfaceTintColor: Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: theme.sheetBorderRadius),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: Padding(
-              padding: EdgeInsets.all(inset),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(child: SingleChildScrollView(child: text(context))),
-                  SizedBox(height: theme.space(PaymentSpace.section)),
-                  Row(
-                    children: [
-                      Expanded(child: cancel),
-                      SizedBox(width: theme.space(PaymentSpace.related)),
-                      Expanded(child: confirm),
-                    ],
-                  ),
-                ],
+    // showDialog's mobile path, with a route that exits at `exit`.
+    final navigator = Navigator.of(context, rootNavigator: true);
+    result = await navigator.push(
+      _ConfirmDialogRoute<bool>(
+        context: context,
+        motion: PaymentMotion.of(context),
+        themes: InheritedTheme.capture(from: context, to: navigator.context),
+        barrierColor:
+            DialogTheme.of(context).barrierColor ??
+            Theme.of(context).dialogTheme.barrierColor ??
+            Colors.black54,
+        builder: (context) {
+          final theme = PaymentTheme.of(context);
+          final inset = theme.space(PaymentSpace.group);
+          final [confirm, cancel] = actions(context);
+          return Dialog(
+            backgroundColor: theme.surface,
+            surfaceTintColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: theme.sheetBorderRadius,
+            ),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: Padding(
+                padding: EdgeInsets.all(inset),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Flexible(
+                      child: SingleChildScrollView(child: text(context)),
+                    ),
+                    SizedBox(height: theme.space(PaymentSpace.section)),
+                    Row(
+                      children: [
+                        Expanded(child: cancel),
+                        SizedBox(width: theme.space(PaymentSpace.related)),
+                        Expanded(child: confirm),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
   return result ?? false;
+}
+
+// The wide confirm dialog's route. The SDK's DialogRoute takes only the
+// enter duration from its AnimationStyle and reuses it for the exit, so
+// this one also overrides the exit. Both are zero under reduced motion.
+class _ConfirmDialogRoute<T> extends DialogRoute<T> {
+  _ConfirmDialogRoute({
+    required super.context,
+    required super.builder,
+    required super.themes,
+    required super.barrierColor,
+    required PaymentMotion motion,
+  }) : _exit = motion.exit,
+       super(
+         traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop,
+         animationStyle: motion.reduced
+             ? AnimationStyle.noAnimation
+             : AnimationStyle(
+                 duration: motion.enter,
+                 reverseDuration: motion.exit,
+               ),
+       );
+
+  final Duration _exit;
+
+  @override
+  Duration get reverseTransitionDuration => _exit;
 }
 
 /// Controls one toast from [showPaymentToast].
@@ -808,6 +849,7 @@ class PaymentToastController {
   }
 
   void _onVisible() {
+    if (_closed || _visible) return;
     _visible = true;
     if (_dismissRequested) {
       dismiss();
@@ -872,6 +914,13 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showPaymentSnackBar(
   onAction: onAction,
 )._feature;
 
+final _toastQueues = Expando<_ToastQueue>();
+
+class _ToastQueue {
+  final open = <PaymentToastController>[];
+  bool? reduced;
+}
+
 PaymentToastController _showToast(
   BuildContext context, {
   required String message,
@@ -881,13 +930,32 @@ PaymentToastController _showToast(
   VoidCallback? onAction,
 }) {
   final theme = PaymentTheme.of(context);
+  final motion = PaymentMotion.of(context);
   final hasAction = actionLabel != null && onAction != null;
   final controller = PaymentToastController._(
     ValueNotifier(_ToastState(message, tone, pending)),
     hasAction,
     MediaQuery.maybeAccessibleNavigationOf(context) ?? false,
   );
-  final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
+  final messenger = ScaffoldMessenger.of(context);
+  final queue = _toastQueues[messenger] ??= _ToastQueue();
+  if (motion.reduced ||
+      (queue.reduced != null && queue.reduced != motion.reduced)) {
+    // Removing a head starts the next queued bar on the old SDK controller.
+    // Drain kit toasts before a style change can dispose that controller.
+    // Host snack bars outside the kit cannot be tracked by this registry.
+    final count = queue.open.length;
+    queue.open.clear();
+    for (var i = 0; i < count; i++) {
+      messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
+    }
+    if (count == 0) {
+      messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
+    }
+  } else {
+    messenger.hideCurrentSnackBar();
+  }
+  queue.reduced = motion.reduced;
   controller._feature = messenger.showSnackBar(
     SnackBar(
       behavior: SnackBarBehavior.floating,
@@ -916,11 +984,15 @@ PaymentToastController _showToast(
         onAction: onAction,
       ),
     ),
-    snackBarAnimationStyle: PaymentMotion.of(context).reduced
+    snackBarAnimationStyle: motion.reduced
         ? AnimationStyle.noAnimation
-        : null,
+        : AnimationStyle(duration: motion.enter, reverseDuration: motion.exit),
   );
-  controller._feature.closed.then((_) => controller._detach());
+  queue.open.add(controller);
+  controller._feature.closed.then((_) {
+    queue.open.remove(controller);
+    controller._detach();
+  });
   return controller;
 }
 
@@ -937,9 +1009,33 @@ class _ToastContent extends StatefulWidget {
   State<_ToastContent> createState() => _ToastContentState();
 }
 
-class _ToastContentState extends State<_ToastContent> {
+class _ToastContentState extends State<_ToastContent>
+    with WidgetsBindingObserver {
+  // Keeps the row, and the action's state, when reduced motion turns on or
+  // off and the AnimatedSize around it comes or goes.
+  final _row = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // A zero-duration entrance completes before SnackBar attaches its status
+    // listener. Check the mounted bar too, so dismissal and reading time work.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final bar = context.findAncestorWidgetOfExactType<SnackBar>();
+      if (bar?.animation?.isCompleted ?? false) widget.controller._onVisible();
+    });
+  }
+
+  // iOS Reduce Motion isn't part of MediaQueryData, so nothing above
+  // rebuilds this when it turns on mid-update.
+  @override
+  void didChangeAccessibilityFeatures() => setState(() {});
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     widget.controller._detach();
     super.dispose();
   }
@@ -948,71 +1044,96 @@ class _ToastContentState extends State<_ToastContent> {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
+    final motion = PaymentMotion.of(context);
     final iconSize = PaymentIconSize.medium.resolve(context);
     return ValueListenableBuilder<_ToastState>(
       valueListenable: widget.controller._state,
-      builder: (context, state, _) => DefaultTextStyle(
-        style: type.label.copyWith(color: theme.surface),
-        // The message keeps 4 pt above and below, so the icon and the
-        // action centre on its first line inside that padding (#46).
-        child: FirstLineRow(
-          line:
-              PaymentType.firstLineHeight(context) +
-              2 * theme.space(PaymentSpace.inline),
-          gap: theme.space(PaymentSpace.block),
-          trailingGap: theme.space(PaymentSpace.related),
-          leading: ExcludeSemantics(
-            child: SizedBox.square(
-              dimension: iconSize,
-              child: Center(
-                child: state.pending
-                    ? PaymentSpinner(
-                        size: PaymentSize.small,
-                        color: theme.surface,
-                      )
-                    : Icon(
-                        toneIcon(state.tone),
-                        size: iconSize,
-                        color: theme.surface,
-                      ),
-              ),
-            ),
-          ),
-          text: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: theme.space(PaymentSpace.inline),
-            ),
-            child: Text(state.message),
-          ),
-          trailing: widget.actionLabel != null && widget.onAction != null
-              ? PaymentFocusRing(
-                  radius: theme.controlBorderRadius,
+      builder: (context, state, _) {
+        final glyph = KeyedSubtree(
+          key: ValueKey(state.pending ? null : state.tone),
+          child: state.pending
+              ? PaymentSpinner(size: PaymentSize.small, color: theme.surface)
+              : Icon(
+                  toneIcon(state.tone),
+                  size: iconSize,
                   color: theme.surface,
-                  child: TextButton(
-                    onPressed: () {
-                      widget.controller.dismiss();
-                      widget.onAction!();
-                    },
-                    style: PaymentFocusRing.withoutFocusFill(
-                      TextButton.styleFrom(
-                        foregroundColor: theme.surface,
-                        textStyle: type.label.copyWith(
-                          fontWeight: type.heading.fontWeight,
-                        ),
-                        minimumSize: const Size(48, 48),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: VisualDensity.standard,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: theme.space(PaymentSpace.block),
-                        ),
-                      ),
-                    ),
-                    child: Text(widget.actionLabel!),
+                ),
+        );
+        final row = KeyedSubtree(
+          key: _row,
+          child: DefaultTextStyle(
+            style: type.label.copyWith(color: theme.surface),
+            // The message keeps 4 pt above and below, so the icon and the
+            // action centre on its first line inside that padding (#46).
+            child: FirstLineRow(
+              line:
+                  PaymentType.firstLineHeight(context) +
+                  2 * theme.space(PaymentSpace.inline),
+              gap: theme.space(PaymentSpace.block),
+              trailingGap: theme.space(PaymentSpace.related),
+              leading: ExcludeSemantics(
+                child: SizedBox.square(
+                  dimension: iconSize,
+                  child: Center(
+                    // The glyph holds no state, so reduced motion drops the
+                    // switcher, and with it a cross-fade already running.
+                    child: motion.reduced
+                        ? glyph
+                        : AnimatedSwitcher(
+                            duration: motion.quick,
+                            transitionBuilder: PaymentMotion.fadeScale,
+                            child: glyph,
+                          ),
                   ),
-                )
-              : null,
-        ),
-      ),
+                ),
+              ),
+              text: Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: theme.space(PaymentSpace.inline),
+                ),
+                child: Text(state.message),
+              ),
+              trailing: widget.actionLabel != null && widget.onAction != null
+                  ? PaymentFocusRing(
+                      radius: theme.controlBorderRadius,
+                      color: theme.surface,
+                      child: TextButton(
+                        onPressed: () {
+                          widget.controller.dismiss();
+                          widget.onAction!();
+                        },
+                        style: PaymentFocusRing.withoutFocusFill(
+                          TextButton.styleFrom(
+                            foregroundColor: theme.surface,
+                            textStyle: type.label.copyWith(
+                              fontWeight: type.heading.fontWeight,
+                            ),
+                            minimumSize: const Size(48, 48),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: VisualDensity.standard,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: theme.space(PaymentSpace.block),
+                            ),
+                          ),
+                        ),
+                        child: Text(widget.actionLabel!),
+                      ),
+                    )
+                  : null,
+            ),
+          ),
+        );
+        // AnimatedSize can't run at zero duration (it re-dirties its own
+        // layout), so reduced motion leaves it out and the height changes
+        // at once.
+        if (motion.reduced) return row;
+        return AnimatedSize(
+          duration: motion.enter,
+          curve: PaymentMotion.easeInOut,
+          alignment: Alignment.topCenter,
+          child: row,
+        );
+      },
     );
   }
 }
@@ -1069,8 +1190,65 @@ class PaymentAccordionItem extends StatefulWidget {
   State<PaymentAccordionItem> createState() => _PaymentAccordionItemState();
 }
 
-class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
+class _PaymentAccordionItemState extends State<PaymentAccordionItem>
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late bool _expanded = widget.initiallyExpanded;
+
+  // One controller drives the height and the fade, so the content leaves
+  // the way it came and a tap mid-collapse turns it around.
+  late final AnimationController _controller;
+
+  // No reverse curve: a collapse plays the enter curve backwards.
+  late final CurvedAnimation _reveal;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _controller = AnimationController(vsync: this, value: _isExpanded ? 1 : 0)
+      ..addStatusListener(_onStatus);
+    _reveal = CurvedAnimation(
+      parent: _controller,
+      curve: PaymentMotion.easeOut,
+    );
+  }
+
+  // iOS Reduce Motion isn't part of MediaQueryData, so nothing above
+  // rebuilds this when it turns on mid-animation.
+  @override
+  void didChangeAccessibilityFeatures() => setState(() {});
+
+  @override
+  void didUpdateWidget(PaymentAccordionItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if ((oldWidget.expanded ?? _expanded) != _isExpanded) _animate();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _reveal.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  // The content leaves the tree once it is fully closed.
+  void _onStatus(AnimationStatus status) {
+    if (status.isDismissed && mounted) setState(() {});
+  }
+
+  // Opens at enter and closes at exit; jumps under reduced motion (D66).
+  void _animate() {
+    final motion = PaymentMotion.of(context);
+    if (motion.reduced) {
+      _controller.value = _isExpanded ? 1 : 0;
+      return;
+    }
+    _controller
+      ..duration = motion.enter
+      ..reverseDuration = motion.exit;
+    _isExpanded ? _controller.forward() : _controller.reverse();
+  }
 
   // ignore: deprecated_member_use_from_same_package
   Widget? get _media =>
@@ -1083,7 +1261,10 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
 
   void _toggle() {
     final next = !_isExpanded;
-    if (widget.expanded == null) setState(() => _expanded = next);
+    if (widget.expanded == null) {
+      setState(() => _expanded = next);
+      _animate();
+    }
     widget.onExpandedChanged?.call(next);
   }
 
@@ -1113,6 +1294,14 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
           widget.media is PaymentImage,
     );
     final open = _isExpanded;
+    // Reduced motion turned on mid-animation: end it now.
+    if (motion.reduced && _controller.isAnimating) {
+      _controller.value = open ? 1 : 0;
+    }
+    const chevron = PaymentIcon(
+      Icons.expand_more,
+      color: PaymentTextColor.secondary,
+    );
     // Flat: no box, only a hairline under the section, so consecutive
     // sections read as one ruled list.
     final header = Semantics(
@@ -1147,16 +1336,17 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
                 ),
                 trailingGap: theme.space(PaymentSpace.related),
                 // Rotation is a transform: no layout, no repaint of the
-                // row. 150 ms, the same as other state changes.
-                trailing: AnimatedRotation(
-                  turns: open ? 0.5 : 0,
-                  duration: motion.quick,
-                  curve: PaymentMotion.easeOut,
-                  child: const PaymentIcon(
-                    Icons.expand_more,
-                    color: PaymentTextColor.secondary,
-                  ),
-                ),
+                // row. 150 ms, the same as other state changes. A turn
+                // already running would finish at its old speed, so under
+                // reduced motion the chevron turns at once.
+                trailing: motion.reduced
+                    ? RotatedBox(quarterTurns: open ? 2 : 0, child: chevron)
+                    : AnimatedRotation(
+                        turns: open ? 0.5 : 0,
+                        duration: motion.quick,
+                        curve: PaymentMotion.easeOut,
+                        child: chevron,
+                      ),
               ),
             ),
           ),
@@ -1216,22 +1406,45 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem> {
                       ),
               ),
             ),
-          // Size eases so the content below does not jump; collapses to an
-          // instant change under reduced motion.
-          AnimatedSize(
-            duration: motion.enter,
-            reverseDuration: motion.exit,
-            curve: PaymentMotion.easeOut,
-            alignment: Alignment.topCenter,
-            child: open
-                ? Padding(
-                    padding: EdgeInsets.only(
-                      bottom: theme.space(PaymentSpace.group),
+          // The height eases so the content below does not jump, and the
+          // content fades with it. It stays while it collapses, out of
+          // reach of taps, Tab and screen readers, and leaves the tree once
+          // closed. The tree keeps one shape in every mode, so turning
+          // reduced motion on keeps the content's state.
+          if (!_controller.isDismissed)
+            ExcludeFocus(
+              excluding: !open,
+              child: ExcludeSemantics(
+                excluding: !open,
+                child: IgnorePointer(
+                  ignoring: !open,
+                  child: AnimatedBuilder(
+                    animation: _reveal,
+                    builder: (context, child) => ClipRect(
+                      // Clipped only while it moves, so focus rings show
+                      // at rest.
+                      clipBehavior: _reveal.value < 1
+                          ? Clip.hardEdge
+                          : Clip.none,
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        heightFactor: _reveal.value,
+                        child: child,
+                      ),
                     ),
-                    child: widget.child,
-                  )
-                : const SizedBox(width: double.infinity),
-          ),
+                    child: FadeTransition(
+                      opacity: _reveal,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          bottom: theme.space(PaymentSpace.group),
+                        ),
+                        child: widget.child,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

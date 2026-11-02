@@ -35,6 +35,58 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
   }
 
+  testWidgets('update cross-fades icon and eases height', (tester) async {
+    await show(tester, message: 'Waiting', pending: true);
+    final size = find.descendant(
+      of: find.byType(SnackBar),
+      matching: find.byType(AnimatedSize),
+    );
+    final oldHeight = tester.getSize(size).height;
+    controller.update(
+      List.filled(50, 'Updated').join(' '),
+      tone: StatusTone.success,
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 75));
+    expect(find.byType(PaymentSpinner), findsOneWidget);
+    expect(find.byIcon(PaymentIcons.success), findsOneWidget);
+    final middle = tester.getSize(size).height;
+    await tester.pump(const Duration(milliseconds: 220));
+    final newHeight = tester.getSize(size).height;
+    expect(middle, inExclusiveRange(oldHeight, newHeight));
+    controller.dismiss();
+    await tester.pumpAndSettle();
+  });
+  testWidgets('toast enters at enter and leaves at exit', (tester) async {
+    late BuildContext context;
+    await tester.pumpWidget(
+      host(
+        Builder(
+          builder: (c) {
+            context = c;
+            return const SizedBox();
+          },
+        ),
+        1,
+      ),
+    );
+    controller = showPaymentToast(context, message: 'Copied');
+    await tester.pump();
+    final bar = tester.widget<SnackBar>(find.byType(SnackBar));
+    await tester.pump(const Duration(milliseconds: 219));
+    expect(bar.animation!.value, inExclusiveRange(0, 1));
+    await tester.pump(const Duration(milliseconds: 1, microseconds: 1));
+    await tester.pump();
+    expect(bar.animation!.value, 1);
+    controller.dismiss();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 149));
+    expect(find.byType(SnackBar), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 1, microseconds: 1));
+    await tester.pump();
+    expect(find.byType(SnackBar), findsNothing);
+  });
+
   testWidgets('ink tokens and flat shape', (tester) async {
     await show(tester);
     final context = tester.element(find.byType(SnackBar));
@@ -78,6 +130,8 @@ void main() {
     await tester.pump();
     expect(tester.element(find.byType(SnackBar)), same(element));
     expect(find.byIcon(PaymentIcons.success), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 150, microseconds: 1));
+    await tester.pump();
     expect(find.byType(PaymentSpinner), findsNothing);
     await tester.pump(const Duration(seconds: 4));
     await tester.pump(const Duration(seconds: 1));
