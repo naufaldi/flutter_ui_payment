@@ -170,6 +170,7 @@ class _ImageFadeInState extends State<_ImageFadeIn>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late final AnimationController _fade;
   late final CurvedAnimation _opacity;
+  final _phKey = GlobalKey();
 
   @override
   void initState() {
@@ -180,31 +181,56 @@ class _ImageFadeInState extends State<_ImageFadeIn>
   }
 
   @override
-  void didChangeAccessibilityFeatures() => setState(() {});
+  void didChangeAccessibilityFeatures() {
+    _finishReducedMotion();
+    setState(() {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _finishReducedMotion();
+  }
+
+  void _finishReducedMotion() {
+    if (PaymentMotion.of(context).reduced && widget.loaded) {
+      _fade.value = 1;
+    }
+  }
 
   @override
   void didUpdateWidget(_ImageFadeIn oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.loaded && !oldWidget.loaded) {
-      _fade.duration = PaymentMotion.of(context).quick;
-      _fade.forward();
+    if (!widget.loaded && oldWidget.loaded) {
+      _fade.value = 0;
+    } else if (widget.loaded && !oldWidget.loaded) {
+      final motion = PaymentMotion.of(context);
+      if (motion.reduced) {
+        _fade.value = 1;
+      } else {
+        _fade.duration = motion.quick;
+        _fade.forward(from: 0);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (PaymentMotion.of(context).reduced) {
-      _fade.value = 1;
-      return widget.child;
-    }
-    if (!widget.loaded) return widget.placeholder;
+    final reduced = PaymentMotion.of(context).reduced;
+    final placeholder = KeyedSubtree(key: _phKey, child: widget.placeholder);
+    final image = FadeTransition(opacity: _opacity, child: widget.child);
     return AnimatedBuilder(
       animation: _fade,
       builder: (_, _) => Stack(
         fit: StackFit.passthrough,
         children: [
-          if (!_fade.isCompleted) Positioned.fill(child: widget.placeholder),
-          FadeTransition(opacity: _opacity, child: widget.child),
+          // Before load the placeholder owns intrinsic sizing, as on main.
+          // The global key preserves host State when it becomes an overlay.
+          if (!widget.loaded)
+            placeholder
+          else if (!reduced && !_fade.isCompleted)
+            Positioned.fill(child: placeholder),
+          if (widget.loaded) image else Positioned.fill(child: image),
         ],
       ),
     );

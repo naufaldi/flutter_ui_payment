@@ -58,6 +58,198 @@ void main() {
       expect(find.byKey(const Key('ph')), findsNothing);
     });
   }
+  for (final setup in ReducedMotion.values) {
+    for (final custom in [true, false]) {
+      testWidgets('loading placeholder under ${setup.name}, custom=$custom', (
+        t,
+      ) async {
+        final result = Completer<ImageInfo>();
+        await t.pumpWidget(
+          setup.apply(
+            t,
+            host(
+              PaymentImage(
+                image: ControlledImage(result.future),
+                alt: 'Bank logo',
+                width: 96,
+                height: 64,
+                placeholder: custom ? const SizedBox(key: Key('ph')) : null,
+              ),
+              1,
+            ),
+          ),
+        );
+        final placeholder = custom
+            ? find.byKey(const Key('ph'))
+            : find.descendant(
+                of: find.byType(PaymentImage),
+                matching: find.byWidgetPredicate(
+                  (w) =>
+                      w is ColoredBox &&
+                      w.color ==
+                          PaymentTheme.of(
+                            t.element(find.byType(PaymentImage)),
+                          ).surfaceMuted,
+                ),
+              );
+        expect(placeholder, findsOneWidget);
+        await completeImage(t, result);
+        await expectStill(t, () {});
+        expect(placeholder, findsNothing);
+      });
+    }
+    testWidgets('turning ${setup.name} off before load allows fade', (t) async {
+      final result = Completer<ImageInfo>();
+      final provider = ControlledImage(result.future);
+      final reduced = ValueNotifier(true);
+      addTearDown(reduced.dispose);
+      final app = host(
+        ValueListenableBuilder<bool>(
+          valueListenable: reduced,
+          builder: (context, value, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              disableAnimations: setup == ReducedMotion.mediaQuery && value,
+            ),
+            child: child!,
+          ),
+          child: PaymentImage(
+            image: provider,
+            alt: 'Bank logo',
+            width: 96,
+            height: 64,
+            placeholder: const SizedBox(key: Key('ph')),
+          ),
+        ),
+        1,
+      );
+      await t.pumpWidget(
+        setup == ReducedMotion.mediaQuery ? app : setup.apply(t, app),
+      );
+      t.platformDispatcher.clearAccessibilityFeaturesTestValue();
+      reduced.value = false;
+      await t.pump();
+      await completeImage(t, result);
+      await t.pump();
+      await t.pump(const Duration(milliseconds: 50));
+      expect(imageFade(t).opacity.value, allOf(greaterThan(0), lessThan(1)));
+      expect(find.byKey(const Key('ph')), findsOneWidget);
+      await t.pumpAndSettle();
+    });
+  }
+  testWidgets('provider swap fades again after loading', (t) async {
+    final first = Completer<ImageInfo>();
+    final second = Completer<ImageInfo>();
+    await t.pumpWidget(imageHost(ControlledImage(first.future)));
+    await completeImage(t, first);
+    await t.pumpAndSettle();
+    await t.pumpWidget(imageHost(ControlledImage(second.future)));
+    expect(find.byKey(const Key('ph')), findsOneWidget);
+    await completeImage(t, second);
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 50));
+    expect(imageFade(t).opacity.value, allOf(greaterThan(0), lessThan(1)));
+    expect(find.byKey(const Key('ph')), findsOneWidget);
+    await t.pumpAndSettle();
+    expect(find.byKey(const Key('ph')), findsNothing);
+  });
+  testWidgets('host placeholder keeps State through load and fade', (t) async {
+    final key = GlobalKey<_PlaceholderState>();
+    final result = Completer<ImageInfo>();
+    await t.pumpWidget(
+      host(
+        PaymentImage(
+          image: ControlledImage(result.future),
+          alt: '',
+          width: 96,
+          height: 64,
+          placeholder: _Placeholder(
+            key: const ValueKey('host-ph'),
+            child: _Placeholder(key: key),
+          ),
+        ),
+        1,
+      ),
+    );
+    final state = key.currentState;
+    final hostState = t.state(find.byKey(const ValueKey('host-ph')));
+    expect(state, isNotNull);
+    await completeImage(t, result);
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 50));
+    expect(key.currentState, same(state));
+    expect(t.state(find.byKey(const ValueKey('host-ph'))), same(hostState));
+    await t.pumpAndSettle();
+    expect(key.currentState, isNull);
+  });
+  for (final fixed in [true, false]) {
+    for (final fit in BoxFit.values) {
+      testWidgets('main layout parity fixed=$fixed fit=$fit', (t) async {
+        final result = Completer<ImageInfo>();
+        final referenceResult = Completer<ImageInfo>();
+        const actualKey = Key('actual');
+        const referenceKey = Key('reference');
+        final width = fixed ? 96.0 : null;
+        final height = fixed ? 64.0 : null;
+        const placeholder = SizedBox(width: 37, height: 23);
+        await t.pumpWidget(
+          host(
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                PaymentImage(
+                  key: actualKey,
+                  image: ControlledImage(result.future),
+                  alt: '',
+                  width: width,
+                  height: height,
+                  fit: fit,
+                  placeholder: placeholder,
+                ),
+                SizedBox(
+                  key: referenceKey,
+                  width: width,
+                  height: height,
+                  child: Image(
+                    image: ControlledImage(referenceResult.future),
+                    width: width,
+                    height: height,
+                    fit: fit,
+                    frameBuilder: (_, child, frame, sync) =>
+                        frame == null ? placeholder : child,
+                  ),
+                ),
+              ],
+            ),
+            1,
+          ),
+        );
+        expect(
+          t.getSize(find.byKey(actualKey)),
+          t.getSize(find.byKey(referenceKey)),
+        );
+        expect(
+          t.getSize(find.byKey(actualKey)),
+          fixed ? const Size(96, 64) : const Size(37, 23),
+        );
+        await completeImage(t, result);
+        await completeImage(t, referenceResult);
+        await t.pump();
+        expect(
+          t.getSize(find.byKey(actualKey)),
+          t.getSize(find.byKey(referenceKey)),
+        );
+        expect(
+          t.getSize(find.byKey(actualKey)),
+          fixed ? const Size(96, 64) : const Size(10, 10),
+        );
+        await t.pumpAndSettle();
+        expect(
+          t.getSize(find.byKey(actualKey)),
+          t.getSize(find.byKey(referenceKey)),
+        );
+      });
+    }
+  }
   testWidgets('iOS reduced motion finishes image fade mid-flight', (t) async {
     final result = Completer<ImageInfo>();
     await t.pumpWidget(imageHost(ControlledImage(result.future)));
@@ -237,4 +429,25 @@ Future<void> completeImage(WidgetTester t, Completer<ImageInfo> result) async {
     );
     await Future<void>.delayed(Duration.zero);
   });
+  await t.pump();
+}
+
+FadeTransition imageFade(WidgetTester t) => t.widget<FadeTransition>(
+  find.descendant(
+    of: find.byType(PaymentImage),
+    matching: find.byType(FadeTransition),
+  ),
+);
+
+class _Placeholder extends StatefulWidget {
+  const _Placeholder({super.key, this.child});
+  final Widget? child;
+  @override
+  State<_Placeholder> createState() => _PlaceholderState();
+}
+
+class _PlaceholderState extends State<_Placeholder> {
+  @override
+  Widget build(BuildContext context) =>
+      SizedBox(width: 37, height: 23, child: widget.child);
 }
