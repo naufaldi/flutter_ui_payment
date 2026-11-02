@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 
@@ -13,7 +14,11 @@ import 'screens/gallery_screen.dart';
 import 'screens/scenario_picker.dart';
 import 'themes.dart';
 
-void main() => runApp(const DemoApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  runApp(const DemoApp());
+}
 
 /// Display preferences chosen in the demo shell.
 class DemoSettings {
@@ -177,24 +182,35 @@ class DemoAppState extends State<DemoApp> with WidgetsBindingObserver {
       ],
       builder: (context, child) {
         final media = MediaQuery.of(context);
-        return MediaQuery(
-          data: media.copyWith(
-            textScaler: settings.textScale == null
-                ? media.textScaler
-                : TextScaler.linear(settings.textScale!),
-            disableAnimations:
-                media.disableAnimations ||
-                settings.reduceMotion ||
-                View.of(
-                  context,
-                ).platformDispatcher.accessibilityFeatures.reduceMotion,
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            systemNavigationBarColor: Colors.transparent,
+            systemNavigationBarDividerColor: Colors.transparent,
+            systemNavigationBarContrastEnforced: false,
+            systemNavigationBarIconBrightness:
+                Theme.of(context).brightness == Brightness.dark
+                ? Brightness.light
+                : Brightness.dark,
           ),
-          child: settings.textDirection == null
-              ? child!
-              : Directionality(
-                  textDirection: settings.textDirection!,
-                  child: child!,
-                ),
+          child: MediaQuery(
+            data: media.copyWith(
+              textScaler: settings.textScale == null
+                  ? media.textScaler
+                  : TextScaler.linear(settings.textScale!),
+              disableAnimations:
+                  media.disableAnimations ||
+                  settings.reduceMotion ||
+                  View.of(
+                    context,
+                  ).platformDispatcher.accessibilityFeatures.reduceMotion,
+            ),
+            child: settings.textDirection == null
+                ? child!
+                : Directionality(
+                    textDirection: settings.textDirection!,
+                    child: child!,
+                  ),
+          ),
         );
       },
       home: _Shell(app: this),

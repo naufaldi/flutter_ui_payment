@@ -42,6 +42,9 @@ class PaymentFullPageView extends StatelessWidget {
   final PaymentButton? pageAction;
 
   /// Navigation on the title row, shown as "Label ›" (D59a).
+  /// At large text, a link that cannot fit beside the title becomes the first
+  /// item in the header's ⋮ menu (D83). At normal text it keeps its own line
+  /// when it cannot fit. External links always keep their own line.
   final PaymentLink? pageLink;
 
   /// The screen's priority action, pinned in the footer (D62).

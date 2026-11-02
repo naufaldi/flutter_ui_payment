@@ -23012,7 +23012,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "pageLink",
-            "doc": "Navigation on the title row, shown as \"Label ›\" (D59a)."
+            "doc": "Navigation on the title row, shown as \"Label ›\" (D59a).\nAt large text, a link that cannot fit beside the title becomes the first\nitem in the header's ⋮ menu (D83). At normal text it keeps its own line\nwhen it cannot fit. External links always keep their own line."
           },
           {
             "name": "primaryAction",
@@ -23069,7 +23069,7 @@
         "kind": "field",
         "static": false,
         "type": "PaymentLink?",
-        "doc": "Navigation on the title row, shown as \"Label ›\" (D59a)."
+        "doc": "Navigation on the title row, shown as \"Label ›\" (D59a).\nAt large text, a link that cannot fit beside the title becomes the first\nitem in the header's ⋮ menu (D83). At normal text it keeps its own line\nwhen it cannot fit. External links always keep their own line."
       },
       {
         "name": "primaryAction",

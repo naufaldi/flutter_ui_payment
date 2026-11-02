@@ -286,7 +286,8 @@ class ViewHeader extends StatelessWidget {
   final String? description;
   final Widget? leading;
 
-  /// Navigation on the title row at every width.
+  /// Navigation on the title row when it fits. Large-text overflow goes
+  /// behind ⋮ (D83); external navigation always keeps its own line.
   final PaymentLink? link;
 
   /// Header actions; see the class doc for the phone layout.
@@ -332,23 +333,13 @@ class ViewHeader extends StatelessWidget {
         builder: (context, k) {
           final compact = k.maxWidth < kCompactBreakpoint;
           final large = PaymentType.isLarge(context);
-          final menu = PaymentMenu(
-            entries: [
-              for (final a in actions)
-                PaymentMenuItem(
-                  label: a.label,
-                  destructive: a.variant == PaymentButtonVariant.destructive,
-                  onSelected: a.onPressed == null ? null : () => a.onPressed!(),
-                ),
-            ],
-          );
           // One header link at most: the page link, or a phone's single
           // action.
           final single = compact && actions.length == 1 && link == null
               ? actions.single
               : null;
           final linkLabel = link?.label ?? single?.label;
-          final hasMenu = compact && actions.isNotEmpty && single == null;
+          final actionMenu = compact && actions.isNotEmpty && single == null;
           Widget? headerLink(AlignmentGeometry alignment) => link != null
               ? HeaderLink(
                   key: link!.key,
@@ -367,8 +358,8 @@ class ViewHeader extends StatelessWidget {
                 )
               : null;
           // The title has priority and never breaks inside a word: when the
-          // title on one line and the link don't fit side by side, the link
-          // takes its own line under the header text, start-aligned.
+          // title on one line and the link don't fit side by side, large
+          // text moves page navigation into the menu (D83).
           final leadWidth = switch (leading) {
             null => 0.0,
             PaymentIcon(:final size) =>
@@ -377,11 +368,30 @@ class ViewHeader extends StatelessWidget {
           };
           final linkOnRow =
               linkLabel != null &&
+              link?.external != true &&
               oneLineWidth(context, title, type.title) +
                       space +
                       HeaderLink.naturalWidth(context, linkLabel) +
-                      (hasMenu ? kMinInteractiveDimension : 0) <=
+                      (actionMenu ? kMinInteractiveDimension : 0) <=
                   k.maxWidth - leadWidth;
+          final linkInMenu =
+              large && link != null && !link!.external && !linkOnRow;
+          final hasMenu = actionMenu || linkInMenu;
+          final menu = PaymentMenu(
+            entries: [
+              if (linkInMenu)
+                PaymentMenuItem(
+                  label: link!.label,
+                  onSelected: link!.onPressed,
+                ),
+              for (final a in actions)
+                PaymentMenuItem(
+                  label: a.label,
+                  destructive: a.variant == PaymentButtonVariant.destructive,
+                  onSelected: a.onPressed == null ? null : () => a.onPressed!(),
+                ),
+            ],
+          );
           final nav = [
             if (linkOnRow) headerLink(AlignmentDirectional.centerEnd)!,
             if (hasMenu) menu,
@@ -390,7 +400,8 @@ class ViewHeader extends StatelessWidget {
                 children: [for (final a in actions) hugButton(a)],
               ),
           ];
-          final actionsBelow = !compact && (!inlineActions || large);
+          final actionsBelow =
+              !linkInMenu && !compact && (!inlineActions || large);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -418,7 +429,7 @@ class ViewHeader extends StatelessWidget {
                         ),
                       ),
               ),
-              if (linkLabel != null && !linkOnRow) ...[
+              if (linkLabel != null && !linkOnRow && !linkInMenu) ...[
                 SizedBox(height: theme.space(PaymentSpace.related)),
                 Align(
                   alignment: AlignmentDirectional.centerStart,

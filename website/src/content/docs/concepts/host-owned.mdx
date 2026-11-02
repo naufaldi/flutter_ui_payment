@@ -27,6 +27,8 @@ Widgets never trust raw JSON. Your adapter maps unknown values to a safe "unavai
 | Payment status, idempotency, refund | Host/backend/provider | Renders authoritative state; does not claim the UI alone prevents a double charge |
 | Status polling, recovery, lifecycle | Host coordinator | Offers events and callbacks; widgets start no hidden polling |
 
+The host also owns Android system-bar styling (B11, D85); see [System bars on Android](/concepts/theming/#system-bars-on-android).
+
 ## Host verdicts, not UI math
 
 Where a widget could be tempted to compute something, it takes your verdict instead:
