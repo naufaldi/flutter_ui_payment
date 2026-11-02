@@ -6,6 +6,7 @@ import '../foundation/token_resolvers.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/payment_icons.dart';
+import '../foundation/payment_motion.dart';
 import '../foundation/payment_tokens.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/kit_strings.dart';
@@ -31,18 +32,21 @@ class PaymentIconButton extends StatelessWidget {
     this.variant = PaymentIconButtonVariant.neutral,
     this.focusNode,
   }) : assert(tooltip != ''),
-       _danger = false;
+       _danger = false,
+       _swapGlyph = false;
 
-  // The copy button's failure glyph, in the danger tone.
-  const PaymentIconButton._danger({
+  // Every copy state shares the switcher, including failure.
+  const PaymentIconButton._copy({
     required this.icon,
     required this.tooltip,
     required this.onPressed,
-  }) : variant = PaymentIconButtonVariant.neutral,
+    this._danger = false,
+  }) : variant = PaymentIconButtonVariant.accent,
        focusNode = null,
-       _danger = true;
+       _swapGlyph = true;
 
   final bool _danger;
+  final bool _swapGlyph;
 
   /// Semantic glyph.
   final IconData icon;
@@ -71,6 +75,15 @@ class PaymentIconButton extends StatelessWidget {
             PaymentIconButtonVariant.neutral => theme.textSecondary,
             PaymentIconButtonVariant.accent => theme.accent,
           };
+    final motion = PaymentMotion.of(context);
+    Widget glyph = Icon(icon, key: ValueKey(icon), size: 20, color: color);
+    if (_swapGlyph && !motion.reduced) {
+      glyph = AnimatedSwitcher(
+        duration: motion.quick,
+        transitionBuilder: PaymentMotion.fadeScale,
+        child: glyph,
+      );
+    }
     return TooltipTheme(
       data: TooltipTheme.of(context).copyWith(
         decoration: BoxDecoration(
@@ -99,7 +112,7 @@ class PaymentIconButton extends StatelessWidget {
             style: PaymentFocusRing.withoutFocusFill(
               IconButton.styleFrom(minimumSize: const Size(48, 48)),
             ),
-            icon: Icon(icon, size: 20, color: color),
+            icon: glyph,
           ),
         ),
       ),
@@ -246,7 +259,17 @@ class PaymentCopyButton extends StatefulWidget {
 
 enum _CopyState { idle, pending, copied, failed }
 
-class _PaymentCopyButtonState extends State<PaymentCopyButton> {
+class _PaymentCopyButtonState extends State<PaymentCopyButton>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAccessibilityFeatures() => setState(() {});
+
   _CopyState _state = _CopyState.idle;
   Timer? _revert;
   int _generation = 0;
@@ -288,6 +311,7 @@ class _PaymentCopyButtonState extends State<PaymentCopyButton> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _generation++;
     _revert?.cancel();
     super.dispose();
@@ -340,18 +364,16 @@ class _PaymentCopyButtonState extends State<PaymentCopyButton> {
               : failed
               ? l10n.copyFailed
               : null,
-          child: failed
-              ? PaymentIconButton._danger(
-                  icon: PaymentIcons.danger,
-                  tooltip: tooltip,
-                  onPressed: _press,
-                )
-              : PaymentIconButton(
-                  icon: copied ? PaymentIcons.copied : PaymentIcons.copy,
-                  tooltip: tooltip,
-                  variant: PaymentIconButtonVariant.accent,
-                  onPressed: _press,
-                ),
+          child: PaymentIconButton._copy(
+            icon: failed
+                ? PaymentIcons.danger
+                : copied
+                ? PaymentIcons.copied
+                : PaymentIcons.copy,
+            tooltip: tooltip,
+            danger: failed,
+            onPressed: _press,
+          ),
         ),
       ),
     );

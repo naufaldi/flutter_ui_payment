@@ -88,7 +88,7 @@ AnimatedSwitcher(
 | `motion.fullWidthSwap(child)` | Fade only, at `enter` in and `exit` out, with the height eased by `AnimatedSize` (`enter`, `easeInOut`) | Full-width status content | Scale |
 | `PaymentMotion.topLayout` | No motion: the layout for a swap | Any `AnimatedSwitcher`: the leaving child keeps painting but takes no taps and is hidden from screen readers | Let a leaving "Pay" button be pressed |
 
-`fadeRise` fits `AnimatedSwitcher.transitionBuilder` as it is. For the back mode, pass a closure, so going back never looks like going forward:
+`fadeRise` fits `AnimatedSwitcher.transitionBuilder` as it is. Flipping the direction mid-swap keeps the leaving child's state. For the back mode, pass a closure, so going back never looks like going forward:
 
 ```dart
 AnimatedSwitcher(

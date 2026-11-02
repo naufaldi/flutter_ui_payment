@@ -485,6 +485,8 @@ Icons are Material `Icons` from the Flutter SDK, with no icon package. **New** `
 
 **No spring token** (D75). Sheets keep the curve tokens. The SDK bottom sheet already carries the release velocity into its fling, and its dismiss and settle can be interrupted.
 
+Copy confirmation glyphs use the compact `fadeScale` swap over `quick`; image loads fade over their placeholder until completion (#103, D69). Both are instant under reduced motion, including a mid-swap setting change (D66). Forward and back `fadeRise` keep the same wrapper structure, preserving leaving child state when direction changes mid-swap (#115, D70).
+
 ### 3.8 Focus and press
 
 | Token / rule | Value | Source |
