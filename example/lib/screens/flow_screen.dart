@@ -111,24 +111,24 @@ class FlowScreen extends StatelessWidget {
         // steps pin theirs inside the step (D62).
         bottomNavigationBar:
             c.step == FlowStep.checkout && !c.starting && !c.obscured
-            ? _CheckoutBar(c, maxContentWidth: contentCap(width, c.step))
+            ? _EnterFade(
+                child: _CheckoutBar(
+                  c,
+                  maxContentWidth: contentCap(width, c.step),
+                ),
+              )
             : null,
         // A view step's pinned footer pads the bottom inset itself.
         body: SafeArea(
           bottom: !view,
           child: PrivacyMask(
             obscured: c.obscured,
-            // Each step enters with a short fade and 8 px rise; the
-            // previous step leaves faster. Collapses under reduced motion.
-            child: AnimatedSwitcher(
-              duration: PaymentMotion.of(context).enter,
-              reverseDuration: PaymentMotion.of(context).exit,
-              transitionBuilder: PaymentMotion.fadeRise,
-              layoutBuilder: PaymentMotion.topLayout,
+            child: _FlowStepSwitcher(
+              step: c.step,
               child: view
                   ? SizedBox.expand(
                       key: ValueKey('flow-view-${c.step.name}'),
-                      child: _StepBody(coordinator: c),
+                      child: _StepBody(coordinator: c, step: c.step),
                     )
                   : ListView(
                       key: ValueKey('flow-list-${c.step.name}'),
@@ -148,7 +148,7 @@ class FlowScreen extends StatelessWidget {
                             child: Center(child: Text(s.loading)),
                           )
                         else
-                          _StepBody(coordinator: c),
+                          _StepBody(coordinator: c, step: c.step),
                       ],
                     ),
             ),
@@ -179,6 +179,9 @@ class FlowScreen extends StatelessWidget {
   };
 
   Future<void> _handleBack(BuildContext context, DemoCoordinator c) async {
+    // Keep parent returns in _FlowStepSwitcherState._goingBack aligned.
+    // This dispatch also has state-dependent targets, guarded actions and
+    // a confirmation dialog, so a static parent map cannot replace it.
     switch (c.step) {
       case FlowStep.signIn:
       case FlowStep.overview:
@@ -212,25 +215,217 @@ class FlowScreen extends StatelessWidget {
           return;
         }
         final s = DemoStrings.of(context);
-        final leave = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(s.leaveTitle),
-            content: Text(s.leaveMessage),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text(s.stay),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(s.leave),
-              ),
-            ],
-          ),
+        final leave = await showPaymentConfirmDialog(
+          context,
+          title: s.leaveTitle,
+          message: s.leaveMessage,
+          confirmLabel: s.leave,
+          cancelLabel: s.stay,
+          destructive: false,
         );
-        if (leave == true) c.goHome();
+        if (leave) c.goHome();
     }
+  }
+}
+
+class _FlowStepSwitcher extends StatefulWidget {
+  const _FlowStepSwitcher({required this.step, required this.child});
+  final FlowStep step;
+  final Widget child;
+  @override
+  State<_FlowStepSwitcher> createState() => _FlowStepSwitcherState();
+}
+
+class _StepEntry {
+  _StepEntry(this.child, this.controller, {required this.back});
+  Widget child;
+  final AnimationController controller;
+  bool back;
+  late final Key key = ObjectKey(this);
+}
+
+class _FlowStepSwitcherState extends State<_FlowStepSwitcher>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
+  late final List<FlowStep> _path = [
+    FlowStep.overview,
+    if (widget.step != FlowStep.overview) widget.step,
+  ];
+  late _StepEntry _current = _StepEntry(
+    widget.child,
+    AnimationController(vsync: this, value: 1),
+    back: false,
+  );
+  final _leaving = <_StepEntry>[];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAccessibilityFeatures() => setState(() {});
+
+  bool _goingBack(FlowStep previous) {
+    if (widget.step == previous) return false;
+    final i = _path.lastIndexOf(widget.step);
+    // A correction or restart starts a new pass. Scenario shortcuts can start
+    // beyond edit/resume destinations that have not been visited yet.
+    final correction =
+        previous == FlowStep.kycStatus &&
+        (widget.step == FlowStep.kycIntro ||
+            widget.step == FlowStep.kycIdentity ||
+            widget.step == FlowStep.kycDocuments);
+    // Mirrors the parent returns in FlowScreen._handleBack, whose dispatch
+    // also handles state-dependent targets, guarded actions and confirmation.
+    final parentReturn = switch ((previous, widget.step)) {
+      (FlowStep.kycDocuments, FlowStep.kycIdentity) ||
+      (FlowStep.kycReview, FlowStep.kycDocuments) ||
+      (FlowStep.kycIdentity, FlowStep.kycIntro) ||
+      (FlowStep.confirm, FlowStep.checkout) ||
+      (FlowStep.authorize, FlowStep.confirm) ||
+      (FlowStep.receipt, FlowStep.payment) => true,
+      _ => false,
+    };
+    final back =
+        !correction &&
+        (i >= 0 || widget.step == FlowStep.overview || parentReturn);
+    if (correction) {
+      // Every transition leaves its destination at the end of the path.
+      // A status-first shortcut has no earlier correction destination;
+      // remove the departed status itself so submitting is forward again.
+      final trimFrom = i >= 0 ? i : _path.lastIndexOf(previous);
+      if (trimFrom >= 0) _path.removeRange(trimFrom, _path.length);
+      _path.add(widget.step);
+    } else if (back && i >= 0) {
+      _path.removeRange(i + 1, _path.length);
+    } else if (back) {
+      _path.removeLast();
+      _path.add(widget.step);
+    } else {
+      _path.add(widget.step);
+    }
+    return back;
+  }
+
+  @override
+  void didUpdateWidget(_FlowStepSwitcher oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.step == oldWidget.step &&
+        Widget.canUpdate(widget.child, _current.child)) {
+      _current.child = widget.child;
+      return;
+    }
+    final back = _goingBack(oldWidget.step);
+    final motion = PaymentMotion.of(context);
+    final leaving = _current;
+    // Only the incoming forward step rises; outgoing content fades in place.
+    leaving.back = true;
+    _current = _StepEntry(
+      widget.child,
+      AnimationController(vsync: this, duration: motion.enter),
+      back: back,
+    );
+    _leaving.add(leaving);
+    // A synchronous dismissed callback must not setState during build.
+    if (motion.reduced) {
+      _finish();
+      return;
+    }
+    _current.controller.forward();
+    leaving.controller
+      ..reverseDuration = motion.exit
+      ..addStatusListener((status) {
+        if (status.isDismissed && mounted) {
+          setState(() => _leaving.remove(leaving));
+          leaving.controller.dispose();
+        }
+      })
+      ..reverse();
+  }
+
+  void _finish() {
+    for (final entry in _leaving) {
+      entry.controller.dispose();
+    }
+    _leaving.clear();
+    _current.controller.value = 1;
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    for (final entry in [_current, ..._leaving]) {
+      entry.controller.dispose();
+    }
+    super.dispose();
+  }
+
+  Widget _transition(_StepEntry entry) => KeyedSubtree(
+    key: entry.key,
+    child: PaymentMotion.fadeRise(
+      entry.child,
+      entry.controller,
+      back: entry.back,
+    ),
+  );
+  @override
+  Widget build(BuildContext context) {
+    if (PaymentMotion.of(context).reduced) _finish();
+    return PaymentMotion.topLayout(_transition(_current), [
+      for (final entry in _leaving) _transition(entry),
+    ]);
+  }
+}
+
+class _EnterFade extends StatefulWidget {
+  const _EnterFade({required this.child});
+  final Widget child;
+  @override
+  State<_EnterFade> createState() => _EnterFadeState();
+}
+
+class _EnterFadeState extends State<_EnterFade>
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  late final AnimationController _controller;
+  late final CurvedAnimation _opacity;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _controller = AnimationController(vsync: this);
+    _opacity = CurvedAnimation(
+      parent: _controller,
+      curve: PaymentMotion.easeOut,
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final motion = PaymentMotion.of(context);
+    if (motion.reduced) {
+      _controller.value = 1;
+    } else if (_controller.duration == null) {
+      _controller.duration = motion.enter;
+      _controller.forward();
+    }
+  }
+
+  @override
+  void didChangeAccessibilityFeatures() => setState(() {});
+  @override
+  Widget build(BuildContext context) {
+    if (PaymentMotion.of(context).reduced) _controller.value = 1;
+    return FadeTransition(opacity: _opacity, child: widget.child);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _opacity.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 }
 
@@ -285,14 +480,15 @@ class _AccountMenu extends StatelessWidget {
 }
 
 class _StepBody extends StatelessWidget {
-  const _StepBody({required this.coordinator});
+  const _StepBody({required this.coordinator, required this.step});
 
   final DemoCoordinator coordinator;
+  final FlowStep step;
 
   @override
   Widget build(BuildContext context) {
     final c = coordinator;
-    return switch (c.step) {
+    return switch (step) {
       FlowStep.overview => _Overview(c),
       FlowStep.signIn => SignInStep(c),
       FlowStep.history => HistoryStep(c),
@@ -303,7 +499,7 @@ class _StepBody extends StatelessWidget {
       FlowStep.kycIntro => _KycIntro(c),
       FlowStep.kycIdentity ||
       FlowStep.kycDocuments ||
-      FlowStep.kycReview => KycOnboardingStep(c),
+      FlowStep.kycReview => KycOnboardingStep(c, step: step),
       FlowStep.kycStatus => VerificationStatusView(
         header: _supportNotice(context, c),
         snapshot: c.kyc,
