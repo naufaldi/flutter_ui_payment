@@ -4,6 +4,101 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
+  testWidgets('mid-collapse retains Body and fades until exit', (tester) async {
+    await tester.pumpWidget(
+      host(
+        const SingleChildScrollView(
+          child: PaymentAccordionItem(
+            title: 'Receipt',
+            initiallyExpanded: true,
+            child: SizedBox(height: 100, child: Text('Body')),
+          ),
+        ),
+        1,
+      ),
+    );
+    await tester.tap(find.text('Receipt'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 75));
+    expect(find.text('Body'), findsOneWidget);
+    final fade = tester.widget<FadeTransition>(
+      find
+          .ancestor(
+            of: find.text('Body'),
+            matching: find.byType(FadeTransition),
+          )
+          .first,
+    );
+    expect(fade.opacity.value, inExclusiveRange(0, 1));
+    await tester.pump(const Duration(milliseconds: 75));
+    await tester.pump(const Duration(microseconds: 1));
+    expect(find.text('Body'), findsNothing);
+  });
+  testWidgets('re-tapping reverses collapse without a height jump', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        const SingleChildScrollView(
+          child: PaymentAccordionItem(
+            title: 'Receipt',
+            initiallyExpanded: true,
+            child: SizedBox(height: 100, child: Text('Body')),
+          ),
+        ),
+        1,
+      ),
+    );
+    final item = find
+        .descendant(
+          of: find.byType(PaymentAccordionItem),
+          matching: find.byType(Column),
+        )
+        .first;
+    final full = tester.getSize(item).height;
+    await tester.tap(find.text('Receipt'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 75));
+    final middle = tester.getSize(item).height;
+    expect(middle, lessThan(full));
+    await tester.tap(find.text('Receipt'));
+    await tester.pump();
+    expect(tester.getSize(item).height, closeTo(middle, 0.01));
+    var previous = middle;
+    for (var frame = 0; frame < 15; frame++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(find.text('Body'), findsOneWidget);
+      final height = tester.getSize(item).height;
+      expect(height, greaterThanOrEqualTo(previous));
+      previous = height;
+    }
+    expect(previous, full);
+  });
+  testWidgets('collapsing content takes no taps', (tester) async {
+    var calls = 0;
+    await tester.pumpWidget(
+      host(
+        PaymentAccordionItem(
+          title: 'Receipt',
+          initiallyExpanded: true,
+          child: GestureDetector(
+            onTap: () => calls++,
+            child: const SizedBox(height: 100, child: Text('Body')),
+          ),
+        ),
+        1,
+      ),
+    );
+    final point = tester.getCenter(find.text('Body'));
+    await tester.tap(find.text('Receipt'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 20));
+    expect(find.text('Body'), findsOneWidget);
+    await tester.tapAt(point);
+    expect(calls, 0);
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('actions do not toggle; header controls its content', (
     tester,
   ) async {

@@ -849,6 +849,7 @@ class PaymentToastController {
   }
 
   void _onVisible() {
+    if (_closed || _visible) return;
     _visible = true;
     if (_dismissRequested) {
       dismiss();
@@ -989,6 +990,13 @@ class _ToastContentState extends State<_ToastContent>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // A zero-duration entrance completes before SnackBar attaches its status
+    // listener. Check the mounted bar too, so dismissal and reading time work.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final bar = context.findAncestorWidgetOfExactType<SnackBar>();
+      if (bar?.animation?.isCompleted ?? false) widget.controller._onVisible();
+    });
   }
 
   // iOS Reduce Motion isn't part of MediaQueryData, so nothing above
