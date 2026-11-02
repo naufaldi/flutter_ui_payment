@@ -302,6 +302,94 @@ void main() {
       });
     }
 
+    // Two swaps side by side, each from a plain child to a stateful one,
+    // under a MediaQuery that can turn reduced motion on.
+    Widget twoSwaps({required bool showNew, required bool reduce}) => _app(
+      Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: reduce),
+          child: Builder(
+            builder: (context) {
+              final motion = PaymentMotion.of(context);
+              return Column(
+                children: [
+                  for (final id in ['one', 'two'])
+                    motion.fullWidthSwap(
+                      showNew
+                          ? _Counter(key: ValueKey('$id-new'))
+                          : SizedBox(key: ValueKey('$id-old'), height: 50),
+                    ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    Future<void> startSwaps(WidgetTester tester) async {
+      await tester.pumpWidget(twoSwaps(showNew: false, reduce: false));
+      await tester.pumpWidget(twoSwaps(showNew: true, reduce: false));
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(tester.hasRunningAnimations, isTrue);
+      for (final id in ['one', 'two']) {
+        tester.state<_CounterState>(find.byKey(ValueKey('$id-new'))).count = 3;
+      }
+    }
+
+    void expectSwapsDone(WidgetTester tester) {
+      for (final id in ['one', 'two']) {
+        expect(find.byKey(ValueKey('$id-old')), findsNothing);
+        final current = find.byKey(ValueKey('$id-new'));
+        expect(tester.state<_CounterState>(current).count, 3);
+        final fade = tester.widget<FadeTransition>(
+          find
+              .ancestor(of: current, matching: find.byType(FadeTransition))
+              .first,
+        );
+        expect(fade.opacity.value, 1);
+      }
+    }
+
+    testWidgets('ends a running swap when MediaQuery turns reduced on', (
+      tester,
+    ) async {
+      await startSwaps(tester);
+      await expectStill(
+        tester,
+        () => tester.pumpWidget(twoSwaps(showNew: true, reduce: true)),
+      );
+      expectSwapsDone(tester);
+
+      // Turned back off, the next swap fades again.
+      await tester.pumpWidget(twoSwaps(showNew: true, reduce: false));
+      await tester.pumpWidget(twoSwaps(showNew: false, reduce: false));
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(tester.hasRunningAnimations, isTrue);
+      expect(find.byKey(const ValueKey('one-new')), findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('one-new')), findsNothing);
+    });
+
+    testWidgets('ends a running swap when iOS Reduce Motion turns on', (
+      tester,
+    ) async {
+      await startSwaps(tester);
+      // Nothing above the swaps rebuilds: reduceMotion isn't in
+      // MediaQueryData, so the swap has to notice the change itself.
+      await expectStill(tester, () {
+        tester.platformDispatcher.accessibilityFeaturesTestValue =
+            const FakeAccessibilityFeatures(
+              reduceMotion: true,
+              autoPlayVideos: true,
+            );
+        addTearDown(
+          tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+        );
+      });
+      expectSwapsDone(tester);
+    });
+
     testWidgets('keeps its content when reduced motion turns on', (
       tester,
     ) async {

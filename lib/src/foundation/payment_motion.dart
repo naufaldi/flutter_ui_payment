@@ -109,10 +109,8 @@ class PaymentMotion {
   /// a lurch. Use [fadeScale] for compact elements only. The leaving child
   /// takes no taps ([topLayout]). Painting is clipped to the eased height
   /// only while it grows; at rest nothing is clipped, focus rings included.
-  Widget fullWidthSwap(Widget child) => _FullWidthSwap(this, child);
-
-  static Widget _fade(Widget child, Animation<double> animation) =>
-      fadeRise(child, animation, back: true);
+  /// If reduced motion turns on mid-swap, the swap ends on the next frame.
+  Widget fullWidthSwap(Widget child) => _FullWidthSwap(child);
 
   /// Layout for swaps: outgoing children keep painting while they fade but
   /// take no taps and are hidden from screen readers, so a leaving "Pay"
@@ -135,39 +133,125 @@ class PaymentMotion {
 }
 
 class _FullWidthSwap extends StatefulWidget {
-  const _FullWidthSwap(this.motion, this.child);
+  const _FullWidthSwap(this.child);
 
-  final PaymentMotion motion;
   final Widget child;
 
   @override
   State<_FullWidthSwap> createState() => _FullWidthSwapState();
 }
 
-class _FullWidthSwapState extends State<_FullWidthSwap> {
-  // Keeps the switcher, and the state below it, when reduced motion is
-  // turned on or off and the AnimatedSize around it comes or goes.
-  final _switcher = GlobalKey();
+/// One child of the swap and the fade it owns.
+class _SwapEntry {
+  _SwapEntry(this.child, this.controller)
+    : opacity = CurvedAnimation(
+        parent: controller,
+        curve: PaymentMotion.easeOut,
+      );
+
+  Widget child;
+  final AnimationController controller;
+  final CurvedAnimation opacity;
+  late final Key key = ObjectKey(this);
+
+  void dispose() {
+    opacity.dispose();
+    controller.dispose();
+  }
+}
+
+// A fade-only switcher of its own rather than an AnimatedSwitcher: that one
+// fixes each fade's duration when the fade starts, so a swap already running
+// when reduced motion turns on would keep going.
+class _FullWidthSwapState extends State<_FullWidthSwap>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
+  // Keeps the stack, and the state below it, when reduced motion is turned
+  // on or off and the AnimatedSize around it comes or goes.
+  final _stack = GlobalKey();
+  late _SwapEntry _current = _SwapEntry(
+    widget.child,
+    AnimationController(vsync: this, value: 1),
+  );
+  final _leaving = <_SwapEntry>[];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  // iOS Reduce Motion isn't part of MediaQueryData, so nothing above
+  // rebuilds this when it turns on mid-swap.
+  @override
+  void didChangeAccessibilityFeatures() => setState(() {});
+
+  @override
+  void didUpdateWidget(_FullWidthSwap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (Widget.canUpdate(widget.child, _current.child)) {
+      _current.child = widget.child;
+      return;
+    }
+    final motion = PaymentMotion.of(context);
+    final leaving = _current;
+    _current = _SwapEntry(
+      widget.child,
+      AnimationController(vsync: this, duration: motion.enter),
+    )..controller.forward();
+    _leaving.add(leaving);
+    leaving.controller
+      ..reverseDuration = motion.exit
+      ..addStatusListener((status) {
+        if (status.isDismissed && mounted) {
+          setState(() => _leaving.remove(leaving));
+          leaving.dispose();
+        }
+      })
+      ..reverse();
+  }
+
+  // Ends every running fade: the leaving children go and the current one is
+  // fully shown, keeping its state.
+  void _finish() {
+    for (final entry in _leaving) {
+      entry.dispose();
+    }
+    _leaving.clear();
+    _current.controller.value = 1;
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    for (final entry in [_current, ..._leaving]) {
+      entry.dispose();
+    }
+    super.dispose();
+  }
+
+  Widget _faded(_SwapEntry entry) => KeyedSubtree(
+    key: entry.key,
+    child: FadeTransition(opacity: entry.opacity, child: entry.child),
+  );
 
   @override
   Widget build(BuildContext context) {
-    final motion = widget.motion;
-    final switcher = AnimatedSwitcher(
-      key: _switcher,
-      duration: motion.enter,
-      reverseDuration: motion.exit,
-      transitionBuilder: PaymentMotion._fade,
-      layoutBuilder: PaymentMotion.topLayout,
-      child: widget.child,
+    final motion = PaymentMotion.of(context);
+    if (motion.reduced) _finish();
+    final stack = KeyedSubtree(
+      key: _stack,
+      child: PaymentMotion.topLayout(_faded(_current), [
+        for (final entry in _leaving) _faded(entry),
+      ]),
     );
     // AnimatedSize can't run at zero duration (it re-dirties its own layout),
     // so reduced motion leaves it out and the height changes at once.
-    if (motion.reduced) return switcher;
+    if (motion.reduced) return stack;
     return AnimatedSize(
       duration: motion.enter,
       curve: PaymentMotion.easeInOut,
       alignment: Alignment.topCenter,
-      child: switcher,
+      child: stack,
     );
   }
 }
