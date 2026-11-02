@@ -614,4 +614,34 @@ void main() {
     expect(find.byKey(const Key('host-stats')), findsNothing);
     await drain(t);
   });
+
+  testWidgets('a payment made in the demo shows its method label (#177)', (
+    t,
+  ) async {
+    final app = await launch(t);
+    final c = await runScenario(t, app, 'H02');
+    await pumpUntil(t, () => c.quote != null && c.selectedMethod != null);
+    expect(c.selectedMethod!.id, 'balance');
+    c.reviewOrder();
+    await settle(t);
+    unawaited(c.confirm());
+    await pumpUntil(t, () => c.step == FlowStep.authorize);
+    unawaited(c.authorize());
+    await pumpUntil(t, () => c.attempt?.status == PaymentStatus.succeeded);
+    c.goHome();
+    await settle(t);
+    unawaited(c.openHistory());
+    await pumpUntil(t, () => !c.historyLoading);
+    await settle(t);
+
+    final made = c.history.firstWhere((r) => r.id == c.attempt!.attemptId);
+    expect(made.methodLabel, 'Ruang Bayar balance');
+    // The history method breakdown never offers the raw id.
+    expect(find.text('balance'), findsNothing);
+    unawaited(c.openDetail(made));
+    await settle(t);
+    expect(find.textContaining('Ruang Bayar balance ·'), findsOneWidget);
+    expect(find.text('balance'), findsNothing);
+    await drain(t);
+  });
 }

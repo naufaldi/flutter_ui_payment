@@ -125,6 +125,49 @@ void main() {
     });
   }
 
+  testWidgets('interrupted rise leaves from where it is (#129)', (
+    tester,
+  ) async {
+    final app = await launch(tester);
+    final c = await runScenario(tester, app, 'K01');
+    c.acceptConsent();
+    await settle(tester);
+    final rest = tester.getTopLeft(body(FlowStep.kycIdentity)).dy;
+    c.editDocuments();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    final leaving = body(FlowStep.kycDocuments);
+    final held = tester.getTopLeft(leaving).dy;
+    expect(held, greaterThan(rest));
+    expect(held, lessThan(rest + 8));
+    final state = tester.state(
+      find.descendant(of: leaving, matching: find.byType(Scrollable)).first,
+    );
+    c.editIdentity();
+    await tester.pump();
+    for (var frame = 0; frame < 10 && leaving.evaluate().isNotEmpty; frame++) {
+      expect(
+        tester.getTopLeft(leaving).dy,
+        closeTo(held, 0.001),
+        reason: 'frame $frame',
+      );
+      expect(
+        tester.state(
+          find.descendant(of: leaving, matching: find.byType(Scrollable)).first,
+        ),
+        same(state),
+      );
+      if (frame > 0) {
+        expect(
+          tester.widget<FadeTransition>(fadeOf(leaving)).opacity.value,
+          lessThan(1),
+        );
+      }
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    expect(leaving, findsNothing);
+    await settle(tester);
+  });
   testWidgets('status-first correction submits forward to status', (
     tester,
   ) async {

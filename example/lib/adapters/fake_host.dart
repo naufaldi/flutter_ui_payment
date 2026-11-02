@@ -138,6 +138,16 @@ class DemoHost {
   bool get _id => languageCode == 'id';
   String _t(String en, String id) => _id ? id : en;
 
+  /// The display label for a method id, as checkout lists it. History and
+  /// the receipt read it too, so a payment never shows its raw id (#177).
+  /// An unknown id falls back to itself.
+  String _methodLabel(String methodId) => switch (methodId) {
+    'balance' => _t('Ruang Bayar balance', 'Saldo Ruang Bayar'),
+    'va' => 'Virtual account (Bank Contoh)',
+    'card' => _t('Card •••• 4242', 'Kartu •••• 4242'),
+    _ => methodId,
+  };
+
   /// Amounts inside fixture copy go through the same formatter as the kit,
   /// so an English screen never shows an Indonesian-format number.
   String _money(int rupiah) =>
@@ -254,7 +264,7 @@ class DemoHost {
             createdAt: r.createdAt,
             status: r.status,
             merchant: 'Ruang Bayar Akademi',
-            methodLabel: r.methodId,
+            methodLabel: _methodLabel(r.methodId),
             reference: r.reference,
           ),
         for (var i = 0; i < 14; i++)
@@ -571,7 +581,7 @@ class DemoHost {
     final balance = config.methods == MethodSet.insufficientBalance
         ? PaymentMethod(
             id: 'balance',
-            label: _t('Ruang Bayar balance', 'Saldo Ruang Bayar'),
+            label: _methodLabel('balance'),
             kind: PaymentMethodKind.balance,
             detail: _t('Balance ${_money(50000)}', 'Saldo ${_money(50000)}'),
             unavailableReason: _t(
@@ -581,7 +591,7 @@ class DemoHost {
           )
         : PaymentMethod(
             id: 'balance',
-            label: _t('Ruang Bayar balance', 'Saldo Ruang Bayar'),
+            label: _methodLabel('balance'),
             kind: PaymentMethodKind.balance,
             detail: _t('Balance ${_money(350000)}', 'Saldo ${_money(350000)}'),
             unavailableReason: config.methods == MethodSet.someUnavailable
@@ -597,10 +607,7 @@ class DemoHost {
         balance,
         PaymentMethod(
           id: 'va',
-          label: _t(
-            'Virtual account (Bank Contoh)',
-            'Virtual account (Bank Contoh)',
-          ),
+          label: _methodLabel('va'),
           kind: PaymentMethodKind.virtualAccount,
           detail: _t('Pay by bank transfer', 'Bayar lewat transfer bank'),
           feeNote: _t(
@@ -611,7 +618,7 @@ class DemoHost {
         if (config.methods == MethodSet.someUnavailable)
           PaymentMethod(
             id: 'card',
-            label: _t('Card •••• 4242', 'Kartu •••• 4242'),
+            label: _methodLabel('card'),
             kind: PaymentMethodKind.card,
             unavailableReason: _t(
               'Not accepted for this purchase',
@@ -838,7 +845,7 @@ class DemoHost {
       total: r.quote.total,
       methodLabel: r.methodId == 'va'
           ? 'Virtual account •••• 7890'
-          : _t('Ruang Bayar balance •••• 2190', 'Saldo Ruang Bayar •••• 2190'),
+          : '${_methodLabel('balance')} •••• 2190',
       refund: r.currentStep.refund,
     );
   }
