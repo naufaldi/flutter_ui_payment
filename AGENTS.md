@@ -20,9 +20,11 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
 
 ## Workflow
 
+- Branch from `origin/main` after `git fetch`. Don't branch from a local checkout that may be stale.
 - Open a GitHub issue for every problem before work starts.
 - Record every decision in the PRD decision table and in `docs/decisions.md`.
-- Add a `CHANGELOG.md` entry for every user-visible change. `website/src/content/docs/reference/changelog.md` mirrors `CHANGELOG.md` verbatim below its intro; update both.
+- Feature PRs don't edit `CHANGELOG.md` or its website mirror. Each PR writes its user-visible change as one bullet under a `## Changelog` heading in the PR body.
+- Before each docs deploy, one release-notes PR collects those bullets into `CHANGELOG.md`. `website/src/content/docs/reference/changelog.md` mirrors `CHANGELOG.md` verbatim below its intro; update both in that PR.
 - `website/src/content/docs/reference/compatibility.md` mirrors `docs/compatibility.md`; update both.
 - After a public API change, regenerate `website/src/data/api.json` with `pnpm gen:api` in `website/`.
 - A PR closes its issues with one `Closes #N` line per issue.
@@ -43,6 +45,8 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
 
 ## Review and verification
 
+- Mechanical rebases: when a rebase conflicts only on `CHANGELOG.md`, the decision table or the decision docs, the orchestrator resolves it directly. The code diff must still equal the approved one.
+- Reviewers don't use devices. They read the executor's captures and logs. Device runs belong to the executor, or to a dedicated device-check task.
 - Judge and test against the user stories in Testing scope.
 - Merge gate: only medium or higher review findings block a merge. Put low findings and nits in a follow-up GitHub issue and merge the PR.
 - Small follow-ups: text-only fixes or a few lines with no behaviour change do not need another review round. The orchestrator checks the diff and merges.
