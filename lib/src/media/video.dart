@@ -90,8 +90,8 @@ abstract class PaymentVideoController
 
 /// Video with accessible controls below the picture.
 ///
-/// - Never starts by itself unless [autoPlay] is set, and not even then when
-///   the platform asks for reduced motion.
+/// - Never starts by itself unless [autoPlay] is set, and not even then under
+///   reduced motion or when iOS Auto-Play Video Previews is off.
 /// - Pauses when the app goes to the background, when the widget is hidden
 ///   (an inactive `IndexedStack` tab, a covered route, `TickerMode(false)`)
 ///   and when it is removed. It does not resume on its own: people press play again.
@@ -184,6 +184,15 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
   bool get _visible =>
       TickerMode.valuesOf(context).enabled && Visibility.of(context);
 
+  // iOS Auto-Play Video Previews. It isn't in MediaQueryData, so it's read
+  // straight from the platform's accessibility features.
+  bool get _autoPlayVideos {
+    final features = View.maybeOf(
+      context,
+    )?.platformDispatcher.accessibilityFeatures;
+    return features?.autoPlayVideos ?? true;
+  }
+
   void _pauseIfPlaying() {
     final phase = _c.value.phase;
     if (phase == VideoPhase.playing || phase == VideoPhase.buffering) {
@@ -199,6 +208,7 @@ class _PaymentVideoPlayerState extends State<PaymentVideoPlayer>
         !_autoPlayed &&
         _foreground &&
         !PaymentMotion.of(context).reduced &&
+        _autoPlayVideos &&
         _visible) {
       _autoPlayed = true;
       _c.play();

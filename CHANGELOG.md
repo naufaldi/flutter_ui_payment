@@ -1,3 +1,16 @@
+## Motion review Phase 1 (2026-11-02)
+
+- **Reduced motion follows iOS Reduce Motion (D65, D66, #94).** `PaymentMotion.of(context).reduced` is now true when `MediaQuery.disableAnimations` is true (a host override, or Android's "Remove animations") or when `PlatformDispatcher.accessibilityFeatures.reduceMotion` is true. iOS delivers Settings → Accessibility → Motion → Reduce Motion only through the second flag, so until now no kit animation honoured it on iPhone or iPad. Under either flag every kit duration is 0 and the press scale is 1. No API change. **Migration:** on iOS devices with Reduce Motion on, kit motion is now instant; a host can force reduced motion on but can't turn the OS setting off. To make SDK widgets that read `MediaQuery` follow too, fold `reduceMotion` into `MediaQuery.disableAnimations` in `MaterialApp.builder`, as the Motion page shows.
+- **Video autoplay follows iOS Auto-Play Video Previews (D65, #94).** `PaymentVideoPlayer(autoPlay: true)` also doesn't start by itself when `accessibilityFeatures.autoPlayVideos` is false. Play still works with a tap. No API change.
+- **`fadeRise` rises a fixed 8 dp, with a back mode (D70, #95).** `PaymentMotion.fadeRise` translates by 8 dp on every screen instead of 2 % of the child's height (about 13 dp on an iPhone SE and 25 dp on an iPad Pro for a full-screen step). New optional `back: true` fades only, with no rise, for a flow moving back. The tear-off still fits `AnimatedSwitcher.transitionBuilder`. **Migration:** full-screen children rise less than before.
+
+  ```dart
+  transitionBuilder: (child, animation) => PaymentMotion.fadeRise(child, animation, back: goingBack)
+  ```
+
+- **Added: full-width swap (D69, #95).** New `PaymentMotion.of(context).fullWidthSwap(child)` swaps full-width content with a fade only, at `enter` in and `exit` out, with the height eased by `AnimatedSize` (`enter`, `easeInOut`), so the content below doesn't jump. It is instant under reduced motion, and the leaving child takes no taps. `fadeScale` is for compact elements only. The status views adopt it in #96. Additive; no migration.
+- **Docs: Motion page.** It covers both reduced-motion flags, the swap builders, and two rules that record current behaviour: amounts, balances, countdowns and totals never count or roll (D74), and there is no spring token (D75).
+
 ## UI review follow-ups (2026-11-01)
 
 - **Action bar on wide windows (D59, D62, #79).** A `PaymentActionBar` with an action and no `total` follows the same footer rule as views and the payment-path footers: full width below 600 dp of available footer width and at large text, and from 600 dp of available footer width (about 632 dp of window with the default gutters) a hug button at the end edge of the 640 dp column instead of a full-width bar. A bar with a `total` is unchanged, with the total on the start side. Phones are unchanged. No API change. **Migration:** on wide tablet layouts, a lone `PaymentButton` in the bar hugs its label (at least 112 dp) at the end edge, and any other action widget takes its intrinsic width; tests that measure the bar's action on a wide surface see the hug width.

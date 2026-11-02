@@ -4757,7 +4757,7 @@
   "PaymentMotion": {
     "kind": "class",
     "file": "lib/src/foundation/payment_motion.dart",
-    "doc": "Motion tokens shared by the kit.\n\nMotion here is feedback only: a press was heard, a status changed, a step\nmoved forward. Durations stay under 300 ms, exits are faster than enters,\nand everything collapses to `Duration.zero` when the platform or host asks\nfor reduced motion (`MediaQueryData.disableAnimations`).",
+    "doc": "Motion tokens shared by the kit.\n\nMotion here is feedback only: a press was heard, a status changed, a step\nmoved forward. Durations stay under 300 ms, exits are faster than enters,\nand everything collapses to `Duration.zero` when the platform or host asks\nfor reduced motion.",
     "extends": null,
     "constructors": [
       {
@@ -4776,7 +4776,7 @@
             "doc": ""
           }
         ],
-        "doc": ""
+        "doc": "Reads reduced motion from both places it can come from:\n`MediaQueryData.disableAnimations` (a host override, or Android's\n\"Remove animations\") and `AccessibilityFeatures.reduceMotion`, the only\nflag iOS sets for Reduce Motion. `MediaQueryData` doesn't carry the\nsecond one, so a widget sees an OS change on its next rebuild."
       }
     ],
     "getters": [
@@ -4830,7 +4830,7 @@
         "kind": "field",
         "static": false,
         "type": "bool",
-        "doc": "True when animations should not play at all."
+        "doc": "True when animations should not play at all, under either flag."
       },
       {
         "name": "easeOut",
@@ -4918,8 +4918,16 @@
         "kind": "static",
         "static": true,
         "type": "Widget",
-        "signature": "static Widget fadeRise(Widget child, Animation<double> animation)",
-        "doc": "Fade plus an 8 px rise, used when a flow moves to its next step."
+        "signature": "static Widget fadeRise( Widget child, Animation<double> animation, { bool back = false, })",
+        "doc": "Fade plus a fixed 8 dp rise, on every screen size, used when a flow\nmoves to its next step. Pass `back: true` when the flow moves back: the\ncontent fades only, with no rise, so going back never looks like going\nforward."
+      },
+      {
+        "name": "fullWidthSwap",
+        "kind": "method",
+        "static": false,
+        "type": "Widget",
+        "signature": "Widget fullWidthSwap(Widget child)",
+        "doc": "Swaps full-width content, such as a status header, with a fade only:\n`enter` in, `exit` out, and the height eased over `enter` on\n`easeInOut`, so the content below glides instead of jumping. All of it\nis instant under reduced motion. Give each state's `child` its own key.\n\nIt never scales: scaling a full-width slab moves its edges and reads as\na lurch. Use `fadeScale` for compact elements only. The leaving child\ntakes no taps (`topLayout`). Painting is clipped to the eased height\nonly while it grows; at rest nothing is clipped, focus rings included."
       },
       {
         "name": "topLayout",
@@ -8998,7 +9006,7 @@
   "PaymentVideoPlayer": {
     "kind": "class",
     "file": "lib/src/media/video.dart",
-    "doc": "Video with accessible controls below the picture.\n\n- Never starts by itself unless `autoPlay` is set, and not even then when\n  the platform asks for reduced motion.\n- Pauses when the app goes to the background, when the widget is hidden\n  (an inactive `IndexedStack` tab, a covered route, `TickerMode(false)`)\n  and when it is removed. It does not resume on its own: people press play again.\n- Controls sit below the picture rather than over it, so they never hide\n  content, keep their contrast on any frame and stay usable at 200% text.",
+    "doc": "Video with accessible controls below the picture.\n\n- Never starts by itself unless `autoPlay` is set, and not even then under\n  reduced motion or when iOS Auto-Play Video Previews is off.\n- Pauses when the app goes to the background, when the widget is hidden\n  (an inactive `IndexedStack` tab, a covered route, `TickerMode(false)`)\n  and when it is removed. It does not resume on its own: people press play again.\n- Controls sit below the picture rather than over it, so they never hide\n  content, keep their contrast on any frame and stay usable at 200% text.",
     "extends": "StatefulWidget",
     "constructors": [
       {

@@ -440,6 +440,62 @@ void main() {
       expect(video.calls, isNot(contains('play')));
     });
 
+    Future<FakeVideo> autoPlayUnder(
+      WidgetTester tester,
+      FakeAccessibilityFeatures features,
+    ) async {
+      tester.platformDispatcher.accessibilityFeaturesTestValue = features;
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      final video = FakeVideo();
+      await tester.pumpWidget(
+        app(
+          Scaffold(
+            body: PaymentVideoPlayer(
+              controller: video,
+              title: 'Demo',
+              autoPlay: true,
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      return video;
+    }
+
+    testWidgets('autoPlay starts when the platform allows it', (tester) async {
+      final video = await autoPlayUnder(
+        tester,
+        const FakeAccessibilityFeatures(autoPlayVideos: true),
+      );
+      expect(video.calls, contains('play'));
+    });
+
+    testWidgets('iOS Reduce Motion blocks autoPlay (D65)', (tester) async {
+      final video = await autoPlayUnder(
+        tester,
+        const FakeAccessibilityFeatures(
+          reduceMotion: true,
+          autoPlayVideos: true,
+        ),
+      );
+      expect(video.calls, isNot(contains('play')));
+    });
+
+    testWidgets('Auto-Play Video Previews off blocks autoPlay (D65)', (
+      tester,
+    ) async {
+      final video = await autoPlayUnder(
+        tester,
+        const FakeAccessibilityFeatures(),
+      );
+      expect(video.calls, isNot(contains('play')));
+      await tester.tap(find.byTooltip('Play'));
+      await tester.pump();
+      expect(video.calls.last, 'play');
+    });
+
     testWidgets('pauses on background, when hidden and when removed', (
       tester,
     ) async {
