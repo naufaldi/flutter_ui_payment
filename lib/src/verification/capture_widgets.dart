@@ -296,118 +296,121 @@ class KycCaptureGuide extends StatelessWidget {
         ),
       ),
     );
-    Widget content(Widget previewFrame, {required bool pinned}) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        previewFrame,
-        SizedBox(height: theme.space(PaymentSpace.related)),
-        if (state.phase != DocumentSlotPhase.empty)
-          Semantics(
-            value:
-                state.phase == DocumentSlotPhase.uploading &&
-                    state.progress != null
-                ? '${(state.progress! * 100).round()}%'
-                : null,
-            child: PaymentBadge(
-              icon: busyStill ? PaymentIcons.busy : Icons.cloud_outlined,
-              label: switch (state.phase) {
-                DocumentSlotPhase.uploading => l10n.documentUploading,
-                DocumentSlotPhase.uploaded => l10n.documentUploaded,
-                _ => l10n.documentFailed,
-              },
-              tone: switch (state.phase) {
-                DocumentSlotPhase.uploading => StatusTone.info,
-                DocumentSlotPhase.uploaded => StatusTone.success,
-                _ => StatusTone.danger,
-              },
-            ),
+    final status = <Widget>[
+      if (state.phase != DocumentSlotPhase.empty)
+        Semantics(
+          value:
+              state.phase == DocumentSlotPhase.uploading &&
+                  state.progress != null
+              ? '${(state.progress! * 100).round()}%'
+              : null,
+          child: PaymentBadge(
+            icon: busyStill ? PaymentIcons.busy : Icons.cloud_outlined,
+            label: switch (state.phase) {
+              DocumentSlotPhase.uploading => l10n.documentUploading,
+              DocumentSlotPhase.uploaded => l10n.documentUploaded,
+              _ => l10n.documentFailed,
+            },
+            tone: switch (state.phase) {
+              DocumentSlotPhase.uploading => StatusTone.info,
+              DocumentSlotPhase.uploaded => StatusTone.success,
+              _ => StatusTone.danger,
+            },
           ),
-        if (state.phase == DocumentSlotPhase.uploading && !busyStill)
-          Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: theme.space(PaymentSpace.related),
-            ),
-            child: ExcludeSemantics(
-              child: LinearProgressIndicator(
-                value: state.progress,
-                color: theme.accent,
-                backgroundColor: theme.surfaceMuted,
-              ),
-            ),
-          ),
-        if (needsUpdate)
-          PaymentBanner(
-            tone: StatusTone.warning,
-            title: l10n.fieldNeedsUpdate,
-            message: updateReason ?? l10n.fieldNeedsUpdate,
-          ),
-        if (issue != null)
-          PaymentBanner(
-            tone: StatusTone.danger,
-            announce: true,
-            title: l10n.documentIssueTitle(issue.kind),
-            message:
-                issue.safeMessage ??
-                l10n.documentIssueMessage(issue.kind, limits),
-          ),
-        SizedBox(height: theme.space(PaymentSpace.related)),
-        Text(
-          l10n.captureFramingHint(kind),
-          style: PaymentType.of(context).heading,
         ),
-        for (final tip in guidance)
-          Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: theme.space(PaymentSpace.inline),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const PaymentIcon(
-                  Icons.info_outline,
-                  color: PaymentTextColor.secondary,
-                ),
-                SizedBox(width: theme.space(PaymentSpace.related)),
-                Expanded(
-                  child: Text(tip, style: PaymentType.of(context).label),
-                ),
-              ],
+      if (state.phase == DocumentSlotPhase.uploading && !busyStill)
+        Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: theme.space(PaymentSpace.related),
+          ),
+          child: ExcludeSemantics(
+            child: LinearProgressIndicator(
+              value: state.progress,
+              color: theme.accent,
+              backgroundColor: theme.surfaceMuted,
             ),
           ),
-        SizedBox(height: theme.space(PaymentSpace.related)),
-        if (!pinned)
-          Wrap(
-            spacing: theme.space(PaymentSpace.related),
-            runSpacing: theme.space(PaymentSpace.related),
+        ),
+      if (needsUpdate)
+        PaymentBanner(
+          tone: StatusTone.warning,
+          title: l10n.fieldNeedsUpdate,
+          message: updateReason ?? l10n.fieldNeedsUpdate,
+        ),
+      if (issue != null)
+        PaymentBanner(
+          tone: StatusTone.danger,
+          announce: true,
+          title: l10n.documentIssueTitle(issue.kind),
+          message:
+              issue.safeMessage ??
+              l10n.documentIssueMessage(issue.kind, limits),
+        ),
+      SizedBox(height: theme.space(PaymentSpace.related)),
+    ];
+    final guidanceContent = <Widget>[
+      Text(
+        l10n.captureFramingHint(kind),
+        style: PaymentType.of(context).heading,
+      ),
+      for (final tip in guidance)
+        Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: theme.space(PaymentSpace.inline),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (framing && (issue == null || issue.canRetry))
-                PaymentButton(label: l10n.captureTake, onPressed: onCapture),
-              if (review || retryUpload)
-                PaymentButton(
-                  label: retryUpload ? l10n.tryAgain : l10n.captureUse,
-                  onPressed: onUsePhoto,
-                ),
-              if (!framing && (issue == null || issue.canRetry))
-                PaymentButton(
-                  label: l10n.captureRetake,
-                  onPressed: onRetake,
-                  variant: review || retryUpload
-                      ? PaymentButtonVariant.secondary
-                      : PaymentButtonVariant.primary,
-                ),
-              if (issue?.canOpenSettings == true && onOpenSettings != null)
-                PaymentButton(
-                  label: l10n.openSettings,
-                  onPressed: onOpenSettings,
-                  variant: PaymentButtonVariant.secondary,
-                ),
+              const PaymentIcon(
+                Icons.info_outline,
+                color: PaymentTextColor.secondary,
+              ),
+              SizedBox(width: theme.space(PaymentSpace.related)),
+              Expanded(child: Text(tip, style: PaymentType.of(context).label)),
             ],
           ),
+        ),
+      SizedBox(height: theme.space(PaymentSpace.related)),
+    ];
+    Widget inlineContent() => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        frame,
+        SizedBox(height: theme.space(PaymentSpace.related)),
+        ...status,
+        ...guidanceContent,
+        Wrap(
+          spacing: theme.space(PaymentSpace.related),
+          runSpacing: theme.space(PaymentSpace.related),
+          children: [
+            if (framing && (issue == null || issue.canRetry))
+              PaymentButton(label: l10n.captureTake, onPressed: onCapture),
+            if (review || retryUpload)
+              PaymentButton(
+                label: retryUpload ? l10n.tryAgain : l10n.captureUse,
+                onPressed: onUsePhoto,
+              ),
+            if (!framing && (issue == null || issue.canRetry))
+              PaymentButton(
+                label: l10n.captureRetake,
+                onPressed: onRetake,
+                variant: review || retryUpload
+                    ? PaymentButtonVariant.secondary
+                    : PaymentButtonVariant.primary,
+              ),
+            if (issue?.canOpenSettings == true && onOpenSettings != null)
+              PaymentButton(
+                label: l10n.openSettings,
+                onPressed: onOpenSettings,
+                variant: PaymentButtonVariant.secondary,
+              ),
+          ],
+        ),
       ],
     );
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (!constraints.hasBoundedHeight) return content(frame, pinned: false);
+        if (!constraints.hasBoundedHeight) return inlineContent();
         final settings =
             issue?.canOpenSettings == true && onOpenSettings != null;
         final permanentlyDenied =
@@ -443,27 +446,38 @@ class KycCaptureGuide extends StatelessWidget {
                 variant: PaymentButtonVariant.quiet,
               )
             : null;
+        assert(
+          secondary == null || secondary.variant == PaymentButtonVariant.quiet,
+          'secondaryAction must be quiet (D59)',
+        );
         final group = theme.space(PaymentSpace.group);
+        // ActionFrame scrolls its entire body, removing the viewport bound
+        // the preview needs to fit alongside status and the pinned actions.
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              child: LayoutBuilder(
-                builder: (context, viewport) => SingleChildScrollView(
-                  padding: EdgeInsets.all(group),
-                  child: ContentColumn(
-                    child: content(
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: (viewport.maxHeight - 2 * group).clamp(
-                            0,
-                            double.infinity,
+              child: Padding(
+                padding: EdgeInsets.all(group),
+                child: ContentColumn(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        flex: 2,
+                        child: Center(heightFactor: 1, child: frame),
+                      ),
+                      SizedBox(height: theme.space(PaymentSpace.related)),
+                      ...status,
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: guidanceContent,
                           ),
                         ),
-                        child: Center(child: frame),
                       ),
-                      pinned: true,
-                    ),
+                    ],
                   ),
                 ),
               ),

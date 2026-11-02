@@ -135,6 +135,90 @@ void main() {
     });
   }
 
+  // Short host-safe messages isolate layout from FlutterTest's one-em glyphs.
+  // Device proof exercises the full localized messages with Roboto.
+  for (final (size, scale) in [
+    (const Size(360, 640), 1.0),
+    (const Size(320, 569), 2.0),
+  ]) {
+    for (final (name, state) in [
+      (
+        'uploading',
+        const DocumentSlotState.uploading(file, requestId: '1', progress: .5),
+      ),
+      (
+        'interrupted',
+        const DocumentSlotState.failed(
+          DocumentIssue(
+            DocumentIssueKind.uploadInterrupted,
+            safeMessage: 'Try again.',
+          ),
+        ),
+      ),
+      (
+        'rejected',
+        const DocumentSlotState.failed(
+          DocumentIssue(
+            DocumentIssueKind.rejectedByHost,
+            safeMessage: 'Blurry photo.',
+          ),
+        ),
+      ),
+      (
+        'permanently denied',
+        const DocumentSlotState.failed(
+          DocumentIssue(
+            DocumentIssueKind.permissionPermanentlyDenied,
+            safeMessage: 'Open Settings.',
+            canRetry: false,
+            canOpenSettings: true,
+          ),
+        ),
+      ),
+    ]) {
+      testWidgets(
+        'bounded status stays visible: $name at $size, ${scale}x (#139)',
+        (t) async {
+          t.view.physicalSize = size;
+          t.view.devicePixelRatio = 1;
+          addTearDown(t.view.reset);
+          await t.pumpWidget(
+            screen(
+              KycCaptureGuide(
+                kind: CaptureKind.idCard,
+                state: state,
+                photo: name == 'permanently denied' ? null : photo,
+                onRetake: () {},
+                onUsePhoto: () {},
+                onOpenSettings: () {},
+              ),
+              scale: scale,
+            ),
+          );
+          await t.pumpAndSettle();
+          final footer = t.getRect(find.byType(PinnedFooter));
+          for (final finder in [
+            find.byType(PaymentBadge),
+            if (state.issue != null) find.byType(PaymentBanner),
+            if (name == 'uploading') find.byType(LinearProgressIndicator),
+          ]) {
+            final rect = t.getRect(finder);
+            expect(rect.top, greaterThanOrEqualTo(0));
+            expect(rect.bottom, lessThanOrEqualTo(footer.top));
+            expect(finder.hitTestable(), findsOneWidget);
+          }
+          final preview = t.getRect(find.byType(AspectRatio));
+          expect(preview.height, greaterThan(0));
+          expect(preview.top, greaterThanOrEqualTo(0));
+          expect(preview.bottom, lessThanOrEqualTo(footer.top));
+          expect(preview.left, greaterThanOrEqualTo(0));
+          expect(preview.right, lessThanOrEqualTo(size.width));
+          expect(t.takeException(), isNull);
+        },
+      );
+    }
+  }
+
   testWidgets('unbounded capture keeps its inline gallery layout (#139)', (
     t,
   ) async {
