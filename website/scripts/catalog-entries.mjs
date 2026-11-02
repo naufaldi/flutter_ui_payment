@@ -25,13 +25,13 @@ slugs.add('tooltip');
 
 const arg = process.argv[2] ?? '';
 const looks = new Set(arg.split(','));
-const entries = [];
+const entries = new Set();
 const rest = [];
-for (const [, name] of registry.matchAll(/^\s+ios_catalog_([a-z0-9_]+):/gm)) {
+for (const [, name] of registry.matchAll(/^\s+(?:ios|android)_catalog_([a-z0-9_]+):/gm)) {
   const [, base, suffix = ''] = name.match(/^(.*?)(_dark|_200|_id_200|_id)?$/);
   const look = suffix ? suffix.slice(1) : 'light';
   const slug = base.endsWith('_variants') ? base.slice(0, -'_variants'.length) : base;
-  if (!slugs.has(slug)) rest.push(`ios_catalog_${name}`);
-  else if (looks.has(look)) entries.push(`${slug}@${look}`);
+  if (!slugs.has(slug)) rest.push(`android_catalog_${name}`);
+  else if (looks.has(look)) entries.add(`${slug}@${look}`);
 }
-console.log(arg === '--rest' ? rest.join('\n') : entries.join(','));
+console.log(arg === '--rest' ? rest.join('\n') : [...entries].join(','));

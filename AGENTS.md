@@ -39,19 +39,23 @@ flutter test                          # package tests
 cd website && pnpm build && pnpm check:pages && pnpm check:links && pnpm check:snippets
 ```
 
-The flow test runs on a simulator: take the simulator lock (Screenshots) first and follow the owner's global device rules.
+The flow test runs on a device: take the device lock (Screenshots) first and follow the owner's global device rules.
 
-On this Mac a full `flutter test` sometimes fails to load a file with "Unable to connect to flutter_tester process: WebSocketException". Re-run that file alone (`flutter test --no-pub test/<file>.dart`) and report both results.
+A full `flutter test` sometimes fails to load a file with "Unable to connect to flutter_tester process: WebSocketException". Re-run that file alone (`flutter test --no-pub test/<file>.dart`) and report both results.
 
 ## Screenshots
 
-- Capture from `example/` with `flutter drive` and the driver, into the directory the docs read:
-  `SCREENSHOT_DIR=build/screenshots_hairline flutter drive --driver=test_driver/integration_driver.dart --target=integration_test/catalog_screenshots_test.dart -d <device>`
-  Capture tests live in `example/integration_test/`. The driver's default `build/screenshots` is not used by the docs.
-- Selective runs: `--dart-define=CAPTURE_ONLY=…` with a matching `--dart-define=CAPTURE_LOOKS=…`, one session per look group. `node scripts/catalog-entries.mjs light,dark` (in `website/`) prints the entries for those looks.
-- Convert with `pnpm screens` in `website/` (`scripts/screens.mjs`): WebP into `website/public/screens`, registry in `website/src/data/screens.json`.
-- Names: `ios_catalog_<component>_variants{,_dark,_200,_id,_id_200}`, plus flow captures such as `ios_se_*_200` and `ios_ipad_*`.
-- Simulator lock: every agent uses the one path `/tmp/flutter-ui-payment-sim.lock`. Take it with `mkdir /tmp/flutter-ui-payment-sim.lock`; if that fails, retry every 60 s. Release it with `rmdir /tmp/flutter-ui-payment-sim.lock` when done, including on failure. Machine-wide simulator capacity is set by the owner's global instructions.
+Docs captures come from Android only (D81): the phone AVD `FlutterPayment_API37_2` (360×640 dp, dpr 2) and, for wide layouts, `PixelTablet_API37` (1280×800 dp). One emulator at a time; follow the owner's global device rules. iOS captures are retired.
+
+- Take the device lock first: `New-Item -ItemType Directory C:\DevTools\locks\flutter-ui-payment-device.lock`. If it exists, retry every 60 s. Remove it when done, including on failure.
+- Capture from `example/` into the directory the docs read:
+  `$env:SCREENSHOT_DIR='build/screenshots_hairline'; flutter drive --no-pub --driver=test_driver/integration_driver.dart --target=integration_test/<catalog_screenshots|screenshots|kit_screenshots>_test.dart -d <serial>`
+- The tests render the Flutter layer in-app (`capture()` in `integration_test/support.dart`). Don't call `convertFlutterSurfaceToImage`; it stalls on the API 37 image.
+- Catalog specimens render at phone width on a tall virtual view and are cropped to the keyed specimen, capped at 1200 dp (D82). Overlay and state captures (dialogs, sheets, toasts, tooltips) are full-screen at the real size.
+- Selective runs: `--dart-define=CAPTURE_ONLY=…` with a matching `--dart-define=CAPTURE_LOOKS=…`, one session per look group. `node scripts/catalog-entries.mjs light,dark` (in `website/`) prints the entries. Tablet sets: `--dart-define=CAPTURE_DEVICE=tablet`.
+- Convert with `pnpm screens` in `website/`: WebP into `website/public/screens`, registry in `website/src/data/screens.json`. After a rebase, re-run it; never hand-merge `screens.json`.
+- Names: `android_catalog_<component>_variants{,_dark,_200,_id,_id_200}`, state captures `android_catalog_<state>`, flow `android_<screen>_<look>`, `android_refined_*`, `android_kit_*`, tablet `android_tablet_*`. `pnpm check:pages` fails on any `ios_` name.
+- Place a component's specimen right after its intro, light and dark paired with `dark=`, with alt text that says what the image shows.
 - Open and look at every capture before claiming a visual result.
 
 ## Don'ts

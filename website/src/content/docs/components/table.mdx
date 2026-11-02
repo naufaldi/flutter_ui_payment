@@ -4,9 +4,15 @@ description: Host-provided payment facts in a responsive table.
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 `PaymentTable` presents host-provided payment facts. The host computes amounts and owns every action.
+
+<Screens>
+  <Screen name="android_catalog_table_variants" dark="android_catalog_table_variants_dark" alt="Payment methods with fees and arrival times, plus the total row." caption="Table: payment methods and total" />
+  <Screen name="android_catalog_table_variants_200" alt="Payment methods, fees, arrival times and total stacked at 200 percent text, with every row visible." caption="200% text" />
+</Screens>
 
 ## Usage
 
@@ -100,7 +106,3 @@ Fees A04. Real composition: `example/lib/screens/steps/fees_step.dart`.
 - [Loading skeleton](/components/loading-skeleton/)
 
 Use [Data table](/components/data-table/) for settlement selection, actions and paging. Empty tables accept a host explanation and next action.
-
-<Screen name="ios_catalog_table_variants" alt="table specimen" />
-<Screen name="ios_catalog_table_variants_dark" alt="table specimen_dark" />
-<Screen name="ios_catalog_table_variants_200" alt="table specimen_200" />

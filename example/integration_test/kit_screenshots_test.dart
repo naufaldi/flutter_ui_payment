@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
@@ -17,19 +15,15 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('capture refined flow and gallery sections', (tester) async {
-    if (Platform.isAndroid) await binding.convertFlutterSurfaceToImage();
     final app = await launch(tester);
-    // CAPTURE_DEVICE (se, ipad) names a device set: ios_<device>_<screen>.
+    // CAPTURE_DEVICE=tablet selects the native landscape tablet set.
     const device = String.fromEnvironment('CAPTURE_DEVICE');
-    final platform = [
-      Platform.isIOS ? 'ios' : 'android',
-      if (device.isNotEmpty) device,
-    ].join('_');
+    final platform = device == 'tablet' ? 'android_tablet' : 'android';
 
     Future<void> shot(String name) async {
       await settle(tester);
       await tester.pump(const Duration(milliseconds: 400));
-      await binding.takeScreenshot('${platform}_$name');
+      await capture(binding, tester, '${platform}_$name');
     }
 
     const looks = {
@@ -156,7 +150,7 @@ void main() {
     // ignore: avoid_print
     print('VIDEO_POSITION_MS=${position.inMilliseconds}');
     expect(position, greaterThan(const Duration(seconds: 2)));
-    await binding.takeScreenshot('${platform}_kit_video_playing');
+    await capture(binding, tester, '${platform}_kit_video_playing');
     await tester.tap(find.byTooltip('Jeda'));
     await settle(tester);
     expect(player.controller.value.phase, VideoPhase.paused);

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
@@ -21,19 +19,15 @@ void main() {
   };
 
   testWidgets('capture key screens', (tester) async {
-    if (Platform.isAndroid) await binding.convertFlutterSurfaceToImage();
     final app = await launch(tester);
-    // CAPTURE_DEVICE (se, ipad) names a device set: ios_<device>_<screen>.
+    // CAPTURE_DEVICE=tablet selects the native landscape tablet set.
     const device = String.fromEnvironment('CAPTURE_DEVICE');
-    final platform = [
-      Platform.isIOS ? 'ios' : 'android',
-      if (device.isNotEmpty) device,
-    ].join('_');
+    final platform = device == 'tablet' ? 'android_tablet' : 'android';
 
     Future<void> shot(String screen, String look) async {
       await settle(tester);
       await tester.pump(const Duration(milliseconds: 400));
-      await binding.takeScreenshot('${platform}_${screen}_$look');
+      await capture(binding, tester, '${platform}_${screen}_$look');
     }
 
     // Every capture, in order; each entry sets up its own screen.

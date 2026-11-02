@@ -353,6 +353,7 @@ class _Entry extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 32),
       child: Column(
+        key: ValueKey('specimen:$name'),
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Semantics(

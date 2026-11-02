@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,15 +17,26 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('capture catalog entries', (tester) async {
-    if (Platform.isAndroid) await binding.convertFlutterSurfaceToImage();
+    final realSize = tester.view.physicalSize;
+    addTearDown(tester.view.resetPhysicalSize);
+    String? lastEntry;
+    var fullScreen = true;
     final app = await launch(tester);
-    final platform = Platform.isIOS ? 'ios' : 'android';
+    const device = String.fromEnvironment('CAPTURE_DEVICE');
+    final platform = device == 'tablet' ? 'android_tablet' : 'android';
 
     Future<void> shot(String name) async {
       await settle(tester);
       await tester.pump(const Duration(milliseconds: 400));
       debugPrint('Capture: $name');
-      await binding.takeScreenshot('${platform}_catalog_$name');
+      await capture(
+        binding,
+        tester,
+        '${platform}_catalog_$name',
+        crop: fullScreen || lastEntry == null
+            ? null
+            : find.byKey(ValueKey('specimen:$lastEntry')),
+      );
     }
 
     Future<void> open(String label) async {
@@ -55,7 +64,25 @@ void main() {
     }
 
     // Move the outer gallery directly: specimen bodies own their own scrolls.
-    Future<void> top(String entry) async {
+    Future<void> top(String entry, {bool? overlay}) async {
+      fullScreen =
+          overlay ??
+          [
+            'showPayment',
+            'showCaptureSourceSheet',
+            'PaymentSheet',
+            'PaymentTooltip',
+            'AdaptiveNavShell',
+            'PaymentDate',
+            'ChartModule · states',
+            'KycCaptureGuide',
+            'PaymentVideoPlayer + video_player adapter',
+          ].any(entry.startsWith);
+      tester.view.physicalSize = device == 'tablet' || fullScreen
+          ? realSize
+          : catalogCaptureSize(tester);
+      await tester.pump();
+      lastEntry = entry;
       final gallery = find
           .descendant(
             of: find.byType(ListView).first,
@@ -65,7 +92,7 @@ void main() {
       final position = tester.state<ScrollableState>(gallery).position;
       position.jumpTo(position.minScrollExtent);
       await tester.pump();
-      final caption = find.text(entry);
+      final caption = find.byKey(ValueKey('specimen:$entry'));
       for (
         var attempt = 0;
         caption.evaluate().isEmpty && attempt < 100;
@@ -81,9 +108,7 @@ void main() {
       }
       expect(caption, findsOneWidget);
       await Scrollable.ensureVisible(tester.element(caption));
-      final specimen = find
-          .ancestor(of: caption, matching: find.byType(Column))
-          .first;
+      final specimen = caption;
       for (final element
           in find
               .descendant(of: specimen, matching: find.byType(Scrollable))
@@ -93,6 +118,15 @@ void main() {
         );
         state.position.jumpTo(state.position.minScrollExtent);
       }
+      await settle(tester);
+      final rect = tester.getRect(specimen);
+      final appBar = tester.getRect(find.byType(AppBar).first);
+      position.jumpTo(
+        (position.pixels + rect.top - appBar.bottom - 16).clamp(
+          position.minScrollExtent,
+          position.maxScrollExtent,
+        ),
+      );
       await settle(tester);
     }
 
@@ -121,7 +155,7 @@ void main() {
         'Tooltip proof $name rect=${tester.getRect(bubble)} opacity=$opacity',
       );
       expect(opacity, 1);
-      await binding.takeScreenshot('${platform}_catalog_$name');
+      await capture(binding, tester, '${platform}_catalog_$name');
       await mouse.removePointer();
       await tester.pump(const Duration(seconds: 2));
       await settle(tester);
@@ -483,11 +517,14 @@ void main() {
       // Chart states captured after steps, named `<slug><suffix>` too.
       final chartStates = <String, (String, Future<void> Function())>{
         // D58: the latest value is labelled with no pointer at all.
-        'chart_line_rest': ('Charts', () => top('PaymentLineChart')),
+        'chart_line_rest': (
+          'Charts',
+          () => top('PaymentLineChart', overlay: true),
+        ),
         'chart_bar_selected': (
           'Charts',
           () async {
-            await top('PaymentBarChart');
+            await top('PaymentBarChart', overlay: true);
             final bar = tester.getRect(
               find.byType(PaymentBarChart).hitTestable().first,
             );
@@ -563,12 +600,27 @@ void main() {
           if (chartStates[slug] case (final page, final steps)?) {
             await openPage(page);
             await steps();
+            tester.view.physicalSize = realSize;
+            fullScreen = true;
+            await settle(tester);
             await shot('$slug$suffix');
             continue;
           }
           final (page, entry, before, after) = specimens[slug]!;
           await openPage(page);
-          await top('$entry · variants');
+          await top(
+            '$entry · variants',
+            overlay:
+                states.contains(slug) ||
+                [
+                  'dialog',
+                  'toast',
+                  'sheets',
+                  'navigation',
+                  'tooltip',
+                ].contains(slug) ||
+                slug.startsWith('date_'),
+          );
           await before?.call(id);
           // State captures are named `<slug><look>`, not `_variants`.
           await shot(
@@ -577,6 +629,9 @@ void main() {
           await after?.call();
         }
       }
+      tester.view.physicalSize = realSize;
+      fullScreen = true;
+      await settle(tester);
       // The kit and flow captures P2 refreshes, in this one session: the
       // Indonesian destructive confirm over the pending-payment sheet, and
       // the fees screen with its ⓘ.
@@ -607,7 +662,7 @@ void main() {
         await tester.tap(find.text('Minta pembatalan'));
         await settle(tester);
         await tester.pump(const Duration(milliseconds: 400));
-        await binding.takeScreenshot('${platform}_kit_sheet_confirm');
+        await capture(binding, tester, '${platform}_kit_sheet_confirm');
         await tester.tap(find.text('Tetap bayar'));
         await settle(tester);
         await tester.tap(find.byTooltip('Tutup panel'));
@@ -638,7 +693,7 @@ void main() {
           }
           await settle(tester);
           await tester.pump(const Duration(milliseconds: 400));
-          await binding.takeScreenshot('${platform}_${screen}_$look');
+          await capture(binding, tester, '${platform}_${screen}_$look');
         }
       }
       if (entries.contains('fees_light')) {
@@ -647,7 +702,7 @@ void main() {
         await runScenario(tester, app, 'A04');
         await settle(tester);
         await tester.pump(const Duration(milliseconds: 400));
-        await binding.takeScreenshot('${platform}_fees_light');
+        await capture(binding, tester, '${platform}_fees_light');
       }
       return;
     }
@@ -1037,9 +1092,9 @@ void main() {
         await shot('chart_states_$state');
       }
       // D58: the latest value is labelled at rest; a tap selects a bar.
-      await top('PaymentLineChart');
+      await top('PaymentLineChart', overlay: true);
       await shot('chart_line_rest');
-      await top('PaymentBarChart');
+      await top('PaymentBarChart', overlay: true);
       final bar = tester.getRect(
         find.byType(PaymentBarChart).hitTestable().first,
       );

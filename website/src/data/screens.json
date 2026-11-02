@@ -1,4 +1,19 @@
 {
+  "android_catalog_table_variants": {
+    "width": 640,
+    "height": 1039,
+    "caption": "Payment methods, fees, arrival times and total, English"
+  },
+  "android_catalog_table_variants_dark": {
+    "width": 640,
+    "height": 1039,
+    "caption": "Payment methods, fees, arrival times and total, dark, English"
+  },
+  "android_catalog_table_variants_200": {
+    "width": 640,
+    "height": 1507,
+    "caption": "Payment methods, fees, arrival times and total at 200% text, English"
+  },
   "ios_catalog_dialog_variants": {
     "width": 640,
     "height": 1391,
@@ -303,21 +318,6 @@
     "width": 640,
     "height": 1391,
     "caption": "property list specimen_200, English"
-  },
-  "ios_catalog_table_variants": {
-    "width": 640,
-    "height": 1391,
-    "caption": "table specimen, English"
-  },
-  "ios_catalog_table_variants_dark": {
-    "width": 640,
-    "height": 1391,
-    "caption": "table specimen_dark, English"
-  },
-  "ios_catalog_table_variants_200": {
-    "width": 640,
-    "height": 1391,
-    "caption": "table specimen_200, English"
   },
   "ios_catalog_data_table_variants": {
     "width": 640,
