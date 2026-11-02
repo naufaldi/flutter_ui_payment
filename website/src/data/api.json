@@ -5642,7 +5642,7 @@
       },
       {
         "name": "block",
-        "doc": "spacing × 1.5 (12): icon → text, list row and header padding, notice\nand banner padding. Stripe small."
+        "doc": "spacing × 1.5 (12): icon → text, band → title, list row and header\npadding, notice and banner padding. Stripe small."
       },
       {
         "name": "group",
