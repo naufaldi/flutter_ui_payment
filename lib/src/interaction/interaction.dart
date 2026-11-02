@@ -21,6 +21,7 @@ import '../foundation/primitives.dart';
 import '../foundation/layout_rules.dart';
 import '../foundation/first_line.dart';
 import '../overlay/modal_presenters.dart';
+import 'menu_key_handoff.dart';
 
 /// A tappable row for settings, menus and action lists.
 ///
@@ -567,31 +568,36 @@ class _MenuSheet extends StatelessWidget {
     final iconColumn = runs.any((r) => r.$2.any((i) => i.icon != null));
     Widget row(PaymentMenuItem item) {
       final enabled = actionOf(item) != null;
-      return MenuItemButton(
-        key: item.key,
-        leadingIcon: item.icon == null
-            ? (iconColumn
-                  ? SizedBox(width: PaymentIconSize.medium.resolve(context))
-                  : null)
-            : PaymentIcon(
-                item.icon,
-                color: item.destructive
-                    ? PaymentTextColor.danger
-                    : PaymentTextColor.secondary,
-              ),
-        style: MenuItemButton.styleFrom(
-          minimumSize: const Size.fromHeight(48),
-          padding: EdgeInsets.symmetric(horizontal: inset),
-          foregroundColor: item.destructive
-              ? theme.danger.foreground
-              : theme.textPrimary,
-          textStyle: type.label,
+      // The sheet can outlive its header; it holds a GlobalKey until it
+      // closes so the key never sits on two widgets (#163).
+      return holdMenuSheetKey(
+        item.key,
+        MenuItemButton(
+          key: item.key,
+          leadingIcon: item.icon == null
+              ? (iconColumn
+                    ? SizedBox(width: PaymentIconSize.medium.resolve(context))
+                    : null)
+              : PaymentIcon(
+                  item.icon,
+                  color: item.destructive
+                      ? PaymentTextColor.danger
+                      : PaymentTextColor.secondary,
+                ),
+          style: MenuItemButton.styleFrom(
+            minimumSize: const Size.fromHeight(48),
+            padding: EdgeInsets.symmetric(horizontal: inset),
+            foregroundColor: item.destructive
+                ? theme.danger.foreground
+                : theme.textPrimary,
+            textStyle: type.label,
+          ),
+          onPressed: enabled ? () => Navigator.pop(context, item) : null,
+          semanticsLabel: item.semanticLabel,
+          // Long labels wrap inside the full-width row.
+          overflowAxis: Axis.vertical,
+          child: Text(item.label, softWrap: true),
         ),
-        onPressed: enabled ? () => Navigator.pop(context, item) : null,
-        semanticsLabel: item.semanticLabel,
-        // Long labels wrap inside the full-width row.
-        overflowAxis: Axis.vertical,
-        child: Text(item.label, softWrap: true),
       );
     }
 

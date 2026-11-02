@@ -81,6 +81,42 @@ void main() {
     expect(opened, 1);
   });
 
+  testWidgets('a GlobalKey link survives a resize while the sheet is open', (
+    t,
+  ) async {
+    // The phone sheet outlives the header: widening moves the link back to
+    // the title row while the sheet still shows it. The key must never sit
+    // on two widgets, and returns to the title row once the sheet closes.
+    final statement = GlobalKey();
+    var opened = 0;
+    await setSurface(t, const Size(360, 640));
+    await t.pumpWidget(
+      contentHost(
+        PaymentFullPageView(
+          title: 'History',
+          pageLink: PaymentLink(
+            key: statement,
+            label: 'Statement',
+            onPressed: () => opened++,
+          ),
+          child: const Text('Body'),
+        ),
+        scale: 2,
+      ),
+    );
+    await t.tap(find.byType(PaymentMenu));
+    await t.pumpAndSettle();
+    t.view.physicalSize = const Size(1280, 800);
+    await t.pumpAndSettle();
+    expect(t.takeException(), isNull);
+    expect(find.byType(HeaderLink), findsOneWidget);
+    expect(statement.currentWidget, isA<MenuItemButton>());
+    await t.tap(find.byKey(statement));
+    await t.pumpAndSettle();
+    expect(opened, 1);
+    expect(statement.currentWidget, isA<HeaderLink>());
+  });
+
   testWidgets('a keyed entry keeps its key in the wide menu', (t) async {
     const statement = ValueKey('statement-item');
     var opened = 0;
