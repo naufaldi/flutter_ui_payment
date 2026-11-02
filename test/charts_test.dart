@@ -61,6 +61,128 @@ String valueText(WidgetTester tester) => tester
     .map((t) => t.data)
     .join();
 void main() {
+  for (final bars in [true, false]) {
+    final kind = bars ? 'bar' : 'line';
+    for (final scenario in [
+      'lift',
+      'cancel',
+      'return',
+      'tap',
+      'two fingers',
+      'scroll',
+      'mouse',
+    ]) {
+      testWidgets('$kind $scenario (D79)', (tester) async {
+        final changes = <int?>[];
+        final chart = SizedBox(
+          height: 180,
+          child: bars
+              ? PaymentBarChart(points: weeks, onSelectionChanged: changes.add)
+              : PaymentLineChart(
+                  points: weeks,
+                  onSelectionChanged: changes.add,
+                ),
+        );
+        await tester.pumpWidget(
+          host(
+            scenario == 'scroll'
+                ? Column(children: [chart, const SizedBox(height: 1500)])
+                : chart,
+          ),
+        );
+        final paint = find.byWidgetPredicate(
+          (w) => w is CustomPaint && w.painter is ChartPainter,
+        );
+        final rect = tester.getRect(paint);
+        final painter =
+            tester.widget<CustomPaint>(paint).painter! as ChartPainter;
+        final area = painter.plot(rect.size);
+        Offset period(int i) =>
+            rect.topLeft + Offset(painter.columnX(i, area), area.center.dy);
+        void expectRest() => expect(valueText(tester), startsWith('W4'));
+        if (scenario == 'tap') {
+          await tester.tapAt(period(1));
+          await tester.pump();
+          expect(valueText(tester), startsWith('W2'));
+          await tester.pump(const Duration(seconds: 5));
+          expect(valueText(tester), startsWith('W2'));
+          await tester.tapAt(period(2));
+          await tester.pump();
+          await tester.tapAt(period(2));
+          await tester.pump();
+          expect(changes, [1, 2, null]);
+          expectRest();
+        } else if (scenario == 'mouse') {
+          final mouse = await tester.createGesture(
+            kind: PointerDeviceKind.mouse,
+          );
+          await mouse.addPointer(location: const Offset(500, 300));
+          await mouse.moveTo(period(1));
+          await tester.pump();
+          await mouse.down(period(1));
+          await mouse.moveTo(period(2));
+          await tester.pump();
+          await mouse.up();
+          await tester.pump();
+          await mouse.down(period(2));
+          await mouse.up();
+          await tester.pump();
+          expect(changes, [1, 2]);
+          await mouse.moveTo(const Offset(500, 300));
+          await tester.pump();
+          expect(changes, [1, 2, null]);
+          await mouse.removePointer();
+        } else if (scenario == 'scroll') {
+          final drag = await tester.startGesture(period(1));
+          await tester.pump(const Duration(milliseconds: 150));
+          await drag.moveBy(const Offset(0, -30));
+          await tester.pump();
+          await drag.moveBy(const Offset(0, -70));
+          await tester.pump();
+          await drag.up();
+          await tester.pumpAndSettle();
+          expect(changes, isEmpty);
+          expectRest();
+          expect(
+            tester
+                .state<ScrollableState>(find.byType(Scrollable).first)
+                .position
+                .pixels,
+            greaterThan(0),
+          );
+        } else {
+          final start = scenario == 'return' ? 1 : 0;
+          final drag = await tester.startGesture(period(start), pointer: 1);
+          await drag.moveBy(const Offset(kTouchSlop + 1, 0));
+          await tester.pump();
+          if (scenario == 'two fingers') {
+            final second = await tester.startGesture(period(1), pointer: 2);
+            await second.moveBy(const Offset(kTouchSlop + 1, 0));
+            await tester.pump();
+            await drag.up();
+            await tester.pump();
+            expect(changes.last, isNotNull);
+            await second.up();
+            await tester.pump();
+            expect(changes.last, isNull);
+          } else {
+            // Returning to the starting coordinate stays within period 1.
+            await drag.moveTo(period(1));
+            await tester.pump();
+            if (scenario == 'lift') expect(changes, [0, 1]);
+            if (scenario == 'cancel') {
+              await drag.cancel();
+            } else {
+              await drag.up();
+            }
+            await tester.pump();
+            expect(changes, scenario == 'return' ? [1, null] : [0, 1, null]);
+          }
+          expectRest();
+        }
+      });
+    }
+  }
   final chartPaint = find.byWidgetPredicate(
     (w) => w is CustomPaint && w.painter is ChartPainter,
   );
@@ -125,8 +247,9 @@ void main() {
           await drag.moveTo(Offset(x, start.dy));
           await tester.pump();
         }
-        await drag.up();
         expect(changes, [0, 1, 2, 3]);
+        await drag.up();
+        expect(changes, [0, 1, 2, 3, null]);
       },
     );
   }
@@ -398,7 +521,7 @@ void main() {
         find.byKey(const ValueKey('payment-chart-value')),
       );
       final height = tester.getSize(find.byType(SizedBox).first).height;
-      // A tap on another period selects it, with no toggle-off.
+      // A touch tap selects; a second tap on the same period returns to rest.
       final plot = tester.getRect(find.byType(GestureDetector).last);
       await tester.tapAt(Offset(plot.left + 90, plot.center.dy));
       await tester.pump();
@@ -414,12 +537,17 @@ void main() {
       expect(painter().selected, isNot(3));
       await tester.tapAt(Offset(plot.left + 90, plot.center.dy));
       await tester.pump();
-      expect(valueText(tester), tapped);
-      // A drag moves it to the end.
-      await tester.dragFrom(
+      expect(valueText(tester), 'W4 · Rp420.000');
+      final drag = await tester.startGesture(
         Offset(plot.left + 90, plot.center.dy),
-        Offset(plot.width - 90, 0),
       );
+      final area = painter().plot(plot.size);
+      await drag.moveTo(
+        plot.topLeft + Offset(painter().columnX(2, area), area.center.dy),
+      );
+      await tester.pump();
+      expect(valueText(tester), 'W3 · Rp200.000');
+      await drag.up();
       await tester.pump();
       expect(valueText(tester), 'W4 · Rp420.000');
       // The label band and the chart keep their geometry.

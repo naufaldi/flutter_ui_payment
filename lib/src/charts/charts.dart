@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../foundation/kit_strings.dart';
@@ -69,6 +70,8 @@ class PaymentLineChart extends StatefulWidget {
   /// The index addresses [points], or the periods all [series] share.
   /// Not called when new points or series reset the selection. Use it to
   /// play a selection haptic (D73); the kit plays none.
+  /// On touch, a drag returns to rest when the finger lifts, and a second tap
+  /// on the same period clears it.
   final ValueChanged<int?>? onSelectionChanged;
   @override
   State<PaymentLineChart> createState() => _PaymentLineChartState();
@@ -135,6 +138,8 @@ class PaymentBarChart extends StatefulWidget {
   /// The index addresses [points], or the periods all [series] share.
   /// Not called when new points or series reset the selection. Use it to
   /// play a selection haptic (D73); the kit plays none.
+  /// On touch, a drag returns to rest when the finger lifts, and a second tap
+  /// on the same period clears it.
   final ValueChanged<int?>? onSelectionChanged;
   @override
   State<PaymentBarChart> createState() => _PaymentBarChartState();
@@ -193,7 +198,8 @@ class PaymentSparkline extends StatelessWidget {
   final String? semanticLabel;
 
   /// Called with the index of the period a tap or hover selects (only when
-  /// [inspectable]); a second tap on the same period returns null.
+  /// [inspectable]); a second tap on the same period, or the pointer leaving,
+  /// reports null.
   /// Not called when new points or series reset the selection. Use it to
   /// play a selection haptic (D73); the kit plays none.
   final ValueChanged<int?>? onSelectionChanged;
@@ -269,6 +275,7 @@ class _PointChart extends StatefulWidget {
   /// selects, and with null when the chart returns to rest. Not called when
   /// new points or series reset the selection. Use it to play a selection
   /// haptic (D73); the kit plays none.
+  /// On touch, a drag returns to rest when the finger lifts.
   final ValueChanged<int?>? onSelectionChanged;
   @override
   State<_PointChart> createState() => _PointChartState();
@@ -277,6 +284,10 @@ class _PointChart extends StatefulWidget {
 class _PointChartState extends State<_PointChart> {
   /// The period a tap, drag or hover picked; null is the rest state.
   int? selected;
+  PointerDeviceKind? _dragKind;
+
+  static bool _touchLike(PointerDeviceKind? kind) =>
+      kind != PointerDeviceKind.mouse && kind != PointerDeviceKind.trackpad;
 
   // Readout layouts by width, measured for [_readoutKey] and
   // [_readoutData]. A tap, drag or hover only changes the selection, so it
@@ -705,12 +716,25 @@ class _PointChartState extends State<_PointChart> {
                         onExit: (_) => returnToRest(),
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
-                          onTapDown: (event) =>
-                              inspect(event.localPosition, false),
-                          onHorizontalDragStart: (event) =>
-                              inspect(event.localPosition, false),
+                          // Touch taps select on lift and toggle off (D79).
+                          // Mouse clicks keep the hover selection.
+                          onTapUp: (event) => inspect(
+                            event.localPosition,
+                            _touchLike(event.kind),
+                          ),
+                          onHorizontalDragStart: (event) {
+                            _dragKind = event.kind;
+                            inspect(event.localPosition, false);
+                          },
                           onHorizontalDragUpdate: (event) =>
                               inspect(event.localPosition, false),
+                          // Accepted drags end on lift and pointer cancel.
+                          // Drag cancel also fires on taps, so it isn't used.
+                          onHorizontalDragEnd: (_) {
+                            final touch = _touchLike(_dragKind);
+                            _dragKind = null;
+                            if (touch) returnToRest();
+                          },
                           child: chart,
                         ),
                       );

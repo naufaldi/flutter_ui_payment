@@ -459,7 +459,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onSelectionChanged",
-            "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
+            "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none.\nOn touch, a drag returns to rest when the finger lifts, and a second tap\non the same period clears it."
           }
         ],
         "doc": "Creates a chart."
@@ -536,7 +536,7 @@
         "kind": "field",
         "static": false,
         "type": "ValueChanged<int?>?",
-        "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
+        "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none.\nOn touch, a drag returns to rest when the finger lifts, and a second tap\non the same period clears it."
       }
     ],
     "copyWith": null
@@ -648,7 +648,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onSelectionChanged",
-            "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
+            "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none.\nOn touch, a drag returns to rest when the finger lifts, and a second tap\non the same period clears it."
           }
         ],
         "doc": "Creates a chart."
@@ -718,7 +718,7 @@
         "kind": "field",
         "static": false,
         "type": "ValueChanged<int?>?",
-        "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
+        "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none.\nOn touch, a drag returns to rest when the finger lifts, and a second tap\non the same period clears it."
       }
     ],
     "copyWith": null
@@ -819,7 +819,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "onSelectionChanged",
-            "doc": "Called with the index of the period a tap or hover selects (only when\n`inspectable`); a second tap on the same period returns null.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
+            "doc": "Called with the index of the period a tap or hover selects (only when\n`inspectable`); a second tap on the same period, or the pointer leaving,\nreports null.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
           }
         ],
         "doc": "Creates a chart."
@@ -882,7 +882,7 @@
         "kind": "field",
         "static": false,
         "type": "ValueChanged<int?>?",
-        "doc": "Called with the index of the period a tap or hover selects (only when\n`inspectable`); a second tap on the same period returns null.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
+        "doc": "Called with the index of the period a tap or hover selects (only when\n`inspectable`); a second tap on the same period, or the pointer leaving,\nreports null.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
       }
     ],
     "copyWith": null
