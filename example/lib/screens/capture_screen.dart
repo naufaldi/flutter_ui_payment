@@ -70,19 +70,16 @@ class _KycCaptureScreenState extends State<KycCaptureScreen> {
         final state = requestId != null && slot?.requestId == requestId
             ? slot!
             : const DocumentSlotState.empty();
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: KycCaptureGuide(
-            kind: widget.kind,
-            requirement: widget.requirement,
-            state: state,
-            photo: photo,
-            preview: SyntheticCameraPreview(kind: widget.kind),
-            onCapture: take,
-            onRetake: retake,
-            onUsePhoto: use,
-            onOpenSettings: () => widget.c.openSettings(widget.requirement.key),
-          ),
+        return KycCaptureGuide(
+          kind: widget.kind,
+          requirement: widget.requirement,
+          state: state,
+          photo: photo,
+          preview: SyntheticCameraPreview(kind: widget.kind),
+          onCapture: take,
+          onRetake: retake,
+          onUsePhoto: use,
+          onOpenSettings: () => widget.c.openSettings(widget.requirement.key),
         );
       },
     ),

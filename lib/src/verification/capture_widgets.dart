@@ -7,6 +7,7 @@ import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
+import '../foundation/view_frame.dart';
 import '../foundation/primitives.dart';
 import '../interaction/interaction.dart';
 import '../overlay/sheets.dart';
@@ -192,6 +193,9 @@ class _CapturePainter extends CustomPainter {
 }
 
 /// Framing, host photo review and upload state. Host owns all verdicts.
+/// With bounded height, actions pin below a scroll region and the preview
+/// fits above the footer in a centred 640 dp column (D62, D53). Inside a
+/// host scroll view, the preview and actions remain inline.
 class KycCaptureGuide extends StatelessWidget {
   const KycCaptureGuide({
     super.key,
@@ -256,45 +260,46 @@ class KycCaptureGuide extends StatelessWidget {
           l10n.captureTipCorners,
           if (kind == CaptureKind.idCard) l10n.captureTipNoCover,
         ];
-    return Column(
+    final frame = AspectRatio(
+      aspectRatio: aspectRatio,
+      child: ClipRRect(
+        borderRadius: theme.controlBorderRadius,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (photo != null)
+              PaymentImage(
+                image: photo!,
+                errorFallback: CaptureFrameOverlay(
+                  kind: kind,
+                  overPreview: false,
+                ),
+                fit: BoxFit.cover,
+                alt: l10n.capturePhotoLabel(kind),
+              )
+            else
+              ?preview,
+            if (photo == null)
+              CaptureFrameOverlay(kind: kind, overPreview: preview != null)
+            else
+              IgnorePointer(
+                child: CustomPaint(
+                  painter: _CapturePainter(
+                    kind,
+                    false,
+                    theme,
+                    illustration: false,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+    Widget content(Widget previewFrame, {required bool pinned}) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AspectRatio(
-          aspectRatio: aspectRatio,
-          child: ClipRRect(
-            borderRadius: theme.controlBorderRadius,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                if (photo != null)
-                  PaymentImage(
-                    image: photo!,
-                    errorFallback: CaptureFrameOverlay(
-                      kind: kind,
-                      overPreview: false,
-                    ),
-                    fit: BoxFit.cover,
-                    alt: l10n.capturePhotoLabel(kind),
-                  )
-                else
-                  ?preview,
-                if (photo == null)
-                  CaptureFrameOverlay(kind: kind, overPreview: preview != null)
-                else
-                  IgnorePointer(
-                    child: CustomPaint(
-                      painter: _CapturePainter(
-                        kind,
-                        false,
-                        theme,
-                        illustration: false,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
+        previewFrame,
         SizedBox(height: theme.space(PaymentSpace.related)),
         if (state.phase != DocumentSlotPhase.empty)
           Semantics(
@@ -370,34 +375,109 @@ class KycCaptureGuide extends StatelessWidget {
             ),
           ),
         SizedBox(height: theme.space(PaymentSpace.related)),
-        Wrap(
-          spacing: theme.space(PaymentSpace.related),
-          runSpacing: theme.space(PaymentSpace.related),
-          children: [
-            if (framing && (issue == null || issue.canRetry))
-              PaymentButton(label: l10n.captureTake, onPressed: onCapture),
-            if (review || retryUpload)
-              PaymentButton(
+        if (!pinned)
+          Wrap(
+            spacing: theme.space(PaymentSpace.related),
+            runSpacing: theme.space(PaymentSpace.related),
+            children: [
+              if (framing && (issue == null || issue.canRetry))
+                PaymentButton(label: l10n.captureTake, onPressed: onCapture),
+              if (review || retryUpload)
+                PaymentButton(
+                  label: retryUpload ? l10n.tryAgain : l10n.captureUse,
+                  onPressed: onUsePhoto,
+                ),
+              if (!framing && (issue == null || issue.canRetry))
+                PaymentButton(
+                  label: l10n.captureRetake,
+                  onPressed: onRetake,
+                  variant: review || retryUpload
+                      ? PaymentButtonVariant.secondary
+                      : PaymentButtonVariant.primary,
+                ),
+              if (issue?.canOpenSettings == true && onOpenSettings != null)
+                PaymentButton(
+                  label: l10n.openSettings,
+                  onPressed: onOpenSettings,
+                  variant: PaymentButtonVariant.secondary,
+                ),
+            ],
+          ),
+      ],
+    );
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (!constraints.hasBoundedHeight) return content(frame, pinned: false);
+        final settings =
+            issue?.canOpenSettings == true && onOpenSettings != null;
+        final permanentlyDenied =
+            issue?.kind == DocumentIssueKind.permissionPermanentlyDenied;
+        final canRetake = !framing && (issue == null || issue.canRetry);
+        final primary = permanentlyDenied
+            ? (settings
+                  ? PaymentButton(
+                      label: l10n.openSettings,
+                      onPressed: onOpenSettings,
+                    )
+                  : null)
+            : framing && (issue == null || issue.canRetry)
+            ? PaymentButton(label: l10n.captureTake, onPressed: onCapture)
+            : review || retryUpload
+            ? PaymentButton(
                 label: retryUpload ? l10n.tryAgain : l10n.captureUse,
                 onPressed: onUsePhoto,
-              ),
-            if (!framing && (issue == null || issue.canRetry))
-              PaymentButton(
-                label: l10n.captureRetake,
-                onPressed: onRetake,
-                variant: review || retryUpload
-                    ? PaymentButtonVariant.secondary
-                    : PaymentButtonVariant.primary,
-              ),
-            if (issue?.canOpenSettings == true && onOpenSettings != null)
-              PaymentButton(
+              )
+            : canRetake
+            ? PaymentButton(label: l10n.captureRetake, onPressed: onRetake)
+            : null;
+        final secondary = !permanentlyDenied && framing && settings
+            ? PaymentButton(
                 label: l10n.openSettings,
                 onPressed: onOpenSettings,
-                variant: PaymentButtonVariant.secondary,
+                variant: PaymentButtonVariant.quiet,
+              )
+            : (review || retryUpload) && canRetake
+            ? PaymentButton(
+                label: l10n.captureRetake,
+                onPressed: onRetake,
+                variant: PaymentButtonVariant.quiet,
+              )
+            : null;
+        final group = theme.space(PaymentSpace.group);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, viewport) => SingleChildScrollView(
+                  padding: EdgeInsets.all(group),
+                  child: ContentColumn(
+                    child: content(
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: (viewport.maxHeight - 2 * group).clamp(
+                            0,
+                            double.infinity,
+                          ),
+                        ),
+                        child: Center(child: frame),
+                      ),
+                      pinned: true,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (primary != null || secondary != null)
+              PinnedFooter(
+                child: ViewFooter(
+                  primaryAction: primary,
+                  secondaryAction: secondary,
+                ),
               ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }
