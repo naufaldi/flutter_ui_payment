@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter_ui_payment/src/verification/capture_geometry.dart';
 
+import 'helpers/reduced_motion.dart';
+
 Widget host(
   Widget child, {
   String locale = 'en',
@@ -35,6 +37,37 @@ const file = DocumentFile(
   mimeType: 'image/jpeg',
   sizeBytes: 100,
 );
+const requirement = DocumentRequirement(
+  key: 'id',
+  label: 'ID card',
+  acceptedTypes: {'image/jpeg'},
+  maxBytes: 1000,
+);
+
+/// Like [host], but keeps the view's MediaQuery, so a reduced-motion setup
+/// applied around it still reaches the kit.
+Widget motionHost(Widget child, {double scale = 1}) => MaterialApp(
+  supportedLocales: const [Locale('en'), Locale('id')],
+  localizationsDelegates: const [
+    PaymentLocalizations.delegate,
+    ...GlobalMaterialLocalizations.delegates,
+  ],
+  builder: (context, app) => MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
+    child: app!,
+  ),
+  home: Scaffold(
+    body: SingleChildScrollView(child: SizedBox(width: 320, child: child)),
+  ),
+);
+
+/// Both upload widgets, built without a photo so no image fade runs.
+final uploads = <String, Widget Function(DocumentSlotState)>{
+  'document slot': (state) =>
+      DocumentUploadTile(requirement: requirement, state: state, onPick: () {}),
+  'capture field': (state) =>
+      KycCaptureGuide(kind: CaptureKind.idCard, state: state),
+};
 void main() {
   test('framing uses ID-1 ratio and separates face and card', () {
     for (final kind in CaptureKind.values) {
@@ -258,4 +291,101 @@ void main() {
       }
     }
   });
+
+  // Upload progress (D76, #97): a bar value only when the host reports one.
+  for (final MapEntry(key: name, value: upload) in uploads.entries) {
+    group('$name upload', () {
+      const unknown = DocumentSlotState.uploading(file, requestId: '1');
+      const known = DocumentSlotState.uploading(
+        file,
+        requestId: '1',
+        progress: .42,
+      );
+      final bar = find.byType(LinearProgressIndicator);
+
+      for (final setup in ReducedMotion.values) {
+        testWidgets('unknown progress stands still (${setup.name})', (
+          tester,
+        ) async {
+          await tester.pumpWidget(
+            setup.apply(
+              tester,
+              motionHost(upload(const DocumentSlotState.empty())),
+            ),
+          );
+          await expectStill(
+            tester,
+            () => tester.pumpWidget(
+              setup.apply(tester, motionHost(upload(unknown))),
+            ),
+          );
+          // No bar, so no value the kit doesn't know.
+          expect(bar, findsNothing);
+          expect(find.semantics.byValue(RegExp('%')), findsNothing);
+          // The still busy glyph sits beside "Uploading" in the badge.
+          final glyph = find.descendant(
+            of: find.byType(PaymentBadge),
+            matching: find.byIcon(PaymentIcons.busy),
+          );
+          final label = find.descendant(
+            of: find.byType(PaymentBadge),
+            matching: find.text('Uploading'),
+          );
+          expect(glyph, findsOneWidget);
+          expect(label, findsOneWidget);
+          expect(
+            tester.getCenter(glyph).dy,
+            closeTo(tester.getCenter(label).dy, 1),
+          );
+          expect(
+            tester.getTopRight(glyph).dx,
+            lessThan(tester.getTopLeft(label).dx),
+          );
+        });
+
+        testWidgets('known progress keeps its bar (${setup.name})', (
+          tester,
+        ) async {
+          await tester.pumpWidget(
+            setup.apply(tester, motionHost(upload(known))),
+          );
+          expect(tester.widget<LinearProgressIndicator>(bar).value, .42);
+          expect(find.semantics.byValue('42%'), findsWidgets);
+          expect(find.byIcon(PaymentIcons.busy), findsNothing);
+          expect(tester.hasRunningAnimations, isFalse);
+        });
+      }
+
+      testWidgets('with motion, unknown progress keeps the moving bar', (
+        tester,
+      ) async {
+        await tester.pumpWidget(motionHost(upload(unknown)));
+        expect(tester.widget<LinearProgressIndicator>(bar).value, isNull);
+        expect(tester.hasRunningAnimations, isTrue);
+        expect(find.semantics.byValue(RegExp('%')), findsNothing);
+        expect(find.byIcon(PaymentIcons.busy), findsNothing);
+      });
+
+      testWidgets('with motion, known progress shows its value', (
+        tester,
+      ) async {
+        await tester.pumpWidget(motionHost(upload(known)));
+        expect(tester.widget<LinearProgressIndicator>(bar).value, .42);
+        expect(find.semantics.byValue('42%'), findsWidgets);
+      });
+
+      testWidgets('unknown progress at 200% text on 320 dp fits', (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          ReducedMotion.mediaQuery.apply(
+            tester,
+            motionHost(upload(unknown), scale: 2),
+          ),
+        );
+        expect(tester.takeException(), isNull);
+        expect(find.byIcon(PaymentIcons.busy), findsOneWidget);
+      });
+    });
+  }
 }

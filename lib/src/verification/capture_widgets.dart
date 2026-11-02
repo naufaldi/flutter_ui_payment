@@ -4,6 +4,7 @@ import '../layout/content.dart';
 import 'package:flutter/material.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
+import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/primitives.dart';
@@ -233,6 +234,12 @@ class KycCaptureGuide extends StatelessWidget {
             issue?.kind == DocumentIssueKind.permissionPermanentlyDenied);
     final review = photo != null && state.phase == DocumentSlotPhase.empty;
     final retryUpload = issue?.kind == DocumentIssueKind.uploadInterrupted;
+    // Unknown progress under reduced motion (D76): the still busy glyph
+    // beside "Uploading" and no looping bar, never a made-up value.
+    final busyStill =
+        state.phase == DocumentSlotPhase.uploading &&
+        state.progress == null &&
+        PaymentMotion.of(context).reduced;
     final limits = requirement == null
         ? ''
         : l10n.documentLimits(
@@ -291,7 +298,7 @@ class KycCaptureGuide extends StatelessWidget {
         SizedBox(height: theme.space(PaymentSpace.related)),
         if (state.phase != DocumentSlotPhase.empty)
           PaymentBadge(
-            icon: Icons.cloud_outlined,
+            icon: busyStill ? PaymentIcons.busy : Icons.cloud_outlined,
             label: switch (state.phase) {
               DocumentSlotPhase.uploading => l10n.documentUploading,
               DocumentSlotPhase.uploaded => l10n.documentUploaded,
@@ -303,15 +310,22 @@ class KycCaptureGuide extends StatelessWidget {
               _ => StatusTone.danger,
             },
           ),
-        if (state.phase == DocumentSlotPhase.uploading)
+        if (state.phase == DocumentSlotPhase.uploading && !busyStill)
           Padding(
             padding: EdgeInsets.symmetric(
               vertical: theme.space(PaymentSpace.related),
             ),
-            child: LinearProgressIndicator(
-              value: state.progress,
-              color: theme.accent,
-              backgroundColor: theme.surfaceMuted,
+            // As in the document slot: a percentage only when it's known.
+            child: Semantics(
+              label: l10n.documentUploading,
+              value: state.progress == null
+                  ? null
+                  : '${(state.progress! * 100).round()}%',
+              child: LinearProgressIndicator(
+                value: state.progress,
+                color: theme.accent,
+                backgroundColor: theme.surfaceMuted,
+              ),
             ),
           ),
         if (needsUpdate)
