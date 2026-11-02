@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
@@ -93,6 +95,65 @@ void main() {
       );
       expect(after.left - before.right, theme.space(role), reason: role.name);
     }
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('dark gallery logo letters use the theme onAccent color (#173)', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final app = await launch(tester);
+    app.selectTab(2);
+    await settle(tester);
+    // Open in light, then switch: the tile must follow the new look.
+    await tester.tap(find.byTooltip('Open navigation'));
+    await settle(tester);
+    await tester.tap(find.text('Layout'));
+    await settle(tester);
+    app.updateSettings(
+      const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+    );
+    await settle(tester);
+    final logo = find.byWidgetPredicate(
+      (w) => w is PaymentImage && w.alt == 'Bank Contoh',
+    );
+    // The tile is painted with a real `Picture.toImage`, outside fake time.
+    for (var i = 0; i < 20 && logo.evaluate().isEmpty; i++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pump();
+    }
+    expect(logo, findsWidgets);
+    final theme = PaymentTheme.of(tester.element(logo.first));
+    final bytes =
+        (tester.widget<PaymentImage>(logo.first).image as MemoryImage).bytes;
+    final pixels = await tester.runAsync(() async {
+      final codec = await ui.instantiateImageCodec(bytes);
+      final frame = await codec.getNextFrame();
+      final data = await frame.image.toByteData();
+      frame.image.dispose();
+      codec.dispose();
+      return data!;
+    });
+    int count(Color color) {
+      var n = 0;
+      for (var i = 0; i < pixels!.lengthInBytes; i += 4) {
+        if ((pixels.getUint8(i) - (color.r * 255).round()).abs() < 8 &&
+            (pixels.getUint8(i + 1) - (color.g * 255).round()).abs() < 8 &&
+            (pixels.getUint8(i + 2) - (color.b * 255).round()).abs() < 8) {
+          n++;
+        }
+      }
+      return n;
+    }
+
+    expect(theme.accent.computeLuminance(), greaterThan(0.5));
+    // The letters are painted in the dark onAccent ink, not white.
+    expect(count(theme.onAccent), greaterThan(100));
+    expect(count(const Color(0xFFFFFFFF)), 0);
     await tester.pumpWidget(const SizedBox());
   });
 }

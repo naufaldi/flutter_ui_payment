@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -1058,6 +1060,51 @@ void main() {
           .last;
       await Scrollable.ensureVisible(tester.element(action), alignment: 1);
       await settle(tester);
+      // #176: the entry's caption must not be cut by the app bar. Scroll it
+      // fully out of view; if the gallery cannot scroll that far, bring it
+      // fully into view instead. The actions stay on screen either way.
+      final caption = find.descendant(
+        of: find.byKey(const ValueKey('specimen:KycCaptureGuide')),
+        matching: find.text('KycCaptureGuide'),
+      );
+      final edge = math.max(
+        tester.getRect(galleryList()).top,
+        tester.getRect(find.byType(AppBar).first).bottom,
+      );
+      bool cut() {
+        final rect = tester.getRect(caption);
+        return rect.top < edge && rect.bottom > edge;
+      }
+
+      final position = tester
+          .state<ScrollableState>(
+            find
+                .descendant(
+                  of: galleryList(),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          )
+          .position;
+      if (cut()) {
+        position.jumpTo(
+          (position.pixels + tester.getRect(caption).bottom - edge).clamp(
+            position.minScrollExtent,
+            position.maxScrollExtent,
+          ),
+        );
+        await settle(tester);
+      }
+      if (cut()) {
+        position.jumpTo(
+          (position.pixels - (edge - tester.getRect(caption).top)).clamp(
+            position.minScrollExtent,
+            position.maxScrollExtent,
+          ),
+        );
+        await settle(tester);
+      }
+      expect(cut(), isFalse, reason: 'KycCaptureGuide caption is half shown');
       final gallery = tester.getRect(galleryList());
       final button = tester.getRect(action);
       expect(button.bottom, lessThanOrEqualTo(gallery.bottom));

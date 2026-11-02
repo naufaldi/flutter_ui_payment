@@ -7,7 +7,7 @@
 // example/build/screenshots (the rejected earlier design).
 
 import { createRequire } from 'node:module';
-import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, existsSync, readFileSync, readdirSync, unlinkSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -331,6 +331,18 @@ mkdirSync(target, { recursive: true });
 // Captures are gitignored build output. When one is gone but its WebP is
 // already committed, keep the committed image and its recorded size.
 const previous = existsSync(manifest) ? JSON.parse(readFileSync(manifest, 'utf8')) : {};
+const convert = async (name) => {
+  const info = await sharp(join(source, `${name}.png`))
+    .resize({ width: name.startsWith('android_tablet_') ? 1280 : 640 })
+    .webp({ quality: 82 })
+    .toFile(join(target, `${name}.webp`));
+  return { width: info.width, height: info.height };
+};
+// D90: a specimen taller than the 1200 dp cap continues in `<name>_part2`,
+// `<name>_part3` and so on, in reading order. They belong to their first
+// image's entry; Screen.astro shows them after it.
+const partName = (name, index) => `${name}_part${index + 2}`;
+const partPattern = /^(.+)_part\d+\.webp$/;
 const sizes = {};
 for (const [name, caption] of Object.entries(screens)) {
   const input = join(source, `${name}.png`);
@@ -341,12 +353,23 @@ for (const [name, caption] of Object.entries(screens)) {
     }
     throw new Error(`Missing screenshot ${input}`);
   }
-  const info = await sharp(input)
-    .resize({ width: name.startsWith('android_tablet_') ? 1280 : 640 })
-    .webp({ quality: 82 })
-    .toFile(join(target, `${name}.webp`));
-  sizes[name] = { width: info.width, height: info.height, caption };
+  const entry = { ...(await convert(name)), caption };
+  const parts = [];
+  while (existsSync(join(source, `${partName(name, parts.length)}.png`))) {
+    parts.push(await convert(partName(name, parts.length)));
+  }
+  if (parts.length) entry.parts = parts;
+  sizes[name] = entry;
+}
+// Remove part images that no current entry lists, such as the tail of a
+// specimen that got shorter.
+const listed = new Set(Object.entries(sizes).flatMap(
+  ([name, entry]) => (entry.parts ?? []).map((_, i) => `${partName(name, i)}.webp`)));
+for (const file of readdirSync(target)) {
+  const match = partPattern.exec(file);
+  if (match && sizes[match[1]] && !listed.has(file)) unlinkSync(join(target, file));
 }
 mkdirSync(dirname(manifest), { recursive: true });
 writeFileSync(manifest, JSON.stringify(sizes, null, 2) + '\n');
-console.log(`screens: wrote ${Object.keys(sizes).length} images to public/screens`);
+const partCount = listed.size;
+console.log(`screens: wrote ${Object.keys(sizes).length} images and ${partCount} continuation parts to public/screens`);

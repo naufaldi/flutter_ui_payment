@@ -42,5 +42,35 @@ for (const name of Object.keys(screens)) {
   console.error('screens.json: retired iOS screen: ' + name);
 }
 
+// D90: continuation parts listed in screens.json and the part WebPs in
+// public/screens match one to one, in order, and none exceeds the cap.
+const screenDir = new URL('../public/screens/', import.meta.url);
+const files = new Set(readdirSync(screenDir));
+const listedParts = new Set();
+for (const [name, entry] of Object.entries(screens)) {
+  const images = [entry, ...(entry.parts ?? [])];
+  images.forEach((size, i) => {
+    const file = `${i === 0 ? name : `${name}_part${i + 1}`}.webp`;
+    if (i > 0) listedParts.add(file);
+    if (!files.has(file)) {
+      problems++;
+      console.error(`screens.json: ${name} lists missing image ${file}`);
+    }
+    // Phone images are 640 px for 360 dp, so 1200 dp is 2134 px. Tablet crops
+    // are resized from the specimen's own width, so they are not checked here.
+    const cap = Math.ceil(1200 * size.width / 360);
+    if (name.startsWith('android_catalog_') && size.height > cap) {
+      problems++;
+      console.error(`screens.json: ${file} is ${size.height} px, over the ${cap} px cap`);
+    }
+  });
+}
+for (const file of files) {
+  if (/_part\d+\.webp$/.test(file) && !listedParts.has(file)) {
+    problems++;
+    console.error(`public/screens: ${file} is not listed in screens.json`);
+  }
+}
+
 console.log(`check-pages: ${pages} pages, ${problems} problems`);
 process.exitCode = problems ? 1 : 0;

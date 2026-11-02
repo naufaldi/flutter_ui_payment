@@ -1,7 +1,8 @@
 ---
 // One native screenshot from public/screens, with its real size so the page
 // does not shift while it loads. `dark` pairs a dark capture that replaces the
-// light one when the site is in dark mode.
+// light one when the site is in dark mode. A specimen taller than the 1200 dp
+// cap has continuation parts (D90); they follow its first image in order.
 import screens from '../data/screens.json';
 
 interface Props {
@@ -12,41 +13,65 @@ interface Props {
   eager?: boolean;
 }
 
+type Size = { width: number; height: number };
+type Entry = Size & { caption: string; parts?: Size[] };
+
 const { name, dark, alt, caption, eager = false } = Astro.props;
-const all = screens as Record<string, { width: number; height: number; caption: string }>;
+const all = screens as Record<string, Entry>;
 for (const n of [name, dark].filter(Boolean) as string[]) {
   if (!all[n]) throw new Error(`Unknown screenshot "${n}". Add it to scripts/screens.mjs.`);
 }
 const light = all[name];
-const darkInfo = dark ? all[dark] : undefined;
 const loading = eager ? 'eager' : 'lazy';
 const text = caption ?? light.caption;
 // Phone captures are 640 px wide; anything wider is a tablet capture.
 const wide = light.width > 640;
+
+// The first image keeps its name; parts are `<name>_part2`, `_part3`, …
+function images(base: string) {
+  const entry = all[base];
+  const list = [entry, ...(entry.parts ?? [])];
+  return list.map((size, i) => ({
+    src: `/screens/${i === 0 ? base : `${base}_part${i + 1}`}.webp`,
+    ...size,
+    alt: list.length === 1 ? alt
+      : i === 0 ? `${alt} Part 1 of ${list.length}.`
+      : `Continued: ${alt} Part ${i + 1} of ${list.length}.`,
+  }));
+}
+const sets = [
+  { cls: dark ? 'fup-only-light' : undefined, items: images(name) },
+  ...(dark ? [{ cls: 'fup-only-dark', items: images(dark) }] : []),
+];
+const note = (count: number) =>
+  count > 1 ? ` Shown in ${count} images, top to bottom; each repeats the last few lines of the one before.` : '';
+const notes = new Set(sets.map((set) => note(set.items.length)));
 ---
 
 <figure class:list={['fup-screen', 'not-content', { 'fup-screen-wide': wide }]}>
-  <img
-    class={dark ? 'fup-only-light' : undefined}
-    src={`/screens/${name}.webp`}
-    width={light.width}
-    height={light.height}
-    alt={alt}
-    loading={loading}
-    decoding="async"
-  />
   {
-    dark && darkInfo && (
-      <img
-        class="fup-only-dark"
-        src={`/screens/${dark}.webp`}
-        width={darkInfo.width}
-        height={darkInfo.height}
-        alt={alt}
-        loading={loading}
-        decoding="async"
-      />
+    sets.map((set) =>
+      set.items.map((img, i) => (
+        <img
+          class:list={[set.cls, { 'fup-screen-part': i > 0 }]}
+          src={img.src}
+          width={img.width}
+          height={img.height}
+          alt={img.alt}
+          loading={loading}
+          decoding="async"
+        />
+      )),
     )
   }
-  {text && <figcaption>{text}</figcaption>}
+  {
+    text && (
+      <figcaption>
+        {text}
+        {notes.size === 1
+          ? [...notes][0]
+          : sets.map((set) => <span class={set.cls}>{note(set.items.length)}</span>)}
+      </figcaption>
+    )
+  }
 </figure>

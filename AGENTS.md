@@ -88,7 +88,7 @@ Docs captures come from Android only (D81): the phone AVD `FlutterPayment_API37_
 - Catalog specimens render at phone width on a tall virtual view and are cropped to the keyed specimen, capped at 1200 dp (D82). Overlay and state captures (dialogs, sheets, toasts, tooltips) are full-screen at the real size.
 - Selective runs: `--dart-define=CAPTURE_ONLY=…` with a matching `--dart-define=CAPTURE_LOOKS=…`, one session per look group. `node scripts/catalog-entries.mjs light,dark` (in `website/`) prints the entries. Tablet sets: `--dart-define=CAPTURE_DEVICE=tablet`.
 - Convert with `pnpm screens` in `website/`: WebP into `website/public/screens`, registry in `website/src/data/screens.json`. After a rebase, re-run it; never hand-merge `screens.json`.
-- Names: `android_catalog_<component>_variants{,_dark,_200,_id,_id_200}`, state captures `android_catalog_<state>`, flow `android_<screen>_<look>`, `android_refined_*`, `android_kit_*`, tablet `android_tablet_*`. `pnpm check:pages` fails on any `ios_` name.
+- Names: `android_catalog_<component>_variants{,_dark,_200,_id,_id_200}` (a specimen over the 1200 dp cap adds `_part2`, `_part3`, … per D90; never register parts in `screens.mjs`), state captures `android_catalog_<state>`, flow `android_<screen>_<look>`, `android_refined_*`, `android_kit_*`, tablet `android_tablet_*`. `pnpm check:pages` fails on any `ios_` name.
 - Place a component's specimen right after its intro, light and dark paired with `dark=`, with alt text that says what the image shows.
 - Open and look at every capture before claiming a visual result.
 
