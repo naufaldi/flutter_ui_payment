@@ -49,9 +49,15 @@ KycCaptureGuide(
 );
 ```
 
+## In a screen vs in a scroll view
+
+Place `KycCaptureGuide` directly in a bounded screen body to pin Take photo, Use photo and Retake in the bottom safe area (D62). The preview fits above the footer in a centred column at most 640 dp wide (D53), using up to half the body height at normal text and a quarter at large text. Status, banners and guidance share a scroll region below a preview that is at least 96 dp high. Long status copy can scroll on short screens. The footer has one primary action and at most one quiet secondary action (D59).
+
+Inside a host scroll view, the guide keeps its inline preview and action `Wrap`, as in the gallery. No signature change is needed; remove a host scroll wrapper to opt into the screen layout. Hosts that use intrinsic-sizing parents (`IntrinsicHeight`, `SliverFillRemaining(hasScrollBody: false)`) must wrap the guide in a scroll view or use a bounded body instead.
+
 ## States and variants
 
-Framing offers Take photo. A local photo offers Use photo and Retake. Uploading and uploaded states offer Retake. An interrupted upload offers Try again. A host rejection shows its safe reason and Retake when permitted. Permanent permission denial offers Open settings. The host scrolls the guide.
+Framing offers Take photo, with Open settings when the host allows it. A local photo offers Use photo and Retake. Uploading and uploaded states offer Retake. An interrupted upload offers Try again and Retake. A host rejection shows its safe reason and Retake when permitted. Permanent permission denial offers Open settings.
 
 ## Content guidelines
 

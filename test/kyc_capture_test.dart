@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter_ui_payment/src/verification/capture_geometry.dart';
+import 'package:flutter_ui_payment/src/foundation/view_frame.dart';
 
 import 'helpers/reduced_motion.dart';
 
@@ -69,6 +70,456 @@ final uploads = <String, Widget Function(DocumentSlotState)>{
       KycCaptureGuide(kind: CaptureKind.idCard, state: state),
 };
 void main() {
+  Widget screen(
+    KycCaptureGuide guide, {
+    double scale = 1,
+    String locale = 'en',
+  }) => MaterialApp(
+    locale: Locale(locale),
+    supportedLocales: const [Locale('en'), Locale('id')],
+    localizationsDelegates: const [
+      PaymentLocalizations.delegate,
+      ...GlobalMaterialLocalizations.delegates,
+    ],
+    builder: (context, child) => MediaQuery(
+      data: MediaQuery.of(
+        context,
+      ).copyWith(textScaler: TextScaler.linear(scale)),
+      child: child!,
+    ),
+    home: Scaffold(body: guide),
+  );
+
+  testWidgets('review photo is large enough to inspect at 360x640 (#139)', (
+    t,
+  ) async {
+    t.view.physicalSize = const Size(360, 640);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(
+      screen(
+        KycCaptureGuide(
+          kind: CaptureKind.idCard,
+          photo: photo,
+          onUsePhoto: () {},
+          onRetake: () {},
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(
+      t.getSize(find.byType(AspectRatio)).height,
+      greaterThanOrEqualTo(200),
+    );
+    final usePhoto = find.widgetWithText(PaymentButton, 'Use photo');
+    expect(usePhoto.hitTestable(), findsOneWidget);
+    expect(t.getRect(usePhoto).bottom, lessThanOrEqualTo(640));
+    expect(t.takeException(), isNull);
+  });
+
+  for (final (size, scale) in [
+    (const Size(360, 640), 1.0),
+    (const Size(320, 569), 2.0),
+    (const Size(1199, 720), 1.0),
+  ]) {
+    testWidgets('bounded capture fits and pins at $size, ${scale}x (#139)', (
+      t,
+    ) async {
+      t.view.physicalSize = size;
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.reset);
+      for (final review in [false, true]) {
+        await t.pumpWidget(
+          screen(
+            KycCaptureGuide(
+              kind: CaptureKind.idCard,
+              photo: review ? photo : null,
+              onCapture: () {},
+              onUsePhoto: () {},
+              onRetake: () {},
+            ),
+            scale: scale,
+          ),
+        );
+        await t.pumpAndSettle();
+        final action = find.widgetWithText(
+          PaymentButton,
+          review ? 'Use photo' : 'Take photo',
+        );
+        expect(
+          find.ancestor(of: action, matching: find.byType(Scrollable)),
+          findsNothing,
+        );
+        expect(action.hitTestable(), findsOneWidget);
+        final preview = t.getRect(find.byType(AspectRatio));
+        final footer = t.getRect(find.byType(PinnedFooter));
+        expect(preview.top, greaterThanOrEqualTo(0));
+        expect(preview.bottom, lessThanOrEqualTo(footer.top));
+        expect(preview.width, lessThanOrEqualTo(640));
+        expect(preview.left, greaterThanOrEqualTo(0));
+        expect(preview.right, lessThanOrEqualTo(size.width));
+        if (review && size.width != 360) {
+          expect(t.getSize(action).width, lessThan(300));
+        }
+        expect(t.takeException(), isNull);
+      }
+    });
+  }
+
+  final compactStates = <String, DocumentSlotState>{
+    'framing': const DocumentSlotState.empty(),
+    'review': const DocumentSlotState.empty(),
+    'uploading': const DocumentSlotState.uploading(
+      file,
+      requestId: '1',
+      progress: .5,
+    ),
+    'uploaded': const DocumentSlotState.uploaded(file, requestId: '1'),
+    'too large': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.tooLarge),
+    ),
+    'unsupported type': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.unsupportedType),
+    ),
+    'denied': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.permissionDenied),
+    ),
+    'permanently denied': const DocumentSlotState.failed(
+      DocumentIssue(
+        DocumentIssueKind.permissionPermanentlyDenied,
+        canRetry: false,
+        canOpenSettings: true,
+      ),
+    ),
+    'interrupted': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.uploadInterrupted),
+    ),
+    'rejected': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.rejectedByHost),
+    ),
+    'rejected+update': const DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.rejectedByHost),
+    ),
+  };
+  for (final size in [const Size(320, 569), const Size(320, 480)]) {
+    for (final locale in ['en', 'id']) {
+      for (final entry in compactStates.entries) {
+        testWidgets(
+          'compact default copy: ${entry.key} $locale at $size (#139)',
+          (t) async {
+            t.view.physicalSize = size;
+            t.view.devicePixelRatio = 1;
+            addTearDown(t.view.reset);
+            await t.pumpWidget(
+              screen(
+                KycCaptureGuide(
+                  kind: CaptureKind.idCard,
+                  state: entry.value,
+                  photo:
+                      [
+                        'framing',
+                        'denied',
+                        'permanently denied',
+                      ].contains(entry.key)
+                      ? null
+                      : photo,
+                  needsUpdate: entry.key == 'rejected+update',
+                  onCapture: () {},
+                  onRetake: () {},
+                  onUsePhoto: () {},
+                  onOpenSettings: () {},
+                ),
+                scale: 2,
+                locale: locale,
+              ),
+            );
+            await t.pumpAndSettle();
+            expect(t.takeException(), isNull);
+            expect(
+              t.getSize(find.byType(AspectRatio)).height,
+              greaterThanOrEqualTo(96),
+            );
+            final footer = t.getRect(find.byType(PinnedFooter));
+            expect(
+              t.getRect(find.byType(AspectRatio)).bottom,
+              lessThanOrEqualTo(footer.top),
+            );
+            // FlutterTest's wide glyphs may require scrolling even where Roboto fits.
+            for (final banner
+                in find.byType(PaymentBanner).evaluate().toList()) {
+              final texts = find.descendant(
+                of: find.byWidget(banner.widget),
+                matching: find.byType(Text),
+              );
+              for (final element in texts.evaluate().toList()) {
+                final target = find.byWidget(element.widget);
+                await Scrollable.ensureVisible(
+                  t.element(target),
+                  alignment: .5,
+                );
+                await t.pumpAndSettle();
+                expect(target.hitTestable(), findsOneWidget);
+              }
+            }
+            expect(t.takeException(), isNull);
+          },
+        );
+      }
+    }
+  }
+
+  // Short host-safe messages isolate layout from FlutterTest's one-em glyphs.
+  // Device proof exercises the full localized messages with Roboto.
+  for (final (size, scale) in [
+    (const Size(360, 640), 1.0),
+    (const Size(320, 569), 2.0),
+  ]) {
+    for (final (name, state) in [
+      (
+        'uploading',
+        const DocumentSlotState.uploading(file, requestId: '1', progress: .5),
+      ),
+      (
+        'interrupted',
+        const DocumentSlotState.failed(
+          DocumentIssue(
+            DocumentIssueKind.uploadInterrupted,
+            safeMessage: 'Try again.',
+          ),
+        ),
+      ),
+      (
+        'rejected',
+        const DocumentSlotState.failed(
+          DocumentIssue(
+            DocumentIssueKind.rejectedByHost,
+            safeMessage: 'Blurry photo.',
+          ),
+        ),
+      ),
+      (
+        'permanently denied',
+        const DocumentSlotState.failed(
+          DocumentIssue(
+            DocumentIssueKind.permissionPermanentlyDenied,
+            safeMessage: 'Open Settings.',
+            canRetry: false,
+            canOpenSettings: true,
+          ),
+        ),
+      ),
+    ]) {
+      testWidgets(
+        'bounded status stays visible: $name at $size, ${scale}x (#139)',
+        (t) async {
+          t.view.physicalSize = size;
+          t.view.devicePixelRatio = 1;
+          addTearDown(t.view.reset);
+          await t.pumpWidget(
+            screen(
+              KycCaptureGuide(
+                kind: CaptureKind.idCard,
+                state: state,
+                photo: name == 'permanently denied' ? null : photo,
+                onRetake: () {},
+                onUsePhoto: () {},
+                onOpenSettings: () {},
+              ),
+              scale: scale,
+            ),
+          );
+          await t.pumpAndSettle();
+          final footer = t.getRect(find.byType(PinnedFooter));
+          for (final finder in [
+            find.byType(PaymentBadge),
+            if (state.issue != null) find.byType(PaymentBanner),
+            if (name == 'uploading') find.byType(LinearProgressIndicator),
+          ]) {
+            if (size.width == 360 ||
+                !['interrupted', 'permanently denied'].contains(name)) {
+              final rect = t.getRect(finder);
+              expect(rect.top, greaterThanOrEqualTo(0));
+              expect(rect.bottom, lessThanOrEqualTo(footer.top));
+              expect(finder.hitTestable(), findsOneWidget);
+            } else {
+              await Scrollable.ensureVisible(t.element(finder), alignment: .5);
+              await t.pumpAndSettle();
+              expect(finder.hitTestable(), findsOneWidget);
+            }
+          }
+          final preview = t.getRect(find.byType(AspectRatio));
+          expect(preview.height, greaterThan(0));
+          expect(preview.top, greaterThanOrEqualTo(0));
+          expect(preview.bottom, lessThanOrEqualTo(footer.top));
+          expect(preview.left, greaterThanOrEqualTo(0));
+          expect(preview.right, lessThanOrEqualTo(size.width));
+          expect(t.takeException(), isNull);
+        },
+      );
+    }
+  }
+
+  testWidgets('unbounded capture keeps its inline gallery layout (#139)', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      host(KycCaptureGuide(kind: CaptureKind.idCard, photo: photo)),
+    );
+    await t.pumpAndSettle();
+    expect(find.byType(PinnedFooter), findsNothing);
+    expect(
+      find.ancestor(of: find.text('Use photo'), matching: find.byType(Wrap)),
+      findsOneWidget,
+    );
+    expect(t.getSize(find.byType(AspectRatio)), const Size(320, 320 * 4 / 3));
+    expect(
+      t
+          .widget<PaymentButton>(find.widgetWithText(PaymentButton, 'Retake'))
+          .variant,
+      PaymentButtonVariant.secondary,
+    );
+  });
+
+  final actionCases = [
+    (
+      'framing',
+      const DocumentSlotState.empty(),
+      false,
+      ['Take photo'],
+      <String>[],
+    ),
+    (
+      'framing settings',
+      const DocumentSlotState.failed(
+        DocumentIssue(
+          DocumentIssueKind.permissionDenied,
+          canOpenSettings: true,
+        ),
+      ),
+      false,
+      ['Take photo'],
+      ['Open settings'],
+    ),
+    (
+      'review',
+      const DocumentSlotState.empty(),
+      true,
+      ['Use photo'],
+      ['Retake'],
+    ),
+    (
+      'interrupted',
+      const DocumentSlotState.failed(
+        DocumentIssue(DocumentIssueKind.uploadInterrupted),
+      ),
+      true,
+      ['Try again'],
+      ['Retake'],
+    ),
+    (
+      'uploading',
+      const DocumentSlotState.uploading(file, requestId: '1', progress: .5),
+      true,
+      ['Retake'],
+      <String>[],
+    ),
+    (
+      'uploaded',
+      const DocumentSlotState.uploaded(file, requestId: '1'),
+      true,
+      ['Retake'],
+      <String>[],
+    ),
+    (
+      'permanent denial',
+      const DocumentSlotState.failed(
+        DocumentIssue(
+          DocumentIssueKind.permissionPermanentlyDenied,
+          canRetry: false,
+          canOpenSettings: true,
+        ),
+      ),
+      false,
+      ['Open settings'],
+      <String>[],
+    ),
+    for (final kind in [
+      DocumentIssueKind.tooLarge,
+      DocumentIssueKind.unsupportedType,
+      DocumentIssueKind.rejectedByHost,
+    ])
+      (
+        kind.name,
+        DocumentSlotState.failed(DocumentIssue(kind)),
+        true,
+        ['Retake'],
+        <String>[],
+      ),
+    (
+      'retry disallowed',
+      const DocumentSlotState.failed(
+        DocumentIssue(DocumentIssueKind.rejectedByHost, canRetry: false),
+      ),
+      true,
+      <String>[],
+      <String>[],
+    ),
+  ];
+  for (final (name, state, hasPhoto, primary, quiet) in actionCases) {
+    testWidgets('bounded footer mapping: $name (#139)', (t) async {
+      var taken = 0, used = 0, retaken = 0, settings = 0;
+      await t.pumpWidget(
+        screen(
+          KycCaptureGuide(
+            kind: CaptureKind.idCard,
+            state: state,
+            photo: hasPhoto ? photo : null,
+            onCapture: () => taken++,
+            onUsePhoto: () => used++,
+            onRetake: () => retaken++,
+            onOpenSettings: () => settings++,
+          ),
+        ),
+      );
+      await t.pumpAndSettle();
+      final buttons = t
+          .widgetList<PaymentButton>(find.byType(PaymentButton))
+          .toList();
+      expect(
+        buttons
+            .where((b) => b.variant == PaymentButtonVariant.primary)
+            .map((b) => b.label),
+        primary,
+      );
+      expect(
+        buttons
+            .where((b) => b.variant == PaymentButtonVariant.quiet)
+            .map((b) => b.label),
+        quiet,
+      );
+      expect(buttons.length, primary.length + quiet.length);
+      expect(buttons.length, lessThanOrEqualTo(2));
+      for (final button in buttons) {
+        final target = find.widgetWithText(PaymentButton, button.label);
+        expect(
+          find.ancestor(of: target, matching: find.byType(Scrollable)),
+          findsNothing,
+        );
+        expect(t.getSize(target).height, greaterThanOrEqualTo(48));
+        await t.tap(target);
+      }
+      expect(taken, buttons.where((b) => b.label == 'Take photo').length);
+      expect(
+        used,
+        buttons
+            .where((b) => ['Use photo', 'Try again'].contains(b.label))
+            .length,
+      );
+      expect(retaken, buttons.where((b) => b.label == 'Retake').length);
+      expect(settings, buttons.where((b) => b.label == 'Open settings').length);
+    });
+  }
+
   test('framing uses ID-1 ratio and separates face and card', () {
     for (final kind in CaptureKind.values) {
       final frames = captureFrameRects(kind, const Size(300, 400));

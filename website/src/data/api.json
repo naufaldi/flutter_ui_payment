@@ -14661,7 +14661,7 @@
   "KycCaptureGuide": {
     "kind": "class",
     "file": "lib/src/verification/capture_widgets.dart",
-    "doc": "Framing, host photo review and upload state. Host owns all verdicts.",
+    "doc": "Framing, host photo review and upload state. Host owns all verdicts.\nWith bounded height, actions pin below a scroll region and the preview\nfits above the footer in a centred 640 dp column (D62, D53). Inside a\nhost scroll view, the preview and actions remain inline.",
     "extends": "StatelessWidget",
     "constructors": [
       {
