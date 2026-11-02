@@ -297,37 +297,36 @@ class KycCaptureGuide extends StatelessWidget {
         ),
         SizedBox(height: theme.space(PaymentSpace.related)),
         if (state.phase != DocumentSlotPhase.empty)
-          PaymentBadge(
-            icon: busyStill ? PaymentIcons.busy : Icons.cloud_outlined,
-            label: switch (state.phase) {
-              DocumentSlotPhase.uploading => l10n.documentUploading,
-              DocumentSlotPhase.uploaded => l10n.documentUploaded,
-              _ => l10n.documentFailed,
-            },
-            tone: switch (state.phase) {
-              DocumentSlotPhase.uploading => StatusTone.info,
-              DocumentSlotPhase.uploaded => StatusTone.success,
-              _ => StatusTone.danger,
-            },
+          Semantics(
+            value:
+                state.phase == DocumentSlotPhase.uploading &&
+                    state.progress != null
+                ? '${(state.progress! * 100).round()}%'
+                : null,
+            child: PaymentBadge(
+              icon: busyStill ? PaymentIcons.busy : Icons.cloud_outlined,
+              label: switch (state.phase) {
+                DocumentSlotPhase.uploading => l10n.documentUploading,
+                DocumentSlotPhase.uploaded => l10n.documentUploaded,
+                _ => l10n.documentFailed,
+              },
+              tone: switch (state.phase) {
+                DocumentSlotPhase.uploading => StatusTone.info,
+                DocumentSlotPhase.uploaded => StatusTone.success,
+                _ => StatusTone.danger,
+              },
+            ),
           ),
         if (state.phase == DocumentSlotPhase.uploading && !busyStill)
           Padding(
             padding: EdgeInsets.symmetric(
               vertical: theme.space(PaymentSpace.related),
             ),
-            // The badge owns the label; the bar adds only known progress.
             child: ExcludeSemantics(
-              excluding: state.progress == null,
-              child: Semantics(
-                excludeSemantics: true,
-                value: state.progress == null
-                    ? null
-                    : '${(state.progress! * 100).round()}%',
-                child: LinearProgressIndicator(
-                  value: state.progress,
-                  color: theme.accent,
-                  backgroundColor: theme.surfaceMuted,
-                ),
+              child: LinearProgressIndicator(
+                value: state.progress,
+                color: theme.accent,
+                backgroundColor: theme.surfaceMuted,
               ),
             ),
           ),

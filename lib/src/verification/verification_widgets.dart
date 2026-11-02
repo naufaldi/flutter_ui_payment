@@ -589,10 +589,16 @@ class DocumentUploadTile extends StatelessWidget {
         state.phase == DocumentSlotPhase.uploading &&
         state.progress == null &&
         PaymentMotion.of(context).reduced;
-    final badge = PaymentBadge(
-      tone: tone,
-      icon: busyStill ? PaymentIcons.busy : icon,
-      label: statusLabel,
+    final badge = Semantics(
+      value:
+          state.phase == DocumentSlotPhase.uploading && state.progress != null
+          ? '${(state.progress! * 100).round()}%'
+          : null,
+      child: PaymentBadge(
+        tone: tone,
+        icon: busyStill ? PaymentIcons.busy : icon,
+        label: statusLabel,
+      ),
     );
     return PaymentSection(
       child: Column(
@@ -657,22 +663,14 @@ class DocumentUploadTile extends StatelessWidget {
           ],
           if (state.phase == DocumentSlotPhase.uploading && !busyStill) ...[
             SizedBox(height: theme.space(PaymentSpace.related)),
-            // The badge owns the label; the bar adds only known progress.
             ExcludeSemantics(
-              excluding: state.progress == null,
-              child: Semantics(
-                excludeSemantics: true,
-                value: state.progress == null
-                    ? null
-                    : '${(state.progress! * 100).round()}%',
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: LinearProgressIndicator(
-                    value: state.progress,
-                    minHeight: 4,
-                    color: theme.accent,
-                    backgroundColor: theme.surfaceMuted,
-                  ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(2),
+                child: LinearProgressIndicator(
+                  value: state.progress,
+                  minHeight: 4,
+                  color: theme.accent,
+                  backgroundColor: theme.surfaceMuted,
                 ),
               ),
             ),

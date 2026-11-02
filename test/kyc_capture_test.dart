@@ -292,7 +292,7 @@ void main() {
     }
   });
 
-  // Upload progress (D76, #97): a bar value only when the host reports one.
+  // Upload progress (D76, #97): the badge owns the label and known value.
   for (final MapEntry(key: name, value: upload) in uploads.entries) {
     group('$name upload', () {
       const unknown = DocumentSlotState.uploading(file, requestId: '1');
@@ -322,6 +322,11 @@ void main() {
           // No bar, so no value the kit doesn't know.
           expect(bar, findsNothing);
           expect(find.semantics.byValue(RegExp('%')), findsNothing);
+          expect(find.semantics.byValue('42'), findsNothing);
+          expect(
+            find.semantics.byLabel('Uploading').evaluate().single.value,
+            isEmpty,
+          );
           expect(find.semantics.byLabel('Uploading'), findsOneWidget);
           // The still busy glyph sits beside "Uploading" in the badge.
           final glyph = find.descendant(
@@ -352,6 +357,10 @@ void main() {
           );
           expect(tester.widget<LinearProgressIndicator>(bar).value, .42);
           expect(find.semantics.byValue('42%'), findsOneWidget);
+          expect(
+            find.semantics.byLabel('Uploading').evaluate().single,
+            same(find.semantics.byValue('42%').evaluate().single),
+          );
           expect(find.semantics.byValue('42'), findsNothing);
           expect(find.semantics.byLabel('Uploading'), findsOneWidget);
           expect(find.byIcon(PaymentIcons.busy), findsNothing);
@@ -366,6 +375,11 @@ void main() {
         expect(tester.widget<LinearProgressIndicator>(bar).value, isNull);
         expect(tester.hasRunningAnimations, isTrue);
         expect(find.semantics.byValue(RegExp('%')), findsNothing);
+        expect(find.semantics.byValue('42'), findsNothing);
+        expect(
+          find.semantics.byLabel('Uploading').evaluate().single.value,
+          isEmpty,
+        );
         expect(find.semantics.byLabel('Uploading'), findsOneWidget);
         expect(find.byIcon(PaymentIcons.busy), findsNothing);
       });
@@ -376,6 +390,10 @@ void main() {
         await tester.pumpWidget(motionHost(upload(known)));
         expect(tester.widget<LinearProgressIndicator>(bar).value, .42);
         expect(find.semantics.byValue('42%'), findsOneWidget);
+        expect(
+          find.semantics.byLabel('Uploading').evaluate().single,
+          same(find.semantics.byValue('42%').evaluate().single),
+        );
         expect(find.semantics.byValue('42'), findsNothing);
         expect(find.semantics.byLabel('Uploading'), findsOneWidget);
       });
