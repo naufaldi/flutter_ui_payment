@@ -128,7 +128,7 @@ class FlowScreen extends StatelessWidget {
               child: view
                   ? SizedBox.expand(
                       key: ValueKey('flow-view-${c.step.name}'),
-                      child: _StepBody(coordinator: c),
+                      child: _StepBody(coordinator: c, step: c.step),
                     )
                   : ListView(
                       key: ValueKey('flow-list-${c.step.name}'),
@@ -148,7 +148,7 @@ class FlowScreen extends StatelessWidget {
                             child: Center(child: Text(s.loading)),
                           )
                         else
-                          _StepBody(coordinator: c),
+                          _StepBody(coordinator: c, step: c.step),
                       ],
                     ),
             ),
@@ -240,7 +240,7 @@ class _StepEntry {
   _StepEntry(this.child, this.controller, {required this.back});
   Widget child;
   final AnimationController controller;
-  final bool back;
+  bool back;
   late final Key key = ObjectKey(this);
 }
 
@@ -319,6 +319,8 @@ class _FlowStepSwitcherState extends State<_FlowStepSwitcher>
     final back = _goingBack(oldWidget.step);
     final motion = PaymentMotion.of(context);
     final leaving = _current;
+    // Only the incoming forward step rises; outgoing content fades in place.
+    leaving.back = true;
     _current = _StepEntry(
       widget.child,
       AnimationController(vsync: this, duration: motion.enter),
@@ -478,14 +480,15 @@ class _AccountMenu extends StatelessWidget {
 }
 
 class _StepBody extends StatelessWidget {
-  const _StepBody({required this.coordinator});
+  const _StepBody({required this.coordinator, required this.step});
 
   final DemoCoordinator coordinator;
+  final FlowStep step;
 
   @override
   Widget build(BuildContext context) {
     final c = coordinator;
-    return switch (c.step) {
+    return switch (step) {
       FlowStep.overview => _Overview(c),
       FlowStep.signIn => SignInStep(c),
       FlowStep.history => HistoryStep(c),
@@ -496,7 +499,7 @@ class _StepBody extends StatelessWidget {
       FlowStep.kycIntro => _KycIntro(c),
       FlowStep.kycIdentity ||
       FlowStep.kycDocuments ||
-      FlowStep.kycReview => KycOnboardingStep(c),
+      FlowStep.kycReview => KycOnboardingStep(c, step: step),
       FlowStep.kycStatus => VerificationStatusView(
         header: _supportNotice(context, c),
         snapshot: c.kyc,

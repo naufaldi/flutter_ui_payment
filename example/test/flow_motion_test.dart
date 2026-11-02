@@ -10,6 +10,8 @@ import 'package:flutter_ui_payment_example/scenarios/scenario_config.dart';
 import 'package:flutter_ui_payment_example/screens/flow_screen.dart';
 import 'package:flutter_ui_payment_example/themes.dart';
 
+import 'package:flutter_ui_payment_example/screens/steps/kyc_onboarding_step.dart';
+
 import '../integration_test/support.dart';
 
 Finder body(FlowStep step) => find.byKey(ValueKey('flow-view-${step.name}'));
@@ -17,6 +19,112 @@ Finder fadeOf(Finder child) =>
     find.ancestor(of: child, matching: find.byType(FadeTransition)).first;
 
 void main() {
+  testWidgets('leaving identity keeps its content during documents entry', (
+    tester,
+  ) async {
+    final app = await launch(tester);
+    final c = await runScenario(tester, app, 'K01');
+    c.acceptConsent();
+    await settle(tester);
+    c.editDocuments();
+    await tester.pump();
+    // Rebuilding an outgoing form (for example its busy state) must keep
+    // the entry's original step, while coordinator data stays live.
+    tester
+        .element(
+          find.descendant(
+            of: body(FlowStep.kycIdentity),
+            matching: find.byType(KycOnboardingStep),
+          ),
+        )
+        .markNeedsBuild();
+    await tester.pump(const Duration(milliseconds: 75));
+    final leaving = body(FlowStep.kycIdentity);
+    expect(
+      find.descendant(of: leaving, matching: find.byType(IdentityForm)),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: body(FlowStep.kycDocuments),
+        matching: find.text('ID card (KTP)'),
+      ),
+      findsWidgets,
+    );
+    expect(
+      find.ancestor(
+        of: leaving,
+        matching: find.byWidgetPredicate(
+          (w) => w is IgnorePointer && w.ignoring,
+        ),
+      ),
+      findsWidgets,
+    );
+    expect(
+      find.ancestor(
+        of: leaving,
+        matching: find.byWidgetPredicate(
+          (w) => w is ExcludeSemantics && w.excluding,
+        ),
+      ),
+      findsWidgets,
+    );
+    await settle(tester);
+  });
+  for (final transition in [
+    'identity-documents',
+    'documents-identity',
+    'detail-history',
+  ]) {
+    testWidgets('outgoing $transition fades in place on every frame', (
+      tester,
+    ) async {
+      final app = await launch(tester);
+      final detail = transition == 'detail-history';
+      final forward = transition == 'identity-documents';
+      final c = await runScenario(tester, app, detail ? 'A01' : 'K01');
+      if (detail) {
+        unawaited(c.openDetail(c.history.first));
+      } else {
+        c.acceptConsent();
+      }
+      await settle(tester);
+      if (!detail && !forward) {
+        c.editDocuments();
+        await settle(tester);
+      }
+      final leaving = body(c.step);
+      final rest = tester.getTopLeft(leaving);
+      if (detail) {
+        c.closeDetail();
+      } else if (forward) {
+        c.editDocuments();
+      } else {
+        c.editIdentity();
+      }
+      await tester.pump();
+      expect(tester.getTopLeft(body(c.step)).dy, rest.dy + (forward ? 8 : 0));
+      for (var frame = 0; frame < 10; frame++) {
+        if (leaving.evaluate().isNotEmpty) {
+          expect(
+            tester.getTopLeft(leaving).dy,
+            closeTo(rest.dy, 0.001),
+            reason: '$transition frame $frame',
+          );
+          if (frame > 0) {
+            expect(
+              tester.widget<FadeTransition>(fadeOf(leaving)).opacity.value,
+              lessThan(1),
+            );
+          }
+        }
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      expect(leaving, findsNothing);
+      await settle(tester);
+    });
+  }
+
   testWidgets('status-first correction submits forward to status', (
     tester,
   ) async {

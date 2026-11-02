@@ -7,8 +7,9 @@ import '../capture_screen.dart';
 import 'kyc_fields.dart';
 
 class KycOnboardingStep extends StatefulWidget {
-  const KycOnboardingStep(this.c, {super.key});
+  const KycOnboardingStep(this.c, {required this.step, super.key});
   final DemoCoordinator c;
+  final FlowStep step;
 
   @override
   State<KycOnboardingStep> createState() => _KycOnboardingStepState();
@@ -41,8 +42,8 @@ class _KycOnboardingStepState extends State<KycOnboardingStep> {
     final l10n = PaymentLocalizations.of(context);
     final reqs = documentRequirements(s);
     final documents = [for (final r in reqs) (r, c.documents[r.key]!)];
-    final review = c.step == FlowStep.kycReview;
-    final details = c.step == FlowStep.kycIdentity;
+    final review = widget.step == FlowStep.kycReview;
+    final details = widget.step == FlowStep.kycIdentity;
     PaymentTaskStatus slot(String key) => switch (c.documents[key]?.phase) {
       DocumentSlotPhase.uploaded => PaymentTaskStatus.complete,
       DocumentSlotPhase.failed => PaymentTaskStatus.blocked,
@@ -50,7 +51,7 @@ class _KycOnboardingStepState extends State<KycOnboardingStep> {
       _ => PaymentTaskStatus.notStarted,
     };
     // Each step's submit pins at the bottom of the view (D62).
-    final action = switch (c.step) {
+    final action = switch (widget.step) {
       FlowStep.kycIdentity => PaymentButton(
         key: const Key('identity-continue'),
         label: l10n.continueLabel,
@@ -105,7 +106,7 @@ class _KycOnboardingStepState extends State<KycOnboardingStep> {
       error: c.kyc.fieldsToFix.isEmpty
           ? null
           : PaymentBanner(tone: StatusTone.warning, title: s.fixHighlighted),
-      child: switch (c.step) {
+      child: switch (widget.step) {
         FlowStep.kycIdentity => _KycIdentity(c, controller: _identity),
         FlowStep.kycDocuments => _KycDocuments(c),
         _ => _KycReview(c),

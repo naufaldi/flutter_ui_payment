@@ -7,7 +7,7 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
 
 ## Motion review Phase 5 (2026-11-02)
 
-- **Example: flow steps show direction (D71, #105).** Going forward fades and rises 8 dp; going back (the back button, system back, or returning to an earlier step) fades only. Restarting or correcting KYC from status starts a new forward pass, including the next submission to status. A running step change ends at once if reduced motion turns on. The checkout bar fades in with its step. "Leave payment?" uses `showPaymentConfirmDialog`, so it follows the tokens and reduced motion (a sheet on phones). Example only; no kit change.
+- **Example: flow steps show direction (D71, #105).** Going forward fades and rises 8 dp; going back (the back button, system back, or returning to an earlier step) fades only. The outgoing step fades in place. Restarting or correcting KYC from status starts a new forward pass, including the next submission to status. A running step change ends at once if reduced motion turns on. The checkout bar fades in with its step. "Leave payment?" uses `showPaymentConfirmDialog`, so it follows the tokens and reduced motion (a sheet on phones). Example only; no kit change.
 
 ## Motion review Phase 4 (2026-11-02)
 
