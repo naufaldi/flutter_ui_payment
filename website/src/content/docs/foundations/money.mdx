@@ -92,13 +92,13 @@ format.compact(const Money.idr(1250000000)); // Rp1,25 M
 
 Use semantic number and date APIs only.
 
-```text
-Customer pays or confirms? → format / AmountText
-Screen reader? → spoken
-Chart axis only? → compact
-Calendar date? → formatDate
-Timestamp? → formatDateTime
-```
+| The value is… | Use |
+| --- | --- |
+| An amount the customer pays or confirms | `format` / `AmountText` |
+| Read by a screen reader | `spoken` |
+| On a chart axis only | `compact` |
+| A calendar date | `formatDate` |
+| A timestamp | `formatDateTime` |
 
 | Function | Output | Use for | Don't |
 | --- | --- | --- | --- |

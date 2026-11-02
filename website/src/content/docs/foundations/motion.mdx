@@ -166,14 +166,14 @@ Sheets, wide confirm dialogs and toasts follow the kit tokens and reduced motion
 
 ## Choose feedback
 
-```text
-Press? → press
-Selection/border? → quick
-Compact swap? → enter + exit, fadeScale
-Full-width content swap? → fullWidthSwap
-Flow step? → fadeRise; back: true going back
-Sheet? → sheetEnter + sheetExit, drawer curve
-Reduced motion (either flag)? → zero duration, scale 1
-```
+| The change is… | Motion |
+| --- | --- |
+| A press | `press` |
+| A selection or border change | `quick` |
+| A compact swap | `enter` + `exit`, `fadeScale` |
+| A full-width content swap | `fullWidthSwap` |
+| A flow step | `fadeRise`; `back: true` when going back |
+| A sheet | `sheetEnter` + `sheetExit`, drawer curve |
+| Any of these with reduced motion (either flag) | Zero duration, scale 1 |
 
 Use semantic motion tokens only. Do: the existing AnimatedSwitcher enter/exit pair above. Don't: a raw 400 ms duration or animated countdown ticks. Stripe Apps components define no motion tokens. The token set above is closed. Nothing else exists.

@@ -21,9 +21,11 @@ const light = all[name];
 const darkInfo = dark ? all[dark] : undefined;
 const loading = eager ? 'eager' : 'lazy';
 const text = caption ?? light.caption;
+// Phone captures are 640 px wide; anything wider is a tablet capture.
+const wide = light.width > 640;
 ---
 
-<figure class="fup-screen not-content">
+<figure class:list={['fup-screen', 'not-content', { 'fup-screen-wide': wide }]}>
   <img
     class={dark ? 'fup-only-light' : undefined}
     src={`/screens/${name}.webp`}

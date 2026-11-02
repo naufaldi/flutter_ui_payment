@@ -225,6 +225,7 @@ class _ChartVariants extends StatelessWidget {
         measure: [92, 95, 88, 97, 99][i],
       ),
     );
+    if (kind == 'sparkline') return _sparklineVariants(context, series);
     final chart = switch (kind) {
       'bar' => PaymentBarChart(series: series),
       'meter' => PaymentMeterChart(
@@ -242,24 +243,11 @@ class _ChartVariants extends StatelessWidget {
           'Host: buka ${s.label}',
         ),
       ),
-      'sparkline' => Row(
-        children: [
-          Expanded(
-            child: Text(_t(context, 'Spending trend', 'Tren pengeluaran')),
-          ),
-          PaymentSparkline(
-            key: const Key('sparkline-inspect'),
-            series: series,
-            inspectable: true,
-          ),
-        ],
-      ),
       _ => PaymentLineChart(series: series),
     };
     final name = switch (kind) {
       'bar' => 'PaymentBarChart',
       'meter' => 'PaymentMeterChart',
-      'sparkline' => 'PaymentSparkline',
       _ => 'PaymentLineChart',
     };
     return _Entry(
@@ -317,11 +305,77 @@ class _ChartVariants extends StatelessWidget {
                 MeterSegment(label: _t(context, 'Card', 'Kartu'), measure: 10),
               ],
             ),
-            if (kind == 'sparkline')
-              PaymentSparkline(
-                points: _chartFixture('typical', _t(context, 'Oct', 'Okt')),
-              ),
           ],
+        ],
+      ),
+    );
+  }
+
+  // A sparkline sits beside a KPI the host already states, so the specimen
+  // shows it in that row rather than alone in a chart-sized box.
+  Widget _sparklineVariants(
+    BuildContext context,
+    List<PaymentChartSeries> series,
+  ) {
+    final theme = PaymentTheme.of(context);
+    Widget kpi(Widget text, Widget sparkline) => Row(
+      children: [
+        Expanded(child: text),
+        SizedBox(width: theme.space(PaymentSpace.group)),
+        sparkline,
+      ],
+    );
+    return _Entry(
+      name: 'PaymentSparkline · variants',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          kpi(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                PaymentInline(
+                  _t(context, 'Spending, October', 'Pengeluaran, Oktober'),
+                  role: PaymentTextRole.caption,
+                ),
+                const AmountText(
+                  Money.idr(2010000),
+                  variant: AmountTextVariant.large,
+                ),
+              ],
+            ),
+            PaymentSparkline(
+              points: _chartFixture('typical', _t(context, 'Oct', 'Okt')),
+            ),
+          ),
+          SizedBox(height: theme.space(PaymentSpace.section)),
+          kpi(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                PaymentInline(
+                  _t(
+                    context,
+                    'This month vs last month',
+                    'Bulan ini vs bulan lalu',
+                  ),
+                ),
+                PaymentInline(
+                  _t(
+                    context,
+                    'Dashed line: last month.',
+                    'Garis putus-putus: bulan lalu.',
+                  ),
+                  role: PaymentTextRole.caption,
+                ),
+              ],
+            ),
+            PaymentSparkline(
+              key: const Key('sparkline-inspect'),
+              series: series,
+              inspectable: true,
+            ),
+          ),
         ],
       ),
     );

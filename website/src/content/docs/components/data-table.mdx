@@ -60,13 +60,13 @@ The host supplies state and callbacks. Explain empty states and offer a next act
 
 Use Table for static fees.
 
-```text
-Who holds all rows?
-├─ Host supplied the complete list → local paging
-└─ Host fetches a page → numeric page position?
-   ├─ Yes → offset callbacks
-   └─ No → cursor callbacks
-```
+Choose paging by who holds the rows:
+
+| Who holds the rows | Paging |
+| --- | --- |
+| The host supplied the complete list | Local paging |
+| The host fetches one page at a time, with a numeric page position | Offset callbacks |
+| The host fetches one page at a time, without a numeric position | Cursor callbacks |
 
 ## States
 

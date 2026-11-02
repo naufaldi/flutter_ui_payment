@@ -1076,12 +1076,12 @@
   },
   "android_catalog_sparkline_variants": {
     "width": 640,
-    "height": 556,
+    "height": 353,
     "caption": "Compact spending trends beside host-provided amounts."
   },
   "android_catalog_sparkline_variants_dark": {
     "width": 640,
-    "height": 556,
+    "height": 353,
     "caption": "Compact spending trends beside host-provided amounts. Dark mode."
   },
   "android_catalog_menu_variants": {
