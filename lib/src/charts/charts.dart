@@ -34,6 +34,7 @@ class PaymentLineChart extends StatefulWidget {
     this.zeroBased = false,
     this.inspectable = true,
     this.semanticLabel,
+    this.onSelectionChanged,
   });
 
   /// Single-series points; leave empty when providing series.
@@ -62,6 +63,13 @@ class PaymentLineChart extends StatefulWidget {
 
   /// Host-authored replacement for the generated summary.
   final String? semanticLabel;
+
+  /// Called with the index of the period a person's tap, drag or hover
+  /// selects, and with null when the chart returns to rest.
+  /// The index addresses [points], or the periods all [series] share.
+  /// Not called when new points or series reset the selection. Use it to
+  /// play a selection haptic (D73); the kit plays none.
+  final ValueChanged<int?>? onSelectionChanged;
   @override
   State<PaymentLineChart> createState() => _PaymentLineChartState();
 }
@@ -78,6 +86,7 @@ class _PaymentLineChartState extends State<PaymentLineChart> {
     zeroBased: widget.zeroBased,
     inspectable: widget.inspectable,
     semanticLabel: widget.semanticLabel,
+    onSelectionChanged: widget.onSelectionChanged,
   );
 }
 
@@ -94,6 +103,7 @@ class PaymentBarChart extends StatefulWidget {
     this.showLegend = true,
     this.inspectable = true,
     this.semanticLabel,
+    this.onSelectionChanged,
   });
 
   /// Single-series points; leave empty when providing series.
@@ -119,6 +129,13 @@ class PaymentBarChart extends StatefulWidget {
 
   /// Host-authored replacement for the generated summary.
   final String? semanticLabel;
+
+  /// Called with the index of the period a person's tap, drag or hover
+  /// selects, and with null when the chart returns to rest.
+  /// The index addresses [points], or the periods all [series] share.
+  /// Not called when new points or series reset the selection. Use it to
+  /// play a selection haptic (D73); the kit plays none.
+  final ValueChanged<int?>? onSelectionChanged;
   @override
   State<PaymentBarChart> createState() => _PaymentBarChartState();
 }
@@ -135,6 +152,7 @@ class _PaymentBarChartState extends State<PaymentBarChart> {
     bars: true,
     inspectable: widget.inspectable,
     semanticLabel: widget.semanticLabel,
+    onSelectionChanged: widget.onSelectionChanged,
   );
 }
 
@@ -150,6 +168,7 @@ class PaymentSparkline extends StatelessWidget {
     this.width = 80,
     this.height = 24,
     this.semanticLabel,
+    this.onSelectionChanged,
   });
 
   /// Single-series points; leave empty when providing series.
@@ -172,6 +191,12 @@ class PaymentSparkline extends StatelessWidget {
 
   /// Host-authored replacement for the generated summary.
   final String? semanticLabel;
+
+  /// Called with the index of the period a tap or hover selects (only when
+  /// [inspectable]); a second tap on the same period returns null.
+  /// Not called when new points or series reset the selection. Use it to
+  /// play a selection haptic (D73); the kit plays none.
+  final ValueChanged<int?>? onSelectionChanged;
   @override
   Widget build(BuildContext context) => SizedBox(
     width: width,
@@ -186,6 +211,7 @@ class PaymentSparkline extends StatelessWidget {
       spark: true,
       inspectable: inspectable,
       semanticLabel: semanticLabel,
+      onSelectionChanged: onSelectionChanged,
     ),
   );
 }
@@ -203,6 +229,7 @@ class _PointChart extends StatefulWidget {
     this.zeroBased = false,
     this.inspectable = true,
     this.semanticLabel,
+    this.onSelectionChanged,
   });
 
   /// Single-series points; leave empty when providing series.
@@ -237,6 +264,12 @@ class _PointChart extends StatefulWidget {
 
   /// Host-authored replacement for the generated summary.
   final String? semanticLabel;
+
+  /// Called with the index of the period a person's tap, drag or hover
+  /// selects, and with null when the chart returns to rest. Not called when
+  /// new points or series reset the selection. Use it to play a selection
+  /// haptic (D73); the kit plays none.
+  final ValueChanged<int?>? onSelectionChanged;
   @override
   State<_PointChart> createState() => _PointChartState();
 }
@@ -523,11 +556,16 @@ class _PointChartState extends State<_PointChart> {
                                     ? (fraction * points.length).floor()
                                     : (fraction * (points.length - 1)).round())
                                 .clamp(0, points.length - 1);
-                        setState(
-                          () => selected = toggle && selected == index
-                              ? null
-                              : index,
-                        );
+                        final next = toggle && selected == index ? null : index;
+                        if (next == selected) return;
+                        setState(() => selected = next);
+                        widget.onSelectionChanged?.call(next);
+                      }
+
+                      void returnToRest() {
+                        if (selected == null) return;
+                        setState(() => selected = null);
+                        widget.onSelectionChanged?.call(null);
                       }
 
                       final index = selected ?? latest;
@@ -538,7 +576,7 @@ class _PointChartState extends State<_PointChart> {
                         final plot = MouseRegion(
                           onHover: (event) =>
                               inspect(event.localPosition, false),
-                          onExit: (_) => setState(() => selected = null),
+                          onExit: (_) => returnToRest(),
                           child: GestureDetector(
                             behavior: HitTestBehavior.opaque,
                             onTapDown: (event) =>
@@ -664,7 +702,7 @@ class _PointChartState extends State<_PointChart> {
                       if (!widget.inspectable) return chart;
                       return MouseRegion(
                         onHover: (event) => inspect(event.localPosition, false),
-                        onExit: (_) => setState(() => selected = null),
+                        onExit: (_) => returnToRest(),
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTapDown: (event) =>

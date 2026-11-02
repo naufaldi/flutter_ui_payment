@@ -61,6 +61,145 @@ String valueText(WidgetTester tester) => tester
     .map((t) => t.data)
     .join();
 void main() {
+  final chartPaint = find.byWidgetPredicate(
+    (w) => w is CustomPaint && w.painter is ChartPainter,
+  );
+  testWidgets('scrub within one period preserves CustomPaint (#104)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(const SizedBox(height: 180, child: PaymentBarChart(points: weeks))),
+    );
+    final rect = tester.getRect(chartPaint);
+    final painter =
+        tester.widget<CustomPaint>(chartPaint).painter! as ChartPainter;
+    final area = painter.plot(rect.size);
+    final drag = await tester.startGesture(
+      rect.topLeft + Offset(area.left + 2, area.center.dy),
+    );
+    await drag.moveBy(const Offset(kTouchSlop + 1, 0));
+    await tester.pump();
+    final before = tester.widget<CustomPaint>(chartPaint);
+    await drag.moveBy(const Offset(2, 0));
+    await tester.pump();
+    expect(identical(before, tester.widget<CustomPaint>(chartPaint)), isTrue);
+    await drag.up();
+  });
+  for (final bars in [true, false]) {
+    testWidgets(
+      '${bars ? 'bar' : 'line'} reports each scrub period once (#104)',
+      (tester) async {
+        final changes = <int?>[];
+        await tester.pumpWidget(
+          host(
+            SizedBox(
+              height: 180,
+              child: bars
+                  ? PaymentBarChart(
+                      points: weeks,
+                      onSelectionChanged: changes.add,
+                    )
+                  : PaymentLineChart(
+                      series: const [
+                        PaymentChartSeries(label: 'Now', points: weeks),
+                        PaymentChartSeries(label: 'Then', points: weeks),
+                      ],
+                      onSelectionChanged: changes.add,
+                    ),
+            ),
+          ),
+        );
+        final rect = tester.getRect(chartPaint);
+        final painter =
+            tester.widget<CustomPaint>(chartPaint).painter! as ChartPainter;
+        final area = painter.plot(rect.size);
+        final start = rect.topLeft + Offset(area.left + 1, area.center.dy);
+        final drag = await tester.startGesture(start);
+        await drag.moveBy(const Offset(kTouchSlop + 1, 0));
+        await tester.pump();
+        for (
+          var x = start.dx + kTouchSlop + 9;
+          x < rect.left + area.right;
+          x += 8
+        ) {
+          await drag.moveTo(Offset(x, start.dy));
+          await tester.pump();
+        }
+        await drag.up();
+        expect(changes, [0, 1, 2, 3]);
+      },
+    );
+  }
+  testWidgets('hover exit returns to rest only once (#104)', (tester) async {
+    final changes = <int?>[];
+    await tester.pumpWidget(
+      host(
+        SizedBox(
+          height: 180,
+          child: PaymentBarChart(
+            points: weeks,
+            onSelectionChanged: changes.add,
+          ),
+        ),
+      ),
+    );
+    final rect = tester.getRect(chartPaint);
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: const Offset(500, 300));
+    final painter =
+        tester.widget<CustomPaint>(chartPaint).painter! as ChartPainter;
+    final area = painter.plot(rect.size);
+    await mouse.moveTo(rect.topLeft + Offset(area.left + 2, area.center.dy));
+    await tester.pump();
+    expect(changes, [0]);
+    await mouse.moveTo(const Offset(500, 300));
+    await tester.pump();
+    expect(changes, [0, null]);
+    // A redundant exit at rest must not notify or rebuild.
+    final region = tester.widget<MouseRegion>(
+      find.ancestor(of: chartPaint, matching: find.byType(MouseRegion)).first,
+    );
+    final beforeExit = tester.widget<CustomPaint>(chartPaint);
+    region.onExit!(const PointerExitEvent());
+    await tester.pump();
+    expect(changes, [0, null]);
+    expect(
+      identical(beforeExit, tester.widget<CustomPaint>(chartPaint)),
+      isTrue,
+    );
+    await mouse.removePointer();
+  });
+  testWidgets(
+    'sparkline toggles a point and silently resets new periods (#104)',
+    (tester) async {
+      final changes = <int?>[];
+      Widget chart(List<ChartPoint> data) => host(
+        PaymentSparkline(
+          points: data,
+          inspectable: true,
+          width: 320,
+          onSelectionChanged: changes.add,
+        ),
+      );
+      await tester.pumpWidget(chart(weeks));
+      final target = tester.getRect(chartPaint).centerLeft + const Offset(2, 0);
+      await tester.tapAt(target);
+      await tester.pump();
+      await tester.tapAt(target);
+      await tester.pump();
+      expect(changes, [0, null]);
+      await tester.tapAt(target);
+      await tester.pump();
+      await tester.pumpWidget(chart(weeks.take(1).toList()));
+      expect(changes, [0, null, 0]);
+      expect(
+        (tester.widget<CustomPaint>(chartPaint).painter! as ChartPainter)
+            .selected,
+        isNull,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
   test('geometry handles zero, missing, outliers and frame bounds', () {
     final rects = barRects(const [
       ChartPoint(label: 'zero', value: Money.idr(0)),

@@ -29,6 +29,20 @@ import HostOwns from '../../../components/HostOwns.astro';
 PaymentSparkline(points: points);
 ```
 
+Use `onSelectionChanged` to receive each new selected period index and `null` on return to rest. The index addresses `points` or the series' shared periods. Repeated events within one period do not notify or rebuild. New periods reset selection silently. The host owns haptics (D73); the kit plays none.
+
+```dart
+import 'package:flutter/services.dart';
+
+PaymentSparkline(
+  points: points,
+  inspectable: true,
+  onSelectionChanged: (i) {
+    if (i != null) HapticFeedback.selectionClick();
+  },
+);
+```
+
 ## Stripe → kit
 
 | Stripe prop | Kit | Note |
@@ -64,7 +78,7 @@ Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to 
 
 <Props names={['PaymentChartSeries', 'PaymentChartAxis', 'PaymentChartUnit', 'ChartPoint', 'MeterSegment']} />
 
-Parameters: `points`, `series`, `width`, `height`, `inspectable`, `unit`, `semanticLabel`. Nothing else exists.
+Parameters: `points`, `series`, `width`, `height`, `inspectable`, `unit`, `semanticLabel`, `onSelectionChanged`. Nothing else exists.
 
 ## Which variant when
 

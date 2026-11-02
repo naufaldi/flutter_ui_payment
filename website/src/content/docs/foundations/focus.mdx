@@ -64,3 +64,20 @@ Full-width button/row? → Material pressed layer
 Use semantic tokens only. Do: preserve 4 dp clearance around the existing focus ring. Don't: clip it or add a second ring to a field. PaymentSize small/medium/large changes only visual treatment; every layout and hit box stays at least 48×48 dp, visual centered (D29). PaymentButton is the first size consumer. Internal ring and press helpers are not exported. There is no Stripe mapping. Nothing else exists.
 
 Text inputs, including history search, use the accent border only.
+
+## Haptics
+
+The host owns native haptics (D73). The kit only calls Dart callbacks and plays no haptic itself.
+
+| Event | Host wiring |
+| --- | --- |
+| Press | Play press feedback from Pay/Confirm `onPressed`. |
+| Copy success | Play feedback from `onCopy` after the host's copy succeeds. |
+| Selection | Play a selection tick from `PaymentSwitch`, `PaymentCheckbox`, `PaymentRadio` `onChanged`, or chart `onSelectionChanged`. |
+| Success or error | The host produces the result and chooses its feedback. |
+
+`PaymentDateField.onChanged` reports the accepted date after its sheet closes, rather than every wheel tick.
+
+Chart callbacks report a new period index, or `null` on return to rest. Skip the haptic for `null`. Data-driven resets do not call the host. See [Bar chart](/components/bar-chart/) for host wiring.
+
+`Feedback.forTap` and `Feedback.forLongPress` from Material controls and tooltip long presses are SDK-owned behaviour. They stay enabled by the SDK; they are separate from host-authored haptics.

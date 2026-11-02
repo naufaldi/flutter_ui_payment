@@ -37,11 +37,18 @@ class _ChartDemo extends StatefulWidget {
 
 class _ChartDemoState extends State<_ChartDemo> {
   String state = 'typical';
+  void selectionChanged(int? index) {
+    if (index != null) HapticFeedback.selectionClick();
+  }
+
   @override
   Widget build(BuildContext context) {
     final points = _chartFixture(state, _t(context, 'Oct', 'Okt'));
     final chart = switch (widget.kind) {
-      'bar' => PaymentBarChart(points: points),
+      'bar' => PaymentBarChart(
+        points: points,
+        onSelectionChanged: selectionChanged,
+      ),
       'meter' => PaymentMeterChart(
         segments: [
           for (final p in points)
@@ -52,10 +59,17 @@ class _ChartDemoState extends State<_ChartDemo> {
       'sparkline' => Row(
         children: [
           const Expanded(child: AmountText(Money.idr(2010000))),
-          PaymentSparkline(points: points),
+          PaymentSparkline(
+            points: points,
+            inspectable: true,
+            onSelectionChanged: selectionChanged,
+          ),
         ],
       ),
-      _ => PaymentLineChart(points: points),
+      _ => PaymentLineChart(
+        points: points,
+        onSelectionChanged: selectionChanged,
+      ),
     };
     return _Entry(
       name: switch (widget.kind) {

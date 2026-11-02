@@ -449,6 +449,17 @@
             "isSuper": false,
             "fieldName": "semanticLabel",
             "doc": "Host-authored replacement for the generated summary."
+          },
+          {
+            "name": "onSelectionChanged",
+            "type": "ValueChanged<int?>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onSelectionChanged",
+            "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
           }
         ],
         "doc": "Creates a chart."
@@ -519,6 +530,13 @@
         "static": false,
         "type": "String?",
         "doc": "Host-authored replacement for the generated summary."
+      },
+      {
+        "name": "onSelectionChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<int?>?",
+        "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
       }
     ],
     "copyWith": null
@@ -620,6 +638,17 @@
             "isSuper": false,
             "fieldName": "semanticLabel",
             "doc": "Host-authored replacement for the generated summary."
+          },
+          {
+            "name": "onSelectionChanged",
+            "type": "ValueChanged<int?>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onSelectionChanged",
+            "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
           }
         ],
         "doc": "Creates a chart."
@@ -683,6 +712,13 @@
         "static": false,
         "type": "String?",
         "doc": "Host-authored replacement for the generated summary."
+      },
+      {
+        "name": "onSelectionChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<int?>?",
+        "doc": "Called with the index of the period a person's tap, drag or hover\nselects, and with null when the chart returns to rest.\nThe index addresses `points`, or the periods all `series` share.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
       }
     ],
     "copyWith": null
@@ -773,6 +809,17 @@
             "isSuper": false,
             "fieldName": "semanticLabel",
             "doc": "Host-authored replacement for the generated summary."
+          },
+          {
+            "name": "onSelectionChanged",
+            "type": "ValueChanged<int?>?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onSelectionChanged",
+            "doc": "Called with the index of the period a tap or hover selects (only when\n`inspectable`); a second tap on the same period returns null.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
           }
         ],
         "doc": "Creates a chart."
@@ -829,6 +876,13 @@
         "static": false,
         "type": "String?",
         "doc": "Host-authored replacement for the generated summary."
+      },
+      {
+        "name": "onSelectionChanged",
+        "kind": "field",
+        "static": false,
+        "type": "ValueChanged<int?>?",
+        "doc": "Called with the index of the period a tap or hover selects (only when\n`inspectable`); a second tap on the same period returns null.\nNot called when new points or series reset the selection. Use it to\nplay a selection haptic (D73); the kit plays none."
       }
     ],
     "copyWith": null
