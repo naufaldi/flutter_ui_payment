@@ -128,6 +128,25 @@ The last open item, history on an iPhone SE at 200% text ([#58](https://github.c
   <Screen name="ios_se_history_light_200" alt="History on an iPhone SE at 200% text in Indonesian: a whole first row and the start of the second above the tab bar." caption="D63, D63a: iPhone SE, 200%, Indonesian" />
 </Screens>
 
+## Motion review, 2 November 2026
+
+On 2 November 2026 the kit's and the example's motion was reviewed against native iOS and Android behaviour. The decisions are D65 to D76. Tracking issue [#93](https://github.com/naufaldi/flutter_ui_payment/issues/93) lists the implementation issues. Until a decision's issue closes, the kit may not behave this way yet. The full wording is in the PRD decision table (<RepoLink path="docs/prd-foundation-components.md" label="docs/prd-foundation-components.md" />), and the reasons are in <RepoLink path="docs/decisions.md" label="docs/decisions.md" />.
+
+| Decision | In plain words | Issue |
+| --- | --- | --- |
+| D65 | Reduced motion follows both the in-app or Android setting and iOS Reduce Motion. Videos don't autoplay when iOS Auto-Play Video Previews is off. | [#94](https://github.com/naufaldi/flutter_ui_payment/issues/94) |
+| D66 | Under reduced motion, every kit animation is instant. | [#94](https://github.com/naufaldi/flutter_ui_payment/issues/94) |
+| D67 | Kit sheets, dialogs and toasts follow reduced motion. A few Material controls keep their own motion, and the Motion page names them. | [#100](https://github.com/naufaldi/flutter_ui_payment/issues/100) |
+| D68 | Drawer items never animate. The phone drawer panel keeps its platform slide and edge swipe. | [#100](https://github.com/naufaldi/flutter_ui_payment/issues/100) |
+| D69 | Full-width status changes fade, and the height eases. Only small elements scale. | [#95](https://github.com/naufaldi/flutter_ui_payment/issues/95), [#96](https://github.com/naufaldi/flutter_ui_payment/issues/96) |
+| D70 | Content rises a fixed 8 dp on every screen. Going back fades without a rise. | [#95](https://github.com/naufaldi/flutter_ui_payment/issues/95) |
+| D71 | In the example app, going forward rises and going back fades. Native back gestures inside the flow come later ([#107](https://github.com/naufaldi/flutter_ui_payment/issues/107)). | [#105](https://github.com/naufaldi/flutter_ui_payment/issues/105) |
+| D72 | The host's theme decides the press splash. The example turns the ripple off on iOS. | [#106](https://github.com/naufaldi/flutter_ui_payment/issues/106) |
+| D73 | The kit plays no haptics. The host plays them from callbacks it already has, and charts report scrub selection. | [#104](https://github.com/naufaldi/flutter_ui_payment/issues/104) |
+| D74 | Amounts, balances, countdowns and totals change in place. They never count or roll. | Records current behaviour |
+| D75 | Sheets use curves, not springs. The drag still carries its speed into the release. | Records current behaviour |
+| D76 | An upload with unknown progress under reduced motion shows a still busy icon, not a made-up percentage. | [#97](https://github.com/naufaldi/flutter_ui_payment/issues/97) |
+
 ## Open items
 
 From the decision record, still to confirm with the owner: whether expired amounts should be struck through, `BalanceCard`'s 20 px balance, side padding of rows listed edge to edge, and making the internal type scale public. Hairline and the Lumen/Contrast preset are still close to each other.
