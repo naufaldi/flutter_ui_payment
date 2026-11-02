@@ -50,6 +50,62 @@ void main() {
     expect(find.bySemanticsLabel('Open monthly statement'), findsOneWidget);
   });
 
+  testWidgets('a page link moved into the menu keeps its key (#163)', (
+    t,
+  ) async {
+    // A host finds its link by key whether it sits on the title row or,
+    // at large text, behind ⋮ in the phone sheet.
+    const statement = ValueKey('statement-link');
+    var opened = 0;
+    await setSurface(t, const Size(360, 640));
+    await t.pumpWidget(
+      contentHost(
+        PaymentFullPageView(
+          title: 'Transactions',
+          pageLink: PaymentLink(
+            key: statement,
+            label: 'Statement',
+            onPressed: () => opened++,
+          ),
+          child: const Text('History'),
+        ),
+        scale: 2,
+      ),
+    );
+    expect(find.byKey(statement), findsNothing);
+    await t.tap(find.byType(PaymentMenu));
+    await t.pumpAndSettle();
+    expect(find.byKey(statement), findsOneWidget);
+    await t.tap(find.byKey(statement));
+    await t.pumpAndSettle();
+    expect(opened, 1);
+  });
+
+  testWidgets('a keyed entry keeps its key in the wide menu', (t) async {
+    const statement = ValueKey('statement-item');
+    var opened = 0;
+    await setSurface(t, const Size(800, 600));
+    await t.pumpWidget(
+      contentHost(
+        PaymentMenu(
+          entries: [
+            PaymentMenuItem(
+              key: statement,
+              label: 'Statement',
+              onSelected: () => opened++,
+            ),
+          ],
+        ),
+      ),
+    );
+    await t.tap(find.byType(PaymentMenu));
+    await t.pumpAndSettle();
+    expect(find.byType(MenuAnchor), findsOneWidget);
+    await t.tap(find.byKey(statement));
+    await t.pumpAndSettle();
+    expect(opened, 1);
+  });
+
   testWidgets('normal text keeps a fitting link on the title row', (t) async {
     // A short title fits even with the deliberately wide FlutterTest glyphs.
     await setSurface(t, const Size(360, 640));

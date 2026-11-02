@@ -7843,6 +7843,17 @@
             "isSuper": false,
             "fieldName": "semanticLabel",
             "doc": "What screen readers announce instead of `label`, when the visible\nlabel needs more context. Null announces `label`."
+          },
+          {
+            "name": "key",
+            "type": "Key?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "key",
+            "doc": "Key for the rendered entry, so a host can find it, for example with\n`find.byKey`. A page link that moves into the menu passes its own key."
           }
         ],
         "doc": ""
@@ -7851,6 +7862,13 @@
     "getters": [],
     "statics": [],
     "members": [
+      {
+        "name": "key",
+        "kind": "field",
+        "static": false,
+        "type": "Key?",
+        "doc": "Key for the rendered entry, so a host can find it, for example with\n`find.byKey`. A page link that moves into the menu passes its own key."
+      },
       {
         "name": "id",
         "kind": "field",
