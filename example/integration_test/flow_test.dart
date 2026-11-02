@@ -311,10 +311,10 @@ void main() {
         () => c.step == FlowStep.transactionDetail && !c.detailLoading,
       );
       expect(find.byType(PaymentDetailPage), findsOneWidget);
-      // The phone attempts table titles the ID with non-breaking hyphens;
-      // its semantics label keeps the original.
+      // Both table layouts expose the original ID to screen readers, even
+      // when the phone title uses non-breaking hyphens.
       expect(
-        find.text(c.attempt!.attemptId.replaceAll('-', '\u2011')),
+        find.bySemanticsLabel(RegExp(RegExp.escape(c.attempt!.attemptId))),
         findsWidgets,
       );
       await openReport(tester);
@@ -352,7 +352,8 @@ void main() {
   testWidgets('P05 double tap and slow submit send one payment', (
     tester,
   ) async {
-    final app = await launch(tester);
+    // Keep the 2500 ms slow submit in Sending for 1.5 s on real devices.
+    final app = await launch(tester, latencyScale: 0.6);
     final c = await runScenario(tester, app, 'P05');
     await pumpUntil(tester, () => c.quote != null && !c.quoting);
     await tapVisible(tester, find.byKey(const Key('review-order')));
