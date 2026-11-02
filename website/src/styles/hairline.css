@@ -381,3 +381,36 @@ starlight-theme-select select {
   color: var(--sl-color-gray-2);
   font-size: var(--sl-text-sm);
 }
+
+/* Decorative token specimens keep their numeric values in the adjacent table. */
+.fup-space-bar {
+  display: block;
+  height: 12px;
+  margin-block: 0.25rem;
+  background: var(--sl-color-text-accent);
+}
+.fup-radius-tile {
+  display: block;
+  box-sizing: border-box;
+  width: 48px;
+  height: 48px;
+  margin-block: 0.25rem;
+  border: 1px solid var(--sl-color-text-accent);
+  background: var(--sl-color-bg-accent);
+}
+.fup-type-specimens {
+  display: grid;
+  gap: 1rem;
+  margin-block: 1.5rem;
+}
+.fup-type-specimen {
+  display: grid;
+  gap: 0.25rem;
+  padding-block-end: 0.75rem;
+  border-bottom: 1px solid var(--fup-rule);
+  overflow-wrap: anywhere;
+}
+.fup-type-specimen code {
+  font-size: var(--sl-text-xs);
+  color: var(--fup-muted);
+}

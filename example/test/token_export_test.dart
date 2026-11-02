@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:flutter_ui_payment/src/foundation/token_resolvers.dart';
 import 'package:flutter_ui_payment_example/themes.dart';
 
 String hex(Color color) =>
@@ -65,12 +66,8 @@ void main() {
                   role.name: theme.space(role),
               };
               data['radius'] = {
-                'none': 0,
-                'tag': theme.tagBorderRadius.topLeft.x,
-                'control': theme.controlBorderRadius.topLeft.x,
-                'box': theme.borderRadius.topLeft.x,
-                'sheet': theme.sheetBorderRadius.topLeft.x,
-                'circle': 'pill',
+                for (final role in PaymentRadius.values)
+                  role.name: role.resolve(theme).topLeft.x,
               };
               final motion = PaymentMotion.of(context);
               final curves = {

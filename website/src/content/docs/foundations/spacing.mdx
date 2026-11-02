@@ -5,11 +5,10 @@ description: Generated spacing and corner roles, with Stripe mappings.
 
 import Props from '../../../components/Props.astro';
 import TokenTable from '../../../components/TokenTable.astro';
-import Screen from '../../../components/Screen.astro';
 
 Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
 
-The scale is **4 / 8 / 12 / 16 / 24 / 32** on the 8 base: an 8 pt grid with 4 pt half-steps, so `block` (12) is on the grid (D46). Every kit spacing value resolves through `theme.space(PaymentSpace.<role>)`, and **one role uses one value**: icon → text is always `block` (12) — in the toast, banner, state message, accordion, skeleton, list row and status header alike.
+The scale is **4 / 8 / 12 / 16 / 24 / 32** on the 8 base: an 8 pt grid with 4 pt half-steps, so `block` (12) is on the grid (D46). Every kit spacing value resolves through `theme.space(PaymentSpace.<role>)`, and **one role uses one value**: icon → text uses `block` (12) in the toast, banner, state message, accordion, skeleton, list row and status header alike.
 
 ```text
 No gap? → none
@@ -21,6 +20,10 @@ Before primary action or ruled section? → section
 Largest reserved gap? → major
 ```
 
+## Spacing scale
+
+Values use the default 8 dp base. Each bar shows the value at 4 CSS pixels per dp; `none` has zero width.
+
 <TokenTable group="space" rows={[
   {
     "token": "none",
@@ -29,7 +32,7 @@ Largest reserved gap? → major
   },
   {
     "token": "inline",
-    "use": "Label to caption, title to message, title to meta, a small glyph beside its text.",
+    "use": "Label to caption, title to message, title to meta, a small glyph beside its text, a field's label above its box at large text.",
     "dont": "Not between rows."
   },
   {
@@ -58,6 +61,10 @@ Largest reserved gap? → major
     "dont": "Not StateMessage padding: it uses group."
   }
 ]} />
+## Radius roles
+
+Tiles are 48 CSS pixels square, with one CSS pixel per dp of radius. The `circle` token resolves to 999 (pill), so a square tile becomes a circle.
+
 <TokenTable group="radius" rows={[
   {
     "token": "none",
@@ -67,22 +74,22 @@ Largest reserved gap? → major
   {
     "token": "tag",
     "use": "Badges, tags, skeletons.",
-    "dont": "Use only for this role."
+    "dont": "Not buttons."
   },
   {
     "token": "control",
-    "use": "Controls, menus and notices.",
-    "dont": "Use only for this role."
+    "use": "Controls, menus, notices, tooltip and toast.",
+    "dont": "Not sheets."
   },
   {
     "token": "box",
-    "use": "Selectable boxes.",
-    "dont": "Use only for this role."
+    "use": "Selectable boxes and promo card layout.",
+    "dont": "Not nested inside another box with radius 8."
   },
   {
     "token": "sheet",
     "use": "Sheet tops and dialogs.",
-    "dont": "Use only for this role."
+    "dont": "Not inline content."
   },
   {
     "token": "circle",
@@ -91,9 +98,21 @@ Largest reserved gap? → major
   }
 ]} />
 
+## Fixed radii
+
+These component details are fixed literals in `lib/`, not `PaymentRadius` roles or exported tokens. This static list links to each source; the 24 dp focus ring is separate from the 999 pill token. Tiles use one CSS pixel per dp of radius. Chart bars round only their top corners.
+
+| Component detail | Radius (dp) | Tile | Source |
+| --- | --- | --- | --- |
+| Icon-button focus ring | 24 | <span class="fup-radius-tile" style="border-radius:24px" aria-hidden="true" /> | [actions.dart:101](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/controls/actions.dart#L101) |
+| Status band | 3 | <span class="fup-radius-tile" style="border-radius:3px" aria-hidden="true" /> | [primitives.dart:1066](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/foundation/primitives.dart#L1066) |
+| Meter / chart bar tops | 2 | <span class="fup-radius-tile" style="border-radius:2px 2px 0 0" aria-hidden="true" /> | [BalanceCard:442](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/payment/payment_extras.dart#L442), [verification meter:668](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/verification/verification_widgets.dart#L668), [chart bar:407](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/charts/chart_painters.dart#L407) |
+| Step bar | 1.5 | <span class="fup-radius-tile" style="border-radius:1.5px" aria-hidden="true" /> | [payment_extras.dart:352](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/payment/payment_extras.dart#L352) |
+| Navigation indicator | 1 | <span class="fup-radius-tile" style="border-radius:1px" aria-hidden="true" /> | [navigation.dart:181](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/navigation/navigation.dart#L181) |
+
 ## Component sizes
 
-Heights and boxes are component sizes, not spacing roles, so they are not `PaymentSpace` values. They sit on the 4 grid: **36** (small button, `InfoRow` pitch), **40** (media tile), **48** (minimum target, list row, small field), **52**, **56** (medium field, large button), **60** (video play disc) and **64** (large list row, large field). A two-line list row is 62 dp (12 + 20 + 18 + 12): its parts are on the grid, and the loading skeleton copies it. Values that are not multiples of 4 (such as 7) are not used.
+Heights and boxes are component sizes, not spacing roles, so they are not `PaymentSpace` values. They sit on the 4 grid: **36** (small button, `InfoRow` pitch), **40** (media tile), **48** (minimum target, list row, small field), **52** (the `_ControlRow` control column), **56** (medium field, large button), **60** (video play disc) and **64** (large list row, large field). A two-line list row is 62 dp (12 + 20 + 18 + 12): its parts are on the grid, and the loading skeleton copies it. The spacing scale and standard component heights use the 4 dp grid. Fixed bar thicknesses and strokes are exceptions: `StatusBand` is 6 dp high (`primitives.dart:1063`), and the step bar is 3 dp high (`payment_extras.dart:349`). These are component details, not spacing roles.
 
 ## Stripe mapping
 
@@ -124,7 +143,7 @@ final theme = PaymentTheme.of(context);
 final gutter = EdgeInsets.all(theme.space(PaymentSpace.group));
 ```
 
-Size is small, medium (default), large; width is fill (default) or hug. All labels wrap. Their **New** component consumers arrive later; every layout/hit box remains at least 48×48 dp regardless of visual size. **New** `PaymentBox` is not implemented. Nothing else exists.
+Size is small, medium (default), large; width is fill (default) or hug. All labels wrap. `PaymentButton` and fields already consume `PaymentSize`; interactive layout and hit boxes remain at least 48×48 dp regardless of visual size. `PaymentBox` implements token-based padding, gaps, radius and width.
 
 <Props names={['PaymentSpace','PaymentRadius','PaymentSize','PaymentWidth']} members />
 

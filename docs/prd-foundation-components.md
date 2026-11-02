@@ -361,23 +361,26 @@ The scale is `PaymentType` (`payment_type.dart:14`). It has 9 roles on 7 sizes a
 
 | Role | Value | Expression | Use for | Don't |
 | --- | --- | --- | --- | --- |
-| inline | 4 | `spacing * 0.5` | Label → caption, title → message, title → meta, a small glyph beside its text | Between rows |
-| related | 8 | `spacing` | Between stacked or adjacent actions and chips, text → trailing control, `InfoRow` and compact control padding | Icon → text |
-| block | 12 | `spacing * 1.5` | Icon → text (every component), list row and header padding, notice and banner padding, band → title | — |
-| group | 16 | `spacing * 2` | Screen and sheet gutter, label ↔ value gap, sheet footer inset | A gutter other than 16 at any width |
-| section | 24 | `spacing * 3` | Content → primary action, ruled section gap (divider in the middle) | — |
-| major | 32 | `spacing * 4` | Largest gap; no kit widget uses it today | — |
+| none | 0 | `0` | No gap | — |
+| inline | 4 | `spacing * 0.5` | Label → caption, title → message, title → meta, a small glyph beside its text, a field's label above its box at large text | Between rows |
+| related | 8 | `spacing` | Between stacked or adjacent actions and chips, text → trailing control, compact control padding | Icon → text |
+| block | 12 | `spacing * 1.5` | Icon → text, list row and header padding, notice and banner padding | — |
+| group | 16 | `spacing * 2` | Screen, sheet and field gutters, label → value, state message padding | A gutter other than 16 at any width |
+| section | 24 | `spacing * 3` | Content → primary action, between field groups, ruled section gaps | — |
+| major | 32 | `spacing * 4` | Largest gap; unused by kit widgets today | — |
+
+Spacing values and standard component heights follow the 4 dp grid. Fixed bar thicknesses (`StatusBand` 6 dp at `primitives.dart:1063`, step bar 3 dp at `payment_extras.dart:349`) and strokes are component details outside that scale.
 
 **Gaps.**
 
-- `StateMessage` uses `spacing * 2`, not 4 (`interaction.dart:605`). Either the dartdoc or the code is wrong, so Phase 1 aligns the dartdoc to the code (16).
+- `StateMessage` uses `group` (16) padding above and below (`interaction.dart:1759, 1790`), matching the `PaymentSpace` dartdoc.
 - Charts use literal 16, 8, 4 and 72 (`charts.dart:301, 313, 427, 443`), which fails B2. That is Phase 2.
-- ~~No new public spacing API (D26)~~ Superseded by D33. **New** `PaymentSpace` names the six roles above plus `none`, for `PaymentBox` padding and gap. `PaymentTheme.space(PaymentSpace)` resolves a value. There are no other getters. Stripe's seven sizes map as follows: `xxsmall` → `inline`, `xsmall` → `related`, `small` → `block`, `medium` → `group`, `large` → `section`, and both `xlarge` and `xxlarge` → `major`.
+- ~~No new public spacing API (D26)~~ Superseded by D33. **New** `PaymentSpace` names the seven roles above, for `PaymentBox` padding and gap. `PaymentTheme.space(PaymentSpace)` resolves a value. There are no other getters. Stripe's seven sizes map as follows: `xxsmall` → `inline`, `xsmall` → `related`, `small` → `block`, `medium` → `group`, `large` → `section`, and both `xlarge` and `xxlarge` → `major`.
 - The multiples table is still the contract. A review grep for numeric `EdgeInsets`, `SizedBox(width|height: <number>)` and `spacing: <number>` in `lib/src` enforces it.
 
 ### 3.4 Radius
 
-Derived from `PaymentTheme.radius` (default 8; `payment_theme.dart:154-163`).
+Derived from `PaymentTheme.radius` (default 8; `payment_theme.dart:167-176`).
 
 | Getter | Value at 8 | Use for | Don't |
 | --- | --- | --- | --- |
@@ -385,8 +388,13 @@ Derived from `PaymentTheme.radius` (default 8; `payment_theme.dart:154-163`).
 | `controlBorderRadius` | 6 | Buttons, inputs, notices, menus, tooltip, toast | Sheets |
 | `borderRadius` | 8 | Selectable boxes (method list), the promo `card` layout | Nested inside another 8 box |
 | `sheetBorderRadius` | 12 | Top of bottom sheets, dialogs | Inline content |
-| circle (24) | fixed | Focus ring of 48 dp icon buttons | — |
-| band (3) / meter bar (2) | fixed | `StatusBand` (`primitives.dart:775`), `BalanceCard` limit bar | — |
+| `PaymentRadius.none` | 0 | No rounding | — |
+| `PaymentRadius.circle` | 999 (pill) | Existing navigation pill; round controls (`token_resolvers.dart:21`) | — |
+| Icon-button focus ring | 24 (fixed) | Focus ring of 48 dp icon buttons (`actions.dart:101`); not the circle token | — |
+| Band | 3 (fixed) | `StatusBand` (`primitives.dart:1052, 1066`) | — |
+| Meter / chart bar tops | 2 (fixed) | `BalanceCard` limit bar (`payment_extras.dart:442`), verification meter (`verification_widgets.dart:668`), chart bar tops (`chart_painters.dart:407`; selected outline adds its offset at :325) | — |
+| Step bar | 1.5 (fixed) | Step progress (`payment_extras.dart:352`) | — |
+| Navigation indicator | 1 (fixed) | Selected indicator (`navigation.dart:181`) | — |
 
 Nested radii are concentric. The inner radius is smaller.
 
