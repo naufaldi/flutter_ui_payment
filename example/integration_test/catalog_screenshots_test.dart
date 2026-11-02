@@ -1047,10 +1047,29 @@ void main() {
       }
       return;
     }
+    Future<void> frameCaptureActions() async {
+      final action = find
+          .descendant(
+            of: find.byType(KycCaptureGuide),
+            matching: find.byType(PaymentButton),
+          )
+          .last;
+      await Scrollable.ensureVisible(tester.element(action), alignment: 1);
+      await settle(tester);
+      final gallery = tester.getRect(find.byType(ListView).first);
+      final button = tester.getRect(action);
+      expect(button.bottom, lessThanOrEqualTo(gallery.bottom));
+      expect(button.top, greaterThanOrEqualTo(gallery.top));
+    }
+
+    const stateLooks = String.fromEnvironment('CAPTURE_LOOKS');
+    bool wantsStateLook(String look) =>
+        stateLooks.isEmpty || stateLooks.split(',').contains(look);
     // The `_variants` captures come from CAPTURE_ONLY, in every look; the
     // full session shoots what has no slug there.
     if (!const bool.fromEnvironment('CAPTURE_TAIL_ONLY')) {
       for (final dark in [false, true]) {
+        if (!wantsStateLook(dark ? 'dark' : 'light')) continue;
         final suffix = dark ? '_dark' : '';
         app.updateSettings(
           DemoSettings(
@@ -1067,7 +1086,7 @@ void main() {
           ('PaymentSparkline · beside a KPI', 'chart_sparkline'),
           ('In context: spending above history', 'chart_in_context'),
         ]) {
-          await top(entry);
+          await top(entry, overlay: true);
           await shot('$name$suffix');
         }
         await open('Verification (KYC)');
@@ -1078,75 +1097,80 @@ void main() {
         await settle(tester);
         clearSnackBars();
         await top('KycCaptureGuide');
+        await frameCaptureActions();
         await shot('capture_ktp$suffix');
         await tapVisible(tester, find.text('selfie'));
         await top('KycCaptureGuide');
+        await frameCaptureActions();
         await shot('capture_selfie$suffix');
       }
-      app.updateSettings(const DemoSettings(locale: Locale('en')));
-      await settle(tester);
-      await open('Charts');
-      await top('ChartModule · states');
-      await shot('chart_states');
-      for (final state in ['error', 'empty']) {
-        await tapVisible(tester, find.text(state));
+      if (wantsStateLook('light')) {
+        app.updateSettings(const DemoSettings(locale: Locale('en')));
+        await settle(tester);
+        await open('Charts');
         await top('ChartModule · states');
-        await shot('chart_states_$state');
-      }
-      // D58: the latest value is labelled at rest; a tap selects a bar.
-      await top('PaymentLineChart', overlay: true);
-      await shot('chart_line_rest');
-      await top('PaymentBarChart', overlay: true);
-      final bar = tester.getRect(
-        find.byType(PaymentBarChart).hitTestable().first,
-      );
-      await tester.tapAt(Offset(bar.left + bar.width * .45, bar.center.dy));
-      await settle(tester);
-      await shot('chart_bar_selected');
-      await open('Verification (KYC)');
-      await top('KycCaptureGuide');
-      for (final state in ['review', 'rejected', 'permission']) {
-        await tapVisible(tester, find.text(state));
+        await shot('chart_states');
+        for (final state in ['error', 'empty']) {
+          await tapVisible(tester, find.text(state));
+          await top('ChartModule · states');
+          await shot('chart_states_$state');
+        }
+        // D58: the latest value is labelled at rest; a tap selects a bar.
+        await top('PaymentLineChart', overlay: true);
+        await shot('chart_line_rest');
+        await top('PaymentBarChart', overlay: true);
+        final bar = tester.getRect(
+          find.byType(PaymentBarChart).hitTestable().first,
+        );
+        await tester.tapAt(Offset(bar.left + bar.width * .45, bar.center.dy));
+        await settle(tester);
+        await shot('chart_bar_selected');
+        await open('Verification (KYC)');
         await top('KycCaptureGuide');
-        await shot('capture_$state');
+        for (final state in ['review', 'rejected', 'permission']) {
+          await tapVisible(tester, find.text(state));
+          await top('KycCaptureGuide');
+          await frameCaptureActions();
+          await shot('capture_$state');
+        }
       }
-      app.updateSettings(
-        const DemoSettings(locale: Locale('en'), textScale: 2),
-      );
-      await settle(tester);
-      await open('Charts');
-      await top('In context: spending above history');
-      await shot('chart_in_context_200');
-      await open('Verification (KYC)');
-      await top('KycCaptureGuide');
-      await tapVisible(tester, find.text('selfie'));
-      await top('KycCaptureGuide');
-      await Scrollable.ensureVisible(
-        tester.element(
-          find.text(
-            'Keep your face in the oval and hold the card below your chin.',
-          ),
-        ),
-        alignment: 0,
-      );
-      await shot('capture_selfie_200');
+      if (wantsStateLook('200')) {
+        app.updateSettings(
+          const DemoSettings(locale: Locale('en'), textScale: 2),
+        );
+        await settle(tester);
+        await open('Charts');
+        await top('In context: spending above history', overlay: true);
+        await shot('chart_in_context_200');
+        await open('Verification (KYC)');
+        await top('KycCaptureGuide');
+        await tapVisible(tester, find.text('selfie'));
+        await top('KycCaptureGuide');
+        await frameCaptureActions();
+        await shot('capture_selfie_200');
+      }
     }
+    if (!wantsStateLook('light')) return;
     app.updateSettings(const DemoSettings(locale: Locale('en')));
     await settle(tester);
-    await open('Feedback');
-    await top('showPaymentToast · variants');
-    await tapVisible(tester, find.widgetWithText(PaymentButton, 'Pending'));
-    await tester.pump(const Duration(seconds: 2));
-    await shot('toast_updated');
-    clearSnackBars();
-    await settle(tester);
-    await top('PaymentTooltip · variants');
-    await hoverShot(
-      'tooltip-flip',
-      'Flips to the start when there is no room',
-      'tooltip_flip',
-    );
-
+    if (!const bool.fromEnvironment('CAPTURE_SKIP_FEEDBACK')) {
+      await open('Feedback');
+      await top('showPaymentToast · variants');
+      await tapVisible(tester, find.widgetWithText(PaymentButton, 'Pending'));
+      await tester.pump(const Duration(seconds: 2));
+      await shot('toast_updated');
+      clearSnackBars();
+      await settle(tester);
+      await top('PaymentTooltip · variants');
+      await hoverShot(
+        'tooltip-flip',
+        'Flips to the start when there is no room',
+        'tooltip_flip',
+      );
+    }
+    tester.view.physicalSize = realSize;
+    fullScreen = true;
+    await tester.pump();
     await open('Foundation');
     tester
         .state<ScrollableState>(

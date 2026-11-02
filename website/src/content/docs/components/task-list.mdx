@@ -4,9 +4,15 @@ description: Add responsive ButtonGroup and host-owned TaskList; migrate status 
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 Host-owned KYC setup tasks. Variants: notStarted, inProgress, blocked, complete. Nothing else exists. Distinct marks and spoken status distinguish progress without relying on color. Complete tasks hide their child tasks. The host decides every status.
+
+<Screens>
+  <Screen name="android_catalog_task_list_variants" dark="android_catalog_task_list_variants_dark" alt="Verification tasks with completed, current, nested and blocked steps." caption="Task list" />
+  <Screen name="android_catalog_task_list_variants_200" alt="Verification tasks with completed, current, nested and blocked steps at 200 percent text." caption="200% text" />
+</Screens>
 
 ## Usage
 
@@ -98,7 +104,3 @@ PaymentOnboardingView H04/K01. Real composition: `example/lib/screens/gallery_co
 ## See also
 
 - [Components](/components/)
-
-<Screen name="ios_catalog_task_list_variants" alt="task list specimen" />
-<Screen name="ios_catalog_task_list_variants_dark" alt="task list specimen_dark" />
-<Screen name="ios_catalog_task_list_variants_200" alt="task list specimen_200" />

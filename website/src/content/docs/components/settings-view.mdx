@@ -4,9 +4,15 @@ description: Add context, full-page, focus, settings, sign-in and onboarding vie
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 Group payment preferences with PaymentFormFieldGroup sections such as Notifications, Payments and Language. Do not use one flat list. Save is the primary action and locks repeat taps while its Future runs. The host owns values, persistence and statusMessage; status is announced in the header. Avoid another primary action in child.
+
+<Screens>
+  <Screen name="android_catalog_settings_view_variants" dark="android_catalog_settings_view_variants_dark" alt="Payment settings grouped into labelled sections." caption="Settings view" />
+  <Screen name="android_catalog_settings_view_variants_200" alt="Payment settings grouped into labelled sections at 200 percent text." caption="200% text" />
+</Screens>
 
 ## Usage
 
@@ -128,7 +134,3 @@ Settings A05. Real composition: `example/lib/screens/gallery_views.dart`.
 ## See also
 
 - [Components](/components/)
-
-<Screen name="ios_catalog_settings_view_variants" alt="settings view specimen" />
-<Screen name="ios_catalog_settings_view_variants_dark" alt="settings view specimen_dark" />
-<Screen name="ios_catalog_settings_view_variants_200" alt="settings view specimen_200" />

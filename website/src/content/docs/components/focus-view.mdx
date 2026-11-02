@@ -4,9 +4,15 @@ description: Add context, full-page, focus, settings, sign-in and onboarding vie
 ---
 
 import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
 A report or other focused task presented through existing sheets. Variants: small, large. Nothing else exists. Stripe size maps to showPaymentFocusView(size:), shown/setShown map to its Future and host dismissal, confirmCloseMessages maps to PaymentConfirmClose. Phone small hugs content, large fills; wide panels are 420/720 dp. Drag dismiss is disabled so it cannot bypass confirmation. Close, scrim, Escape and Back ask before discarding when confirmClose is supplied. Inline specimens do not block their host route.
+
+<Screens>
+  <Screen name="android_catalog_focus_view_variants" dark="android_catalog_focus_view_variants_dark" alt="Focused payment content with a title, body and primary action." caption="Focus view" />
+  <Screen name="android_catalog_focus_view_variants_200" alt="Focused payment content with a title, body and primary action at 200 percent text." caption="200% text" />
+</Screens>
 
 ## Usage
 
@@ -87,7 +93,3 @@ Report A02/H04; sign-in learn-more. Real composition: `example/lib/screens/galle
 ## See also
 
 - [Components](/components/)
-
-<Screen name="ios_catalog_focus_view_variants" alt="focus view specimen" />
-<Screen name="ios_catalog_focus_view_variants_dark" alt="focus view specimen_dark" />
-<Screen name="ios_catalog_focus_view_variants_200" alt="focus view specimen_200" />
