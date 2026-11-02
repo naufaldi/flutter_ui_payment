@@ -389,14 +389,39 @@ starlight-theme-select select {
   margin-block: 0.25rem;
   background: var(--sl-color-text-accent);
 }
+/* A 64 px window onto a 48 dp tile at 8x, preserving circular arcs. */
 .fup-radius-tile {
   display: block;
-  box-sizing: border-box;
-  width: 48px;
-  height: 48px;
+  position: relative;
+  overflow: hidden;
+  width: 64px;
+  height: 64px;
   margin-block: 0.25rem;
-  border: 1px solid var(--sl-color-text-accent);
-  background: var(--sl-color-bg-accent);
+  background: var(--sl-color-bg);
+  outline: 1px dashed var(--fup-muted);
+}
+.fup-radius-tile > span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 384px;
+  height: 384px;
+  border-radius: var(--fup-radius);
+  background: var(--sl-color-text-accent);
+}
+.fup-radius-bottom > span { top: auto; bottom: 0; }
+.fup-radius-circle { border-radius: 50%; outline: none; }
+.fup-radius-circle > span { width: 64px; height: 64px; border-radius: 50%; }
+.fup-fixed-radii a { overflow-wrap: anywhere; }
+.fup-radius-pair { display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: var(--sl-text-xs); }
+/* Keep every dimension value and rule visible on narrow screens. */
+@media (max-width: 40rem) {
+  .fup-dimension-tokens table { min-width: 0; }
+  .fup-dimension-tokens thead { display: none; }
+  .fup-dimension-tokens tr { display: grid; grid-template-columns: 1fr; padding-block: 0.75rem; border-bottom: 1px solid var(--fup-rule); }
+  .fup-dimension-tokens td { border: 0; padding: 0.25rem 0; }
+  .fup-dimension-tokens td:nth-last-child(2)::before { content: 'Use: '; font-weight: 600; }
+  .fup-dimension-tokens td:last-child::before { content: "Don't: "; font-weight: 600; }
 }
 .fup-type-specimens {
   display: grid;

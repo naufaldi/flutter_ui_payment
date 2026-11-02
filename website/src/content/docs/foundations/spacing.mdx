@@ -28,7 +28,7 @@ Values use the default 8 dp base. Each bar shows the value at 4 CSS pixels per d
   {
     "token": "none",
     "use": "No gap.",
-    "dont": "Use only for this role."
+    "dont": "—"
   },
   {
     "token": "inline",
@@ -42,8 +42,8 @@ Values use the default 8 dp base. Each bar shows the value at 4 CSS pixels per d
   },
   {
     "token": "block",
-    "use": "Icon to text, list row and header padding, notice and banner padding.",
-    "dont": "Use only for this role."
+    "use": "Icon to text, band to title, list row and header padding, notice and banner padding.",
+    "dont": "Not between stacked actions: that is related."
   },
   {
     "token": "group",
@@ -53,23 +53,23 @@ Values use the default 8 dp base. Each bar shows the value at 4 CSS pixels per d
   {
     "token": "section",
     "use": "Content to primary action, between field groups, ruled section gaps.",
-    "dont": "Use only for this role."
+    "dont": "Not inside a row."
   },
   {
     "token": "major",
     "use": "Largest gap, unused by kit widgets today.",
-    "dont": "Not StateMessage padding: it uses group."
+    "dont": "—"
   }
 ]} />
 ## Radius roles
 
-Tiles are 48 CSS pixels square, with one CSS pixel per dp of radius. The `circle` token resolves to 999 (pill), so a square tile becomes a circle.
+Each 64 CSS pixel square shows the top-left corner of a 48 dp tile at **8× magnification (8 CSS pixels per dp)**. The window covers 8 dp in each direction, making small radii visible. The unbounded `circle` token (999, pill) is shown separately as a complete 64 px circle, rather than a corner detail.
 
 <TokenTable group="radius" rows={[
   {
     "token": "none",
     "use": "No rounding.",
-    "dont": "Use only for this role."
+    "dont": "—"
   },
   {
     "token": "tag",
@@ -94,21 +94,25 @@ Tiles are 48 CSS pixels square, with one CSS pixel per dp of radius. The `circle
   {
     "token": "circle",
     "use": "Existing navigation pill; round controls.",
-    "dont": "Use only for this role."
+    "dont": "Not on rectangular controls."
   }
 ]} />
 
 ## Fixed radii
 
-These component details are fixed literals in `lib/`, not `PaymentRadius` roles or exported tokens. This static list links to each source; the 24 dp focus ring is separate from the 999 pill token. Tiles use one CSS pixel per dp of radius. Chart bars round only their top corners.
+These component details are fixed literals in `lib/`, not `PaymentRadius` roles or exported tokens. This static list links to each source; the 24 dp focus ring is separate from the 999 pill token. Corner details use the same **8× magnification (8 CSS pixels per dp)** in 64 px windows. The meter / chart row shows top-left and bottom-left details: chart bars round only their top corners.
 
-| Component detail | Radius (dp) | Tile | Source |
+<div class="fup-fixed-radii">
+
+| Component detail | Radius (dp) | Corner detail | Source |
 | --- | --- | --- | --- |
-| Icon-button focus ring | 24 | <span class="fup-radius-tile" style="border-radius:24px" aria-hidden="true" /> | [actions.dart:101](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/controls/actions.dart#L101) |
-| Status band | 3 | <span class="fup-radius-tile" style="border-radius:3px" aria-hidden="true" /> | [primitives.dart:1066](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/foundation/primitives.dart#L1066) |
-| Meter / chart bar tops | 2 | <span class="fup-radius-tile" style="border-radius:2px 2px 0 0" aria-hidden="true" /> | [BalanceCard:442](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/payment/payment_extras.dart#L442), [verification meter:668](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/verification/verification_widgets.dart#L668), [chart bar:407](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/charts/chart_painters.dart#L407) |
-| Step bar | 1.5 | <span class="fup-radius-tile" style="border-radius:1.5px" aria-hidden="true" /> | [payment_extras.dart:352](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/payment/payment_extras.dart#L352) |
-| Navigation indicator | 1 | <span class="fup-radius-tile" style="border-radius:1px" aria-hidden="true" /> | [navigation.dart:181](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/src/navigation/navigation.dart#L181) |
+| Icon-button focus ring | 24 | <span class="fup-radius-tile" style="--fup-radius:192px" aria-hidden="true"><span /></span> | [actions.dart:101](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/controls/actions.dart#L101) |
+| Status band | 3 | <span class="fup-radius-tile" style="--fup-radius:24px" aria-hidden="true"><span /></span> | [primitives.dart:1066](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/foundation/primitives.dart#L1066) |
+| Meter / chart bar tops | 2 | <div class="fup-radius-pair" aria-hidden="true"><span>Top<span class="fup-radius-tile" style="--fup-radius:16px 16px 0 0"><span /></span></span><span>Bottom<span class="fup-radius-tile fup-radius-bottom" style="--fup-radius:16px 16px 0 0"><span /></span></span></div> | [BalanceCard:442](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/payment/payment_extras.dart#L442), [verification meter:668](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/verification/verification_widgets.dart#L668), [chart bar:407](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/charts/chart_painters.dart#L407) |
+| Step bar | 1.5 | <span class="fup-radius-tile" style="--fup-radius:12px" aria-hidden="true"><span /></span> | [payment_extras.dart:352](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/payment/payment_extras.dart#L352) |
+| Navigation indicator | 1 | <span class="fup-radius-tile" style="--fup-radius:8px" aria-hidden="true"><span /></span> | [navigation.dart:181](https://github.com/naufaldi/flutter_ui_payment/blob/fd29c2b075f024ae7ba6f6cd74c2bd11e7764f3a/lib/src/navigation/navigation.dart#L181) |
+
+</div>
 
 ## Component sizes
 

@@ -38,8 +38,8 @@ enum PaymentSpace {
   /// trailing control, compact control padding. Stripe xsmall.
   related,
 
-  /// spacing × 1.5 (12): icon → text, list row and header padding, notice
-  /// and banner padding. Stripe small.
+  /// spacing × 1.5 (12): icon → text, band → title, list row and header
+  /// padding, notice and banner padding. Stripe small.
   block,
 
   /// spacing × 2 (16): screen, sheet and field gutters, label → value,

@@ -364,7 +364,7 @@ The scale is `PaymentType` (`payment_type.dart:14`). It has 9 roles on 7 sizes a
 | none | 0 | `0` | No gap | — |
 | inline | 4 | `spacing * 0.5` | Label → caption, title → message, title → meta, a small glyph beside its text, a field's label above its box at large text | Between rows |
 | related | 8 | `spacing` | Between stacked or adjacent actions and chips, text → trailing control, compact control padding | Icon → text |
-| block | 12 | `spacing * 1.5` | Icon → text, list row and header padding, notice and banner padding | — |
+| block | 12 | `spacing * 1.5` | Icon → text, band → title, list row and header padding, notice and banner padding | — |
 | group | 16 | `spacing * 2` | Screen, sheet and field gutters, label → value, state message padding | A gutter other than 16 at any width |
 | section | 24 | `spacing * 3` | Content → primary action, between field groups, ruled section gaps | — |
 | major | 32 | `spacing * 4` | Largest gap; unused by kit widgets today | — |
