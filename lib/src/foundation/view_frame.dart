@@ -11,6 +11,7 @@ import 'focus_ring.dart';
 import 'tap_target.dart';
 import '../controls/button_group.dart';
 import '../interaction/interaction.dart';
+import '../interaction/menu_key_handoff.dart';
 import '../controls/actions.dart';
 import 'token_resolvers.dart';
 import 'payment_localizations.dart';
@@ -341,13 +342,16 @@ class ViewHeader extends StatelessWidget {
           final linkLabel = link?.label ?? single?.label;
           final actionMenu = compact && actions.isNotEmpty && single == null;
           Widget? headerLink(AlignmentGeometry alignment) => link != null
-              ? HeaderLink(
-                  key: link!.key,
-                  label: link!.label,
-                  semanticLabel: link!.semanticLabel,
-                  external: link!.external,
-                  onPressed: link!.onPressed,
-                  alignment: alignment,
+              ? withMenuSheetKey(
+                  link!.key,
+                  (key) => HeaderLink(
+                    key: key,
+                    label: link!.label,
+                    semanticLabel: link!.semanticLabel,
+                    external: link!.external,
+                    onPressed: link!.onPressed,
+                    alignment: alignment,
+                  ),
                 )
               : single != null
               ? HeaderLink(
@@ -381,6 +385,7 @@ class ViewHeader extends StatelessWidget {
             entries: [
               if (linkInMenu)
                 PaymentMenuItem(
+                  key: link!.key,
                   label: link!.label,
                   semanticLabel: link!.semanticLabel,
                   onSelected: link!.onPressed,
