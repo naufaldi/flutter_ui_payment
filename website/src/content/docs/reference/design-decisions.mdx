@@ -130,7 +130,7 @@ The last open item, history on an iPhone SE at 200% text ([#58](https://github.c
 
 ## Motion review, 2 November 2026
 
-On 2 November 2026 the kit's and the example's motion was reviewed against native iOS and Android behaviour. The decisions are D65 to D78. Tracking issue [#93](https://github.com/naufaldi/flutter_ui_payment/issues/93) lists the implementation issues. A row marked "Tracked in" is decided but not shipped yet: the kit behaves this way once that issue closes. The full wording is in the PRD decision table (<RepoLink path="docs/prd-foundation-components.md" label="docs/prd-foundation-components.md" />), and the reasons are in <RepoLink path="docs/decisions.md" label="docs/decisions.md" />.
+On 2 November 2026 the kit's and the example's motion was reviewed against native iOS and Android behaviour. The decisions are D65 to D80. Tracking issue [#93](https://github.com/naufaldi/flutter_ui_payment/issues/93) lists the implementation issues. A row marked "Tracked in" is decided but not shipped yet: the kit behaves this way once that issue closes. The full wording is in the PRD decision table (<RepoLink path="docs/prd-foundation-components.md" label="docs/prd-foundation-components.md" />), and the reasons are in <RepoLink path="docs/decisions.md" label="docs/decisions.md" />.
 
 | Decision | In plain words | Status |
 | --- | --- | --- |
@@ -148,6 +148,7 @@ On 2 November 2026 the kit's and the example's motion was reviewed against nativ
 | D76 | An upload with unknown progress under reduced motion shows a still busy icon, not a made-up percentage. | Current behaviour |
 | D77 | The newest toast replaces any toast showing or waiting. | Current behaviour |
 | D78 | A reduced-motion change clears the snack bar queue, including the app's own snack bars. | Current behaviour |
+| D80 | A host theme's toast close icon stays inside the toast pill, matching the SDK button. | Current behaviour |
 
 ## Open items
 
