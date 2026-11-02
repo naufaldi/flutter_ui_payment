@@ -152,50 +152,73 @@ Future<T?> showPaymentSideSheet<T>({
   final motion = PaymentMotion.of(context);
 
   final l10n = PaymentLocalizations.of(context);
-  return showGeneralDialog<T>(
-    context: context,
-    barrierDismissible: barrierDismissible,
-    barrierLabel: l10n.closeSheet,
-    barrierColor: Colors.black54,
-    transitionDuration: motion.sheetEnter,
-    pageBuilder: (context, _, _) {
-      final theme = PaymentTheme.of(context);
+  return Navigator.of(context, rootNavigator: true).push(
+    _SideSheetRoute<T>(
+      motion: motion,
+      barrierDismissible: barrierDismissible,
+      barrierLabel: l10n.closeSheet,
+      pageBuilder: (context, _, _) {
+        final theme = PaymentTheme.of(context);
 
-      final width = MediaQuery.sizeOf(context).width;
-      return Align(
-        alignment: AlignmentDirectional.centerEnd,
-        child: SizedBox(
-          width: width * 0.88 < maxWidth ? width * 0.88 : maxWidth,
-          height: double.infinity,
-          child: Material(
-            color: theme.surface,
-            surfaceTintColor: Colors.transparent,
-            child: SafeArea(
-              left: false,
-              child: _SideSheetScope(child: Builder(builder: builder)),
+        final width = MediaQuery.sizeOf(context).width;
+        return Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child: SizedBox(
+            width: width * 0.88 < maxWidth ? width * 0.88 : maxWidth,
+            height: double.infinity,
+            child: Material(
+              color: theme.surface,
+              surfaceTintColor: Colors.transparent,
+              child: SafeArea(
+                left: false,
+                child: _SideSheetScope(child: Builder(builder: builder)),
+              ),
             ),
           ),
-        ),
-      );
-    },
-    transitionBuilder: (context, animation, _, child) {
-      final rtl = Directionality.of(context) == TextDirection.rtl;
-      // Slides from the edge it lives on; the exit reverses the same path so
-      // the panel goes back where it came from.
-      final curved = CurvedAnimation(
-        parent: animation,
-        curve: PaymentMotion.drawer,
-        reverseCurve: Curves.easeIn,
-      );
-      return SlideTransition(
-        position: Tween<Offset>(
-          begin: Offset(rtl ? -1 : 1, 0),
-          end: Offset.zero,
-        ).animate(curved),
-        child: child,
-      );
-    },
+        );
+      },
+      transitionBuilder: (context, animation, _, child) {
+        final rtl = Directionality.of(context) == TextDirection.rtl;
+        // Slides from the edge it lives on; the exit plays the same curve
+        // backwards, so the panel goes back the way it came.
+        return SlideTransition(
+          position: animation.drive(
+            Tween<Offset>(
+              begin: Offset(rtl ? -1 : 1, 0),
+              end: Offset.zero,
+            ).chain(CurveTween(curve: PaymentMotion.drawer)),
+          ),
+          child: child,
+        );
+      },
+    ),
   );
+}
+
+// showGeneralDialog's route reuses the enter duration for the exit and
+// fades the scrim on its own curve. This one exits at sheetExit, and the
+// scrim follows the panel on the drawer curve. Both are zero under reduced
+// motion.
+class _SideSheetRoute<T> extends RawDialogRoute<T> {
+  _SideSheetRoute({
+    required PaymentMotion motion,
+    required super.pageBuilder,
+    required super.transitionBuilder,
+    super.barrierDismissible,
+    super.barrierLabel,
+  }) : _exit = motion.sheetExit,
+       super(
+         barrierColor: Colors.black54,
+         transitionDuration: motion.sheetEnter,
+       );
+
+  final Duration _exit;
+
+  @override
+  Duration get reverseTransitionDuration => _exit;
+
+  @override
+  Curve get barrierCurve => PaymentMotion.drawer;
 }
 
 class _SideSheetScope extends InheritedWidget {
