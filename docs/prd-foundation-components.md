@@ -1922,7 +1922,7 @@ These are local commands; the repo has no CI.
 
 - Every foundation page has its full token table.
 - All 48 Stripe entries and the kit-specific components are Have, with B1–B13 checked, a variant specimen and a docs page.
-- No Tier 2 file contains a private copy of a Tier 1 control. Review grep: no `CheckboxListTile`, `_Radio`, `OutlineInputBorder`, raw `Divider(`, `IconButton(`, `TextButton(` or `CircularProgressIndicator` outside `lib/src/controls` and `lib/src/foundation`.
+- No Tier 2 file contains a private copy of a Tier 1 control. Review grep: no `CheckboxListTile`, `_Radio`, `OutlineInputBorder`, raw `Divider(`, `IconButton(`, `TextButton(` or `CircularProgressIndicator` outside `lib/src/controls` and `lib/src/foundation`. Exception: the toast draws the SDK-identical themed close `IconButton` inside its pill (D77/D78/D79).
 - The deprecated names from D34 are removed in the following minor release.
 - "Not in the kit" lists only the D28 non-mirrored props.
 

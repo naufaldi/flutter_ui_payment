@@ -1239,6 +1239,7 @@ class _ToastContentState extends State<_ToastContent>
                           horizontal: endPadding / 12,
                         ),
                         child: IconButton(
+                          key: StandardComponentType.closeButton.key,
                           icon: const Icon(Icons.close),
                           iconSize: 24,
                           color:

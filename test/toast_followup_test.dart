@@ -88,10 +88,8 @@ void main() {
             expect(rect.left, closeTo(iconX, 0.001));
             expect(rect.top, iconY);
             expect(rect.size, const Size(24, 24));
-            final target = find.ancestor(
-              of: icon,
-              matching: find.byType(IconButton),
-            );
+            final target = find.byKey(StandardComponentType.closeButton.key);
+            expect(target, findsOneWidget);
             expect(tester.getSize(target).width, greaterThanOrEqualTo(48));
             expect(tester.getSize(target).height, greaterThanOrEqualTo(48));
             final tooltip = MaterialLocalizations.of(
@@ -102,7 +100,7 @@ void main() {
               tester.getSemantics(target).getSemanticsData().tooltip,
               tooltip,
             );
-            await tester.tap(icon);
+            await tester.tap(target);
             await settle(tester);
             expect(await controller.closed, SnackBarClosedReason.dismiss);
             expect(tester.takeException(), isNull);
