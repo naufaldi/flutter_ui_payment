@@ -315,16 +315,19 @@ class KycCaptureGuide extends StatelessWidget {
             padding: EdgeInsets.symmetric(
               vertical: theme.space(PaymentSpace.related),
             ),
-            // As in the document slot: a percentage only when it's known.
-            child: Semantics(
-              label: l10n.documentUploading,
-              value: state.progress == null
-                  ? null
-                  : '${(state.progress! * 100).round()}%',
-              child: LinearProgressIndicator(
-                value: state.progress,
-                color: theme.accent,
-                backgroundColor: theme.surfaceMuted,
+            // The badge owns the label; the bar adds only known progress.
+            child: ExcludeSemantics(
+              excluding: state.progress == null,
+              child: Semantics(
+                excludeSemantics: true,
+                value: state.progress == null
+                    ? null
+                    : '${(state.progress! * 100).round()}%',
+                child: LinearProgressIndicator(
+                  value: state.progress,
+                  color: theme.accent,
+                  backgroundColor: theme.surfaceMuted,
+                ),
               ),
             ),
           ),

@@ -322,6 +322,7 @@ void main() {
           // No bar, so no value the kit doesn't know.
           expect(bar, findsNothing);
           expect(find.semantics.byValue(RegExp('%')), findsNothing);
+          expect(find.semantics.byLabel('Uploading'), findsOneWidget);
           // The still busy glyph sits beside "Uploading" in the badge.
           final glyph = find.descendant(
             of: find.byType(PaymentBadge),
@@ -350,7 +351,9 @@ void main() {
             setup.apply(tester, motionHost(upload(known))),
           );
           expect(tester.widget<LinearProgressIndicator>(bar).value, .42);
-          expect(find.semantics.byValue('42%'), findsWidgets);
+          expect(find.semantics.byValue('42%'), findsOneWidget);
+          expect(find.semantics.byValue('42'), findsNothing);
+          expect(find.semantics.byLabel('Uploading'), findsOneWidget);
           expect(find.byIcon(PaymentIcons.busy), findsNothing);
           expect(tester.hasRunningAnimations, isFalse);
         });
@@ -363,6 +366,7 @@ void main() {
         expect(tester.widget<LinearProgressIndicator>(bar).value, isNull);
         expect(tester.hasRunningAnimations, isTrue);
         expect(find.semantics.byValue(RegExp('%')), findsNothing);
+        expect(find.semantics.byLabel('Uploading'), findsOneWidget);
         expect(find.byIcon(PaymentIcons.busy), findsNothing);
       });
 
@@ -371,7 +375,9 @@ void main() {
       ) async {
         await tester.pumpWidget(motionHost(upload(known)));
         expect(tester.widget<LinearProgressIndicator>(bar).value, .42);
-        expect(find.semantics.byValue('42%'), findsWidgets);
+        expect(find.semantics.byValue('42%'), findsOneWidget);
+        expect(find.semantics.byValue('42'), findsNothing);
+        expect(find.semantics.byLabel('Uploading'), findsOneWidget);
       });
 
       testWidgets('unknown progress at 200% text on 320 dp fits', (
