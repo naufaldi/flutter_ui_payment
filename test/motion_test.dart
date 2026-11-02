@@ -51,6 +51,39 @@ Widget _swap(bool showB) => _app(
 );
 
 void main() {
+  testWidgets('fadeRise keeps leaving state when direction flips mid-swap', (
+    t,
+  ) async {
+    var mounts = 0;
+    var showB = false, back = false;
+    late StateSetter rebuild;
+    await t.pumpWidget(
+      _app(
+        StatefulBuilder(
+          builder: (context, setState) {
+            rebuild = setState;
+            return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 220),
+              transitionBuilder: (c, a) =>
+                  PaymentMotion.fadeRise(c, a, back: back),
+              child: showB
+                  ? const SizedBox(key: _b)
+                  : _MountProbe(key: _a, onMount: () => mounts++),
+            );
+          },
+        ),
+      ),
+    );
+    final state = t.state(find.byKey(_a));
+    rebuild(() => showB = true);
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 50));
+    rebuild(() => back = true);
+    await t.pump();
+    expect(mounts, 1);
+    expect(t.state(find.byKey(_a)), same(state));
+    await t.pumpAndSettle();
+  });
   group('PaymentMotion.reduced (D65)', () {
     testWidgets('false by default', (tester) async {
       late bool reduced;
@@ -215,7 +248,14 @@ void main() {
       expect(opacity(tester), 0);
       expect(await topLeftAt(tester, 0.5, 800, back: true), Offset.zero);
       expect(opacity(tester), inExclusiveRange(0, 1));
-      expect(find.byType(Transform), findsNothing);
+      expect(
+        tester
+            .widget<Transform>(find.byType(Transform))
+            .transform
+            .getTranslation()
+            .y,
+        0,
+      );
     });
 
     test('still fits AnimatedSwitcher.transitionBuilder', () {
@@ -421,4 +461,22 @@ void main() {
       expect(tester.state<_CounterState>(find.byType(_Counter)).count, 3);
     });
   });
+}
+
+class _MountProbe extends StatefulWidget {
+  const _MountProbe({required super.key, required this.onMount});
+  final VoidCallback onMount;
+  @override
+  State<_MountProbe> createState() => _MountProbeState();
+}
+
+class _MountProbeState extends State<_MountProbe> {
+  @override
+  void initState() {
+    super.initState();
+    widget.onMount();
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox(height: 20);
 }

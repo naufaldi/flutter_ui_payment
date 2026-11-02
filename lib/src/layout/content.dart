@@ -84,18 +84,10 @@ class PaymentImage extends StatelessWidget {
             excludeFromSemantics: true,
             frameBuilder: (context, child, frame, sync) {
               if (sync) return semantics(child);
-              if (frame == null) {
-                return semantics(
-                  placeholder ?? ColoredBox(color: t.surfaceMuted),
-                );
-              }
               return semantics(
-                TweenAnimationBuilder<double>(
-                  tween: Tween(begin: 0, end: 1),
-                  duration: PaymentMotion.of(context).quick,
-                  curve: PaymentMotion.easeOut,
-                  builder: (_, value, child) =>
-                      Opacity(opacity: value, child: child),
+                _ImageFadeIn(
+                  loaded: frame != null,
+                  placeholder: placeholder ?? ColoredBox(color: t.surfaceMuted),
                   child: child,
                 ),
               );
@@ -157,6 +149,99 @@ class PaymentImage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _ImageFadeIn extends StatefulWidget {
+  const _ImageFadeIn({
+    required this.loaded,
+    required this.placeholder,
+    required this.child,
+  });
+  final bool loaded;
+  final Widget placeholder;
+  final Widget child;
+
+  @override
+  State<_ImageFadeIn> createState() => _ImageFadeInState();
+}
+
+class _ImageFadeInState extends State<_ImageFadeIn>
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  late final AnimationController _fade;
+  late final CurvedAnimation _opacity;
+  final _phKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    _fade = AnimationController(vsync: this, value: widget.loaded ? 1 : 0);
+    _opacity = CurvedAnimation(parent: _fade, curve: PaymentMotion.easeOut);
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAccessibilityFeatures() {
+    _finishReducedMotion();
+    setState(() {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _finishReducedMotion();
+  }
+
+  void _finishReducedMotion() {
+    if (PaymentMotion.of(context).reduced && widget.loaded) {
+      _fade.value = 1;
+    }
+  }
+
+  @override
+  void didUpdateWidget(_ImageFadeIn oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!widget.loaded && oldWidget.loaded) {
+      _fade.value = 0;
+    } else if (widget.loaded && !oldWidget.loaded) {
+      final motion = PaymentMotion.of(context);
+      if (motion.reduced) {
+        _fade.value = 1;
+      } else {
+        _fade.duration = motion.quick;
+        _fade.forward(from: 0);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final reduced = PaymentMotion.of(context).reduced;
+    final placeholder = KeyedSubtree(key: _phKey, child: widget.placeholder);
+    final image = FadeTransition(opacity: _opacity, child: widget.child);
+    return AnimatedBuilder(
+      animation: _fade,
+      builder: (_, _) => Stack(
+        fit: StackFit.passthrough,
+        children: [
+          // Before load the placeholder owns intrinsic sizing, as on main.
+          // The global key preserves host State when it becomes an overlay.
+          if (!widget.loaded)
+            placeholder
+          else if (!reduced && !_fade.isCompleted)
+            Positioned.fill(child: placeholder),
+          if (widget.loaded) image else Positioned.fill(child: image),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _opacity.dispose();
+    _fade.dispose();
+    super.dispose();
   }
 }
 

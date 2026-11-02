@@ -84,13 +84,12 @@ class PaymentMotion {
     bool back = false,
   }) {
     final curved = CurvedAnimation(parent: animation, curve: easeOut);
-    if (back) return FadeTransition(opacity: curved, child: child);
     return FadeTransition(
       opacity: curved,
       child: AnimatedBuilder(
         animation: curved,
         builder: (context, child) => Transform.translate(
-          offset: Offset(0, _rise * (1 - curved.value)),
+          offset: back ? Offset.zero : Offset(0, _rise * (1 - curved.value)),
           child: child,
         ),
         child: child,

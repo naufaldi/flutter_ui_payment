@@ -3,8 +3,69 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
+import 'helpers/reduced_motion.dart';
 
 void main() {
+  for (final ok in [true, false]) {
+    testWidgets('copy glyph cross-fades on result $ok', (t) async {
+      final result = Completer<bool>();
+      await t.pumpWidget(
+        host(PaymentCopyButton(value: 'DEMO', onCopy: (_) => result.future), 1),
+      );
+      t.widget<IconButton>(find.byType(IconButton)).onPressed!();
+      result.complete(ok);
+      await t.pump();
+      await t.pump(const Duration(milliseconds: 75));
+      expect(find.byIcon(PaymentIcons.copy), findsOneWidget);
+      expect(
+        find.byIcon(ok ? PaymentIcons.copied : PaymentIcons.danger),
+        findsOneWidget,
+      );
+      await t.pump(const Duration(milliseconds: 75));
+      // Cross the controller endpoint despite floating-point tick rounding.
+      await t.pump(const Duration(milliseconds: 1));
+      expect(find.byIcon(PaymentIcons.copy), findsNothing);
+      await t.pumpWidget(host(const SizedBox(), 1));
+    });
+  }
+  for (final setup in ReducedMotion.values) {
+    testWidgets('copy result is instant under ${setup.name}', (t) async {
+      final result = Completer<bool>();
+      await t.pumpWidget(
+        setup.apply(
+          t,
+          host(
+            PaymentCopyButton(value: 'DEMO', onCopy: (_) => result.future),
+            1,
+          ),
+        ),
+      );
+      t.widget<IconButton>(find.byType(IconButton)).onPressed!();
+      await expectStill(t, () => result.complete(true));
+      expect(find.byIcon(PaymentIcons.copy), findsNothing);
+      expect(find.byIcon(PaymentIcons.copied), findsOneWidget);
+      await t.pumpWidget(host(const SizedBox(), 1));
+    });
+  }
+  testWidgets('iOS reduced motion finishes copy swap mid-flight', (t) async {
+    final result = Completer<bool>();
+    await t.pumpWidget(
+      host(PaymentCopyButton(value: 'DEMO', onCopy: (_) => result.future), 1),
+    );
+    t.widget<IconButton>(find.byType(IconButton)).onPressed!();
+    result.complete(true);
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 50));
+    expect(t.hasRunningAnimations, isTrue);
+    addTearDown(t.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    await expectStill(t, () {
+      t.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(reduceMotion: true);
+    });
+    expect(find.byIcon(PaymentIcons.copy), findsNothing);
+    expect(find.byIcon(PaymentIcons.copied), findsOneWidget);
+    await t.pumpWidget(host(const SizedBox(), 1));
+  });
   testWidgets('link text sits on the column edge, the target extends out', (
     tester,
   ) async {
