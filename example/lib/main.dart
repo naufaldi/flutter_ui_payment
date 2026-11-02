@@ -262,11 +262,14 @@ class _Shell extends StatelessWidget {
             ),
             const VerticalDivider(width: 1),
             Expanded(
-              child: MediaQuery.removePadding(
-                context: context,
-                removeLeft: ltr,
-                removeRight: !ltr,
-                child: body,
+              // Read below Scaffold so its consumed keyboard inset stays removed.
+              child: Builder(
+                builder: (context) => MediaQuery.removePadding(
+                  context: context,
+                  removeLeft: ltr,
+                  removeRight: !ltr,
+                  child: body,
+                ),
               ),
             ),
           ],
