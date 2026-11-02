@@ -9,14 +9,15 @@ import Props from '../../../components/Props.astro';
 
 `PaymentTextField` is a labeled single-line input. The host owns values, validation and submission.
 
-<Screens><Screen name="ios_kit_history" alt="Transaction history search" /></Screens>
-
 <Screens>
-  <Screen name="ios_catalog_text_field_variants" alt="text-field variants" />
-  <Screen name="ios_catalog_text_field_variants_dark" alt="text-field variants_dark" />
-  <Screen name="ios_catalog_text_field_variants_200" alt="text-field variants_200" />
-  <Screen name="ios_catalog_text_field_variants_id_200" alt="text-field variants at 200 percent text, Indonesian" />
+  <Screen name="android_catalog_text_field_variants" dark="android_catalog_text_field_variants_dark" alt="Name fields in three sizes and receipt, phone, promo, order and company fields with validation and disabled states." caption="Text field" />
+  <Screen name="android_catalog_text_field_variants_200" alt="Name fields in three sizes, receipt email, an invalid phone number, promo code and order ID at 200 percent text; later fields extend beyond the capture." caption="200% text" />
+  <Screen name="android_catalog_text_field_variants_id_200" alt="Name, receipt email, phone, promo and order fields at 200 percent text in Indonesian; the company field body and search extend beyond the capture." caption="200% text, Indonesian" />
 </Screens>
+
+The 200% captures stop at the 1200 dp catalog limit before the company and search examples are fully visible. See [capture limitation #172](https://github.com/naufaldi/flutter_ui_payment/issues/172).
+
+<Screens><Screen name="ios_kit_history" alt="Transaction history search" /></Screens>
 
 ## Usage
 
