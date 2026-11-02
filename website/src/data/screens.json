@@ -1465,53 +1465,53 @@
     "caption": "Example KYC review on Android phone at 200% text, English"
   },
   "android_tablet_checkout_light": {
-    "width": 640,
-    "height": 388,
+    "width": 1280,
+    "height": 776,
     "caption": "Example checkout on Android tablet, Indonesian"
   },
   "android_tablet_checkout_en": {
-    "width": 640,
-    "height": 388,
+    "width": 1280,
+    "height": 776,
     "caption": "Example checkout on Android tablet, English"
   },
   "android_tablet_transaction_detail_en": {
-    "width": 640,
-    "height": 388,
+    "width": 1280,
+    "height": 776,
     "caption": "Example transaction detail on Android tablet, English"
   },
   "android_tablet_history_en": {
-    "width": 640,
-    "height": 388,
+    "width": 1280,
+    "height": 776,
     "caption": "Example history on Android tablet, English"
   },
   "android_tablet_catalog_table_variants": {
-    "width": 640,
-    "height": 236,
+    "width": 1280,
+    "height": 473,
     "caption": "Payment methods, fees, arrival times and total in a wide table, English on Android tablet."
   },
   "android_tablet_catalog_data_table_variants": {
-    "width": 640,
-    "height": 770,
+    "width": 1280,
+    "height": 1539,
     "caption": "Settlement table with search, selection, pagination, loading rows and an empty state; later examples extend beyond the 1200 dp crop cap, English on Android tablet."
   },
   "android_tablet_catalog_detail_page_variants": {
-    "width": 640,
-    "height": 462,
+    "width": 1280,
+    "height": 924,
     "caption": "Payment details and merchant modules in two columns with receipt and report actions, English on Android tablet."
   },
   "android_tablet_catalog_focus_view_variants": {
-    "width": 640,
-    "height": 411,
+    "width": 1280,
+    "height": 821,
     "caption": "Report form with Send and Cancel actions aligned in the wide footer, English on Android tablet."
   },
   "android_tablet_catalog_onboarding_view_variants": {
-    "width": 640,
-    "height": 447,
+    "width": 1280,
+    "height": 893,
     "caption": "Identity verification with the step sidebar beside the documents content, English on Android tablet."
   },
   "android_tablet_catalog_overview_page_variants": {
-    "width": 640,
-    "height": 462,
+    "width": 1280,
+    "height": 924,
     "caption": "Spending chart and recent transactions beside the balance module, English on Android tablet."
   }
 }

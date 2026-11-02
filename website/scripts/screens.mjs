@@ -342,7 +342,7 @@ for (const [name, caption] of Object.entries(screens)) {
     throw new Error(`Missing screenshot ${input}`);
   }
   const info = await sharp(input)
-    .resize({ width: 640 })
+    .resize({ width: name.startsWith('android_tablet_') ? 1280 : 640 })
     .webp({ quality: 82 })
     .toFile(join(target, `${name}.webp`));
   sizes[name] = { width: info.width, height: info.height, caption };
