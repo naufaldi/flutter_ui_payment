@@ -299,6 +299,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
       selectedId: _section,
       onSelected: (item) => setState(() => _section = item.id),
       breakpoint: 720,
+      // Leave room for the 840 dp specimen breakpoint on a 1280 dp tablet.
+      sidebarWidth: 200,
       actions: [
         IconButton(
           tooltip: s.settings,
@@ -316,7 +318,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
             children: [
               Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 640),
+                  constraints: BoxConstraints(
+                    maxWidth: switch (_section) {
+                      'content' || 'views' => 1040,
+                      _ => 640,
+                    },
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: entries,

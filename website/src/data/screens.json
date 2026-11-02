@@ -739,11 +739,6 @@
     "height": 1095,
     "caption": "Example sign in dark, Indonesian"
   },
-  "ios_sign_in_light_200": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Example sign in light_200, Indonesian"
-  },
   "android_kyc_onboarding_light": {
     "width": 640,
     "height": 1095,
@@ -769,11 +764,6 @@
     "height": 1095,
     "caption": "Example history dark, Indonesian"
   },
-  "ios_history_light_200": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Example history light_200, Indonesian"
-  },
   "android_transaction_detail_light": {
     "width": 640,
     "height": 1095,
@@ -783,11 +773,6 @@
     "width": 640,
     "height": 1095,
     "caption": "Example transaction detail dark, Indonesian"
-  },
-  "ios_transaction_detail_light_200": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Example transaction detail light_200, Indonesian"
   },
   "android_report_problem_light": {
     "width": 640,
@@ -799,11 +784,6 @@
     "height": 1095,
     "caption": "Example report problem dark, Indonesian"
   },
-  "ios_report_problem_light_200": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Example report problem light_200, Indonesian"
-  },
   "android_statement_light": {
     "width": 640,
     "height": 1095,
@@ -813,11 +793,6 @@
     "width": 640,
     "height": 1095,
     "caption": "Example statement dark, Indonesian"
-  },
-  "ios_statement_light_200": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Example statement light_200, Indonesian"
   },
   "android_fees_light": {
     "width": 640,
@@ -829,11 +804,6 @@
     "height": 1095,
     "caption": "Example fees dark, Indonesian"
   },
-  "ios_fees_light_200": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Example fees light_200, Indonesian"
-  },
   "android_account_settings_light": {
     "width": 640,
     "height": 1095,
@@ -843,11 +813,6 @@
     "width": 640,
     "height": 1095,
     "caption": "Example account settings dark, Indonesian"
-  },
-  "ios_account_settings_light_200": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Example account settings light_200, Indonesian"
   },
   "android_catalog_property_list_variants": {
     "width": 640,
@@ -1129,11 +1094,6 @@
     "height": 315,
     "caption": "Overflow action triggers with grouped, disabled and destructive menu entries. Dark mode."
   },
-  "android_catalog_menu_variants_200": {
-    "width": 640,
-    "height": 319,
-    "caption": "Overflow action triggers with grouped, disabled and destructive menu entries at 200 percent text."
-  },
   "android_catalog_accordion_variants": {
     "width": 640,
     "height": 588,
@@ -1188,11 +1148,6 @@
     "width": 640,
     "height": 1095,
     "caption": "Android methods unavailable dark, Indonesian"
-  },
-  "ios_methods_unavailable_light_200": {
-    "width": 640,
-    "height": 1391,
-    "caption": "ios methods unavailable light 200, Indonesian"
   },
   "android_catalog_video_loading": {
     "width": 640,
@@ -1434,35 +1389,10 @@
     "height": 1138,
     "caption": "Gallery: transaction detail, unknown outcome"
   },
-  "ios_kit_interaction": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Gallery: interaction components, Indonesian"
-  },
   "android_kit_interaction_200": {
     "width": 640,
     "height": 1138,
     "caption": "Gallery: interaction at 200% text"
-  },
-  "ios_kit_navigation_drawer": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Gallery: navigation drawer"
-  },
-  "ios_kit_sheets": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Gallery: sheets"
-  },
-  "ios_kit_sheet_pending": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Gallery: pending-payment sheet"
-  },
-  "ios_kit_sheet_confirm": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Gallery: destructive confirmation"
   },
   "android_kit_promo": {
     "width": 640,
@@ -1474,35 +1404,10 @@
     "height": 1138,
     "caption": "Gallery: promotions at 200% text"
   },
-  "ios_kit_video_ready": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Gallery: video player"
-  },
   "android_catalog_foundation": {
     "width": 640,
     "height": 1138,
     "caption": "Foundation amount formatting, status badges and async payment actions."
-  },
-  "android_catalog_list_variants_id": {
-    "width": 640,
-    "height": 873,
-    "caption": "Payment method rows with icons, descriptions, actions and disabled states, in Indonesian."
-  },
-  "android_catalog_list_variants_id_200": {
-    "width": 640,
-    "height": 1732,
-    "caption": "Payment method rows with icons, descriptions, actions and disabled states at 200 percent text, in Indonesian."
-  },
-  "android_catalog_menu_variants_id": {
-    "width": 640,
-    "height": 315,
-    "caption": "Overflow action triggers with grouped, disabled and destructive menu entries, in Indonesian."
-  },
-  "android_catalog_menu_variants_id_200": {
-    "width": 640,
-    "height": 319,
-    "caption": "Overflow action triggers with grouped, disabled and destructive menu entries at 200 percent text, in Indonesian."
   },
   "android_catalog_dialog_variants_id": {
     "width": 640,
@@ -1514,16 +1419,6 @@
     "height": 1138,
     "caption": "Remove card confirmation sheet with the destructive action above Cancel at 200 percent text, in Indonesian."
   },
-  "android_catalog_button_group_variants_id": {
-    "width": 640,
-    "height": 755,
-    "caption": "Grouped payment actions using different collapse rules and a long wrapping label, in Indonesian."
-  },
-  "android_catalog_button_group_variants_id_200": {
-    "width": 640,
-    "height": 817,
-    "caption": "Grouped payment actions using different collapse rules and a long wrapping label at 200 percent text, in Indonesian."
-  },
   "android_catalog_menu_sheet": {
     "width": 640,
     "height": 1138,
@@ -1533,21 +1428,6 @@
     "width": 640,
     "height": 1138,
     "caption": "Phone action menu with grouped rows, a destructive action and Cancel, in Indonesian."
-  },
-  "android_catalog_sign_in_view_variants_id_200": {
-    "width": 640,
-    "height": 1244,
-    "caption": "External bank sign-in with requester branding, permissions, legal links and pinned Continue and Cancel actions at 200 percent text, in Indonesian."
-  },
-  "android_catalog_settings_view_variants_id_200": {
-    "width": 640,
-    "height": 1144,
-    "caption": "Payment settings grouped into labelled sections at 200 percent text, in Indonesian."
-  },
-  "android_catalog_context_view_variants_id_200": {
-    "width": 640,
-    "height": 1130,
-    "caption": "Context panels with titles, supporting content and footer actions at 200 percent text, in Indonesian."
   },
   "android_sign_in_light_200": {
     "width": 640,
@@ -1574,154 +1454,64 @@
     "height": 1095,
     "caption": "Example transaction detail on Android phone at 200% text, Indonesian"
   },
-  "ios_se_transaction_detail_en_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example transaction detail on iPhone SE at 200% text, English"
-  },
-  "ios_se_checkout_light_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example checkout on iPhone SE at 200% text, Indonesian"
-  },
-  "ios_se_checkout_en_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example checkout on iPhone SE at 200% text, English"
-  },
-  "ios_se_authorize_light_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example authorize on iPhone SE at 200% text, Indonesian"
-  },
-  "ios_se_authorize_en_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example authorize on iPhone SE at 200% text, English"
-  },
-  "ios_se_status_pending_light_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example pending status on iPhone SE at 200% text, Indonesian"
-  },
-  "ios_se_status_pending_en_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example pending status on iPhone SE at 200% text, English"
-  },
-  "ios_se_receipt_light_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example receipt on iPhone SE at 200% text, Indonesian"
-  },
-  "ios_se_receipt_en_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example receipt on iPhone SE at 200% text, English"
-  },
-  "ios_kyc_documents_light": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Example KYC documents step with the pinned Continue to review"
-  },
-  "ios_kyc_documents_dark": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Example KYC documents step, dark"
-  },
-  "ios_kyc_documents_light_200": {
-    "width": 640,
-    "height": 1391,
-    "caption": "Example KYC documents step at 200% text"
-  },
-  "ios_se_kyc_onboarding_light_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example KYC details on iPhone SE at 200% text, Indonesian"
-  },
   "android_kyc_onboarding_en_200": {
     "width": 640,
     "height": 1095,
     "caption": "Example KYC details on Android phone at 200% text, English"
-  },
-  "ios_se_kyc_documents_light_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example KYC documents on iPhone SE at 200% text, Indonesian"
-  },
-  "ios_se_kyc_documents_en_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example KYC documents on iPhone SE at 200% text, English"
-  },
-  "ios_se_kyc_review_light_200": {
-    "width": 640,
-    "height": 1138,
-    "caption": "Example KYC review on iPhone SE at 200% text, Indonesian"
   },
   "android_kyc_review_en_200": {
     "width": 640,
     "height": 1095,
     "caption": "Example KYC review on Android phone at 200% text, English"
   },
-  "ios_ipad_checkout_light": {
+  "android_tablet_checkout_light": {
     "width": 640,
-    "height": 975,
-    "caption": "Example checkout on iPad mini, Indonesian"
+    "height": 388,
+    "caption": "Example checkout on Android tablet, Indonesian"
   },
-  "ios_ipad_checkout_en": {
+  "android_tablet_checkout_en": {
     "width": 640,
-    "height": 975,
-    "caption": "Example checkout on iPad mini, English"
+    "height": 388,
+    "caption": "Example checkout on Android tablet, English"
   },
-  "ios_ipad_transaction_detail_light": {
+  "android_tablet_transaction_detail_en": {
     "width": 640,
-    "height": 975,
-    "caption": "Example transaction detail on iPad mini, Indonesian"
+    "height": 388,
+    "caption": "Example transaction detail on Android tablet, English"
   },
-  "ios_ipad_transaction_detail_en": {
+  "android_tablet_history_en": {
     "width": 640,
-    "height": 975,
-    "caption": "Example transaction detail on iPad mini, English"
+    "height": 388,
+    "caption": "Example history on Android tablet, English"
   },
-  "ios_ipad_history_light": {
+  "android_tablet_catalog_table_variants": {
     "width": 640,
-    "height": 975,
-    "caption": "Example history on iPad mini, Indonesian"
+    "height": 236,
+    "caption": "Payment methods, fees, arrival times and total in a wide table, English on Android tablet."
   },
-  "ios_ipad_history_en": {
+  "android_tablet_catalog_data_table_variants": {
     "width": 640,
-    "height": 975,
-    "caption": "Example history on iPad mini, English"
+    "height": 770,
+    "caption": "Settlement table with search, selection, pagination, loading rows and an empty state; later examples extend beyond the 1200 dp crop cap, English on Android tablet."
   },
-  "ios_ipad_kyc_onboarding_light": {
+  "android_tablet_catalog_detail_page_variants": {
     "width": 640,
-    "height": 975,
-    "caption": "Example KYC details on iPad mini, Indonesian"
+    "height": 462,
+    "caption": "Payment details and merchant modules in two columns with receipt and report actions, English on Android tablet."
   },
-  "ios_ipad_kyc_onboarding_en": {
+  "android_tablet_catalog_focus_view_variants": {
     "width": 640,
-    "height": 975,
-    "caption": "Example KYC details on iPad mini, English"
+    "height": 411,
+    "caption": "Report form with Send and Cancel actions aligned in the wide footer, English on Android tablet."
   },
-  "ios_ipad_kyc_documents_light": {
+  "android_tablet_catalog_onboarding_view_variants": {
     "width": 640,
-    "height": 975,
-    "caption": "Example KYC documents on iPad mini, Indonesian"
+    "height": 447,
+    "caption": "Identity verification with the step sidebar beside the documents content, English on Android tablet."
   },
-  "ios_ipad_kyc_documents_en": {
+  "android_tablet_catalog_overview_page_variants": {
     "width": 640,
-    "height": 975,
-    "caption": "Example KYC documents on iPad mini, English"
-  },
-  "ios_ipad_kyc_review_light": {
-    "width": 640,
-    "height": 975,
-    "caption": "Example KYC review on iPad mini, Indonesian"
-  },
-  "ios_ipad_kyc_review_en": {
-    "width": 640,
-    "height": 975,
-    "caption": "Example KYC review on iPad mini, English"
+    "height": 462,
+    "caption": "Spending chart and recent transactions beside the balance module, English on Android tablet."
   }
 }
