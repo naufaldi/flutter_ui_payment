@@ -11,7 +11,7 @@ Motion in the kit is feedback: a press was heard, a status changed, a step moved
 
 ## Tokens
 
-`PaymentMotion.of(context)` returns the tokens for the current context. Every duration is `Duration.zero` when the platform or host asks for reduced motion (`MediaQueryData.disableAnimations`).
+`PaymentMotion.of(context)` returns the tokens for the current context. Every duration is `Duration.zero`, and the press scale is 1, when the platform or host asks for reduced motion (see [Reduced motion](#reduced-motion)).
 
 <TokenTable group="motion" rows={[
   {
@@ -74,23 +74,85 @@ final motion = PaymentMotion.of(context);
 AnimatedSwitcher(
   duration: motion.enter,
   reverseDuration: motion.exit,
-  switchInCurve: PaymentMotion.easeOut,
   transitionBuilder: PaymentMotion.fadeScale,
-  child: statusWidget,
+  child: Icon(icon, key: ValueKey(icon)),
 );
 ```
 
+## Swap builders
+
+| Builder | Motion | Use for | Don't |
+| --- | --- | --- | --- |
+| `PaymentMotion.fadeScale` | Fade plus a scale from 0.95 | Compact element swaps: an icon, a glyph, a badge | Full-width bands or rows; animate from nothing |
+| `PaymentMotion.fadeRise` | Fade plus a fixed 8 dp rise, the same on every screen. `back: true` fades only, with no rise | Forward content and step changes; the back mode when the flow moves back | Animate from nothing |
+| `motion.fullWidthSwap(child)` | Fade only, at `enter` in and `exit` out, with the height eased by `AnimatedSize` (`enter`, `easeInOut`) | Full-width status content | Scale |
+| `PaymentMotion.topLayout` | No motion: the layout for a swap | Any `AnimatedSwitcher`: the leaving child keeps painting but takes no taps and is hidden from screen readers | Let a leaving "Pay" button be pressed |
+
+`fadeRise` fits `AnimatedSwitcher.transitionBuilder` as it is. For the back mode, pass a closure, so going back never looks like going forward:
+
+```dart
+AnimatedSwitcher(
+  duration: motion.enter,
+  reverseDuration: motion.exit,
+  transitionBuilder: (child, animation) =>
+      PaymentMotion.fadeRise(child, animation, back: goingBack),
+  layoutBuilder: PaymentMotion.topLayout,
+  child: KeyedSubtree(key: ValueKey(step), child: stepBody),
+);
+```
+
+Full-width content fades and never scales: scaling a full-width slab moves its edges and reads as a lurch, the same reason full-width buttons don't scale on press. The eased height keeps the content below from jumping when the new content is taller or shorter. Give each state its own key:
+
+```dart
+PaymentMotion.of(context).fullWidthSwap(
+  KeyedSubtree(key: ValueKey(status), child: statusContent),
+)
+```
+
+With the durations from `PaymentMotion.of`, every swap is instant under reduced motion; `fullWidthSwap` reads them itself. The payment and verification status views still scale their header in; they move to `fullWidthSwap` in [#96](https://github.com/naufaldi/flutter_ui_payment/issues/96).
+
+## Reduced motion
+
+The kit reads both places reduced motion can come from (D65):
+
+- `MediaQueryData.disableAnimations`: a host or in-app override, or Android's "Remove animations".
+- `PlatformDispatcher.accessibilityFeatures.reduceMotion`: iOS Settings → Accessibility → Motion → Reduce Motion. iOS delivers it only here, and `MediaQueryData` doesn't carry it.
+
+Under either flag every kit duration is 0 and the press scale is 1 (D66). There is no cross-fade variant. Two kit surfaces still animate under reduced motion: the wide confirm dialog ([#100](https://github.com/naufaldi/flutter_ui_payment/issues/100)) and the upload bars ([#97](https://github.com/naufaldi/flutter_ui_payment/issues/97)). A host can force reduced motion on, but can't turn the OS setting off. A widget reads the flags when it builds, so a setting changed while the app runs applies from the widget's next change.
+
+SDK widgets inside the kit that read `MediaQuery` don't see the iOS flag. A host that wants them to follow too can fold it into `MediaQuery` in `MaterialApp.builder`:
+
+```dart
+MaterialApp(
+  builder: (context, child) {
+    final features = View.of(context).platformDispatcher.accessibilityFeatures;
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        disableAnimations:
+            MediaQuery.disableAnimationsOf(context) || features.reduceMotion,
+      ),
+      child: child!,
+    );
+  },
+  home: home,
+)
+```
+
+The SDK's own animation controllers still don't follow on iOS: they slow down only for the platform's `disableAnimations` flag, which iOS never sets.
+
 ## Rules the kit follows
 
-- Status swaps fade and scale in from 0.95, never from nothing.
+- Compact swaps fade and scale in from 0.95, never from nothing. Full-width content fades only, and its height eases.
+- Flow steps fade and rise a fixed 8 dp going forward, and fade only going back.
 - Compact controls press to 0.96 over 100 ms. Full-width buttons do not scale: scaling a wide slab moves its edges several pixels and reads as a lurch, so they rely on Material's pressed state.
 - Navigation selection, drawer items, menus and anything keyboard-driven are instant. They are used constantly, and animation would only add delay.
 - Sheets take 280 ms in and 200 ms out on the drawer curve; disclosures 220/150 ms.
 - Implicit animations retarget when interrupted.
-- The countdown, which ticks every second, is never animated. Amounts are never animated.
+- Amounts, balances, countdowns and totals change in place with tabular digits. They never count or roll, so a payment amount never shows an intermediate wrong value. The only allowed motion is the action-bar total's `quick` cross-fade after a re-quote (D74).
+- There is no spring token (D75). Sheets keep the curve tokens; the SDK bottom sheet already carries the release velocity into its fling, and its dismiss and settle can be interrupted.
 - `LoadingSkeleton` is static: a shimmer repaints every frame and adds no information.
 - `PaymentSpinner`, and the busy state of `PaymentButton`, become a still hourglass under reduced motion.
-- Video never autoplays unless `autoPlay: true`, and never under reduced motion.
+- Video never autoplays unless `autoPlay: true`, and never under reduced motion or when iOS Auto-Play Video Previews is off (`accessibilityFeatures.autoPlayVideos`).
 
 ## API
 
@@ -107,9 +169,11 @@ AnimatedSwitcher(
 ```text
 Press? → press
 Selection/border? → quick
-Status/content swap? → enter + exit
+Compact swap? → enter + exit, fadeScale
+Full-width content swap? → fullWidthSwap
+Flow step? → fadeRise; back: true going back
 Sheet? → sheetEnter + sheetExit, drawer curve
-Reduced motion? → zero duration, scale 1
+Reduced motion (either flag)? → zero duration, scale 1
 ```
 
 Use semantic motion tokens only. Do: the existing AnimatedSwitcher enter/exit pair above. Don't: a raw 400 ms duration or animated countdown ticks. Stripe Apps components define no motion tokens. The token set above is closed. Nothing else exists.
