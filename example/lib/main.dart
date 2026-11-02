@@ -276,8 +276,8 @@ class _Shell extends StatelessWidget {
         ),
       );
     }
-    // Inside the payment flow the tab bar is hidden, so the step's pinned
-    // action is the only thing at the bottom (D62); back leaves the flow.
+    // The tab bar hides inside the payment flow (D62) and on pushed detail
+    // screens (D84), leaving the pinned action at the bottom.
     return ListenableBuilder(
       listenable: app.coordinator,
       builder: (context, _) => Scaffold(

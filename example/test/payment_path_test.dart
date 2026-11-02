@@ -42,6 +42,32 @@ void expectPinnedPrimary(WidgetTester t, {double height = 852}) {
 }
 
 void main() {
+  for (final direction in TextDirection.values) {
+    testWidgets('checkout loading stays centred: ${direction.name} (#159)', (
+      t,
+    ) async {
+      surface(t, const Size(1280, 800));
+      final app = await launch(
+        t,
+        settings: DemoSettings(
+          locale: const Locale('en'),
+          textDirection: direction,
+        ),
+      );
+      final c = await runScenario(t, app, 'H02');
+      c.starting = true;
+      c.setObscured(true);
+      await t.pump();
+      final loading = find.text('Loading…');
+      final list = find.byKey(const ValueKey('flow-list-checkout'));
+      expect(
+        t.getRect(loading).center.dx,
+        closeTo(t.getRect(list).center.dx, .5),
+      );
+      await drain(t);
+    });
+  }
+
   for (final scenario in ['A02', 'A03', 'A04', 'A05']) {
     testWidgets('D84: $scenario hides tabs and back restores them (#142)', (
       t,

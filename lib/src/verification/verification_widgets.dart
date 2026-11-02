@@ -625,7 +625,12 @@ class DocumentUploadTile extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: theme.space(PaymentSpace.related)),
-                Flexible(child: badge),
+                Flexible(
+                  child: Align(
+                    alignment: AlignmentDirectional.topEnd,
+                    child: badge,
+                  ),
+                ),
               ],
             ),
           if (needsUpdate && state.phase != DocumentSlotPhase.uploaded) ...[
