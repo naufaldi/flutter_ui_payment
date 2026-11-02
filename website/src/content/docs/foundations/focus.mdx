@@ -79,12 +79,12 @@ The ring and press widgets are internal to the package. To match them on your ow
 | Hover/focus fill | Removed by `PaymentFocusRing.withoutFocusFill`; pressed and hovered layers are kept | `focus_ring.dart:32-44` |
 | Clearance | ≥ 4 px between a focusable control and any clipping ancestor | `focus_ring.dart:11-12`, `PaymentTabs` side clip `controls.dart:353-361` |
 
-```text
-Text field? → accent border only
-Keyboard-focused control? → textPrimary ring
-Compact press? → pressedScale
-Full-width button/row? → Material pressed layer
-```
+| The control is… | Feedback |
+| --- | --- |
+| A focused text field | `accent` border only |
+| Any other keyboard-focused control | `textPrimary` ring |
+| A compact control being pressed | `pressedScale` |
+| A full-width button or row being pressed | Material pressed layer |
 
 Use semantic tokens only. Do: preserve 4 dp clearance around the existing focus ring. Don't: clip it or add a second ring to a field. PaymentSize small/medium/large changes only visual treatment; every layout and hit box stays at least 48×48 dp, visual centered (D29). PaymentButton is the first size consumer. Internal ring and press helpers are not exported. There is no Stripe mapping. Nothing else exists.
 

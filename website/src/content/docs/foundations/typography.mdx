@@ -11,17 +11,17 @@ Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
 
 `PaymentType.of(context)` exposes nine roles. Every role inherits the host font from textTheme.bodyMedium; the kit bundles no fonts. Values below show size, line, weight and tracking.
 
-```text
-One display amount? → display
-Action-bar total or balance? → amountLarge
-Sheet/dialog title? → title
-Section/status title or button? → heading
-Paragraph? → bodyFor(context)
-Row label/value? → label
-Supporting line? → caption
-Short status? → tag
-Field entry? → input
-```
+| The text is… | Role |
+| --- | --- |
+| The one display amount | `display` |
+| An action-bar total or a balance | `amountLarge` |
+| A sheet or dialog title | `title` |
+| A section or status title, or a button | `heading` |
+| A paragraph | `bodyFor(context)` |
+| A row label or value | `label` |
+| A supporting line | `caption` |
+| A short status | `tag` |
+| A field entry | `input` |
 
 The specimens below use the exported size, line height, weight and tracking in CSS pixels. They inherit the docs font; a Flutter host supplies its own font.
 

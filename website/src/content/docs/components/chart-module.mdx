@@ -45,13 +45,14 @@ Variants: ready, loading, empty, error. Nothing else exists.
 
 Use Overview page to arrange several modules.
 
-```text
-What does the host know?
-├─ Request pending → loading
-├─ Failed request → error with retry
-├─ No readings → empty with explanation
-└─ Readings available → ready with chart
-```
+Choose the state from what the host knows:
+
+| The host knows… | State |
+| --- | --- |
+| The request is pending | `loading` |
+| The request failed | `error`, with retry |
+| There are no readings | `empty`, with an explanation |
+| Readings are available | `ready`, with the chart |
 
 ## States
 

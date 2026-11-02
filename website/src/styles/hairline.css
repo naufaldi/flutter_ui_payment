@@ -256,10 +256,19 @@ starlight-theme-select select {
   gap: 1rem;
   margin-block: 1.5rem;
 }
+/* A phone capture is 640 px for a 360 dp screen, so 22.5rem shows it at its
+   real dp size and keeps its labels readable. Pairs share the row; narrower
+   columns wrap to one capture per row instead of shrinking it. */
 .fup-screen {
   margin: 0;
-  flex: 0 1 15rem;
+  flex: 1 1 16rem;
   min-width: 0;
+  max-width: 22.5rem;
+}
+/* Tablet captures are laid out for a wide screen: use the whole column. */
+.fup-screen-wide {
+  flex-basis: 100%;
+  max-width: none;
 }
 .fup-screen img {
   display: block;
@@ -332,9 +341,6 @@ starlight-theme-select select {
 @media (max-width: 50rem) {
   .fup-api td:first-child {
     white-space: normal;
-  }
-  .fup-screen {
-    flex-basis: calc(50% - 0.5rem);
   }
 }
 

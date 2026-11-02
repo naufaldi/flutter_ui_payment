@@ -52,12 +52,12 @@ Amounts follow the language too: `id` groups with `.` and uses `,` for decimals,
 
 Use semantic formatting APIs only. Choose en or id; no third locale exists. Nothing else exists.
 
-```text
-Calendar date? → formatDate
-Instant? → formatDateTime
-Amount? → moneyFormat
-Built-in words? → PaymentLocalizations / KitStrings
-```
+| You are showing… | Use |
+| --- | --- |
+| A calendar date | `formatDate` |
+| An instant | `formatDateTime` |
+| An amount | `moneyFormat` |
+| The kit's built-in words | `PaymentLocalizations` / `KitStrings` |
 
 Do: register the existing localization delegates above. Don't: hardcode translated strings in a widget. See [Money and dates](/foundations/money/#dates) for calendar formatting and typed-date pattern overrides.
 

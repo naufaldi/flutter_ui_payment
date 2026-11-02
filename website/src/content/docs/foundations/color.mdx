@@ -9,24 +9,30 @@ import Screen from '../../../components/Screen.astro';
 
 Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
 
-Which text color:
+## Which text color
 
-```
-Is the control disabled?            → disabled
-Is it a status word or status icon? → tone(t).foreground
-Is it on an accent fill?            → onAccent
-Is it a label, caption or muted icon? → textSecondary
-Default                             → textPrimary
-```
+Use the first row that matches:
 
-Which line:
+| The text is… | Token |
+| --- | --- |
+| On a disabled control | `disabled` |
+| A status word or status icon | `tone(t).foreground` |
+| On an accent fill | `onAccent` |
+| A label, caption or muted icon | `textSecondary` |
+| Anything else | `textPrimary` |
 
-```
-Is the line how someone finds a control (input, secondary button, unchecked box)? → border (≥ 3:1)
-Is it the selected or focused edge?  → accent (selected) / textPrimary ring (focus, §3.8)
-Default (separates content only)     → outline (may be < 3:1)
-```
+## Which line
 
+Use the first row that matches:
+
+| The line is… | Token |
+| --- | --- |
+| How someone finds a control: an input, a secondary button or an unchecked box | `border`, at least 3:1 |
+| The selected edge | `accent` |
+| The focused edge | `textPrimary` ring (§3.8) |
+| Anything else: it only separates content | `outline`, may be below 3:1 |
+
+## Tokens
 
 <TokenTable group="color" rows={[
   {"token": "surface", "use": "Page, sheets, dialogs and flat sections.", "dont": "Do not box normal sections."},

@@ -170,13 +170,14 @@ The screen's priority action pins at the bottom (D62); a full-width button in a 
 
 Use Link for inline destinations.
 
-```text
-Single next action?
-├─ Yes → primary
-└─ No → irreversible consequence?
-   ├─ Yes → destructive, behind confirmation
-   └─ No → visible supporting action? secondary : quiet
-```
+Use the first row that matches:
+
+| The button is… | Variant |
+| --- | --- |
+| The single next action | `primary` |
+| Not the next action, and its consequence cannot be undone | `destructive`, behind a confirmation |
+| A supporting action that must stay visible | `secondary` |
+| Any other supporting action | `quiet` |
 
 ## States
 

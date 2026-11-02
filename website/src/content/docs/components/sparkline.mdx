@@ -4,21 +4,16 @@ description: Adds a small trend beside a host-provided amount.
 ---
 
 import Screen from '../../../components/Screen.astro';
-import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentSparkline` adds a small trend beside a host-provided amount.
 
+It answers "which way is this going?" at a glance. It has no axes, labels or value at rest, so it always sits in a row next to a KPI that states the exact amount. For a chart someone reads point by point, use [Line chart](/components/line-chart/).
+
 <HostOwns>amounts, currency, period labels, settled/pending/unknown status, and every headline or delta.</HostOwns>
 
-<Screens>
-  <Screen name="android_catalog_chart_sparkline" dark="android_catalog_chart_sparkline_dark" alt="Compact spending trend beside a headline amount." caption="Sparkline, English" />
-</Screens>
-
-<Screens>
-  <Screen name="android_catalog_sparkline_variants" dark="android_catalog_sparkline_variants_dark" alt="Compact spending trends beside host-provided amounts." caption="Sparkline" />
-</Screens>
+<Screen name="android_catalog_sparkline_variants" dark="android_catalog_sparkline_variants_dark" alt="Two rows. Spending, October, Rp2,010,000 with a small single-line trend to its right. This month vs last month, with the note 'Dashed line: last month', beside a two-line trend." caption="A one-series trend beside the October total, and a two-series comparison of this month and last month." />
 
 ## Usage
 
