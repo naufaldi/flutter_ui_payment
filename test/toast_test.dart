@@ -5,6 +5,11 @@ import 'first_line_test.dart' show host;
 import 'helpers/toast.dart';
 
 void main() {
+  setUp(() {
+    final semantics = TestWidgetsFlutterBinding.ensureInitialized()
+        .ensureSemantics();
+    addTearDown(semantics.dispose);
+  });
   late BuildContext context;
   Future<void> capture(WidgetTester tester) async {
     await tester.pumpWidget(
@@ -21,8 +26,6 @@ void main() {
   }
 
   testWidgets('newest wins without painting the waiting toast', (tester) async {
-    final semantics = tester.ensureSemantics();
-
     await capture(tester);
     // ignore: deprecated_member_use_from_same_package
     final a = showPaymentSnackBar(context, message: 'Toast A');
@@ -49,7 +52,6 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pump();
     await c.closed;
-    semantics.dispose();
     expect(find.byType(SnackBar), findsNothing);
   });
 
@@ -105,8 +107,6 @@ void main() {
   });
 
   testWidgets('replaced toast behind a host bar never appears', (tester) async {
-    final semantics = tester.ensureSemantics();
-
     await capture(tester);
     showPaymentToast(context, message: 'Kit K', pending: true);
     await tester.pump();
@@ -130,7 +130,6 @@ void main() {
     }
     expect(find.text('Host H'), findsNothing);
     expect(find.text('Toast Z'), findsOneWidget);
-    semantics.dispose();
     z.dismiss();
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pump();
@@ -239,12 +238,12 @@ void main() {
         )
         .singleWhere((material) => material.color == theme.textPrimary);
     expect(surface.color, theme.textPrimary);
-    expect(surface.shape, bar.shape);
+    expect(bar.shape, const RoundedRectangleBorder());
     expect(surface.clipBehavior, bar.clipBehavior);
     expect(bar.elevation, 0);
     expect(bar.persist, true);
     expect(
-      bar.shape,
+      surface.shape,
       RoundedRectangleBorder(borderRadius: theme.controlBorderRadius),
     );
     expect(

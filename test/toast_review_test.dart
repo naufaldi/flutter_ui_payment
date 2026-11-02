@@ -6,6 +6,11 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'helpers/toast.dart';
 
 void main() {
+  setUp(() {
+    final semantics = TestWidgetsFlutterBinding.ensureInitialized()
+        .ensureSemantics();
+    addTearDown(semantics.dispose);
+  });
   late BuildContext context;
   Future<void> mount(
     WidgetTester tester, {
@@ -13,10 +18,14 @@ void main() {
     bool accessible = false,
     bool dark = false,
     double scale = 1,
+    bool closeIcon = false,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData(brightness: dark ? Brightness.dark : Brightness.light),
+        theme: ThemeData(
+          brightness: dark ? Brightness.dark : Brightness.light,
+          snackBarTheme: SnackBarThemeData(showCloseIcon: closeIcon),
+        ),
         builder: (context, child) => MediaQuery(
           data: MediaQuery.of(context).copyWith(
             disableAnimations: reduced,
@@ -59,8 +68,12 @@ void main() {
       testWidgets(
         'review replaced waiting never paints accessible=$accessible hosts=$count',
         (tester) async {
-          final semantics = tester.ensureSemantics();
-          await mount(tester, reduced: !accessible, accessible: accessible);
+          await mount(
+            tester,
+            reduced: !accessible,
+            accessible: accessible,
+            closeIcon: true,
+          );
           showPaymentToast(context, message: 'Kit K', pending: true);
           await settleBar(tester);
           hosts(count);
@@ -89,6 +102,7 @@ void main() {
                   matching: find.byType(Material),
                 ),
               );
+              expect(find.byIcon(Icons.close), findsNothing);
               expect(
                 bars.where((m) => m.color != null && m.color!.a != 0),
                 isEmpty,
@@ -111,7 +125,6 @@ void main() {
           expect(find.text('Toast Z'), findsOneWidget);
           z.dismiss();
           await settleBar(tester);
-          semantics.dispose();
         },
       );
     }
@@ -154,7 +167,6 @@ void main() {
     expect(closed, 3);
   });
   testWidgets('review live region and swipe stay available', (tester) async {
-    final semantics = tester.ensureSemantics();
     await mount(tester);
     final c = showPaymentToast(context, message: 'Swipe me', pending: true);
     await settleBar(tester);
@@ -174,7 +186,6 @@ void main() {
     await settleBar(tester);
     expect(find.text('Swipe me'), findsNothing);
     expect(closed, isTrue);
-    semantics.dispose();
   });
   for (final dark in [false, true]) {
     for (final action in [false, true]) {

@@ -856,6 +856,12 @@ class PaymentToastController {
     _feature.close();
   }
 
+  void _dismissFromCloseIcon() {
+    if (_closed) return;
+    _timer?.cancel();
+    _messenger.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+  }
+
   void _detach() {
     _timer?.cancel();
     _closed = true;
@@ -1012,7 +1018,8 @@ PaymentToastController _showToast(
       persist: true,
       backgroundColor: Colors.transparent,
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: theme.controlBorderRadius),
+      showCloseIcon: false,
+      shape: const RoundedRectangleBorder(),
       margin: EdgeInsets.fromLTRB(
         theme.space(PaymentSpace.group),
         0,
@@ -1057,18 +1064,19 @@ class _ToastContentState extends State<_ToastContent>
   // Keeps the row, and the action's state, when reduced motion turns on or
   // off and the AnimatedSize around it comes or goes.
   final _row = GlobalKey();
+  late final bool _leave;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    final leave = widget.controller._superseded;
+    _leave = widget.controller._superseded;
     // A zero-duration entrance completes before SnackBar attaches its status
     // listener. Check the mounted bar too, so dismissal and reading time work.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       // I2: a superseded waiting bar leaves before its first visible frame.
-      if (leave) {
+      if (_leave) {
         widget.controller._leave();
         return;
       }
@@ -1105,13 +1113,20 @@ class _ToastContentState extends State<_ToastContent>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.controller._superseded) {
+    if (_leave) {
       return const ExcludeSemantics(child: SizedBox.shrink());
     }
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     final motion = PaymentMotion.of(context);
     final iconSize = PaymentIconSize.medium.resolve(context);
+    final snackBarTheme = SnackBarTheme.of(context);
+    // The kit has no close-icon override; both SDK defaults are false.
+    final showCloseIcon = snackBarTheme.showCloseIcon ?? false;
+    final materialTheme = Theme.of(context);
+    final endPadding = widget.controller._hasAction
+        ? theme.space(PaymentSpace.related)
+        : theme.space(PaymentSpace.group);
     return ValueListenableBuilder<_ToastState>(
       valueListenable: widget.controller._state,
       builder: (context, state, _) {
@@ -1211,12 +1226,42 @@ class _ToastContentState extends State<_ToastContent>
             padding: EdgeInsetsDirectional.fromSTEB(
               theme.space(PaymentSpace.group),
               theme.space(PaymentSpace.related),
-              widget.controller._hasAction
-                  ? theme.space(PaymentSpace.related)
-                  : theme.space(PaymentSpace.group),
+              endPadding,
               theme.space(PaymentSpace.related),
             ),
-            child: content,
+            child: showCloseIcon
+                ? Row(
+                    children: [
+                      Expanded(child: content),
+                      Padding(
+                        // Match SnackBar's explicit-padding close-icon margin.
+                        padding: EdgeInsets.symmetric(
+                          horizontal: endPadding / 12,
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.close),
+                          iconSize: 24,
+                          color:
+                              snackBarTheme.closeIconColor ??
+                              (materialTheme.useMaterial3
+                                  ? materialTheme.colorScheme.onInverseSurface
+                                  // SnackBar has already inverted the M2 theme.
+                                  : materialTheme.colorScheme.surface),
+                          tooltip: MaterialLocalizations.of(
+                            context,
+                          ).closeButtonTooltip,
+                          constraints: const BoxConstraints(
+                            minWidth: 48,
+                            minHeight: 48,
+                          ),
+                          onPressed: () {
+                            widget.controller._dismissFromCloseIcon();
+                          },
+                        ),
+                      ),
+                    ],
+                  )
+                : content,
           ),
         );
       },
