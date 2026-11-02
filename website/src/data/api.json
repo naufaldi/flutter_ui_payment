@@ -8089,7 +8089,7 @@
       {
         "name": "closed",
         "type": "Future<void>",
-        "doc": "Completes when the toast leaves the screen, or when a newer toast or a\nmotion change drops it before it shows."
+        "doc": "Completes when the toast leaves the screen, or when a newer toast or a\nmotion change drops it before it shows.\nA host-cleared waiting toast completes when a later kit toast reaches the\nfront. If the messenger is disposed while only host bars are mounted,\nwaiting kit toasts have no disposal callback; their futures may stay open."
       }
     ],
     "statics": [],
@@ -8099,7 +8099,7 @@
         "kind": "getter",
         "static": false,
         "type": "Future<void>",
-        "doc": "Completes when the toast leaves the screen, or when a newer toast or a\nmotion change drops it before it shows."
+        "doc": "Completes when the toast leaves the screen, or when a newer toast or a\nmotion change drops it before it shows.\nA host-cleared waiting toast completes when a later kit toast reaches the\nfront. If the messenger is disposed while only host bars are mounted,\nwaiting kit toasts have no disposal callback; their futures may stay open."
       },
       {
         "name": "update",

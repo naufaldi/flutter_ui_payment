@@ -228,7 +228,19 @@ void main() {
     final context = tester.element(find.byType(SnackBar));
     final theme = PaymentTheme.of(context);
     final bar = tester.widget<SnackBar>(find.byType(SnackBar));
-    expect(bar.backgroundColor, theme.textPrimary);
+    expect(bar.backgroundColor, Colors.transparent);
+    expect(bar.padding, EdgeInsets.zero);
+    final surface = tester
+        .widgetList<Material>(
+          find.descendant(
+            of: find.byType(SnackBar),
+            matching: find.byType(Material),
+          ),
+        )
+        .singleWhere((material) => material.color == theme.textPrimary);
+    expect(surface.color, theme.textPrimary);
+    expect(surface.shape, bar.shape);
+    expect(surface.clipBehavior, bar.clipBehavior);
     expect(bar.elevation, 0);
     expect(bar.persist, true);
     expect(

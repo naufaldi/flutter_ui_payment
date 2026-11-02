@@ -829,6 +829,9 @@ class PaymentToastController {
 
   /// Completes when the toast leaves the screen, or when a newer toast or a
   /// motion change drops it before it shows.
+  /// A host-cleared waiting toast completes when a later kit toast reaches the
+  /// front. If the messenger is disposed while only host bars are mounted,
+  /// waiting kit toasts have no disposal callback; their futures may stay open.
   Future<void> get closed => _done.future;
 
   /// Replaces the entire state in place and restarts its reading time.
@@ -874,6 +877,16 @@ class PaymentToastController {
 
   void _onVisible() {
     if (_closed || _visible) return;
+    // Reaching the front proves all older kit bars have left the SDK queue,
+    // including waiting bars silently dropped by a host's clearSnackBars().
+    final queue = _toastQueues[_messenger];
+    if (queue != null) {
+      final older = queue.open.takeWhile((toast) => toast != this).toList();
+      for (final toast in older) {
+        toast._detach();
+        queue.open.remove(toast);
+      }
+    }
     _visible = true;
     if (_dismissRequested) {
       dismiss();
@@ -997,7 +1010,7 @@ PaymentToastController _showToast(
     SnackBar(
       behavior: SnackBarBehavior.floating,
       persist: true,
-      backgroundColor: theme.textPrimary,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: theme.controlBorderRadius),
       margin: EdgeInsets.fromLTRB(
@@ -1006,14 +1019,7 @@ PaymentToastController _showToast(
         theme.space(PaymentSpace.group),
         theme.space(PaymentSpace.group),
       ),
-      padding: EdgeInsetsDirectional.fromSTEB(
-        theme.space(PaymentSpace.group),
-        theme.space(PaymentSpace.related),
-        hasAction
-            ? theme.space(PaymentSpace.related)
-            : theme.space(PaymentSpace.group),
-        theme.space(PaymentSpace.related),
-      ),
+      padding: EdgeInsets.zero,
       onVisible: controller._onVisible,
       content: _ToastContent(
         controller: controller,
@@ -1081,14 +1087,27 @@ class _ToastContentState extends State<_ToastContent>
     WidgetsBinding.instance.removeObserver(this);
     final controller = widget.controller;
     // I4: one Scaffold copy disappearing must not detach a messenger's toast.
+    // If only host bars were mounted at messenger disposal, no kit content
+    // has a dispose callback. Waiting kit futures can remain open in that case.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!controller._messenger.mounted) controller._detach();
+      if (!controller._messenger.mounted) {
+        final queue = _toastQueues[controller._messenger];
+        if (queue != null) {
+          for (final toast in queue.open) {
+            toast._detach();
+          }
+          queue.open.clear();
+        }
+      }
     });
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.controller._superseded) {
+      return const ExcludeSemantics(child: SizedBox.shrink());
+    }
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
     final motion = PaymentMotion.of(context);
@@ -1173,12 +1192,32 @@ class _ToastContentState extends State<_ToastContent>
         // AnimatedSize can't run at zero duration (it re-dirties its own
         // layout), so reduced motion leaves it out and the height changes
         // at once.
-        if (motion.reduced) return row;
-        return AnimatedSize(
-          duration: motion.enter,
-          curve: PaymentMotion.easeInOut,
-          alignment: Alignment.topCenter,
-          child: row,
+        final content = motion.reduced
+            ? row
+            : AnimatedSize(
+                duration: motion.enter,
+                curve: PaymentMotion.easeInOut,
+                alignment: Alignment.topCenter,
+                child: row,
+              );
+        return Material(
+          color: theme.textPrimary,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: theme.controlBorderRadius,
+          ),
+          clipBehavior: Clip.hardEdge,
+          child: Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(
+              theme.space(PaymentSpace.group),
+              theme.space(PaymentSpace.related),
+              widget.controller._hasAction
+                  ? theme.space(PaymentSpace.related)
+                  : theme.space(PaymentSpace.group),
+              theme.space(PaymentSpace.related),
+            ),
+            child: content,
+          ),
         );
       },
     );
