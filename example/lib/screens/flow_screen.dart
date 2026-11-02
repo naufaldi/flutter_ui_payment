@@ -135,10 +135,18 @@ class FlowScreen extends StatelessWidget {
                       // At 600 dp and wider the steps sit in a centred
                       // 640 dp column; the scrollbar stays at the
                       // window edge (D53).
-                      padding: EdgeInsets.fromLTRB(
+                      // The order context adds its own group gutter. Extend
+                      // only the two-column end so its text meets the bar (#146).
+                      padding: EdgeInsetsDirectional.fromSTEB(
                         16 + listInset(width, c.step),
                         8,
-                        16 + listInset(width, c.step),
+                        16 +
+                            listInset(width, c.step) -
+                            (c.step == FlowStep.checkout && width - 32 >= 840
+                                ? PaymentTheme.of(
+                                    context,
+                                  ).space(PaymentSpace.group)
+                                : 0),
                         24,
                       ),
                       children: [
@@ -1218,3 +1226,14 @@ bool inPaymentFlow(FlowStep step) => switch (step) {
   FlowStep.receipt => true,
   _ => false,
 };
+
+/// D84 extends D62 to pushed details; keep this rule when #107 adds routes.
+bool hidesTabBar(FlowStep step) =>
+    inPaymentFlow(step) ||
+    switch (step) {
+      FlowStep.transactionDetail ||
+      FlowStep.statement ||
+      FlowStep.fees ||
+      FlowStep.accountSettings => true,
+      _ => false,
+    };

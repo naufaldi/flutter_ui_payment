@@ -2,6 +2,9 @@
 
 - **Example: the keyboard no longer blanks the screen in the side-rail layout (#138, #144).** At 840 dp and wider, opening the keyboard keeps the flow visible, and the step swap no longer overflows while the keyboard closes. Example only; no kit change.
 
+- **Example: detail screens hide the tab bar (D84, #142).** Example only.
+- **Example: the two-column checkout bar ends on the order summary's text edge (#146).** Example only.
+
 ## Docs: Android captures (2026-11-02)
 
 - Docs captures now come from Android (D81, D82), using in-app rendering and keyed specimen crops. The Table pilot pairs light and dark specimens just below its introduction, with a complete 200% text view. Remaining pages migrate in follow-up PRs.

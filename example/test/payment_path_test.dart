@@ -42,6 +42,108 @@ void expectPinnedPrimary(WidgetTester t, {double height = 852}) {
 }
 
 void main() {
+  for (final scenario in ['A02', 'A03', 'A04', 'A05']) {
+    testWidgets('D84: $scenario hides tabs and back restores them (#142)', (
+      t,
+    ) async {
+      surface(t, const Size(360, 640));
+      final app = await launch(t);
+      final c = await runScenario(t, app, scenario);
+      if (scenario == 'A02') {
+        final record = c.detail!;
+        unawaited(c.openHistory());
+        await pumpUntil(t, () => !c.historyLoading);
+        unawaited(c.openDetail(record));
+        await pumpUntil(t, () => !c.detailLoading);
+        await settle(t);
+      }
+      expect(find.byType(NavigationBar), findsNothing);
+      if (scenario == 'A02') {
+        c.closeDetail();
+      } else {
+        c.goHome();
+      }
+      await settle(t);
+      expect(c.step, scenario == 'A02' ? FlowStep.history : FlowStep.overview);
+      expect(find.byType(NavigationBar), findsOneWidget);
+      await drain(t);
+    });
+  }
+
+  testWidgets('D84: detail keeps the wide side rail (#142)', (t) async {
+    surface(t, const Size(1280, 800));
+    final app = await launch(t);
+    await runScenario(t, app, 'A02');
+    expect(find.byType(NavigationRail), findsOneWidget);
+    await drain(t);
+  });
+
+  for (final direction in TextDirection.values) {
+    for (final scale in [1.0, 2.0]) {
+      testWidgets('checkout text edge: ${direction.name}, ${scale}x (#146)', (
+        t,
+      ) async {
+        surface(t, const Size(1280, 800));
+        final app = await launch(
+          t,
+          settings: DemoSettings(
+            locale: const Locale('en'),
+            textDirection: direction,
+            textScale: scale,
+          ),
+        );
+        final c = await runScenario(t, app, 'H02');
+        await pumpUntil(t, () => c.quote != null && !c.quoting);
+        await settle(t);
+        final total = t.getRect(
+          find.descendant(
+            of: find.byType(OrderContext),
+            matching: find.byType(AmountText),
+          ),
+        );
+        final action = t.getRect(find.byKey(const Key('review-order')));
+        final screen = t.getRect(find.byType(FlowScreen));
+        final context = t.element(find.byType(FlowScreen));
+        final group = PaymentTheme.of(context).space(PaymentSpace.group);
+        final inset = group + listInset(screen.width, FlowStep.checkout);
+        final form = t.getRect(find.byType(PaymentMethodPicker));
+        final ltr = direction == TextDirection.ltr;
+        // Large text stacks the amount at the start. Its text column
+        // still shares the bar's end edge; glyph width is not that edge.
+        final textColumn = scale == 1
+            ? total
+            : t.getRect(
+                find.descendant(
+                  of: find.byType(OrderContext),
+                  matching: find.byType(PaymentPropertyList),
+                ),
+              );
+        expect(
+          ltr ? action.right : action.left,
+          moreOrLessEquals(
+            ltr ? textColumn.right : textColumn.left,
+            epsilon: 0.5,
+          ),
+        );
+        expect(
+          ltr ? form.left : form.right,
+          moreOrLessEquals(
+            ltr ? screen.left + inset : screen.right - inset,
+            epsilon: 0.5,
+          ),
+        );
+        if (scale == 2) {
+          expect(
+            ltr ? action.left : action.right,
+            moreOrLessEquals(ltr ? form.left : form.right, epsilon: 0.5),
+          );
+        }
+        expect(t.takeException(), isNull);
+        await drain(t);
+      });
+    }
+  }
+
   testWidgets('tab bar: shown on the overview, hidden in the payment flow', (
     t,
   ) async {
@@ -229,7 +331,7 @@ void main() {
       // Two columns: the row that holds the order context. One column: the
       // method picker, which spans the column.
       final twoColumns = find.byType(OrderContext).evaluate().isNotEmpty;
-      final content = t.getRect(
+      final body = t.getRect(
         twoColumns
             ? find
                   .ancestor(
@@ -239,6 +341,23 @@ void main() {
                   .first
             : find.byType(PaymentMethodPicker),
       );
+      // #146: the order context's own end gutter extends beyond the
+      // shared text column; compare the bar to that text edge.
+      final content = twoColumns
+          ? Rect.fromLTRB(
+              body.left,
+              body.top,
+              t
+                  .getRect(
+                    find.descendant(
+                      of: find.byType(OrderContext),
+                      matching: find.byType(PaymentPropertyList),
+                    ),
+                  )
+                  .right,
+              body.bottom,
+            )
+          : body;
       return (
         screen: t.getSize(find.byType(FlowScreen)).width,
         content: content,
