@@ -13,10 +13,16 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
 - **Example: detail screens hide the tab bar (D84, #142).** Example only.
 - **Document badge on the row's end edge; "Contact support" on the text column (#145).** No API change.
 - **Example: the two-column checkout bar ends on the order summary's text edge (#146).** Example only.
+- **KYC capture pins its actions in a screen (D62, #139).** In a bounded screen, `KycCaptureGuide` pins Take, Use photo and Retake in a footer. The preview uses up to half the body height at normal text and a quarter at large text, with a 96 dp minimum and a 640 dp column cap. Inside a scroll view it is unchanged. Hosts that use intrinsic-sizing parents (`IntrinsicHeight`, `SliverFillRemaining(hasScrollBody: false)`) must wrap the guide in a scroll view or use a bounded body instead. No signature change. **Migration:** a host that put the guide directly in a bounded body now gets the pinned layout.
 
 ## Docs: Android captures (2026-11-02)
 
-- Docs captures now come from Android (D81, D82), using in-app rendering and keyed specimen crops. The Table pilot pairs light and dark specimens just below its introduction, with a complete 200% text view. Remaining pages migrate in follow-up PRs.
+- **Docs captures come from Android only (D81, D82, #130, #131).** In-app rendering produces keyed specimen crops capped at 1200 dp. Docs only; no kit API change.
+- **Component specimens sit right after the introduction (#174, #175).** Every component page pairs light and dark specimens, includes a 200% text view where it applies, and uses alt text that says what the image shows. Fourteen specimens moved up from below "See also". Docs only.
+- **Phone and tablet captures replace the iOS sets (#132, #135, #178, #179).** Flow, kit and refined captures use the 360×640 dp phone; its 200% captures replace the iPhone SE set. Tablet captures use 1280×800 dp landscape and replace the iPad set, with a "Wide (tablet)" figure on six wide components. All iOS captures and unused screenshots are removed; `pnpm check:pages` fails on any `ios_` name. Docs only.
+- **Spacing and radius shows the resolved roles (#133, #134, #137, #178).** A measured specimen shows the `PaymentSpace` roles alongside a generated scale and radius tiles. Docs only.
+- **Example: English gallery Table fees use `AmountText` (#136).** Fees show Rp2,500 instead of Rp2.500. Example only; no kit API change.
+- **Known capture limits (#172, #176).** Some 200% and long specimens stop at the 1200 dp cap, and the KYC state shots show a half-clipped caption. Docs only.
 
 ## Motion review Phase 5 (2026-11-02)
 
