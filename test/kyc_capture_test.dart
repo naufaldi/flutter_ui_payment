@@ -90,6 +90,33 @@ void main() {
     home: Scaffold(body: guide),
   );
 
+  testWidgets('review photo is large enough to inspect at 360x640 (#139)', (
+    t,
+  ) async {
+    t.view.physicalSize = const Size(360, 640);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(
+      screen(
+        KycCaptureGuide(
+          kind: CaptureKind.idCard,
+          photo: photo,
+          onUsePhoto: () {},
+          onRetake: () {},
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(
+      t.getSize(find.byType(AspectRatio)).height,
+      greaterThanOrEqualTo(200),
+    );
+    final usePhoto = find.widgetWithText(PaymentButton, 'Use photo');
+    expect(usePhoto.hitTestable(), findsOneWidget);
+    expect(t.getRect(usePhoto).bottom, lessThanOrEqualTo(640));
+    expect(t.takeException(), isNull);
+  });
+
   for (final (size, scale) in [
     (const Size(360, 640), 1.0),
     (const Size(320, 569), 2.0),

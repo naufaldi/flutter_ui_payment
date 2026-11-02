@@ -469,10 +469,10 @@ class KycCaptureGuide extends StatelessWidget {
                           // viewport for status at large text sizes.
                           constraints: BoxConstraints(
                             minHeight: 96,
-                            maxHeight: (viewport.maxHeight / 4).clamp(
-                              96,
-                              double.infinity,
-                            ),
+                            maxHeight:
+                                (viewport.maxHeight /
+                                        (PaymentType.isLarge(context) ? 4 : 2))
+                                    .clamp(96, double.infinity),
                           ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
