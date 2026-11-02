@@ -63,6 +63,75 @@ double _copyScale(WidgetTester tester) => tester
     .scale;
 
 void main() {
+  testWidgets('moving back inside slop does not press again', (t) async {
+    await t.pumpWidget(host(PaymentChip(label: 'Chip', onDropdown: () {})));
+    final scale = find.byType(AnimatedScale);
+    final origin = t.getCenter(find.byType(PaymentChip));
+    final gesture = await t.startGesture(origin);
+    await t.pump();
+    expect(t.widget<AnimatedScale>(scale).scale, .96);
+    await gesture.moveBy(const Offset(kTouchSlop + 2, 0));
+    await t.pump();
+    expect(t.widget<AnimatedScale>(scale).scale, 1);
+    await gesture.moveTo(origin);
+    await t.pump();
+    expect(t.widget<AnimatedScale>(scale).scale, 1);
+    await gesture.up();
+    await t.pumpAndSettle();
+  });
+
+  testWidgets('a second pointer does not release the first press', (t) async {
+    await t.pumpWidget(host(PaymentChip(label: 'Chip', onDropdown: () {})));
+    final origin = t.getCenter(find.byType(PaymentChip));
+    final first = await t.startGesture(origin, pointer: 1);
+    await t.pump();
+    expect(t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale, .96);
+    final second = await t.startGesture(origin, pointer: 2);
+    await t.pump();
+    expect(t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale, .96);
+    await second.up();
+    await t.pump();
+    expect(t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale, .96);
+    await first.up();
+    await t.pumpAndSettle();
+    expect(t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale, 1);
+  });
+
+  testWidgets('pointer cancel releases the press', (t) async {
+    await t.pumpWidget(host(PaymentChip(label: 'Chip', onDropdown: () {})));
+    final gesture = await t.startGesture(t.getCenter(find.byType(PaymentChip)));
+    await t.pump();
+    expect(t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale, .96);
+    await gesture.cancel();
+    await t.pumpAndSettle();
+    expect(t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale, 1);
+  });
+
+  testWidgets('press slop uses the global origin under a transform', (t) async {
+    await t.pumpWidget(
+      host(
+        Center(
+          child: Transform.scale(
+            scale: 4,
+            child: PaymentChip(label: 'Chip', onDropdown: () {}),
+          ),
+        ),
+      ),
+    );
+    final gesture = await t.startGesture(t.getCenter(find.byType(PaymentChip)));
+    await t.pump();
+    expect(t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale, .96);
+    // Between slop / 4 and slop in global coordinates.
+    await gesture.moveBy(const Offset(kTouchSlop / 2, 0));
+    await t.pump();
+    expect(t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale, .96);
+    await gesture.moveBy(const Offset(kTouchSlop, 0));
+    await t.pump();
+    expect(t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale, 1);
+    await gesture.up();
+    await t.pumpAndSettle();
+  });
+
   for (final horizontal in [true, false]) {
     testWidgets('press releases past slop, horizontal=$horizontal', (t) async {
       t.view.physicalSize = const Size(320, 600);

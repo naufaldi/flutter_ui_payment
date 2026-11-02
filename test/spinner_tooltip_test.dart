@@ -7,6 +7,45 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
+  testWidgets('tooltip re-show resumes exit opacity and disposes mid-fade', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      host(const PaymentTooltip(message: 'Hint', child: Text('Term')), 1),
+    );
+    await t.tap(find.text('Term'));
+    await t.pumpAndSettle();
+    final text = t.element(find.text('Hint'));
+    final fade = find
+        .ancestor(of: find.text('Hint'), matching: find.byType(FadeTransition))
+        .first;
+    double opacity() => t.widget<FadeTransition>(fade).opacity.value;
+    expect(opacity(), 1);
+    await t.tap(find.text('Term'));
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 75));
+    final exiting = opacity();
+    expect(exiting, inExclusiveRange(0, 1));
+    expect(t.element(find.text('Hint')), same(text));
+    await t.tap(find.text('Term'));
+    await t.pump();
+    expect(opacity(), closeTo(exiting, .000001));
+    expect(t.element(find.text('Hint')), same(text));
+    await t.pump(const Duration(milliseconds: 20));
+    expect(opacity(), greaterThan(exiting));
+    expect(t.element(find.text('Hint')), same(text));
+    await t.pumpAndSettle();
+    expect(opacity(), 1);
+    expect(t.element(find.text('Hint')), same(text));
+    await t.tap(find.text('Term'));
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 50));
+    expect(opacity(), inExclusiveRange(0, 1));
+    await t.pumpWidget(const SizedBox());
+    await t.pump(const Duration(seconds: 1));
+    expect(t.takeException(), isNull);
+  });
+
   testWidgets('tooltip remains partially visible during exit', (t) async {
     await t.pumpWidget(
       host(const PaymentTooltip(message: 'Hint', child: Text('Term')), 1),
