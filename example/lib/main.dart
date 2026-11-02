@@ -282,7 +282,7 @@ class _Shell extends StatelessWidget {
       listenable: app.coordinator,
       builder: (context, _) => Scaffold(
         body: body,
-        bottomNavigationBar: app.tab == 0 && inPaymentFlow(app.coordinator.step)
+        bottomNavigationBar: app.tab == 0 && hidesTabBar(app.coordinator.step)
             ? null
             : NavigationBar(
                 selectedIndex: app.tab,
