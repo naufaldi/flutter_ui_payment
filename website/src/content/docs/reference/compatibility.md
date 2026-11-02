@@ -5,7 +5,7 @@ description: What each platform needs, where the number comes from, and what was
 
 Copied from `docs/compatibility.md`. These are the only platform claims the project makes.
 
-What each platform needs, where the number comes from, and what was actually run. Checked on 30 October 2026 with Flutter 3.44.6 (stable).
+What each platform needs, where the number comes from, and what was actually run. Platform baseline checked on 30 October 2026 with Flutter 3.44.6 (stable); Android documentation captures updated on 2 November 2026.
 
 **Scope (D64, owner decision 1 Nov 2026).** Phase 1 targets iOS on iPhone and iPad, and Android phones and tablets. Web is documentation only, not a product target. Desktop (macOS, Windows, Linux) is out of scope.
 
@@ -18,14 +18,14 @@ What each platform needs, where the number comes from, and what was actually run
 | Highest minimum among dependencies | 24 (`video_player_android` 2.9.5; Media3 ExoPlayer 1.9.2 underneath) | plugin `build.gradle.kts`; the Android manifest merger would fail if any library required more than the app's 24 |
 | Merged manifest | `minSdkVersion="24"`, `targetSdkVersion="36"` (debug, profile and release) | `example/build/app/intermediates/merged_manifests/*/AndroidManifest.xml` |
 | ABIs in the release APK | `armeabi-v7a`, `arm64-v8a`, `x86_64` | `flutter build apk --release`, APK contents |
-| Actually run on | Android 11 (API 30) arm64 emulator, 60 Hz, Impeller over OpenGL ES | the oldest system image installed on this machine |
+| Actually run on | Android 11 (API 30) arm64 emulator; documentation captures on the Android API 37 phone, 360×640 dp, dpr 2 | earlier runtime pass and the 2 November 2026 Android capture pass |
 
 What that means:
 
 - **Declared and built for Android 7.0+.** Nothing in the package raises the floor; it has no Android dependency at all. Only the example's video adapter adds one, at the same floor.
-- **Tested on Android 11 only.** No API 24–29 image is installed, and none was downloaded for this pass. Android 7–10 behavior is unverified, not proven broken.
-- **32-bit ARM is built, not run.** The release APK contains `armeabi-v7a` code, but every run used an arm64 emulator. Old 32-bit phones, their GPUs and Impeller's OpenGL ES path on them are untested.
-- **Android tablets are a target (D64), not verified yet.** No Android tablet run is recorded here, and the 1 Nov 2026 UI review (D45–D63a) was captured on iOS only. The Android phone and tablet capture, review and fix pass is planned next.
+- **Runtime baseline on Android 11; docs captures on API 37.** No API 24–29 image is installed, and none was downloaded for this pass. Android 7–10 behavior is unverified, not proven broken.
+- **32-bit ARM is built, not run.** The release APK contains `armeabi-v7a` code, but the earlier Android 11 runtime pass used an arm64 emulator. Old 32-bit phones, their GPUs and Impeller's OpenGL ES path on them are untested.
+- **Android tablets are a target (D64), not verified yet.** The 1 Nov 2026 UI review (D45–D63a) used iOS. The documentation phone capture pass now uses Android API 37; tablet documentation recapture remains pending.
 - **Video:** the bundled clip is H.264 Constrained Baseline 640×360 plus AAC, the most widely decodable combination on old Android. The decoders of specific old devices are not verified.
 
 To check an older version, first list available system images and choose one supported by the host architecture. An API 24 arm64 image must not be assumed to exist; older x86 images may need an Intel test host. Installing an image is a separate, potentially large download. After preparing a suitable emulator, run sequentially:

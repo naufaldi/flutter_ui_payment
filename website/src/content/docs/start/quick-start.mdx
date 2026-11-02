@@ -143,8 +143,8 @@ Scaffold(
 ```
 
 <Screens>
-  <Screen name="ios_refined_checkout_light" dark="ios_refined_checkout_dark" alt="Checkout: order summary led by the total, fee line, bordered method list with the selected row outlined, and a pinned bar with total and Review payment." caption="Summary, method list and pinned action bar" />
-  <Screen name="ios_refined_checkout_light_200" alt="The checkout in Indonesian at 200% text size; rows reflow, amounts stay on one line and the total and Tinjau pembayaran stay pinned." caption="The same checkout at 200% text (Indonesian)" />
+  <Screen name="android_refined_checkout_light" dark="android_refined_checkout_dark" alt="Checkout: order summary led by the total, fee line, bordered method list with the selected row outlined, and a pinned Review payment action." caption="Summary, method list and pinned action bar" />
+  <Screen name="android_refined_checkout_light_200" alt="The checkout in Indonesian at 200% text size; rows reflow, amounts stay on one line and the Tinjau pembayaran stays pinned." caption="The same checkout at 200% text (Indonesian)" />
 </Screens>
 
 ## 4. Confirm
@@ -168,7 +168,7 @@ PaymentConfirmation(
 `onConfirm` returns a `Future`; the button stays locked while it runs, so a double tap sends one callback.
 
 <Screens>
-  <Screen name="ios_requote_light" alt="Review screen in Indonesian: a notice that the total changed from Rp102.500 to Rp103.500, an unchecked box to accept the new total, and a disabled pay button." caption="A changed total must be accepted first (Indonesian)" />
+  <Screen name="android_requote_light" alt="Review screen in Indonesian: a notice that the total changed from Rp102.500 to Rp103.500, an unchecked box to accept the new total, and a disabled pay button." caption="A changed total must be accepted first (Indonesian)" />
 </Screens>
 
 ## 5. Hand authorization to the host
@@ -310,9 +310,9 @@ Future<void> refreshStatus() async {
 ```
 
 <Screens>
-  <Screen name="ios_refined_status_unknown_light" dark="ios_refined_status_unknown_dark" alt="Unknown outcome: hatched band, Result not confirmed yet, amount, Don't pay again, and the single Check status action." caption="outcomeUnknown: one action, no pay-again" />
-  <Screen name="ios_status_pending_light" alt="Pending payment in Indonesian with a solid amber band, amount, explanation and a Cek status action." caption="pending: solid band (Indonesian)" />
-  <Screen name="ios_status_va_pending_light" dark="ios_status_va_pending_dark" alt="Virtual account pending in Indonesian: monospace account number with copy, amount to pay, countdown, folded steps, Cek status and Minta pembatalan." caption="Virtual account instructions (Indonesian)" />
+  <Screen name="android_refined_status_unknown_light" dark="android_refined_status_unknown_dark" alt="Unknown outcome: hatched band, Result not confirmed yet, amount, Don't pay again, and the single Check status action." caption="outcomeUnknown: one action, no pay-again" />
+  <Screen name="android_status_pending_light" alt="Pending payment in Indonesian with a solid amber band, amount, explanation and a Cek status action." caption="pending: solid band (Indonesian)" />
+  <Screen name="android_status_va_pending_light" dark="android_status_va_pending_dark" alt="Virtual account pending in Indonesian: monospace account number with copy, amount to pay, countdown, folded steps, Cek status and Minta pembatalan." caption="Virtual account instructions (Indonesian)" />
 </Screens>
 
 ## 8. Show the receipt
@@ -350,7 +350,7 @@ Future<bool> copyToClipboard(String value) async {
 ```
 
 <Screens>
-  <Screen name="ios_receipt_light" dark="ios_receipt_dark" alt="Receipt in Indonesian: success band, merchant, amount and date, line items, total, masked method, transaction ID with copy, Bagikan struk and an allowlist note." caption="Receipt (Indonesian)" />
+  <Screen name="android_receipt_light" dark="android_receipt_dark" alt="Receipt in Indonesian with a green success band, merchant, amount, date, line items, total, masked method and pinned Selesai and Lihat detail actions." caption="Receipt (Indonesian)" />
 </Screens>
 
 ## 9. Done: what your app must implement

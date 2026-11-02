@@ -1,4 +1,14 @@
 {
+  "android_catalog_spacing_roles": {
+    "width": 640,
+    "height": 940,
+    "caption": "All seven PaymentSpace roles: labelled values and two markers separated by each resolved gap."
+  },
+  "android_catalog_spacing_roles_dark": {
+    "width": 640,
+    "height": 940,
+    "caption": "All seven PaymentSpace roles: labelled values and two markers separated by each resolved gap. Dark mode."
+  },
   "android_catalog_amount_text_variants": {
     "width": 640,
     "height": 693,
@@ -719,14 +729,14 @@
     "height": 2133,
     "caption": "Spending charts with host-provided headlines and explicit chart states at 200 percent text. Capture capped at 1200 dp."
   },
-  "ios_sign_in_light": {
+  "android_sign_in_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example sign in light, Indonesian"
   },
-  "ios_sign_in_dark": {
+  "android_sign_in_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example sign in dark, Indonesian"
   },
   "ios_sign_in_light_200": {
@@ -734,29 +744,29 @@
     "height": 1391,
     "caption": "Example sign in light_200, Indonesian"
   },
-  "ios_kyc_onboarding_light": {
+  "android_kyc_onboarding_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example kyc onboarding light, Indonesian"
   },
-  "ios_kyc_onboarding_dark": {
+  "android_kyc_onboarding_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example kyc onboarding dark, Indonesian"
   },
-  "ios_kyc_onboarding_light_200": {
+  "android_kyc_onboarding_light_200": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example kyc onboarding light_200, Indonesian"
   },
-  "ios_history_light": {
+  "android_history_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example history light, Indonesian"
   },
-  "ios_history_dark": {
+  "android_history_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example history dark, Indonesian"
   },
   "ios_history_light_200": {
@@ -764,14 +774,14 @@
     "height": 1391,
     "caption": "Example history light_200, Indonesian"
   },
-  "ios_transaction_detail_light": {
+  "android_transaction_detail_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example transaction detail light, Indonesian"
   },
-  "ios_transaction_detail_dark": {
+  "android_transaction_detail_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example transaction detail dark, Indonesian"
   },
   "ios_transaction_detail_light_200": {
@@ -779,14 +789,14 @@
     "height": 1391,
     "caption": "Example transaction detail light_200, Indonesian"
   },
-  "ios_report_problem_light": {
+  "android_report_problem_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example report problem light, Indonesian"
   },
-  "ios_report_problem_dark": {
+  "android_report_problem_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example report problem dark, Indonesian"
   },
   "ios_report_problem_light_200": {
@@ -794,14 +804,14 @@
     "height": 1391,
     "caption": "Example report problem light_200, Indonesian"
   },
-  "ios_statement_light": {
+  "android_statement_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example statement light, Indonesian"
   },
-  "ios_statement_dark": {
+  "android_statement_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example statement dark, Indonesian"
   },
   "ios_statement_light_200": {
@@ -809,14 +819,14 @@
     "height": 1391,
     "caption": "Example statement light_200, Indonesian"
   },
-  "ios_fees_light": {
+  "android_fees_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example fees light, Indonesian"
   },
-  "ios_fees_dark": {
+  "android_fees_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example fees dark, Indonesian"
   },
   "ios_fees_light_200": {
@@ -824,14 +834,14 @@
     "height": 1391,
     "caption": "Example fees light_200, Indonesian"
   },
-  "ios_account_settings_light": {
+  "android_account_settings_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example account settings light, Indonesian"
   },
-  "ios_account_settings_dark": {
+  "android_account_settings_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Example account settings dark, Indonesian"
   },
   "ios_account_settings_light_200": {
@@ -1154,30 +1164,30 @@
     "height": 1660,
     "caption": "Payment method rows with icons, descriptions, actions and disabled states at 200 percent text."
   },
-  "ios_kyc_intro_light": {
+  "android_kyc_intro_light": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios kyc intro light, Indonesian"
+    "height": 1095,
+    "caption": "Android kyc intro light, Indonesian"
   },
-  "ios_kyc_intro_dark": {
+  "android_kyc_intro_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios kyc intro dark, Indonesian"
+    "height": 1095,
+    "caption": "Android kyc intro dark, Indonesian"
   },
-  "ios_kyc_intro_light_200": {
+  "android_kyc_intro_light_200": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios kyc intro light 200, Indonesian"
+    "height": 1095,
+    "caption": "Android kyc intro light 200, Indonesian"
   },
-  "ios_methods_unavailable_light": {
+  "android_methods_unavailable_light": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios methods unavailable light, Indonesian"
+    "height": 1095,
+    "caption": "Android methods unavailable light, Indonesian"
   },
-  "ios_methods_unavailable_dark": {
+  "android_methods_unavailable_dark": {
     "width": 640,
-    "height": 1391,
-    "caption": "ios methods unavailable dark, Indonesian"
+    "height": 1095,
+    "caption": "Android methods unavailable dark, Indonesian"
   },
   "ios_methods_unavailable_light_200": {
     "width": 640,
@@ -1319,109 +1329,109 @@
     "height": 1138,
     "caption": "Selfie framing guidance and Take photo action in a scrolled phone viewport at 200 percent text."
   },
-  "ios_refined_checkout_light": {
+  "android_refined_checkout_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Checkout, light, English"
   },
-  "ios_refined_checkout_dark": {
+  "android_refined_checkout_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Checkout, dark, Indonesian"
   },
-  "ios_refined_checkout_light_200": {
+  "android_refined_checkout_light_200": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Checkout at 200% text, Indonesian"
   },
-  "ios_refined_status_unknown_light": {
+  "android_refined_status_unknown_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Unknown outcome, light, English"
   },
-  "ios_refined_status_unknown_dark": {
+  "android_refined_status_unknown_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Unknown outcome, dark, Indonesian"
   },
-  "ios_refined_status_unknown_light_200": {
+  "android_refined_status_unknown_light_200": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Unknown outcome at 200% text, Indonesian"
   },
-  "ios_refined_kyc_review_light": {
+  "android_refined_kyc_review_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "KYC review, light, English"
   },
-  "ios_refined_kyc_review_dark": {
+  "android_refined_kyc_review_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "KYC review, dark"
   },
-  "ios_status_pending_light": {
+  "android_status_pending_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Pending payment, Indonesian"
   },
-  "ios_status_va_pending_light": {
+  "android_status_va_pending_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Virtual account pending, Indonesian"
   },
-  "ios_status_va_pending_dark": {
+  "android_status_va_pending_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Virtual account pending, dark, Indonesian"
   },
-  "ios_receipt_light": {
+  "android_receipt_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Receipt, Indonesian"
   },
-  "ios_receipt_dark": {
+  "android_receipt_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Receipt, dark, Indonesian"
   },
-  "ios_authorize_light": {
+  "android_authorize_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Host authorization, Indonesian"
   },
-  "ios_requote_light": {
+  "android_requote_light": {
     "width": 640,
-    "height": 1391,
+    "height": 1095,
     "caption": "Changed total needs re-approval, Indonesian"
   },
-  "ios_kit_checkout": {
+  "android_kit_checkout": {
     "width": 640,
-    "height": 1391,
+    "height": 1138,
     "caption": "Gallery: checkout components, Indonesian"
   },
-  "ios_kit_checkout_dark": {
+  "android_kit_checkout_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1138,
     "caption": "Gallery: checkout components, dark"
   },
-  "ios_kit_checkout_lumen": {
+  "android_kit_checkout_lumen": {
     "width": 640,
-    "height": 1391,
+    "height": 1138,
     "caption": "Gallery: checkout in the Lumen brand"
   },
-  "ios_kit_history": {
+  "android_kit_history": {
     "width": 640,
-    "height": 1391,
+    "height": 1138,
     "caption": "Gallery: transaction history, Indonesian"
   },
-  "ios_kit_history_dark": {
+  "android_kit_history_dark": {
     "width": 640,
-    "height": 1391,
+    "height": 1138,
     "caption": "Gallery: transaction history, dark"
   },
-  "ios_kit_history_detail_unknown": {
+  "android_kit_history_detail_unknown": {
     "width": 640,
-    "height": 1391,
+    "height": 1138,
     "caption": "Gallery: transaction detail, unknown outcome"
   },
   "ios_kit_interaction": {
@@ -1429,9 +1439,9 @@
     "height": 1391,
     "caption": "Gallery: interaction components, Indonesian"
   },
-  "ios_kit_interaction_200": {
+  "android_kit_interaction_200": {
     "width": 640,
-    "height": 1391,
+    "height": 1138,
     "caption": "Gallery: interaction at 200% text"
   },
   "ios_kit_navigation_drawer": {
@@ -1454,14 +1464,14 @@
     "height": 1391,
     "caption": "Gallery: destructive confirmation"
   },
-  "ios_kit_promo": {
+  "android_kit_promo": {
     "width": 640,
-    "height": 1391,
+    "height": 1138,
     "caption": "Gallery: promotions, Indonesian"
   },
-  "ios_kit_promo_200": {
+  "android_kit_promo_200": {
     "width": 640,
-    "height": 1391,
+    "height": 1138,
     "caption": "Gallery: promotions at 200% text"
   },
   "ios_kit_video_ready": {
@@ -1539,30 +1549,30 @@
     "height": 1130,
     "caption": "Context panels with titles, supporting content and footer actions at 200 percent text, in Indonesian."
   },
-  "ios_se_sign_in_light_200": {
+  "android_sign_in_light_200": {
     "width": 640,
-    "height": 1138,
-    "caption": "Example sign in on iPhone SE at 200% text, Indonesian"
+    "height": 1095,
+    "caption": "Example sign in on Android phone at 200% text, Indonesian"
   },
-  "ios_se_sign_in_en_200": {
+  "android_sign_in_en_200": {
     "width": 640,
-    "height": 1138,
-    "caption": "Example sign in on iPhone SE at 200% text, English"
+    "height": 1095,
+    "caption": "Example sign in on Android phone at 200% text, English"
   },
-  "ios_se_history_light_200": {
+  "android_history_light_200": {
     "width": 640,
-    "height": 1138,
-    "caption": "Example history on iPhone SE at 200% text, Indonesian"
+    "height": 1095,
+    "caption": "Example history on Android phone at 200% text, Indonesian"
   },
-  "ios_se_history_en_200": {
+  "android_history_en_200": {
     "width": 640,
-    "height": 1138,
-    "caption": "Example history on iPhone SE at 200% text, English"
+    "height": 1095,
+    "caption": "Example history on Android phone at 200% text, English"
   },
-  "ios_se_transaction_detail_light_200": {
+  "android_transaction_detail_light_200": {
     "width": 640,
-    "height": 1138,
-    "caption": "Example transaction detail on iPhone SE at 200% text, Indonesian"
+    "height": 1095,
+    "caption": "Example transaction detail on Android phone at 200% text, Indonesian"
   },
   "ios_se_transaction_detail_en_200": {
     "width": 640,
@@ -1629,10 +1639,10 @@
     "height": 1138,
     "caption": "Example KYC details on iPhone SE at 200% text, Indonesian"
   },
-  "ios_se_kyc_onboarding_en_200": {
+  "android_kyc_onboarding_en_200": {
     "width": 640,
-    "height": 1138,
-    "caption": "Example KYC details on iPhone SE at 200% text, English"
+    "height": 1095,
+    "caption": "Example KYC details on Android phone at 200% text, English"
   },
   "ios_se_kyc_documents_light_200": {
     "width": 640,
@@ -1649,10 +1659,10 @@
     "height": 1138,
     "caption": "Example KYC review on iPhone SE at 200% text, Indonesian"
   },
-  "ios_se_kyc_review_en_200": {
+  "android_kyc_review_en_200": {
     "width": 640,
-    "height": 1138,
-    "caption": "Example KYC review on iPhone SE at 200% text, English"
+    "height": 1095,
+    "caption": "Example KYC review on Android phone at 200% text, English"
   },
   "ios_ipad_checkout_light": {
     "width": 640,
