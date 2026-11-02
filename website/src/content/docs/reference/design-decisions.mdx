@@ -111,7 +111,7 @@ The captures below show the result, from the final capture refresh on an iPhone 
 <Screens>
   <Screen name="ios_catalog_banner_variants" alt="Banners in every tone with the icon and close on the title's first line and actions on the text column." caption="D48a: banner anatomy" />
   <Screen name="ios_catalog_chart_line_rest" alt="A line chart with the latest point selected at rest and its exact amount in the band above the plot." caption="D58: exact value at rest" />
-  <Screen name="ios_catalog_table_variants" alt="Table rows on a phone laid out like a property list, values on the end edge." caption="D60: table rows" />
+  <Screen name="android_catalog_table_variants" dark="android_catalog_table_variants_dark" alt="Table rows on an Android phone laid out like a property list, with values on the end edge and the total below." caption="D60: table rows" />
 </Screens>
 
 <Screens>
@@ -150,6 +150,11 @@ On 2 November 2026 the kit's and the example's motion was reviewed against nativ
 | D78 | A reduced-motion change clears the snack bar queue, including the app's own snack bars. | Current behaviour |
 | D79 | On touch, a chart scrub returns to rest on lift; a tap keeps its period until tapped again. | Current behaviour |
 | D80 | A host theme's toast close icon stays inside the toast pill, matching the SDK button. | Current behaviour |
+
+## Docs captures, 2 November 2026
+
+- **D81.** Docs captures now come from Android only: a 360×640 dp phone at dpr 2 and a 1280×800 dp landscape tablet. Names use `android_`, replacing D27's `ios_` prefix. D64's iOS and Android product scope is unchanged. Legacy iOS images remain while pages migrate.
+- **D82.** Phone catalog specimens render on a tall 720×2400 physical-pixel view and crop to the keyed specimen below the app bar, capped at 1200 dp. Overlays and states keep real device size. Flow images omit the blank 24 dp status band; tablets use native landscape.
 
 ## Open items
 

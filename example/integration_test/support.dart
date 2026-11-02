@@ -1,10 +1,76 @@
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment_example/adapters/fake_host.dart';
 import 'package:flutter_ui_payment_example/coordinator/demo_coordinator.dart';
 import 'package:flutter_ui_payment_example/main.dart';
 import 'package:flutter_ui_payment_example/scenarios/catalog.dart';
+import 'package:integration_test/integration_test.dart';
+
+/// Renders in-app, avoiding the Android surface conversion handshake.
+/// [crop] identifies a gallery specimen. Flow captures omit the status band.
+Future<void> capture(
+  IntegrationTestWidgetsFlutterBinding binding,
+  WidgetTester tester,
+  String name, {
+  Finder? crop,
+}) async {
+  final view = tester.binding.renderViews.first;
+  final dpr = view.flutterView.devicePixelRatio;
+  final layer = view.debugLayer! as OffsetLayer;
+  final statusBand = name.contains('_catalog_') || name.contains('_kit_')
+      ? 0.0
+      : 24.0;
+  var bounds = Rect.fromLTWH(
+    0,
+    statusBand,
+    view.size.width,
+    view.size.height - statusBand,
+  );
+  if (crop != null) {
+    final specimen = tester.getRect(crop);
+    final appBar = tester.getRect(find.byType(AppBar).first);
+    // Round inward past the app bar's painted edge, including fractional pixels.
+    final top = math.max(
+      (appBar.bottom * dpr).ceil() / dpr + 1 / dpr,
+      specimen.top - 16,
+    );
+    final bottom = math.min(
+      math.min(specimen.bottom + 16, top + 1200),
+      math.min(
+        view.size.height,
+        tester.getRect(find.byType(ListView).first).bottom,
+      ),
+    );
+    expect(bottom, greaterThan(top), reason: 'Specimen must be visible: $name');
+    bounds = Rect.fromLTRB(0, top, view.size.width, bottom);
+  }
+  // RenderView's root layer already contains the device-pixel transform.
+  debugPrint('Capture bounds $name: $bounds; view=${view.size}; dpr=$dpr');
+  final image = await layer.toImage(
+    Rect.fromLTRB(
+      bounds.left * dpr,
+      bounds.top * dpr,
+      bounds.right * dpr,
+      bounds.bottom * dpr,
+    ),
+    pixelRatio: 1,
+  );
+  try {
+    final data = await image.toByteData(format: ui.ImageByteFormat.png);
+    final report = binding.reportData ??= <String, dynamic>{};
+    ((report['screenshots'] ??= <Object>[]) as List).add(<String, Object>{
+      'screenshotName': name,
+      'bytes': data!.buffer.asUint8List().toList(),
+    });
+  } finally {
+    image.dispose();
+  }
+}
 
 /// Boots the demo app in English with a shortened simulated latency.
 Future<DemoAppState> launch(

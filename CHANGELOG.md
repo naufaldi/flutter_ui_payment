@@ -1,3 +1,7 @@
+## Docs: Android captures (2026-11-02)
+
+- Docs captures now come from Android (D81, D82), using in-app rendering and keyed specimen crops. The Table pilot pairs light and dark specimens just below its introduction, with a complete 200% text view. Remaining pages migrate in follow-up PRs.
+
 ## Motion review Phase 5 (2026-11-02)
 
 - **Example: flow steps show direction (D71, #105).** Going forward fades and rises 8 dp; going back (the back button, system back, or returning to an earlier step) fades only. The outgoing step fades in place. Restarting or correcting KYC from status starts a new forward pass, including the next submission to status. A running step change ends at once if reduced motion turns on. The checkout bar fades in with its step. "Leave payment?" uses `showPaymentConfirmDialog`, so it follows the tokens and reduced motion (a sheet on phones). Example only; no kit change.

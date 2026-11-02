@@ -22,6 +22,9 @@ const sharp = requireFromAstro('sharp');
 
 // name → what it shows (locale noted, because captures mix en and id).
 const screens = {
+  android_catalog_table_variants: 'Payment methods, fees, arrival times and total, English',
+  android_catalog_table_variants_dark: 'Payment methods, fees, arrival times and total, dark, English',
+  android_catalog_table_variants_200: 'Payment methods, fees, arrival times and total at 200% text, English',
   ios_catalog_dialog_variants: 'showPaymentConfirmDialog specimen, English',
   ios_catalog_dialog_variants_dark: 'showPaymentConfirmDialog specimen_dark, English',
   ios_catalog_dialog_variants_200: 'showPaymentConfirmDialog specimen_200, English',
@@ -84,9 +87,6 @@ const screens = {
   ios_catalog_property_list_variants: 'property list specimen, English',
   ios_catalog_property_list_variants_dark: 'property list specimen_dark, English',
   ios_catalog_property_list_variants_200: 'property list specimen_200, English',
-  ios_catalog_table_variants: 'table specimen, English',
-  ios_catalog_table_variants_dark: 'table specimen_dark, English',
-  ios_catalog_table_variants_200: 'table specimen_200, English',
   ios_catalog_data_table_variants: 'data table specimen, English',
   ios_catalog_data_table_variants_dark: 'data table specimen_dark, English',
   ios_catalog_data_table_variants_id_200: 'PaymentDataTable specimen_id_200, Indonesian',
@@ -386,6 +386,15 @@ const screens = {
   ios_catalog_search_field_variants_id_200: 'search field specimen at 200% text, Indonesian',
   ios_catalog_form_field_group_variants_id_200: 'form field group specimen at 200% text, Indonesian',
 };
+
+// Derive future Android names while retaining the existing iOS registrations.
+for (const [name, caption] of Object.entries(screens)) {
+  if (!name.startsWith('ios_')) continue;
+  const android = name.replace(/^ios_(?:se_)?/, 'android_').replace(/^android_ipad_/, 'android_tablet_');
+  if (existsSync(join(source, android + '.png')) || existsSync(join(target, android + '.webp'))) {
+    screens[android] ??= caption.replaceAll('iPhone SE', 'Android phone').replaceAll('iPad mini', 'Android tablet');
+  }
+}
 
 mkdirSync(target, { recursive: true });
 // Captures are gitignored build output. When one is gone but its WebP is
