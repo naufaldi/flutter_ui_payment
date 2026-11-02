@@ -147,10 +147,13 @@ void main() {
       await settle(tester);
       final bubble = find.text(message);
       final opacity = tester
-          .widget<Opacity>(
-            find.ancestor(of: bubble, matching: find.byType(Opacity)).first,
+          .widget<FadeTransition>(
+            find
+                .ancestor(of: bubble, matching: find.byType(FadeTransition))
+                .first,
           )
-          .opacity;
+          .opacity
+          .value;
       debugPrint(
         'Tooltip proof $name rect=${tester.getRect(bubble)} opacity=$opacity',
       );
@@ -618,8 +621,7 @@ void main() {
                   'sheets',
                   'navigation',
                   'tooltip',
-                ].contains(slug) ||
-                slug.startsWith('date_'),
+                ].contains(slug),
           );
           await before?.call(id);
           // State captures are named `<slug><look>`, not `_variants`.
