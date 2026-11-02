@@ -5,6 +5,10 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Motion review Phase 5 (2026-11-02)
+
+- **Example: flow steps show direction (D71, #105).** Going forward fades and rises 8 dp; going back (the back button, system back, or returning to an earlier step) fades only. A running step change ends at once if reduced motion turns on. The checkout bar fades in with its step. "Leave payment?" uses `showPaymentConfirmDialog`, so it follows the tokens and reduced motion (a sheet on phones). Example only; no kit change.
+
 ## Motion review Phase 4 (2026-11-02)
 
 - **Press scale cancels when the touch becomes a scroll (#101).** Compact controls (icon and copy buttons, links, chips, tabs, video controls) return to full size once the touch moves past the platform touch slop, so a control under a scrolling finger no longer stays shrunk until lift. Disabled tabs no longer shrink. Keyboard focus and selection in a scrolling tab row reveal the tab at once instead of scrolling over 150 ms. No API change.
