@@ -142,7 +142,9 @@ class FlowScreen extends StatelessWidget {
                         8,
                         16 +
                             listInset(width, c.step) -
-                            (c.step == FlowStep.checkout && width - 32 >= 840
+                            (c.step == FlowStep.checkout &&
+                                    !c.starting &&
+                                    _checkoutTwoColumns(width - 32)
                                 ? PaymentTheme.of(
                                     context,
                                   ).space(PaymentSpace.group)
@@ -749,7 +751,7 @@ class _Checkout extends StatelessWidget {
       ],
     );
     return LayoutBuilder(
-      builder: (context, k) => k.maxWidth < 840
+      builder: (context, k) => !_checkoutTwoColumns(k.maxWidth)
           ? body
           : Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1120,7 +1122,10 @@ class _HostTools extends StatelessWidget {
 /// (Q1). The checkout bar takes the same cap, so its action ends where the
 /// content does (#84).
 double contentCap(double width, FlowStep step) =>
-    step == FlowStep.checkout && width - 32 >= 840 ? 1040 : 640;
+    step == FlowStep.checkout && _checkoutTwoColumns(width - 32) ? 1040 : 640;
+
+// Takes available content width after the flow's outer gutters.
+bool _checkoutTwoColumns(double width) => width >= 840;
 
 /// Side inset that centres the content column in the flow screen [width]
 /// wide inside its side safe-area insets, added to the 16 dp gutter (D53).

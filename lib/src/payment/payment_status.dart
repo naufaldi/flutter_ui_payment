@@ -300,7 +300,10 @@ class PaymentStatusView extends StatelessWidget {
     final slot = unknown ? null : instructions;
     final ordered = _orderedActions(actions);
     final primary = ordered.isEmpty ? null : ordered.first;
-    PaymentButton button(PaymentAction action) => PaymentButton(
+    PaymentButton button(
+      PaymentAction action, {
+      PaymentWidth width = PaymentWidth.fill,
+    }) => PaymentButton(
       label: l10n.paymentActionLabel(action),
       variant: action == primary
           ? PaymentButtonVariant.primary
@@ -311,6 +314,7 @@ class PaymentStatusView extends StatelessWidget {
           busyAction == action ||
           (action == PaymentAction.checkStatus && refreshing),
       busyLabel: l10n.checkingStatus,
+      width: width,
       onPressed: () => onAction(action),
     );
     // Pinned: the primary, then the host's quiet action or contact support.
@@ -322,7 +326,13 @@ class PaymentStatusView extends StatelessWidget {
         : null;
     final inline = [
       for (final action in ordered)
-        if (action != primary && action != quiet) button(action),
+        if (action != primary && action != quiet)
+          button(
+            action,
+            width: action == PaymentAction.contactSupport
+                ? PaymentWidth.hug
+                : PaymentWidth.fill,
+          ),
     ];
 
     return ActionFrame(
@@ -406,10 +416,14 @@ class PaymentStatusView extends StatelessWidget {
             SizedBox(height: theme.space(PaymentSpace.group)),
             Align(
               alignment: AlignmentDirectional.centerStart,
-              child: PaymentButtonGroup(
-                collapse: PaymentButtonGroupCollapse.none,
-                children: inline,
-              ),
+              child:
+                  inline.length == 1 &&
+                      inline.single.variant == PaymentButtonVariant.quiet
+                  ? inline.single
+                  : PaymentButtonGroup(
+                      collapse: PaymentButtonGroupCollapse.none,
+                      children: inline,
+                    ),
             ),
           ],
           // What to do now comes before the reference numbers, so the action
