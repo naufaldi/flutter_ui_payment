@@ -969,6 +969,18 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showPaymentSnackBar(
 
 final _toastQueues = Expando<_ToastQueue>();
 
+// The messenger's one snack bar animation under reduced motion (D89). At
+// zero, hiding a bar dismisses it synchronously and starts the waiting bar,
+// which completes before the SDK clears the old reading timer: debug builds
+// fail `_snackBarTimer == null` (#126). Both directions need it, because the
+// screen-reader hide jumps straight to zero. 1 µs is shorter than any frame,
+// so no in-between value is ever painted.
+const _reducedSnackBar = Duration(microseconds: 1);
+const _reducedSnackBarStyle = AnimationStyle(
+  duration: _reducedSnackBar,
+  reverseDuration: _reducedSnackBar,
+);
+
 class _ToastQueue {
   final open = <PaymentToastController>[];
   bool? reduced;
@@ -1042,7 +1054,7 @@ PaymentToastController _showToast(
       ),
     ),
     snackBarAnimationStyle: motion.reduced
-        ? AnimationStyle.noAnimation
+        ? _reducedSnackBarStyle
         : AnimationStyle(duration: motion.enter, reverseDuration: motion.exit),
   );
   queue.open.add(controller);
@@ -1147,6 +1159,31 @@ class _ToastContentState extends State<_ToastContent>
                   color: theme.surface,
                 ),
         );
+        // The themed close button stays in the first-line band, also when
+        // the action wraps under the message (D80, D88).
+        final close = showCloseIcon
+            ? Padding(
+                // Match SnackBar's explicit-padding close-icon margin.
+                padding: EdgeInsets.symmetric(horizontal: endPadding / 12),
+                child: IconButton(
+                  key: StandardComponentType.closeButton.key,
+                  icon: const Icon(Icons.close),
+                  iconSize: 24,
+                  color:
+                      snackBarTheme.closeIconColor ??
+                      (materialTheme.useMaterial3
+                          ? materialTheme.colorScheme.onInverseSurface
+                          // SnackBar has already inverted the M2 theme.
+                          : materialTheme.colorScheme.surface),
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 48,
+                  ),
+                  onPressed: widget.controller._dismissFromCloseIcon,
+                ),
+              )
+            : null;
         final row = KeyedSubtree(
           key: _row,
           child: DefaultTextStyle(
@@ -1159,6 +1196,13 @@ class _ToastContentState extends State<_ToastContent>
                   2 * theme.space(PaymentSpace.inline),
               gap: theme.space(PaymentSpace.block),
               trailingGap: theme.space(PaymentSpace.related),
+              // At large text the action takes its own line under the
+              // message when the message doesn't fit on one line beside it;
+              // at any size it does so before a word would break (D88).
+              wrap: PaymentType.isLarge(context)
+                  ? FirstLineWrap.whenTextWraps
+                  : FirstLineWrap.whenWordsBreak,
+              end: close,
               leading: ExcludeSemantics(
                 child: SizedBox.square(
                   dimension: iconSize,
@@ -1236,40 +1280,7 @@ class _ToastContentState extends State<_ToastContent>
               endPadding,
               theme.space(PaymentSpace.related),
             ),
-            child: showCloseIcon
-                ? Row(
-                    children: [
-                      Expanded(child: content),
-                      Padding(
-                        // Match SnackBar's explicit-padding close-icon margin.
-                        padding: EdgeInsets.symmetric(
-                          horizontal: endPadding / 12,
-                        ),
-                        child: IconButton(
-                          key: StandardComponentType.closeButton.key,
-                          icon: const Icon(Icons.close),
-                          iconSize: 24,
-                          color:
-                              snackBarTheme.closeIconColor ??
-                              (materialTheme.useMaterial3
-                                  ? materialTheme.colorScheme.onInverseSurface
-                                  // SnackBar has already inverted the M2 theme.
-                                  : materialTheme.colorScheme.surface),
-                          tooltip: MaterialLocalizations.of(
-                            context,
-                          ).closeButtonTooltip,
-                          constraints: const BoxConstraints(
-                            minWidth: 48,
-                            minHeight: 48,
-                          ),
-                          onPressed: () {
-                            widget.controller._dismissFromCloseIcon();
-                          },
-                        ),
-                      ),
-                    ],
-                  )
-                : content,
+            child: content,
           ),
         );
       },

@@ -215,13 +215,15 @@ void main() {
           );
           final material = tester.widget<Material>(materials.first);
           // Measured on 1812ba1, before moving the SnackBar surface inward.
+          // At 200% the action now wraps under the message instead of
+          // breaking it mid-word (D88).
           final top = action
-              ? (scale == 1 ? 560.0 : 480.0)
+              ? (scale == 1 ? 560.0 : 512.0)
               : (scale == 1 ? 580.0 : 560.0);
           final textRect = action
               ? (scale == 1
                     ? const Rect.fromLTRB(64, 582, 204, 602)
-                    : const Rect.fromLTRB(76, 492, 144, 612))
+                    : const Rect.fromLTRB(76, 524, 296, 564))
               : (scale == 1
                     ? const Rect.fromLTRB(64, 592, 288, 612)
                     : const Rect.fromLTRB(76, 572, 288, 612));

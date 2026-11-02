@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
@@ -29,6 +31,45 @@ class _CounterState extends State<_Counter> {
 
   @override
   Widget build(BuildContext context) => const SizedBox(height: 10);
+}
+
+/// Passes [parent] through and counts the listeners registered on it.
+class _CountingAnimation extends Animation<double> {
+  _CountingAnimation(this.parent);
+
+  final Animation<double> parent;
+  int listeners = 0;
+  int statusListeners = 0;
+
+  @override
+  double get value => parent.value;
+
+  @override
+  AnimationStatus get status => parent.status;
+
+  @override
+  void addListener(VoidCallback listener) {
+    listeners++;
+    parent.addListener(listener);
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    listeners--;
+    parent.removeListener(listener);
+  }
+
+  @override
+  void addStatusListener(AnimationStatusListener listener) {
+    statusListeners++;
+    parent.addStatusListener(listener);
+  }
+
+  @override
+  void removeStatusListener(AnimationStatusListener listener) {
+    statusListeners--;
+    parent.removeStatusListener(listener);
+  }
 }
 
 Widget _app(Widget home) => MaterialApp(home: home);
@@ -262,6 +303,77 @@ void main() {
       // A compile-time check: the new named parameter is optional.
       const AnimatedSwitcherTransitionBuilder builder = PaymentMotion.fadeRise;
       expect(builder, isNotNull);
+    });
+  });
+
+  group('transition builders (#116)', () {
+    final builders = <String, AnimatedSwitcherTransitionBuilder>{
+      'fadeScale': PaymentMotion.fadeScale,
+      'fadeRise': PaymentMotion.fadeRise,
+      'fadeRise back': (c, a) => PaymentMotion.fadeRise(c, a, back: true),
+    };
+    for (final MapEntry(key: name, value: builder) in builders.entries) {
+      testWidgets('$name keeps a fixed listener count over rebuilds', (
+        tester,
+      ) async {
+        // AnimatedSwitcher calls its transitionBuilder again with the same
+        // entry animation on every child update during a swap.
+        final controller = AnimationController(
+          vsync: tester,
+          duration: const Duration(milliseconds: 220),
+        );
+        addTearDown(controller.dispose);
+        final animation = _CountingAnimation(controller);
+        late StateSetter rebuild;
+        await tester.pumpWidget(
+          StatefulBuilder(
+            builder: (context, setState) {
+              rebuild = setState;
+              return builder(const SizedBox(), animation);
+            },
+          ),
+        );
+        unawaited(controller.forward());
+        await tester.pump(const Duration(milliseconds: 50));
+        final listeners = animation.listeners;
+        final statusListeners = animation.statusListeners;
+        for (var i = 0; i < 20; i++) {
+          rebuild(() {});
+          await tester.pump(const Duration(milliseconds: 5));
+        }
+        expect(animation.statusListeners, statusListeners);
+        expect(animation.listeners, listeners);
+        controller.stop();
+        await tester.pumpWidget(const SizedBox());
+        expect(animation.statusListeners, 0);
+        expect(animation.listeners, 0);
+      });
+    }
+
+    testWidgets('fadeScale keeps its easeOut fade and 0.95 scale', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        PaymentMotion.fadeScale(
+          const SizedBox(),
+          const AlwaysStoppedAnimation(0.5),
+        ),
+      );
+      final eased = PaymentMotion.easeOut.transform(0.5);
+      expect(
+        tester
+            .widget<FadeTransition>(find.byType(FadeTransition))
+            .opacity
+            .value,
+        eased,
+      );
+      expect(
+        tester
+            .widget<ScaleTransition>(find.byType(ScaleTransition))
+            .scale
+            .value,
+        closeTo(0.95 + 0.05 * eased, 1e-12),
+      );
     });
   });
 
