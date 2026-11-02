@@ -63,7 +63,7 @@ class DemoApp extends StatefulWidget {
   State<DemoApp> createState() => DemoAppState();
 }
 
-class DemoAppState extends State<DemoApp> {
+class DemoAppState extends State<DemoApp> with WidgetsBindingObserver {
   late DemoSettings settings = widget.initialSettings;
   int tab = 0;
   Scenario activeScenario = scenarios.first;
@@ -78,6 +78,7 @@ class DemoAppState extends State<DemoApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _boot(activeScenario.variants.first);
     _lifecycle = AppLifecycleListener(
       onInactive: () => coordinator.setObscured(true),
@@ -99,7 +100,11 @@ class DemoAppState extends State<DemoApp> {
   }
 
   @override
+  void didChangeAccessibilityFeatures() => setState(() {});
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _lifecycle.dispose();
     coordinator.dispose();
     host.dispose();
@@ -177,7 +182,12 @@ class DemoAppState extends State<DemoApp> {
             textScaler: settings.textScale == null
                 ? media.textScaler
                 : TextScaler.linear(settings.textScale!),
-            disableAnimations: media.disableAnimations || settings.reduceMotion,
+            disableAnimations:
+                media.disableAnimations ||
+                settings.reduceMotion ||
+                View.of(
+                  context,
+                ).platformDispatcher.accessibilityFeatures.reduceMotion,
           ),
           child: settings.textDirection == null
               ? child!

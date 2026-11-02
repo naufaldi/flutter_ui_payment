@@ -1,6 +1,7 @@
 ## Motion review Phase 5 (2026-11-02)
 
 - **Example: flow steps show direction (D71, #105).** Going forward fades and rises 8 dp; going back (the back button, system back, or returning to an earlier step) fades only. The outgoing step fades in place. Restarting or correcting KYC from status starts a new forward pass, including the next submission to status. A running step change ends at once if reduced motion turns on. The checkout bar fades in with its step. "Leave payment?" uses `showPaymentConfirmDialog`, so it follows the tokens and reduced motion (a sheet on phones). Example only; no kit change.
+- **Example: native press feedback and iOS Reduce Motion (D72, #106).** The example theme turns the Material splash off on iOS (`NoSplash`; the pressed highlight remains) and keeps `InkSparkle` on Android. The example folds iOS Reduce Motion into `MediaQuery.disableAnimations`, also when it changes while the app runs, so its own SDK routes, dialogs and sheets follow it. The Focus page shows the per-platform `splashFactory` pattern. Example and docs only; the kit keeps inheriting the host's splash.
 
 ## Motion review Phase 4 (2026-11-02)
 
