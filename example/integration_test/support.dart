@@ -11,7 +11,9 @@ import 'package:flutter_ui_payment_example/main.dart';
 import 'package:flutter_ui_payment_example/scenarios/catalog.dart';
 import 'package:integration_test/integration_test.dart';
 
-const catalogCaptureHeight = 1200.0;
+import 'capture_slices.dart';
+
+export 'capture_slices.dart';
 
 Finder galleryList() => find.byWidgetPredicate(
   (widget) =>
@@ -36,6 +38,11 @@ Size catalogCaptureSize(WidgetTester tester, {double physicalWidth = 720}) {
 
 /// Renders in-app, avoiding the Android surface conversion handshake.
 /// [crop] identifies a gallery specimen. Flow captures omit the status band.
+///
+/// A specimen taller than [catalogCaptureHeight] continues in more images
+/// (D90): `<name>_part2`, `<name>_part3` and so on, each at most the cap and
+/// overlapping the one before by [continuationOverlap]. The gallery scrolls
+/// for each part and returns to where it was.
 Future<void> capture(
   IntegrationTestWidgetsFlutterBinding binding,
   WidgetTester tester,
@@ -44,58 +51,120 @@ Future<void> capture(
 }) async {
   final view = tester.binding.renderViews.first;
   final dpr = view.flutterView.devicePixelRatio;
-  final layer = view.debugLayer! as OffsetLayer;
   final statusBand = name.contains('_catalog_') || name.contains('_kit_')
       ? 0.0
       : view.flutterView.padding.top / dpr;
-  var bounds = Rect.fromLTWH(
-    0,
-    statusBand,
-    view.size.width,
-    view.size.height - statusBand,
+  if (crop == null) {
+    await _report(
+      binding,
+      tester,
+      name,
+      Rect.fromLTWH(
+        0,
+        statusBand,
+        view.size.width,
+        view.size.height - statusBand,
+      ),
+    );
+    return;
+  }
+  final specimen = tester.getRect(crop);
+  final appBar = tester.getRect(find.byType(AppBar).first);
+  // Round inward past the app bar's painted edge, including fractional pixels.
+  final edge = (appBar.bottom * dpr).ceil() / dpr + 1 / dpr;
+  final top = math.max(edge, specimen.top - 16);
+  double visibleBottom() =>
+      math.min(view.size.height, tester.getRect(galleryList()).bottom);
+  final requestedBottom = specimen.bottom + 16;
+  final bottom = math.min(
+    math.min(requestedBottom, top + catalogCaptureHeight),
+    visibleBottom(),
   );
-  if (crop != null) {
-    final specimen = tester.getRect(crop);
-    final appBar = tester.getRect(find.byType(AppBar).first);
-    // Round inward past the app bar's painted edge, including fractional pixels.
-    final top = math.max(
-      (appBar.bottom * dpr).ceil() / dpr + 1 / dpr,
-      specimen.top - 16,
-    );
-    final visibleBottom = math.min(
-      view.size.height,
-      tester.getRect(galleryList()).bottom,
-    );
-    final requestedBottom = specimen.bottom + 16;
-    final bottom = math.min(
-      math.min(requestedBottom, top + catalogCaptureHeight),
-      visibleBottom,
-    );
-    if (requestedBottom > visibleBottom) {
-      expect(
-        bottom - top,
-        greaterThanOrEqualTo(catalogCaptureHeight),
-        reason:
-            'Specimen $name is truncated by the gallery viewport before '
-            'the $catalogCaptureHeight dp cap: requested bottom '
-            '$requestedBottom, visible bottom $visibleBottom, crop height '
-            '${bottom - top}. Increase the virtual view height.',
-      );
-    }
-    if (requestedBottom - top > catalogCaptureHeight) {
-      debugPrint(
-        'Specimen $name intentionally capped at '
-        '$catalogCaptureHeight dp (requested ${requestedBottom - top} dp).',
-      );
-    }
-    expect(bottom, greaterThan(top), reason: 'Specimen must be visible: $name');
-    bounds = Rect.fromLTRB(
-      math.max(0, specimen.left - 16),
-      top,
-      math.min(view.size.width, specimen.right + 16),
-      bottom,
+  if (requestedBottom > visibleBottom()) {
+    expect(
+      bottom - top,
+      greaterThanOrEqualTo(catalogCaptureHeight),
+      reason:
+          'Specimen $name is truncated by the gallery viewport before '
+          'the $catalogCaptureHeight dp cap: requested bottom '
+          '$requestedBottom, visible bottom ${visibleBottom()}, crop height '
+          '${bottom - top}. Increase the virtual view height.',
     );
   }
+  expect(bottom, greaterThan(top), reason: 'Specimen must be visible: $name');
+  final left = math.max(0.0, specimen.left - 16);
+  final right = math.min(view.size.width, specimen.right + 16);
+  final slices = captureSlices(requestedBottom - top);
+  if (slices.length > 1) {
+    debugPrint(
+      'Specimen $name continues in ${slices.length} images '
+      '(requested ${requestedBottom - top} dp, cap $catalogCaptureHeight dp).',
+    );
+  }
+  // The crop's top, measured from the specimen's top, stays fixed while the
+  // gallery scrolls under it.
+  final origin = top - specimen.top;
+  final position = tester
+      .state<ScrollableState>(
+        find
+            .descendant(of: galleryList(), matching: find.byType(Scrollable))
+            .first,
+      )
+      .position;
+  final resting = position.pixels;
+  try {
+    for (final (index, slice) in slices.indexed) {
+      if (index > 0) {
+        position.jumpTo(
+          (resting + slice.start).clamp(
+            position.minScrollExtent,
+            position.maxScrollExtent,
+          ),
+        );
+        await tester.pump();
+      }
+      final sliceTop = tester.getRect(crop).top + origin + slice.start;
+      final sliceBottom = sliceTop + slice.height;
+      const slack = 0.01;
+      expect(
+        sliceTop,
+        greaterThanOrEqualTo(edge - slack),
+        reason: 'Part ${index + 1} of $name starts under the app bar.',
+      );
+      expect(
+        sliceBottom,
+        lessThanOrEqualTo(visibleBottom() + slack),
+        reason: 'Part ${index + 1} of $name is cut by the gallery viewport.',
+      );
+      await _report(
+        binding,
+        tester,
+        continuationName(name, index),
+        Rect.fromLTRB(
+          left,
+          math.max(edge, sliceTop),
+          right,
+          math.min(visibleBottom(), sliceBottom),
+        ),
+      );
+    }
+  } finally {
+    if (position.pixels != resting) {
+      position.jumpTo(resting);
+      await tester.pump();
+    }
+  }
+}
+
+Future<void> _report(
+  IntegrationTestWidgetsFlutterBinding binding,
+  WidgetTester tester,
+  String name,
+  Rect bounds,
+) async {
+  final view = tester.binding.renderViews.first;
+  final dpr = view.flutterView.devicePixelRatio;
+  final layer = view.debugLayer! as OffsetLayer;
   // RenderView's root layer already contains the device-pixel transform.
   debugPrint('Capture bounds $name: $bounds; view=${view.size}; dpr=$dpr');
   final image = await layer.toImage(

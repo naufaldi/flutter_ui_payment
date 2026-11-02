@@ -30,6 +30,7 @@ void main() {
               ],
             ),
             body: ListView(
+              key: const PageStorageKey('gallery-regression'),
               padding: const EdgeInsets.all(16),
               children: [
                 SizedBox(
@@ -99,16 +100,29 @@ void main() {
     // The crop excludes one physical pixel past the app bar's painted edge.
     expect(await imageHeight(bytes), (1100 + 32) * 2 - 1);
 
+    // D90: a taller specimen keeps the capped first image and continues in
+    // `_part2`, which ends at the specimen's bottom margin.
     await specimen(1300);
+    final before = screenshots.length;
     await capture(
       binding,
       tester,
       'android_catalog_regression_capped',
       crop: crop,
     );
+    final parts = screenshots.sublist(before).cast<Map<String, Object?>>();
+    expect(parts.map((part) => part['screenshotName']), [
+      'android_catalog_regression_capped',
+      'android_catalog_regression_capped_part2',
+    ]);
     expect(
-      await imageHeight((screenshots.last as Map)['bytes'] as List<int>),
+      await imageHeight(parts.first['bytes'] as List<int>),
       catalogCaptureHeight * 2,
+    );
+    final slices = captureSlices(1300 + 32 - 1 / 2);
+    expect(
+      await imageHeight(parts.last['bytes'] as List<int>),
+      closeTo(slices.last.height * 2, 1),
     );
 
     addTearDown(tester.view.resetPadding);

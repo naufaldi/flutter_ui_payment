@@ -162,14 +162,25 @@ Future<ImageProvider> renderSyntheticPhoto(
   return MemoryImage(bytes!.buffer.asUint8List());
 }
 
-Future<ImageProvider> renderSyntheticTile(Color color, String letters) async {
+/// Paints a 192 x 128 logo tile: [letters] in [foreground] on [background].
+///
+/// Pass a theme pair designed to contrast, such as `PaymentTheme.accent` and
+/// `PaymentTheme.onAccent`, so the letters stay legible in every look.
+Future<ImageProvider> renderSyntheticTile({
+  required Color background,
+  required Color foreground,
+  required String letters,
+}) async {
   final recorder = ui.PictureRecorder();
   final canvas = Canvas(recorder);
-  canvas.drawRect(const Rect.fromLTWH(0, 0, 192, 128), Paint()..color = color);
+  canvas.drawRect(
+    const Rect.fromLTWH(0, 0, 192, 128),
+    Paint()..color = background,
+  );
   final text = TextPainter(
     text: TextSpan(
       text: letters,
-      style: const TextStyle(fontSize: 36, color: Colors.white),
+      style: TextStyle(fontSize: 36, color: foreground),
     ),
     textDirection: TextDirection.ltr,
   )..layout();

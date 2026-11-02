@@ -11,6 +11,19 @@ Future<void> main() {
     onScreenshot: (name, bytes, [args]) async {
       final file = File('$dir/$name.png');
       await file.create(recursive: true);
+      // A new first image replaces its whole set: drop continuations
+      // (`<name>_partN`, D90) left by an earlier, longer capture. The test
+      // reports a specimen's parts right after its first image.
+      if (!RegExp(r'_part\d+$').hasMatch(name)) {
+        final stale = RegExp(
+          '^${RegExp.escape(name)}'
+          r'_part\d+\.png$',
+        );
+        for (final entry in file.parent.listSync()) {
+          final base = entry.uri.pathSegments.last;
+          if (entry is File && stale.hasMatch(base)) entry.deleteSync();
+        }
+      }
       await file.writeAsBytes(bytes);
       return true;
     },

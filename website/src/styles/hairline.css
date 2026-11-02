@@ -278,6 +278,10 @@ starlight-theme-select select {
   border-radius: var(--fup-radius-box);
   background: var(--fup-surface-muted);
 }
+/* Continuation parts of one long specimen (D90): a small gap marks the seam. */
+.fup-screen img.fup-screen-part {
+  margin-top: 0.5rem;
+}
 .fup-screen figcaption {
   margin-top: 0.5rem;
   font-size: var(--sl-text-xs);

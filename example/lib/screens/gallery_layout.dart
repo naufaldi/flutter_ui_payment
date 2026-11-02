@@ -161,10 +161,22 @@ class _ImageTiles extends StatefulWidget {
 
 class _ImageTilesState extends State<_ImageTiles> {
   Future<ImageProvider>? tile;
+  (Color, Color)? tileColors;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    tile ??= renderSyntheticTile(PaymentTheme.of(context).accent, 'BC');
+    // Re-render when the look changes so the letters keep the theme's
+    // accent/onAccent contrast pair in light and dark.
+    final theme = PaymentTheme.of(context);
+    final colors = (theme.accent, theme.onAccent);
+    if (colors == tileColors) return;
+    tileColors = colors;
+    tile = renderSyntheticTile(
+      background: colors.$1,
+      foreground: colors.$2,
+      letters: 'BC',
+    );
   }
 
   @override

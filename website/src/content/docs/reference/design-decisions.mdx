@@ -159,6 +159,7 @@ Docs captures moved to Android on 2 November 2026 (issue [#130](https://github.c
 | --- | --- | --- |
 | D81 | Docs captures come from Android only: a 360×640 dp phone at dpr 2 and a 1280×800 dp landscape tablet. Names use `android_`, replacing D27's `ios_` prefix. D64's product scope is unchanged. All docs capture registrations and assets use Android. | Implemented |
 | D82 | Phone catalog specimens use a 720 px-wide virtual view with height calculated from measured app-bar and gallery bottom insets to leave the full 1200 dp crop cap visible. Crops use the keyed specimen below the app bar. Overlays and states keep real device size. Flows omit the measured top status inset. Tablet flows use native 1280×800 dp landscape; tablet specimens keep native width and device pixel ratio on the tall virtual view, with the same 1200 dp cap. | Current behaviour |
+| D90 | A catalog specimen taller than the 1200 dp cap continues in more images instead of being cut off. The first keeps its name; `_part2`, `_part3` and so on follow in reading order, each at most 1200 dp and repeating the last 64 dp of the one before. Pages show every part after the first image, with "Part n of N" alt text. Extends D82 (#172). | Current behaviour |
 
 ## Android pass fixes, 2 November 2026
 
