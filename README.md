@@ -207,7 +207,7 @@ dart format --output=none --set-exit-if-changed .
 flutter analyze
 flutter test                                        # package tests
 cd example
-flutter test integration_test/flow_test.dart -d <device>
+flutter test --no-pub integration_test/flow_test.dart -d <device>
 flutter drive --driver=test_driver/integration_driver.dart \
   --target=integration_test/screenshots_test.dart -d <device>
 flutter drive --driver=test_driver/integration_driver.dart \

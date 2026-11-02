@@ -29,7 +29,7 @@ To check an older version, first list available system images and choose one sup
 sdkmanager --list
 emulator -avd <compatible-older-avd>
 # In another terminal, after it boots:
-cd example && flutter test integration_test/flow_test.dart -d emulator-5554
+cd example && flutter test --no-pub integration_test/flow_test.dart -d emulator-5554
 flutter drive --driver=test_driver/integration_driver.dart \
   --target=integration_test/kit_screenshots_test.dart -d emulator-5554
 ```
