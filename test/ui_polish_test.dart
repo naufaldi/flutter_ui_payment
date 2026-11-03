@@ -5,6 +5,17 @@ import 'package:flutter_ui_payment/src/foundation/view_frame.dart'
     show PinnedFooter;
 import 'content_host.dart';
 
+double toastBottom(WidgetTester t) => t
+    .getRect(
+      find
+          .descendant(
+            of: find.byType(SnackBar),
+            matching: find.byType(Material),
+          )
+          .first,
+    )
+    .bottom;
+
 void main() {
   // #202, D95.
   testWidgets('a toast floats above a pinned footer; Report stays tappable', (
@@ -57,6 +68,71 @@ void main() {
     await t.tap(find.text('Report a problem'));
     expect(reported, 1);
     expect(find.text('Receipt opened'), findsOneWidget);
+  });
+
+  // #204 R1: the toast's own scaffold already lifts it above a bottom
+  // navigation bar, so a kit footer there adds nothing more.
+  testWidgets('a toast keeps one 16 dp gap above an action bar in the '
+      'bottom navigation slot', (t) async {
+    await setSurface(t, const Size(360, 640));
+    late BuildContext page;
+    await t.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: const [PaymentLocalizations.delegate],
+        home: Scaffold(
+          body: Builder(
+            builder: (context) {
+              page = context;
+              return const SizedBox.expand();
+            },
+          ),
+          bottomNavigationBar: PaymentActionBar(
+            action: PaymentButton(label: 'Pay', onPressed: () {}),
+          ),
+        ),
+      ),
+    );
+    showPaymentToast(page, message: 'Receipt opened');
+    await t.pumpAndSettle();
+    final gap = t.getRect(find.byType(PinnedFooter)).top - toastBottom(t);
+    expect(gap, moreOrLessEquals(16, epsilon: 0.5));
+  });
+
+  // #204 R1: the outer scaffold shows the toast, so the clearance is measured
+  // there, not on the nested scaffold with the navigation bar and footer.
+  testWidgets('a toast clears a footer in a nested scaffold above its '
+      'navigation bar', (t) async {
+    await setSurface(t, const Size(360, 640));
+    late BuildContext page;
+    await t.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: const [PaymentLocalizations.delegate],
+        home: Scaffold(
+          body: Scaffold(
+            body: Builder(
+              builder: (context) {
+                page = context;
+                return PaymentDetailPage(
+                  title: 'Payment',
+                  primaryAction: PaymentButton(
+                    label: 'View receipt',
+                    onPressed: () {},
+                  ),
+                  primary: const [
+                    PaymentPageModule(title: 'Payment', child: Text('Body')),
+                  ],
+                );
+              },
+            ),
+            bottomNavigationBar: const SizedBox(height: 80),
+          ),
+        ),
+      ),
+    );
+    showPaymentToast(page, message: 'Receipt opened');
+    await t.pumpAndSettle();
+    final footer = t.getRect(find.byType(PinnedFooter));
+    expect(toastBottom(t), moreOrLessEquals(footer.top - 16, epsilon: 0.5));
   });
 
   // #201, D96.

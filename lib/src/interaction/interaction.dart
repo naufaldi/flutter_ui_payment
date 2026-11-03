@@ -945,7 +945,7 @@ class _ToastState {
 }
 
 /// Short feedback after an action. Failures requiring a fix use [PaymentBanner].
-/// Neutral, success, warning, or pending. Reading time is 4â€“10 seconds,
+/// Neutral, success, warning, or pending. Reading time is 4–10 seconds,
 /// at least 6 with an action; pending and accessible actions never time out.
 /// The newest toast wins: showing one replaces the kit toast on screen and
 /// drops any kit toast still waiting (D77). When reduced motion changes, the
@@ -988,7 +988,7 @@ final _toastQueues = Expando<_ToastQueue>();
 // zero, hiding a bar dismisses it synchronously and starts the waiting bar,
 // which completes before the SDK clears the old reading timer: debug builds
 // fail `_snackBarTimer == null` (#126). Both directions need it, because the
-// screen-reader hide jumps straight to zero. 1 Âµs is shorter than any frame,
+// screen-reader hide jumps straight to zero. 1 µs is shorter than any frame,
 // so no in-between value is ever painted.
 const _reducedSnackBar = Duration(microseconds: 1);
 const _reducedSnackBarStyle = AnimationStyle(
@@ -1047,7 +1047,8 @@ PaymentToastController _showToast(
   }
   queue.reduced = motion.reduced;
   // D95: a toast floats `group` above a pinned kit footer on screen instead
-  // of covering its actions. The margin is read once, when it shows.
+  // of covering its actions. The lift is only the overlap left after the
+  // scaffold's own placement, read once, when the toast shows.
   final gap = theme.space(PaymentSpace.group);
   final lift = PinnedFooterRegistry.lift(messenger);
   controller._feature = messenger.showSnackBar(

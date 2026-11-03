@@ -8214,7 +8214,7 @@
   "showPaymentToast": {
     "kind": "function",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "Short feedback after an action. Failures requiring a fix use `PaymentBanner`.\nNeutral, success, warning, or pending. Reading time is 4â€“10 seconds,\nat least 6 with an action; pending and accessible actions never time out.\nThe newest toast wins: showing one replaces the kit toast on screen and\ndrops any kit toast still waiting (D77). When reduced motion changes, the\nwhole snack bar queue is cleared first, host snack bars included (D78).",
+    "doc": "Short feedback after an action. Failures requiring a fix use `PaymentBanner`.\nNeutral, success, warning, or pending. Reading time is 4–10 seconds,\nat least 6 with an action; pending and accessible actions never time out.\nThe newest toast wins: showing one replaces the kit toast on screen and\ndrops any kit toast still waiting (D77). When reduced motion changes, the\nwhole snack bar queue is cleared first, host snack bars included (D78).",
     "returns": "PaymentToastController",
     "typeParams": "",
     "params": [
