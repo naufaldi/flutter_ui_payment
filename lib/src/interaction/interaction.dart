@@ -322,10 +322,10 @@ class PaymentMenuGroup extends PaymentMenuEntry {
 
 /// Overflow menu behind an icon button.
 ///
-/// On wide windows it is built on [MenuAnchor], so arrow keys move between
+/// On tablets it is built on [MenuAnchor], so arrow keys move between
 /// entries, Escape closes the menu and focus returns to the button; the panel
-/// keeps 16 dp from the window edges. On phones (narrower than 600 dp) the
-/// trigger opens a bottom action sheet instead (D55): full-width 48 dp rows,
+/// keeps 16 dp from the window edges. On phones (window shortest side under
+/// 600 dp, so also in landscape; D92) the trigger opens a bottom action sheet instead (D55): full-width 48 dp rows,
 /// group titles as captions, destructive items last after a divider, and a
 /// full-width Cancel at the bottom. The sheet closes before the selection is
 /// dispatched, and focus returns to the trigger. Opening is instant: a menu
@@ -666,9 +666,10 @@ typedef ActionMenuEntry = PaymentMenuItem;
 /// the person confirms; the scrim, swipe down, Back and Escape all resolve
 /// to false.
 ///
-/// On phones (narrower than 600 dp) it is a bottom confirm sheet: title,
-/// message, then full-width actions stacked top-down with the confirm action
-/// on top and Cancel below (D45). On wider windows it is a centred dialog
+/// On phones (window shortest side under 600 dp, so also in landscape; D92)
+/// it is a bottom confirm sheet: title, message, then full-width actions
+/// stacked top-down with the confirm action on top and Cancel below (D45).
+/// On tablets it is a centred dialog
 /// with one row of equal-width buttons, confirm trailing. Both use one 16 dp
 /// inset at every text scale, so the layout never depends on label length.
 ///

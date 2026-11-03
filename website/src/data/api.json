@@ -7981,7 +7981,7 @@
   "PaymentMenu": {
     "kind": "class",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "Overflow menu behind an icon button.\n\nOn wide windows it is built on `MenuAnchor`, so arrow keys move between\nentries, Escape closes the menu and focus returns to the button; the panel\nkeeps 16 dp from the window edges. On phones (narrower than 600 dp) the\ntrigger opens a bottom action sheet instead (D55): full-width 48 dp rows,\ngroup titles as captions, destructive items last after a divider, and a\nfull-width Cancel at the bottom. The sheet closes before the selection is\ndispatched, and focus returns to the trigger. Opening is instant: a menu\nused many times a day should not make people wait for it.",
+    "doc": "Overflow menu behind an icon button.\n\nOn tablets it is built on `MenuAnchor`, so arrow keys move between\nentries, Escape closes the menu and focus returns to the button; the panel\nkeeps 16 dp from the window edges. On phones (window shortest side under\n600 dp, so also in landscape; D92) the trigger opens a bottom action sheet instead (D55): full-width 48 dp rows,\ngroup titles as captions, destructive items last after a divider, and a\nfull-width Cancel at the bottom. The sheet closes before the selection is\ndispatched, and focus returns to the trigger. Opening is instant: a menu\nused many times a day should not make people wait for it.",
     "extends": "StatefulWidget",
     "constructors": [
       {
@@ -8098,7 +8098,7 @@
   "showPaymentConfirmDialog": {
     "kind": "function",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "Asks before an action that cannot be undone. Resolves to true only when\nthe person confirms; the scrim, swipe down, Back and Escape all resolve\nto false.\n\nOn phones (narrower than 600 dp) it is a bottom confirm sheet: title,\nmessage, then full-width actions stacked top-down with the confirm action\non top and Cancel below (D45). On wider windows it is a centred dialog\nwith one row of equal-width buttons, confirm trailing. Both use one 16 dp\ninset at every text scale, so the layout never depends on label length.\n\nFor `destructive` actions the safe choice (cancel) receives focus first,\nso Enter never confirms by accident.",
+    "doc": "Asks before an action that cannot be undone. Resolves to true only when\nthe person confirms; the scrim, swipe down, Back and Escape all resolve\nto false.\n\nOn phones (window shortest side under 600 dp, so also in landscape; D92)\nit is a bottom confirm sheet: title, message, then full-width actions\nstacked top-down with the confirm action on top and Cancel below (D45).\nOn tablets it is a centred dialog\nwith one row of equal-width buttons, confirm trailing. Both use one 16 dp\ninset at every text scale, so the layout never depends on label length.\n\nFor `destructive` actions the safe choice (cancel) receives focus first,\nso Enter never confirms by accident.",
     "returns": "Future<bool>",
     "typeParams": "",
     "params": [
@@ -10069,7 +10069,7 @@
   "showPaymentFocusView": {
     "kind": "function",
     "file": "lib/src/overlay/sheets.dart",
-    "doc": "Presents a focused task through the existing sheet surfaces.",
+    "doc": "Presents a focused task through the existing sheet surfaces: a bottom\nsheet on phones (window shortest side under 600 dp, so also in landscape;\nD92) and a side sheet on tablets.",
     "returns": "Future<T?>",
     "typeParams": "<T>",
     "params": [
@@ -20040,7 +20040,7 @@
   "PaymentSearchField": {
     "kind": "class",
     "file": "lib/src/forms/search_field.dart",
-    "doc": "Locally filtered or host-searched listbox with keyboard selection (D50).\n\nBelow 600 dp the field is a trigger that opens a full-height search sheet:\nthe search field on top, 48 dp result rows under it and, for multiple\nselection, the chosen chips and a full-width Done in the footer. At\n600 dp and wider it is an inline field with an anchored, elevated list\nthat floats over the page instead of pushing it down.",
+    "doc": "Locally filtered or host-searched listbox with keyboard selection (D50).\n\nOn phones (window shortest side under 600 dp, so also in landscape; D92)\nthe field is a trigger that opens a full-height search sheet: the search\nfield on top, 48 dp result rows under it and, for multiple selection, the\nchosen chips and a full-width Done in the footer. On tablets it is an\ninline field with an anchored, elevated list\nthat floats over the page instead of pushing it down.",
     "extends": "StatefulWidget",
     "constructors": [
       {

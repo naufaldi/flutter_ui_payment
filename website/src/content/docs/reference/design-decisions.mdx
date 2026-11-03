@@ -69,19 +69,19 @@ On 1 November 2026 the owner reviewed every component and flow against the 8 pt 
 
 | Decision | In plain words | Before |
 | --- | --- | --- |
-| D45 | On a phone, a confirmation is a bottom sheet: full-width actions, the confirm on top and Cancel below. Wide screens get a centred dialog. | [#45](https://github.com/naufaldi/flutter_ui_payment/issues/45) |
+| D45 | On a phone, a confirmation is a bottom sheet: full-width actions, the confirm on top and Cancel below. Wide screens get a centred dialog. A phone in landscape still counts as a phone (D92). | [#45](https://github.com/naufaldi/flutter_ui_payment/issues/45) |
 | D46 | Spacing keeps 4 / 8 / 12 / 16 / 24 / 32. Every gap goes through a named role, and one role uses one value. | [#50](https://github.com/naufaldi/flutter_ui_payment/issues/50) |
 | D47 | There is no warning button. A warning is a banner, badge or toast next to the action. | Owner decision, no issue |
 | D48 | A banner's actions sit on its text column. A banner about a changed total states old → new and can't be dismissed while the payment is open. | [#52](https://github.com/naufaldi/flutter_ui_payment/issues/52) |
 | D48a | One banner layout for every tone: icon and close on the title's first line, one text column, at most one small button and one link. | [#52](https://github.com/naufaldi/flutter_ui_payment/issues/52) |
 | D49 | Tooltips open on tap too, and hold one line. Longer explanations open a sheet. | [#53](https://github.com/naufaldi/flutter_ui_payment/issues/53) |
-| D50 | On a phone, search opens a full-height sheet. Wide screens show a floating list under the field. | [#54](https://github.com/naufaldi/flutter_ui_payment/issues/54) |
+| D50 | On a phone, search opens a full-height sheet. Wide screens show a floating list under the field. A phone in landscape still counts as a phone (D92). | [#54](https://github.com/naufaldi/flutter_ui_payment/issues/54) |
 | D51 | A custom date range opens a kit calendar sheet with Apply at the bottom. | [#55](https://github.com/naufaldi/flutter_ui_payment/issues/55) |
 | D52 | A single date opens a kit date sheet with a full-width "Choose date". Date of birth starts with typed entry. | [#56](https://github.com/naufaldi/flutter_ui_payment/issues/56) |
 | D52a | Far dates, such as a date of birth, use a scrolling wheel; near dates use a month calendar. | [#56](https://github.com/naufaldi/flutter_ui_payment/issues/56) |
 | D53 | From 600 dp wide, pages sit in a centred column about 640 dp wide. | [#57](https://github.com/naufaldi/flutter_ui_payment/issues/57) |
 | D54 | One primary button per screen, sheet or dialog. A button that only opens something is secondary. | [#61](https://github.com/naufaldi/flutter_ui_payment/issues/61) |
-| D55 | On a phone, a menu is a bottom action sheet. Wide screens keep the floating menu. | [#61](https://github.com/naufaldi/flutter_ui_payment/issues/61) |
+| D55 | On a phone, a menu is a bottom action sheet. Wide screens keep the floating menu. A phone in landscape still counts as a phone (D92). | [#61](https://github.com/naufaldi/flutter_ui_payment/issues/61) |
 | D56 | In a row, title, value and control share one centre line. In a multi-line row, the icon and control line up with the first line. | [#62](https://github.com/naufaldi/flutter_ui_payment/issues/62) |
 | D57 | IDs and references in rows are plain monospace text on the value edge with a copy action, not grey chips. | [#62](https://github.com/naufaldi/flutter_ui_payment/issues/62) |
 | D58 | Charts show the latest exact value at rest; tap or drag to read another point or bar. | [#62](https://github.com/naufaldi/flutter_ui_payment/issues/62), [#63](https://github.com/naufaldi/flutter_ui_payment/issues/63) |
@@ -204,6 +204,12 @@ A01 on the Android 17/API 37 phone at 200% app text, system Light. Native dpr 2 
 | 360 dp | Gesture | Fits | +92.0 dp | +104.0 dp | +28.0 / +40.0 dp |
 
 The 320 dp gesture row adds the header's 8 dp to the measured tab-fold result (+18.2 / +30.2 dp); the other rows were measured on the final code.
+
+## Phone landscape, 3 November 2026
+
+| Decision | In plain words | Status |
+| --- | --- | --- |
+| D92 | The confirmation, search, menu and focus view pick their phone or wide form from the window's shorter side. A phone held sideways (640 × 360 dp) keeps the phone sheets; a tablet keeps the wide forms in both orientations. Page layouts, such as footers, tables and the centred column, still follow the width. Amends D45, D50 and D55. On the Android phone in landscape, the width rule ran the search list under the tab bar, let a menu cover its own ⋮ button, and cut a 200% confirmation after two lines. Orchestrator decision, option (a), [#147](https://github.com/naufaldi/flutter_ui_payment/issues/147). | Current behaviour |
 
 ## Open items
 

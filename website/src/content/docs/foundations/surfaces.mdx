@@ -16,7 +16,7 @@ Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
 | A selectable grouped box | Bordered box |
 | A status that needs attention | Tinted tone |
 | Disabled, loading or selected navigation | Muted |
-| An action menu at 600 dp or wider | Floating |
+| An action menu on a tablet (window shorter side 600 dp or more, D92) | Floating |
 | A sheet, a dialog, or an action menu on a phone | Overlay |
 
 | Surface | Recipe | Where | Don't |
@@ -27,7 +27,7 @@ Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
 | Tinted | `tone.container` fill, no edge | `PaymentBanner`, `PaymentBadge` | Use for the normal path (decisions.md: "tinted boxes are for problems") |
 | Muted | `surfaceMuted` fill | Disabled fill, skeleton, selected nav item | — |
 | Ink | textPrimary fill, surface text, elevation 0, control radius | Toast and tooltip | Add a shadow |
-| Floating | `surface` + `outline` edge + elevation 2 | `PaymentMenu` at ≥ 600 dp only (`interaction.dart:472`); below 600 dp the menu is an overlay action sheet (D55) | Add a shadow anywhere else |
+| Floating | `surface` + `outline` edge + elevation 2 | `PaymentMenu` on tablets only (`interaction.dart:464`); on phones, in either orientation, the menu is an overlay action sheet (D55, D92) | Add a shadow anywhere else |
 | Overlay | `surface`, elevation 0, top radius 12, scrim | Bottom sheet (`sheets.dart:163`), side sheet with `Colors.black54` barrier (`:192`), dialog | Tint the surface (`surfaceTintColor` is transparent everywhere) |
 
 Do: a flat `PaymentSection` as in checkout. Don't: wrap every section in a Material Card. Nested boxes compete with the primary action and make host composition harder.
