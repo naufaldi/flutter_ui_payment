@@ -237,6 +237,34 @@ void main() {
     expect(t.hasRunningAnimations, isFalse);
   });
 
+  testWidgets('reduced motion turned on during the height ease still ends '
+      'the handoff, so later ready changes stay instant', (t) async {
+    Widget app(bool loading, double h) => contentHost(
+      Column(
+        children: [
+          LoadingHandoff(
+            loading: loading,
+            child: SizedBox(key: ValueKey(loading), height: h),
+          ),
+          const Text('Below'),
+        ],
+      ),
+    );
+    await t.pumpWidget(app(true, 300));
+    await t.pumpWidget(app(false, 50));
+    // Past both fades, still inside the height ease.
+    await t.pump(const Duration(milliseconds: 230));
+    await t.pump(const Duration(milliseconds: 16));
+    ReducedMotion.iosReduceMotion.apply(t, const SizedBox());
+    await t.pump();
+    await t.pump();
+    t.platformDispatcher.clearAccessibilityFeaturesTestValue();
+    await t.pump();
+
+    await t.pumpWidget(app(false, 100));
+    expect(t.getTopLeft(find.text('Below')).dy, 100, reason: 'instant');
+  });
+
   testWidgets('reduced motion turned on mid-swap ends the step swap at once', (
     t,
   ) async {

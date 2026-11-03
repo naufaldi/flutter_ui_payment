@@ -113,13 +113,18 @@ class _MotionSwapState extends State<MotionSwap>
 
   // Ends every running transition: the leaving children go and the current
   // one is fully shown, keeping its state.
+  //
+  // It always checks for rest: with the fades already done, reduced motion
+  // can still cut a running height ease, and dropping the AnimatedSize drops
+  // the onEnd that would have reported it (#200 R4).
   void _finish() {
-    if (_leaving.isEmpty && _current.controller.isCompleted) return;
-    for (final entry in _leaving) {
-      entry.controller.dispose();
+    if (_leaving.isNotEmpty || !_current.controller.isCompleted) {
+      for (final entry in _leaving) {
+        entry.controller.dispose();
+      }
+      _leaving.clear();
+      _current.controller.value = 1;
     }
-    _leaving.clear();
-    _current.controller.value = 1;
     _checkSettled();
   }
 
