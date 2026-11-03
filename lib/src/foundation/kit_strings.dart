@@ -332,6 +332,10 @@ extension KitStrings on PaymentLocalizations {
   String get transactionsFailedTitle =>
       _k('Transactions didn’t load', 'Transaksi gagal dimuat');
   String get resetFilters => _k('Reset filters', 'Atur ulang filter');
+
+  /// Spoken name of the status filter button that replaces the filter tabs
+  /// on phones at large text (D91).
+  String get filterByStatus => _k('Filter by status', 'Saring menurut status');
   String transactionFilterLabel(TransactionFilter filter) => switch (filter) {
     TransactionFilter.all => _k('All', 'Semua'),
     TransactionFilter.inProgress => _k('In progress', 'Dalam proses'),

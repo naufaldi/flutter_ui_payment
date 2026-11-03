@@ -121,11 +121,11 @@ The captures below show the result on an Android phone and a native landscape An
   <Screen name="android_tablet_checkout_light" alt="Checkout on an Android tablet with order summary and payment methods beside merchant details." caption="D53: Android tablet columns" />
 </Screens>
 
-D63 and D63a moved history before the chart and put the date range on the search line. D83 moves the Statement link into the header menu when it cannot fit beside the title at large text. The captures below show the 360×640 dp Android phone at 200%; the measured 320 dp limit is recorded below and tracked in [#161](https://github.com/naufaldi/flutter_ui_payment/issues/161).
+D63 and D63a moved history before the chart and put the date range on the search line. D83 moves the Statement link into the header menu when it cannot fit beside the title at large text. D91 then folds the status tabs into a button on the search line on phones at large text, so a whole first row fits at 320 dp too. The captures below show the 360×640 dp Android phone at 200%.
 
 <Screens>
-  <Screen name="android_history_en_200" alt="History on a 360×640 dp Android phone at 200% text in English: the search line with its calendar button, the tabs and a whole first row with its Refunded badge above the tab bar." caption="D63, D63a: 360×640 dp Android phone, 200%, English" />
-  <Screen name="android_history_light_200" alt="History on a 360×640 dp Android phone at 200% text in Indonesian: the search line, filter tabs and first transaction above the tab bar." caption="D63, D63a: 360×640 dp Android phone, 200%, Indonesian" />
+  <Screen name="android_history_en_200" alt="History on a 360×640 dp Android phone at 200% text in English: the search line with its calendar and status filter buttons, then a whole first row with its Refunded badge above the tab bar." caption="D63, D63a, D91: 360×640 dp Android phone, 200%, English" />
+  <Screen name="android_history_light_200" alt="History on a 360×640 dp Android phone at 200% text in Indonesian: the search line with its calendar and status filter buttons, then the first transaction above the tab bar." caption="D63, D63a, D91: 360×640 dp Android phone, 200%, Indonesian" />
 </Screens>
 
 ## Motion review, 2 November 2026
@@ -185,6 +185,25 @@ A01 on the Android 17/API 37 phone at 200% app text, system Light. Native dpr 2 
 | 320 dp | id | Three-button | Does not fit | −59.1 dp | −47.1 dp |
 
 Layer renders and system screenshots: `C:/DevTools/android-fixes/pr-df/{gesture|threebutton}_{360|320}_history_{en|id}_light_200_{layer|system}.png`. The complete first row fits at 360 dp in both languages and navigation modes. At 320 dp, the badge shortfall is 25.8 dp with gestures and 47.1 dp with three-button navigation, in both languages. The orchestrator approved a draft with these measured gaps and no further layout change in this PR; the owner will open a follow-up for the 320 dp remainder. No large-text mode was added (D63).
+
+## History at 320 dp, 3 November 2026
+
+| Decision | In plain words | Status |
+| --- | --- | --- |
+| D91 | On phones at large text, history's status tabs become a filter button at the end of the search line, beside the date-range button. It opens the action sheet with every status, the current one checked, and fills with the accent while a status other than All is set. At large text every page header also sits 8 dp closer to its body. Normal text and wide screens keep the tabs. Not a separate large-text mode (D63): the same filters stay one tap away. Refines D63a and D83 ([#161](https://github.com/naufaldi/flutter_ui_payment/issues/161)). | Current behaviour |
+
+#### D91 acceptance measurements (3 Nov 2026)
+
+A01 on the Android 17/API 37 phone at 200% app text, system Light. Native dpr 2 is 360×640 dp; PASS_DPR=2.25 is 320×568.9 dp. Positive clearance is above the app's tab bar. Row clearance includes the row's 12 dp bottom padding; badge clearance measures the badge bottom. English and Indonesian measured the same.
+
+| Width | Navigation | Whole first row | Row clearance | Badge clearance | Before (D83) row / badge |
+| --- | --- | --- | ---: | ---: | ---: |
+| 320 dp | Three-button | Fits | +4.9 dp | +16.9 dp | −59.1 / −47.1 dp |
+| 320 dp | Gesture | Fits | +26.2 dp | +38.2 dp | −37.8 / −25.8 dp |
+| 360 dp | Three-button | Fits | +68.0 dp | +80.0 dp | +4.0 / +16.0 dp |
+| 360 dp | Gesture | Fits | +92.0 dp | +104.0 dp | +28.0 / +40.0 dp |
+
+The 320 dp gesture row adds the header's 8 dp to the measured tab-fold result (+18.2 / +30.2 dp); the other rows were measured on the final code.
 
 ## Open items
 

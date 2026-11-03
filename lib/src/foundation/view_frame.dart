@@ -324,11 +324,16 @@ class ViewHeader extends StatelessWidget {
     };
     return Padding(
       // A breadcrumb's 48 dp target already spaces it from the edge above.
+      // At large text the gap to the body is `related`: the title's tall
+      // line already leaves room under the glyphs, and on a small phone the
+      // body needs the height (D91).
       padding: EdgeInsets.fromLTRB(
         space,
         above == null ? space : theme.space(PaymentSpace.inline),
         space,
-        space,
+        PaymentType.isLarge(context)
+            ? theme.space(PaymentSpace.related)
+            : space,
       ),
       child: LayoutBuilder(
         builder: (context, k) {

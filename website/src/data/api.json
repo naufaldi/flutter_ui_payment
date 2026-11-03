@@ -2487,6 +2487,7 @@
       "noMatchesMessage",
       "transactionsFailedTitle",
       "resetFilters",
+      "filterByStatus",
       "transactionFilterLabel",
       "paymentLabel",
       "dateLabel",
@@ -13549,7 +13550,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "searchActions",
-            "doc": "Host filter controls on the search line, after the box, such as\n`PaymentDateRangePicker.button`. Show the active filter as a chip too.\n\nWith actions the search line is one compact row at every text size\n(D63a): the search label shows as the placeholder, not above the box,\nand stays the field's spoken name."
+            "doc": "Host filter controls on the search line, after the box, such as\n`PaymentDateRangePicker.button`. Show the active filter as a chip too.\n\nWith actions the search line is one compact row at every text size\n(D63a): the search label shows as the placeholder, not above the box,\nand stays the field's spoken name. On phones at large text the status\nfilter joins them as a button after these actions (D91)."
           }
         ],
         "doc": ""
@@ -13626,7 +13627,7 @@
         "kind": "field",
         "static": false,
         "type": "List<Widget>",
-        "doc": "Host filter controls on the search line, after the box, such as\n`PaymentDateRangePicker.button`. Show the active filter as a chip too.\n\nWith actions the search line is one compact row at every text size\n(D63a): the search label shows as the placeholder, not above the box,\nand stays the field's spoken name."
+        "doc": "Host filter controls on the search line, after the box, such as\n`PaymentDateRangePicker.button`. Show the active filter as a chip too.\n\nWith actions the search line is one compact row at every text size\n(D63a): the search label shows as the placeholder, not above the box,\nand stays the field's spoken name. On phones at large text the status\nfilter joins them as a button after these actions (D91)."
       }
     ],
     "copyWith": null
