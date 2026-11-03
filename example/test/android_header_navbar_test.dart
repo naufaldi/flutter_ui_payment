@@ -59,6 +59,8 @@ void main() {
     // is a button on the search line.
     expect(find.byType(PaymentTabs), findsNothing);
     final search = t.getRect(find.byType(PaymentTextField));
+    // At large text the header's gap to the body is `related` (D91).
+    expect(search.top - t.getRect(find.text('Transactions').first).bottom, 8);
     final row = find.byType(TransactionListItem).first;
     expect(t.getRect(row).top, moreOrLessEquals(search.bottom));
     final navTop = t.getRect(find.byType(NavigationBar)).top;
