@@ -564,28 +564,11 @@ void main() {
         String? current;
         Future<void> openPage(String page) async {
           if (current == page) return;
-          final menu = find.byTooltip(id ? 'Buka navigasi' : 'Open navigation');
-          if (menu.evaluate().isNotEmpty) {
-            await tester.tap(menu);
-            await settle(tester);
-          }
-          final sidebar = find.byType(NavSidebar).first;
-          final item = find.descendant(
-            of: sidebar,
-            matching: find.text(id ? pages[page]! : page),
+          await openGalleryPage(
+            tester,
+            id ? pages[page]! : page,
+            menuTooltip: id ? 'Buka navigasi' : 'Open navigation',
           );
-          await tester.scrollUntilVisible(
-            item,
-            180,
-            scrollable: find
-                .descendant(of: sidebar, matching: find.byType(Scrollable))
-                .first,
-          );
-          // Centre the item: one at the drawer's bottom edge misses the tap.
-          await Scrollable.ensureVisible(tester.element(item), alignment: .5);
-          await settle(tester);
-          await tester.tap(item);
-          await settle(tester);
           current = page;
         }
 

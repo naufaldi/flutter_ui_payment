@@ -50,6 +50,32 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
+  testWidgets('captures can leave Kit components past its sidebar specimen '
+      '(#189)', (tester) async {
+    tester.view.physicalSize = const Size(720, 1280);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.reset);
+    final app = await launch(tester);
+    app.updateSettings(const DemoSettings(locale: Locale('en')));
+    app.selectTab(2);
+    await settle(tester);
+    await openGalleryPage(tester, 'Kit components');
+    // Bring the page's own NavSidebar specimen into the tree.
+    final specimen = find.byType(NavSidebar).first;
+    await tester.scrollUntilVisible(
+      specimen,
+      600,
+      scrollable: find
+          .descendant(of: galleryList(), matching: find.byType(Scrollable))
+          .first,
+    );
+    await settle(tester);
+    await openGalleryPage(tester, 'Charts');
+    expect(find.byType(PaymentSparkline), findsWidgets);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('English gallery table formats every fee and its total', (
     tester,
   ) async {

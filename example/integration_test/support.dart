@@ -22,6 +22,51 @@ Finder galleryList() => find.byWidgetPredicate(
       (widget.key! as PageStorageKey<String>).value.startsWith('gallery-'),
 );
 
+/// The gallery's own sidebar: in the drawer on phones, beside the body on
+/// wide layouts. Kit specimens render NavSidebars of their own in the page
+/// list, so skip anything inside it (#189).
+Finder gallerySidebar() => _outsideGallery((w) => w is NavSidebar);
+
+Finder _outsideGallery(bool Function(Widget) matches) =>
+    find.byElementPredicate((element) {
+      if (!matches(element.widget)) return false;
+      var inGallery = false;
+      element.visitAncestorElements((ancestor) {
+        final key = ancestor.widget.key;
+        inGallery =
+            key is PageStorageKey<String> && key.value.startsWith('gallery-');
+        return !inGallery;
+      });
+      return !inGallery;
+    }).first;
+
+/// Opens a gallery page by its [label] from the app's own navigation.
+Future<void> openGalleryPage(
+  WidgetTester tester,
+  String label, {
+  String menuTooltip = 'Open navigation',
+}) async {
+  final menu = _outsideGallery((w) => w is Tooltip && w.message == menuTooltip);
+  if (menu.evaluate().isNotEmpty) {
+    await tester.tap(menu);
+    await settle(tester);
+  }
+  final sidebar = gallerySidebar();
+  final item = find.descendant(of: sidebar, matching: find.text(label));
+  await tester.scrollUntilVisible(
+    item,
+    180,
+    scrollable: find
+        .descendant(of: sidebar, matching: find.byType(Scrollable))
+        .first,
+  );
+  // Centre the item: one at the drawer's bottom edge misses the tap.
+  await Scrollable.ensureVisible(tester.element(item), alignment: .5);
+  await settle(tester);
+  await tester.tap(item);
+  await settle(tester);
+}
+
 /// Leaves room for the crop cap between the measured app and navigation bars.
 Size catalogCaptureSize(WidgetTester tester, {double physicalWidth = 720}) {
   final view = tester.binding.renderViews.first;
