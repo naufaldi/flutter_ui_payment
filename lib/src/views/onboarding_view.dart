@@ -8,6 +8,7 @@ import '../foundation/layout_rules.dart';
 import '../foundation/first_line.dart';
 import '../foundation/payment_icons.dart';
 import '../foundation/payment_motion.dart';
+import '../foundation/motion_swap.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/payment_tokens.dart';
 import '../interaction/interaction.dart';
@@ -170,12 +171,11 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
                   ),
                   // Loading, each task and done arrive from below as the
                   // flow moves forward (D94). The leaving step takes no
-                  // taps and is hidden from screen readers.
-                  AnimatedSwitcher(
-                    duration: motion.enter,
-                    reverseDuration: motion.exit,
-                    transitionBuilder: PaymentMotion.fadeRise,
-                    layoutBuilder: PaymentMotion.topLayout,
+                  // taps or focus and is hidden from screen readers. If
+                  // reduced motion turns on mid-swap, the swap ends at once.
+                  MotionSwap(
+                    transition: PaymentMotion.fadeRise,
+                    easeSize: false,
                     child: SizedBox(
                       key: ValueKey(
                         w.completed

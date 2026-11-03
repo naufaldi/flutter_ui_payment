@@ -1,11 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:flutter_ui_payment/src/foundation/loading_handoff.dart';
 
 import 'content_host.dart';
 import 'helpers/reduced_motion.dart';
 
-// Content handoffs (D94, #196–#199): onboarding steps arrive from below,
+// Content handoffs (D94, #196â€“#199): onboarding steps arrive from below,
 // loading hands off to content, task marks turn, and a kit-owned slot
 // collapses, all after mount only. Leaving content takes no taps.
 
@@ -124,7 +127,7 @@ void main() {
     await t.pumpAndSettle();
     expect(find.byType(LoadingSkeleton), findsNothing);
 
-    // Ready → ready (a search or filter result) is instant, height included.
+    // Ready â†’ ready (a search or filter result) is instant, height included.
     await t.pumpWidget(history(loading: false, rs: [record('2')]));
     await t.pump();
     expect(t.hasRunningAnimations, isFalse);
@@ -200,5 +203,72 @@ void main() {
       ),
     );
     expect(find.text('Save profile'), findsNothing);
+  });
+
+  testWidgets('a ready result shorter than its skeleton eases up, with no '
+      'jump when the handoff ends', (t) async {
+    Widget app(bool loading) => contentHost(
+      Column(
+        children: [
+          LoadingHandoff(
+            loading: loading,
+            child: SizedBox(key: ValueKey(loading), height: loading ? 300 : 50),
+          ),
+          const Text('Below'),
+        ],
+      ),
+    );
+    await t.pumpWidget(app(true));
+    await t.pumpWidget(app(false));
+    var last = t.getTopLeft(find.text('Below')).dy;
+    var biggest = 0.0;
+    for (var i = 0; i < 40; i++) {
+      await t.pump(const Duration(milliseconds: 16));
+      final dy = t.getTopLeft(find.text('Below')).dy;
+      biggest = max(biggest, (dy - last).abs());
+      last = dy;
+    }
+    expect(last, 50, reason: 'settled at the ready height');
+    expect(
+      biggest,
+      lessThan(100),
+      reason: 'eased (the curve peaks near 80 dp), no jump',
+    );
+    expect(t.hasRunningAnimations, isFalse);
+  });
+
+  testWidgets('reduced motion turned on mid-swap ends the step swap at once', (
+    t,
+  ) async {
+    await t.pumpWidget(onboarding(tasks: _tasks, step: 'Save profile'));
+    await t.pumpWidget(onboarding(tasks: _next, step: 'Link bank'));
+    await t.pump(const Duration(milliseconds: 60));
+    expect(find.text('Save profile'), findsOneWidget, reason: 'fading out');
+
+    ReducedMotion.iosReduceMotion.apply(t, const SizedBox());
+    await t.pump();
+    expect(find.text('Save profile'), findsNothing);
+    expect(opacityOf(t, find.text('Link bank')), 1);
+  });
+
+  testWidgets('a leaving step loses focus and is left out of keyboard '
+      'traversal', (t) async {
+    Widget app(List<PaymentTaskListItem> tasks, Widget step) => contentHost(
+      PaymentOnboardingView(title: 'Set up payouts', tasks: tasks, child: step),
+    );
+    await t.pumpWidget(app(_tasks, const TextField(key: ValueKey('name'))));
+    await t.showKeyboard(find.byKey(const ValueKey('name')));
+    final node = t.widget<EditableText>(find.byType(EditableText)).focusNode;
+    expect(node.hasFocus, isTrue);
+
+    await t.pumpWidget(app(_next, const Text('Link bank')));
+    await t.pump(const Duration(milliseconds: 60));
+    expect(
+      find.byKey(const ValueKey('name')),
+      findsOneWidget,
+      reason: 'fading',
+    );
+    expect(node.hasFocus, isFalse);
+    expect(node.canRequestFocus, isFalse);
   });
 }

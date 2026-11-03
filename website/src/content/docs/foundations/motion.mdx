@@ -86,7 +86,7 @@ AnimatedSwitcher(
 | `PaymentMotion.fadeScale` | Fade plus a scale from 0.95 | Compact element swaps: an icon, a glyph, a badge, a task status mark | Full-width bands or rows; animate from nothing |
 | `PaymentMotion.fadeRise` | Fade plus a fixed 8 dp rise, the same on every screen. `back: true` fades only, with no rise | Forward content and step changes, such as onboarding's loading, tasks and done; the back mode when the flow moves back | Animate from nothing |
 | `motion.fullWidthSwap(child)` | Fade only, at `enter` in and `exit` out, with the height eased by `AnimatedSize` (`enter`, `easeInOut`) | Full-width status content; a skeleton handing off to its content; a slot that appears or collapses | Scale; a search or filter result in content that is already showing |
-| `PaymentMotion.topLayout` | No motion: the layout for a swap | Any `AnimatedSwitcher`: the leaving child keeps painting but takes no taps and is hidden from screen readers | Let a leaving "Pay" button be pressed |
+| `PaymentMotion.topLayout` | No motion: the layout for a swap | Any `AnimatedSwitcher`: the leaving child keeps painting but takes no taps or keyboard focus and is hidden from screen readers; a leaving control loses focus | Let a leaving "Pay" button be pressed |
 
 `fadeRise` fits `AnimatedSwitcher.transitionBuilder` as it is. Flipping the direction mid-swap keeps the leaving child's state. For the back mode, pass a closure, so going back never looks like going forward:
 
