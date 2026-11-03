@@ -83,10 +83,10 @@ AnimatedSwitcher(
 
 | Builder | Motion | Use for | Don't |
 | --- | --- | --- | --- |
-| `PaymentMotion.fadeScale` | Fade plus a scale from 0.95 | Compact element swaps: an icon, a glyph, a badge | Full-width bands or rows; animate from nothing |
-| `PaymentMotion.fadeRise` | Fade plus a fixed 8 dp rise, the same on every screen. `back: true` fades only, with no rise | Forward content and step changes; the back mode when the flow moves back | Animate from nothing |
-| `motion.fullWidthSwap(child)` | Fade only, at `enter` in and `exit` out, with the height eased by `AnimatedSize` (`enter`, `easeInOut`) | Full-width status content | Scale |
-| `PaymentMotion.topLayout` | No motion: the layout for a swap | Any `AnimatedSwitcher`: the leaving child keeps painting but takes no taps and is hidden from screen readers | Let a leaving "Pay" button be pressed |
+| `PaymentMotion.fadeScale` | Fade plus a scale from 0.95 | Compact element swaps: an icon, a glyph, a badge, a task status mark | Full-width bands or rows; animate from nothing |
+| `PaymentMotion.fadeRise` | Fade plus a fixed 8 dp rise, the same on every screen. `back: true` fades only, with no rise | Forward content and step changes, such as onboarding's loading, tasks and done; the back mode when the flow moves back | Animate from nothing |
+| `motion.fullWidthSwap(child)` | Fade only, at `enter` in and `exit` out, with the height eased by `AnimatedSize` (`enter`, `easeInOut`) | Full-width status content; a skeleton handing off to its content; a slot that appears or collapses | Scale; a search or filter result in content that is already showing |
+| `PaymentMotion.topLayout` | No motion: the layout for a swap | Any `AnimatedSwitcher`: the leaving child keeps painting but takes no taps or keyboard focus and is hidden from screen readers; a leaving control loses focus | Let a leaving "Pay" button be pressed |
 
 `fadeRise` fits `AnimatedSwitcher.transitionBuilder` as it is. Flipping the direction mid-swap keeps the leaving child's state. For the back mode, pass a closure, so going back never looks like going forward:
 
@@ -110,6 +110,18 @@ PaymentMotion.of(context).fullWidthSwap(
 ```
 
 With the durations from `PaymentMotion.of`, every swap is instant under reduced motion; `fullWidthSwap` reads them itself. The payment and verification status views swap their status this way.
+
+### Content handoffs
+
+Content that arrives or leaves moves only on a state change after the widget is built, never on its first build (D94):
+
+- `PaymentOnboardingView` brings in loading, each task's content and the done message with `fadeRise`, and the done mark settles in with `fadeScale`. Its `error` banner fades in and out, and the step below glides.
+- `TransactionHistory`, `PaymentOverviewPage`, `PaymentDetailPagePropertyList` and `PromoSlot` hand their skeleton over to content with `fullWidthSwap`. Only the loading → ready step moves: a search, a filter or new data in content that is already showing changes at once, height included.
+- `PromoSlot` fades between all its states, and a dismissed offer collapses with `collapseWhenEmpty` while the content below glides up.
+- `PaymentTaskList` turns a task's status mark with `fadeScale` over `quick`.
+- `ChartModule` swaps its plot at once: the plot keeps a fixed height, so nothing below moves.
+
+The kit can only animate slots it owns. When your screen adds or removes a banner itself, wrap that slot in `fullWidthSwap` with a key per state, such as `const SizedBox.shrink(key: ValueKey('none'))` when it's empty.
 
 ## Reduced motion
 
@@ -172,6 +184,8 @@ Sheets, wide confirm dialogs and toasts follow the kit tokens and reduced motion
 | A selection or border change | `quick` |
 | A compact swap | `enter` + `exit`, `fadeScale` |
 | A full-width content swap | `fullWidthSwap` |
+| Loading handing off to content, or a slot appearing or collapsing | `fullWidthSwap` |
+| A task's status mark | `quick`, `fadeScale` |
 | A flow step | `fadeRise`; `back: true` when going back |
 | A sheet | `sheetEnter` + `sheetExit`, drawer curve |
 | Any of these with reduced motion (either flag) | Zero duration, scale 1 |

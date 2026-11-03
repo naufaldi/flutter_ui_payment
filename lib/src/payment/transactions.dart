@@ -9,6 +9,7 @@ import '../foundation/row_shell.dart';
 import '../controls/text_field.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/layout_rules.dart';
+import '../foundation/loading_handoff.dart';
 import '../foundation/money.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';
@@ -366,7 +367,13 @@ class TransactionHistory extends StatelessWidget {
             onSelected: (i) => onFilterChanged(filters[i]),
           ),
         ],
-        Semantics(liveRegion: true, container: true, child: content),
+        Semantics(
+          liveRegion: true,
+          container: true,
+          // Only the skeleton → list handoff animates; a search or filter
+          // swaps the rows at once (D94).
+          child: LoadingHandoff(loading: loading, child: content),
+        ),
       ],
     );
   }

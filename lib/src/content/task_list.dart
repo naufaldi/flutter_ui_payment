@@ -7,6 +7,7 @@ import '../foundation/payment_type.dart';
 import '../foundation/row_shell.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
+import '../foundation/payment_motion.dart';
 import '../foundation/payment_tokens.dart';
 
 /// Host-owned task progress.
@@ -48,6 +49,17 @@ class PaymentTaskList extends StatelessWidget {
       48.0,
       lineHeightOf(context, type.label) + 2 * theme.space(PaymentSpace.block),
     );
+    // A status change turns the mark into the next one: a quick fade and a
+    // scale from 0.95, the copy button's recipe (D94). Instant under reduced
+    // motion, and nothing plays on the first build.
+    final motion = PaymentMotion.of(context);
+    Widget glyph(Widget icon) => motion.reduced
+        ? icon
+        : AnimatedSwitcher(
+            duration: motion.quick,
+            transitionBuilder: PaymentMotion.fadeScale,
+            child: icon,
+          );
     Widget row(PaymentTaskListItem item, {bool last = true}) {
       final done = item.status == PaymentTaskStatus.complete;
       final label = [
@@ -80,14 +92,17 @@ class PaymentTaskList extends StatelessWidget {
                     children: [
                       SizedBox(
                         height: iconBand,
-                        child: Icon(
-                          icon,
-                          color:
-                              done ||
-                                  item.status == PaymentTaskStatus.inProgress
-                              ? theme.accent
-                              : theme.textSecondary,
-                          size: 24,
+                        child: glyph(
+                          Icon(
+                            icon,
+                            key: ValueKey(item.status),
+                            color:
+                                done ||
+                                    item.status == PaymentTaskStatus.inProgress
+                                ? theme.accent
+                                : theme.textSecondary,
+                            size: 24,
+                          ),
                         ),
                       ),
                       if (!last)

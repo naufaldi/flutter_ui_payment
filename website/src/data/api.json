@@ -4982,7 +4982,7 @@
         "static": false,
         "type": "Widget",
         "signature": "Widget fullWidthSwap(Widget child)",
-        "doc": "Swaps full-width content, such as a status header, with a fade only:\n`enter` in, `exit` out, and the height eased over `enter` on\n`easeInOut`, so the content below glides instead of jumping. All of it\nis instant under reduced motion. Give each state's `child` its own key.\n\nIt never scales: scaling a full-width slab moves its edges and reads as\na lurch. Use `fadeScale` for compact elements only. The leaving child\ntakes no taps (`topLayout`). Painting is clipped to the eased height\nonly while it grows; at rest nothing is clipped, focus rings included.\nIf reduced motion turns on mid-swap, the swap ends on the next frame."
+        "doc": "Swaps full-width content, such as a status header, with a fade only:\n`enter` in, `exit` out, and the height eased over `enter` on\n`easeInOut`, so the content below glides instead of jumping. All of it\nis instant under reduced motion. Give each state's `child` its own key.\n\nIt never scales: scaling a full-width slab moves its edges and reads as\na lurch. Use `fadeScale` for compact elements only. The leaving child\ntakes no taps (`topLayout`). Painting is clipped to the eased height\ntakes no taps and can't hold focus (`topLayout`). Painting is clipped\nto the eased height only while it grows; at rest nothing is clipped,\nfocus rings included. If reduced motion turns on mid-swap, the swap\nends on the next frame."
       },
       {
         "name": "topLayout",
@@ -4990,7 +4990,7 @@
         "static": true,
         "type": "Widget",
         "signature": "static Widget topLayout(Widget? current, List<Widget> previous)",
-        "doc": "Layout for swaps: outgoing children keep painting while they fade but\ntake no taps and are hidden from screen readers, so a leaving \"Pay\"\nbutton can never be pressed."
+        "doc": "Layout for swaps: outgoing children keep painting while they fade but\ntake no taps, are hidden from screen readers and are left out of\nkeyboard focus, so a leaving \"Pay\" button can never be pressed. A\ncontrol that has focus when it starts leaving loses it."
       }
     ],
     "copyWith": null

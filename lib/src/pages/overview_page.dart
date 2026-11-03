@@ -7,6 +7,7 @@ import 'detail_page_table.dart';
 import '../charts/charts.dart';
 import '../foundation/payment_tokens.dart';
 import '../foundation/layout_rules.dart';
+import '../foundation/loading_handoff.dart';
 
 /// Non-scrolling page modules; place inside a FullPageView.
 class PaymentOverviewPage extends StatelessWidget {
@@ -42,23 +43,27 @@ class PaymentOverviewPage extends StatelessWidget {
     final theme = PaymentTheme.of(context);
     final after =
         theme.space(PaymentSpace.section) - theme.space(PaymentSpace.related);
-    Widget column(List<Widget> items, int count) => Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: pending
-          ? [
-              for (var i = 0; i < count; i++)
-                const LoadingSkeleton(rows: 3, leading: false),
-            ]
-          : [
-              for (final item in items)
-                if (item is ChartModule)
-                  Padding(
-                    padding: EdgeInsets.only(bottom: after),
-                    child: item,
-                  )
-                else
-                  item,
-            ],
+    // Only the placeholder → modules handoff animates (D94).
+    Widget column(List<Widget> items, int count) => LoadingHandoff(
+      loading: pending,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: pending
+            ? [
+                for (var i = 0; i < count; i++)
+                  const LoadingSkeleton(rows: 3, leading: false),
+              ]
+            : [
+                for (final item in items)
+                  if (item is ChartModule)
+                    Padding(
+                      padding: EdgeInsets.only(bottom: after),
+                      child: item,
+                    )
+                  else
+                    item,
+              ],
+      ),
     );
     return LayoutBuilder(
       builder: (context, k) {
