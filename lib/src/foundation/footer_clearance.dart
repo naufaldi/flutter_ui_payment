@@ -63,8 +63,8 @@ class PinnedFooterRegistry {
         !frame.hasSize) {
       return null;
     }
-    double? top(Widget? slot) {
-      final box = _slotBox(scaffold!, slot);
+    double? top(Widget? slot, String name) {
+      final box = slot == null ? null : _slotBox(scaffold!, name);
       return box == null
           ? null
           : frame.globalToLocal(box.localToGlobal(Offset.zero)).dy;
@@ -72,8 +72,10 @@ class PinnedFooterRegistry {
 
     final height = frame.size.height;
     final widget = scaffold.widget;
-    final navTop = top(widget.bottomNavigationBar);
-    final fabTop = _aboveFab(widget) ? top(widget.floatingActionButton) : null;
+    final navTop = top(widget.bottomNavigationBar, 'bottomNavigationBar');
+    final fabTop = _aboveFab(widget)
+        ? top(widget.floatingActionButton, 'floatingActionButton')
+        : null;
     final double base;
     if (fabTop != null) {
       base = navTop == null ? fabTop : math.min(navTop, fabTop);
@@ -93,24 +95,36 @@ class PinnedFooterRegistry {
     return frame.localToGlobal(Offset(0, base)).dy;
   }
 
-  /// The laid-out box of [slot], a widget the scaffold places itself, such as
-  /// its bottom navigation bar. The search is shallow and skips nested
-  /// scaffolds: the scaffold places its slots near its own root.
-  static RenderBox? _slotBox(ScaffoldState scaffold, Widget? slot) {
-    if (slot == null) return null;
-    RenderBox? found;
-    void visit(Element e, int depth) {
-      if (found != null) return;
-      if (identical(e.widget, slot)) {
-        final box = e.renderObject;
-        if (box is RenderBox && box.attached && box.hasSize) found = box;
+  /// The laid-out box of the scaffold's own [name] slot, such as
+  /// `bottomNavigationBar`: the [LayoutId] child the scaffold positions in
+  /// its multi-child layout. Only that layout's direct children are read, so
+  /// the body (or a nested scaffold) can never stand in for a slot, even when
+  /// it holds the same widget instance (#204 R3).
+  static RenderBox? _slotBox(ScaffoldState scaffold, String name) {
+    Element? layout;
+    void find(Element e, int depth) {
+      if (layout != null) return;
+      if (e.widget is CustomMultiChildLayout) {
+        layout = e;
         return;
       }
       if (depth == 0 || e.widget is Scaffold) return;
-      e.visitChildren((c) => visit(c, depth - 1));
+      e.visitChildren((c) => find(c, depth - 1));
     }
 
-    (scaffold.context as Element).visitChildren((c) => visit(c, 32));
+    (scaffold.context as Element).visitChildren((c) => find(c, 16));
+    RenderBox? found;
+    layout?.visitChildren((c) {
+      final id = (c.widget is LayoutId) ? (c.widget as LayoutId).id : null;
+      final box = c.renderObject;
+      if (id is Enum &&
+          id.name == name &&
+          box is RenderBox &&
+          box.attached &&
+          box.hasSize) {
+        found = box;
+      }
+    });
     return found;
   }
 

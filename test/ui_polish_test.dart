@@ -135,6 +135,52 @@ void main() {
     expect(toastBottom(t), moreOrLessEquals(footer.top - 16, epsilon: 0.5));
   });
 
+  // #204 R3: the same widget instance in the body and the navigation slot
+  // must not be mistaken for the slot.
+  testWidgets('a toast still clears the footer when the navigation bar '
+      'widget is also used in the body', (t) async {
+    await setSurface(t, const Size(360, 640));
+    const bar = SizedBox(height: 80);
+    late BuildContext page;
+    await t.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: const [PaymentLocalizations.delegate],
+        home: Scaffold(
+          body: Column(
+            children: [
+              bar,
+              Expanded(
+                child: Builder(
+                  builder: (context) {
+                    page = context;
+                    return PaymentDetailPage(
+                      title: 'Payment',
+                      primaryAction: PaymentButton(
+                        label: 'View receipt',
+                        onPressed: () {},
+                      ),
+                      primary: const [
+                        PaymentPageModule(
+                          title: 'Payment',
+                          child: Text('Body'),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          bottomNavigationBar: bar,
+        ),
+      ),
+    );
+    showPaymentToast(page, message: 'Receipt opened');
+    await t.pumpAndSettle();
+    final footer = t.getRect(find.byType(PinnedFooter));
+    expect(toastBottom(t), moreOrLessEquals(footer.top - 16, epsilon: 0.5));
+  });
+
   // #201, D96.
   testWidgets('a primary link is underlined, so it never reads as a heading', (
     t,
