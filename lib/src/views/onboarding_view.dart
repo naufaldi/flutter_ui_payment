@@ -5,6 +5,10 @@ import '../foundation/payment_localizations.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/view_frame.dart';
 import '../foundation/layout_rules.dart';
+import '../foundation/first_line.dart';
+import '../foundation/payment_icons.dart';
+import '../foundation/payment_motion.dart';
+import '../foundation/payment_type.dart';
 import '../foundation/payment_tokens.dart';
 import '../interaction/interaction.dart';
 import '../content/task_list.dart';
@@ -68,6 +72,10 @@ class PaymentOnboardingView extends StatefulWidget {
 }
 
 class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
+  // True once the flow finishes while on screen: only then does the done
+  // mark settle in. A view first built completed shows it at rest.
+  bool _finishedHere = false;
+
   void completed() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) widget.onCompleted?.call();
@@ -83,7 +91,10 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
   @override
   void didUpdateWidget(covariant PaymentOnboardingView old) {
     super.didUpdateWidget(old);
-    if (!old.completed && widget.completed) completed();
+    if (!old.completed && widget.completed) {
+      _finishedHere = true;
+      completed();
+    }
   }
 
   @override
@@ -104,11 +115,10 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
       (t) => t.status != PaymentTaskStatus.complete,
     );
 
+    final motion = PaymentMotion.of(context);
+    final gap = PaymentTheme.of(context).space(PaymentSpace.group);
     final content = w.completed
-        ? StateMessage(
-            icon: Icons.check_circle_outline,
-            title: l.onboardingDone,
-          )
+        ? _DoneMessage(title: l.onboardingDone, settle: _finishedHere)
         : w.pending
         ? Semantics(
             liveRegion: true,
@@ -141,10 +151,47 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: PaymentTheme.of(context).space(PaymentSpace.group),
+            spacing: gap,
             children: [
-              if (w.error != null) w.error!,
-              content,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // The kit-owned banner slot fades and its height eases,
+                  // so the step below glides when an error shows or clears
+                  // (D94). Its gap travels with it.
+                  motion.fullWidthSwap(
+                    w.error == null
+                        ? const SizedBox.shrink(key: ValueKey('no-error'))
+                        : Padding(
+                            key: const ValueKey('error'),
+                            padding: EdgeInsets.only(bottom: gap),
+                            child: w.error,
+                          ),
+                  ),
+                  // Loading, each task and done arrive from below as the
+                  // flow moves forward (D94). The leaving step takes no
+                  // taps and is hidden from screen readers.
+                  AnimatedSwitcher(
+                    duration: motion.enter,
+                    reverseDuration: motion.exit,
+                    transitionBuilder: PaymentMotion.fadeRise,
+                    layoutBuilder: PaymentMotion.topLayout,
+                    child: SizedBox(
+                      key: ValueKey(
+                        w.completed
+                            ? 'done'
+                            : w.pending
+                            ? 'loading'
+                            : 'task-$current',
+                      ),
+                      // Filled, so the step keeps the column's start edge in
+                      // the switcher's stack.
+                      width: double.infinity,
+                      child: content,
+                    ),
+                  ),
+                ],
+              ),
               if (!wide)
                 PaymentAccordionItem(
                   title: l.allSteps,
@@ -181,6 +228,45 @@ class _PaymentOnboardingViewState extends State<PaymentOnboardingView> {
           ),
         );
       },
+    );
+  }
+}
+
+/// The "done" message, laid out as a [StateMessage], whose mark settles in
+/// with a compact fade and scale from 0.95 when [settle] is set (D94).
+class _DoneMessage extends StatelessWidget {
+  const _DoneMessage({required this.title, required this.settle});
+
+  final String title;
+  final bool settle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    final motion = PaymentMotion.of(context);
+    return Semantics(
+      container: true,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: theme.space(PaymentSpace.group),
+        ),
+        child: FirstLineRow(
+          leading: ExcludeSemantics(
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: settle && !motion.reduced ? 0 : 1, end: 1),
+              duration: motion.enter,
+              builder: (context, t, glyph) =>
+                  PaymentMotion.fadeScale(glyph!, AlwaysStoppedAnimation(t)),
+              child: const PaymentIcon(
+                Icons.check_circle_outline,
+                color: PaymentTextColor.secondary,
+              ),
+            ),
+          ),
+          gap: theme.space(PaymentSpace.block),
+          text: Text(title, style: PaymentType.of(context).heading),
+        ),
+      ),
     );
   }
 }

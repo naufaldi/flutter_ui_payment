@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
+import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/primitives.dart';
@@ -311,6 +312,20 @@ class PromoSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Every state change fades and the slot's height eases, so a dismissed
+    // offer collapses and the checkout below glides up (D94). A new offer in
+    // the ready state updates in place. Filled, so the card keeps the
+    // column's start edge in the swap's stack.
+    return PaymentMotion.of(context).fullWidthSwap(
+      SizedBox(
+        key: ValueKey(state),
+        width: double.infinity,
+        child: _slot(context),
+      ),
+    );
+  }
+
+  Widget _slot(BuildContext context) {
     final l10n = PaymentLocalizations.of(context);
     final theme = PaymentTheme.of(context);
     switch (state) {

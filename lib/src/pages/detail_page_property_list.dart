@@ -7,6 +7,7 @@ import '../foundation/payment_localizations.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/page_module_frame.dart';
 import '../foundation/first_line.dart';
+import '../foundation/loading_handoff.dart';
 import '../controls/actions.dart';
 import '../foundation/tap_target.dart';
 import '../interaction/interaction.dart';
@@ -281,7 +282,8 @@ class PaymentDetailPagePropertyList extends StatelessWidget {
                   ),
               ],
             ),
-      child: body,
+      // Only the skeleton → content handoff animates (D94).
+      child: LoadingHandoff(loading: pending, child: body),
     );
   }
 }
