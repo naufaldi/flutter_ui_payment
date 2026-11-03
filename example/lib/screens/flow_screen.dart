@@ -16,7 +16,11 @@ import '../dev_chrome.dart';
 
 /// The demo purchase flow. Renders [DemoCoordinator] state step by step and
 /// forwards every user intent to it; no business state lives here.
-class FlowScreen extends StatelessWidget {
+///
+/// Hierarchical steps are routes on a nested [Navigator], so the iOS
+/// edge swipe and Android predictive back pop them; the payment steps from
+/// confirm on share one guarded route and switch in place (D93).
+class FlowScreen extends StatefulWidget {
   const FlowScreen({
     super.key,
     required this.coordinator,
@@ -24,6 +28,7 @@ class FlowScreen extends StatelessWidget {
     required this.onRestart,
     required this.onBackground,
     required this.onOpenSettings,
+    this.active = true,
   });
 
   final DemoCoordinator coordinator;
@@ -35,6 +40,196 @@ class FlowScreen extends StatelessWidget {
   /// at most two trailing actions and step titles fit (P7a).
   final void Function(VoidCallback demoTools) onOpenSettings;
 
+  /// False while another tab is shown: system back and back gestures then
+  /// leave this flow alone.
+  final bool active;
+
+  @override
+  State<FlowScreen> createState() => _FlowScreenState();
+}
+
+/// The steps that stay in place on one route, with back guarded (D93).
+bool _onPaymentRoute(FlowStep step) => switch (step) {
+  FlowStep.confirm ||
+  FlowStep.authorize ||
+  FlowStep.payment ||
+  FlowStep.receipt => true,
+  _ => false,
+};
+
+String _routeKey(FlowStep step) =>
+    _onPaymentRoute(step) ? 'flow-route-payment' : 'flow-route-${step.name}';
+
+class _FlowScreenState extends State<FlowScreen> with WidgetsBindingObserver {
+  final _navigator = GlobalKey<NavigatorState>();
+
+  /// Route keys of the stack last handed to the navigator.
+  Set<String> _keys = const {};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  // Reduced motion on iOS arrives as a platform feature, not a MediaQuery
+  // change, so the routes rebuild to read it.
+  @override
+  void didChangeAccessibilityFeatures() => setState(() {});
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// A route left the navigator. When the coordinator still shows it, the
+  /// person popped it (back button, edge swipe or predictive back), so the
+  /// coordinator takes the same back action. Otherwise the coordinator moved
+  /// on first and the navigator only caught up.
+  void _didRemovePage(Page<Object?> page) {
+    if (page is! _FlowPage || !_keys.contains(_routeKey(page.step))) return;
+    if (_onPaymentRoute(page.step)) return;
+    _handleBack(context, widget.coordinator, page.step);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: widget.coordinator,
+      builder: (context, _) {
+        final c = widget.coordinator;
+        final stack = c.routeStack;
+        _keys = {for (final step in stack) _routeKey(step)};
+        return NavigatorPopHandler<Object?>(
+          enabled: widget.active,
+          onPopWithResult: (_) => _navigator.currentState?.maybePop(),
+          child: Navigator(
+            key: _navigator,
+            onDidRemovePage: _didRemovePage,
+            pages: [
+              for (final step in stack)
+                _FlowPage(
+                  key: ValueKey(_routeKey(step)),
+                  step: step,
+                  active: widget.active,
+                  child: _FlowStepPage(
+                    coordinator: c,
+                    step: step,
+                    root: step == stack.first,
+                    scenarioLabel: widget.scenarioLabel,
+                    onRestart: widget.onRestart,
+                    onBackground: widget.onBackground,
+                    onOpenSettings: widget.onOpenSettings,
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// One route of the flow. The page keeps the last child it was given, so a
+/// route that is leaving keeps showing its own step.
+class _FlowPage extends Page<void> {
+  const _FlowPage({
+    required LocalKey super.key,
+    required this.step,
+    required this.active,
+    required this.child,
+  });
+
+  final FlowStep step;
+  final bool active;
+  final Widget child;
+
+  @override
+  Route<void> createRoute(BuildContext context) => _FlowRoute(this);
+}
+
+/// The platform page transition (Cupertino on iOS, predictive back on
+/// Android), with no motion when reduced motion is on (B9, D66). A swipe
+/// still follows the finger: it is direct manipulation, not animation.
+class _FlowRoute extends PageRoute<void>
+    with MaterialRouteTransitionMixin<void> {
+  _FlowRoute(_FlowPage page) : super(settings: page);
+
+  _FlowPage get _page => settings as _FlowPage;
+
+  bool get _reduced => PaymentMotion.of(navigator!.context).reduced;
+
+  @override
+  Widget buildContent(BuildContext context) => _page.child;
+
+  @override
+  bool get maintainState => true;
+
+  @override
+  bool get popGestureEnabled => _page.active && super.popGestureEnabled;
+
+  @override
+  Duration get transitionDuration =>
+      _reduced ? Duration.zero : super.transitionDuration;
+
+  @override
+  Duration get reverseTransitionDuration =>
+      _reduced ? Duration.zero : super.reverseTransitionDuration;
+
+  @override
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    // Reduced motion turned on mid-transition: finish it next frame.
+    final controller = this.controller;
+    if (PaymentMotion.of(context).reduced &&
+        controller != null &&
+        controller.isAnimating &&
+        !popGestureInProgress) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!controller.isAnimating) return;
+        controller.value = controller.status == AnimationStatus.reverse ? 0 : 1;
+      });
+    }
+    return super.buildTransitions(
+      context,
+      animation,
+      secondaryAnimation,
+      child,
+    );
+  }
+
+  @override
+  String get debugLabel => '${super.debugLabel}(${_page.step.name})';
+}
+
+/// The screen for one route: its app bar, body and pinned action.
+class _FlowStepPage extends StatelessWidget {
+  const _FlowStepPage({
+    required this.coordinator,
+    required this.step,
+    required this.root,
+    required this.scenarioLabel,
+    required this.onRestart,
+    required this.onBackground,
+    required this.onOpenSettings,
+  });
+
+  final DemoCoordinator coordinator;
+
+  /// The step this route shows. The payment route follows the coordinator
+  /// while it is on top.
+  final FlowStep step;
+  final bool root;
+  final String scenarioLabel;
+  final VoidCallback onRestart;
+  final VoidCallback onBackground;
+  final void Function(VoidCallback demoTools) onOpenSettings;
+
   @override
   Widget build(BuildContext context) {
     // The column is measured from the width this screen gets, not the
@@ -43,13 +238,10 @@ class FlowScreen extends StatelessWidget {
     // checkout bar and the app bar each sit inside them (#88). The list,
     // the bar and the title fit share this one width (#87).
     return LayoutBuilder(
-      builder: (context, k) => ListenableBuilder(
-        listenable: coordinator,
-        builder: (context, _) {
-          final side = MediaQuery.paddingOf(context);
-          return _build(context, k.maxWidth - side.left - side.right);
-        },
-      ),
+      builder: (context, k) {
+        final side = MediaQuery.paddingOf(context);
+        return _build(context, k.maxWidth - side.left - side.right);
+      },
     );
   }
 
@@ -57,9 +249,8 @@ class FlowScreen extends StatelessWidget {
   Widget _build(BuildContext context, double width) {
     final c = coordinator;
     final s = DemoStrings.of(context);
-    final atRoot = c.step == FlowStep.overview || c.step == FlowStep.signIn;
-    final view = _isViewStep(c.step) && !c.starting;
-    final title = _ownHeader(c) ? null : _title(s, c.step);
+    final view = _isViewStep(step) && !c.starting;
+    final title = _ownHeader(c, step) ? null : _title(s, step);
     final titleLines = title == null
         ? 1
         : _appBarTitleLines(
@@ -67,177 +258,179 @@ class FlowScreen extends StatelessWidget {
             title,
             room: appBarTitleRoom(
               width,
-              leading: !atRoot,
+              leading: !root,
               actions: c.signedIn ? 2 : 1,
             ),
           );
-    return PopScope(
-      canPop: atRoot,
-      onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) _handleBack(context, c);
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          // A title that doesn't fit on one line wraps to two in a
-          // taller bar instead of ending in "…" (#80).
-          toolbarHeight: titleLines == 1
-              ? null
-              : kToolbarHeight + _appBarTitleLine(context),
-          leading: atRoot
-              ? null
-              : BackButton(onPressed: () => _handleBack(context, c)),
-          title: title == null
-              ? null
-              : Text(title, maxLines: titleLines, softWrap: true),
-          actions: [
-            if (c.signedIn) _AccountMenu(coordinator: c),
-            IconButton(
-              key: const Key('settings'),
-              tooltip: s.settings,
-              icon: const Icon(Icons.tune),
-              onPressed: () => onOpenSettings(
-                () => _showDemoTools(
-                  context,
-                  coordinator: c,
-                  scenarioLabel: scenarioLabel,
-                  onRestart: onRestart,
-                  onBackground: onBackground,
-                ),
+    final content = view
+        ? SizedBox.expand(
+            key: ValueKey('flow-view-${step.name}'),
+            child: _StepBody(coordinator: c, step: step),
+          )
+        : ListView(
+            key: ValueKey('flow-list-${step.name}'),
+            // At 600 dp and wider the steps sit in a centred
+            // 640 dp column; the scrollbar stays at the
+            // window edge (D53).
+            // The order context adds its own group gutter. Extend
+            // only the two-column end so its text meets the bar (#146).
+            padding: EdgeInsetsDirectional.fromSTEB(
+              16 + listInset(width, step),
+              8,
+              16 +
+                  listInset(width, step) -
+                  (step == FlowStep.checkout &&
+                          !c.starting &&
+                          _checkoutTwoColumns(width - 32)
+                      ? PaymentTheme.of(context).space(PaymentSpace.group)
+                      : 0),
+              24,
+            ),
+            children: [
+              if (c.starting)
+                Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Center(child: Text(s.loading)),
+                )
+              else
+                _StepBody(coordinator: c, step: step),
+            ],
+          );
+    final scaffold = Scaffold(
+      appBar: AppBar(
+        // A title that doesn't fit on one line wraps to two in a
+        // taller bar instead of ending in "…" (#80).
+        toolbarHeight: titleLines == 1
+            ? null
+            : kToolbarHeight + _appBarTitleLine(context),
+        automaticallyImplyLeading: false,
+        // Hierarchical routes pop like any route; the payment route's
+        // guard below decides what back does there.
+        leading: root ? null : const BackButton(),
+        title: title == null
+            ? null
+            : Text(title, maxLines: titleLines, softWrap: true),
+        actions: [
+          if (c.signedIn) _AccountMenu(coordinator: c),
+          IconButton(
+            key: const Key('settings'),
+            tooltip: s.settings,
+            icon: const Icon(Icons.tune),
+            onPressed: () => onOpenSettings(
+              () => _showDemoTools(
+                context,
+                coordinator: c,
+                scenarioLabel: scenarioLabel,
+                onRestart: onRestart,
+                onBackground: onBackground,
               ),
             ),
-          ],
-        ),
-        // Checkout pins its action under the list; the other payment
-        // steps pin theirs inside the step (D62).
-        bottomNavigationBar:
-            c.step == FlowStep.checkout && !c.starting && !c.obscured
-            ? _EnterFade(
-                child: _CheckoutBar(
-                  c,
-                  maxContentWidth: contentCap(width, c.step),
-                ),
-              )
-            : null,
-        // A view step's pinned footer pads the bottom inset itself.
-        body: SafeArea(
-          bottom: !view,
-          child: PrivacyMask(
-            obscured: c.obscured,
-            child: _FlowStepSwitcher(
-              step: c.step,
-              child: view
-                  ? SizedBox.expand(
-                      key: ValueKey('flow-view-${c.step.name}'),
-                      child: _StepBody(coordinator: c, step: c.step),
-                    )
-                  : ListView(
-                      key: ValueKey('flow-list-${c.step.name}'),
-                      // At 600 dp and wider the steps sit in a centred
-                      // 640 dp column; the scrollbar stays at the
-                      // window edge (D53).
-                      // The order context adds its own group gutter. Extend
-                      // only the two-column end so its text meets the bar (#146).
-                      padding: EdgeInsetsDirectional.fromSTEB(
-                        16 + listInset(width, c.step),
-                        8,
-                        16 +
-                            listInset(width, c.step) -
-                            (c.step == FlowStep.checkout &&
-                                    !c.starting &&
-                                    _checkoutTwoColumns(width - 32)
-                                ? PaymentTheme.of(
-                                    context,
-                                  ).space(PaymentSpace.group)
-                                : 0),
-                        24,
-                      ),
-                      children: [
-                        if (c.starting)
-                          Padding(
-                            padding: const EdgeInsets.all(32),
-                            child: Center(child: Text(s.loading)),
-                          )
-                        else
-                          _StepBody(coordinator: c, step: c.step),
-                      ],
-                    ),
-            ),
           ),
+        ],
+      ),
+      // Checkout pins its action under the list; the other payment
+      // steps pin theirs inside the step (D62).
+      bottomNavigationBar:
+          step == FlowStep.checkout && !c.starting && !c.obscured
+          ? _CheckoutBar(c, maxContentWidth: contentCap(width, step))
+          : null,
+      // A view step's pinned footer pads the bottom inset itself.
+      body: SafeArea(
+        bottom: !view,
+        child: PrivacyMask(
+          obscured: c.obscured,
+          child: _onPaymentRoute(step)
+              ? _FlowStepSwitcher(step: step, child: content)
+              : content,
         ),
       ),
     );
-  }
-
-  String _title(DemoStrings s, FlowStep step) => switch (step) {
-    FlowStep.overview => s.appName,
-    FlowStep.signIn => s.appName,
-    FlowStep.history => s.transactions,
-    FlowStep.transactionDetail ||
-    FlowStep.statement ||
-    FlowStep.fees ||
-    FlowStep.accountSettings => s.yourAccount,
-    FlowStep.kycIntro => s.stepConsent,
-    FlowStep.kycIdentity => s.stepIdentity,
-    FlowStep.kycDocuments => s.stepDocuments,
-    FlowStep.kycReview => s.stepReview,
-    FlowStep.kycStatus => s.stepStatus,
-    FlowStep.checkout => s.stepCheckout,
-    FlowStep.confirm => s.stepConfirm,
-    FlowStep.authorize => s.stepAuthorize,
-    FlowStep.payment => s.stepPayment,
-    FlowStep.receipt => s.stepReceipt,
-  };
-
-  Future<void> _handleBack(BuildContext context, DemoCoordinator c) async {
-    // Keep parent returns in _FlowStepSwitcherState._goingBack aligned.
-    // This dispatch also has state-dependent targets, guarded actions and
-    // a confirmation dialog, so a static parent map cannot replace it.
-    switch (c.step) {
-      case FlowStep.signIn:
-      case FlowStep.overview:
-        return;
-      case FlowStep.transactionDetail:
-        c.closeDetail();
-      case FlowStep.history ||
-          FlowStep.statement ||
-          FlowStep.fees ||
-          FlowStep.accountSettings:
-        c.goHome();
-      case FlowStep.kycIntro || FlowStep.kycStatus || FlowStep.checkout:
-        c.goHome();
-      case FlowStep.kycIdentity:
-        c.kyc.status == VerificationStatus.actionRequired
-            ? c.kycAction(VerificationAction.start)
-            : c.goHome();
-      case FlowStep.kycDocuments:
-        c.editIdentity();
-      case FlowStep.kycReview:
-        c.editDocuments();
-      case FlowStep.confirm:
-        await c.openCheckout();
-      case FlowStep.authorize:
-        if (c.authPhase != AuthorizationPhase.inProgress) c.backToReview();
-      case FlowStep.receipt:
-        c.resumeAttempt();
-      case FlowStep.payment:
-        if (!c.hasUnresolvedAttempt) {
-          c.finish();
-          return;
-        }
-        final s = DemoStrings.of(context);
-        final leave = await showPaymentConfirmDialog(
-          context,
-          title: s.leaveTitle,
-          message: s.leaveMessage,
-          confirmLabel: s.leave,
-          cancelLabel: s.stay,
-          destructive: false,
-        );
-        if (leave) c.goHome();
-    }
+    if (!_onPaymentRoute(step)) return scaffold;
+    // Payment steps keep back guarded: no swipe, and back is ignored while
+    // authorizing and confirmed before leaving an unresolved payment.
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _handleBack(context, c, step);
+      },
+      child: scaffold,
+    );
   }
 }
 
+String _title(DemoStrings s, FlowStep step) => switch (step) {
+  FlowStep.overview => s.appName,
+  FlowStep.signIn => s.appName,
+  FlowStep.history => s.transactions,
+  FlowStep.transactionDetail ||
+  FlowStep.statement ||
+  FlowStep.fees ||
+  FlowStep.accountSettings => s.yourAccount,
+  FlowStep.kycIntro => s.stepConsent,
+  FlowStep.kycIdentity => s.stepIdentity,
+  FlowStep.kycDocuments => s.stepDocuments,
+  FlowStep.kycReview => s.stepReview,
+  FlowStep.kycStatus => s.stepStatus,
+  FlowStep.checkout => s.stepCheckout,
+  FlowStep.confirm => s.stepConfirm,
+  FlowStep.authorize => s.stepAuthorize,
+  FlowStep.payment => s.stepPayment,
+  FlowStep.receipt => s.stepReceipt,
+};
+
+/// Back from [step]. A hierarchical step's target must be its parent in
+/// [DemoCoordinator.routeStack], since its route has already popped.
+Future<void> _handleBack(
+  BuildContext context,
+  DemoCoordinator c,
+  FlowStep step,
+) async {
+  switch (step) {
+    case FlowStep.signIn:
+    case FlowStep.overview:
+      return;
+    case FlowStep.transactionDetail:
+      c.closeDetail();
+    case FlowStep.history ||
+        FlowStep.statement ||
+        FlowStep.fees ||
+        FlowStep.accountSettings:
+      c.goHome();
+    case FlowStep.kycIntro || FlowStep.kycStatus || FlowStep.checkout:
+      c.goHome();
+    case FlowStep.kycIdentity:
+      c.kyc.status == VerificationStatus.actionRequired
+          ? c.kycAction(VerificationAction.start)
+          : c.goHome();
+    case FlowStep.kycDocuments:
+      c.editIdentity();
+    case FlowStep.kycReview:
+      c.editDocuments();
+    case FlowStep.confirm:
+      await c.openCheckout();
+    case FlowStep.authorize:
+      if (c.authPhase != AuthorizationPhase.inProgress) c.backToReview();
+    case FlowStep.receipt:
+      c.resumeAttempt();
+    case FlowStep.payment:
+      if (!c.hasUnresolvedAttempt) {
+        c.finish();
+        return;
+      }
+      final s = DemoStrings.of(context);
+      final leave = await showPaymentConfirmDialog(
+        context,
+        title: s.leaveTitle,
+        message: s.leaveMessage,
+        confirmLabel: s.leave,
+        cancelLabel: s.stay,
+        destructive: false,
+      );
+      if (leave) c.goHome();
+  }
+}
+
+/// Switches the payment steps in place on their one route (D71, D93).
 class _FlowStepSwitcher extends StatefulWidget {
   const _FlowStepSwitcher({required this.step, required this.child});
   final FlowStep step;
@@ -262,10 +455,7 @@ const double _stepRise = 8;
 
 class _FlowStepSwitcherState extends State<_FlowStepSwitcher>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  late final List<FlowStep> _path = [
-    FlowStep.overview,
-    if (widget.step != FlowStep.overview) widget.step,
-  ];
+  late final List<FlowStep> _path = [widget.step];
   late _StepEntry _current = _StepEntry(
     widget.child,
     AnimationController(vsync: this, value: 1),
@@ -282,46 +472,26 @@ class _FlowStepSwitcherState extends State<_FlowStepSwitcher>
   @override
   void didChangeAccessibilityFeatures() => setState(() {});
 
+  /// A visited step or a parent return goes back; anything else forward.
   bool _goingBack(FlowStep previous) {
     if (widget.step == previous) return false;
     final i = _path.lastIndexOf(widget.step);
-    // A correction or restart starts a new pass. Scenario shortcuts can start
-    // beyond edit/resume destinations that have not been visited yet.
-    final correction =
-        previous == FlowStep.kycStatus &&
-        (widget.step == FlowStep.kycIntro ||
-            widget.step == FlowStep.kycIdentity ||
-            widget.step == FlowStep.kycDocuments);
-    // Mirrors the parent returns in FlowScreen._handleBack, whose dispatch
-    // also handles state-dependent targets, guarded actions and confirmation.
+    // Mirrors the payment parent returns in _handleBack.
     final parentReturn = switch ((previous, widget.step)) {
-      (FlowStep.kycDocuments, FlowStep.kycIdentity) ||
-      (FlowStep.kycReview, FlowStep.kycDocuments) ||
-      (FlowStep.kycIdentity, FlowStep.kycIntro) ||
-      (FlowStep.confirm, FlowStep.checkout) ||
       (FlowStep.authorize, FlowStep.confirm) ||
       (FlowStep.receipt, FlowStep.payment) => true,
       _ => false,
     };
-    final back =
-        !correction &&
-        (i >= 0 || widget.step == FlowStep.overview || parentReturn);
-    if (correction) {
-      // Every transition leaves its destination at the end of the path.
-      // A status-first shortcut has no earlier correction destination;
-      // remove the departed status itself so submitting is forward again.
-      final trimFrom = i >= 0 ? i : _path.lastIndexOf(previous);
-      if (trimFrom >= 0) _path.removeRange(trimFrom, _path.length);
-      _path.add(widget.step);
-    } else if (back && i >= 0) {
+    if (i >= 0) {
       _path.removeRange(i + 1, _path.length);
-    } else if (back) {
-      _path.removeLast();
-      _path.add(widget.step);
+    } else if (parentReturn) {
+      _path
+        ..removeLast()
+        ..add(widget.step);
     } else {
       _path.add(widget.step);
     }
-    return back;
+    return i >= 0 || parentReturn;
   }
 
   @override
@@ -403,57 +573,6 @@ class _FlowStepSwitcherState extends State<_FlowStepSwitcher>
     return PaymentMotion.topLayout(_transition(_current), [
       for (final entry in _leaving) _transition(entry),
     ]);
-  }
-}
-
-class _EnterFade extends StatefulWidget {
-  const _EnterFade({required this.child});
-  final Widget child;
-  @override
-  State<_EnterFade> createState() => _EnterFadeState();
-}
-
-class _EnterFadeState extends State<_EnterFade>
-    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  late final AnimationController _controller;
-  late final CurvedAnimation _opacity;
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _controller = AnimationController(vsync: this);
-    _opacity = CurvedAnimation(
-      parent: _controller,
-      curve: PaymentMotion.easeOut,
-    );
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final motion = PaymentMotion.of(context);
-    if (motion.reduced) {
-      _controller.value = 1;
-    } else if (_controller.duration == null) {
-      _controller.duration = motion.enter;
-      _controller.forward();
-    }
-  }
-
-  @override
-  void didChangeAccessibilityFeatures() => setState(() {});
-  @override
-  Widget build(BuildContext context) {
-    if (PaymentMotion.of(context).reduced) _controller.value = 1;
-    return FadeTransition(opacity: _opacity, child: widget.child);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _opacity.dispose();
-    _controller.dispose();
-    super.dispose();
   }
 }
 
@@ -1019,6 +1138,8 @@ Future<void> _showDemoTools(
   required VoidCallback onBackground,
 }) => showModalBottomSheet<void>(
   context: context,
+  // Over the whole window, not inside the flow's own navigator (D93).
+  useRootNavigator: true,
   isScrollControlled: true,
   showDragHandle: true,
   backgroundColor: devWorkbench(context),
@@ -1220,7 +1341,7 @@ bool _isViewStep(FlowStep step) => switch (step) {
 };
 
 /// Steps whose page header carries the title, so the app bar has none.
-bool _ownHeader(DemoCoordinator c) => switch (c.step) {
+bool _ownHeader(DemoCoordinator c, FlowStep step) => switch (step) {
   FlowStep.signIn ||
   FlowStep.kycIdentity ||
   FlowStep.kycDocuments ||
@@ -1250,7 +1371,7 @@ bool inPaymentFlow(FlowStep step) => switch (step) {
   _ => false,
 };
 
-/// D84 extends D62 to pushed details; keep this rule when #107 adds routes.
+/// D84 extends D62 to pushed details; D93 keeps it for the flow's routes.
 bool hidesTabBar(FlowStep step) =>
     inPaymentFlow(step) ||
     switch (step) {

@@ -244,9 +244,10 @@ Future<void> pumpUntilFound(
   reason: finder.describeMatch(Plurality.one),
 );
 
-/// A few frames for route transitions and layout.
+/// A few frames for route transitions and layout. The flow's page transitions
+/// take 450 ms on Android and 500 ms on iOS from the frame they start (D93).
 Future<void> settle(WidgetTester tester) async {
-  for (var i = 0; i < 6; i++) {
+  for (var i = 0; i < 10; i++) {
     await tester.pump(const Duration(milliseconds: 60));
   }
 }

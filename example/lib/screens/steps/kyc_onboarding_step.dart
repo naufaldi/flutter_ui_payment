@@ -145,7 +145,7 @@ class _KycDocuments extends StatelessWidget {
       if (!allowed || !context.mounted) return;
     }
     if (source == CaptureSource.camera) {
-      await Navigator.of(context).push(
+      await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute<void>(
           builder: (_) => KycCaptureScreen(
             c: c,
@@ -162,6 +162,7 @@ class _KycDocuments extends StatelessWidget {
     final l10n = PaymentLocalizations.of(context);
     final fixture = await showModalBottomSheet<DocumentFixture>(
       context: context,
+      useRootNavigator: true,
       showDragHandle: true,
       isScrollControlled: true,
       builder: (context) => SafeArea(

@@ -233,6 +233,7 @@ class _Shell extends StatelessWidget {
         scenarioLabel: app.activeScenario.id,
         onRestart: app.simulateRestart,
         onBackground: app.simulateBackground,
+        active: app.tab == 0,
         onOpenSettings: (demoTools) =>
             showSettingsSheet(context, app, onDemoTools: demoTools),
       ),

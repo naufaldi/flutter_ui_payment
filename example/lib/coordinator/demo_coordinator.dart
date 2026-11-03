@@ -102,6 +102,45 @@ class DemoCoordinator extends ChangeNotifier {
   }
 
   void closeDetail() => _go(_detailFrom);
+
+  /// The step the open transaction detail returns to.
+  FlowStep get detailFrom => _detailFrom;
+
+  /// The flow's route stack, root first (D93). Hierarchical steps each get a
+  /// route, so the platform back gesture can pop them; the payment steps
+  /// from [FlowStep.confirm] on share one route and switch in place.
+  /// Every entry's parent is the step its back action returns to.
+  List<FlowStep> get routeStack => _stackOf(step);
+
+  List<FlowStep> _stackOf(FlowStep s) => switch (s) {
+    FlowStep.overview || FlowStep.signIn => [s],
+    FlowStep.history ||
+    FlowStep.statement ||
+    FlowStep.fees ||
+    FlowStep.accountSettings ||
+    FlowStep.kycIntro ||
+    FlowStep.kycStatus ||
+    FlowStep.checkout ||
+    FlowStep.payment ||
+    FlowStep.receipt => [FlowStep.overview, s],
+    // A correction pass restarts at the intro, so back returns there.
+    FlowStep.kycIdentity => [
+      FlowStep.overview,
+      if (kyc.status == VerificationStatus.actionRequired) FlowStep.kycIntro,
+      s,
+    ],
+    FlowStep.kycDocuments => [..._stackOf(FlowStep.kycIdentity), s],
+    FlowStep.kycReview => [..._stackOf(FlowStep.kycDocuments), s],
+    FlowStep.confirm ||
+    FlowStep.authorize => [FlowStep.overview, FlowStep.checkout, s],
+    FlowStep.transactionDetail => [
+      if (_detailFrom == FlowStep.transactionDetail)
+        FlowStep.overview
+      else
+        ..._stackOf(_detailFrom),
+      s,
+    ],
+  };
   Future<String> reportProblem({
     required String category,
     required int length,

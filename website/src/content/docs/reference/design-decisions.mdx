@@ -140,7 +140,7 @@ On 2 November 2026 the kit's and the example's motion was reviewed against nativ
 | D68 | Drawer items never animate. The phone drawer panel keeps its platform slide and edge swipe. | Current behaviour |
 | D69 | Full-width status changes fade, and the height eases. Only small elements scale. | Current behaviour |
 | D70 | Content rises a fixed 8 dp on every screen. Going back fades without a rise. | Current behaviour |
-| D71 | In the example app, going forward rises and going back fades. The outgoing step fades in place in either direction. Restarting or correcting KYC from status is a new forward pass, even to a visited step. Native back gestures inside the flow come later ([#107](https://github.com/naufaldi/flutter_ui_payment/issues/107)). | Current behaviour; native back gestures in [#107](https://github.com/naufaldi/flutter_ui_payment/issues/107) |
+| D71 | In the example app, going forward rises and going back fades. The outgoing step fades in place in either direction. Restarting or correcting KYC from status is a new forward pass, even to a visited step. Native back gestures inside the flow come later ([#107](https://github.com/naufaldi/flutter_ui_payment/issues/107)). | Current behaviour inside the payment steps; native back gestures by D93 |
 | D72 | The host's theme decides the press splash. The example turns the ripple off on iOS. | Current behaviour |
 | D73 | The kit has no haptic API. The host plays haptics from callbacks it already has, and charts report scrub selection. Material controls keep the SDK's own tap and long-press feedback (`Feedback.forTap`, `Feedback.forLongPress`). | Current behaviour |
 | D74 | Amounts, balances, countdowns and totals change in place. They never count or roll. | Current behaviour |
@@ -210,6 +210,12 @@ The 320 dp gesture row adds the header's 8 dp to the measured tab-fold result (+
 | Decision | In plain words | Status |
 | --- | --- | --- |
 | D92 | The confirmation, search, menu and focus view pick their phone or wide form from the window's shorter side. A phone held sideways (640 × 360 dp) keeps the phone sheets; a tablet keeps the wide forms in both orientations. Page layouts, such as footers, tables and the centred column, still follow the width. Amends D45, D50 and D55. On the Android phone in landscape, the width rule ran the search list under the tab bar, let a menu cover its own ⋮ button, and cut a 200% confirmation after two lines. Orchestrator decision, option (a), [#147](https://github.com/naufaldi/flutter_ui_payment/issues/147). | Current behaviour |
+
+## Flow routes, 3 November 2026
+
+| Decision | In plain words | Status |
+| --- | --- | --- |
+| D93 | In the example app, the account pages, history → detail, the KYC steps, KYC status and checkout are separate screens, so the iOS edge swipe and Android's predictive back preview work there. The payment steps from confirm through the receipt stay on one screen with back guarded: no swipe, back is ignored while authorizing, and leaving an unresolved payment asks first. A screen that is leaving keeps showing what it showed, even when the app has already cleared that data. With reduced motion, screens change without animation. Supersedes D71's deferral ([#107](https://github.com/naufaldi/flutter_ui_payment/issues/107)). | Current behaviour |
 
 ## Open items
 
