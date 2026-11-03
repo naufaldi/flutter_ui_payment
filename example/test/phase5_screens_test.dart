@@ -164,7 +164,8 @@ void main() {
     await settle(t);
     await tapVisible(t, find.text('Select all on this page'));
     expect(c.selectedSettlements.length, 10);
-    expect(find.text('Download selected (10)'), findsOneWidget);
+    expect(find.text('10 selected'), findsOneWidget);
+    expect(find.text('Download selected'), findsOneWidget);
     await tapVisible(t, find.text('Sort: Date, newest first'));
     await tapVisible(
       t,

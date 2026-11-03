@@ -92,6 +92,7 @@ class DemoStrings {
   String get attempts => _t("Attempts", "Percobaan");
   String get merchant => _t("Merchant", "Merchant");
   String get viewReceipt => _t("View receipt", "Lihat struk");
+  String get receiptOpened => _t('Receipt opened', 'Struk dibuka');
   String get reportProblem => _t("Report a problem", "Laporkan masalah");
   String get whatWentWrong => _t("What went wrong?", "Apa masalahnya?");
   String get chargedTwice => _t("Charged twice", "Terdebit dua kali");
@@ -145,8 +146,7 @@ class DemoStrings {
   );
   String reportSent(String caseId) =>
       _t('Report sent. Case $caseId', 'Laporan terkirim. Kasus $caseId');
-  String downloadSelected(int n) =>
-      _t('Download selected ($n)', 'Unduh yang dipilih ($n)');
+  String get downloadSelected => _t('Download selected', 'Unduh yang dipilih');
   String prepared(int n) =>
       _t('Prepared $n settlements', '$n penyelesaian disiapkan');
 

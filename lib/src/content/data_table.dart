@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../foundation/primitives.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
@@ -557,24 +558,24 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
                   ),
                 ],
               ),
+            // The count and the batch actions share one 48 dp band, like
+            // Select all and Sort. The actions keep their one-line natural
+            // width beside the count; when both don't fit, the actions drop
+            // under the count (D97).
             if (w.selection != null && selected.isNotEmpty)
-              Row(
+              _SelectionBar(
+                spacing: theme.space(PaymentSpace.related),
+                direction: Directionality.of(context),
                 children: [
-                  if (selected.isNotEmpty) ...[
-                    Expanded(
-                      child: Semantics(
-                        liveRegion: true,
-                        child: Text(
-                          l.rowsSelected(selected.length),
-                          style: type.label.tabular,
-                        ),
-                      ),
+                  Semantics(
+                    liveRegion: true,
+                    child: Text(
+                      l.rowsSelected(selected.length),
+                      style: type.label.tabular,
                     ),
-                    if (w.batchActions.isNotEmpty)
-                      Flexible(
-                        child: PaymentButtonGroup(children: w.batchActions),
-                      ),
-                  ],
+                  ),
+                  if (w.batchActions.isNotEmpty)
+                    PaymentButtonGroup(children: w.batchActions),
                 ],
               ),
             if (narrow && cols.any((c) => c.sortable))
@@ -825,4 +826,144 @@ class _PaymentDataTableState<T> extends State<PaymentDataTable<T>> {
       },
     );
   }
+}
+
+/// The band every narrow toolbar line keeps: Select all, the selection
+/// count and Sort (D97).
+const double _toolbarBand = 48;
+
+/// A selection count and its batch actions (D97). When the actions'
+/// one-line natural width fits beside the count's, they share one band with
+/// the actions on the end edge. Otherwise the actions drop under the
+/// count's band, `spacing` below it, with the full width to lay out in.
+class _SelectionBar extends MultiChildRenderObjectWidget {
+  const _SelectionBar({
+    required this.spacing,
+    required this.direction,
+    required super.children,
+  });
+  final double spacing;
+  final TextDirection direction;
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderSelectionBar(spacing, direction);
+  @override
+  void updateRenderObject(BuildContext context, _RenderSelectionBar r) {
+    r
+      ..spacing = spacing
+      ..direction = direction
+      ..markNeedsLayout();
+  }
+}
+
+class _BarData extends ContainerBoxParentData<RenderBox> {}
+
+class _RenderSelectionBar extends RenderBox
+    with
+        ContainerRenderObjectMixin<RenderBox, _BarData>,
+        RenderBoxContainerDefaultsMixin<RenderBox, _BarData> {
+  _RenderSelectionBar(this.spacing, this.direction);
+  double spacing;
+  TextDirection direction;
+
+  @override
+  void setupParentData(RenderBox child) {
+    if (child.parentData is! _BarData) child.parentData = _BarData();
+  }
+
+  RenderBox get _count => firstChild!;
+  RenderBox? get _actions => childAfter(firstChild!);
+
+  double _oneLine(RenderBox box) => box.getMaxIntrinsicWidth(double.infinity);
+
+  bool _fits(double width) {
+    final actions = _actions;
+    return actions == null ||
+        _oneLine(_count) + spacing + _oneLine(actions) <= width;
+  }
+
+  void _place(RenderBox box, double x, double y) =>
+      (box.parentData! as _BarData).offset = Offset(
+        direction == TextDirection.ltr ? x : size.width - x - box.size.width,
+        y,
+      );
+
+  @override
+  void performLayout() {
+    final count = _count;
+    final actions = _actions;
+    final max = constraints.maxWidth;
+    if (_fits(max)) {
+      final aw = actions == null ? 0.0 : _oneLine(actions);
+      actions?.layout(BoxConstraints(maxWidth: aw), parentUsesSize: true);
+      count.layout(
+        BoxConstraints(
+          maxWidth: math.max(0, max - (actions == null ? 0 : aw + spacing)),
+        ),
+        parentUsesSize: true,
+      );
+      final height = math.max(
+        _toolbarBand,
+        math.max(count.size.height, actions?.size.height ?? 0),
+      );
+      size = constraints.constrain(Size(max, height));
+      _place(count, 0, (height - count.size.height) / 2);
+      if (actions != null) {
+        _place(
+          actions,
+          max - actions.size.width,
+          (height - actions.size.height) / 2,
+        );
+      }
+      return;
+    }
+    count.layout(BoxConstraints(maxWidth: max), parentUsesSize: true);
+    actions!.layout(BoxConstraints(maxWidth: max), parentUsesSize: true);
+    final band = math.max(_toolbarBand, count.size.height);
+    size = constraints.constrain(
+      Size(max, band + spacing + actions.size.height),
+    );
+    _place(count, 0, (band - count.size.height) / 2);
+    _place(actions, 0, band + spacing);
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) =>
+      defaultPaint(context, offset);
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) =>
+      defaultHitTestChildren(result, position: position);
+
+  @override
+  double computeMinIntrinsicWidth(double height) => math.max(
+    _count.getMinIntrinsicWidth(height),
+    _actions?.getMinIntrinsicWidth(height) ?? 0,
+  );
+
+  @override
+  double computeMaxIntrinsicWidth(double height) {
+    final actions = _actions;
+    return _oneLine(_count) +
+        (actions == null ? 0 : spacing + _oneLine(actions));
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) =>
+      computeMaxIntrinsicHeight(width);
+
+  @override
+  double computeMaxIntrinsicHeight(double width) {
+    final count = _count.getMaxIntrinsicHeight(width);
+    final actions = _actions;
+    if (actions == null) return math.max(_toolbarBand, count);
+    final a = actions.getMaxIntrinsicHeight(width);
+    if (_fits(width)) return math.max(_toolbarBand, math.max(count, a));
+    return math.max(_toolbarBand, count) + spacing + a;
+  }
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) => constraints.constrain(
+    Size(constraints.maxWidth, computeMaxIntrinsicHeight(constraints.maxWidth)),
+  );
 }

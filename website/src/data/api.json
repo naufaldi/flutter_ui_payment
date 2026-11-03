@@ -17756,7 +17756,7 @@
     "values": [
       {
         "name": "primary",
-        "doc": "Heading-weight accent action."
+        "doc": "Underlined heading-weight accent action."
       },
       {
         "name": "secondary",

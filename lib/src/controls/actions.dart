@@ -122,7 +122,7 @@ class PaymentIconButton extends StatelessWidget {
 
 /// Inline text hierarchy. Nothing else exists.
 enum PaymentLinkVariant {
-  /// Heading-weight accent action.
+  /// Underlined heading-weight accent action.
   primary,
 
   /// Underlined secondary caption.
@@ -163,9 +163,12 @@ class PaymentLink extends StatelessWidget {
       PaymentLinkVariant.primary => true,
       PaymentLinkVariant.secondary => false,
     };
-    final style = primary
-        ? type.heading
-        : type.caption.copyWith(decoration: TextDecoration.underline);
+    // Both variants are underlined: with a monochrome accent the primary's
+    // colour alone matches heading text, so the underline is the link cue
+    // that never depends on colour (D96).
+    final style = (primary ? type.heading : type.caption).copyWith(
+      decoration: TextDecoration.underline,
+    );
     return Semantics(
       container: true,
       excludeSemantics: true,

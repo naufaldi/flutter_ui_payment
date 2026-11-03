@@ -9,6 +9,7 @@ import 'button_copy.dart';
 import 'first_line.dart';
 import 'focus_ring.dart';
 import 'tap_target.dart';
+import 'footer_clearance.dart';
 import '../controls/button_group.dart';
 import '../interaction/interaction.dart';
 import '../interaction/menu_key_handoff.dart';
@@ -61,7 +62,9 @@ class ContentColumn extends StatelessWidget {
 /// top, then `group` padding or the bottom safe-area inset when that is
 /// larger. The hairline spans its parent; with [maxContentWidth] the content
 /// keeps that column cap, so it lines up with the content above it (D53).
-class PinnedFooter extends StatelessWidget {
+/// While mounted it registers its band, so a kit toast floats above it
+/// (D95).
+class PinnedFooter extends StatefulWidget {
   const PinnedFooter({
     super.key,
     required this.child,
@@ -77,9 +80,31 @@ class PinnedFooter extends StatelessWidget {
   /// for a sheet whose body has no cap of its own.
   final double? maxContentWidth;
   @override
+  State<PinnedFooter> createState() => _PinnedFooterState();
+}
+
+class _PinnedFooterState extends State<PinnedFooter> {
+  late final _entry = PinnedFooterEntry(context);
+
+  @override
+  void initState() {
+    super.initState();
+    PinnedFooterRegistry.add(_entry);
+  }
+
+  @override
+  void dispose() {
+    PinnedFooterRegistry.remove(_entry);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    _entry.update(context);
     final theme = PaymentTheme.of(context);
-    final cap = maxContentWidth;
+    final cap = widget.maxContentWidth;
+    final padding = widget.padding;
+    final child = widget.child;
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: theme.outline)),

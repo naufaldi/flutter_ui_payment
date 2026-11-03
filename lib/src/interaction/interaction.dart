@@ -6,6 +6,7 @@ import '../foundation/tap_target.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../foundation/footer_clearance.dart';
 
 import '../foundation/focus_ring.dart';
 import '../foundation/row_shell.dart';
@@ -1045,6 +1046,11 @@ PaymentToastController _showToast(
     messenger.hideCurrentSnackBar();
   }
   queue.reduced = motion.reduced;
+  // D95: a toast floats `group` above a pinned kit footer on screen instead
+  // of covering its actions. The lift is only the overlap left after the
+  // scaffold's own placement, read once, when the toast shows.
+  final gap = theme.space(PaymentSpace.group);
+  final lift = PinnedFooterRegistry.lift(messenger);
   controller._feature = messenger.showSnackBar(
     SnackBar(
       behavior: SnackBarBehavior.floating,
@@ -1053,12 +1059,7 @@ PaymentToastController _showToast(
       elevation: 0,
       showCloseIcon: false,
       shape: const RoundedRectangleBorder(),
-      margin: EdgeInsets.fromLTRB(
-        theme.space(PaymentSpace.group),
-        0,
-        theme.space(PaymentSpace.group),
-        theme.space(PaymentSpace.group),
-      ),
+      margin: EdgeInsets.fromLTRB(gap, 0, gap, gap + lift),
       padding: EdgeInsets.zero,
       onVisible: controller._onVisible,
       content: _ToastContent(
