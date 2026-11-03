@@ -63,6 +63,55 @@ void main() {
     handle.dispose();
   });
 
+  testWidgets('on a 320 dp phone at 200% the status filter is a button on the '
+      'search line (D91)', (tester) async {
+    tester.view.physicalSize = const Size(320, 569);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final handle = tester.ensureSemantics();
+    var filter = TransactionFilter.all;
+    Widget history(double scale) => host(
+      StatefulBuilder(
+        builder: (context, setState) => TransactionHistory(
+          records: const [],
+          query: '',
+          filter: filter,
+          onQueryChanged: (_) {},
+          onFilterChanged: (f) => setState(() => filter = f),
+          onOpen: (_) {},
+          searchActions: [_button(null, (_) {})],
+        ),
+      ),
+      scale,
+    );
+    // Normal text keeps the tabs.
+    await tester.pumpWidget(history(1));
+    expect(find.byType(PaymentTabs), findsOneWidget);
+    await tester.pumpWidget(history(2));
+    expect(find.byType(PaymentTabs), findsNothing);
+    final button = find.byKey(const ValueKey('transaction-status-filter'));
+    final box = tester.getRect(find.byType(InputDecorator));
+    final rect = tester.getRect(button);
+    expect(rect.center.dy, moreOrLessEquals(box.center.dy, epsilon: 0.5));
+    expect(rect.left, greaterThanOrEqualTo(box.right));
+    expect(rect.right, lessThanOrEqualTo(320));
+    expect(rect.width, greaterThanOrEqualTo(48));
+    expect(rect.height, greaterThanOrEqualTo(48));
+    var node = tester.getSemantics(button).getSemanticsData();
+    expect(node.tooltip, 'Filter by status');
+    expect(node.value, 'All');
+    // The person picks a status from the sheet; the button then reads it.
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Refunds'));
+    await tester.pumpAndSettle();
+    expect(filter, TransactionFilter.refunds);
+    node = tester.getSemantics(button).getSemanticsData();
+    expect(node.flagsCollection.isSelected, Tristate.isTrue);
+    expect(node.value, 'Refunds');
+    handle.dispose();
+  });
+
   for (final scale in [1.0, 2.0]) {
     testWidgets('search actions sit centred on the box at $scale', (
       tester,

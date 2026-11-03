@@ -28,9 +28,49 @@ void main() {
       (w) => w is PaymentFullPageView && w.title == 'Transactions',
     );
     expect(
-      find.descendant(of: header, matching: find.byType(PaymentMenu)),
+      find.descendant(
+        of: header,
+        // The status filter's menu (D91) is not the header's ⋮.
+        matching: find.byWidgetPredicate(
+          (w) =>
+              w is PaymentMenu &&
+              w.key != const ValueKey('transaction-status-filter'),
+        ),
+      ),
       findsOneWidget,
     );
+    await t.pumpWidget(const SizedBox());
+    await t.pump(const Duration(seconds: 2));
+  });
+
+  testWidgets('at 320 dp and 200% the first row starts right under the '
+      'search line, above the tab bar (D91, #161)', (t) async {
+    t.view.physicalSize = const Size(320, 569);
+    t.view.devicePixelRatio = 1;
+    t.view.padding = const FakeViewPadding(top: 24, bottom: 48);
+    addTearDown(t.view.reset);
+    final app = await launch(
+      t,
+      settings: const DemoSettings(locale: Locale('en'), textScale: 2),
+    );
+    final c = await runScenario(t, app, 'A01');
+    await pumpUntil(t, () => !c.historyLoading);
+    // No tab row between the search line and the list: the status filter
+    // is a button on the search line.
+    expect(find.byType(PaymentTabs), findsNothing);
+    final search = t.getRect(find.byType(PaymentTextField));
+    final row = find.byType(TransactionListItem).first;
+    expect(t.getRect(row).top, moreOrLessEquals(search.bottom));
+    final navTop = t.getRect(find.byType(NavigationBar)).top;
+    final title = find.descendant(of: row, matching: find.byType(Text)).first;
+    expect(t.getRect(title).bottom, lessThan(navTop));
+    // The person still filters by status, from the button's sheet.
+    await t.tap(find.byKey(const ValueKey('transaction-status-filter')));
+    await settle(t);
+    await t.tap(find.text('Unsuccessful'));
+    await settle(t);
+    expect(c.historyFilter, TransactionFilter.unsuccessful);
+    expect(find.byType(PaymentChip), findsOneWidget);
     await t.pumpWidget(const SizedBox());
     await t.pump(const Duration(seconds: 2));
   });

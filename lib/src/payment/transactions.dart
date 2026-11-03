@@ -8,6 +8,7 @@ import '../controls/controls.dart';
 import '../foundation/row_shell.dart';
 import '../controls/text_field.dart';
 import '../foundation/kit_strings.dart';
+import '../foundation/layout_rules.dart';
 import '../foundation/money.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';
@@ -253,7 +254,8 @@ class TransactionHistory extends StatelessWidget {
   ///
   /// With actions the search line is one compact row at every text size
   /// (D63a): the search label shows as the placeholder, not above the box,
-  /// and stays the field's spoken name.
+  /// and stays the field's spoken name. On phones at large text the status
+  /// filter joins them as a button after these actions (D91).
   final List<Widget> searchActions;
 
   @override
@@ -302,6 +304,45 @@ class TransactionHistory extends StatelessWidget {
       );
     }
 
+    // On phones at large text the status tabs take a line of their own that
+    // pushes the first row under the app's tab bar at 320 dp, so the filter
+    // goes behind a button at the end of the search line (D91). Every filter
+    // stays one tap away; the tabs return at normal text and on wide screens.
+    final folded = PaymentType.isLarge(context) && isCompact(context);
+    final current = filter;
+    final filterButton = MergeSemantics(
+      child: Semantics(
+        selected: current != TransactionFilter.all,
+        value: l10n.transactionFilterLabel(current),
+        child: PaymentMenu(
+          key: const ValueKey('transaction-status-filter'),
+          entries: [
+            for (final f in filters)
+              PaymentMenuItem(
+                label: l10n.transactionFilterLabel(f),
+                icon: f == current ? Icons.check : null,
+                semanticLabel: f == current
+                    ? '${l10n.transactionFilterLabel(f)}, ${l10n.selected}'
+                    : null,
+                onSelected: () => onFilterChanged(f),
+              ),
+          ],
+          trigger: (toggle, focusNode) => PaymentIconButton(
+            focusNode: focusNode,
+            icon: current == TransactionFilter.all
+                ? Icons.filter_list
+                : Icons.filter_list_alt,
+            tooltip: l10n.filterByStatus,
+            variant: current == TransactionFilter.all
+                ? PaymentIconButtonVariant.neutral
+                : PaymentIconButtonVariant.accent,
+            onPressed: toggle,
+          ),
+        ),
+      ),
+    );
+    final actions = [...searchActions, if (folded) filterButton];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -309,20 +350,22 @@ class TransactionHistory extends StatelessWidget {
           query: query,
           onChanged: onQueryChanged,
           label: l10n.searchTransactions,
-          actions: searchActions,
-          hiddenElements: searchActions.isEmpty
+          actions: actions,
+          hiddenElements: actions.isEmpty
               ? const {}
               : const {PaymentFieldPart.label},
         ),
-        SizedBox(height: theme.space(PaymentSpace.related)),
-        PaymentTabs(
-          tabs: [
-            for (final f in filters)
-              PaymentTab(label: l10n.transactionFilterLabel(f)),
-          ],
-          selectedIndex: filters.indexOf(filter),
-          onSelected: (i) => onFilterChanged(filters[i]),
-        ),
+        if (!folded) ...[
+          SizedBox(height: theme.space(PaymentSpace.related)),
+          PaymentTabs(
+            tabs: [
+              for (final f in filters)
+                PaymentTab(label: l10n.transactionFilterLabel(f)),
+            ],
+            selectedIndex: filters.indexOf(filter),
+            onSelected: (i) => onFilterChanged(filters[i]),
+          ),
+        ],
         Semantics(liveRegion: true, container: true, child: content),
       ],
     );
