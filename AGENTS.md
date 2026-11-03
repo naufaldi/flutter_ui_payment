@@ -77,11 +77,19 @@ The flow test runs on a device: take the device lock (Screenshots) first and fol
 
 A full `flutter test` sometimes fails to load a file with "Unable to connect to flutter_tester process: WebSocketException". Re-run that file alone (`flutter test --no-pub test/<file>.dart`) and report both results.
 
+## Emulator ownership and lifetime
+
+- Keep one Android emulator open in the T3 Device panel during active Flutter UI work, including related edits, checks, delegate handoffs, and temporary CI/review waits while the parent task remains unsettled and expects more device work. Do not start a device for work that needs none.
+- The parent orchestrator owns the shared device reservation and lock. Record the parent task/thread, hostId, device id/serial, and current operator in `owner.md` inside the device lock directory. Include these details and the lock path in device-work briefs. Serialize device control; reuse only within the owning task or after explicit handoff.
+- Delegates return control to the parent when finished. They stop their runners and recorders, but do not shut down the shared emulator or remove its lock. Delegate completion, a recoverable check failure, or a turn ending does not mean the parent task is finished.
+- Stop recordings promptly after each bounded capture. Keeping the emulator open never authorizes repeated checks while waiting for CI/review.
+- The parent closes the task-owned device with `device_close` and `shutdown: true` and removes the lock when the task settles, is cancelled or terminally fails, no further device work is expected, or actual resource pressure requires release. Coordinate release or explicit handoff when another task needs the slot. Confirm cleanup and preserve unrelated/user-owned devices. Follow the owner's global device rules for all device operations.
+
 ## Screenshots
 
 Docs captures come from Android only (D81): the phone AVD `FlutterPayment_API37_2` (360×640 dp, dpr 2) and, for wide layouts, `PixelTablet_API37` (1280×800 dp). One emulator at a time; follow the owner's global device rules. iOS captures are retired.
 
-- Take the device lock first: `New-Item -ItemType Directory C:\DevTools\locks\flutter-ui-payment-device.lock`. If it exists, retry every 60 s. Remove it when done, including on failure.
+- Take the device lock first: `New-Item -ItemType Directory C:\DevTools\locks\flutter-ui-payment-device.lock`. Add the owner note described above. An explicitly assigned operator in the owning parent task uses the existing reservation rather than acquiring it again. For another task's lock, coordinate with its owner and retry every 60 s; never remove an unknown/stale lock without resolving ownership. Retain the lock across the parent task's device session and remove it at final cleanup or explicit handoff as described above.
 - Capture from `example/` into the directory the docs read:
   `$env:SCREENSHOT_DIR='build/screenshots_hairline'; flutter drive --no-pub --driver=test_driver/integration_driver.dart --target=integration_test/<catalog_screenshots|screenshots|kit_screenshots>_test.dart -d <serial>`
 - The tests render the Flutter layer in-app (`capture()` in `integration_test/support.dart`). Don't call `convertFlutterSurfaceToImage`; it stalls on the API 37 image.
