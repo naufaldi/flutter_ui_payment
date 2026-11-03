@@ -577,8 +577,9 @@ void main() {
   testWidgets('X04 account switch discards the old account response', (
     tester,
   ) async {
-    // Real latency so the slow check is still running when we switch.
-    final app = await launch(tester, latencyScale: 0.5);
+    // Full latency (3 s checks) so the slow check is still running when we
+    // switch, after the route transitions settle (D93).
+    final app = await launch(tester, latencyScale: 1);
     final c = await runScenario(tester, app, 'X04');
     expect(c.step, FlowStep.payment);
     // The slow status check for account A is still in flight.

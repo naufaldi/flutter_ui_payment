@@ -1,344 +1,229 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter_ui_payment_example/coordinator/demo_coordinator.dart';
-
-import 'package:flutter_ui_payment_example/adapters/fake_host.dart';
-import 'package:flutter_ui_payment_example/scenarios/scenario_config.dart';
-import 'package:flutter_ui_payment_example/screens/flow_screen.dart';
-import 'package:flutter_ui_payment_example/themes.dart';
-
-import 'package:flutter_ui_payment_example/screens/steps/kyc_onboarding_step.dart';
+import 'package:flutter_ui_payment_example/main.dart';
 
 import '../integration_test/support.dart';
 
 Finder body(FlowStep step) => find.byKey(ValueKey('flow-view-${step.name}'));
-Finder fadeOf(Finder child) =>
-    find.ancestor(of: child, matching: find.byType(FadeTransition)).first;
+
+/// The route that shows [step]'s screen.
+ModalRoute<Object?> routeOf(WidgetTester tester, FlowStep step) =>
+    ModalRoute.of(tester.element(body(step)))!;
+
+/// Sends one Android predictive back event, as the engine does.
+Future<void> backGesture(
+  WidgetTester tester,
+  String method, [
+  double progress = 0,
+]) => tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+  SystemChannels.backGesture.name,
+  SystemChannels.backGesture.codec.encodeMethodCall(
+    MethodCall(method, {
+      'touchOffset': [0.0, 300.0],
+      'progress': progress,
+      'swipeEdge': 0,
+    }),
+  ),
+  (_) {},
+);
+
+/// History → transaction detail, settled.
+Future<DemoCoordinator> openDetail(
+  WidgetTester tester, {
+  DemoSettings settings = const DemoSettings(locale: Locale('en')),
+}) async {
+  final app = await launch(tester, settings: settings);
+  final c = await runScenario(tester, app, 'A01');
+  unawaited(c.openDetail(c.history.first));
+  await settle(tester);
+  expect(c.step, FlowStep.transactionDetail);
+  return c;
+}
 
 void main() {
-  testWidgets('leaving identity keeps its content during documents entry', (
-    tester,
-  ) async {
-    final app = await launch(tester);
-    final c = await runScenario(tester, app, 'K01');
-    c.acceptConsent();
-    await settle(tester);
-    c.editDocuments();
-    await tester.pump();
-    // Rebuilding an outgoing form (for example its busy state) must keep
-    // the entry's original step, while coordinator data stays live.
-    tester
-        .element(
-          find.descendant(
-            of: body(FlowStep.kycIdentity),
-            matching: find.byType(KycOnboardingStep),
-          ),
-        )
-        .markNeedsBuild();
-    await tester.pump(const Duration(milliseconds: 75));
-    final leaving = body(FlowStep.kycIdentity);
-    expect(
-      find.descendant(of: leaving, matching: find.byType(IdentityForm)),
-      findsOneWidget,
-    );
-    expect(
-      find.descendant(
-        of: body(FlowStep.kycDocuments),
-        matching: find.text('ID card (KTP)'),
-      ),
-      findsWidgets,
-    );
-    expect(
-      find.ancestor(
-        of: leaving,
-        matching: find.byWidgetPredicate(
-          (w) => w is IgnorePointer && w.ignoring,
-        ),
-      ),
-      findsWidgets,
-    );
-    expect(
-      find.ancestor(
-        of: leaving,
-        matching: find.byWidgetPredicate(
-          (w) => w is ExcludeSemantics && w.excluding,
-        ),
-      ),
-      findsWidgets,
-    );
-    await settle(tester);
-  });
-  for (final transition in [
-    'identity-documents',
-    'documents-identity',
-    'detail-history',
-  ]) {
-    testWidgets('outgoing $transition fades in place on every frame', (
-      tester,
-    ) async {
-      final app = await launch(tester);
-      final detail = transition == 'detail-history';
-      final forward = transition == 'identity-documents';
-      final c = await runScenario(tester, app, detail ? 'A01' : 'K01');
-      if (detail) {
-        unawaited(c.openDetail(c.history.first));
-      } else {
-        c.acceptConsent();
-      }
-      await settle(tester);
-      if (!detail && !forward) {
-        c.editDocuments();
-        await settle(tester);
-      }
-      final leaving = body(c.step);
-      final rest = tester.getTopLeft(leaving);
-      if (detail) {
-        c.closeDetail();
-      } else if (forward) {
-        c.editDocuments();
-      } else {
-        c.editIdentity();
-      }
+  testWidgets(
+    'on iOS, an edge swipe on transaction detail returns to history',
+    (tester) async {
+      final c = await openDetail(tester);
+      expect(
+        routeOf(tester, FlowStep.transactionDetail).popGestureEnabled,
+        isTrue,
+      );
+      final size = tester.view.physicalSize / tester.view.devicePixelRatio;
+      // Halfway across, history is already showing under the detail.
+      final gesture = await tester.startGesture(Offset(2, size.height / 2));
+      await gesture.moveBy(const Offset(20, 0));
       await tester.pump();
-      expect(tester.getTopLeft(body(c.step)).dy, rest.dy + (forward ? 8 : 0));
-      for (var frame = 0; frame < 10; frame++) {
-        if (leaving.evaluate().isNotEmpty) {
-          expect(
-            tester.getTopLeft(leaving).dy,
-            closeTo(rest.dy, 0.001),
-            reason: '$transition frame $frame',
-          );
-          if (frame > 0) {
-            expect(
-              tester.widget<FadeTransition>(fadeOf(leaving)).opacity.value,
-              lessThan(1),
-            );
-          }
-        }
-        await tester.pump(const Duration(milliseconds: 16));
-      }
-      expect(leaving, findsNothing);
+      await gesture.moveBy(Offset(size.width / 2, 0));
+      await tester.pump();
+      expect(body(FlowStep.history), findsOneWidget);
+      expect(c.step, FlowStep.transactionDetail);
+      await gesture.moveBy(Offset(size.width / 4, 0));
+      await gesture.up();
       await settle(tester);
-    });
-  }
+      expect(c.step, FlowStep.history);
+      expect(body(FlowStep.transactionDetail), findsNothing);
+      expect(find.text('Transactions'), findsWidgets);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.iOS),
+  );
 
-  testWidgets('interrupted rise leaves from where it is (#129)', (
+  testWidgets('on Android, predictive back on documents returns to identity', (
     tester,
   ) async {
     final app = await launch(tester);
     final c = await runScenario(tester, app, 'K01');
     c.acceptConsent();
     await settle(tester);
-    final rest = tester.getTopLeft(body(FlowStep.kycIdentity)).dy;
-    c.editDocuments();
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
-    final leaving = body(FlowStep.kycDocuments);
-    final held = tester.getTopLeft(leaving).dy;
-    expect(held, greaterThan(rest));
-    expect(held, lessThan(rest + 8));
-    final state = tester.state(
-      find.descendant(of: leaving, matching: find.byType(Scrollable)).first,
-    );
-    c.editIdentity();
-    await tester.pump();
-    for (var frame = 0; frame < 10 && leaving.evaluate().isNotEmpty; frame++) {
-      expect(
-        tester.getTopLeft(leaving).dy,
-        closeTo(held, 0.001),
-        reason: 'frame $frame',
-      );
-      expect(
-        tester.state(
-          find.descendant(of: leaving, matching: find.byType(Scrollable)).first,
-        ),
-        same(state),
-      );
-      if (frame > 0) {
-        expect(
-          tester.widget<FadeTransition>(fadeOf(leaving)).opacity.value,
-          lessThan(1),
-        );
-      }
-      await tester.pump(const Duration(milliseconds: 16));
-    }
-    expect(leaving, findsNothing);
-    await settle(tester);
-  });
-  testWidgets('status-first correction submits forward to status', (
-    tester,
-  ) async {
-    final app = await launch(tester);
-    final c = await runScenario(tester, app, 'K07', variant: 1);
-    final rest = tester.getTopLeft(body(FlowStep.kycStatus));
-    await c.kycAction(VerificationAction.fixDetails);
+    c.submitIdentity(Map.of(demoIdentity));
     await settle(tester);
     expect(c.step, FlowStep.kycDocuments);
-    c.goToReview();
+    final documents = routeOf(tester, FlowStep.kycDocuments);
+    await backGesture(tester, 'startBackGesture');
+    await backGesture(tester, 'updateBackGestureProgress', 0.5);
+    await tester.pump();
+    // The preview shows identity behind documents before the person commits.
+    expect(documents.popGestureInProgress, isTrue);
+    expect(body(FlowStep.kycIdentity), findsOneWidget);
+    expect(c.step, FlowStep.kycDocuments);
+    await backGesture(tester, 'commitBackGesture');
     await settle(tester);
-    unawaited(c.submitKyc());
-    await pumpUntil(tester, () => !c.kycSubmitting);
-    expect(c.step, FlowStep.kycStatus);
-    expect(tester.getTopLeft(body(FlowStep.kycStatus)).dy, rest.dy + 8);
-    await settle(tester);
+    expect(c.step, FlowStep.kycIdentity);
+    expect(body(FlowStep.kycDocuments), findsNothing);
+    expect(body(FlowStep.kycIdentity), findsOneWidget);
   });
-  for (final visitedIntro in [false, true]) {
-    testWidgets('status restart rises with visited intro: $visitedIntro', (
-      tester,
-    ) async {
-      final app = await launch(tester);
-      final c = await runScenario(tester, app, visitedIntro ? 'K01' : 'K08');
-      final rest = tester.getTopLeft(body(c.step));
-      if (visitedIntro) {
-        c.acceptConsent();
-        await settle(tester);
-        c.editDocuments();
-        await settle(tester);
-        c.goToReview();
-        await settle(tester);
-        unawaited(c.submitKyc());
-        await pumpUntil(tester, () => !c.kycSubmitting);
-        await settle(tester);
-        expect(c.step, FlowStep.kycStatus);
-      }
-      await c.kycAction(VerificationAction.start);
-      await tester.pump();
-      expect(c.step, FlowStep.kycIntro);
-      expect(tester.getTopLeft(body(FlowStep.kycIntro)).dy, rest.dy + 8);
-      await settle(tester);
-    });
-  }
-  testWidgets('scenario shortcut edits back then advances to review', (
+
+  testWidgets('back is blocked while authorizing, then returns to review', (
     tester,
   ) async {
-    final app = await launch(tester);
-    final c = await runScenario(tester, app, 'K06');
-    final rest = tester.getTopLeft(body(FlowStep.kycReview));
-    c.editDocuments();
+    final app = await launch(tester, latencyScale: 1);
+    final c = await runScenario(tester, app, 'H02');
+    await pumpUntil(tester, () => c.quote != null && !c.quoting);
+    c.reviewOrder();
+    await settle(tester);
+    final payment = routeOf(tester, FlowStep.confirm);
+    unawaited(c.confirm());
+    await pumpUntil(tester, () => c.step == FlowStep.authorize);
+    await settle(tester);
+    // The payment steps switch in place on one route with no swipe back.
+    expect(routeOf(tester, FlowStep.authorize), same(payment));
+    expect(payment.popGestureEnabled, isFalse);
+    unawaited(c.authorize());
     await tester.pump();
-    expect(tester.getTopLeft(body(FlowStep.kycDocuments)).dy, rest.dy);
-    await settle(tester);
-    c.goToReview();
+    expect(c.authPhase, AuthorizationPhase.inProgress);
+    await tester.binding.handlePopRoute();
     await tester.pump();
-    expect(tester.getTopLeft(body(FlowStep.kycReview)).dy, rest.dy + 8);
-    await settle(tester);
-  });
-  testWidgets('forward detail starts eight dp below rest', (tester) async {
-    final app = await launch(tester);
-    final c = await runScenario(tester, app, 'A01');
-    unawaited(c.openDetail(c.history.first));
-    await tester.pump();
-    await settle(tester);
-    final rest = tester.getTopLeft(body(FlowStep.transactionDetail));
-    c.closeDetail();
-    await settle(tester);
-    unawaited(c.openDetail(c.history.first));
-    await tester.pump();
-    expect(
-      tester.getTopLeft(body(FlowStep.transactionDetail)).dy,
-      closeTo(rest.dy + 8, 0.001),
-    );
-    await settle(tester);
-  });
-  testWidgets('back history starts at rest without rise', (tester) async {
-    final app = await launch(tester);
-    final c = await runScenario(tester, app, 'A01');
-    final rest = tester.getTopLeft(body(FlowStep.history));
-    unawaited(c.openDetail(c.history.first));
-    await settle(tester);
     await tester.tap(find.byType(BackButton));
     await tester.pump();
-    expect(
-      tester.getTopLeft(body(FlowStep.history)).dy,
-      closeTo(rest.dy, 0.001),
-    );
+    expect(c.step, FlowStep.authorize);
+    expect(c.authPhase, AuthorizationPhase.inProgress);
+    await pumpUntil(tester, () => c.authPhase != AuthorizationPhase.inProgress);
+    await settle(tester);
+    // Approval submits and moves on; drain it before the test ends.
+    await pumpUntil(tester, () => c.step == FlowStep.payment);
     await settle(tester);
   });
-  testWidgets('checkout bar fades with entering body and exits immediately', (
+
+  testWidgets('back from confirm pops to checkout', (tester) async {
+    final app = await launch(tester);
+    final c = await runScenario(tester, app, 'H02');
+    await pumpUntil(tester, () => c.quote != null && !c.quoting);
+    c.reviewOrder();
+    await settle(tester);
+    await tester.binding.handlePopRoute();
+    await settle(tester);
+    expect(c.step, FlowStep.checkout);
+    expect(find.byKey(const ValueKey('flow-list-checkout')), findsOneWidget);
+    await pumpUntil(tester, () => !c.quoting);
+  });
+
+  testWidgets('back on another tab leaves the flow where it is', (
+    tester,
+  ) async {
+    final c = await openDetail(tester);
+    final app = tester.state<DemoAppState>(find.byType(DemoApp));
+    app.selectTab(1);
+    await settle(tester);
+    await tester.binding.handlePopRoute();
+    await settle(tester);
+    expect(c.step, FlowStep.transactionDetail);
+  });
+
+  testWidgets('Done on the receipt leaves with the receipt still readable', (
     tester,
   ) async {
     final app = await launch(tester);
-    final c = await runScenario(tester, app, 'P01');
-    c.goHome();
-    await settle(tester);
-    unawaited(c.openCheckout());
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 110));
-    final bar = find.byType(PaymentActionBar);
-    final opacity = tester.widget<FadeTransition>(fadeOf(bar)).opacity.value;
-    final step = find.byKey(const ValueKey('flow-list-checkout'));
-    expect(opacity, greaterThan(0));
-    expect(opacity, lessThan(1));
-    expect(
-      opacity,
-      closeTo(tester.widget<FadeTransition>(fadeOf(step)).opacity.value, 0.01),
+    final c = await runScenario(tester, app, 'P15');
+    await pumpUntil(
+      tester,
+      () => c.attempt?.status == PaymentStatus.succeeded,
+      reason: 'payment succeeded',
     );
-    c.goHome();
+    if (c.step != FlowStep.receipt) {
+      unawaited(c.paymentAction(PaymentAction.viewReceipt));
+    }
+    await pumpUntil(tester, () => c.receipt != null, reason: 'receipt');
+    await settle(tester);
+    final transactionId = c.receipt!.transactionId;
+    await tester.tap(find.byKey(const Key('receipt-done')));
     await tester.pump();
-    expect(bar, findsNothing);
+    await tester.pump(const Duration(milliseconds: 100));
+    // finish() has cleared the receipt; the leaving screen still shows it.
+    expect(c.receipt, isNull);
+    expect(c.step, FlowStep.overview);
+    expect(find.textContaining(transactionId), findsWidgets);
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('receipt-done')), findsNothing);
+  });
+
+  testWidgets('switching account on confirm leaves without an error', (
+    tester,
+  ) async {
+    final app = await launch(tester);
+    final c = await runScenario(tester, app, 'H02');
+    await pumpUntil(tester, () => c.quote != null && !c.quoting);
+    c.reviewOrder();
+    await settle(tester);
+    expect(c.step, FlowStep.confirm);
+    unawaited(c.switchAccount('B'));
+    await tester.pump();
+    // The account's quote is cleared at once, not kept for the transition.
+    expect(c.quote, isNull);
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(c.step, FlowStep.overview);
+    expect(body(FlowStep.confirm), findsNothing);
+  });
+
+  testWidgets('with reduced motion, detail opens and closes in one frame', (
+    tester,
+  ) async {
+    final c = await openDetail(
+      tester,
+      settings: const DemoSettings(locale: Locale('en'), reduceMotion: true),
+    );
+    await tester.tap(find.byType(BackButton));
+    await tester.pump();
+    await tester.pump();
+    expect(tester.hasRunningAnimations, isFalse);
+    expect(c.step, FlowStep.history);
+    expect(body(FlowStep.transactionDetail), findsNothing);
+    unawaited(c.openDetail(c.history.first));
+    await tester.pump();
+    await tester.pump();
+    expect(tester.hasRunningAnimations, isFalse);
+    expect(body(FlowStep.history), findsNothing);
+    expect(body(FlowStep.transactionDetail), findsOneWidget);
     await settle(tester);
   });
-  for (final mode in ['host', 'ios', 'android']) {
-    testWidgets('mid-transition reduced motion finishes next frame: $mode', (
-      tester,
-    ) async {
-      final reduced = ValueNotifier(false);
-      final host = DemoHost(const ScenarioConfig())..languageCode = 'en';
-      final c = DemoCoordinator(host)..starting = false;
-      addTearDown(c.dispose);
-      addTearDown(host.dispose);
-      addTearDown(reduced.dispose);
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: buildTheme(DemoBrand.ruangBayar, Brightness.light),
-          localizationsDelegates: const [PaymentLocalizations.delegate],
-          home: ValueListenableBuilder<bool>(
-            valueListenable: reduced,
-            builder: (context, value, child) => MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                disableAnimations:
-                    value || MediaQuery.disableAnimationsOf(context),
-              ),
-              child: child!,
-            ),
-            child: FlowScreen(
-              coordinator: c,
-              scenarioLabel: '',
-              onRestart: () {},
-              onBackground: () {},
-              onOpenSettings: (_) {},
-            ),
-          ),
-        ),
-      );
-      unawaited(c.openHistory());
-      await pumpUntil(tester, () => !c.historyLoading);
-      await settle(tester);
-      addTearDown(
-        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
-      );
-      unawaited(c.openDetail(c.history.first));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 50));
-      if (mode == 'host') {
-        reduced.value = true;
-      } else {
-        tester.platformDispatcher.accessibilityFeaturesTestValue =
-            FakeAccessibilityFeatures(
-              reduceMotion: mode == 'ios',
-              disableAnimations: mode == 'android',
-            );
-      }
-      await tester.pump();
-      expect(tester.hasRunningAnimations, isFalse);
-      expect(body(FlowStep.history), findsNothing);
-      expect(body(FlowStep.transactionDetail), findsOneWidget);
-    });
-  }
-  testWidgets('direction flip keeps leaving scroll state and blocks input', (
+
+  testWidgets('reduced motion turned on mid-push finishes next frame', (
     tester,
   ) async {
     final app = await launch(tester);
@@ -346,39 +231,17 @@ void main() {
     unawaited(c.openDetail(c.history.first));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 50));
-    final list = find
-        .descendant(
-          of: body(FlowStep.transactionDetail),
-          matching: find.byType(Scrollable),
-        )
-        .first;
-    final state = tester.state<ScrollableState>(list);
-    state.position.jumpTo(20);
-    final offset = state.position.pixels;
-    c.closeDetail();
+    expect(tester.hasRunningAnimations, isTrue);
+    app.updateSettings(app.settings.copyWith(reduceMotion: true));
     await tester.pump();
-    expect(tester.state(list), same(state));
-    expect(state.position.pixels, offset);
-    expect(
-      find.ancestor(
-        of: body(FlowStep.transactionDetail),
-        matching: find.byWidgetPredicate(
-          (w) => w is IgnorePointer && w.ignoring,
-        ),
-      ),
-      findsWidgets,
-    );
-    expect(
-      find.ancestor(
-        of: body(FlowStep.transactionDetail),
-        matching: find.byWidgetPredicate(
-          (w) => w is ExcludeSemantics && w.excluding,
-        ),
-      ),
-      findsWidgets,
-    );
-    await settle(tester);
+    await tester.pump();
+    // The route transition is done; the detail's own content may still move.
+    final route = routeOf(tester, FlowStep.transactionDetail);
+    expect(route.animation!.status, AnimationStatus.completed);
+    expect(body(FlowStep.history), findsNothing);
+    expect(body(FlowStep.transactionDetail), findsOneWidget);
   });
+
   testWidgets('leave pending uses kit confirm and preserves attempt', (
     tester,
   ) async {
