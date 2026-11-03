@@ -208,7 +208,7 @@ class _FlowRoute extends PageRoute<void>
 }
 
 /// The screen for one route: its app bar, body and pinned action.
-class _FlowStepPage extends StatelessWidget {
+class _FlowStepPage extends StatefulWidget {
   const _FlowStepPage({
     required this.coordinator,
     required this.step,
@@ -231,6 +231,28 @@ class _FlowStepPage extends StatelessWidget {
   final void Function(VoidCallback demoTools) onOpenSettings;
 
   @override
+  State<_FlowStepPage> createState() => _FlowStepPageState();
+}
+
+class _FlowStepPageState extends State<_FlowStepPage> {
+  DemoCoordinator get coordinator => widget.coordinator;
+  FlowStep get step => widget.step;
+  bool get root => widget.root;
+
+  /// What this screen last showed. A leaving screen stays mounted for its
+  /// exit transition and rebuilds after the coordinator has moved on: Done
+  /// clears the receipt, an account switch clears the quote. It keeps
+  /// showing this copy until it is gone, while the coordinator's data is
+  /// already cleared (D93).
+  _StepData? _shown;
+
+  _StepData _data() {
+    final live = _StepData.of(coordinator);
+    if (live.covers(step)) return _shown = live;
+    return _shown ?? live;
+  }
+
+  @override
   Widget build(BuildContext context) {
     // The column is measured from the width this screen gets, not the
     // window: from 840 dp the app's side rail takes part of the window
@@ -248,9 +270,10 @@ class _FlowStepPage extends StatelessWidget {
   /// [width] is the screen's width inside the side safe-area insets.
   Widget _build(BuildContext context, double width) {
     final c = coordinator;
+    final data = _data();
     final s = DemoStrings.of(context);
     final view = _isViewStep(step) && !c.starting;
-    final title = _ownHeader(c, step) ? null : _title(s, step);
+    final title = _ownHeader(data, step) ? null : _title(s, step);
     final titleLines = title == null
         ? 1
         : _appBarTitleLines(
@@ -265,7 +288,7 @@ class _FlowStepPage extends StatelessWidget {
     final content = view
         ? SizedBox.expand(
             key: ValueKey('flow-view-${step.name}'),
-            child: _StepBody(coordinator: c, step: step),
+            child: _StepBody(coordinator: c, step: step, data: data),
           )
         : ListView(
             key: ValueKey('flow-list-${step.name}'),
@@ -293,7 +316,7 @@ class _FlowStepPage extends StatelessWidget {
                   child: Center(child: Text(s.loading)),
                 )
               else
-                _StepBody(coordinator: c, step: step),
+                _StepBody(coordinator: c, step: step, data: data),
             ],
           );
     final scaffold = Scaffold(
@@ -316,13 +339,13 @@ class _FlowStepPage extends StatelessWidget {
             key: const Key('settings'),
             tooltip: s.settings,
             icon: const Icon(Icons.tune),
-            onPressed: () => onOpenSettings(
+            onPressed: () => widget.onOpenSettings(
               () => _showDemoTools(
                 context,
                 coordinator: c,
-                scenarioLabel: scenarioLabel,
-                onRestart: onRestart,
-                onBackground: onBackground,
+                scenarioLabel: widget.scenarioLabel,
+                onRestart: widget.onRestart,
+                onBackground: widget.onBackground,
               ),
             ),
           ),
@@ -626,11 +649,52 @@ class _AccountMenu extends StatelessWidget {
   }
 }
 
+/// The coordinator data the payment steps render, copied when their screen
+/// builds (see [_FlowStepPageState._shown]).
+@immutable
+class _StepData {
+  const _StepData({
+    this.quote,
+    this.method,
+    this.attempt,
+    this.attemptAmount,
+    this.receipt,
+  });
+
+  factory _StepData.of(DemoCoordinator c) => _StepData(
+    quote: c.quote,
+    method: c.selectedMethod,
+    attempt: c.attempt,
+    attemptAmount: c.attemptAmount,
+    receipt: c.receipt,
+  );
+
+  final PaymentQuote? quote;
+  final PaymentMethod? method;
+  final PaymentAttempt? attempt;
+  final Money? attemptAmount;
+  final PaymentReceiptData? receipt;
+
+  /// Whether this has what [step] needs to render.
+  bool covers(FlowStep step) => switch (step) {
+    FlowStep.confirm => quote != null && method != null,
+    FlowStep.authorize => quote != null,
+    FlowStep.payment => attempt != null,
+    FlowStep.receipt => receipt != null || attempt != null,
+    _ => true,
+  };
+}
+
 class _StepBody extends StatelessWidget {
-  const _StepBody({required this.coordinator, required this.step});
+  const _StepBody({
+    required this.coordinator,
+    required this.step,
+    required this.data,
+  });
 
   final DemoCoordinator coordinator;
   final FlowStep step;
+  final _StepData data;
 
   @override
   Widget build(BuildContext context) {
@@ -655,10 +719,10 @@ class _StepBody extends StatelessWidget {
         onAction: c.kycAction,
       ),
       FlowStep.checkout => _Checkout(c),
-      FlowStep.confirm => _Confirm(c),
-      FlowStep.authorize => _Authorize(c),
-      FlowStep.payment => _Payment(c),
-      FlowStep.receipt => _Receipt(c),
+      FlowStep.confirm => _Confirm(c, data),
+      FlowStep.authorize => _Authorize(c, data),
+      FlowStep.payment => _Payment(c, data),
+      FlowStep.receipt => _Receipt(c, data),
     };
   }
 }
@@ -931,13 +995,17 @@ class _CheckoutBar extends StatelessWidget {
 }
 
 class _Confirm extends StatelessWidget {
-  const _Confirm(this.c);
+  const _Confirm(this.c, this.data);
   final DemoCoordinator c;
+  final _StepData data;
 
   @override
   Widget build(BuildContext context) {
     final s = DemoStrings.of(context);
     final error = c.submitError;
+    final quote = data.quote;
+    final method = data.method;
+    if (quote == null || method == null) return const SizedBox.shrink();
     return PaymentConfirmation(
       header: error == null
           ? null
@@ -950,8 +1018,8 @@ class _Confirm extends StatelessWidget {
                   : s.quoteFailedTitle,
               message: error.safeMessage,
             ),
-      quote: c.quote!,
-      method: c.selectedMethod!,
+      quote: quote,
+      method: method,
       previousQuote: c.previousQuote,
       busy: c.confirming,
       footnote: s.confirmFootnote,
@@ -961,13 +1029,16 @@ class _Confirm extends StatelessWidget {
 }
 
 class _Authorize extends StatelessWidget {
-  const _Authorize(this.c);
+  const _Authorize(this.c, this.data);
   final DemoCoordinator c;
+  final _StepData data;
 
   @override
   Widget build(BuildContext context) {
     final l10n = PaymentLocalizations.of(context);
     final theme = PaymentTheme.of(context);
+    final quote = data.quote;
+    if (quote == null) return const SizedBox.shrink();
     return AuthorizationPrompt(
       phase: c.authPhase,
       onStart: c.authorize,
@@ -991,13 +1062,13 @@ class _Authorize extends StatelessWidget {
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: AmountText(
-                c.quote!.total,
+                quote.total,
                 variant: AmountTextVariant.display,
               ),
             ),
             InfoRow(
               label: l10n.payWithTitle,
-              valueText: c.selectedMethod?.label ?? '',
+              valueText: data.method?.label ?? '',
             ),
           ],
         ),
@@ -1007,13 +1078,14 @@ class _Authorize extends StatelessWidget {
 }
 
 class _Payment extends StatelessWidget {
-  const _Payment(this.c);
+  const _Payment(this.c, this.data);
   final DemoCoordinator c;
+  final _StepData data;
 
   @override
   Widget build(BuildContext context) {
     final s = DemoStrings.of(context);
-    final attempt = c.attempt;
+    final attempt = data.attempt;
     if (attempt == null) return const SizedBox.shrink();
     final instructions = attempt.snapshot?.instructions;
     final status = attempt.status;
@@ -1037,7 +1109,7 @@ class _Payment extends StatelessWidget {
               ],
             ),
       attempt: attempt,
-      amount: c.attemptAmount,
+      amount: data.attemptAmount,
       busyAction: c.busyAction,
       onAction: c.paymentAction,
       instructions: instructions != null && c.showInstructions
@@ -1061,13 +1133,14 @@ class _Payment extends StatelessWidget {
 }
 
 class _Receipt extends StatelessWidget {
-  const _Receipt(this.c);
+  const _Receipt(this.c, this.data);
   final DemoCoordinator c;
+  final _StepData data;
 
   @override
   Widget build(BuildContext context) {
     final s = DemoStrings.of(context);
-    final receipt = c.receipt;
+    final receipt = data.receipt;
     if (receipt != null) {
       // "Done" ends the purchase, so it is the one primary (#49-1); sharing
       // stays with the receipt as a hug button.
@@ -1091,6 +1164,8 @@ class _Receipt extends StatelessWidget {
         ),
       );
     }
+    final attempt = data.attempt;
+    if (attempt == null) return const SizedBox.shrink();
     return PaymentStatusView(
       header: c.receiptError == null
           ? null
@@ -1109,8 +1184,8 @@ class _Receipt extends StatelessWidget {
                 ),
               ],
             ),
-      attempt: c.attempt!,
-      amount: c.attemptAmount,
+      attempt: attempt,
+      amount: data.attemptAmount,
       busyAction: c.loadingReceipt ? PaymentAction.viewReceipt : null,
       onAction: c.paymentAction,
     );
@@ -1341,7 +1416,7 @@ bool _isViewStep(FlowStep step) => switch (step) {
 };
 
 /// Steps whose page header carries the title, so the app bar has none.
-bool _ownHeader(DemoCoordinator c, FlowStep step) => switch (step) {
+bool _ownHeader(_StepData data, FlowStep step) => switch (step) {
   FlowStep.signIn ||
   FlowStep.kycIdentity ||
   FlowStep.kycDocuments ||
@@ -1351,7 +1426,7 @@ bool _ownHeader(DemoCoordinator c, FlowStep step) => switch (step) {
   FlowStep.statement ||
   FlowStep.fees ||
   FlowStep.accountSettings => true,
-  FlowStep.receipt => c.receipt != null,
+  FlowStep.receipt => data.receipt != null,
   _ => false,
 };
 

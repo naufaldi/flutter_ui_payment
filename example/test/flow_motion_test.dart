@@ -154,6 +154,53 @@ void main() {
     expect(c.step, FlowStep.transactionDetail);
   });
 
+  testWidgets('Done on the receipt leaves with the receipt still readable', (
+    tester,
+  ) async {
+    final app = await launch(tester);
+    final c = await runScenario(tester, app, 'P15');
+    await pumpUntil(
+      tester,
+      () => c.attempt?.status == PaymentStatus.succeeded,
+      reason: 'payment succeeded',
+    );
+    if (c.step != FlowStep.receipt) {
+      unawaited(c.paymentAction(PaymentAction.viewReceipt));
+    }
+    await pumpUntil(tester, () => c.receipt != null, reason: 'receipt');
+    await settle(tester);
+    final transactionId = c.receipt!.transactionId;
+    await tester.tap(find.byKey(const Key('receipt-done')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    // finish() has cleared the receipt; the leaving screen still shows it.
+    expect(c.receipt, isNull);
+    expect(c.step, FlowStep.overview);
+    expect(find.textContaining(transactionId), findsWidgets);
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('receipt-done')), findsNothing);
+  });
+
+  testWidgets('switching account on confirm leaves without an error', (
+    tester,
+  ) async {
+    final app = await launch(tester);
+    final c = await runScenario(tester, app, 'H02');
+    await pumpUntil(tester, () => c.quote != null && !c.quoting);
+    c.reviewOrder();
+    await settle(tester);
+    expect(c.step, FlowStep.confirm);
+    unawaited(c.switchAccount('B'));
+    await tester.pump();
+    // The account's quote is cleared at once, not kept for the transition.
+    expect(c.quote, isNull);
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(c.step, FlowStep.overview);
+    expect(body(FlowStep.confirm), findsNothing);
+  });
+
   testWidgets('with reduced motion, detail opens and closes in one frame', (
     tester,
   ) async {
