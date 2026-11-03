@@ -70,11 +70,11 @@ The cancel button says "Cancel" by default. Pass `cancelLabel` when the safe cho
 
 ### Phone: confirm sheet
 
-Below 600 dp the confirmation slides up as a bottom sheet with no drag handle: the title, then the message, then the actions. The actions are stacked top-down at full width with centred labels, the confirm action on top and a quiet Cancel below. One 16 dp inset holds on every edge at every text scale, plus the bottom safe area. Language and text size never change the layout, so English, Indonesian and 200% text all look the same. At large text the title and message scroll, and the actions stay on screen.
+On a phone, when the window's shorter side is under 600 dp, the confirmation slides up as a bottom sheet with no drag handle: the title, then the message, then the actions. The actions are stacked top-down at full width with centred labels, the confirm action on top and a quiet Cancel below. One 16 dp inset holds on every edge at every text scale, plus the bottom safe area. Language and text size never change the layout, so English, Indonesian and 200% text all look the same. At large text the title and message scroll, and the actions stay on screen. A phone held sideways (640 × 360 dp) keeps this sheet (D92).
 
 ### Wide: centred dialog
 
-At 600 dp and wider the confirmation is a centred dialog, at most 400 dp wide, with the same 16 dp edges. The actions are one row of equal-width buttons with Cancel first and the confirm action trailing.
+On a tablet, with a shorter side of 600 dp or more, the confirmation is a centred dialog, at most 400 dp wide, with the same 16 dp edges. The actions are one row of equal-width buttons with Cancel first and the confirm action trailing.
 
 ### Dismiss paths
 

@@ -32,10 +32,11 @@ class PaymentSearchOption<T> {
 
 /// Locally filtered or host-searched listbox with keyboard selection (D50).
 ///
-/// Below 600 dp the field is a trigger that opens a full-height search sheet:
-/// the search field on top, 48 dp result rows under it and, for multiple
-/// selection, the chosen chips and a full-width Done in the footer. At
-/// 600 dp and wider it is an inline field with an anchored, elevated list
+/// On phones (window shortest side under 600 dp, so also in landscape; D92)
+/// the field is a trigger that opens a full-height search sheet: the search
+/// field on top, 48 dp result rows under it and, for multiple selection, the
+/// chosen chips and a full-width Done in the footer. On tablets it is an
+/// inline field with an anchored, elevated list
 /// that floats over the page instead of pushing it down.
 class PaymentSearchField<T> extends StatefulWidget {
   const PaymentSearchField({

@@ -57,7 +57,7 @@ An entry with `onSelected: null` is shown disabled. Keep it in the menu when peo
 
 ### Phone: action sheet
 
-Below 600 dp the trigger opens a bottom action sheet instead of an anchored menu (D55):
+On a phone, when the window's shorter side is under 600 dp (so in landscape too, D92), the trigger opens a bottom action sheet instead of an anchored menu (D55):
 
 - every entry is a full-width row at least 48 dp tall; when any entry has an icon, every entry keeps the icon column so labels share one edge;
 - group titles become captions, and groups are separated by a divider;
@@ -68,7 +68,7 @@ The sheet closes first. Then the menu runs the entry's `onSelected` or reports i
 
 ### Wide: anchored menu
 
-At 600 dp and wider the menu is built on MenuAnchor. Arrow keys move between entries, Escape closes the menu and focus returns to the button. The panel keeps 16 dp from the window edges. Entries without an icon keep the icon column when a sibling has one. The menu opens instantly: a menu used many times a day should not make people wait for it.
+On a tablet, with a shorter side of 600 dp or more, the menu is built on MenuAnchor. Arrow keys move between entries, Escape closes the menu and focus returns to the button. The panel keeps 16 dp from the window edges. Entries without an icon keep the icon column when a sibling has one. The menu opens instantly: a menu used many times a day should not make people wait for it.
 
 ### Variants, behavior and migration
 

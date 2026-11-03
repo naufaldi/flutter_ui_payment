@@ -455,12 +455,12 @@ Review of every component and flow against the 8 pt grid and the emil-ui-review 
 
 **Decided** (do not reopen without a new reason; details in the PRD decision table):
 
-- **D45 — confirm on phones is a bottom sheet** with top-down, full-width actions (issue #45).
+- **D45 — confirm on phones is a bottom sheet** with top-down, full-width actions (issue #45). Phone means a window shortest side under 600 dp (D92).
 - **D46 — the spacing scale keeps 12** (8 pt grid with 4 pt half-steps); one value per role, everything through `PaymentSpace` (issue #50).
 - **D47 — no warning button.** Warnings are states shown by banner, badge or toast.
 - **D48 — banner actions on the text column; no dismiss before paying on a changed total, which states old → new** (issue #52).
 - **D49 — tooltips open on tap and hold one line; longer explanations ("Why this?") open a sheet** (issue #53).
-- **D50 — search on phones is a full-height sheet; an elevated anchored list on wide screens** (issue #54).
+- **D50 — search on phones is a full-height sheet; an elevated anchored list on wide screens** (issue #54). Phone means a window shortest side under 600 dp (D92).
 - **D51 — custom date range is a kit calendar sheet with an Apply footer** (issue #55).
 
 - **D52 — the single date field uses a kit date sheet; date of birth opens with typed entry first** (issue #56).
@@ -468,7 +468,7 @@ Review of every component and flow against the 8 pt grid and the emil-ui-review 
 - **Demo text is bilingual.** Every gallery specimen string goes through the en/id helper so the Indonesian pass tests real lengths (example app only; issue #59).
 
 - **D54 — one primary per surface;** a trigger that opens a surface is secondary (issue #61).
-- **D55 — `PaymentMenu` on phones is a bottom action sheet;** wide screens keep the anchored menu (issue #61).
+- **D55 — `PaymentMenu` on phones is a bottom action sheet;** wide screens keep the anchored menu (issue #61). Phone means a window shortest side under 600 dp (D92).
 - **D48a — one banner anatomy:** icon on the title's first line, one text column for title, message and actions, close without extra height, at most one small button plus one link (issue #52).
 - **D52a — picker by purpose:** typed entry plus an iOS-style wheel for far dates, calendar grid for near dates, scrolling month calendar for ranges (issue #56).
 
@@ -694,3 +694,7 @@ The 320 dp gesture rows were measured with the tab fold alone (+18.2 / +30.2 dp 
 ### History at 320 dp, 3 November 2026
 
 - **D91 — on phones at large text, history's status filter is a button on the search line (#161).** Refines D63a and D83. Below 600 dp and above 1.5× text (`PaymentType.isLarge`), `TransactionHistory` drops the status tab row and puts a 48 dp filter `PaymentIconButton` at the end of the search line, after the host's `searchActions`. Its tooltip and spoken name is "Filter by status" / "Saring menurut status" (new kit string `filterByStatus`) and its spoken value is the current filter. It opens a `PaymentMenu`, the D55 action sheet on phones, listing every filter with a check on the current one (spoken "…, Selected"). While a filter other than All is set the glyph fills, takes the accent and the button reads as selected, as the date-range button does. The search keeps its label as the placeholder (D63a). At large text every page header's gap to the body (`ViewHeader` bottom padding) is `related` (8 dp) instead of `group` (16 dp), at every width, since the title's tall line already leaves room under the glyphs. The list follows the search line directly: the row's own 12 dp padding spaces it from the box. Normal text and wide screens keep the tabs. Every filter stays one tap away and the active filter still shows as the host's chip, so it is the same list in the same place, not a separate large-text mode (D63). No public API change. Owner decision to fix the 320 dp case rather than accept 360 dp, 3 Nov 2026. After D83 the first row's badge was still 25.8 dp (gesture) and 47.1 dp (3-button) under the app's tab bar at 320 dp and 200%; the tab row and its gap take 56 dp, and the header gap 8 dp more. A smaller title role saves nothing, because the ⋮ target already sets the title row's 48 dp. Not chosen: accepting 360 dp as the target; hiding the search box behind a button, since search is the main way to find a payment. Cost: the status filter is one tap deeper on phones at large text, and the search box is 56 dp narrower there, so its placeholder ellipsizes sooner ("Search…", "Cari tr…" at 320 dp).
+
+### Phone landscape, 3 November 2026
+
+- **D92 — overlays choose the phone or wide pattern by the window's shortest side (#147).** Amends the "below 600 dp / at ≥ 600 dp" wording of D45, D50 and D55. `isCompact` (`lib/src/foundation/layout_rules.dart`) now compares `MediaQuery.sizeOf(context).shortestSide` with 600 dp. It is the one rule behind the four overlay choices: the confirm sheet or dialog (D45), the search sheet or anchored list (D50), the menu action sheet or anchored menu (D55), and the bottom or side focus view. A phone in landscape (640 × 360 dp) keeps the phone patterns. Tablets (shortest side ≥ 600 dp) keep the wide patterns in both orientations (D64). A tablet window narrower than 600 dp, such as split screen, gets the phone patterns, as before. Content layouts that fit the available width keep comparing width: the footer rule (D59, D62), tables, the detail page and the centred column (D53). Evidence, Android API 37 phone `FlutterPayment_API37_2` in landscape under the width rule: the anchored search list ran under the tab bar and the gesture bar, showing two results, and a software keyboard would have covered it (the AVD uses a hardware keyboard, so this point is inferred); a four-item menu filled the full 360 dp height and covered its own ⋮ trigger; at 200% the 400 dp dialog cut the sign-out message after two lines, with no cue that it scrolls; the 420 dp report side sheet worked but left a 220 dp strip of scrim. Rejected: (b) keep width only, because those patterns are sized for a tall window and a 360 dp-tall screen is a phone held sideways. Orchestrator decision, option (a) as the owner leaned, 3 Nov 2026.

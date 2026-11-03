@@ -263,7 +263,9 @@ class PaymentConfirmClose {
   final String? cancelLabel;
 }
 
-/// Presents a focused task through the existing sheet surfaces.
+/// Presents a focused task through the existing sheet surfaces: a bottom
+/// sheet on phones (window shortest side under 600 dp, so also in landscape;
+/// D92) and a side sheet on tablets.
 Future<T?> showPaymentFocusView<T>(
   BuildContext context, {
   required WidgetBuilder builder,

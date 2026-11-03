@@ -2,7 +2,9 @@ import 'package:flutter/widgets.dart';
 
 // Internal layout constants shared by the kit. Not exported.
 
-/// Below this width the kit uses its phone layouts (sheets, stacked footers).
+/// The phone/wide breakpoint. Content layouts (stacked footers, tables) compare
+/// the available width with it; overlay presentation compares the window's
+/// shortest side ([isCompact], D92).
 const kCompactBreakpoint = 600.0;
 
 /// Widest content column on wide screens (D53).
@@ -18,6 +20,11 @@ const kTwoColumnMaxWidth = 1040.0;
 /// size, not a spacing role (D46), so it is not a `PaymentSpace` value.
 const kMediaTile = 40.0;
 
-/// Whether the window is narrower than [kCompactBreakpoint].
+/// Whether overlays use their phone presentation: the confirm sheet (D45), the
+/// search sheet (D50), the menu action sheet (D55) and the bottom focus view.
+///
+/// True when the window's shortest side is under [kCompactBreakpoint] (D92), so
+/// a phone keeps its phone patterns in landscape (640 x 360 dp) while a tablet,
+/// whose shortest side is at least 600 dp, keeps the wide patterns either way.
 bool isCompact(BuildContext context) =>
-    MediaQuery.sizeOf(context).width < kCompactBreakpoint;
+    MediaQuery.sizeOf(context).shortestSide < kCompactBreakpoint;
