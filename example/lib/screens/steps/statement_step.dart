@@ -81,7 +81,7 @@ class StatementStep extends StatelessWidget {
             onSelectionChanged: c.setSelectedSettlements,
             batchActions: [
               PaymentButton(
-                label: s.downloadSelected(c.selectedSettlements.length),
+                label: s.downloadSelected,
                 variant: PaymentButtonVariant.secondary,
                 size: PaymentSize.small,
                 onPressed: () => download(c.selectedSettlements),

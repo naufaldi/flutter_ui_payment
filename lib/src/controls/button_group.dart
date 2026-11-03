@@ -424,10 +424,15 @@ class _RenderCollapseRow extends RenderBox
     }
   }
 
+  // The width that shows every inline action: the ⋮ trigger counts only
+  // when a destructive action always needs it, as in performLayout.
   @override
-  double computeMaxIntrinsicWidth(double height) =>
-      boxes.fold(0.0, (a, b) => a + b.getMaxIntrinsicWidth(height)) +
-      math.max(0, childCount - 1) * spacing;
+  double computeMaxIntrinsicWidth(double height) {
+    final list = hasDanger ? boxes : boxes.take(childCount - 1).toList();
+    return list.fold(0.0, (a, b) => a + b.getMaxIntrinsicWidth(height)) +
+        math.max(0, list.length - 1) * spacing;
+  }
+
   @override
   double computeMinIntrinsicWidth(double height) =>
       boxes.first.getMinIntrinsicWidth(height) +

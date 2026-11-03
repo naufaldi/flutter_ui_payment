@@ -8,7 +8,7 @@ import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
-`showPaymentToast` confirms that something happened: "Reference copied", "Share canceled". It floats at the bottom of the screen and goes away on its own.
+`showPaymentToast` confirms that something happened: "Reference copied", "Share canceled". It floats at the bottom of the screen and goes away on its own. On a screen with a pinned kit footer, such as a detail page or the payment path, it floats 16 dp above the footer, so the footer actions stay visible and tappable (D95).
 
 <HostOwns>the message and what its action does, for example restoring something the person hid.</HostOwns>
 

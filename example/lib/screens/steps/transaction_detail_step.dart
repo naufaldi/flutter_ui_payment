@@ -36,7 +36,7 @@ class TransactionDetailStep extends StatelessWidget {
         label: s.viewReceipt,
         onPressed: r.id == c.attempt?.attemptId
             ? c.closeDetail
-            : () => showPaymentToast(context, message: s.viewReceipt),
+            : () => showPaymentToast(context, message: s.receiptOpened),
       ),
       secondaryAction: PaymentButton(
         key: const Key('report-problem'),
