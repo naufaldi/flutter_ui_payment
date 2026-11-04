@@ -154,7 +154,8 @@ class _SettlementSpecimen extends StatefulWidget {
 }
 
 class _SettlementSpecimenState extends State<_SettlementSpecimen> {
-  Set<String> selected = {};
+  // Two rows start selected so the batch toolbar shows (D97).
+  Set<String> selected = {'2', '3'};
   String query = '';
   @override
   Widget build(BuildContext context) {

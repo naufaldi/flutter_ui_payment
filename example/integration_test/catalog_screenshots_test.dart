@@ -190,6 +190,7 @@ void main() {
         'date_field_sheet_wheel',
         'date_range_presets',
         'date_range_calendar',
+        'toast_footer',
       };
       bool want(String slug, String look) =>
           looks.contains(look) &&
@@ -404,6 +405,24 @@ void main() {
               (_) => tapVisible(tester, find.byKey(const Key('toast-pending'))),
               () async {
                 clearSnackBars();
+                await settle(tester);
+              },
+            ),
+            // D95: a toast over a page with a pinned footer.
+            'toast_footer': (
+              'Feedback',
+              'showPaymentToast',
+              (_) async {
+                await tapVisible(tester, find.byKey(const Key('toast-footer')));
+                await settle(tester);
+                await tester.tap(find.byKey(const Key('toast-footer-show')));
+                await settle(tester);
+              },
+              () async {
+                clearSnackBars();
+                Navigator.of(
+                  tester.element(find.byKey(const Key('toast-footer-show'))),
+                ).pop();
                 await settle(tester);
               },
             ),
