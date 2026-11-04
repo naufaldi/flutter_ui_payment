@@ -1,3 +1,7 @@
+## Payment and KYC mobile blocks (2026-11-04)
+
+- Added six runnable mobile host blocks with docs pages: manual VA transfer, method choice and quote changes, payment and refund detail, KYC onboarding and consent, KYC capture and upload recovery, and payment preferences.
+
 ## History and KYC blocks (2026-11-04)
 
 - Add copyable mobile Transaction History and KYC Review/Correction blocks with runnable synthetic demos, source, native Android proof and paired pattern guidance; track the remaining Payment/KYC blocks in GitHub.
