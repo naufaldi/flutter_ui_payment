@@ -152,31 +152,39 @@ Future<T?> showPaymentSideSheet<T>({
   final motion = PaymentMotion.of(context);
 
   final l10n = PaymentLocalizations.of(context);
-  return Navigator.of(context, rootNavigator: true).push(
+  final navigator = Navigator.of(context, rootNavigator: true);
+  // The root navigator sits above any feature-scoped Theme, so the caller's
+  // themes are captured once here and wrap the whole panel, chrome included.
+  final themes = InheritedTheme.capture(from: context, to: navigator.context);
+  return navigator.push(
     _SideSheetRoute<T>(
       motion: motion,
       barrierDismissible: barrierDismissible,
       barrierLabel: l10n.closeSheet,
-      pageBuilder: (context, _, _) {
-        final theme = PaymentTheme.of(context);
+      pageBuilder: (_, _, _) => themes.wrap(
+        Builder(
+          builder: (context) {
+            final theme = PaymentTheme.of(context);
 
-        final width = MediaQuery.sizeOf(context).width;
-        return Align(
-          alignment: AlignmentDirectional.centerEnd,
-          child: SizedBox(
-            width: width * 0.88 < maxWidth ? width * 0.88 : maxWidth,
-            height: double.infinity,
-            child: Material(
-              color: theme.surface,
-              surfaceTintColor: Colors.transparent,
-              child: SafeArea(
-                left: false,
-                child: _SideSheetScope(child: Builder(builder: builder)),
+            final width = MediaQuery.sizeOf(context).width;
+            return Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: SizedBox(
+                width: width * 0.88 < maxWidth ? width * 0.88 : maxWidth,
+                height: double.infinity,
+                child: Material(
+                  color: theme.surface,
+                  surfaceTintColor: Colors.transparent,
+                  child: SafeArea(
+                    left: false,
+                    child: _SideSheetScope(child: Builder(builder: builder)),
+                  ),
+                ),
               ),
-            ),
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
       transitionBuilder: (context, animation, _, child) {
         final rtl = Directionality.of(context) == TextDirection.rtl;
         // Slides from the edge it lives on; the exit plays the same curve

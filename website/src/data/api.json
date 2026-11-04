@@ -1,4 +1,355 @@
 {
+  "PaymentButtonStyle": {
+    "kind": "class",
+    "file": "lib/src/foundation/button_style.dart",
+    "doc": "Partial button appearance, resolved after semantic and family defaults.\n\nDisabled colors, focus color, padding, sizing, state layers and motion stay\nkit-owned. Hosts verify contrast for custom enabled color pairs in light and\ndark. This type deliberately does not forward unrestricted `ButtonStyle`.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentButtonStyle",
+        "factory": false,
+        "params": [
+          {
+            "name": "backgroundColor",
+            "type": "Color?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "backgroundColor",
+            "doc": "Enabled fill; secondary and quiet variants have no fill by default."
+          },
+          {
+            "name": "foregroundColor",
+            "type": "Color?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "foregroundColor",
+            "doc": "Enabled label, icon and spinner color, also used for pressed/hover layers."
+          },
+          {
+            "name": "borderColor",
+            "type": "Color?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "borderColor",
+            "doc": "Enabled secondary outline; ignored by the other variants."
+          },
+          {
+            "name": "borderRadius",
+            "type": "BorderRadius?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "borderRadius",
+            "doc": "Button corners; the keyboard focus ring follows the same radii."
+          },
+          {
+            "name": "textStyle",
+            "type": "TextStyle?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "textStyle",
+            "doc": "Typography merged over the heading role, keeping unspecified fields.\n\nColor, paint, background, shadows, decorations and `inherit` are ignored;\nuse `foregroundColor`. Font size and height must be positive when supplied."
+          }
+        ],
+        "doc": "Creates optional overrides; null properties preserve preceding layers."
+      }
+    ],
+    "getters": [
+      {
+        "name": "hashCode",
+        "type": "int",
+        "doc": ""
+      }
+    ],
+    "statics": [
+      "lerp"
+    ],
+    "members": [
+      {
+        "name": "backgroundColor",
+        "kind": "field",
+        "static": false,
+        "type": "Color?",
+        "doc": "Enabled fill; secondary and quiet variants have no fill by default."
+      },
+      {
+        "name": "foregroundColor",
+        "kind": "field",
+        "static": false,
+        "type": "Color?",
+        "doc": "Enabled label, icon and spinner color, also used for pressed/hover layers."
+      },
+      {
+        "name": "borderColor",
+        "kind": "field",
+        "static": false,
+        "type": "Color?",
+        "doc": "Enabled secondary outline; ignored by the other variants."
+      },
+      {
+        "name": "borderRadius",
+        "kind": "field",
+        "static": false,
+        "type": "BorderRadius?",
+        "doc": "Button corners; the keyboard focus ring follows the same radii."
+      },
+      {
+        "name": "textStyle",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle?",
+        "doc": "Typography merged over the heading role, keeping unspecified fields.\n\nColor, paint, background, shadows, decorations and `inherit` are ignored;\nuse `foregroundColor`. Font size and height must be positive when supplied."
+      },
+      {
+        "name": "merge",
+        "kind": "method",
+        "static": false,
+        "type": "PaymentButtonStyle",
+        "signature": "PaymentButtonStyle merge(PaymentButtonStyle? other)",
+        "doc": "Overlays non-null properties from `other`, merging its typography."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentButtonTheme": {
+    "kind": "class",
+    "file": "lib/src/foundation/button_style.dart",
+    "doc": "Button-family overrides registered in `ThemeData.extensions`.\n\nResolution is token defaults, shared `style`, variant style, then instance.\nA scoped `Theme` may change buttons without changing input or sheet corners.\nPreserve unrelated parent extensions. Nested themes replace this extension;\nderive them with `copyWith` when parent values should remain.",
+    "extends": "ThemeExtension<PaymentButtonTheme>",
+    "constructors": [
+      {
+        "name": "PaymentButtonTheme",
+        "factory": false,
+        "params": [
+          {
+            "name": "style",
+            "type": "PaymentButtonStyle?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "style",
+            "doc": "Shared appearance applied before variant overrides."
+          },
+          {
+            "name": "primary",
+            "type": "PaymentButtonStyle?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "primary",
+            "doc": "Primary appearance."
+          },
+          {
+            "name": "secondary",
+            "type": "PaymentButtonStyle?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "secondary",
+            "doc": "Secondary appearance."
+          },
+          {
+            "name": "quiet",
+            "type": "PaymentButtonStyle?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "quiet",
+            "doc": "Quiet appearance."
+          },
+          {
+            "name": "destructive",
+            "type": "PaymentButtonStyle?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "destructive",
+            "doc": "Destructive appearance."
+          }
+        ],
+        "doc": "Creates optional shared and variant-specific overrides."
+      }
+    ],
+    "getters": [
+      {
+        "name": "hashCode",
+        "type": "int",
+        "doc": ""
+      }
+    ],
+    "statics": [],
+    "members": [
+      {
+        "name": "style",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButtonStyle?",
+        "doc": "Shared appearance applied before variant overrides."
+      },
+      {
+        "name": "primary",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButtonStyle?",
+        "doc": "Primary appearance."
+      },
+      {
+        "name": "secondary",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButtonStyle?",
+        "doc": "Secondary appearance."
+      },
+      {
+        "name": "quiet",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButtonStyle?",
+        "doc": "Quiet appearance."
+      },
+      {
+        "name": "destructive",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButtonStyle?",
+        "doc": "Destructive appearance."
+      }
+    ],
+    "copyWith": [
+      "style",
+      "primary",
+      "secondary",
+      "quiet",
+      "destructive"
+    ]
+  },
+  "PaymentFieldTheme": {
+    "kind": "class",
+    "file": "lib/src/foundation/field_style.dart",
+    "doc": "Field-family appearance registered in `ThemeData.extensions` (D102).\n\nApplies to the input box of text, search, text-area, select, date,\ndate-range-field and currency fields, and to fields composed from them\n(promo code, identity form). Buttons, cards, sheets, chips, selection\ncontrols and option lists or panels are unaffected.\n\nTheme-only: there is no per-field style parameter. Scope a one-off with a\nnested `Theme`, keeping unrelated extensions:\n\n```dart\nTheme(\n  data: Theme.of(context).copyWith(\n    extensions: [\n      ...Theme.of(context).extensions.values,\n      PaymentFieldTheme(fillColor: PaymentTheme.of(context).surfaceMuted),\n    ],\n  ),\n  child: form,\n)\n```\n\nEvery property is optional; null keeps the kit default, and an empty\ntheme renders exactly like no theme. The kit keeps the 2 dp accent focus\nborder, the danger error border, disabled and read-only behaviour, label,\nhelper and error typography, content padding and sizes, the 48 dp\nminimum, prefix, suffix and clear controls, and focus semantics. Hosts\nverify contrast for a custom fill against the text and border colors in\nlight and dark.",
+    "extends": "ThemeExtension<PaymentFieldTheme>",
+    "constructors": [
+      {
+        "name": "PaymentFieldTheme",
+        "factory": false,
+        "params": [
+          {
+            "name": "fillColor",
+            "type": "Color?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "fillColor",
+            "doc": "Box fill while enabled or read-only. Unset, fields have no fill.\n\nA disabled field with a custom fill shows `PaymentTheme.surfaceMuted`."
+          },
+          {
+            "name": "borderColor",
+            "type": "Color?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "borderColor",
+            "doc": "Resting outline color while enabled; defaults to `PaymentTheme.border`.\nFocus, error and disabled outlines stay kit-owned."
+          },
+          {
+            "name": "borderRadius",
+            "type": "BorderRadius?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "borderRadius",
+            "doc": "Box corners for every outline state and the tap highlight; defaults to\n`PaymentTheme.controlBorderRadius` (D101)."
+          },
+          {
+            "name": "textStyle",
+            "type": "TextStyle?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "textStyle",
+            "doc": "Typography merged over the input role for the entered value and the\nplaceholder, keeping unspecified fields.\n\nColor, paint, background, shadows, decorations and `inherit` are\nignored; the kit owns text colors per state. Font size and height must\nbe positive when supplied. The box grows or shrinks with the text line,\nnever below 48 dp. Currency fields keep the amount role for the entered\namount and match the themed input line height. Labels, helper and\nerror text keep their roles."
+          }
+        ],
+        "doc": "Creates optional field overrides; null properties keep the kit default."
+      }
+    ],
+    "getters": [
+      {
+        "name": "hashCode",
+        "type": "int",
+        "doc": ""
+      }
+    ],
+    "statics": [],
+    "members": [
+      {
+        "name": "fillColor",
+        "kind": "field",
+        "static": false,
+        "type": "Color?",
+        "doc": "Box fill while enabled or read-only. Unset, fields have no fill.\n\nA disabled field with a custom fill shows `PaymentTheme.surfaceMuted`."
+      },
+      {
+        "name": "borderColor",
+        "kind": "field",
+        "static": false,
+        "type": "Color?",
+        "doc": "Resting outline color while enabled; defaults to `PaymentTheme.border`.\nFocus, error and disabled outlines stay kit-owned."
+      },
+      {
+        "name": "borderRadius",
+        "kind": "field",
+        "static": false,
+        "type": "BorderRadius?",
+        "doc": "Box corners for every outline state and the tap highlight; defaults to\n`PaymentTheme.controlBorderRadius` (D101)."
+      },
+      {
+        "name": "textStyle",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle?",
+        "doc": "Typography merged over the input role for the entered value and the\nplaceholder, keeping unspecified fields.\n\nColor, paint, background, shadows, decorations and `inherit` are\nignored; the kit owns text colors per state. Font size and height must\nbe positive when supplied. The box grows or shrinks with the text line,\nnever below 48 dp. Currency fields keep the amount role for the entered\namount and match the themed input line height. Labels, helper and\nerror text keep their roles."
+      }
+    ],
+    "copyWith": [
+      "fillColor",
+      "borderColor",
+      "borderRadius",
+      "textStyle"
+    ]
+  },
   "ChartPointStatus": {
     "kind": "enum",
     "file": "lib/src/charts/chart_models.dart",
@@ -5231,7 +5582,40 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "radius",
-            "doc": "Corner radius of selectable boxes such as the method list. Buttons and\ninputs use three quarters of it."
+            "doc": "Corner radius of selectable boxes such as the method list (the box\nrole). It is also the base of the other corner roles: tags use half of\nit, controls three quarters and sheets one and a half, unless\n`tagRadius`, `controlRadius` or `sheetRadius` sets that role (D101)."
+          },
+          {
+            "name": "tagRadius",
+            "type": "double?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "tagRadius",
+            "doc": "Corner radius of badges and tags. Null derives `radius * 0.5`.\nZero gives square corners; a large value such as 999 gives pills."
+          },
+          {
+            "name": "controlRadius",
+            "type": "double?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "controlRadius",
+            "doc": "Corner radius of buttons, inputs, notices and menus. Null derives\n`radius * 0.75`."
+          },
+          {
+            "name": "sheetRadius",
+            "type": "double?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "sheetRadius",
+            "doc": "Corner radius of sheet tops and dialogs. Null derives `radius * 1.5`."
           },
           {
             "name": "spacing",
@@ -5345,22 +5729,22 @@
       {
         "name": "borderRadius",
         "type": "BorderRadius",
-        "doc": ""
+        "doc": "Selectable boxes such as the method list: `radius`."
       },
       {
         "name": "tagBorderRadius",
         "type": "BorderRadius",
-        "doc": "Badges and tags."
+        "doc": "Badges and tags: `tagRadius`, else half of `radius`."
       },
       {
         "name": "controlBorderRadius",
         "type": "BorderRadius",
-        "doc": "Buttons, inputs, notices and menus."
+        "doc": "Buttons, inputs, notices and menus: `controlRadius`, else three\nquarters of `radius`."
       },
       {
         "name": "sheetBorderRadius",
         "type": "BorderRadius",
-        "doc": "The top of a sheet and dialogs."
+        "doc": "The top of a sheet and dialogs: `sheetRadius`, else one and a half\ntimes `radius`."
       }
     ],
     "statics": [
@@ -5456,7 +5840,28 @@
         "kind": "field",
         "static": false,
         "type": "double",
-        "doc": "Corner radius of selectable boxes such as the method list. Buttons and\ninputs use three quarters of it."
+        "doc": "Corner radius of selectable boxes such as the method list (the box\nrole). It is also the base of the other corner roles: tags use half of\nit, controls three quarters and sheets one and a half, unless\n`tagRadius`, `controlRadius` or `sheetRadius` sets that role (D101)."
+      },
+      {
+        "name": "tagRadius",
+        "kind": "field",
+        "static": false,
+        "type": "double?",
+        "doc": "Corner radius of badges and tags. Null derives `radius * 0.5`.\nZero gives square corners; a large value such as 999 gives pills."
+      },
+      {
+        "name": "controlRadius",
+        "kind": "field",
+        "static": false,
+        "type": "double?",
+        "doc": "Corner radius of buttons, inputs, notices and menus. Null derives\n`radius * 0.75`."
+      },
+      {
+        "name": "sheetRadius",
+        "kind": "field",
+        "static": false,
+        "type": "double?",
+        "doc": "Corner radius of sheet tops and dialogs. Null derives `radius * 1.5`."
       },
       {
         "name": "spacing",
@@ -5536,28 +5941,28 @@
         "kind": "getter",
         "static": false,
         "type": "BorderRadius",
-        "doc": ""
+        "doc": "Selectable boxes such as the method list: `radius`."
       },
       {
         "name": "tagBorderRadius",
         "kind": "getter",
         "static": false,
         "type": "BorderRadius",
-        "doc": "Badges and tags."
+        "doc": "Badges and tags: `tagRadius`, else half of `radius`."
       },
       {
         "name": "controlBorderRadius",
         "kind": "getter",
         "static": false,
         "type": "BorderRadius",
-        "doc": "Buttons, inputs, notices and menus."
+        "doc": "Buttons, inputs, notices and menus: `controlRadius`, else three\nquarters of `radius`."
       },
       {
         "name": "sheetBorderRadius",
         "kind": "getter",
         "static": false,
         "type": "BorderRadius",
-        "doc": "The top of a sheet and dialogs."
+        "doc": "The top of a sheet and dialogs: `sheetRadius`, else one and a half\ntimes `radius`."
       },
       {
         "name": "amountStyle",
@@ -5582,6 +5987,9 @@
       "warning",
       "danger",
       "radius",
+      "tagRadius",
+      "controlRadius",
+      "sheetRadius",
       "spacing",
       "amountWeight",
       "amountFontFamily",
@@ -5670,19 +6078,19 @@
       },
       {
         "name": "tag",
-        "doc": "tagBorderRadius (4). Stripe xsmall."
+        "doc": "tagBorderRadius (4 by default). Stripe xsmall."
       },
       {
         "name": "control",
-        "doc": "controlBorderRadius (6). Stripe small."
+        "doc": "controlBorderRadius (6 by default). Stripe small."
       },
       {
         "name": "box",
-        "doc": "borderRadius (8). Stripe medium."
+        "doc": "borderRadius (8 by default). Stripe medium."
       },
       {
         "name": "sheet",
-        "doc": "sheetBorderRadius (12). Stripe large."
+        "doc": "sheetBorderRadius (12 by default). Stripe large."
       },
       {
         "name": "circle",
@@ -6455,6 +6863,17 @@
             "isSuper": false,
             "fieldName": "icon",
             "doc": "Optional leading icon in the label color."
+          },
+          {
+            "name": "style",
+            "type": "PaymentButtonStyle?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "style",
+            "doc": "Appearance after token and button-family defaults; see `PaymentButtonStyle`.\nDisabled colors, focus, sizing and motion remain kit-owned."
           }
         ],
         "doc": ""
@@ -6525,6 +6944,13 @@
         "static": false,
         "type": "IconData?",
         "doc": "Optional leading icon in the label color."
+      },
+      {
+        "name": "style",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentButtonStyle?",
+        "doc": "Appearance after token and button-family defaults; see `PaymentButtonStyle`.\nDisabled colors, focus, sizing and motion remain kit-owned."
       }
     ],
     "copyWith": null
@@ -8214,7 +8640,7 @@
   "showPaymentToast": {
     "kind": "function",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "Short feedback after an action. Failures requiring a fix use `PaymentBanner`.\nNeutral, success, warning, or pending. Reading time is 4–10 seconds,\nat least 6 with an action; pending and accessible actions never time out.\nThe newest toast wins: showing one replaces the kit toast on screen and\ndrops any kit toast still waiting (D77). When reduced motion changes, the\nwhole snack bar queue is cleared first, host snack bars included (D78).",
+    "doc": "Short feedback after an action. Failures requiring a fix use `PaymentBanner`.\nNeutral, success, warning, or pending. Reading time is 4–10 seconds,\nat least 6 with an action; pending and accessible actions never time out.\nThe newest toast wins: showing one replaces the kit toast on screen and\ndrops any kit toast still waiting (D77). When reduced motion changes, the\nwhole snack bar queue is cleared first, host snack bars included (D78).\nThe toast takes its look from the themes around `context`: themes scoped\nbelow the `ScaffoldMessenger` are captured once when it shows, and app\nthemes above the messenger stay live only where no captured theme shadows\nthem; a captured Material Theme freezes its full ThemeData (D103).",
     "returns": "PaymentToastController",
     "typeParams": "",
     "params": [

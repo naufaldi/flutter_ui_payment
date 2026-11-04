@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'field_decoration.dart';
+import 'field_style.dart';
 import 'payment_theme.dart';
 import 'payment_tokens.dart';
-import 'payment_type.dart';
 
 String joinLabels(List<String> labels) => labels.length <= 2
     ? labels.join(', ')
@@ -46,6 +46,7 @@ class _FieldTriggerState extends State<FieldTrigger> {
   @override
   Widget build(BuildContext context) {
     final t = PaymentTheme.of(context);
+    final look = FieldAppearance.of(context);
     final label = fieldLabel(context, widget.label, required: widget.required);
     final hideLabel = widget.hiddenElements.contains(PaymentFieldPart.label);
     final above = !hideLabel && fieldLabelAbove(context);
@@ -56,7 +57,7 @@ class _FieldTriggerState extends State<FieldTrigger> {
       onFocusChange: (v) => setState(() => focused = v),
       focusColor: Colors.transparent,
       hoverColor: Colors.transparent,
-      borderRadius: t.controlBorderRadius,
+      borderRadius: look.borderRadius,
       child: InputDecorator(
         isFocused: focused,
         isEmpty: widget.value == null,
@@ -96,9 +97,9 @@ class _FieldTriggerState extends State<FieldTrigger> {
             ),
         child: Text(
           widget.value ?? '',
-          style: PaymentType.of(
-            context,
-          ).input.copyWith(color: widget.enabled ? t.textPrimary : t.disabled),
+          style: look.input.copyWith(
+            color: widget.enabled ? t.textPrimary : t.disabled,
+          ),
         ),
       ),
     );

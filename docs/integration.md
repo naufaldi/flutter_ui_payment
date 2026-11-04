@@ -34,6 +34,10 @@ MaterialApp(
 
 Without the extension, the kit derives every token from your `ColorScheme`. The example's two brands live in `example/lib/themes.dart`.
 
+For a product look, add `PaymentButtonTheme` and `PaymentFieldTheme` to the app theme or to a feature's scoped `Theme`, keeping the parent's other extensions. Put a repeated look in a named preset that takes `BuildContext`. `example/lib/compositions/host_checkout.dart` builds two different checkout layouts from the same host data and callbacks this way (D98).
+
+For a connected host example, copy `host_checkout.dart`, `host_payment_recovery.dart` and `host_checkout_journey.dart` from `example/lib/compositions/`. `HostCheckoutJourney` pins the invoice pay action and then renders the existing recovery/receipt composition from host callback results. Its gallery fixture demonstrates a lost submit response and pending/offline recovery without `DemoCoordinator`. The host persists the attempt before sending and supplies revalidated quotes, authoritative snapshots and matching receipt data; the screen keeps only mounted presentation state. The website's Checkout pattern explains callback ownership and session identity.
+
 ## 3. App shell
 
 On phones and tablets, use `AdaptiveNavShell` for the app frame, or `NavSidebar` inside your own. Put `PaymentActionBar` in `Scaffold.bottomNavigationBar` on any step where the total and the main action must stay reachable. Use `showPaymentSheet` / `showPaymentSideSheet` with `PaymentSheet` for filters, details and option lists.
@@ -65,7 +69,7 @@ Create the controller in your state, pass it to `PaymentVideoPlayer`, and dispos
 
 **Promotions.** Load offers however you like, map them to `PromoContent`, and show them in a `PromoSlot`. Decide in your own callbacks what CTA, dismiss and "Why this?" do, and whether a dismissed offer stays hidden. Keep promotions out of the path between the total and the pay button.
 
-**Feedback.** Use `showPaymentSnackBar` for share/copy results and `showPaymentConfirmDialog` before any irreversible action you run.
+**Feedback.** Use `showPaymentToast` for share/copy results and `showPaymentConfirmDialog` before any irreversible action you run.
 
 ## Run the example
 

@@ -106,4 +106,71 @@ void main() {
       expect(find.byType(PaymentFocusView), findsNothing);
     }
   });
+
+  testWidgets('wide panel keeps the caller\'s scoped themes', (t) async {
+    await setSurface(t, const Size(1024, 900));
+    final scoped = PaymentTheme.fromColorScheme(
+      ColorScheme.fromSeed(seedColor: Colors.teal),
+    ).copyWith(surface: const Color(0xFFFFF4E0));
+    const pill = BorderRadius.all(Radius.circular(999));
+    await t.pumpWidget(
+      contentHost(
+        Builder(
+          builder: (context) => Theme(
+            data: Theme.of(context).copyWith(
+              extensions: [
+                scoped,
+                const PaymentButtonTheme(
+                  style: PaymentButtonStyle(borderRadius: pill),
+                ),
+              ],
+            ),
+            child: Builder(
+              builder: (context) => PaymentButton(
+                label: 'Open',
+                onPressed: () {
+                  showPaymentFocusView<void>(
+                    context,
+                    builder: (_) => PaymentFocusView(
+                      title: 'Report a problem',
+                      primaryAction: PaymentButton(
+                        label: 'Send',
+                        onPressed: () {},
+                      ),
+                      child: const Text('Details'),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await t.tap(find.text('Open'));
+    await t.pumpAndSettle();
+    final send = t
+        .widget<FilledButton>(
+          find.ancestor(
+            of: find.text('Send'),
+            matching: find.byType(FilledButton),
+          ),
+        )
+        .style!;
+    expect(
+      (send.shape!.resolve({})! as RoundedRectangleBorder).borderRadius,
+      pill,
+    );
+    expect(
+      t
+          .widgetList<Material>(
+            find.ancestor(
+              of: find.byType(PaymentFocusView),
+              matching: find.byType(Material),
+            ),
+          )
+          .map((m) => m.color),
+      contains(scoped.surface),
+    );
+  });
 }

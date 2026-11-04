@@ -7,6 +7,9 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import '../adapters/fake_host.dart';
 import '../adapters/synthetic_capture.dart';
 import '../adapters/video_adapter.dart';
+import '../compositions/host_checkout.dart';
+import '../compositions/host_payment_recovery.dart';
+import '../compositions/host_checkout_journey.dart';
 import '../demo_strings.dart';
 import '../dev_chrome.dart';
 import 'flow_screen.dart' show documentRequirements, identityFields;
@@ -22,6 +25,9 @@ part 'gallery_capture.dart';
 part 'gallery_feedback.dart';
 part 'gallery_nav_controls.dart';
 part 'gallery_selection.dart';
+part 'gallery_host_checkout.dart';
+part 'gallery_host_recovery.dart';
+part 'gallery_host_journey.dart';
 
 void _galleryFeedback(BuildContext context, String en, String id) {
   showPaymentToast(context, message: _t(context, en, id));
@@ -225,6 +231,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ],
       'controls' => const [
         _ButtonsDemo(),
+        _ButtonCustomizationDemo(),
+        _FieldCustomizationDemo(),
         _ActionSpecimen('PaymentIconButton'),
         _ActionSpecimen('PaymentLink'),
         _ActionSpecimen('PaymentCopyButton'),
@@ -256,6 +264,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       'media' => const [_VideoDemo()],
       'promo' => const [_PromoDemo()],
       'checkout' => const [
+        _HostJourneyDemo(),
         _MerchantStepsDemo(),
         _SummaryDemo(),
         _MethodsDemo(),
@@ -263,8 +272,14 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _PromoCodeDemo(),
         _ActionBarDemo(),
         _AuthDemo(),
+        _HostCheckoutDemo(),
       ],
-      'status' => const [_StatusDemo(), _InstructionsDemo(), _ReceiptDemo()],
+      'status' => const [
+        _HostRecoveryDemo(),
+        _StatusDemo(),
+        _InstructionsDemo(),
+        _ReceiptDemo(),
+      ],
       'history' => const [_HistoryDemo()],
       'charts' => const [
         _ChartVariants('line'),
@@ -289,6 +304,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       _ => const [
         _Foundation(),
         _SpacingRolesDemo(),
+        _ThemeShapeRolesDemo(),
         _AmountTextVariantsDemo(),
         _AmountDemo(),
       ],
@@ -535,6 +551,93 @@ class _SpacingRolesDemo extends StatelessWidget {
                 ],
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+/// D101: a product theme sets corner roles on its PaymentTheme; components
+/// pick them up without per-widget styling.
+class _ThemeShapeRolesDemo extends StatelessWidget {
+  const _ThemeShapeRolesDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    final parent = Theme.of(context);
+    // Square boxes, pill tags and rounder sheets; controls stay where the
+    // default theme puts them.
+    final brand = theme.copyWith(
+      radius: 0,
+      tagRadius: 999,
+      controlRadius: theme.controlBorderRadius.topLeft.x,
+      sheetRadius: theme.space(PaymentSpace.section),
+    );
+    Widget sample(String title, PaymentTheme shapes) => Theme(
+      data: parent.copyWith(extensions: [...parent.extensions.values, shapes]),
+      child: PaymentBox(
+        gap: PaymentSpace.related,
+        children: [
+          PaymentInline(title, weight: PaymentFontWeight.semibold),
+          PaymentBox(
+            padding: PaymentSpace.group,
+            gap: PaymentSpace.block,
+            background: PaymentBoxBackground.muted,
+            radius: PaymentRadius.box,
+            children: [
+              Wrap(
+                spacing: theme.space(PaymentSpace.related),
+                runSpacing: theme.space(PaymentSpace.related),
+                children: [
+                  PaymentBadge(
+                    tone: StatusTone.success,
+                    label: _t(context, 'Paid', 'Lunas'),
+                  ),
+                  PaymentBadge(
+                    tone: StatusTone.warning,
+                    label: _t(context, 'Pending', 'Tertunda'),
+                  ),
+                ],
+              ),
+              PaymentTextField(label: _t(context, 'Reference', 'Referensi')),
+              PaymentButton(
+                label: _t(context, 'Pay now', 'Bayar sekarang'),
+                onPressed: () => _hostSays(
+                  context,
+                  'Payment started (simulated)',
+                  'Pembayaran dimulai (simulasi)',
+                ),
+              ),
+            ],
+          ),
+          PaymentBox(
+            padding: PaymentSpace.group,
+            background: PaymentBoxBackground.surface,
+            keyline: PaymentKeyline.neutral,
+            radius: PaymentRadius.sheet,
+            children: [
+              PaymentInline(_t(context, 'Sheet corners', 'Sudut lembar')),
+            ],
+          ),
+        ],
+      ),
+    );
+    return _Entry(
+      name: 'PaymentTheme · shape roles · variants',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: theme.space(PaymentSpace.section),
+        children: [
+          sample(_t(context, 'Default theme', 'Tema bawaan'), theme),
+          sample(
+            _t(
+              context,
+              'Product theme: square boxes, pill tags, rounder sheets',
+              'Tema produk: kotak siku, tag pil, lembar lebih bulat',
+            ),
+            brand,
+          ),
         ],
       ),
     );

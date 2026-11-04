@@ -75,6 +75,8 @@ Short messages last 4 seconds, or 6 with an action. Longer messages get 1 second
 
 Only the newest toast counts. Showing a toast replaces the kit toast on screen and drops any kit toast still waiting, so feedback never waits behind another toast's reading time (D77). The toast on screen leaves over 150 ms, then the new one enters. With reduced motion the swap is instant. A replaced toast's controller stops responding: `update` and `dismiss` do nothing, and `closed` completes when it leaves. A waiting kit toast dropped by your app's `clearSnackBars()` completes when a later kit toast reaches the front; a dropped waiting legacy `showPaymentSnackBar` future never completes. A controller keeps working until its toast closes, even after a route with its own `Scaffold` is popped.
 
+A toast takes its look from where you show it. Themes scoped between your `context` and the `ScaffoldMessenger`, such as a feature's own `PaymentTheme`, are captured once when the toast shows; app themes above the messenger remain live only where no captured theme shadows them (D103). A captured Material Theme freezes its full ThemeData, including copied app values. To restyle toasts, scope `PaymentTheme`; there is no toast style.
+
 If your app also calls `ScaffoldMessenger.showSnackBar`, a kit toast replaces your snack bar when it is on screen. When reduced motion turns on or off, and before the first kit toast on a messenger, the kit clears the whole snack bar queue, your bars included (D78). Flutter rebuilds its snack bar animation when the timing changes, and a bar left waiting would freeze the queue. A dropped bar's `closed` never completes. If your own bars pass `snackBarAnimationStyle`, the kit can't see that change.
 
 ## Which variant when

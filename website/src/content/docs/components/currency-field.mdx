@@ -119,6 +119,10 @@ Keep currency fixed unless the host explicitly allows switching.
 
 Top-up scenarios; Gallery Controls. Real composition: `example/lib/screens/gallery_selection.dart`.
 
+## Customization
+
+The amount box follows the field-family `PaymentFieldTheme` (D102): fill, resting outline and corners. The entered amount keeps the amount type role; themed input typography changes only its line height, with the default input line as its minimum to keep digits visible. A smaller input font can therefore make text fields shorter than currency fields. See [Text field customization](/components/text-field/#customization).
+
 ## API
 
 <Props names={["PaymentCurrencyField", "AmountParseResult", "AmountIssue", "AmountInput"]} />

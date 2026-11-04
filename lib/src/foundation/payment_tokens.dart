@@ -60,16 +60,16 @@ enum PaymentRadius {
   /// BorderRadius.zero. Stripe none.
   none,
 
-  /// tagBorderRadius (4). Stripe xsmall.
+  /// tagBorderRadius (4 by default). Stripe xsmall.
   tag,
 
-  /// controlBorderRadius (6). Stripe small.
+  /// controlBorderRadius (6 by default). Stripe small.
   control,
 
-  /// borderRadius (8). Stripe medium.
+  /// borderRadius (8 by default). Stripe medium.
   box,
 
-  /// sheetBorderRadius (12). Stripe large.
+  /// sheetBorderRadius (12 by default). Stripe large.
   sheet,
 
   /// BorderRadius.circular(999), existing navigation pill. Stripe rounded.

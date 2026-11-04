@@ -1,216 +1,79 @@
 # Components
 
-Every public component of `flutter_ui_payment`, what it is for, what the host still owns, and where to see it. All of them are exported from `package:flutter_ui_payment/flutter_ui_payment.dart`, take their colors from `PaymentTheme`, their strings from `PaymentLocalizations` (English and Indonesian), and their motion from `PaymentMotion` (which goes to zero under reduced motion).
+Current public visual families, their host boundary, and canonical usage. Import from `package:flutter_ui_payment/flutter_ui_payment.dart`. Supporting models and enum values are listed in the generated [API data](../website/src/data/api.json); the [export file](../lib/flutter_ui_payment.dart) identifies public modules. This inventory describes shipped APIs, while the [daily guide](design-system.md) links approved requirements.
 
-"Gallery" means the **Galeri** tab of the example app (`example/`), opened from the menu button on phones or the sidebar on wide windows.
+"Gallery" means the example app's Galeri tab. The catalog groups families alphabetically; payment patterns also appear in the demo screens. The website owns usage examples and Props tables.
 
 ## Inventory
 
-| Module | Component | What it does | The host owns | Gallery section |
-| --- | --- | --- | --- | --- |
-| Foundation | `PaymentTheme`, `PaymentMotion`, `PaymentLocalizations`, `KitStrings` | Brand tokens, motion tokens, en/id strings and formatters | Brand values, locale | Fondasi |
-| Foundation | `Money`, `MoneyFormat`, `AmountText` | Integer money, strict parsing, amounts that scale down instead of clipping | Currency, amounts | Fondasi |
-| Foundation | `InfoRow`, `MiddleEllipsisText` | Label/value rows; values keep up to 60% of the row; long file names keep their extension (`ktp_demo_ret…ake.png`) | — | Fondasi, Verifikasi |
-| Foundation | `PaymentButton`, `StatusBadge`, `NoticeBanner`, `PaymentSection` (`trailing:` header action), `StatusBand`, `PrivacyMask`, `CountdownText` | Primitives with idle/busy/disabled states; buttons are primary, secondary, quiet or destructive; `StatusBand` is hatched for an unknown outcome | Callbacks | Fondasi |
-| Foundation | `PaymentSpinner`, `PaymentDivider` | Indeterminate wait (still hourglass under reduced motion); 1 px outline rule | — | Kontrol |
-| Controls | `PaymentCheckbox`, `PaymentRadio`, `PaymentSwitch` | Label rows, one 48 dp target and one screen-reader node each; disabled with a reason | The value | Kontrol |
-| Controls | `PaymentTabs`, `PaymentTooltip` | Text tabs on a hairline (also the history filters); long-press/hover hint in ink | Selected index and the content | Kontrol, Riwayat |
-| Interaction | `ActionTile`, `ActionTileGroup` | Row with icon, subtitle, disabled reason, destructive tone | What the tap does | Interaksi |
-| Interaction | `ActionMenu`, `ActionMenuEntry` | Overflow menu (keyboard arrows, Escape, focus return via `MenuAnchor`) | Entries and callbacks | Interaksi |
-| Interaction | `showPaymentConfirmDialog` | Yes/no before an irreversible action; destructive puts focus on Cancel | The action itself | Interaksi, Sheet & drawer |
-| Interaction | `showPaymentSnackBar` | Toned feedback with optional undo | What undo does | Interaksi |
-| Interaction | `ExpandableSection` | Controlled or uncontrolled disclosure | Content | Interaksi |
-| Interaction | `LoadingSkeleton`, `StateMessage` | Static loading placeholder; empty/error/no-match state with one action | Retry | Interaksi, Riwayat |
-| Navigation | `PaymentNavItem`, `PaymentNavSection`, `NavSidebar` | Grouped navigation with selected, disabled-with-reason and badge | Selection, routing | Navigasi |
-| Navigation | `AdaptiveNavShell` | Sidebar at ≥ breakpoint, modal drawer below it; Escape/Back/scrim close; focus returns to the menu button | Selected id, pages | The whole gallery |
-| Sheets | `PaymentSheet`, `PaymentSheetHeader` | Header / scrolling body / fixed footer; safe area and keyboard inset | Content and actions | Sheet & drawer |
-| Sheets | `showPaymentSheet`, `showPaymentSideSheet` | Bottom sheet and end-edge side panel | Whether it may be dismissed | Sheet & drawer, Riwayat |
-| Media | `PaymentVideoController`, `VideoPlaybackValue`, `VideoPhase` | Contract between the widget and any media engine | The engine (plugin), the source, its lifetime | Video |
-| Media | `PaymentVideoPlayer` | Play/pause, seek, mute, retry, loading/buffering/ended/error; no autoplay; pauses when hidden or backgrounded | — | Video |
-| Promotions | `PromoContent`, `PromoKind`, `PromoCard`, `PromoLayout` | Labeled sponsored or own promotion with CTA, dismiss and "why this?" | Campaigns, what CTA/dismiss do, tracking (if any) | Promosi |
-| Promotions | `PromoSlot`, `PromoSlotState` | Loading/ready/empty/error placement; empty and failed collapse by default | Loading the content | Promosi |
-| Checkout | `AmountInput`, `PaymentSummary`, `PaymentMethodPicker`, `PaymentConfirmation`, `AuthorizationPrompt` | Unchanged v0.1 checkout | Quote, methods, auth | Checkout |
-| Checkout | `PaymentActionBar` | Pinned total + main action; "Updating total…" while re-quoting | Enabling the action | Checkout, Demo checkout |
-| Checkout | `MerchantHeader` | Payee name, category, order reference, verified badge | Verification flag, logo | Checkout |
-| Checkout | `PaymentStepIndicator` | "Step 2 of 4: Checkout" bars | Current step | Checkout |
-| Checkout | `BalanceCard`, `BalanceState` | Balance, insufficient warning with shortfall, limit usage | Whether balance covers the payment | Checkout |
-| Checkout | `PromoCodeInput`, `PromoCodeStatus` | Code entry with checking/applied/rejected | Validation and the discounted quote | Checkout |
-| Status | `PaymentInstructions`, `PaymentStatusView`, `RefundSection`, `PaymentAttempt` | Unchanged v0.1 status logic; hero simplified | Status, idempotency, refunds | Status & struk |
-| History | `TransactionRecord`, `TransactionFilter` | Presentation record; local `where(query, filter)` helper | Records, server search | Riwayat |
-| History | `TransactionHistory`, `TransactionListItem`, `TransactionDetail` | Search, filter chips, list, loading/error/empty/no-match, detail with separate refund | Query/filter state, actions | Riwayat |
-| Receipt | `PaymentReceipt` | Unchanged v0.1 | Share and clipboard | Status & struk |
-| Verification | `VerificationIntro`, `IdentityForm`, `DocumentUploadTile`, `VerificationReview`, `VerificationStatusView` | Unchanged v0.1 flow; review edit buttons moved into section headers | KYC decision | Verifikasi (KYC) |
+| Module / current public names | The host owns | Canonical docs / example location |
+| --- | --- | --- |
+| Foundation: `PaymentTheme`, `PaymentType`, `PaymentMotion`, `PaymentLocalizations`, `KitStrings`, `HostError` | Brand, locale, safe error content | [Theming](https://flutter-ui-payment.netlify.app/concepts/theming/), [localization](https://flutter-ui-payment.netlify.app/foundations/localization/); foundation gallery |
+| Money: `Money`, `MoneyFormat`, `AmountText`, `CountdownText` | Amount/currency, authoritative time | [Money](https://flutter-ui-payment.netlify.app/foundations/money/), [countdown](https://flutter-ui-payment.netlify.app/components/countdown/); foundation gallery |
+| Layout: `PaymentBox`, `PaymentInline`, `PaymentSpan`, `PaymentIcon`, `PaymentIcons`, `PaymentImage` | Content, media widget/source | [Box](https://flutter-ui-payment.netlify.app/components/box/), [inline](https://flutter-ui-payment.netlify.app/components/inline/), [image](https://flutter-ui-payment.netlify.app/components/image/); catalog specimens |
+| Actions: `PaymentButton`, `PaymentIconButton`, `PaymentLink`, `PaymentCopyButton`, `PaymentButtonGroup` | Callbacks, clipboard/URLs | [Button](https://flutter-ui-payment.netlify.app/components/button/), [button group](https://flutter-ui-payment.netlify.app/components/button-group/), [copy](https://flutter-ui-payment.netlify.app/components/copy-button/); catalog and flow |
+| Feedback: `PaymentBadge`, `PaymentBanner`, `StatusHeader`, `StatusBand`, `PaymentSpinner`, `PaymentDivider`, `PrivacyMask` | Status truth, banner removal, OS screenshot protection | [Badge](https://flutter-ui-payment.netlify.app/components/badge/), [banner](https://flutter-ui-payment.netlify.app/components/banner/), [privacy](https://flutter-ui-payment.netlify.app/components/privacy-mask/); foundation gallery |
+| Content: `InfoRow`, `MiddleEllipsisText`, `PaymentSection`, `PaymentCode`, `PaymentPropertyList`, `PaymentPropertyListItem` | Values, slots and copy callbacks | [Section](https://flutter-ui-payment.netlify.app/components/section/), [property list](https://flutter-ui-payment.netlify.app/components/property-list/), [code](https://flutter-ui-payment.netlify.app/components/code/); catalog, status/receipt |
+| Controls: `PaymentCheckbox`, `PaymentRadio`, `PaymentSwitch`, `PaymentTabs`, `PaymentTab`, `PaymentTabPanels`, `PaymentTooltip` | Values, selection and panel content | [Checkbox](https://flutter-ui-payment.netlify.app/components/checkbox/), [tabs](https://flutter-ui-payment.netlify.app/components/tabs/), [tooltip](https://flutter-ui-payment.netlify.app/components/tooltip/); controls gallery |
+| Forms: `PaymentTextField`, `PaymentTextArea`, `PaymentCurrencyField`, `PaymentSelect`, `PaymentDateField`, `PaymentFormFieldGroup` | Controllers, validation, options, allowed dates | [Forms](https://flutter-ui-payment.netlify.app/patterns/forms/), [currency field](https://flutter-ui-payment.netlify.app/components/currency-field/); catalog, identity and checkout |
+| Search/filter: `PaymentSearchField`, `PaymentSearchOption`, `PaymentChip`, `PaymentChipList`, `PaymentDateRangePicker`, `PaymentDateRange` | Query/results, filters, date range and loading | [Search](https://flutter-ui-payment.netlify.app/components/search-field/), [date range](https://flutter-ui-payment.netlify.app/components/date-range-picker/); catalog and history |
+| Lists/disclosure: `PaymentList`, `PaymentListItem`, `PaymentAccordion`, `PaymentAccordionItem` | Actions, content and optional controlled expansion | [List](https://flutter-ui-payment.netlify.app/components/list/), [accordion](https://flutter-ui-payment.netlify.app/components/accordion/); interaction gallery |
+| Tables/tasks: `PaymentTable`, `PaymentTableRow`, `PaymentTableCell`, `PaymentTableHeaderCell`, `PaymentDataTable`, `PaymentDataColumn`, `PaymentTaskList`, `PaymentTaskListItem` | Rows, sort/pagination, task state and actions | [Table](https://flutter-ui-payment.netlify.app/components/table/), [data table](https://flutter-ui-payment.netlify.app/components/data-table/), [task list](https://flutter-ui-payment.netlify.app/components/task-list/); fees, statement, onboarding |
+| States: `LoadingSkeleton`, `StateMessage`, `PaymentEmptyMessage` | Loading/error truth and retry | [Loading](https://flutter-ui-payment.netlify.app/patterns/loading/), [empty/error](https://flutter-ui-payment.netlify.app/patterns/empty-and-error/); catalog and history |
+| Overlays: `PaymentMenu`, `PaymentMenuEntry`, `PaymentMenuItem`, `PaymentMenuGroup`, `showPaymentConfirmDialog`, `showPaymentToast`, `PaymentToastController` | Menu actions, destructive result, undo | [Menu](https://flutter-ui-payment.netlify.app/components/menu/), [dialog](https://flutter-ui-payment.netlify.app/components/dialog/), [toast](https://flutter-ui-payment.netlify.app/components/toast/); interaction gallery |
+| Navigation: `AdaptiveNavShell`, `NavSidebar`, `PaymentNavItem`, `PaymentNavSection` | Selection, routing, pages | [Navigation](https://flutter-ui-payment.netlify.app/components/navigation/); gallery shell |
+| Sheets: `PaymentSheet`, `PaymentSheetHeader`, `showPaymentSheet`, `showPaymentSideSheet`, `PaymentFocusView`, `showPaymentFocusView` | Content, actions, dismissal policy | [Sheets](https://flutter-ui-payment.netlify.app/components/sheets/), [focus view](https://flutter-ui-payment.netlify.app/components/focus-view/); sheet gallery, report problem |
+| Views: `PaymentContextView`, `PaymentFullPageView`, `PaymentSettingsView`, `PaymentSignInView`, `PaymentOnboardingView` | Shell/routes, slots, save/auth/onboarding decisions | [Views and pages](https://flutter-ui-payment.netlify.app/patterns/views-and-pages/); catalog, settings, sign-in, KYC |
+| Pages: `PaymentPageModule`, `PaymentBreadcrumb`, `PaymentDetailPage`, `PaymentOverviewPage`, `PaymentDetailPagePropertyList`, `PaymentDetailPageTable` | Header/content slots, navigation, authoritative records | [Overview](https://flutter-ui-payment.netlify.app/components/overview-page/), [detail](https://flutter-ui-payment.netlify.app/components/detail-page/); overview and transaction detail |
+| Media: `PaymentVideoPlayer`, `PaymentVideoController`, `VideoPlaybackValue`, `VideoPhase` | Media engine, source, controller lifecycle | [Media](https://flutter-ui-payment.netlify.app/components/media/); video gallery |
+| Promotions: `PromoCard`, `PromoSlot`, `PromoContent`, `PromoLayout`, `PromoKind`, `PromoSlotState` | Campaigns, tracking, CTA and dismiss effects | [Promotions](https://flutter-ui-payment.netlify.app/patterns/promotions/); promotion gallery |
+| Checkout: `PaymentSummary`, `PaymentMethodPicker`, `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentQuote`, `PaymentMethod` | Quote, methods, revalidation and auth SDK | [Checkout](https://flutter-ui-payment.netlify.app/patterns/checkout/); demo checkout |
+| Checkout additions: `PaymentActionBar`, `MerchantHeader`, `PaymentStepIndicator`, `BalanceCard`, `BalanceState`, `PromoCodeInput`, `PromoCodeStatus` | Action eligibility, merchant verdict, balance/limits, new discounted quote | [Action bar](https://flutter-ui-payment.netlify.app/components/action-bar/), [checkout](https://flutter-ui-payment.netlify.app/patterns/checkout/); checkout gallery |
+| Status: `PaymentInstructions`, `PaymentStatusView`, `RefundSection`, `PaymentAttempt`, `PaymentStatusSnapshot` | Status reconciliation inputs, idempotency, polling, refunds | [Status/receipt](https://flutter-ui-payment.netlify.app/patterns/status-receipt/), [attempt](https://flutter-ui-payment.netlify.app/concepts/payment-attempt/); status gallery |
+| History: `TransactionHistory`, `TransactionListItem`, `TransactionDetail`, `TransactionRecord`, `TransactionFilter` | Records, server search, query/filter state, actions | [History](https://flutter-ui-payment.netlify.app/patterns/history/); history gallery and flow |
+| Receipt: `PaymentReceipt`, `PaymentReceiptData`, `ReceiptShareData`, `ShareOutcome` | Safe receipt data, sharing and clipboard | [Status/receipt](https://flutter-ui-payment.netlify.app/patterns/status-receipt/); receipt flow |
+| Verification: `VerificationIntro`, `IdentityForm`, `IdentityFormController`, `DocumentUploadTile`, `VerificationReview`, `VerificationStatusView`, `checkDocumentLimits` | Field specs, validators, document policy/storage/upload and KYC verdict | [Verification](https://flutter-ui-payment.netlify.app/patterns/verification/); verification gallery and flow |
+| Charts: `PaymentLineChart`, `PaymentBarChart`, `PaymentMeterChart`, `PaymentSparkline`, `ChartModule`, `ChartPoint`, `ChartPointStatus`, `MeterSegment`, `ChartState` | Ordered data, units, authoritative readings and selection callbacks | [Chart layout](https://flutter-ui-payment.netlify.app/patterns/chart-layout/); chart gallery and overview |
+| Capture: `CaptureSource`, `CaptureKind`, `showCaptureSourceSheet`, `CaptureFrameOverlay`, `KycCaptureGuide` | Permissions, camera/gallery, capture, upload | [KYC capture](https://flutter-ui-payment.netlify.app/patterns/kyc-capture/); capture gallery |
 
-Out of scope on purpose (shown disabled in the gallery navigation): saved cards, PIN entry, ledgers, ad SDKs, real campaigns.
+**Deprecated compatibility names still present (D34):** `StatusBadge` → `PaymentBadge`, `NoticeBanner` → `PaymentBanner`, `ActionTile` / `ActionTileGroup` → `PaymentListItem` / `PaymentList`, `ActionMenu` / `ActionMenuEntry` → `PaymentMenu` / `PaymentMenuItem`, `AmountInput` → `PaymentCurrencyField`, `ExpandableSection` → `PaymentAccordionItem`, `showPaymentSnackBar` → `showPaymentToast`. These are deprecated now, with removal scheduled for 0.2.0, not already removed. New integrations use the current names above.
+
+Saved-card storage, PIN/OTP/secret entry, ledgers and ad SDK integration remain outside the kit. All platform effects stay host-owned; see [integration](integration.md).
 
 ## Interaction
 
-```dart
-PaymentSection(
-  title: 'Account',
-  trailing: ActionMenu(entries: [
-    ActionMenuEntry(label: 'Copy account ID', icon: Icons.copy_rounded,
-        onSelected: copyId),
-    ActionMenuEntry(label: 'Sign out everywhere', icon: Icons.logout,
-        destructive: true, onSelected: signOutEverywhere),
-  ]),
-  child: Column(children: [
-    ActionTile(icon: Icons.receipt_long_outlined, title: 'History',
-        onTap: openHistory),
-    const ActionTile(icon: Icons.pin_outlined, title: 'Change PIN',
-        disabledReason: 'Managed by your bank app'),
-  ]),
-);
+Use the canonical [list](https://flutter-ui-payment.netlify.app/components/list/), [menu](https://flutter-ui-payment.netlify.app/components/menu/), [dialog](https://flutter-ui-payment.netlify.app/components/dialog/) and [toast](https://flutter-ui-payment.netlify.app/components/toast/) examples. Tooltips also open on tap; longer explanations belong in a sheet.
 
-Future<void> signOutEverywhere() async {
-  final ok = await showPaymentConfirmDialog(context,
-      title: 'Sign out of all devices?',
-      message: 'Payments already sent are not affected.',
-      confirmLabel: 'Sign out', destructive: true);
-  if (ok) await host.signOutEverywhere();
-}
-
-showPaymentSnackBar(context, message: 'Reference copied',
-    tone: StatusTone.success);
-```
-
-`ExpandableSection` is uncontrolled by default (`initiallyExpanded`) and controlled when you pass `expanded` with `onExpandedChanged`. Collapsed content is removed from the tree. Do not use it to hide fees.
+`PaymentAccordionItem` is uncontrolled by default (`initiallyExpanded`) and controlled with `expanded` / `onExpandedChanged`. Collapsed content is removed from the tree. Never hide required fees in disclosure.
 
 ## Navigation
 
-```dart
-AdaptiveNavShell(
-  title: const Text('Ruang Bayar'),
-  selectedId: current,
-  onSelected: (item) => setState(() => current = item.id),
-  breakpoint: 840, // sidebar at or above this width, drawer below
-  sections: const [
-    PaymentNavSection(items: [
-      PaymentNavItem(id: 'home', label: 'Home', icon: Icons.home_outlined),
-      PaymentNavItem(id: 'history', label: 'History', icon: Icons.history,
-          badge: '2'),
-      PaymentNavItem(id: 'limits', label: 'Limits', icon: Icons.speed,
-          enabled: false, disabledReason: 'Verify first'),
-    ]),
-  ],
-  body: pages[current]!,
-);
-```
-
-Selection is instant (no animation) because navigation is used constantly. Disabled items are visible with their reason but not focusable. Use `NavSidebar` alone if you already have a shell.
+[Navigation usage](https://flutter-ui-payment.netlify.app/components/navigation/) covers shell/sidebar selection, disabled reasons and focus. Selection is instant. Use `NavSidebar` alone when the host already has a shell; the host owns routing.
 
 ## Sheets and drawers
 
-```dart
-await showPaymentSheet<void>(
-  context: context,
-  builder: (sheet) => PaymentSheet(
-    header: PaymentSheetHeader(title: 'Pending payment',
-        onClose: () => Navigator.pop(sheet)),
-    body: const Text('Closing this panel does not cancel the payment.'),
-    footer: PaymentButton(
-      label: 'Request cancellation',
-      variant: PaymentButtonVariant.secondary,
-      // Do not return the Future: PaymentButton would show a spinner while
-      // the confirmation dialog is open.
-      onPressed: () => unawaited(confirmThenAskHost(sheet)),
-    ),
-  ),
-);
-```
+[Sheet usage](https://flutter-ui-payment.netlify.app/components/sheets/) covers headers, scrolling bodies, pinned footers and dismissal. Closing a panel does not cancel a payment; cancellation is a separate host action with confirmation. While required work is running, the host chooses the documented dismissal controls.
 
-The header's **Close** only closes the panel. Cancelling a payment is a separate footer action, behind `showPaymentConfirmDialog`, and the host decides the result. `showPaymentSideSheet` takes the same `PaymentSheet`, which then fills the height so the footer sits at the bottom. Pass `isDismissible: false` / `barrierDismissible: false` while a host call that must finish is running.
+When a button only opens a confirmation, do not return the confirmation's entire Future as the button's work: that would keep its busy state active while the person decides. The host action itself owns submission state.
 
 ## Video
 
-The package has no media dependency. You adapt your player once:
+Adapt your media engine to `PaymentVideoController`; [media usage](https://flutter-ui-payment.netlify.app/components/media/) describes its contract. A working adapter is [video_adapter.dart](../example/lib/adapters/video_adapter.dart). Report safe `errorMessage` text, never raw engine errors. The host creates and disposes the controller.
 
-```dart
-class MyVideo extends PaymentVideoController {
-  @override Future<void> initialize() async { /* load, then */
-    value = value.copyWith(phase: VideoPhase.ready, duration: d); }
-  @override Future<void> play() => engine.play();
-  @override Future<void> pause() => engine.pause();
-  @override Future<void> seekTo(Duration p) => engine.seekTo(p);
-  @override Future<void> setMuted(bool m) => engine.setVolume(m ? 0 : 1);
-  @override Future<void> retry() => initialize();
-  @override Widget buildSurface(BuildContext context) => engine.view();
-}
-
-PaymentVideoPlayer(controller: myVideo, title: 'How to pay with QRIS');
-```
-
-A complete adapter for the official `video_player` plugin is in `example/lib/adapters/video_adapter.dart` (about 100 lines). Report safe `errorMessage` text only; never show raw player errors.
-
-Behavior: no autoplay unless `autoPlay: true`, and never under reduced motion. Pauses on app background, in an inactive `IndexedStack` tab, under a covering route, inside `TickerMode(false)`, and on dispose. It does not resume by itself. The host creates and disposes the controller.
+Autoplay is opt-in and respects reduced motion and platform video preferences. The player pauses when backgrounded, hidden by its tab/route, disabled by ticker mode or disposed; it does not resume itself.
 
 ## Promotions
 
-```dart
-PromoSlot(
-  state: offersState, // loading / ready / empty / error
-  content: const PromoContent(
-    id: 'cb-10', kind: PromoKind.sponsored, advertiser: 'Bank Contoh',
-    title: 'Cashback 10% on bills', ctaLabel: 'See offer'),
-  onAction: (promo) => host.openOffer(promo.id),
-  onDismiss: (promo) => host.hidePromo(promo.id),
-  onAbout: (promo) => host.explainPlacement(promo.id),
-);
-```
-
-Every promotion is labeled ("Sponsored · advertiser" or "Promo"), and the label wraps rather than truncates. The kit never fetches campaigns, counts impressions, applies discounts or changes a quote. To use an ad network, load its content in the host and pass it in; native-ad SDK views and their policies remain the host's integration.
+[Promotion usage](https://flutter-ui-payment.netlify.app/patterns/promotions/) covers labeled sponsored/own content and slot states. Labels wrap. The kit never fetches campaigns, counts impressions, applies discounts or changes a quote. Native-ad SDK views and policies remain host integrations.
 
 ## Payment additions
 
-```dart
-Scaffold(
-  body: ListView(children: [
-    const MerchantHeader(name: 'Ruang Bayar Akademi',
-        orderReference: 'RB-118', verified: true),
-    PaymentStepIndicator(steps: const ['Verify', 'Checkout', 'Pay'], current: 1),
-    PaymentSummary(quote: quote),
-    BalanceCard(state: host.balanceState, balance: balance,
-        shortfall: host.shortfall),
-    PromoCodeInput(status: codeStatus, onApply: host.applyCode,
-        appliedCode: code, discount: discount, message: codeError,
-        onRemove: host.removeCode),
-  ]),
-  bottomNavigationBar: PaymentActionBar(
-    total: quote.total,
-    updating: requoting,
-    action: PaymentButton(label: 'Review payment',
-        onPressed: requoting ? null : review),
-  ),
-);
-```
-
-A promo code changes the price only through a new host quote (a `QuoteLineKind.discount` line). `BalanceCard` never compares balance with the total; the host passes `BalanceState`.
+[Checkout usage](https://flutter-ui-payment.netlify.app/patterns/checkout/) composes summary, methods, balance, promo input and action bar. A promo changes price through a new host quote (`QuoteLineKind.discount`). `BalanceCard` does not compare balance with the total; the host supplies `BalanceState`.
 
 ## Transaction history
 
-```dart
-TransactionHistory(
-  records: TransactionRecord.where(all, query: query, filter: filter),
-  query: query,
-  filter: filter,
-  loading: loading,
-  error: loadError,
-  onRetry: reload,
-  onQueryChanged: (q) => setState(() => query = q),
-  onFilterChanged: (f) => setState(() => filter = f),
-  onOpen: (r) => showPaymentSheet(context: context,
-      builder: (_) => PaymentSheet(body: TransactionDetail(record: r))),
-);
-```
-
-A record with `status: null` is "not confirmed yet". It falls under **In progress**, never **Unsuccessful**, and its detail should offer a status check, never paying again. Refunds appear as their own section next to the original payment. `TransactionHistory` lays records out in a column; for long lists, build `TransactionListItem`s in a `ListView.builder`.
+[History usage](https://flutter-ui-payment.netlify.app/patterns/history/) covers search, filters, loading/error/empty/no-match and separate refunds. A record with `status: null` means not confirmed, under In progress; offer status checking, never paying again. For long lists, build `TransactionListItem`s in `ListView.builder` rather than the column used by `TransactionHistory`.
 
 ### Charts and capture
 
-| Public API | Purpose |
-| --- | --- |
-| `ChartPoint`, `ChartPointStatus`, `MeterSegment`, `ChartState` | Host-owned money and rendering states. |
-| `PaymentLineChart`, `PaymentBarChart` | Ordered trends and zero-baseline comparisons. |
-| `PaymentMeterChart`, `PaymentSparkline`, `ChartModule` | Category snapshot, compact trend and stable state container. |
-| `CaptureSource`, `CaptureKind`, `showCaptureSourceSheet` | Source intent before host permission. |
-| `CaptureFrameOverlay`, `KycCaptureGuide` | Passive framing, review and host upload state. |
+[Chart layout](https://flutter-ui-payment.netlify.app/patterns/chart-layout/) explains ordered trends, comparisons, category snapshots and exact values. [KYC capture](https://flutter-ui-payment.netlify.app/patterns/kyc-capture/) separates source intent from host permission, capture and upload. Passive frames never open a camera themselves.

@@ -67,6 +67,8 @@ Values use the default 8 dp base. Each bar shows the value at 4 CSS pixels per d
 ]} />
 ## Radius roles
 
+`PaymentTheme.radius` (default 8) is the `box` role and the base of the others. A theme may set `tagRadius`, `controlRadius` or `sheetRadius` to change one role; an unset role keeps its multiple: tag 0.5 (4), control 0.75 (6), sheet 1.5 (12). `PaymentRadius` and the theme getters (`tagBorderRadius`, `controlBorderRadius`, `borderRadius`, `sheetBorderRadius`) resolve the current role. See [Corner roles](/concepts/theming/#corner-roles).
+
 Each 64 CSS pixel square shows the top-left corner of a 48 dp tile at **8× magnification (8 CSS pixels per dp)**. The window covers 8 dp in each direction, making small radii visible. The unbounded `circle` token (999, pill) is shown separately as a complete 64 px circle, rather than a corner detail.
 
 <TokenTable group="radius" rows={[

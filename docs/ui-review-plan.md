@@ -1,5 +1,7 @@
 # UI review and execution plan: large text, status screens, polish
 
+> **Historical plan.** Preserved for context and stable links. Original status and instructions describe that snapshot, not current work or authorization. Start with the [documentation map](README.md) and [daily guide](design-system.md); use the latest applicable [PRD §8 decision](prd-foundation-components.md#8-decisions).
+
 Date: 30 October 2026. Planner pass only. The only file written was this one. Baseline: `flutter analyze` reports "No issues found!".
 
 **Evidence:** 75 native PNGs in `example/build/screenshots_hairline/` were opened and inspected. File names below refer to that folder.

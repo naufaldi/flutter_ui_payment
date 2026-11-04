@@ -1,5 +1,7 @@
 # Foundation plan: type, spacing, color, radius, icons (MVP: Payment / PPOB)
 
+> **Historical plan.** Preserved for context and stable links. Original status and instructions describe that snapshot, not current work or authorization. Start with the [documentation map](README.md) and [daily guide](design-system.md); use the latest applicable [PRD §8 decision](prd-foundation-components.md#8-decisions).
+
 Date: 30 October 2026. This was a planner pass. The only file written is this one. No code, tests, themes or assets were changed.
 
 **Inputs:**

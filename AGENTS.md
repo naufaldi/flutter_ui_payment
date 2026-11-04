@@ -6,7 +6,7 @@ Machine-wide simulator and browser rules live in the owner's global instructions
 
 - `lib/`: the Flutter payment UI kit. `example/`: the example app. `website/`: the Astro Starlight docs site, deployed to Netlify.
 - Platform scope (D64): phase 1 targets iOS (iPhone, iPad) and Android (phones, tablets). Web is documentation only. Desktop is out of scope.
-- Source of truth: `docs/prd-foundation-components.md` (decision table D1–D76) and `docs/decisions.md`. Follow recorded decisions; don't reopen them. Propose a change as a new decision.
+- Source of truth: `PRD.md` and `docs/prd-foundation-components.md` specs, plus its §8 register of current applicable decisions, including amendments and supersession. `docs/decisions.md` preserves rationale/history. Start with `docs/README.md` and the derived daily guide `docs/design-system.md` for navigation. Follow recorded decisions; don't reopen them. Propose a change as a new decision.
 
 ## Rules of the kit
 

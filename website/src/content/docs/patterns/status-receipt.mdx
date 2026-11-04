@@ -74,6 +74,22 @@ The full sequence, including `PaymentAttempt` and `reconcile`, is in the [Quick 
 - **Refunds** appear in `RefundSection`, beside the original payment, never instead of it. A refund above `paidAmount` is treated as invalid host data.
 - **Receipt sharing** hands your callback only `ReceiptShareData`: merchant, transaction ID, time, total and the masked method. Line items and account identifiers are excluded. A failed or dismissed share never changes the receipt or the payment.
 
+## Copyable host composition
+
+The local example's `example/lib/compositions/host_payment_recovery.dart` combines the existing status and receipt patterns without `DemoCoordinator`. Copy it into the host alongside your product theme, such as `ProductLooks` in `host_checkout.dart`. It is example source, not an exported package API or an installed block system.
+
+Pass the restored `PaymentAttempt`, amount and optional host-loaded receipt. `onAction(attemptId, action)` returns the host operation's future: a status check reconciles that same attempt, never submits a new payment. Rebuild with the updated attempt; use `Observation.unavailable` while retaining its last trusted snapshot when refresh fails. Persistence, reconciliation ordering, retries, networking and routing stay with the host.
+
+Receipt rendering requires an accepted attempt with a succeeded host snapshot and a receipt whose `transactionId` matches `attempt.serverReference`. Early data, another transaction's receipt and an official correction away from success remain on the status view. The host must validate the full receipt payload; matching an identifier is only a presentation guard. While loading or retrying a receipt, pass `busyAction` and a safe notice through `header`; keep returning the callback future for local repeat protection. Share and copy callbacks use the existing allowlist and feedback behavior.
+
+Try **Host payment recovery** in the gallery's **Status & receipt** section. Unknown offers a status check for the restored reference; the synthetic host returns a confirmed success fixture. Offline pending keeps the last known payment, and Receipt shows the confirmed result. These fixtures make no payment or platform call.
+
+<Screens>
+  <Screen name="android_catalog_host_recovery_unknown_variants" dark="android_catalog_host_recovery_unknown_variants_dark" alt="Host recovery shows an unknown payment outcome and Check status without an action to pay again." />
+  <Screen name="android_catalog_host_recovery_offline_variants" dark="android_catalog_host_recovery_offline_variants_dark" alt="Host recovery retains pending and shows a failed refresh notice above the status action." />
+  <Screen name="android_catalog_host_recovery_receipt_variants" dark="android_catalog_host_recovery_receipt_variants_dark" alt="A matching host-confirmed receipt shows the payment breakdown and Done action." />
+</Screens>
+
 ## API
 
 <Props names={['PaymentStatusView', 'PaymentInstructions', 'VirtualAccountInstructions', 'RefundSection', 'PaymentReceipt', 'PaymentReceiptData', 'ReceiptShareData', 'ShareOutcome']} />

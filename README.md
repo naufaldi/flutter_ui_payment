@@ -10,6 +10,8 @@ Targets iOS and Android, phones and tablets. The web build is a documentation pr
 
 **Status:** `0.1.0`. Install from this GitHub repository; it is not published to pub.dev yet, and the package name is unverified. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
 
+**Maintainers:** [documentation map](docs/README.md) · [daily design-system guide](docs/design-system.md).
+
 **Docs:** [components](docs/components.md) (inventory, API, what the host owns) · [integration](docs/integration.md) · [compatibility](docs/compatibility.md) (Android 7.0+/API 24 declared, what was actually run) · [decisions](docs/decisions.md) (design and engineering tradeoffs, performance findings).
 
 ## Why
@@ -146,18 +148,28 @@ KYC is optional and composes the same way: `VerificationIntro`, `IdentityForm`, 
 
 | Module | Components |
 | --- | --- |
-| Foundation | `PaymentTheme`, `PaymentLocalizations` (+ `KitStrings`), `PaymentMotion`, `Money`, `MoneyFormat`, `AmountText`, `InfoRow`, `MiddleEllipsisText`, `PaymentButton`, `StatusBadge`, `NoticeBanner`, `PaymentSection`, `PrivacyMask`, `CountdownText`, `HostError` |
+| Foundation | `PaymentTheme`, `PaymentType`, `PaymentLocalizations` (+ `KitStrings`), `PaymentMotion`, `Money`, `MoneyFormat`, `AmountText`, `InfoRow`, `MiddleEllipsisText`, `PaymentButton`, `PaymentBadge`, `PaymentBanner`, `PaymentSection`, `PrivacyMask`, `CountdownText`, `HostError` |
 | Controls | `PaymentCheckbox`, `PaymentRadio`, `PaymentSwitch`, `PaymentTabs`, `PaymentTooltip`, `PaymentSpinner`, `PaymentDivider` |
-| Interaction | `ActionTile`, `ActionMenu`, `showPaymentConfirmDialog`, `showPaymentSnackBar`, `ExpandableSection`, `LoadingSkeleton`, `StateMessage` |
+| Interaction | `PaymentListItem`, `PaymentList`, `PaymentMenu`, `PaymentMenuItem`, `showPaymentConfirmDialog`, `showPaymentToast`, `PaymentAccordion`, `PaymentAccordionItem`, `LoadingSkeleton`, `StateMessage` |
 | Navigation | `AdaptiveNavShell`, `NavSidebar`, `PaymentNavItem`, `PaymentNavSection` |
 | Sheets | `PaymentSheet`, `PaymentSheetHeader`, `showPaymentSheet`, `showPaymentSideSheet` |
 | Media | `PaymentVideoPlayer`, `PaymentVideoController`, `VideoPlaybackValue` |
 | Promotions | `PromoCard`, `PromoSlot`, `PromoContent` |
 | Verification | `VerificationIntro`, `IdentityForm`, `DocumentUploadTile`, `VerificationReview`, `VerificationStatusView`, models and `checkDocumentLimits` |
-| Checkout | `AmountInput`, `PaymentSummary`, `PaymentMethodPicker`, `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentActionBar`, `MerchantHeader`, `PaymentStepIndicator`, `BalanceCard`, `PromoCodeInput` |
+| Checkout | `PaymentCurrencyField`, `PaymentSummary`, `PaymentMethodPicker`, `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentActionBar`, `MerchantHeader`, `PaymentStepIndicator`, `BalanceCard`, `PromoCodeInput` |
 | Status | `PaymentInstructions`, `PaymentStatusView`, `RefundSection`, `PaymentAttempt`, `PaymentStatusSnapshot` |
 | History | `TransactionHistory`, `TransactionListItem`, `TransactionDetail`, `TransactionRecord` |
 | Receipt | `PaymentReceipt`, `PaymentReceiptData`, `ReceiptShareData` |
+
+### Charts and capture
+
+| Public API | Purpose |
+| --- | --- |
+| `ChartPoint`, `ChartPointStatus`, `MeterSegment`, `ChartState` | Host-owned money and rendering states. |
+| `PaymentLineChart`, `PaymentBarChart` | Ordered trends and zero-baseline comparisons. |
+| `PaymentMeterChart`, `PaymentSparkline`, `ChartModule` | Category snapshot, compact trend and stable state container. |
+| `CaptureSource`, `CaptureKind`, `showCaptureSourceSheet` | Source intent before host permission. |
+| `CaptureFrameOverlay`, `KycCaptureGuide` | Passive framing, review and host upload state. |
 
 Usage, states and host responsibilities for each: [docs/components.md](docs/components.md).
 
@@ -203,7 +215,7 @@ The fake host (`example/lib/adapters/`) simulates the backend, provider, idempot
 ## Development
 
 ```sh
-dart format --output=none --set-exit-if-changed .
+dart format --output=none --set-exit-if-changed lib test example/lib example/test example/integration_test example/test_driver
 flutter analyze
 flutter test                                        # package tests
 cd example
@@ -222,7 +234,7 @@ flutter drive --profile --driver=test_driver/integration_driver.dart \
 
 ## What is verified
 
-Checked on 30 October 2026 with Flutter 3.44.6:
+**Historical v0.1 baseline, 30 October 2026 (Flutter 3.44.6).** The results and pending items below describe that snapshot, not current-head verification or release readiness. For later evidence and remaining limits, read [compatibility](docs/compatibility.md) and the [decision record](docs/decisions.md#performance).
 
 - Formatter and analyzer clean (package and example). The full 54-test package run passed. After review, the component suite passed 14/14, including an added regression that prevents autoplay when loading finishes in the background. Unchanged package test evidence is reused.
 - `flow_test.dart` (12 tests) passes on an Android 11 arm64 emulator (API 30, 60 Hz) after this pass's UI changes. The earlier iPhone 16 simulator (iOS 18.1) flow run predates them. The new component/screenshot journey was subsequently run successfully on that iOS simulator: video advanced to 4.5 s and paused on tab change, and refined screens, drawer, sheet and gallery captures were inspected (`ios_refined_*`, `ios_kit_*`).
@@ -236,13 +248,3 @@ Not done yet: an external developer integrating a checkout from this README (the
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
-### Charts and capture
-
-| Public API | Purpose |
-| --- | --- |
-| `ChartPoint`, `ChartPointStatus`, `MeterSegment`, `ChartState` | Host-owned money and rendering states. |
-| `PaymentLineChart`, `PaymentBarChart` | Ordered trends and zero-baseline comparisons. |
-| `PaymentMeterChart`, `PaymentSparkline`, `ChartModule` | Category snapshot, compact trend and stable state container. |
-| `CaptureSource`, `CaptureKind`, `showCaptureSourceSheet` | Source intent before host permission. |
-| `CaptureFrameOverlay`, `KycCaptureGuide` | Passive framing, review and host upload state. |

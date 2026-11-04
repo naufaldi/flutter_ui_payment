@@ -1,4 +1,124 @@
 {
+  "android_catalog_theme_shape_roles_variants": {
+    "width": 640,
+    "height": 1213,
+    "caption": "Default corners beside square boxes, pill tags and independently rounded sheets."
+  },
+  "android_catalog_theme_shape_roles_variants_dark": {
+    "width": 640,
+    "height": 1213,
+    "caption": "Default corners beside square boxes, pill tags and independently rounded sheets. Dark mode."
+  },
+  "android_catalog_field_customization_variants": {
+    "width": 640,
+    "height": 1249,
+    "caption": "Scoped field theme with soft fill, rounded corners, input typography, error and disabled states."
+  },
+  "android_catalog_field_customization_variants_dark": {
+    "width": 640,
+    "height": 1249,
+    "caption": "Scoped field theme with soft fill, rounded corners, input typography, error and disabled states. Dark mode."
+  },
+  "android_catalog_host_checkout_invoice_variants": {
+    "width": 640,
+    "height": 1404,
+    "caption": "Stacked invoice checkout with visible fees, method choice, receipt email and a shared pay preset."
+  },
+  "android_catalog_host_checkout_invoice_variants_dark": {
+    "width": 640,
+    "height": 1404,
+    "caption": "Stacked invoice checkout with visible fees, method choice, receipt email and a shared pay preset. Dark mode."
+  },
+  "android_catalog_host_checkout_wallet_variants": {
+    "width": 640,
+    "height": 1200,
+    "caption": "Wallet review checkout with balance, receipt email, visible fees and an action bar using the same product theme."
+  },
+  "android_catalog_host_checkout_wallet_variants_dark": {
+    "width": 640,
+    "height": 1200,
+    "caption": "Wallet review checkout with balance, receipt email, visible fees and an action bar using the same product theme. Dark mode."
+  },
+  "android_catalog_host_recovery_unknown_variants": {
+    "width": 640,
+    "height": 1366,
+    "caption": "Restored host attempt with unknown outcome, no pay-again action and a status check."
+  },
+  "android_catalog_host_journey_checkout_variants": {
+    "width": 640,
+    "height": 1366,
+    "caption": "Connected host checkout with visible fees, wallet method and a pinned pay action."
+  },
+  "android_catalog_host_journey_checkout_variants_dark": {
+    "width": 640,
+    "height": 1366,
+    "caption": "Connected host checkout with visible fees and pinned pay action. Dark mode."
+  },
+  "android_catalog_host_journey_unknown_variants": {
+    "width": 640,
+    "height": 1366,
+    "caption": "The same checkout attempt after a lost submit response, with a status check and no repeat payment."
+  },
+  "android_catalog_host_journey_unknown_variants_dark": {
+    "width": 640,
+    "height": 1366,
+    "caption": "The same attempt after a lost response, with a status check. Dark mode."
+  },
+  "android_catalog_host_journey_offline_variants": {
+    "width": 640,
+    "height": 1366,
+    "caption": "The connected journey retains last-known pending when a status refresh fails."
+  },
+  "android_catalog_host_journey_offline_variants_dark": {
+    "width": 640,
+    "height": 1366,
+    "caption": "The connected journey retains pending after a failed refresh. Dark mode."
+  },
+  "android_catalog_host_journey_receipt_variants": {
+    "width": 640,
+    "height": 1366,
+    "caption": "Matching receipt after the host confirms the checkout attempt succeeded, with fees visible and Done pinned."
+  },
+  "android_catalog_host_journey_receipt_variants_dark": {
+    "width": 640,
+    "height": 1366,
+    "caption": "Matching host-confirmed receipt with visible fees and pinned Done. Dark mode."
+  },
+  "android_catalog_host_recovery_unknown_variants_dark": {
+    "width": 640,
+    "height": 1366,
+    "caption": "Restored host attempt with unknown outcome and a status check. Dark mode."
+  },
+  "android_catalog_host_recovery_offline_variants": {
+    "width": 640,
+    "height": 1366,
+    "caption": "Last-known pending payment retained after an unavailable status refresh."
+  },
+  "android_catalog_host_recovery_offline_variants_dark": {
+    "width": 640,
+    "height": 1366,
+    "caption": "Last-known pending payment retained after an unavailable status refresh. Dark mode."
+  },
+  "android_catalog_host_recovery_receipt_variants": {
+    "width": 640,
+    "height": 1366,
+    "caption": "Host-confirmed receipt matched to the restored payment transaction."
+  },
+  "android_catalog_host_recovery_receipt_variants_dark": {
+    "width": 640,
+    "height": 1366,
+    "caption": "Host-confirmed receipt matched to the restored payment transaction. Dark mode."
+  },
+  "android_catalog_button_customization_variants": {
+    "width": 640,
+    "height": 797,
+    "caption": "Button-only pill theme with custom enabled colors, secondary, disabled and busy states, and one instance override."
+  },
+  "android_catalog_button_customization_variants_dark": {
+    "width": 640,
+    "height": 797,
+    "caption": "Button-only pill theme with custom enabled colors, secondary, disabled and busy states, and one instance override. Dark mode."
+  },
   "android_catalog_spacing_roles": {
     "width": 640,
     "height": 940,

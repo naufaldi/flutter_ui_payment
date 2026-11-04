@@ -1205,6 +1205,201 @@ class _ButtonsDemo extends StatelessWidget {
   }
 }
 
+class _ButtonCustomizationDemo extends StatelessWidget {
+  const _ButtonCustomizationDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    final parent = Theme.of(context);
+    String t(String en, String id) => _t(context, en, id);
+    return _Entry(
+      name: 'PaymentButton · customization · variants',
+      child: Theme(
+        data: parent.copyWith(
+          extensions: [
+            ...parent.extensions.values,
+            PaymentButtonTheme(
+              style: PaymentButtonStyle(
+                borderRadius: BorderRadius.circular(
+                  theme.space(PaymentSpace.major),
+                ),
+                textStyle: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+              primary: PaymentButtonStyle(
+                backgroundColor: theme.info.foreground,
+                foregroundColor: theme.surface,
+              ),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: theme.space(PaymentSpace.related),
+          children: [
+            Text(
+              t(
+                'Button-only theme: pill corners and stronger labels. Inputs keep their original theme.',
+                'Tema khusus tombol: sudut pil dan label tebal. Tema input tetap.',
+              ),
+            ),
+            PaymentButton(
+              label: t('Save changes', 'Simpan perubahan'),
+              icon: Icons.save_outlined,
+              onPressed: () => _hostSays(
+                context,
+                'Changes saved (simulated)',
+                'Perubahan disimpan (simulasi)',
+              ),
+            ),
+            PaymentButton(
+              label: t('Preview', 'Pratinjau'),
+              variant: PaymentButtonVariant.secondary,
+              onPressed: () => _hostSays(
+                context,
+                'Preview opened (simulated)',
+                'Pratinjau dibuka (simulasi)',
+              ),
+            ),
+            PaymentButton(
+              label: t('Unavailable', 'Tidak tersedia'),
+              onPressed: null,
+            ),
+            PaymentButton(
+              label: t('Saving changes', 'Menyimpan perubahan'),
+              busy: true,
+              onPressed: () {},
+            ),
+            Text(
+              t(
+                'Instance override: this button keeps the family typography.',
+                'Override satu tombol: tipografi keluarga tetap.',
+              ),
+            ),
+            PaymentButton(
+              label: t('Continue', 'Lanjutkan'),
+              style: PaymentButtonStyle(
+                backgroundColor: theme.textPrimary,
+                foregroundColor: theme.surface,
+                borderRadius: theme.controlBorderRadius,
+              ),
+              onPressed: () => _hostSays(
+                context,
+                'Continued (simulated)',
+                'Dilanjutkan (simulasi)',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A named host preset: a host function, not kit API. It reads the current
+/// theme, so light, dark and brand changes follow.
+PaymentFieldTheme _softFields(BuildContext context) {
+  final theme = PaymentTheme.of(context);
+  return PaymentFieldTheme(
+    fillColor: theme.surfaceMuted,
+    borderRadius: BorderRadius.circular(theme.space(PaymentSpace.group)),
+    textStyle: const TextStyle(fontWeight: FontWeight.w500),
+  );
+}
+
+class _FieldCustomizationDemo extends StatefulWidget {
+  const _FieldCustomizationDemo();
+  @override
+  State<_FieldCustomizationDemo> createState() =>
+      _FieldCustomizationDemoState();
+}
+
+class _FieldCustomizationDemoState extends State<_FieldCustomizationDemo> {
+  String occupation = 'employee';
+  DateTime? birth = DateTime(1994, 8, 17);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    final parent = Theme.of(context);
+    String t(String en, String id) => _t(context, en, id);
+    return _Entry(
+      name: 'PaymentTextField · customization · variants',
+      child: Theme(
+        // Scoped feature theme: keep the parent's other extensions.
+        data: parent.copyWith(
+          extensions: [...parent.extensions.values, _softFields(context)],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: theme.space(PaymentSpace.group),
+          children: [
+            Text(
+              t(
+                'Field-only theme: soft filled boxes with rounder corners. Buttons keep their own theme.',
+                'Tema khusus kolom: kotak berisi warna lembut dengan sudut lebih bulat. Tombol tetap memakai temanya.',
+              ),
+            ),
+            PaymentTextField(
+              label: t('Full name', 'Nama lengkap'),
+              initialValue: 'Rina Kartika',
+            ),
+            PaymentSelect<String>(
+              label: t('Occupation', 'Pekerjaan'),
+              options: [
+                PaymentSelectOption(
+                  value: 'employee',
+                  label: t('Employee', 'Karyawan'),
+                ),
+                PaymentSelectOption(
+                  value: 'student',
+                  label: t('Student', 'Pelajar'),
+                ),
+              ],
+              value: occupation,
+              onChanged: (v) => setState(() => occupation = v),
+            ),
+            PaymentDateField(
+              label: t('Date of birth', 'Tanggal lahir'),
+              value: birth,
+              onChanged: (v) => setState(() => birth = v),
+              firstDate: DateTime(1900),
+              lastDate: DateTime(2026, 12, 31),
+            ),
+            PaymentCurrencyField(
+              currency: 'IDR',
+              initialText: '250000',
+              onChanged: (_) {},
+            ),
+            PaymentTextField(
+              label: t('Email for receipt', 'Email untuk struk'),
+              type: PaymentTextFieldType.email,
+              errorText: t('Enter a valid email', 'Masukkan email yang valid'),
+            ),
+            PaymentTextField(
+              label: t('Account number', 'Nomor rekening'),
+              initialValue: '1234567890',
+              enabled: false,
+              description: t(
+                'Disabled fields switch to the muted fill.',
+                'Kolom nonaktif memakai isian redup.',
+              ),
+            ),
+            PaymentButton(
+              label: t('Save profile', 'Simpan profil'),
+              onPressed: () => _hostSays(
+                context,
+                'Profile saved (simulated)',
+                'Profil disimpan (simulasi)',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _AmountTextVariantsDemo extends StatelessWidget {
   const _AmountTextVariantsDemo();
   @override

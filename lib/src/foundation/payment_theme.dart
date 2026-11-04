@@ -42,13 +42,29 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
     required this.warning,
     required this.danger,
     this.radius = 8,
+    this.tagRadius,
+    this.controlRadius,
+    this.sheetRadius,
     this.spacing = 8,
     this.amountWeight = FontWeight.w600,
     this.amountFontFamily,
     this._border,
     this._disabled,
     this._referenceFontFamily,
-  });
+  }) : assert(
+         tagRadius == null || (tagRadius >= 0 && tagRadius < double.infinity),
+         'tagRadius must be finite and non-negative',
+       ),
+       assert(
+         controlRadius == null ||
+             (controlRadius >= 0 && controlRadius < double.infinity),
+         'controlRadius must be finite and non-negative',
+       ),
+       assert(
+         sheetRadius == null ||
+             (sheetRadius >= 0 && sheetRadius < double.infinity),
+         'sheetRadius must be finite and non-negative',
+       );
 
   /// Derives tokens from a Material [ColorScheme].
   factory PaymentTheme.fromColorScheme(ColorScheme scheme) {
@@ -99,9 +115,26 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
   final ToneColors warning;
   final ToneColors danger;
 
-  /// Corner radius of selectable boxes such as the method list. Buttons and
-  /// inputs use three quarters of it.
+  /// Corner radius of selectable boxes such as the method list (the box
+  /// role). It is also the base of the other corner roles: tags use half of
+  /// it, controls three quarters and sheets one and a half, unless
+  /// [tagRadius], [controlRadius] or [sheetRadius] sets that role (D101).
   final double radius;
+
+  /// Corner radius of badges and tags. Null derives `radius * 0.5`.
+  /// Zero gives square corners; a large value such as 999 gives pills.
+  final double? tagRadius;
+
+  /// Corner radius of buttons, inputs, notices and menus. Null derives
+  /// `radius * 0.75`.
+  final double? controlRadius;
+
+  /// Corner radius of sheet tops and dialogs. Null derives `radius * 1.5`.
+  final double? sheetRadius;
+
+  double get _tag => tagRadius ?? radius * 0.5;
+  double get _control => controlRadius ?? radius * 0.75;
+  double get _sheet => sheetRadius ?? radius * 1.5;
 
   /// Base spacing unit. Kit widgets never multiply it by hand; they resolve
   /// a named role with [space] (D46), one value per role:
@@ -164,16 +197,19 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
     StatusTone.danger => danger,
   };
 
+  /// Selectable boxes such as the method list: [radius].
   BorderRadius get borderRadius => BorderRadius.circular(radius);
 
-  /// Badges and tags.
-  BorderRadius get tagBorderRadius => BorderRadius.circular(radius * 0.5);
+  /// Badges and tags: [tagRadius], else half of [radius].
+  BorderRadius get tagBorderRadius => BorderRadius.circular(_tag);
 
-  /// Buttons, inputs, notices and menus.
-  BorderRadius get controlBorderRadius => BorderRadius.circular(radius * 0.75);
+  /// Buttons, inputs, notices and menus: [controlRadius], else three
+  /// quarters of [radius].
+  BorderRadius get controlBorderRadius => BorderRadius.circular(_control);
 
-  /// The top of a sheet and dialogs.
-  BorderRadius get sheetBorderRadius => BorderRadius.circular(radius * 1.5);
+  /// The top of a sheet and dialogs: [sheetRadius], else one and a half
+  /// times [radius].
+  BorderRadius get sheetBorderRadius => BorderRadius.circular(_sheet);
 
   /// Text style for amounts: the 32/36 display total when [large], otherwise
   /// a 15/20 row amount. Both use [amountWeight] and tabular figures, and the
@@ -200,6 +236,11 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
     );
   }
 
+  /// A null argument keeps the current value. For [tagRadius],
+  /// [controlRadius] and [sheetRadius] that keeps an override that is set:
+  /// copyWith cannot clear one back to its derived value, so build a new
+  /// [PaymentTheme] for that. A role that is unset keeps following a later
+  /// [radius] change.
   @override
   PaymentTheme copyWith({
     Color? accent,
@@ -215,6 +256,9 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
     ToneColors? warning,
     ToneColors? danger,
     double? radius,
+    double? tagRadius,
+    double? controlRadius,
+    double? sheetRadius,
     double? spacing,
     FontWeight? amountWeight,
     String? amountFontFamily,
@@ -236,6 +280,9 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
       warning: warning ?? this.warning,
       danger: danger ?? this.danger,
       radius: radius ?? this.radius,
+      tagRadius: tagRadius ?? this.tagRadius,
+      controlRadius: controlRadius ?? this.controlRadius,
+      sheetRadius: sheetRadius ?? this.sheetRadius,
       spacing: spacing ?? this.spacing,
       amountWeight: amountWeight ?? this.amountWeight,
       amountFontFamily: amountFontFamily ?? this.amountFontFamily,
@@ -264,6 +311,24 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
       warning: ToneColors.lerp(warning, other.warning, t),
       danger: ToneColors.lerp(danger, other.danger, t),
       radius: lerpDouble(radius, other.radius, t)!,
+      // A role set on either side interpolates the radii each side actually
+      // draws, so an unset side animates from its derived value, never from
+      // zero. Unset on both sides stays null and keeps following radius.
+      tagRadius: _lerpRole(tagRadius, other.tagRadius, _tag, other._tag, t),
+      controlRadius: _lerpRole(
+        controlRadius,
+        other.controlRadius,
+        _control,
+        other._control,
+        t,
+      ),
+      sheetRadius: _lerpRole(
+        sheetRadius,
+        other.sheetRadius,
+        _sheet,
+        other._sheet,
+        t,
+      ),
       spacing: lerpDouble(spacing, other.spacing, t)!,
       amountWeight: t < 0.5 ? amountWeight : other.amountWeight,
       amountFontFamily: t < 0.5 ? amountFontFamily : other.amountFontFamily,
@@ -273,5 +338,16 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
           ? _referenceFontFamily
           : other._referenceFontFamily,
     );
+  }
+
+  static double? _lerpRole(
+    double? a,
+    double? b,
+    double resolvedA,
+    double resolvedB,
+    double t,
+  ) {
+    if (a == null && b == null) return null;
+    return lerpDouble(resolvedA, resolvedB, t);
   }
 }

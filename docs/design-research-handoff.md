@@ -1,5 +1,7 @@
 # Handoff: research the visual direction before redesigning
 
+> **Historical handoff.** Preserved for context and stable links. Original status, paths and instructions describe that snapshot, not current work or authorization. Start with the [documentation map](README.md) and [daily guide](design-system.md); use the latest applicable [PRD §8 decision](prd-foundation-components.md#8-decisions).
+
 Work in `/Users/naufaldisatriya/WebApps/flutter-ui-payment`.
 
 The owner rejected the current component screenshots: **"our component really bad, slop"**. Your task is to research UI inspiration, diagnose the visual problems, and propose a defensible design direction. This first phase is research and art direction. Do not edit production components or continue the landing page yet.

@@ -9,6 +9,14 @@ import Screens from '../../../components/Screens.astro';
 
 The full records live in the repository: <RepoLink path="docs/design-research.md" label="docs/design-research.md" /> (research and art direction) and <RepoLink path="docs/decisions.md" label="docs/decisions.md" /> (engineering and design tradeoffs, performance findings). This page summarizes them.
 
+## Customization direction (D98)
+
+D98 approves layered customization: shared semantic defaults, scoped family themes where needed, then typed instance overrides, with children/slots for composition. Button is implemented under D100 with a dedicated family theme and typed instance style, theme radius roles under D101, fields under D102 with a theme-only field theme, and toasts follow the caller's scoped themes under D103. The review of every exported family and two host checkout compositions in the example app are done; combined tests, Android light/dark captures and independent review passed locally on 3 November 2026. This does not mean publication or deployment. See [Button customization](/components/button/#customization) and [Text field customization](/components/text-field/#customization). Current integrations use the documented [theming API](/concepts/theming/) and each component's existing Props. The migration starts with Button, proceeds by family and proves two host checkout layouts while preserving accessibility, interaction protection and host ownership.
+
+The derived <RepoLink path="docs/design-system.md" label="daily design-system guide" /> links the active rules and full D98 contract; it does not promise new API names.
+
+**D104:** the [connected host checkout example](/patterns/checkout/#connected-host-example) composes review, lost-response recovery and the matching receipt without `DemoCoordinator`. It pins the priority action, retains one attempt identity and protects a new order from stale callbacks. It is copyable host source; persistence, authoritative terms/auth checks and all platform effects remain with the host.
+
 ## Visual direction: Stripe-calm · Hairline
 
 The first version looked like stock Material 3: every section a large rounded card, tinted icon circles on every screen. The owner chose a Stripe-like base on 30 October 2026, and of three options, **Hairline** became the kit default.
