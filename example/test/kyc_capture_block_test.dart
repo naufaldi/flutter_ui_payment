@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:flutter_ui_payment_example/block_demo_shell.dart';
 import 'package:flutter_ui_payment_example/kyc_capture_demo.dart';
 
 import 'support/small_screen.dart';
@@ -50,6 +51,45 @@ DocumentSlotState slotOf(WidgetTester tester) =>
     tester.widget<KycCaptureGuide>(find.byType(KycCaptureGuide)).state;
 
 void main() {
+  testWidgets('resetting the demo keeps a new photo uploading until its own '
+      'host answer arrives', (tester) async {
+    final uploads = <Completer<DocumentIssue?>>[];
+    await tester.pumpWidget(
+      KycCaptureDemo(
+        delay: Duration.zero,
+        takePhoto: () async => testPhoto,
+        upload: (_) {
+          final answer = Completer<DocumentIssue?>();
+          uploads.add(answer);
+          return answer.future;
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+    await takePhoto(tester);
+    await tapStartingUpload(tester, 'Pakai foto');
+
+    // Reset the host session without completing its pending upload.
+    tester
+        .widget<BlockDemoShell>(find.byType(BlockDemoShell))
+        .scenarios
+        .first
+        .onSelected();
+    await tester.pumpAndSettle();
+    await takePhoto(tester);
+    await tapStartingUpload(tester, 'Pakai foto');
+
+    uploads.first.complete(null);
+    await pumpWhileUploading(tester);
+    expect(slotOf(tester).phase, DocumentSlotPhase.uploading);
+    expect(find.text('Kirim untuk verifikasi'), findsNothing);
+
+    uploads.last.complete(null);
+    await tester.pumpAndSettle();
+    expect(find.text('Foto KTP terunggah'), findsWidgets);
+    expect(enabled(tester, 'Kirim untuk verifikasi'), isTrue);
+  });
+
   testWidgets('an older upload answer cannot overwrite the retaken photo, and '
       'a finished upload is not a verification', (tester) async {
     final uploads = <String, Completer<DocumentIssue?>>{};

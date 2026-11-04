@@ -131,6 +131,7 @@ class _KycCaptureDemoState extends State<KycCaptureDemo> {
 
   Future<void> usePhoto() async {
     if (photo == null || slot.phase == DocumentSlotPhase.uploading) return;
+    final current = generation;
     final requestId = 'UPLOAD-DEMO-${++uploads}';
     setState(() {
       slot = DocumentSlotState.uploading(kycCaptureFile, requestId: requestId);
@@ -138,7 +139,9 @@ class _KycCaptureDemoState extends State<KycCaptureDemo> {
     final issue = await (widget.upload ?? _upload)(requestId);
     // An answer for an earlier photo or session never replaces the current
     // photo's state.
-    if (!mounted || slot.requestId != requestId) return;
+    if (!mounted || current != generation || slot.requestId != requestId) {
+      return;
+    }
     setState(() {
       slot = issue == null
           ? DocumentSlotState.uploaded(kycCaptureFile, requestId: requestId)
