@@ -1,5 +1,24 @@
 # Merchant overview: compose a mobile host screen
 
+## History and KYC blocks
+
+- History: run `flutter run -t lib/history_block_demo.dart`. Copy
+  `merchant_history.dart`; supply already-filtered records, query/filter and
+  safe loading/error state. It composes `TransactionHistory` and a read-only
+  `TransactionDetail` sheet with a pinned return action. Use lazy rows and host
+  pagination for large datasets. The five-record fixture includes unknown,
+  pending, failed, succeeded and a separate partial refund.
+- KYC correction: run `flutter run -t lib/kyc_review_demo.dart`. Copy
+  `kyc_review_block.dart`; supply document state, host snapshot, typed step and
+  callbacks. Replacing a synthetic file does not set verified. Submit moves to
+  in-review; only a host verdict changes it to verified. The retry fixture is a
+  known pre-acceptance rejection, not an uncertain transport failure. Prior
+  consent, auth, document bytes, permissions, validation and retention stay in
+  the host. This correction block does not implement initial onboarding.
+
+Source, inspected Android captures and paired pattern contracts are published
+in the Blocks section. Roadmap and reference links: GitHub issue #223.
+
 ## Checkout and recovery demo
 
 Run `flutter run -t lib/checkout_block_demo.dart` from `example/`.

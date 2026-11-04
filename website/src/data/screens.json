@@ -1,4 +1,54 @@
 {
+  "android_block_history": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Merchant history host block: native search, filters and transaction rows."
+  },
+  "android_block_history_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Merchant history host block in dark mode."
+  },
+  "android_block_history_unknown": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Read-only unknown transaction detail with safe return action."
+  },
+  "android_block_history_refund": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Original succeeded transaction and separate partial refund detail."
+  },
+  "android_block_history_error": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Host history load error with explicit retry."
+  },
+  "android_block_kyc_action": {
+    "width": 640,
+    "height": 1095,
+    "caption": "KYC host requests document correction with a safe reason."
+  },
+  "android_block_kyc_document": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Rejected document metadata, limits and replacement action."
+  },
+  "android_block_kyc_review": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Review of corrected synthetic document and masked identity before submit."
+  },
+  "android_block_kyc_review_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "KYC correction review in dark mode."
+  },
+  "android_block_kyc_pending": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Host-submitted correction remains in review, not automatically verified."
+  },
   "android_block_merchant_overview": {
     "width": 640,
     "height": 1138,

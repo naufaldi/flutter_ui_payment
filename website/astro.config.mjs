@@ -162,6 +162,8 @@ export default defineConfig({
           { label: 'Overview', slug: 'blocks' },
           { label: 'Merchant overview', slug: 'blocks/merchant-overview' },
           { label: 'Checkout and recovery', slug: 'blocks/checkout-recovery' },
+          { label: 'Transaction history', slug: 'blocks/transaction-history' },
+          { label: 'KYC review and correction', slug: 'blocks/kyc-review' },
         ] },
         { label: 'Patterns', items: [
           { label: 'Checkout', slug: 'patterns/checkout' },
