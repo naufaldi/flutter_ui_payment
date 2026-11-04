@@ -1,0 +1,76 @@
+---
+title: KYC review and correction
+description: A mobile host block for correcting a document, reviewing masked identity and waiting for a host verification verdict.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+Read why a document needs correction, replace it, review the updated information
+and submit it for review. A completed upload is never a verification verdict.
+One pinned action guides each step; content scrolls at large text.
+
+<Screens>
+  <Screen name="android_block_kyc_action" alt="Host asks for a clearer identity photo with a specific correction reason and Update details action." caption="Action required" />
+  <Screen name="android_block_kyc_document" alt="Document correction shows the host rejection reason, accepted format, file metadata and replacement action." caption="Replace document" />
+  <Screen name="android_block_kyc_review" dark="android_block_kyc_review_dark" alt="KYC correction review with fictional name, masked identity reference, uploaded document and pinned submit action." caption="Review before submitting" />
+  <Screen name="android_block_kyc_pending" alt="Submitted correction is in review with a status check; upload completion does not show verified." caption="Await a host verdict" />
+</Screens>
+
+## Run and try
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/kyc_review_demo.dart
+```
+
+Tap **Perbarui data**, then **Coba lagi** to replace the synthetic rejected file.
+The fixture provides metadata only, with no camera, picker or upload effect.
+Continue to review: the identity reference is masked. Submit the correction;
+it becomes **in review**. Only **Cek status** returns an explicit synthetic
+host-verified snapshot. No elapsed delay or uploaded badge establishes that result.
+
+The developer menu's **Gagal kirim pertama** fixture explicitly rejects the first
+submit before acceptance. Review data remains and the customer can retry. This is
+not a lost-response simulation: a real transport timeout may have been accepted,
+so the host must reconcile the same request instead of blindly resubmitting.
+Changing a developer scenario starts a fresh synthetic session and invalidates
+old asynchronous callbacks. It is not a production identity-reset action.
+
+## Composition and boundaries
+
+`KycReviewBlock` takes separate document state, host verification snapshot, typed
+step, host field specs/values and callbacks. The host owns step transitions and
+must preserve consent/policy eligibility before entering this correction journey.
+The block doesn't collect new consent or implement initial onboarding.
+
+| UI | Existing library surface |
+| --- | --- |
+| Correction reason and host verdict | `VerificationStatusView`, `VerificationSnapshot` |
+| File metadata, limits and rejection | `DocumentUploadTile`, `DocumentSlotState` |
+| Masked identity and document review | `VerificationReview`, `IdentityFieldSpec` |
+| Reachable primary action | `PaymentFullPageView`, `PaymentButton` |
+
+Copy the composition and wire your authenticated adapters. Keep document bytes,
+permissions, upload request identity, privacy/retention and provider validation
+in the host. Use safe reasons suitable for display. The example uses fictional
+metadata and no real identity/document content. See the
+[verification pattern](/patterns/verification/) and [capture pattern](/patterns/kyc-capture/).
+For an uncertain submit, use the pattern's `VerificationStatusView.outcomeUnknown`
+presentation and host reconciliation; this fixture covers known rejection/retry.
+
+## Source
+
+<BlockSource name="kycReview" />
+<BlockSource name="kycDemo" />
+<BlockSource name="themes" />
+
+## Proof and limits
+
+Tests prove correction/upload doesn't set verified, masking, explicit in-review
+then host verdict, known rejection/retry, and a 320 dp/200% dark/reduced-motion
+review with reachable submit. Android captures were inspected. The small fixed
+fixture has no polling or new animation engine; no hardware speed or iOS visual
+claim. The demo is not an identity-verification service or a production adapter.

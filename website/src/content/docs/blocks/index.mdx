@@ -11,6 +11,8 @@ must install. All demo records and money are synthetic.
 | --- | --- |
 | [Merchant overview](/blocks/merchant-overview/) | Balance, revenue, method mix, recent transactions and unknown-payment inspection |
 | [Checkout and recovery](/blocks/checkout-recovery/) | Review with visible fees, lost response, same-attempt check, pending/offline and a confirmed receipt |
+| [Transaction history](/blocks/transaction-history/) | Search/filter, unknown inspection, refund detail and list retry |
+| [KYC review and correction](/blocks/kyc-review/) | Read a correction reason, replace a document, review masked identity and await a host verdict |
 
 ## Components, patterns, guides and blocks
 
@@ -37,8 +39,16 @@ You own auth, networking, durable attempt persistence, quotes and status verdict
 plus routing and platform effects. Demo adapters are not production integrations.
 Copying source does not establish payment-provider compliance or production readiness.
 
-## Planned next blocks
+## Roadmap and references
 
-[Merchant history #213](https://github.com/naufaldi/flutter_ui_payment/issues/213)
-and [KYC review/correction #214](https://github.com/naufaldi/flutter_ui_payment/issues/214)
-are tracked follow-ups. They are not shipped blocks in this release.
+The [Payment/KYC block tracker #223](https://github.com/naufaldi/flutter_ui_payment/issues/223)
+lists shipped blocks and ordered follow-ups: manual VA payment, changed-quote
+review, refunds, KYC consent, capture/upload recovery and payment preferences.
+Open issues describe planned work, not additional shipped blocks.
+
+We use [shadcn Blocks](https://ui.shadcn.com/blocks) as a reference for visible
+preview/source/file composition, [Flutter Templates Finance](https://www.fluttertemplates.dev/widgets/finance/)
+for mobile screen categories, and [FlockUI](https://www.flockui.com/) for direct
+ownership of copied Dart source. We adapt those presentation ideas to this kit's
+mobile and host-ownership rules. No third-party code, assets, desktop dashboard
+layout or financial behavior is imported.

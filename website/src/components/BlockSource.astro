@@ -8,6 +8,10 @@ import merchant from '../../../example/lib/compositions/merchant_overview.dart?r
 import detail from '../../../example/lib/compositions/merchant_transaction_detail.dart?raw';
 import merchantDemo from '../../../example/lib/merchant_demo.dart?raw';
 import themes from '../../../example/lib/themes.dart?raw';
+import history from '../../../example/lib/compositions/merchant_history.dart?raw';
+import historyDemo from '../../../example/lib/history_block_demo.dart?raw';
+import kycReview from '../../../example/lib/compositions/kyc_review_block.dart?raw';
+import kycDemo from '../../../example/lib/kyc_review_demo.dart?raw';
 
 const sources = {
   checkout: ['compositions/host_checkout.dart', checkout],
@@ -18,6 +22,10 @@ const sources = {
   detail: ['compositions/merchant_transaction_detail.dart', detail],
   merchantDemo: ['merchant_demo.dart', merchantDemo],
   themes: ['themes.dart', themes],
+  history: ['compositions/merchant_history.dart', history],
+  historyDemo: ['history_block_demo.dart', historyDemo],
+  kycReview: ['compositions/kyc_review_block.dart', kycReview],
+  kycDemo: ['kyc_review_demo.dart', kycDemo],
 };
 interface Props { name: keyof typeof sources; }
 const [file, source] = sources[Astro.props.name];

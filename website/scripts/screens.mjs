@@ -22,6 +22,16 @@ const sharp = requireFromAstro('sharp');
 
 // name → what it shows (locale noted, because captures mix en and id).
 const screens = {
+  android_block_history: 'Merchant history host block: native search, filters and transaction rows.',
+  android_block_history_dark: 'Merchant history host block in dark mode.',
+  android_block_history_unknown: 'Read-only unknown transaction detail with safe return action.',
+  android_block_history_refund: 'Original succeeded transaction and separate partial refund detail.',
+  android_block_history_error: 'Host history load error with explicit retry.',
+  android_block_kyc_action: 'KYC host requests document correction with a safe reason.',
+  android_block_kyc_document: 'Rejected document metadata, limits and replacement action.',
+  android_block_kyc_review: 'Review of corrected synthetic document and masked identity before submit.',
+  android_block_kyc_review_dark: 'KYC correction review in dark mode.',
+  android_block_kyc_pending: 'Host-submitted correction remains in review, not automatically verified.',
   android_block_merchant_overview: 'Merchant Overview host block: available balance, unknown-payment notice and revenue chart.',
   android_block_merchant_overview_dark: 'Merchant Overview host block in dark mode.',
   android_block_merchant_recent: 'Merchant Overview scrolled to method mix and recent transaction records.',

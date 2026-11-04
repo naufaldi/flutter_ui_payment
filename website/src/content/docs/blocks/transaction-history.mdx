@@ -1,0 +1,73 @@
+---
+title: Transaction history
+description: Copyable native merchant history with search, filters, unknown outcomes, separate refunds and retry.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+Find a payment by reference, narrow by status and inspect its actual outcome.
+Unknown stays unknown; a refund is its own lifecycle beside a successful original
+payment. This is a small mobile host list, not a ledger or server-search service.
+
+<Screens>
+  <Screen name="android_block_history" dark="android_block_history_dark" alt="Native phone history with search, status filters and synthetic transaction rows." caption="Search and filter" />
+  <Screen name="android_block_history_unknown" alt="Read-only unknown transaction sheet warns against paying again and keeps its return action reachable." caption="Unknown inspection" />
+  <Screen name="android_block_history_refund" alt="Transaction detail preserves original successful payment and shows the partial refund in a separate section." caption="Refund lifecycle" />
+  <Screen name="android_block_history_error" alt="A failed history load explains the problem and offers retry without initiating a payment." caption="List retry" />
+</Screens>
+
+## Run and try
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/history_block_demo.dart
+```
+
+Search **INV-2047** for the unknown outcome, or **INV-2044** for a partial refund.
+The status filters narrow the same host data. Search an absent reference to see
+the no-match reset action. The developer menu selects loading, empty or failed
+history; retry returns explicit synthetic data. The theme button switches looks.
+No network, platform effect or financial operation occurs.
+
+## Assemble it in your host
+
+Copy `merchant_history.dart`. Supply already-filtered records, the current query,
+filter, safe loading/error state and callbacks. The demo uses
+`TransactionRecord.where` for five local fixtures; replace that with your own
+retrieval strategy. For long histories, use lazy `TransactionListItem` rows and
+host pagination instead of passing an unbounded list into this column-based kit
+pattern. A server query needs host cancellation/stale-response protection.
+
+`MerchantHistoryDetail` composes `PaymentSheet`, `TransactionDetail` and a pinned
+return button. It deliberately offers read-only inspection. Add a status-check
+or receipt action only when your host actually implements it; unknown never
+authorizes a new payment. Copying or sharing is absent from this fixture.
+
+| UI | Existing library surface |
+| --- | --- |
+| Search, filter and list states | `TransactionHistory` |
+| Matching local records | `TransactionRecord.where` |
+| Status and facts | `TransactionDetail`, `StatusHeader`, `PaymentPropertyList` |
+| Refund truth | `RefundSection` |
+| Detail layout | `PaymentSheet`, `PaymentSheetHeader`, `PaymentButton` |
+
+Read the [history contract](/patterns/history/) and
+[status/receipt contract](/patterns/status-receipt/). The pattern explains the
+rules; this block demonstrates a host screen using them.
+
+## Source
+
+<BlockSource name="history" />
+<BlockSource name="historyDemo" />
+<BlockSource name="themes" />
+
+## Proof and limits
+
+Focused stories cover search and unknown inspection, separate refund status,
+failed-load retry/no-match reset, and a 320 dp/200% dark detail with reachable
+filter and return controls. Native Android captures were inspected. Small bounded
+fixtures add no polling or new animation machinery. No iOS visual or physical-device
+speed claim. Auth, retrieval, retention, reconciliation and persistence remain host-owned.

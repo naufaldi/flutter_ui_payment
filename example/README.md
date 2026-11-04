@@ -1,5 +1,9 @@
 # Ruang Bayar demo
 
+New mobile blocks: `flutter run -t lib/history_block_demo.dart` and
+`flutter run -t lib/kyc_review_demo.dart`. The developer menus select synthetic
+list/error or correction/retry states. No real payment or identity data is used.
+
 For the connected Checkout + Recovery block, run
 `flutter run -t lib/checkout_block_demo.dart`. The top-bar demo menu selects lost
 response, pending/offline or receipt-load retry; status checks keep the same
