@@ -158,6 +158,11 @@ export default defineConfig({
           { label: 'Toast', slug: 'components/toast' },
           { label: 'Tooltip', slug: 'components/tooltip' },
         ] },
+        { label: 'Blocks', items: [
+          { label: 'Overview', slug: 'blocks' },
+          { label: 'Merchant overview', slug: 'blocks/merchant-overview' },
+          { label: 'Checkout and recovery', slug: 'blocks/checkout-recovery' },
+        ] },
         { label: 'Patterns', items: [
           { label: 'Checkout', slug: 'patterns/checkout' },
           { label: 'Status and receipt', slug: 'patterns/status-receipt' },
@@ -165,6 +170,8 @@ export default defineConfig({
           { label: 'Verification (KYC)', slug: 'patterns/verification' },
           { label: 'KYC capture', slug: 'patterns/kyc-capture' },
           { label: 'Promotions', slug: 'patterns/promotions' },
+        ] },
+        { label: 'Guides', items: [
           { label: 'Loading', slug: 'patterns/loading' },
           { label: 'Empty and error', slug: 'patterns/empty-and-error' },
           { label: 'Forms', slug: 'patterns/forms' },

@@ -34,6 +34,10 @@ The package renders structured data from your app and reports user intent throug
 
 ## Invariants the kit helps keep
 
+Want a complete host screen first? Start with [Blocks](/blocks/): copy the source,
+run the mobile demo, then follow its links to the domain patterns. General layout
+and state recipes appear under Guides; their existing URLs stay stable.
+
 - `verified` comes only from the host, never from a finished upload.
 - One active submit per attempt. `PaymentButton` locks while its callback runs; this is interaction protection, not a replacement for server-side deduplication.
 - Timeouts, offline refreshes and an elapsed countdown never become "failed" or "paid".

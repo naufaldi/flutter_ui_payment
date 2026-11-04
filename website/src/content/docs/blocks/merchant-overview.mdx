@@ -1,0 +1,68 @@
+---
+title: Merchant overview
+description: A copyable native mobile merchant overview with balance, charts and transaction inspection.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+Read available balance, inspect revenue and method mix, then open unconfirmed
+payments without requesting another payment. The balance is the single display
+amount; section totals and metadata recede. Content scrolls rather than shrinking
+to fit a phone. The host shell owns bottom navigation and safe areas.
+
+<Screens>
+  <Screen name="android_block_merchant_overview" dark="android_block_merchant_overview_dark" alt="Native merchant overview with available balance, unconfirmed-payment notice and revenue chart." caption="Overview · Android phone" />
+  <Screen name="android_block_merchant_recent" alt="Scrolled merchant overview showing method mix, recent records and an explicit unconfirmed badge." caption="Recent transactions" />
+  <Screen name="android_block_merchant_detail" alt="Transaction-detail bottom sheet with invoice reference, display amount, hatched unknown status, readable explanation and a safe-area return action." caption="Unknown transaction detail" />
+</Screens>
+
+## Run the demo
+
+From the repository's `example/` directory:
+
+```sh
+flutter run -d <device-id> -t lib/merchant_demo.dart
+```
+
+**Periksa transaksi** opens three synthetic unknown records. **Lihat semua**
+opens all records. Tap a record to inspect its details. Settings switches the
+theme. No payment, clipboard write, network call or status verdict is performed.
+
+## How it is assembled
+
+| Section | Library components |
+| --- | --- |
+| Balance | `AmountText` with the `display` variant |
+| Notice and inspection action | `PaymentBanner`, `PaymentLink` |
+| Revenue and method mix | `ChartModule`, `PaymentBarChart`, `PaymentMeterChart` |
+| Recent records | `TransactionListItem`, `TransactionRecord` |
+| Transaction detail | `PaymentSheet`, `PaymentSheetHeader`, `StatusHeader`, `PaymentButton` |
+| Hierarchy and rhythm | `PaymentType`, `PaymentTheme`, `PaymentSpace`, `PaymentSection` |
+
+The host supplies authoritative totals, method percentages and unconfirmed count,
+which may include records outside the preview. Null balance means unavailable,
+never zero. The detail fixture covers confirmed and unknown only; map other
+provider states explicitly in your host. A dismissed sheet never changes status.
+Read the [history pattern](/patterns/history/) and
+[status/recovery pattern](/patterns/status-receipt/) before integrating.
+
+## Copy the source
+
+Copy the two compositions into your host and adapt `MerchantOverviewData` and its
+callbacks. Keep the scrolling body inside your Scaffold's safe area. Configure
+the shared theme in the host; the supplied themes demonstrate both looks.
+
+<BlockSource name="merchant" />
+<BlockSource name="detail" />
+<BlockSource name="themes" />
+<BlockSource name="merchantDemo" />
+
+## Verification and limits
+
+Android phone captures were inspected, including the revised detail sheet.
+Widget stories cover inspection/return, success versus unknown, unavailable/empty
+data, 320 dp at 200% text in dark/reduced-motion settings and a reachable 48 dp
+detail footer. This is a synthetic ready snapshot, not a loading/data adapter or
+ledger. There is no hardware performance or iOS visual claim.

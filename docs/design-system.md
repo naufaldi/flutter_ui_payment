@@ -6,6 +6,12 @@ The [product PRD](../PRD.md) and [foundation specs](prd-foundation-components.md
 
 ## Scope and layers
 
+Docs navigation (D105): **Components** describe public APIs, **Patterns** explain
+domain composition and behavior, **Guides** cover general layout/state recipes,
+and **Blocks** provide copyable mobile host screens with source and runnable demos.
+Blocks reuse components/patterns; they add no package runtime. Existing guide URLs
+remain stable even when their sidebar group changes.
+
 - **Platforms (D64):** iOS on iPhone/iPad and Android phones/tablets. Web is documentation and gallery preview only; desktop is out of scope.
 - **Foundations:** shared tokens and rules. **Tier 1 components:** reusable controls, views and pages. **Tier 2 patterns:** compose Tier 1 and enforce payment/KYC presentation contracts. Tier 1 does not depend on Tier 2 types.
 - Views and pages are Scaffold-free bodies with named host slots; the host owns routing and the surrounding shell. FocusView is the presentation exception (D31).

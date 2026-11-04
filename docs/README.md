@@ -13,6 +13,12 @@ Start with [the daily design-system guide](design-system.md) when changing the k
 
 ## Reference: integration and evidence
 
+For complete mobile host examples, use the website's **Blocks** section and
+`example/lib/compositions/README.md`. Components document APIs; domain Patterns
+explain behavior; Guides cover general recipes. D105 records this navigation
+split while preserving existing page URLs. History and KYC block issues remain
+follow-ups, not shipped examples.
+
 | Document | Audience and role |
 | --- | --- |
 | [Component inventory](components.md) and [component site](https://flutter-ui-payment.netlify.app/components/) | Host developers: current public names, shipped usage, states and host responsibilities. |

@@ -1,0 +1,88 @@
+---
+title: Checkout and recovery
+description: A runnable mobile checkout block that retains one attempt through uncertainty and shows a receipt only after host-confirmed success.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+A single native phone journey: review the order and visible service fee, pay once,
+recover a lost response, then read the matching confirmed receipt. Priority actions
+stay pinned; content scrolls at large text. Amounts use the kit's numeric roles and
+the layout follows the current host theme.
+
+<Screens>
+  <Screen name="android_block_checkout_review" dark="android_block_checkout_review_dark" alt="Mobile checkout review with merchant, visible item and service fee, wallet method and pinned pay action." caption="Review" />
+  <Screen name="android_block_checkout_unknown" dark="android_block_checkout_unknown_dark" alt="Lost response retains the attempt identity, explicitly warns against paying again and offers Check status." caption="Unknown is not failed" />
+  <Screen name="android_block_checkout_receipt" dark="android_block_checkout_receipt_dark" alt="Receipt only after host-confirmed success, with the matching reference, total, fee and masked wallet method." caption="Confirmed receipt" />
+  <Screen name="android_block_checkout_offline" alt="A failed status refresh retains the trusted pending state and same attempt with Check status still available." caption="Pending while offline" />
+</Screens>
+
+## Run the demo
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/checkout_block_demo.dart
+```
+
+1. Review **Paket Belajar Rp100.000 + Biaya layanan Rp2.500** and pay the total.
+2. The default **Respons hilang** fixture loses the response. No receipt appears.
+3. Tap **Cek status**. The synthetic host confirms the same attempt; only then
+   does its matching receipt appear. **Selesai** starts a fresh demo session.
+
+The top bar is developer tooling: switch light/dark or choose **Skenario demo**.
+**Pending lalu offline** returns pending, fails the first check and confirms on
+the next check. **Struk gagal dimuat** confirms payment but fails the first receipt
+load; **Lihat struk** retries without sending another payment. Selecting a scenario
+deliberately resets the synthetic session; this is not a customer recovery action.
+The fixed fixture clock is not a verdict source. Share is dismissed and copy
+reports unavailable: the demo performs no platform effect.
+
+## Composition and ownership
+
+`HostCheckoutJourney` connects `InvoiceCheckout` and `HostPaymentRecovery`.
+It accepts host data and async callbacks, and expects bounded height such as a
+`Scaffold.body`. There is no `DemoCoordinator`, router dependency or block runtime.
+
+| Concern | Existing surface |
+| --- | --- |
+| Item, visible fee and method review | `PaymentSummary`, `PaymentMethodPicker`, `MerchantHeader` |
+| One pinned action and large-text scroll | `PaymentFullPageView`, `PaymentButton` |
+| Same-attempt recovery | `PaymentAttempt`, `PaymentStatusView`, `PaymentAction` |
+| Confirmed receipt | `PaymentReceipt`, `PaymentReceiptData` |
+| Shared look | `PaymentTheme`, scoped button/field themes, named host pay preset |
+
+Read the [checkout contract](/patterns/checkout/#connected-host-example) for quote
+expiry, method readiness, changed terms, authorization and session identity. Read
+[status/recovery](/patterns/status-receipt/#copyable-host-composition) for restored
+attempts and receipt gating. Those rules apply equally when you change this layout.
+
+The real host must durably persist the attempt before sending, enforce server-side
+idempotency and price/auth rules, parse provider responses, and validate receipts.
+The example guards the receipt's transaction reference; that is not full backend
+receipt validation. No elapsed delay establishes success or failure. Never turn a
+status check or a missing response into a new submission.
+
+## Copy the source
+
+Copy all three compositions below and inject your own callbacks. `CheckoutOrder`
+is a host model you can adapt. The standalone shell and adapter show wiring with
+synthetic data; replace them rather than shipping the fixture as an integration.
+Theme-dependent presets resolve from the current context.
+
+<BlockSource name="checkout" />
+<BlockSource name="journey" />
+<BlockSource name="recovery" />
+<BlockSource name="themes" />
+<BlockSource name="checkoutDemo" />
+
+## Verification and limits
+
+Focused widget stories cover one submission through unknown to a matching receipt,
+offline checks without resubmission, receipt retry while preserving success, and
+320 dp/200% dark/reduced-motion layout with a reachable action. Existing journey
+tests additionally cover stale sessions and quote expiry at submission. Android
+phone captures are native, not web mockups. There is no iOS visual or physical-device
+speed claim. Persistence across process death remains a host responsibility.
