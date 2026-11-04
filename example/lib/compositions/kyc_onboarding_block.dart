@@ -109,14 +109,7 @@ class KycOnboardingBlock extends StatelessWidget {
             busyLabel: 'Memeriksa data…',
             onPressed: formController.submit,
           ),
-          // The step swap clips to its bounds, and a filled first field
-          // floats its label above its box; keep that label inside.
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: PaymentTheme.of(context).space(PaymentSpace.related),
-            ),
-            child: form!,
-          ),
+          child: form!,
         ),
         // The form keeps its state across host answers, so edits survive.
         child: IdentityForm(

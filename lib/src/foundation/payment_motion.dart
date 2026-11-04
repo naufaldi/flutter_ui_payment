@@ -114,7 +114,6 @@ class PaymentMotion {
   ///
   /// It never scales: scaling a full-width slab moves its edges and reads as
   /// a lurch. Use [fadeScale] for compact elements only. The leaving child
-  /// takes no taps ([topLayout]). Painting is clipped to the eased height
   /// takes no taps and can't hold focus ([topLayout]). Painting is clipped
   /// to the eased height only while it grows; at rest nothing is clipped,
   /// focus rings included. If reduced motion turns on mid-swap, the swap
