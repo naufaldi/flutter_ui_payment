@@ -1,0 +1,29 @@
+---
+import { Code } from 'astro:components';
+import checkout from '../../../example/lib/compositions/host_checkout.dart?raw';
+import journey from '../../../example/lib/compositions/host_checkout_journey.dart?raw';
+import recovery from '../../../example/lib/compositions/host_payment_recovery.dart?raw';
+import checkoutDemo from '../../../example/lib/checkout_block_demo.dart?raw';
+import merchant from '../../../example/lib/compositions/merchant_overview.dart?raw';
+import detail from '../../../example/lib/compositions/merchant_transaction_detail.dart?raw';
+import merchantDemo from '../../../example/lib/merchant_demo.dart?raw';
+import themes from '../../../example/lib/themes.dart?raw';
+
+const sources = {
+  checkout: ['compositions/host_checkout.dart', checkout],
+  journey: ['compositions/host_checkout_journey.dart', journey],
+  recovery: ['compositions/host_payment_recovery.dart', recovery],
+  checkoutDemo: ['checkout_block_demo.dart', checkoutDemo],
+  merchant: ['compositions/merchant_overview.dart', merchant],
+  detail: ['compositions/merchant_transaction_detail.dart', detail],
+  merchantDemo: ['merchant_demo.dart', merchantDemo],
+  themes: ['themes.dart', themes],
+};
+interface Props { name: keyof typeof sources; }
+const [file, source] = sources[Astro.props.name];
+---
+<details>
+  <summary>Source: {file}</summary>
+  <p><a href={`https://github.com/naufaldi/flutter_ui_payment/blob/main/example/lib/${file}`}>Open this file on GitHub</a>. Copy and adapt it in your host app.</p>
+  <Code code={source} lang="dart" />
+</details>

@@ -115,6 +115,10 @@ Inside a `ListView` or `SingleChildScrollView` the height is unbounded, and the 
 
 ## Connected host example
 
+For a standalone runnable phone shell, inspected native screenshots and full
+copyable source, use the [Checkout and Recovery block](/blocks/checkout-recovery/).
+This pattern explains the domain contract; the block demonstrates its host layout.
+
 `example/lib/compositions/host_checkout_journey.dart` connects `InvoiceCheckout` from `host_checkout.dart` to `HostPaymentRecovery` from `host_payment_recovery.dart`. Copy those three source files into your host and adapt the callbacks. They use the Flutter SDK and this package, with no `DemoCoordinator`, router dependency or additional runtime layer. The screen expects bounded height, for example a `Scaffold.body`, so review, status and receipt keep their priority action pinned.
 
 Try **Host checkout journey** in **Gallery → Checkout**. **Lost response** submits one synthetic attempt, shows an unknown outcome, then checks that same attempt and loads its matching receipt after a succeeded snapshot. **Pending then offline** first returns a pending snapshot; the first check fails and retains that snapshot, and the next check confirms success. Done resets this fixture. The scenario selector is developer tooling, not a customer recovery action.

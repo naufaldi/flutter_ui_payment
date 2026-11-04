@@ -22,6 +22,17 @@ const sharp = requireFromAstro('sharp');
 
 // name → what it shows (locale noted, because captures mix en and id).
 const screens = {
+  android_block_merchant_overview: 'Merchant Overview host block: available balance, unknown-payment notice and revenue chart.',
+  android_block_merchant_overview_dark: 'Merchant Overview host block in dark mode.',
+  android_block_merchant_recent: 'Merchant Overview scrolled to method mix and recent transaction records.',
+  android_block_merchant_detail: 'Merchant transaction-detail sheet with amount hierarchy, hatched unknown state and safe-area return action.',
+  android_block_checkout_review: 'Checkout block: native phone review, visible service fee and pinned pay action.',
+  android_block_checkout_review_dark: 'Checkout block review in dark mode.',
+  android_block_checkout_unknown: 'Checkout block: lost response, retained attempt and Check status without resubmission.',
+  android_block_checkout_unknown_dark: 'Checkout block unknown response in dark mode.',
+  android_block_checkout_receipt: 'Checkout block: matching receipt after host-confirmed success.',
+  android_block_checkout_receipt_dark: 'Checkout block confirmed receipt in dark mode.',
+  android_block_checkout_offline: 'Checkout block: failed refresh preserves last-known pending and the same attempt.',
   android_catalog_theme_shape_roles_variants: 'Default corners beside square boxes, pill tags and independently rounded sheets.',
   android_catalog_theme_shape_roles_variants_dark: 'Default corners beside square boxes, pill tags and independently rounded sheets. Dark mode.',
   android_catalog_field_customization_variants: 'Scoped field theme with soft fill, rounded corners, input typography, error and disabled states.',

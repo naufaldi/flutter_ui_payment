@@ -1,5 +1,19 @@
 # Merchant overview: compose a mobile host screen
 
+## Checkout and recovery demo
+
+Run `flutter run -t lib/checkout_block_demo.dart` from `example/`.
+Copy `host_checkout.dart`, `host_checkout_journey.dart` and
+`host_payment_recovery.dart` into your host and replace the synthetic adapter
+callbacks. Use a bounded Scaffold body. The demo menu offers lost response,
+pending then offline, and receipt retry; light/dark switches in the top bar.
+It performs no networking or platform sharing/clipboard operation. The fixture
+clock and delayed responses are deterministic, not a production quote/status
+source. Persist attempts durably and enforce price/auth/idempotency on your
+authoritative side. Full adoption and source are in the website Blocks pages.
+
+## Merchant overview demo
+
 Run from `example/`:
 
 ```powershell

@@ -1,5 +1,10 @@
 # Ruang Bayar demo
 
+For the connected Checkout + Recovery block, run
+`flutter run -t lib/checkout_block_demo.dart`. The top-bar demo menu selects lost
+response, pending/offline or receipt-load retry; status checks keep the same
+attempt. See the [composition guide](lib/compositions/README.md).
+
 For the copyable mobile Merchant Overview block, see
 [the composition guide](lib/compositions/README.md). Run it with
 `flutter run -t lib/merchant_demo.dart`.

@@ -11,6 +11,11 @@ The full records live in the repository: <RepoLink path="docs/design-research.md
 
 ## Customization direction (D98)
 
+**D105:** [Blocks](/blocks/) publish full mobile host compositions and runnable
+synthetic demos. Patterns retain domain contracts; general layout/state recipes
+appear under Guides without changing their existing URLs. Blocks apply D98/D104,
+adding no package runtime or style system.
+
 D98 approves layered customization: shared semantic defaults, scoped family themes where needed, then typed instance overrides, with children/slots for composition. Button is implemented under D100 with a dedicated family theme and typed instance style, theme radius roles under D101, fields under D102 with a theme-only field theme, and toasts follow the caller's scoped themes under D103. The review of every exported family and two host checkout compositions in the example app are done; combined tests, Android light/dark captures and independent review passed locally on 3 November 2026. This does not mean publication or deployment. See [Button customization](/components/button/#customization) and [Text field customization](/components/text-field/#customization). Current integrations use the documented [theming API](/concepts/theming/) and each component's existing Props. The migration starts with Button, proceeds by family and proves two host checkout layouts while preserving accessibility, interaction protection and host ownership.
 
 The derived <RepoLink path="docs/design-system.md" label="daily design-system guide" /> links the active rules and full D98 contract; it does not promise new API names.

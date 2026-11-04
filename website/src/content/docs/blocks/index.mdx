@@ -1,0 +1,44 @@
+---
+title: Blocks
+description: Copyable mobile host screens assembled from the Flutter payment UI kit.
+---
+
+Start with a complete mobile screen, then adapt its host data, callbacks and theme.
+These are Flutter **host source**, not additional package widgets or a runtime you
+must install. All demo records and money are synthetic.
+
+| Start here | What you can try |
+| --- | --- |
+| [Merchant overview](/blocks/merchant-overview/) | Balance, revenue, method mix, recent transactions and unknown-payment inspection |
+| [Checkout and recovery](/blocks/checkout-recovery/) | Review with visible fees, lost response, same-attempt check, pending/offline and a confirmed receipt |
+
+## Components, patterns, guides and blocks
+
+| Section | Use it to |
+| --- | --- |
+| [Components](/components/) | Choose a widget and understand its supported props and states |
+| [Patterns](/patterns/checkout/) | Understand domain composition, financial invariants and host responsibilities |
+| [Guides](/patterns/views-and-pages/) | Solve general layout, forms and loading/empty/error presentation |
+| Blocks | Copy a full host composition and run a mobile demo |
+
+A block can use several patterns. Domain rules stay in their pattern pages;
+block pages link to them and explain adoption. General guides keep their existing
+`/patterns/…` URLs so bookmarks remain valid.
+
+## Adoption order
+
+1. Install the [package](/start/installation/) and configure shared theme tokens.
+2. Copy the block source and supply your host models and callbacks.
+3. Apply a scoped family theme when the product needs a shared component look.
+4. Use a named host preset for a repeated subset, then an inline override only
+   for a justified exception. See [theming](/concepts/theming/).
+
+You own auth, networking, durable attempt persistence, quotes and status verdicts,
+plus routing and platform effects. Demo adapters are not production integrations.
+Copying source does not establish payment-provider compliance or production readiness.
+
+## Planned next blocks
+
+[Merchant history #213](https://github.com/naufaldi/flutter_ui_payment/issues/213)
+and [KYC review/correction #214](https://github.com/naufaldi/flutter_ui_payment/issues/214)
+are tracked follow-ups. They are not shipped blocks in this release.
