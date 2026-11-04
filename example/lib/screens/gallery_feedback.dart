@@ -166,6 +166,7 @@ class _ToastSpecimenState extends State<_ToastSpecimen> {
           ),
         ])
           PaymentButton(
+            key: Key('toast-${tone.name}'),
             label: label,
             size: PaymentSize.small,
             width: PaymentWidth.hug,

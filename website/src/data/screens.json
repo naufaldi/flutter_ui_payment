@@ -907,17 +907,17 @@
   "android_catalog_toast_variants": {
     "width": 640,
     "height": 1138,
-    "caption": "Toast controls with a pending balance refresh message over the gallery."
+    "caption": "Toast controls with a Reference copied success toast over the gallery."
   },
   "android_catalog_toast_variants_200": {
     "width": 640,
     "height": 1138,
-    "caption": "Toast controls with a pending balance refresh message over the gallery at 200 percent text."
+    "caption": "Toast controls with a Reference copied success toast over the gallery at 200 percent text."
   },
   "android_catalog_toast_variants_dark": {
     "width": 640,
     "height": 1138,
-    "caption": "Toast controls with a pending balance refresh message over the gallery. Dark mode."
+    "caption": "Toast controls with a Reference copied success toast over the gallery. Dark mode."
   },
   "android_catalog_toast_footer": {
     "width": 640,

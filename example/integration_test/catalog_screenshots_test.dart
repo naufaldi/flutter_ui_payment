@@ -402,7 +402,9 @@ void main() {
             'toast': (
               'Feedback',
               'showPaymentToast',
-              (_) => tapVisible(tester, find.byKey(const Key('toast-pending'))),
+              // A settled success toast. The pending demo swaps to success on
+              // a timer, so a capture of it races the swap.
+              (_) => tapVisible(tester, find.byKey(const Key('toast-success'))),
               () async {
                 clearSnackBars();
                 await settle(tester);
