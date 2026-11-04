@@ -7,7 +7,7 @@ Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not publish
 
 ## Foundation customization and host checkout (2026-11-04)
 
-- Enable theme-first foundation customization and copyable host checkout/recovery compositions, including a connected checkout-to-confirmed-receipt journey with safe unknown/offline states.
+- Enable theme-first foundation customization and copyable host checkout/recovery compositions, including a connected checkout-to-confirmed-receipt journey with safe unknown/offline states and host-owned merchant verification.
 
 ## Android pass fixes (2026-11-02)
 
