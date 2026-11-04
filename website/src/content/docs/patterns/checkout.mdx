@@ -130,6 +130,8 @@ The host passes a current quote already priced for the selected available method
 
 `newAttemptId` creates one identity before `onSubmit`. Persist it in the host before sending. A null response or transport exception preserves it as unknown; no automatic new attempt is created. `onCheckStatus` reconciles through `PaymentAttempt.reconcile`, ignoring wrong identities, changed references and stale revisions. It never submits. Return callback futures so the screen and kit controls retain repeat protection. Failed receipt loading stays on succeeded status with a safe message and View receipt retry.
 
+`CheckoutOrder.merchantVerified` defaults to false. Set it only when the host has verified that merchant; otherwise the invoice and connected journey show no verified seal. Gallery fixtures opt in explicitly for their synthetic merchant.
+
 `order.reference` identifies the host session. Replacing it invalidates outstanding callbacks, so a response from the previous order cannot populate the next one. The amount shown after submission comes from the submitted order, even when the host rebuilds with another quote. Do not use a quote refresh to change the order reference or clear an unresolved attempt. This example stores presentation state only while mounted: persistence, resume after process death, full receipt validation, credentials and platform sharing/clipboard implementations remain host responsibilities. Use the separate [recovery composition](/patterns/status-receipt/#copyable-host-composition) to render a restored host attempt.
 
 ## API

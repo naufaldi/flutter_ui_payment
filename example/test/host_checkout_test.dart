@@ -38,32 +38,36 @@ final order = CheckoutOrder(
   balanceState: BalanceState.sufficient,
 );
 
-Widget host(CheckoutActions actions, {double scale = 1}) => MaterialApp(
-  theme: ThemeData(colorScheme: scheme, extensions: [payment]),
-  localizationsDelegates: const [PaymentLocalizations.delegate],
-  home: Builder(
-    builder: (context) => MediaQuery(
-      data: MediaQuery.of(
-        context,
-      ).copyWith(textScaler: TextScaler.linear(scale)),
-      child: Scaffold(
-        body: ProductLooks(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                InvoiceCheckout(order: order, actions: actions),
-                const SizedBox(height: 48),
-                WalletReviewCheckout(order: order, actions: actions),
-              ],
+Widget host(CheckoutActions actions, {double scale = 1, CheckoutOrder? data}) =>
+    MaterialApp(
+      theme: ThemeData(colorScheme: scheme, extensions: [payment]),
+      localizationsDelegates: const [PaymentLocalizations.delegate],
+      home: Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(scale)),
+          child: Scaffold(
+            body: ProductLooks(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    InvoiceCheckout(order: data ?? order, actions: actions),
+                    const SizedBox(height: 48),
+                    WalletReviewCheckout(
+                      order: data ?? order,
+                      actions: actions,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
       ),
-    ),
-  ),
-);
+    );
 
 Finder pay(int index) => find
     .ancestor(
@@ -73,6 +77,30 @@ Finder pay(int index) => find
     .at(index);
 
 void main() {
+  testWidgets('merchant verification badge requires a host verdict', (
+    tester,
+  ) async {
+    final actions = CheckoutActions(
+      onSelectMethod: (_) {},
+      onChangeMethod: () {},
+      onReceiptEmailChanged: (_) {},
+      onPay: () async {},
+    );
+    await tester.pumpWidget(host(actions));
+    expect(find.byIcon(Icons.verified_outlined), findsNothing);
+    final verifiedOrder = CheckoutOrder(
+      merchant: order.merchant,
+      reference: order.reference,
+      quote: order.quote,
+      methods: order.methods,
+      selectedMethodId: order.selectedMethodId,
+      balance: order.balance,
+      balanceState: order.balanceState,
+      merchantVerified: true,
+    );
+    await tester.pumpWidget(host(actions, data: verifiedOrder));
+    expect(find.byIcon(Icons.verified_outlined), findsOneWidget);
+  });
   testWidgets(
     'both layouts show the product look and pay through the same host '
     'callback, once per press',

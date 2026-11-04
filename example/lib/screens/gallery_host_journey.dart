@@ -52,6 +52,7 @@ class _HostJourneyDemoState extends State<_HostJourneyDemo> {
         key: ValueKey(_session),
         order: CheckoutOrder(
           merchant: 'Ruang Bayar Akademi (Demo)',
+          merchantVerified: true, // Verified synthetic merchant fixture.
           reference: 'INV-HOST-$_session',
           quote: _quote(methodId: 'balance'),
           methods: const [
