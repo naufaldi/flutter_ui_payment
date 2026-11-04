@@ -1,3 +1,7 @@
+## Foundation customization and host checkout (2026-11-04)
+
+- Enable theme-first foundation customization and copyable host checkout/recovery compositions, including a connected checkout-to-confirmed-receipt journey with safe unknown/offline states and host-owned merchant verification.
+
 ## Android pass fixes (2026-11-02)
 
 - **Example: the keyboard no longer blanks the screen in the side-rail layout (#138, #144).** At 840 dp and wider, opening the keyboard keeps the flow visible, and the step swap no longer overflows while the keyboard closes. Example only; no kit change.
