@@ -13,6 +13,12 @@ must install. All demo records and money are synthetic.
 | [Checkout and recovery](/blocks/checkout-recovery/) | Review with visible fees, lost response, same-attempt check, pending/offline and a confirmed receipt |
 | [Transaction history](/blocks/transaction-history/) | Search/filter, unknown inspection, refund detail and list retry |
 | [KYC review and correction](/blocks/kyc-review/) | Read a correction reason, replace a document, review masked identity and await a host verdict |
+| [Manual VA transfer](/blocks/manual-transfer/) | Copy a host-issued account, see the exact amount and deadline, and check the same attempt |
+| [Method choice and quote changes](/blocks/method-quote/) | Availability reasons, host-priced fees and total, and explicit re-approval of a changed quote |
+| [Payment and refund detail](/blocks/refund-detail/) | Original payment kept intact, a separate pending/partial/completed refund and a read-only receipt |
+| [KYC onboarding and consent](/blocks/kyc-onboarding/) | Purpose before an unchecked consent box, host fields and validation, and a masked review |
+| [KYC capture and upload recovery](/blocks/kyc-capture/) | Synthetic guide and preview, permission, quality and upload errors, retake and retry |
+| [Payment preferences](/blocks/payment-preferences/) | Default method and notifications with an explicit, host-confirmed save |
 
 ## Components, patterns, guides and blocks
 
@@ -42,9 +48,8 @@ Copying source does not establish payment-provider compliance or production read
 ## Roadmap and references
 
 The [Payment/KYC block tracker #223](https://github.com/naufaldi/flutter_ui_payment/issues/223)
-lists shipped blocks and ordered follow-ups: manual VA payment, changed-quote
-review, refunds, KYC consent, capture/upload recovery and payment preferences.
-Open issues describe planned work, not additional shipped blocks.
+tracks the Payment/KYC block set. Every block in the table above is shipped and
+runnable; open issues there describe planned work, not additional shipped blocks.
 
 We use [shadcn Blocks](https://ui.shadcn.com/blocks) as a reference for visible
 preview/source/file composition, [Flutter Templates Finance](https://www.fluttertemplates.dev/widgets/finance/)

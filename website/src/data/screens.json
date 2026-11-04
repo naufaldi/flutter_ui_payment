@@ -104,6 +104,141 @@
     "height": 1095,
     "caption": "Checkout block: failed refresh preserves last-known pending and the same attempt."
   },
+  "android_block_transfer": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Manual VA transfer block: host-issued account number with copy, exact amount, deadline and Check status."
+  },
+  "android_block_transfer_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Manual VA transfer block in dark mode."
+  },
+  "android_block_transfer_elapsed": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Elapsed VA deadline warns to check status before paying again; the payment stays pending."
+  },
+  "android_block_transfer_unknown": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Lost VA issuing response hides the account number and offers Check status for the same attempt."
+  },
+  "android_block_quote": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Method and quote block: availability reasons, per-method fees and a priced Continue action."
+  },
+  "android_block_quote_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Method and quote block in dark mode."
+  },
+  "android_block_quote_changed": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Changed quote at submit shows old and new totals and keeps Pay disabled until the payer accepts."
+  },
+  "android_block_quote_error": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Failed quote keeps Continue disabled and offers an explicit retry."
+  },
+  "android_block_refund": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Payment detail block: original succeeded payment and amount before any refund update."
+  },
+  "android_block_refund_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Payment detail block in dark mode."
+  },
+  "android_block_refund_partial": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Partial refund shown in its own section; the original payment stays succeeded."
+  },
+  "android_block_refund_receipt": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Read-only receipt sheet for the original payment with line items and total."
+  },
+  "android_block_onboarding": {
+    "width": 640,
+    "height": 1095,
+    "caption": "KYC onboarding block: purpose of each data item before an unchecked consent box."
+  },
+  "android_block_onboarding_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "KYC onboarding consent in dark mode."
+  },
+  "android_block_onboarding_rejected": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Host rejects the ID number; the error sits under that field and other values stay."
+  },
+  "android_block_onboarding_review": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Review step with masked ID number, Edit action and Save."
+  },
+  "android_block_onboarding_save_error": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Failed save keeps the reviewed details and explains how to try again."
+  },
+  "android_block_onboarding_saved": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Saved details state that identity is not verified yet and name the next step."
+  },
+  "android_block_capture": {
+    "width": 640,
+    "height": 1095,
+    "caption": "KYC capture block: synthetic ID card guide with framing tips and Take photo."
+  },
+  "android_block_capture_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "KYC capture guide in dark mode."
+  },
+  "android_block_capture_permission": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Camera permission denied explains why and offers Open settings."
+  },
+  "android_block_capture_rejected": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Host rejects a blurry photo with a reason and a Retake action."
+  },
+  "android_block_capture_uploaded": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Uploaded photo with a note that upload is not verification, and Submit for review."
+  },
+  "android_block_preferences": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Payment preferences block: default method, notifications and an explicit Save."
+  },
+  "android_block_preferences_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Payment preferences block in dark mode."
+  },
+  "android_block_preferences_error": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Failed save keeps the chosen method and asks to save again."
+  },
+  "android_block_preferences_saved": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Host-confirmed save shows Preferences saved."
+  },
   "android_catalog_theme_shape_roles_variants": {
     "width": 640,
     "height": 1213,

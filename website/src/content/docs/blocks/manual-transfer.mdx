@@ -1,0 +1,77 @@
+---
+title: Manual VA transfer
+description: A mobile host block for paying into a host-issued virtual account, copying its number and checking the same attempt.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+Show the exact virtual account number and amount the host issued, let the payer
+copy the number, and check the status of the same payment attempt. The deadline
+tells the payer when to transfer by. Reaching it is never a payment verdict:
+only the host's status says whether the money arrived.
+
+<Screens>
+  <Screen name="android_block_transfer" dark="android_block_transfer_dark" alt="Virtual account number with a copy action, exact amount Rp152.500, deadline countdown and pinned Check status action." caption="Pay into the issued account" />
+  <Screen name="android_block_transfer_elapsed" alt="Deadline countdown at 00:00 with a warning to check status before paying again; Check status stays pinned." caption="Deadline passed, still pending" />
+  <Screen name="android_block_transfer_unknown" alt="The issuing response was lost, so no account number is shown and only Check status for the same attempt is offered." caption="Issuing response lost" />
+</Screens>
+
+## Run and try
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/manual_transfer_demo.dart
+```
+
+Tap the copy icon: the demo's host adapter writes the number to the clipboard.
+Tap **Cek status**; the synthetic host confirms success for the same attempt.
+The developer menu offers four fixtures:
+
+- **Batas waktu lewat**: the countdown reaches zero and a warning appears. The
+  status stays pending until **Cek status** returns the host's answer.
+- **Cek status gagal**: the first check fails; the last known pending status and
+  the account stay on screen and the next check succeeds.
+- **Respons VA hilang**: the issuing response is unknown, so the kit hides the
+  account. **Cek status** reconciles the same attempt and then shows the number.
+  The block never offers a second transfer or a new attempt.
+
+Changing a fixture starts a fresh synthetic session and ignores answers that
+belong to the previous one.
+
+## Composition and boundaries
+
+`ManualTransferBlock` takes the host's `PaymentAttempt`, amount, a clock and
+callbacks for checking status and copying. The host keeps the attempt durable
+and calls `PaymentAttempt.reconcile` with every new snapshot; the kit drops
+snapshots for another attempt, older revisions and downgrades.
+
+| UI | Existing library surface |
+| --- | --- |
+| Status, amount and Check status | `PaymentStatusView`, `PaymentAttempt`, `Observation` |
+| Account number, copy, amount and deadline | `PaymentInstructions`, `VirtualAccountInstructions` |
+| Lost issuing response | `SubmissionState.outcomeUnknown` |
+
+The clipboard, polling, deep links and bank instructions stay in the host. The
+copy callback returns `false` when copying failed so the kit can say so. Every
+account number and amount in the demo is fictional. See the
+[status and receipt pattern](/patterns/status-receipt/) and the
+[checkout pattern](/patterns/checkout/).
+
+## Source
+
+<BlockSource name="manualTransfer" />
+<BlockSource name="manualTransferDemo" />
+<BlockSource name="demoShell" />
+
+## Proof and limits
+
+Tests prove that the payer reads the exact account and amount and the check
+reports success for the same attempt, that a passed deadline never decides the
+payment, that a lost issuing response hides the account and offers only Check
+status, that a failed check keeps the last known status, and that Check status
+stays reachable at 320 dp and 200% text in dark mode with reduced motion.
+Android captures were inspected. There is no polling and no hardware speed or iOS
+visual claim. The demo is not a bank integration.

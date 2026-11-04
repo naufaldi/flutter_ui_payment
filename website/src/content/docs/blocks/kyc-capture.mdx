@@ -1,0 +1,74 @@
+---
+title: KYC capture and upload recovery
+description: A mobile host block for taking an ID photo with guidance, recovering from permission, quality and upload problems, and sending it for review.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+Guide the person to photograph their ID card, preview the photo and upload it.
+A denied camera explains why and offers settings. A blurry photo asks for a
+retake; an interrupted upload retries the same photo. A finished upload is not a
+verdict: only the host's verification status says whether the identity is
+verified.
+
+<Screens>
+  <Screen name="android_block_capture" dark="android_block_capture_dark" alt="Synthetic specimen ID card in a framing guide with tips for light, glare, corners and fingers, and a Take photo action." caption="Framing guide" />
+  <Screen name="android_block_capture_permission" alt="Camera access not allowed, with a reason, Take photo and Open settings actions." caption="Permission denied" />
+  <Screen name="android_block_capture_rejected" alt="Blurred synthetic photo with a host reason that the text is unreadable and a Retake action." caption="Photo rejected" />
+  <Screen name="android_block_capture_uploaded" alt="Uploaded photo with file name and size, a note that upload is not verification, and Submit for review." caption="Uploaded, not verified" />
+</Screens>
+
+## Run and try
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/kyc_capture_demo.dart
+```
+
+Tap **Ambil foto**, choose the camera in the source sheet, then **Pakai foto**.
+After the upload, tap **Kirim untuk verifikasi**; the status becomes in review.
+The developer menu offers **Izin kamera ditolak**, **Foto buram** and
+**Unggahan terputus**. The camera is synthetic: the demo draws a labelled
+specimen card and never opens a real camera or gallery.
+
+If the person retakes while an upload is running, the older upload's answer is
+ignored because each upload has its own request id. Changing a fixture starts a
+fresh synthetic session.
+
+## Composition and boundaries
+
+`KycCaptureBlock` takes the `DocumentSlotState` for the photo on screen, the
+host's photo or preview and callbacks. The host keeps the slot keyed by request
+id, so a late answer for an earlier photo cannot replace the current one.
+
+| UI | Existing library surface |
+| --- | --- |
+| Framing guide, tips, preview and issues | `KycCaptureGuide`, `DocumentSlotState`, `DocumentIssue` |
+| Camera or gallery choice (demo host) | `showCaptureSourceSheet` |
+| Uploaded file and replace | `DocumentUploadTile` |
+| In review after submit (demo host) | `VerificationStatusView`, `VerificationSnapshot` |
+
+The host owns the camera, picker, permission prompts, settings, image quality
+checks, upload, retention and the verification verdict. See the
+[KYC capture pattern](/patterns/kyc-capture/) and the
+[verification pattern](/patterns/verification/). Start with the
+[KYC onboarding block](/blocks/kyc-onboarding/) for consent and details.
+
+## Source
+
+<BlockSource name="kycCapture" />
+<BlockSource name="kycCaptureDemo" />
+<BlockSource name="demoShell" />
+
+## Proof and limits
+
+Tests prove that an older upload answer cannot overwrite the retaken photo and a
+finished upload is not a verification, that a denied camera explains why and
+offers settings, that an interrupted upload retries the same photo and a blurry
+one asks for a retake, and that the capture action stays reachable at 320 dp and
+200% text in dark mode with reduced motion. Android captures were inspected. No
+real camera, hardware speed or iOS visual claim. The demo is not an identity
+service.

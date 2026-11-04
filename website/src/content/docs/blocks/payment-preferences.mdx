@@ -1,0 +1,63 @@
+---
+title: Payment preferences
+description: A mobile host block for choosing a default payment method and payment notifications with an explicit, host-confirmed Save.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+Choose a default payment method and payment notifications, then save. The block
+says "saved" only after the host confirms it. A failed save keeps the choices so
+the person can try again without choosing again. Choosing a default method only
+preselects it at checkout; it never charges or authorizes anything.
+
+<Screens>
+  <Screen name="android_block_preferences" dark="android_block_preferences_dark" alt="Default method radio list with an unavailable card and its reason, notification switches and a Save action." caption="Preferences" />
+  <Screen name="android_block_preferences_error" alt="Save failed message under the title; the chosen Virtual account stays selected." caption="Save failed" />
+  <Screen name="android_block_preferences_saved" alt="Preferences saved message after the host confirmed the save." caption="Host-confirmed save" />
+</Screens>
+
+## Run and try
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/payment_preferences_demo.dart
+```
+
+Change the default method or a notification and tap **Simpan**. The developer
+menu's **Simpan pertama gagal** fixture fails the first save; the choice stays
+and the next save is confirmed. Controls lock while the host saves.
+
+## Composition and boundaries
+
+`PaymentPreferencesBlock` takes the host's last confirmed `PaymentPreferences`,
+the person's draft, the methods, a confirmed flag and callbacks. It shows
+"unsaved changes" while the draft differs from the confirmed snapshot.
+
+| UI | Existing library surface |
+| --- | --- |
+| Settings page, status line and Save | `PaymentSettingsView` |
+| Default method | `PaymentRadio`, `PaymentSection` |
+| Notifications and a locked security alert | `PaymentSwitch` |
+
+The host owns persistence, the account's methods, notification delivery and any
+sync with other devices. The block never shows "saved" optimistically. All
+methods are fictional. See the [forms guide](/patterns/forms/) and the
+[checkout pattern](/patterns/checkout/).
+
+## Source
+
+<BlockSource name="preferences" />
+<BlockSource name="preferencesDemo" />
+<BlockSource name="demoShell" />
+
+## Proof and limits
+
+Tests prove that a failed save keeps the edit and never says saved, that the
+retry is confirmed by the host, that choices lock while the host saves and an
+unavailable method explains why, and that Save stays reachable at 320 dp and 200%
+text in dark mode with 48 dp rows and reduced motion. Android captures were
+inspected. No hardware speed or iOS visual claim. The demo does not persist
+anything.

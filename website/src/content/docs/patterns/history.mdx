@@ -18,7 +18,9 @@ filter and safe load/retry state and passes already-filtered records into
 No-match reset is distinct from an empty history. Unknown inspection offers no
 pay-again action; a partial refund retains the original successful payment and
 its original amount. Server-backed hosts must reject stale query results and
-authorize record access; hiding a row is not an access-control check.
+authorize record access; hiding a row is not an access-control check. For one
+payment with its refund lifecycle and receipt, see the
+[Payment and refund detail block](/blocks/refund-detail/).
 
 A fully controlled list of past payments with search, filter tabs, loading, error, empty and no-match states, plus a detail view with a separate refund section.
 

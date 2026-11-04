@@ -164,6 +164,12 @@ export default defineConfig({
           { label: 'Checkout and recovery', slug: 'blocks/checkout-recovery' },
           { label: 'Transaction history', slug: 'blocks/transaction-history' },
           { label: 'KYC review and correction', slug: 'blocks/kyc-review' },
+          { label: 'Manual VA transfer', slug: 'blocks/manual-transfer' },
+          { label: 'Method and quote changes', slug: 'blocks/method-quote' },
+          { label: 'Payment and refund detail', slug: 'blocks/refund-detail' },
+          { label: 'KYC onboarding and consent', slug: 'blocks/kyc-onboarding' },
+          { label: 'KYC capture and upload', slug: 'blocks/kyc-capture' },
+          { label: 'Payment preferences', slug: 'blocks/payment-preferences' },
         ] },
         { label: 'Patterns', items: [
           { label: 'Checkout', slug: 'patterns/checkout' },
