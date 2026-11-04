@@ -179,6 +179,167 @@ Use the first row that matches:
 | A supporting action that must stay visible | `secondary` |
 | Any other supporting action | `quiet` |
 
+## Customization
+
+`PaymentButtonStyle` changes enabled appearance. `PaymentButtonTheme` is a Flutter theme extension for button-family defaults, independent of input and sheet styling (D100).
+
+Adopt customization in this order. Most buttons need only the first step.
+
+1. **Product default:** configure `PaymentTheme` and `PaymentButtonTheme` once in the app theme. Everyday buttons then pass only `variant`, `size` and `width`, never `style`.
+2. **Feature theme:** a scoped family theme when every button in one subtree needs a different look.
+3. **Host preset:** a named host function for a subset repeated across screens, where a scoped theme would also change buttons that should keep the default. Presets are host code, not kit API.
+4. **One-off override:** an inline `style` for one exceptional instance, changing only the fields that differ.
+
+Repeating the same inline `style` across screens is never the default: copies drift apart and skip theme changes. Brand looks belong in the theme, not in new variants (§9).
+
+### Product default
+
+Build the theme per color scheme, so light and dark each resolve their own tokens:
+
+```dart
+ThemeData paymentAppTheme(ColorScheme scheme) {
+  final payment = PaymentTheme.fromColorScheme(scheme);
+  return ThemeData(
+    colorScheme: scheme,
+    extensions: [
+      payment,
+      PaymentButtonTheme(
+        style: PaymentButtonStyle(
+          // Buttons follow the box radius instead of the input radius.
+          borderRadius: payment.borderRadius,
+          textStyle: const TextStyle(fontWeight: FontWeight.w700),
+        ),
+      ),
+    ],
+  );
+}
+
+// MaterialApp(theme: paymentAppTheme(lightScheme),
+//     darkTheme: paymentAppTheme(darkScheme), ...)
+```
+
+Call sites stay semantic and omit `style`:
+
+```dart
+PaymentButton(label: 'Pay now', onPressed: pay);
+PaymentButton(
+  label: 'View receipt',
+  variant: PaymentButtonVariant.secondary,
+  onPressed: openReceipt,
+);
+```
+
+### Feature theme
+
+Scope a family theme without replacing unrelated extensions. `copyWith` replaces a whole variant entry, so merge into the parent's entry to keep its fields:
+
+```dart
+// Inside the feature's build method.
+final parent = Theme.of(context);
+final payment = PaymentTheme.of(context);
+final buttons = parent.extension<PaymentButtonTheme>() ??
+    const PaymentButtonTheme();
+final accentOutline = PaymentButtonStyle(
+  borderColor: payment.accent,
+  foregroundColor: payment.accent,
+);
+return Theme(
+  data: parent.copyWith(extensions: [
+    ...parent.extensions.values,
+    buttons.copyWith(
+      secondary: buttons.secondary?.merge(accentOutline) ?? accentOutline,
+    ),
+  ]),
+  child: rewardsView,
+);
+```
+
+### Reusable host preset
+
+Use a named preset when the same subset repeats on several screens and other buttons of that variant keep the default. Take `BuildContext` and read `PaymentTheme.of(context)`, so the preset follows light/dark and brand changes. Don't keep resolved colors in a top-level `final`; that freezes one theme.
+
+```dart
+// Host code: a compact tonal action for card rows.
+PaymentButtonStyle cardRowAction(BuildContext context) {
+  final payment = PaymentTheme.of(context);
+  return PaymentButtonStyle(
+    backgroundColor: payment.surfaceMuted,
+    foregroundColor: payment.textPrimary,
+  );
+}
+
+// Saved cards screen
+PaymentButton(
+  label: 'Add card',
+  variant: PaymentButtonVariant.quiet,
+  size: PaymentSize.small,
+  style: cardRowAction(context),
+  onPressed: addCard,
+);
+
+// Payouts screen
+PaymentButton(
+  label: 'Add bank account',
+  variant: PaymentButtonVariant.quiet,
+  size: PaymentSize.small,
+  style: cardRowAction(context),
+  onPressed: addBankAccount,
+);
+```
+
+### One-off override
+
+An instance overrides only the fields it provides; everything else keeps the theme. Here one button beside a promo-code field keeps the input radius to line up with it:
+
+```dart
+PaymentButton(
+  label: 'Apply',
+  variant: PaymentButtonVariant.secondary,
+  style: PaymentButtonStyle(
+    borderRadius: PaymentTheme.of(context).controlBorderRadius,
+  ),
+  onPressed: applyCode,
+);
+```
+
+```dart
+// Incorrect: one appearance pasted inline on every screen.
+// Move it to the app theme, a feature theme or a named preset.
+PaymentButton(
+  label: 'Pay now',
+  style: PaymentButtonStyle(
+    backgroundColor: const Color(0xFF0B5FFF),
+    foregroundColor: Colors.white,
+    borderRadius: BorderRadius.circular(24),
+  ),
+  onPressed: pay,
+);
+```
+
+### Supported properties and states
+
+Resolution: semantic defaults for `variant`/`size` → theme `style` → theme variant entry → instance `style`. A null field retains the preceding value. Nested themes replace the extension; derive from the parent with `copyWith` to preserve its button settings.
+
+Kit slots that lay a button out at hug width (button group, banner actions, view and page module footers, action bar) keep its instance `style`. A button group that collapses into a menu shows menu rows instead, which use menu styling.
+
+During theme transitions, concrete override pairs interpolate. An override present at only one endpoint switches at the midpoint: null still means inherit, rather than a transparent color or zero radius. Ignored text paint and inheritance fields are removed before interpolation.
+
+| Property | Effect |
+| --- | --- |
+| `backgroundColor` | Enabled fill, including secondary/quiet when supplied. |
+| `foregroundColor` | Enabled label, icon, busy indicator and derived pressed/hover state layers. |
+| `borderColor` | Enabled secondary outline; ignored by other variants. |
+| `borderRadius` | Button shape and matching keyboard focus ring. |
+| `textStyle` | Typography merged over the heading role. Color, paint, background, shadows, decoration and `inherit` are ignored. |
+
+Size, padding, hit target, density, alignment, icon size, elevation, focus color, state-specific colors and animation are kit-owned. Use `size` and `width` for supported geometry. There is no unrestricted Flutter `ButtonStyle` pass-through or custom-content builder.
+
+Disabled buttons use kit `disabled` / `surfaceMuted` tokens, ignoring custom enabled colors. Quiet buttons with no custom fill remain unfilled; a custom quiet fill becomes `surfaceMuted` when disabled. Busy buttons retain the label's layout and use the current state's foreground for the spinner, including disabled+busy. Keyboard focus stays neutral and follows the custom radius. Reduced motion and repeat-press protection are unchanged.
+
+The host verifies custom foreground/background pairs and outlines in light/dark and all relevant interaction states. Keep text size and line height positive and check long labels at 200% text. Repeated overrides belong in the app or feature theme, or a named host preset, rather than inline at every call site.
+
+<Screen name="android_catalog_button_customization_variants" dark="android_catalog_button_customization_variants_dark" alt="Scoped pill button theme with custom colors, secondary, disabled and busy states, and a rectangular instance override." caption="Button-family theme and instance style" />
+
 ## States
 
 Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
@@ -213,7 +374,7 @@ H04 sign-in/KYC; report A02; settings A05. Real composition: `example/lib/screen
 
 ## API
 
-<Props names={["PaymentButton", "PaymentButtonVariant", "PaymentSize", "PaymentWidth"]} />
+<Props names={["PaymentButton", "PaymentButtonStyle", "PaymentButtonTheme", "PaymentButtonVariant", "PaymentSize", "PaymentWidth"]} />
 
 ## See also
 

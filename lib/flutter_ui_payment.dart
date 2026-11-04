@@ -8,6 +8,9 @@
 /// results, and it makes no network calls.
 library;
 
+export 'src/foundation/button_style.dart';
+export 'src/foundation/field_style.dart' show PaymentFieldTheme;
+
 export 'src/charts/chart_models.dart';
 export 'src/charts/charts.dart';
 export 'src/controls/controls.dart';

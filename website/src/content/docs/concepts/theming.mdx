@@ -11,6 +11,12 @@ Every widget takes its colors, radius, spacing and amount style from `PaymentThe
 
 ## Follow your scheme, then adjust
 
+Buttons also support a dedicated `PaymentButtonTheme` and per-instance `PaymentButtonStyle`. See [Button customization](/components/button/#customization) for precedence, supported properties and preserved states; these overrides do not change other component families.
+
+Fields (text, search, text area, select, date, date range and currency) have a dedicated `PaymentFieldTheme` for fill, resting outline, corners and input typography, with no per-field style. See [Text field customization](/components/text-field/#customization).
+
+Every other family reads the shared theme, so a scoped `PaymentTheme` restyles it, toasts included (D103). The example app's host checkout shows two different checkout layouts sharing one product button and field theme and one named pay preset.
+
 ```dart
 final scheme = ColorScheme.fromSeed(seedColor: brandColor);
 
@@ -111,12 +117,42 @@ The full token reference, with swatches and values, is in Foundations: [Color](/
 - **`outline`** is the decorative hairline: dividers, the method-group edge, the action-bar top. It may sit below 3:1.
 - **`border`** is the edge of a control (inputs, secondary buttons, unselected checkboxes) and must reach 3:1 against `surface`. It defaults to `textSecondary` a quarter of the way to `surface`.
 - **`disabled`** is the label and icon color of a disabled control on `surfaceMuted`.
-- **`radius`** is the corner radius of selectable boxes such as the method list. Buttons and inputs use three quarters of it.
+- **`radius`** is the corner radius of selectable boxes such as the method list, and the base of the other corner roles: tags use half of it, controls three quarters, sheets one and a half. To change one role on its own, see [Corner roles](#corner-roles).
 - **`spacing`** is the base unit (default 8). Layouts use multiples by role: inline 4, related 8, block 12, group 16, section 24, major 32.
 - **`amountWeight`** and **`amountFontFamily`** style money. Amounts use tabular figures.
 - **`referenceFontFamily`** is for things people copy or compare digit by digit: virtual account numbers, transaction IDs, promo codes. It defaults to the platform monospace.
 
 The package bundles no fonts. Use your app's text theme for everything else.
+
+## Corner roles
+
+<Screens><Screen name="android_catalog_theme_shape_roles_variants" dark="android_catalog_theme_shape_roles_variants_dark" alt="Default corners beside a product theme with square boxes, pill badges, unchanged controls and rounder sheets." caption="Independent corner roles" /></Screens>
+
+Most brands only set `radius`, and every corner follows it. When one role needs its own shape, set it on the theme once. Here boxes are square, tags are pills, sheets are rounder and controls keep their default 6:
+
+```dart
+PaymentTheme.fromColorScheme(scheme).copyWith(
+  radius: 0, // boxes such as the method list
+  tagRadius: 999, // badges and tags
+  controlRadius: 6, // buttons, inputs, notices, menus
+  sheetRadius: 20, // sheet tops and dialogs
+);
+```
+
+Leave a role unset and it keeps its multiple of `radius`: tag 0.5, control 0.75, sheet 1.5. Zero gives square corners; values must be finite and not negative. Components read the roles through the theme, so call sites need no style. A light/dark switch animates from the corner each theme draws, including a derived one.
+
+`copyWith` keeps a role once set; passing null does not reset it. Build a new `PaymentTheme` to go back to the derived value. To change only buttons, use [`PaymentButtonTheme`](/components/button/#customization) instead; to change only fields, use [`PaymentFieldTheme`](/components/text-field/#customization).
+
+## Host compositions
+
+The example's `compositions/host_checkout.dart` uses one host model and callback set for these two arrangements. `ProductLooks` installs reusable Button and Field themes while preserving other extensions; `payActionStyle(context)` resolves a shared host preset from current tokens. Everyday controls use those defaults. The invoice stacks method choice and receipt details; the wallet review groups balance and review content and ends with an action bar.
+
+<Screens>
+  <Screen name="android_catalog_host_checkout_invoice_variants" dark="android_catalog_host_checkout_invoice_variants_dark" alt="Invoice checkout with merchant, visible fees, payment methods, receipt email and a pill pay action." caption="Invoice checkout" />
+  <Screen name="android_catalog_host_checkout_wallet_variants" dark="android_catalog_host_checkout_wallet_variants_dark" alt="Wallet checkout with balance, method action, receipt email, fee summary and a pay action bar using the same product theme." caption="Wallet review" />
+</Screens>
+
+These are editable host examples. Routing, quotes, payment effects and eligibility remain host-owned; the kit supplies the controls and presentation contracts.
 
 ## API
 

@@ -1,9 +1,13 @@
 # PRD: Flutter UI Payment
 
 Tanggal: 30 Oktober 2026  
-Status: keputusan produk untuk implementasi; belum menjadi aplikasi atau package yang berjalan.  
-Pusat proyek: `~/WebApps/flutter-ui-payment`  
+Status: PRD produk; package versi `0.1.0` dapat dipasang dari repository ini, belum dipublikasikan ke pub.dev. Status ini bukan klaim semua gate v0.1 selesai.
+
+Pusat proyek: repository ini (`.`)
+
 Nama package sementara: `flutter_ui_payment`; ketersediaan nama belum diperiksa.
+
+Navigasi dokumentasi: [peta dokumen](docs/README.md), [panduan harian design system](docs/design-system.md), dan [spesifikasi fondasi serta register keputusan §8](docs/prd-foundation-components.md#8-decisions). Dokumen ini tetap menjadi kontrak scope, cerita pengguna, dan penerimaan produk.
 
 ## 1. Ringkasan dan janji produk
 

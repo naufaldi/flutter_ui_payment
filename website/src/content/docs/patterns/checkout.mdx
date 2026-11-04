@@ -113,6 +113,25 @@ Inside a `ListView` or `SingleChildScrollView` the height is unbounded, and the 
 - For free-form amounts, such as a top-up, use [`PaymentCurrencyField`](/components/currency-field/).
 - `BalanceCard` never compares the balance with the total, and `PromoCodeInput` never computes a discount. A discount reaches the price only as a new host quote with a `QuoteLineKind.discount` line.
 
+## Connected host example
+
+`example/lib/compositions/host_checkout_journey.dart` connects `InvoiceCheckout` from `host_checkout.dart` to `HostPaymentRecovery` from `host_payment_recovery.dart`. Copy those three source files into your host and adapt the callbacks. They use the Flutter SDK and this package, with no `DemoCoordinator`, router dependency or additional runtime layer. The screen expects bounded height, for example a `Scaffold.body`, so review, status and receipt keep their priority action pinned.
+
+Try **Host checkout journey** in **Gallery → Checkout**. **Lost response** submits one synthetic attempt, shows an unknown outcome, then checks that same attempt and loads its matching receipt after a succeeded snapshot. **Pending then offline** first returns a pending snapshot; the first check fails and retains that snapshot, and the next check confirms success. Done resets this fixture. The scenario selector is developer tooling, not a customer recovery action.
+
+<Screens>
+  <Screen name="android_catalog_host_journey_checkout_variants" dark="android_catalog_host_journey_checkout_variants_dark" alt="Connected host checkout shows merchant, item and service fee, selected wallet, and a pinned Pay action." caption="Review" />
+  <Screen name="android_catalog_host_journey_unknown_variants" dark="android_catalog_host_journey_unknown_variants_dark" alt="The submitted attempt has an unknown result, says not to pay again, and offers Check status for the same reference." caption="Lost response" />
+  <Screen name="android_catalog_host_journey_offline_variants" dark="android_catalog_host_journey_offline_variants_dark" alt="A failed refresh retains the last-known pending payment and its reference with Check status still available." caption="Offline refresh" />
+  <Screen name="android_catalog_host_journey_receipt_variants" dark="android_catalog_host_journey_receipt_variants_dark" alt="The host-confirmed receipt shows the same total, visible fee, masked wallet method, transaction ID and pinned Done." caption="Confirmed receipt" />
+</Screens>
+
+The host passes a current quote already priced for the selected available method. Review blocks an expired quote, a mismatched/unavailable selection, or a balance method without a sufficient host verdict; the submit callback must still enforce price, eligibility and authorization on the authoritative side. This sample's wallet fixture requires no challenge. A host requiring one must finish it before exposing this send step, using the existing confirmation/authorization patterns; cancellation stays in that host step and must not be encoded as a null submit response. Changing terms after authorization requires host re-approval and re-authorization. Changing method must request a fresh quote in the host before allowing submission.
+
+`newAttemptId` creates one identity before `onSubmit`. Persist it in the host before sending. A null response or transport exception preserves it as unknown; no automatic new attempt is created. `onCheckStatus` reconciles through `PaymentAttempt.reconcile`, ignoring wrong identities, changed references and stale revisions. It never submits. Return callback futures so the screen and kit controls retain repeat protection. Failed receipt loading stays on succeeded status with a safe message and View receipt retry.
+
+`order.reference` identifies the host session. Replacing it invalidates outstanding callbacks, so a response from the previous order cannot populate the next one. The amount shown after submission comes from the submitted order, even when the host rebuilds with another quote. Do not use a quote refresh to change the order reference or clear an unresolved attempt. This example stores presentation state only while mounted: persistence, resume after process death, full receipt validation, credentials and platform sharing/clipboard implementations remain host responsibilities. Use the separate [recovery composition](/patterns/status-receipt/#copyable-host-composition) to render a restored host attempt.
+
 ## API
 
 <Props names={['PaymentSummary', 'PaymentMethodPicker', 'PaymentConfirmation', 'AuthorizationPrompt', 'AuthorizationPhase', 'PaymentActionBar', 'MerchantHeader', 'PaymentStepIndicator', 'BalanceCard', 'BalanceState', 'PromoCodeInput', 'PromoCodeStatus', 'PaymentQuote', 'QuoteLine', 'QuoteLineKind', 'PaymentMethod', 'PaymentMethodKind']} />

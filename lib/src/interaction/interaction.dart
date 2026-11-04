@@ -950,6 +950,10 @@ class _ToastState {
 /// The newest toast wins: showing one replaces the kit toast on screen and
 /// drops any kit toast still waiting (D77). When reduced motion changes, the
 /// whole snack bar queue is cleared first, host snack bars included (D78).
+/// The toast takes its look from the themes around [context]: themes scoped
+/// below the [ScaffoldMessenger] are captured once when it shows, and app
+/// themes above the messenger stay live only where no captured theme shadows
+/// them; a captured Material Theme freezes its full ThemeData (D103).
 PaymentToastController showPaymentToast(
   BuildContext context, {
   required String message,
@@ -1051,6 +1055,13 @@ PaymentToastController _showToast(
   // scaffold's own placement, read once, when the toast shows.
   final gap = theme.space(PaymentSpace.group);
   final lift = PinnedFooterRegistry.lift(messenger);
+  // D103: the pill follows the themes where the toast was shown, like the
+  // sheets. The messenger renders it outside any feature-scoped Theme, so the
+  // themes between the caller and the messenger are captured once here. App
+  // themes above the messenger stay live unless the captured ThemeData
+  // shadows them, including any app values copied into that scope.
+  final themes = InheritedTheme.capture(from: context, to: messenger.context);
+  final callerMaterialTheme = _themeBetween(context, messenger.context);
   controller._feature = messenger.showSnackBar(
     SnackBar(
       behavior: SnackBarBehavior.floating,
@@ -1062,10 +1073,13 @@ PaymentToastController _showToast(
       margin: EdgeInsets.fromLTRB(gap, 0, gap, gap + lift),
       padding: EdgeInsets.zero,
       onVisible: controller._onVisible,
-      content: _ToastContent(
-        controller: controller,
-        actionLabel: actionLabel,
-        onAction: onAction,
+      content: themes.wrap(
+        _ToastContent(
+          controller: controller,
+          callerMaterialTheme: callerMaterialTheme,
+          actionLabel: actionLabel,
+          onAction: onAction,
+        ),
       ),
     ),
     snackBarAnimationStyle: motion.reduced
@@ -1080,15 +1094,34 @@ PaymentToastController _showToast(
   return controller;
 }
 
+// Whether a Material [Theme] sits between [from] and its messenger [to]. Its
+// capture then replaces SnackBar's inverted Material 2 theme in the content.
+bool _themeBetween(BuildContext from, BuildContext to) {
+  var found = false;
+  from.visitAncestorElements((element) {
+    if (element == to) return false;
+    if (element.widget is Theme) {
+      found = true;
+      return false;
+    }
+    return true;
+  });
+  return found;
+}
+
 class _ToastContent extends StatefulWidget {
   const _ToastContent({
     required this.controller,
+    required this.callerMaterialTheme,
     this.actionLabel,
     this.onAction,
   });
   final PaymentToastController controller;
   final String? actionLabel;
   final VoidCallback? onAction;
+
+  // The caller's uninverted Material theme was captured (D103).
+  final bool callerMaterialTheme;
   @override
   State<_ToastContent> createState() => _ToastContentState();
 }
@@ -1188,7 +1221,11 @@ class _ToastContentState extends State<_ToastContent>
                       snackBarTheme.closeIconColor ??
                       (materialTheme.useMaterial3
                           ? materialTheme.colorScheme.onInverseSurface
-                          // SnackBar has already inverted the M2 theme.
+                          // The SDK's M2 default is the uninverted
+                          // onSurface: SnackBar's inverted surface, or a
+                          // captured caller theme's own onSurface.
+                          : widget.callerMaterialTheme
+                          ? materialTheme.colorScheme.onSurface
                           : materialTheme.colorScheme.surface),
                   tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                   constraints: const BoxConstraints(

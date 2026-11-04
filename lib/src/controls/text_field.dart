@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/semantics.dart';
 import '../foundation/field_decoration.dart';
+import '../foundation/field_style.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';
@@ -293,6 +294,7 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
+    final inputStyle = FieldAppearance.of(context).input;
     final l10n = PaymentLocalizations.of(context);
     final enabled =
         widget.enabled && !(FieldGroupScope.of(context)?.disabled ?? false);
@@ -388,10 +390,10 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
                   : null),
           style:
               (widget.reference
-                      ? type.input.reference(theme)
+                      ? inputStyle.reference(theme)
                       : tabular
-                      ? type.input.tabular
-                      : type.input)
+                      ? inputStyle.tabular
+                      : inputStyle)
                   .copyWith(
                     color: enabled ? theme.textPrimary : theme.disabled,
                   ),
@@ -463,7 +465,7 @@ class _PaymentTextFieldState extends State<PaymentTextField> {
                           label,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: type.input.copyWith(
+                          style: inputStyle.copyWith(
                             color: theme.textSecondary,
                           ),
                         ),

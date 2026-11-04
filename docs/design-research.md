@@ -1,5 +1,7 @@
 # Design research and art direction
 
+> **Research reference.** [§0](#0-current-direction-stripe-calm) records the chosen Stripe-calm direction; earlier alternatives and proposals remain historical evidence. Use the [daily guide](design-system.md) for active rules and the [site summary](https://flutter-ui-payment.netlify.app/reference/design-decisions/) for the documented visual direction. Research proposals are not a shipped API inventory.
+
 Date: 30 October 2026. Phase: research only. No production component, gallery or website code was changed.
 
 **Verdict.** The components behave correctly, but they look like stock Material 3. Every section is a large rounded card. Teal tonal pills and tinted icon circles appear on every screen, and the end-user UI and the developer gallery share one visual voice. None of that comes from the payment task. The recommended direction is **Statement**: a flat ruled ledger, a monospace face for money and references, and a status band whose *pattern* (not only its color) separates "pending" from "unknown". It is the furthest of the three options from default Material, and it makes the critical state hardest to misread.

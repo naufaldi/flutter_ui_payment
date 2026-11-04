@@ -13,4 +13,5 @@ PaymentButton hugButton(PaymentButton b, {PaymentSize? size}) => PaymentButton(
   busy: b.busy,
   busyLabel: b.busyLabel,
   icon: b.icon,
+  style: b.style,
 );

@@ -2,6 +2,7 @@ import '../forms/select.dart';
 import '../foundation/kit_strings.dart';
 import '../foundation/action_frame.dart';
 import '../foundation/field_decoration.dart';
+import '../foundation/field_style.dart';
 import '../foundation/first_line.dart';
 import 'dart:async';
 
@@ -185,13 +186,20 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
     ].join(' · ');
     // The entered amount is a large amount, so it follows text scaling only
     // up to 1.6×, like the other 20 px amounts. Its line matches the text
-    // field's input line, so both fields are the same height (#47).
+    // field's input line (#47), but a smaller themed input must not shrink
+    // the viewport below the default line and clip the unchanged amount font.
     final amountSize = MediaQuery.textScalerOf(
       context,
     ).clamp(maxScaleFactor: 1.6).scale(type.amountLarge.fontSize!);
     final amountStyle = type.amountLarge.copyWith(
-      height: lineHeightOf(context, type.input) / amountSize,
+      height:
+          lineHeightOf(
+            context,
+            FieldAppearance.of(context).input,
+          ).clamp(lineHeightOf(context, type.input), double.infinity) /
+          amountSize,
     );
+    final enabled = !(FieldGroupScope.of(context)?.disabled ?? false);
     final label = widget.label ?? l10n.amountLabel;
     final hideLabel = widget.hiddenElements.contains(PaymentFieldPart.label);
     // At large text the label sits above the box at full scale, outside the
@@ -200,7 +208,7 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
     final input = MediaQuery.withClampedTextScaling(
       maxScaleFactor: 1.6,
       child: TextField(
-        enabled: !(FieldGroupScope.of(context)?.disabled ?? false),
+        enabled: enabled,
         controller: _controller,
         focusNode: _focus,
         onChanged: _onChanged,
@@ -216,6 +224,7 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
         decoration:
             paymentFieldDecoration(
               context,
+              enabled: enabled,
               label: label,
               hideLabel: hideLabel,
               labelAbove: above,

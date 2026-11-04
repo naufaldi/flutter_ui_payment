@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter_ui_payment_example/coordinator/demo_coordinator.dart';
 import 'package:flutter_ui_payment_example/main.dart';
+import 'package:flutter_ui_payment_example/compositions/host_checkout_journey.dart';
 import 'package:integration_test/integration_test.dart';
 
 import 'support.dart';
@@ -205,6 +206,7 @@ void main() {
         'Layout': 'Tata letak',
         'Charts': 'Grafik',
         'Views & pages': 'Tampilan & halaman',
+        'Checkout': 'Checkout',
       };
       // Opens a sheet from the first [target] inside the keyed specimen.
       Future<void> openFrom(String key, Finder target) async {
@@ -268,6 +270,12 @@ void main() {
             ),
             'amount_text': ('Foundation', 'AmountText', null, null),
             'spacing_roles': ('Foundation', 'PaymentSpace', null, null),
+            'theme_shape_roles': (
+              'Foundation',
+              'PaymentTheme · shape roles',
+              null,
+              null,
+            ),
             'badge': ('Feedback', 'PaymentBadge', null, null),
             'spinner': ('Feedback', 'PaymentSpinner', null, null),
             'step_indicator': (
@@ -400,6 +408,121 @@ void main() {
               },
             ),
             'button_group': ('Content', 'PaymentButtonGroup', null, null),
+            'field_customization': (
+              'Controls',
+              'PaymentTextField · customization',
+              null,
+              null,
+            ),
+            'button_customization': (
+              'Controls',
+              'PaymentButton · customization',
+              null,
+              null,
+            ),
+            // D98 host adoption: two layouts, one host model and look.
+            'host_checkout_invoice': (
+              'Checkout',
+              'Host checkout · invoice',
+              null,
+              null,
+            ),
+            'host_checkout_wallet': (
+              'Checkout',
+              'Host checkout · wallet review',
+              null,
+              null,
+            ),
+            'host_journey_checkout': (
+              'Checkout',
+              'Host checkout journey',
+              (_) async {
+                await tester.tap(find.text('Lost response'));
+              },
+              null,
+            ),
+            'host_journey_unknown': (
+              'Checkout',
+              'Host checkout journey',
+              (_) async {
+                await tester.tap(find.text('Lost response'));
+                await settle(tester);
+                await tester.tap(
+                  find
+                      .descendant(
+                        of: find.byType(HostCheckoutJourney),
+                        matching: find.byType(FilledButton),
+                      )
+                      .first,
+                );
+                await settle(tester);
+              },
+              null,
+            ),
+            'host_journey_offline': (
+              'Checkout',
+              'Host checkout journey',
+              (id) async {
+                await tester.tap(find.text('Pending then offline'));
+                await settle(tester);
+                await tester.tap(
+                  find
+                      .descendant(
+                        of: find.byType(HostCheckoutJourney),
+                        matching: find.byType(FilledButton),
+                      )
+                      .first,
+                );
+                await settle(tester);
+                await tester.tap(find.text(id ? 'Cek status' : 'Check status'));
+                await settle(tester);
+              },
+              null,
+            ),
+            'host_journey_receipt': (
+              'Checkout',
+              'Host checkout journey',
+              (id) async {
+                await tester.tap(find.text('Lost response'));
+                await settle(tester);
+                await tester.tap(
+                  find
+                      .descendant(
+                        of: find.byType(HostCheckoutJourney),
+                        matching: find.byType(FilledButton),
+                      )
+                      .first,
+                );
+                await settle(tester);
+                await tester.tap(find.text(id ? 'Cek status' : 'Check status'));
+                await settle(tester);
+              },
+              null,
+            ),
+            'host_recovery_unknown': (
+              'Status & receipt',
+              'Host payment recovery',
+              (_) async {
+                await tester.tap(find.text('Unknown'));
+              },
+              null,
+            ),
+            'host_recovery_offline': (
+              'Status & receipt',
+              'Host payment recovery',
+              (_) async {
+                await tester.tap(find.text('Offline pending'));
+              },
+              null,
+            ),
+            'host_recovery_receipt': (
+              'Status & receipt',
+              'Host payment recovery',
+              (_) async {
+                await tester.tap(find.text('Receipt').last);
+              },
+              null,
+            ),
             // Focus on the medium Edit, as the full session shoots it.
             'button': (
               'Controls',

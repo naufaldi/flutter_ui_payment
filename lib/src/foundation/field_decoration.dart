@@ -6,6 +6,7 @@ import 'payment_type.dart';
 import 'payment_tokens.dart';
 import 'payment_icons.dart';
 import 'token_resolvers.dart';
+import 'field_style.dart';
 
 /// Internal shared subtext: optional tone icon and words.
 class FieldMessage extends StatelessWidget {
@@ -119,18 +120,20 @@ InputDecoration paymentFieldDecoration(
 }) {
   final theme = PaymentTheme.of(context);
   final type = PaymentType.of(context);
+  final look = FieldAppearance.of(context);
   OutlineInputBorder edge(Color color, [double width = 1]) =>
       OutlineInputBorder(
-        borderRadius: theme.controlBorderRadius,
+        borderRadius: look.borderRadius,
         borderSide: BorderSide(color: color, width: width),
       );
+  final fill = look.fill(enabled: enabled);
   return InputDecoration(
     labelText: hideLabel || labelAbove ? null : label,
     hintText: hint,
     labelStyle: type.label.copyWith(
       color: enabled ? theme.textSecondary : theme.disabled,
     ),
-    hintStyle: type.input.copyWith(color: theme.textSecondary),
+    hintStyle: look.input.copyWith(color: theme.textSecondary),
     helper: helper,
     contentPadding: contentPadding,
     prefixText: prefixText,
@@ -139,8 +142,11 @@ InputDecoration paymentFieldDecoration(
     suffixIcon: suffixIcon,
     helperMaxLines: 4,
     errorMaxLines: 3,
-    border: edge(theme.border),
-    enabledBorder: edge(theme.border),
+    // Null keeps any host InputDecorationTheme fill, as before.
+    filled: fill == null ? null : true,
+    fillColor: fill,
+    border: edge(look.borderColor),
+    enabledBorder: edge(look.borderColor),
     focusedBorder: edge(theme.accent, 2),
     errorBorder: edge(theme.danger.foreground),
     focusedErrorBorder: edge(theme.danger.foreground, 2),

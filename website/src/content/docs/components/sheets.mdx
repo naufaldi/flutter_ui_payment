@@ -45,6 +45,7 @@ Variants: bottom sheet, side sheet. Nothing else exists.
 - The header's **Close** only closes the panel. Cancelling a payment is a separate footer action, behind `showPaymentConfirmDialog`, and your host decides the result. The payment stays pending until then.
 - `showPaymentSheet` sizes the sheet to its content, up to the full height. Swipe down, the scrim, Back and Escape dismiss it while `isDismissible` is true.
 - `showPaymentSideSheet` takes the same `PaymentSheet`, which then fills the height so the footer sits at the bottom. The scrim, Back and Escape close it, and focus returns to whatever opened it.
+- Both presenters keep the theme around the code that opens them: a `PaymentTheme` or `PaymentButtonTheme` scoped to one feature also styles that feature's sheet surface and buttons.
 - Pass `isDismissible: false` / `barrierDismissible: false` while a host call that must finish is running.
 - Sheets open in 280 ms and close in 200 ms on the drawer curve; zero under reduced motion.
 - The header's title centres its first line on the 48 dp close button at every text scale. The header keeps that height while `onClose` is null, so hiding Close during a host call does not move the title.

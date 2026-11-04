@@ -18,6 +18,7 @@ import 'token_resolvers.dart';
 import 'tap_target.dart';
 import 'first_line.dart';
 import 'button_copy.dart';
+import 'button_style.dart';
 import 'section_layout.dart';
 
 /// The five amount looks. Nothing else exists.
@@ -332,6 +333,7 @@ class PaymentButton extends StatefulWidget {
     this.busy = false,
     this.busyLabel,
     this.icon,
+    this.style,
   });
 
   /// Host focus node, for example for menu focus return.
@@ -366,6 +368,10 @@ class PaymentButton extends StatefulWidget {
   /// Optional leading icon in the label color.
   final IconData? icon;
 
+  /// Appearance after token and button-family defaults; see [PaymentButtonStyle].
+  /// Disabled colors, focus, sizing and motion remain kit-owned.
+  final PaymentButtonStyle? style;
+
   @override
   State<PaymentButton> createState() => _PaymentButtonState();
 }
@@ -395,11 +401,48 @@ class _PaymentButtonState extends State<PaymentButton> {
     final l10n = PaymentLocalizations.of(context);
     final enabled = widget.onPressed != null;
     final motion = PaymentMotion.of(context);
-    final foreground = switch (widget.variant) {
+    final defaultForeground = switch (widget.variant) {
       PaymentButtonVariant.primary => theme.onAccent,
       PaymentButtonVariant.destructive => theme.surface,
       _ => theme.accent,
     };
+    final buttonTheme = Theme.of(context).extension<PaymentButtonTheme>();
+    final variantStyle = switch (widget.variant) {
+      PaymentButtonVariant.primary => buttonTheme?.primary,
+      PaymentButtonVariant.secondary => buttonTheme?.secondary,
+      PaymentButtonVariant.quiet => buttonTheme?.quiet,
+      PaymentButtonVariant.destructive => buttonTheme?.destructive,
+    };
+    final appearance = PaymentButtonStyle(
+      backgroundColor: switch (widget.variant) {
+        PaymentButtonVariant.primary => theme.accent,
+        PaymentButtonVariant.destructive => theme.danger.foreground,
+        _ => null,
+      },
+      foregroundColor: defaultForeground,
+      borderColor: theme.border,
+      borderRadius: theme.controlBorderRadius,
+    ).merge(buttonTheme?.style).merge(variantStyle).merge(widget.style);
+    final foreground = enabled ? appearance.foregroundColor! : theme.disabled;
+    final customType = appearance.textStyle;
+    final label = customType == null
+        ? type.heading
+        : type.heading.merge(
+            TextStyle(
+              fontFamily: customType.fontFamily,
+              fontFamilyFallback: customType.fontFamilyFallback,
+              fontSize: customType.fontSize,
+              fontWeight: customType.fontWeight,
+              fontStyle: customType.fontStyle,
+              letterSpacing: customType.letterSpacing,
+              wordSpacing: customType.wordSpacing,
+              textBaseline: customType.textBaseline,
+              height: customType.height,
+              leadingDistribution: customType.leadingDistribution,
+              fontFeatures: customType.fontFeatures,
+              fontVariations: customType.fontVariations,
+            ),
+          );
     final m = MediaQuery.textScalerOf(context).scale(14) / 14;
     final metrics = switch (widget.size) {
       PaymentSize.small => (
@@ -515,14 +558,13 @@ class _PaymentButtonState extends State<PaymentButton> {
         ),
       ],
     );
-    final radius = theme.controlBorderRadius;
+    final radius = appearance.borderRadius!;
     final shape = RoundedRectangleBorder(borderRadius: radius);
     final minimumSize = Size(
       widget.width == PaymentWidth.hug ? 112 : 48,
       metrics.height,
     );
     // The heading role carries the host font; a const style would not.
-    final label = type.heading;
     final onPressed = enabled ? _handle : null;
     final button = switch (widget.variant) {
       PaymentButtonVariant.primary => FilledButton(
@@ -531,8 +573,8 @@ class _PaymentButtonState extends State<PaymentButton> {
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
           FilledButton.styleFrom(
-            backgroundColor: theme.accent,
-            foregroundColor: theme.onAccent,
+            backgroundColor: appearance.backgroundColor,
+            foregroundColor: appearance.foregroundColor,
             disabledBackgroundColor: theme.surfaceMuted,
             disabledForegroundColor: theme.disabled,
             minimumSize: minimumSize,
@@ -553,8 +595,8 @@ class _PaymentButtonState extends State<PaymentButton> {
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
           FilledButton.styleFrom(
-            backgroundColor: theme.danger.foreground,
-            foregroundColor: theme.surface,
+            backgroundColor: appearance.backgroundColor,
+            foregroundColor: appearance.foregroundColor,
             disabledBackgroundColor: theme.surfaceMuted,
             disabledForegroundColor: theme.disabled,
             minimumSize: minimumSize,
@@ -573,7 +615,8 @@ class _PaymentButtonState extends State<PaymentButton> {
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
           OutlinedButton.styleFrom(
-            foregroundColor: theme.accent,
+            backgroundColor: appearance.backgroundColor,
+            foregroundColor: appearance.foregroundColor,
             disabledBackgroundColor: theme.surfaceMuted,
             disabledForegroundColor: theme.disabled,
             minimumSize: minimumSize,
@@ -587,7 +630,7 @@ class _PaymentButtonState extends State<PaymentButton> {
               (states) => BorderSide(
                 color: states.contains(WidgetState.disabled)
                     ? theme.disabled
-                    : theme.border,
+                    : appearance.borderColor!,
               ),
             ),
           ),
@@ -600,7 +643,11 @@ class _PaymentButtonState extends State<PaymentButton> {
         onPressed: onPressed,
         style: PaymentFocusRing.withoutFocusFill(
           TextButton.styleFrom(
-            foregroundColor: theme.accent,
+            backgroundColor: appearance.backgroundColor,
+            disabledBackgroundColor: appearance.backgroundColor == null
+                ? null
+                : theme.surfaceMuted,
+            foregroundColor: appearance.foregroundColor,
             disabledForegroundColor: theme.disabled,
             minimumSize: onEdge ? Size(48, metrics.height) : minimumSize,
             padding: onEdge ? edgePadding : metrics.padding,

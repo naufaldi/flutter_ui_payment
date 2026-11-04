@@ -80,6 +80,81 @@ Choose the type by what the value means:
 | A phone number, destination URL or email | `tel`, `url` or `email` |
 | Any other non-secret single-line value | `text` |
 
+## Customization
+
+<Screens><Screen name="android_catalog_field_customization_variants" dark="android_catalog_field_customization_variants_dark" alt="Rounded filled fields share input typography while error and disabled states retain their meaning; the button keeps its own theme." caption="Field theme" /></Screens>
+
+`PaymentFieldTheme` is a Flutter theme extension for the field family: fill, resting outline color, corners and input typography (D102). It applies to text, search, text-area, select, date, date-range field and currency fields, and to fields composed from them, such as the promo code input and identity form. Buttons, cards, sheets, chips, checkboxes, radios, switches and option lists keep their own styling. This page is the canonical guide for every field.
+
+Fields have no per-instance `style` parameter. Adopt in this order:
+
+1. **Product default:** configure `PaymentTheme` and `PaymentFieldTheme` once in the app theme. Field call sites stay semantic.
+2. **Feature theme:** a scoped `Theme` for one subtree, such as a checkout form.
+3. **Host preset:** a named host function that returns a `PaymentFieldTheme` for a look repeated on several screens. Presets are host code, not kit API.
+4. **One-off:** wrap the single field in a scoped `Theme`. There is no inline field override.
+
+Radius alone often needs no field theme: `PaymentTheme.controlRadius` (D101) changes inputs together with the other control-radius surfaces. Use `PaymentFieldTheme.borderRadius` when only fields should change.
+
+### Product default
+
+```dart
+ThemeData paymentAppTheme(ColorScheme scheme) {
+  final payment = PaymentTheme.fromColorScheme(scheme);
+  return ThemeData(
+    colorScheme: scheme,
+    extensions: [
+      payment,
+      PaymentFieldTheme(
+        fillColor: payment.surfaceMuted,
+        borderRadius: BorderRadius.circular(payment.space(PaymentSpace.group)),
+      ),
+    ],
+  );
+}
+```
+
+### Feature theme and host preset
+
+Keep the parent's other extensions when you scope a theme. A preset takes `BuildContext` and reads the current theme, so light, dark and brand changes follow; don't freeze resolved colors in a top-level `final`.
+
+```dart
+// Host code: soft fields for the profile and payout forms.
+PaymentFieldTheme softFields(BuildContext context) {
+  final payment = PaymentTheme.of(context);
+  return PaymentFieldTheme(
+    fillColor: payment.surfaceMuted,
+    textStyle: const TextStyle(fontWeight: FontWeight.w500),
+  );
+}
+
+// Inside the feature's build method.
+final parent = Theme.of(context);
+return Theme(
+  data: parent.copyWith(extensions: [
+    ...parent.extensions.values,
+    softFields(context),
+  ]),
+  child: profileForm,
+);
+```
+
+Nested themes replace the extension. To keep the parent's field settings, start from `parent.extension<PaymentFieldTheme>()` and use `copyWith`; a null argument keeps the existing value.
+
+### Supported properties and states
+
+| Property | Effect |
+| --- | --- |
+| `fillColor` | Box fill while enabled or read-only. Unset, fields have no fill. A disabled field with a custom fill uses `surfaceMuted`. |
+| `borderColor` | Resting outline while enabled. Unset, `PaymentTheme.border`. |
+| `borderRadius` | Corners of every outline state and of the tap highlight on select and date triggers. Unset, `controlBorderRadius`. |
+| `textStyle` | Typography merged over the input role for the entered value and placeholder. Color, paint, background, shadows, decoration and `inherit` are ignored. |
+
+The kit keeps the 2 dp accent focus outline, the danger error outline, disabled colors and read-only behaviour, label, helper and error typography, content padding and sizes, prefix, suffix and clear controls, option lists and panels, motion and focus semantics. A custom font size or line height changes the text line, so the box follows the text like it does for system text size; it never drops below 48 dp. Keep both values positive. The currency field keeps the amount role for the entered amount and matches the themed input line height.
+
+During theme transitions, concrete pairs interpolate. A property set at only one end switches at the midpoint, so null still means the kit default rather than a transparent fill or square corners. Ignored text fields are removed first.
+
+The host checks contrast for a custom fill against the input text, placeholder and outline, in light and dark, and checks long values at 200% text.
+
 ## States
 
 Default uses a border edge; focus uses a 2 px accent edge. Errors show an icon, message and danger edge, 2 px when focused. Disabled fields use disabled text and edge. Read-only retains default styling. Host errors hide after edits and return when the host passes a new error; pass null between identical attempts. Form validation timing belongs to the enclosing Form.
@@ -110,7 +185,7 @@ TransactionHistory A01; IdentityForm; statement A03. Real composition: `example/
 
 ## API
 
-<Props names={["PaymentTextField", "PaymentTextFieldType", "PaymentSize", "PaymentFieldPart"]} />
+<Props names={["PaymentTextField", "PaymentTextFieldType", "PaymentSize", "PaymentFieldPart", "PaymentFieldTheme"]} />
 
 ## See also
 
