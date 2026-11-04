@@ -269,6 +269,40 @@ Each step ends with native screenshots (light and dark, id and en, 100% and 200%
 4. **Gallery.** Introduce the workbench, specimen frame, outside-the-frame state selector, mono class captions and Preview / Code. Retire the pill fixture chips.
 5. **Landing and docs.** Only after the product language is approved. Lead with a large real specimen (the unknown-state switcher from `docs/web-plan.md`) and a left-aligned promise: no pill badge, no gradient, no three-card feature grid. Docs follow the Forui IA with state anchors and a "Host owns" note per component. `docs/web-plan.md`'s visual section is superseded by this document; its IA and product answers still stand.
 
+<a id="9-showcase-themes"></a>
+
+## 9. Showcase themes: Soft (implemented, 4 Nov 2026)
+
+Status: **implemented in the example app** (D106, #151). This section replaces the planning note from PR #152 ("Showcase direction: Blocks and themes, planned, 2 Nov 2026"), which never reached `main`. What follows says what exists now, then what stays history or proposal.
+
+**Implemented.**
+
+- `DemoBrand.soft` in `example/lib/themes.dart`, beside Hairline (default) and Contrast/Lumen. It is a token change only: tinted page, white or lifted panels, indigo accent, D101 radius roles 8/12/16/20, white field fill (D102), `amountWeight` w500.
+- `SoftInsetPanel` in `example/lib/compositions/soft_inset_panel.dart`: host styling, not a kit widget. A surface panel with a 1 dp outline and the sheet corners, inset `related` from the page, with no shadow, scale or motion.
+- `lib/soft_merchant_demo.dart` runs the Merchant overview block in Soft. The gallery's brand setting offers Soft too.
+- Contrast on the tinted light page:
+
+| Pair | Ratio |
+| --- | --- |
+| Body text `#1C2133` | 14.3:1 |
+| Secondary text `#586074` | 5.6:1 |
+| Accent `#3D4AC4` | 6.3:1 |
+| Control edge `#7A8090` | 3.5:1 |
+| Status tones (fixed) | at least 5.6:1 |
+
+  In dark mode, on `#0E0F13` and the `#18191E` panel, every pair is higher.
+
+**Rules kept from the PR #152 plan.**
+
+- The shell and inset panel are host styling in `example/` only. No kit variant, brand API or new dependency.
+- Status keeps every channel (text, icon, hatch), not color alone.
+- Charts get no tone colors and no series palette API. D39 ramps and dash are enough.
+- Kit rules override generic web guidance: 48 dp targets, no press scale on full-width buttons, no optimistic payment states.
+
+**History, not current.** The PR #152 note drew on a Keitoto Studio dashboard reference: pale grey shell, white inset panel, thin borders, soft shadows and about 20 px corners. Soft keeps the shell, panel, thin borders and 20 dp sheet corners. It drops the shadows, so depth comes from fill and outline. The note's block order (Merchant overview, Checkout, Payment result, KYC) is superseded by the D105 Blocks pages.
+
+**Proposal, not implemented.** Soft captures exist only for the Merchant overview block. Other blocks and the docs catalog stay Hairline (D81 captures). Extending Soft to more blocks would be a new request.
+
 ## Open uncertainties
 
 - Font choice: IBM Plex is a recommendation from this research, not owner-approved. Any OFL sans + mono superfamily with tabular figures and good Latin coverage satisfies the constraints.

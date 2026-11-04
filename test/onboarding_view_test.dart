@@ -105,4 +105,45 @@ void main() {
     );
     expect(accordion.top - row.bottom, 16);
   });
+  testWidgets('a filled first field shows its whole floating label at rest '
+      '(#228)', (t) async {
+    await setSurface(t, const Size(360, 640));
+    await t.pumpWidget(
+      contentHost(
+        const SizedBox(
+          height: 640,
+          child: PaymentOnboardingView(
+            title: 'Your details',
+            tasks: tasks,
+            // A long form: the body scrolls, so its viewport clips.
+            child: Column(
+              children: [
+                PaymentTextField(label: 'Full name', initialValue: 'Rina'),
+                SizedBox(height: 1000),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    final label = t.renderObject<RenderBox>(find.text('Full name'));
+    final rect = label.localToGlobal(Offset.zero) & label.size;
+    // The label floats above the field's box, which starts the body.
+    final field = t.getRect(find.byType(InputDecorator));
+    expect(rect.top, lessThan(field.top));
+    RenderObject child = label;
+    for (var parent = label.parent; parent != null; parent = parent.parent) {
+      final clip = parent.describeApproximatePaintClip(child);
+      if (clip != null && parent is RenderBox) {
+        final shown = clip.shift(parent.localToGlobal(Offset.zero));
+        expect(
+          shown.intersect(rect),
+          rect,
+          reason: 'clipped by ${parent.runtimeType}',
+        );
+      }
+      child = parent;
+    }
+  });
 }

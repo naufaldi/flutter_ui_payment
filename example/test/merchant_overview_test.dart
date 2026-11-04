@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 import 'package:flutter_ui_payment_example/compositions/merchant_overview.dart';
+import 'package:flutter_ui_payment_example/compositions/soft_inset_panel.dart';
 import 'package:flutter_ui_payment_example/merchant_demo.dart';
+import 'package:flutter_ui_payment_example/themes.dart';
 
 void main() {
   testWidgets('merchant inspects unknown payments without creating a payment', (
@@ -128,6 +130,44 @@ void main() {
       200,
       scrollable: find.byType(Scrollable).first,
     );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Soft preset: the overview sits in a white panel on a tinted '
+      'page and stays usable at 320 dp and 200% text', (tester) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await tester.pumpWidget(const MerchantDemo(brand: DemoBrand.soft));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+
+    // The person sees the panel apart from the page: other fill, one outline.
+    final page = Theme.of(
+      tester.element(find.byType(Scaffold)),
+    ).scaffoldBackgroundColor;
+    final panel = tester.widget<Material>(
+      find
+          .descendant(
+            of: find.byType(SoftInsetPanel),
+            matching: find.byType(Material),
+          )
+          .first,
+    );
+    expect(panel.color, isNot(page));
+    expect((panel.shape! as RoundedRectangleBorder).side.width, 1);
+
+    // The inspection link keeps its 48 dp target and still opens the list.
+    final action = find.widgetWithText(PaymentLink, 'Periksa transaksi');
+    await tester.ensureVisible(action);
+    await tester.pumpAndSettle();
+    expect(tester.getSize(action).height, greaterThanOrEqualTo(48));
+    await tester.tap(action);
+    await tester.pumpAndSettle();
+    expect(find.text('Pembayaran belum diketahui'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

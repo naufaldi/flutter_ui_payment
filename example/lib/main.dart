@@ -386,6 +386,7 @@ Future<void> showSettingsSheet(
                 group(s.brand, settings.brand, const [
                   (DemoBrand.ruangBayar, 'Ruang Bayar'),
                   (DemoBrand.lumen, 'Lumen'),
+                  (DemoBrand.soft, 'Soft'),
                 ], (v) => update(settings.copyWith(brand: v))),
                 group(
                   s.appearance,

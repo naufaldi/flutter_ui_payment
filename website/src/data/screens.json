@@ -69,6 +69,16 @@
     "height": 1138,
     "caption": "Merchant transaction-detail sheet with amount hierarchy, hatched unknown state and safe-area return action."
   },
+  "android_block_merchant_soft": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Merchant Overview in the Soft host preset: a white inset panel with rounder corners on a tinted page, indigo accent and lighter balance."
+  },
+  "android_block_merchant_soft_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Merchant Overview in the Soft host preset in dark mode: a lifted panel on a near-black page."
+  },
   "android_block_checkout_review": {
     "width": 640,
     "height": 1095,
@@ -897,17 +907,27 @@
   "android_catalog_toast_variants": {
     "width": 640,
     "height": 1138,
-    "caption": "Toast controls with a pending balance refresh message over the gallery."
+    "caption": "Toast controls with a Reference copied success toast over the gallery."
   },
   "android_catalog_toast_variants_200": {
     "width": 640,
     "height": 1138,
-    "caption": "Toast controls with a pending balance refresh message over the gallery at 200 percent text."
+    "caption": "Toast controls with a Reference copied success toast over the gallery at 200 percent text."
   },
   "android_catalog_toast_variants_dark": {
     "width": 640,
     "height": 1138,
-    "caption": "Toast controls with a pending balance refresh message over the gallery. Dark mode."
+    "caption": "Toast controls with a Reference copied success toast over the gallery. Dark mode."
+  },
+  "android_catalog_toast_footer": {
+    "width": 640,
+    "height": 1138,
+    "caption": "A success toast floating above a page footer with its Continue action still uncovered."
+  },
+  "android_catalog_toast_footer_dark": {
+    "width": 640,
+    "height": 1138,
+    "caption": "A success toast floating above a page footer with its Continue action still uncovered. Dark mode."
   },
   "android_catalog_tooltip_tap": {
     "width": 640,
@@ -1254,7 +1274,7 @@
       },
       {
         "width": 640,
-        "height": 1395
+        "height": 1480
       }
     ]
   },
@@ -1269,7 +1289,7 @@
       },
       {
         "width": 640,
-        "height": 1395
+        "height": 1480
       }
     ]
   },
@@ -1292,7 +1312,7 @@
       },
       {
         "width": 640,
-        "height": 1489
+        "height": 1674
       }
     ]
   },
@@ -1315,7 +1335,7 @@
       },
       {
         "width": 640,
-        "height": 637
+        "height": 822
       }
     ]
   },
@@ -1986,7 +2006,13 @@
   "android_tablet_catalog_data_table_variants": {
     "width": 1280,
     "height": 1539,
-    "caption": "Settlement table with search, selection, pagination, loading rows and an empty state; later examples extend beyond the 1200 dp crop cap, English on Android tablet."
+    "caption": "Settlement table with search, selection, pagination, loading rows and an empty state; later examples extend beyond the 1200 dp crop cap, English on Android tablet.",
+    "parts": [
+      {
+        "width": 1280,
+        "height": 291
+      }
+    ]
   },
   "android_tablet_catalog_detail_page_variants": {
     "width": 1280,

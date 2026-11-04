@@ -166,6 +166,7 @@ class _ToastSpecimenState extends State<_ToastSpecimen> {
           ),
         ])
           PaymentButton(
+            key: Key('toast-${tone.name}'),
             label: label,
             size: PaymentSize.small,
             width: PaymentWidth.hug,
@@ -209,7 +210,59 @@ class _ToastSpecimenState extends State<_ToastSpecimen> {
             );
           },
         ),
+        PaymentButton(
+          key: const Key('toast-footer'),
+          label: _t(context, 'Above a footer', 'Di atas footer'),
+          size: PaymentSize.small,
+          width: PaymentWidth.hug,
+          variant: PaymentButtonVariant.secondary,
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(builder: (_) => const _ToastFooterPage()),
+          ),
+        ),
       ],
+    ),
+  );
+}
+
+/// D95: a page with the kit's pinned footer. A toast shown here floats
+/// above the footer's actions instead of covering them.
+class _ToastFooterPage extends StatelessWidget {
+  const _ToastFooterPage();
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    body: SafeArea(
+      child: PaymentFullPageView(
+        title: _t(context, 'Toast above a footer', 'Toast di atas footer'),
+        primaryAction: PaymentButton(
+          label: _t(context, 'Continue', 'Lanjutkan'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: PaymentTheme.of(context).space(PaymentSpace.block),
+          children: [
+            Text(
+              _t(
+                context,
+                'The toast keeps the footer actions reachable.',
+                'Toast tidak menutupi tombol di footer.',
+              ),
+              style: PaymentType.of(context).body,
+            ),
+            PaymentButton(
+              key: const Key('toast-footer-show'),
+              label: _t(context, 'Copy reference', 'Salin referensi'),
+              variant: PaymentButtonVariant.secondary,
+              onPressed: () => showPaymentToast(
+                context,
+                message: _t(context, 'Reference copied', 'Referensi disalin'),
+                tone: StatusTone.success,
+              ),
+            ),
+          ],
+        ),
+      ),
     ),
   );
 }

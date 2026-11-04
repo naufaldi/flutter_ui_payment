@@ -6,6 +6,7 @@ description: PaymentTheme is a ThemeExtension. Without it the kit follows your C
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
+import BlockSource from '../../../components/BlockSource.astro';
 
 Every widget takes its colors, radius, spacing and amount style from `PaymentTheme`, a `ThemeExtension`. Register it on `ThemeData.extensions`. When no extension is installed, widgets fall back to `PaymentTheme.fromColorScheme`, so the kit follows your `ColorScheme` by default and a full brand is opt-in.
 
@@ -71,7 +72,26 @@ Pass `theme: buildTheme(Brightness.light)` and `darkTheme: buildTheme(Brightness
   <Screen name="android_kit_checkout_lumen" alt="The same checkout specimens in the Lumen brand: pure black and white, heavier amounts." caption="Lumen: the same widgets, other tokens" />
 </Screens>
 
-The second brand, Lumen, is also in `example/lib/themes.dart`: pure black and white, `amountWeight: FontWeight.w700`, its own muted and outline colors. Both brands are applied from outside the package without forking it.
+The second brand, Lumen, is also in `example/lib/themes.dart`: pure black and white, `amountWeight: FontWeight.w700`, its own muted and outline colors. All three brands, Soft included, are applied from outside the package without forking it.
+
+
+## Soft: a third preset
+
+Soft (`DemoBrand.soft`, D106) shows a softer product look with the same widgets and no new API. It sets a tinted page, white or lifted panels, an indigo accent, rounder D101 radius roles (8 tags, 12 controls, 16 boxes, 20 sheets), a white field fill through `PaymentFieldTheme` and a lighter amount weight. The inset panel around the block is host layout, `SoftInsetPanel` in `example/lib/compositions/`, not a kit widget.
+
+<Screens>
+  <Screen name="android_block_merchant_soft" dark="android_block_merchant_soft_dark" alt="Merchant Overview in the Soft host preset: a white inset panel with rounder corners on a tinted page, indigo accent and lighter balance." caption="Soft: Merchant overview in a host inset panel" />
+</Screens>
+
+On the tinted light page, secondary text is 5.6:1, the accent 6.3:1, the control edge 3.5:1 and the status tones at least 5.6:1. Targets stay 48 dp and full-width buttons don't scale when pressed, whatever generic web guidance suggests. Charts keep the D39 ramps and dash; there is no series palette API. Run it from `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/soft_merchant_demo.dart
+```
+
+<BlockSource name="themes" />
+<BlockSource name="softPanel" />
+<BlockSource name="softDemo" />
 
 ## System bars on Android
 

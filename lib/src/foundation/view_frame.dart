@@ -188,7 +188,20 @@ class ViewFrame extends StatelessWidget {
                   ],
                 ),
               )
-            : SingleChildScrollView(padding: padding, child: content);
+            : head == null
+            ? SingleChildScrollView(padding: padding, child: content)
+            // The body starts flush with the scroll edge under a pinned
+            // header, so a filled field's floating label or a focus ring on
+            // the first control would be cut off at rest (#228). Let the
+            // body paint into the header's own bottom padding instead.
+            : ClipRect(
+                clipper: _HeadroomClipper(space),
+                child: SingleChildScrollView(
+                  padding: padding,
+                  clipBehavior: Clip.none,
+                  child: content,
+                ),
+              );
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -200,6 +213,22 @@ class ViewFrame extends StatelessWidget {
       },
     );
   }
+}
+
+/// Clips to the box, extended upward by [headroom].
+class _HeadroomClipper extends CustomClipper<Rect> {
+  const _HeadroomClipper(this.headroom);
+  final double headroom;
+
+  @override
+  Rect getClip(Size size) =>
+      Rect.fromLTRB(0, -headroom, size.width, size.height);
+
+  @override
+  Rect getApproximateClipRect(Size size) => getClip(size);
+
+  @override
+  bool shouldReclip(_HeadroomClipper old) => old.headroom != headroom;
 }
 
 /// Internal: a header navigation action drawn as a link with a › glyph

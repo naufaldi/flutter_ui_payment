@@ -56,6 +56,8 @@ Keep 48 dp hit areas, focus, semantics, busy/repeated-action protection, reduced
 
 Migration order: Button pilot, related family batches, then two structurally different host checkout compositions using the same foundation and host data/callbacks. Review every exported visual family; models/formatters and already-composable APIs need no artificial styling surface. Future copyable blocks are host compositions, not a required runtime layer.
 
+D106 adds Soft, a third example host preset, by tokens only: a tinted page, a host inset panel (`SoftInsetPanel`), an indigo accent and radius roles 8/12/16/20. Hairline stays the default; see [design research §9](design-research.md#9-showcase-themes).
+
 D104 connects the invoice and recovery compositions in `example/lib/compositions/host_checkout_journey.dart`. It demonstrates one attempt through lost-response/offline recovery to its matching confirmed receipt. It is host source with injected callbacks, not a package runtime; persistence, price/auth checks and effects stay with the host. See the Checkout pattern documentation for adoption and session identity.
 
 Full contract and acceptance: [D98 in §2](prd-foundation-components.md#customization-and-composition-contract-d98). Do not invent API names for this migration.

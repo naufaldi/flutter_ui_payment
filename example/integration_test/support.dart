@@ -25,7 +25,7 @@ Finder galleryList() => find.byWidgetPredicate(
 /// The gallery's own sidebar: in the drawer on phones, beside the body on
 /// wide layouts. Kit specimens render NavSidebars of their own in the page
 /// list, so skip anything inside it (#189).
-Finder gallerySidebar() => _outsideGallery((w) => w is NavSidebar);
+Finder gallerySidebar() => _outsideGallery((w) => w is NavSidebar).first;
 
 Finder _outsideGallery(bool Function(Widget) matches) =>
     find.byElementPredicate((element) {
@@ -38,7 +38,7 @@ Finder _outsideGallery(bool Function(Widget) matches) =>
         return !inGallery;
       });
       return !inGallery;
-    }).first;
+    });
 
 /// Opens a gallery page by its [label] from the app's own navigation.
 Future<void> openGalleryPage(
@@ -48,7 +48,7 @@ Future<void> openGalleryPage(
 }) async {
   final menu = _outsideGallery((w) => w is Tooltip && w.message == menuTooltip);
   if (menu.evaluate().isNotEmpty) {
-    await tester.tap(menu);
+    await tester.tap(menu.first);
     await settle(tester);
   }
   final sidebar = gallerySidebar();

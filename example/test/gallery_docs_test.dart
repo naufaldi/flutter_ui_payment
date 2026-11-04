@@ -76,6 +76,29 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
+  testWidgets('tablet captures navigate the permanent gallery sidebar without '
+      'a menu button (#189)', (tester) async {
+    tester.view.physicalSize = const Size(2560, 1600);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.reset);
+    final app = await launch(tester);
+    app.updateSettings(const DemoSettings(locale: Locale('en')));
+    app.selectTab(2);
+    await settle(tester);
+    expect(find.byTooltip('Open navigation'), findsNothing);
+    await openGalleryPage(tester, 'Content');
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('specimen:PaymentDataTable · variants')),
+      400,
+      scrollable: find
+          .descendant(of: galleryList(), matching: find.byType(Scrollable))
+          .first,
+    );
+    expect(find.byType(PaymentDataTable<int>), findsWidgets);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('English gallery table formats every fee and its total', (
     tester,
   ) async {
