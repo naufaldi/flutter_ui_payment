@@ -5,6 +5,11 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Soft showcase and remaining UI fixes (2026-11-04)
+
+- Docs: the Sparkline comparison specimen now shows two distinct trends for this month and last month.
+- Fix clipped onboarding field labels, add the Soft host theme and mobile showcase, and refresh payment/KYC/table/toast documentation proof with reliable phone and tablet capture navigation.
+
 ## Payment and KYC mobile blocks (2026-11-04)
 
 - Added six runnable mobile host blocks with docs pages: manual VA transfer, method choice and quote changes, payment and refund detail, KYC onboarding and consent, KYC capture and upload recovery, and payment preferences.
