@@ -1,5 +1,9 @@
 # Ruang Bayar demo
 
+For the copyable mobile Merchant Overview block, see
+[the composition guide](lib/compositions/README.md). Run it with
+`flutter run -t lib/merchant_demo.dart`.
+
 Example app for `flutter_ui_payment`. Everything is simulated: synthetic identity, document fixtures, references and money. Nothing leaves the device.
 
 ```sh
