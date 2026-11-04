@@ -5,6 +5,10 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## History and KYC blocks (2026-11-04)
+
+- Add copyable mobile Transaction History and KYC Review/Correction blocks with runnable synthetic demos, source, native Android proof and paired pattern guidance; track the remaining Payment/KYC blocks in GitHub.
+
 ## Mobile blocks and pattern guides (2026-11-04)
 
 - Add a copyable mobile merchant overview and transaction-detail host demo using existing kit components, with light/dark theming and accessible large-text layout.
