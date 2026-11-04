@@ -225,7 +225,7 @@ class _ChartVariants extends StatelessWidget {
         measure: [92, 95, 88, 97, 99][i],
       ),
     );
-    if (kind == 'sparkline') return _sparklineVariants(context, series);
+    if (kind == 'sparkline') return _sparklineVariants(context);
     final chart = switch (kind) {
       'bar' => PaymentBarChart(series: series),
       'meter' => PaymentMeterChart(
@@ -313,10 +313,7 @@ class _ChartVariants extends StatelessWidget {
 
   // A sparkline sits beside a KPI the host already states, so the specimen
   // shows it in that row rather than alone in a chart-sized box.
-  Widget _sparklineVariants(
-    BuildContext context,
-    List<PaymentChartSeries> series,
-  ) {
+  Widget _sparklineVariants(BuildContext context) {
     final theme = PaymentTheme.of(context);
     Widget kpi(Widget text, Widget sparkline) => Row(
       children: [
@@ -372,7 +369,31 @@ class _ChartVariants extends StatelessWidget {
             ),
             PaymentSparkline(
               key: const Key('sparkline-inspect'),
-              series: series,
+              // Settled weeks in both series, last month lower throughout,
+              // so the two lines stay apart at the specimen's size (#185).
+              series: [
+                PaymentChartSeries(
+                  label: _t(context, 'This month', 'Bulan ini'),
+                  points: _chartFixture('typical', _t(context, 'Oct', 'Okt')),
+                ),
+                PaymentChartSeries(
+                  label: _t(context, 'Last month', 'Bulan lalu'),
+                  points: [
+                    for (final (i, value) in [
+                      150000,
+                      190000,
+                      170000,
+                      220000,
+                      200000,
+                    ].indexed)
+                      // Same week labels: series share one x axis.
+                      ChartPoint(
+                        label: '${1 + i * 7} ${_t(context, 'Oct', 'Okt')}',
+                        value: Money.idr(value),
+                      ),
+                  ],
+                ),
+              ],
               inspectable: true,
             ),
           ),
