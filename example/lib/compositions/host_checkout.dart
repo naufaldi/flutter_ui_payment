@@ -23,11 +23,15 @@ class CheckoutOrder {
     required this.selectedMethodId,
     required this.balance,
     required this.balanceState,
+    this.merchantVerified = false,
     this.receiptEmail = '',
     this.paying = false,
   });
 
   final String merchant;
+
+  /// Set only when the host has verified this merchant.
+  final bool merchantVerified;
   final String reference;
   final PaymentQuote quote;
   final List<PaymentMethod> methods;
@@ -153,7 +157,7 @@ class InvoiceCheckout extends StatelessWidget {
         MerchantHeader(
           name: order.merchant,
           orderReference: order.reference,
-          verified: true,
+          verified: order.merchantVerified,
         ),
         PaymentSummary(quote: order.quote),
         PaymentSection(

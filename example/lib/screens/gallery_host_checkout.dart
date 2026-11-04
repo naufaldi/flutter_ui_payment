@@ -32,6 +32,7 @@ class _HostCheckoutDemoState extends State<_HostCheckoutDemo> {
 
   CheckoutOrder get _order => CheckoutOrder(
     merchant: 'Ruang Bayar Akademi',
+    merchantVerified: true, // Verified synthetic merchant fixture.
     reference: 'INV-2026-1103',
     quote: _quote(methodId: _method),
     methods: _methods,
