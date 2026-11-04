@@ -1,0 +1,72 @@
+---
+title: KYC onboarding and consent
+description: A mobile host block that explains each data item before an unchecked consent box, then collects host-defined identity fields and reviews them masked.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+Explain what data the host collects and why before asking for consent. The
+consent box starts unchecked and Continue waits for it. The person then fills the
+host's identity fields, reviews them with the ID number masked and saves.
+Saving details never verifies identity; the document photos come next.
+
+<Screens>
+  <Screen name="android_block_onboarding" dark="android_block_onboarding_dark" alt="List of requested data with the reason for each, a privacy policy link and a disabled Continue action until consent." caption="Purpose before consent" />
+  <Screen name="android_block_onboarding_rejected" alt="Identity form where the host rejected the ID number; the error sits under that field and the other values stay filled." caption="Host rejects a field" />
+  <Screen name="android_block_onboarding_review" alt="Review of name, masked ID number showing only its last four digits, birth date and occupation, with Edit and Save." caption="Review masked" />
+  <Screen name="android_block_onboarding_save_error" alt="Save failed banner above the unchanged review, with Save available again." caption="Save failed" />
+  <Screen name="android_block_onboarding_saved" alt="Details saved, with a notice that identity is not verified yet and the next step is the ID photo and selfie." caption="Saved, not verified" />
+</Screens>
+
+## Run and try
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/kyc_onboarding_demo.dart
+```
+
+Check the consent box and continue, fill the synthetic form, review and save.
+The developer menu offers **NIK ditolak host** (the host rejects the ID number
+after a check; the person corrects only that field) and **Simpan gagal** (the
+first save fails and keeps the details). Changing a fixture starts a fresh
+synthetic session and ignores answers from the previous one.
+
+## Composition and boundaries
+
+`KycOnboardingBlock` takes a typed step, the host's requirement list, field specs,
+values, server errors, an `IdentityFormController` and callbacks. The host
+records consent, runs its own field rules and saves the details. The form keeps
+what the person typed across host answers.
+
+| UI | Existing library surface |
+| --- | --- |
+| Purpose list, consent and policy link | `VerificationIntro` |
+| Host fields, validation and server errors | `IdentityForm`, `IdentityFieldSpec`, `IdentityFormController` |
+| Steps, error slot and pinned action | `PaymentOnboardingView`, `PaymentTaskListItem` |
+| Saved state | `PaymentBanner` |
+
+The block collects no PIN, OTP, password or document bytes. The host owns the
+privacy policy, consent records, retention, field rules and identity checks.
+All identities in the demo are fictional. See the
+[verification pattern](/patterns/verification/) and the
+[forms guide](/patterns/forms/). Continue with the
+[KYC capture block](/blocks/kyc-capture/) for the photos.
+
+## Source
+
+<BlockSource name="kycOnboarding" />
+<BlockSource name="kycOnboardingDemo" />
+<BlockSource name="demoShell" />
+
+## Proof and limits
+
+Tests prove that consent starts unchecked and Continue waits for it, that the
+form asks for no PIN or OTP, that a host-rejected ID number is corrected in place
+and reviewed masked, that a failed save keeps the details and a confirmed save
+still says identity is not verified, and that consent and Continue stay reachable
+at 320 dp and 200% text in dark mode with reduced motion. Android captures were
+inspected. No hardware speed or iOS visual claim. The demo is not an identity
+service.

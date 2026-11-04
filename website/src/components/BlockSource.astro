@@ -12,6 +12,19 @@ import history from '../../../example/lib/compositions/merchant_history.dart?raw
 import historyDemo from '../../../example/lib/history_block_demo.dart?raw';
 import kycReview from '../../../example/lib/compositions/kyc_review_block.dart?raw';
 import kycDemo from '../../../example/lib/kyc_review_demo.dart?raw';
+import demoShell from '../../../example/lib/block_demo_shell.dart?raw';
+import manualTransfer from '../../../example/lib/compositions/manual_transfer_block.dart?raw';
+import manualTransferDemo from '../../../example/lib/manual_transfer_demo.dart?raw';
+import methodQuote from '../../../example/lib/compositions/method_quote_block.dart?raw';
+import methodQuoteDemo from '../../../example/lib/method_quote_demo.dart?raw';
+import refundDetail from '../../../example/lib/compositions/payment_refund_detail.dart?raw';
+import refundDetailDemo from '../../../example/lib/refund_detail_demo.dart?raw';
+import kycOnboarding from '../../../example/lib/compositions/kyc_onboarding_block.dart?raw';
+import kycOnboardingDemo from '../../../example/lib/kyc_onboarding_demo.dart?raw';
+import kycCapture from '../../../example/lib/compositions/kyc_capture_block.dart?raw';
+import kycCaptureDemo from '../../../example/lib/kyc_capture_demo.dart?raw';
+import preferences from '../../../example/lib/compositions/payment_preferences_block.dart?raw';
+import preferencesDemo from '../../../example/lib/payment_preferences_demo.dart?raw';
 
 const sources = {
   checkout: ['compositions/host_checkout.dart', checkout],
@@ -26,6 +39,19 @@ const sources = {
   historyDemo: ['history_block_demo.dart', historyDemo],
   kycReview: ['compositions/kyc_review_block.dart', kycReview],
   kycDemo: ['kyc_review_demo.dart', kycDemo],
+  demoShell: ['block_demo_shell.dart', demoShell],
+  manualTransfer: ['compositions/manual_transfer_block.dart', manualTransfer],
+  manualTransferDemo: ['manual_transfer_demo.dart', manualTransferDemo],
+  methodQuote: ['compositions/method_quote_block.dart', methodQuote],
+  methodQuoteDemo: ['method_quote_demo.dart', methodQuoteDemo],
+  refundDetail: ['compositions/payment_refund_detail.dart', refundDetail],
+  refundDetailDemo: ['refund_detail_demo.dart', refundDetailDemo],
+  kycOnboarding: ['compositions/kyc_onboarding_block.dart', kycOnboarding],
+  kycOnboardingDemo: ['kyc_onboarding_demo.dart', kycOnboardingDemo],
+  kycCapture: ['compositions/kyc_capture_block.dart', kycCapture],
+  kycCaptureDemo: ['kyc_capture_demo.dart', kycCaptureDemo],
+  preferences: ['compositions/payment_preferences_block.dart', preferences],
+  preferencesDemo: ['payment_preferences_demo.dart', preferencesDemo],
 };
 interface Props { name: keyof typeof sources; }
 const [file, source] = sources[Astro.props.name];

@@ -16,8 +16,9 @@ Start with [the daily design-system guide](design-system.md) when changing the k
 For complete mobile host examples, use the website's **Blocks** section and
 `example/lib/compositions/README.md`. Components document APIs; domain Patterns
 explain behavior; Guides cover general recipes. D105 records this navigation
-split while preserving existing page URLs. History and KYC block issues remain
-follow-ups, not shipped examples.
+split while preserving existing page URLs. The blocks cover merchant overview,
+checkout and recovery, history, refunds, manual transfer, method and quote
+changes, KYC onboarding, capture and correction, and payment preferences.
 
 | Document | Audience and role |
 | --- | --- |

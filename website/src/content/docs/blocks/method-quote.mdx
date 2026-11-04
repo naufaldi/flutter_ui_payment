@@ -1,0 +1,74 @@
+---
+title: Method choice and quote changes
+description: A mobile host block for choosing a payment method, seeing its host-priced fee and total, and re-approving a changed quote.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+Choose a payment method, see the fee and total the host quotes for it, then
+review and pay. Unavailable methods say why. When the host re-prices at submit,
+the payer sees the old and new totals and must accept the new total before Pay
+becomes available.
+
+<Screens>
+  <Screen name="android_block_quote" dark="android_block_quote_dark" alt="Method list with fees per method, an unavailable card with its reason, and a Continue action showing the total Rp254.000." caption="Choose a method" />
+  <Screen name="android_block_quote_changed" alt="Changed total banner from Rp254.000 to Rp255.000, new fee lines, an unchecked acceptance box and a disabled Pay action." caption="Quote changed at submit" />
+  <Screen name="android_block_quote_error" alt="The fee could not be calculated; a banner offers Try again and Continue stays disabled." caption="Quote failed" />
+</Screens>
+
+## Run and try
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/method_quote_demo.dart
+```
+
+Pick a method. Continue stays disabled until the host quote for that method
+arrives, then shows the total. Continue to the review and tap **Bayar**. The
+developer menu offers two more fixtures:
+
+- **Biaya VA berubah saat bayar**: the host answers the first Pay with a new
+  bank fee. The review shows the change, and Pay waits for the payer to check
+  the acceptance box.
+- **Biaya gagal dihitung**: the first quote fails and **Coba lagi** asks again.
+
+If the payer switches method while a quote is running, the older answer is
+ignored. Changing a fixture starts a fresh synthetic session.
+
+## Composition and boundaries
+
+`MethodQuoteBlock` takes the host's methods, the selected id, the latest
+`PaymentQuote`, the previous approved quote and callbacks. The static
+`MethodQuoteBlock.quoteMatches` check enables Continue only for a settled quote
+that names the current selection. The host passes `previousQuote` when it
+re-prices; the kit resets acceptance on every new quote revision.
+
+| UI | Existing library surface |
+| --- | --- |
+| Methods, fees and availability reasons | `PaymentMethodPicker`, `PaymentMethod` |
+| Fee lines and total | `PaymentSummary`, `PaymentQuote` |
+| Review, changed total and acceptance | `PaymentConfirmation` with `previousQuote` |
+| Pinned Continue and quote retry | `PaymentFullPageView`, `PaymentButton`, `PaymentBanner` |
+
+The host owns pricing, quote ids and revisions, the request that asks for a
+quote, and authorization (PIN, OTP, biometrics) after approval. This block
+collects no credentials. All prices are fictional. See the
+[checkout pattern](/patterns/checkout/).
+
+## Source
+
+<BlockSource name="methodQuote" />
+<BlockSource name="methodQuoteDemo" />
+<BlockSource name="demoShell" />
+
+## Proof and limits
+
+Tests prove that a late quote for an earlier choice cannot enable Continue, that
+a re-priced total keeps Pay disabled until the payer accepts it, that an
+unavailable method says why and a pricing failure offers a retry, and that the
+method list and Continue stay reachable at 320 dp and 200% text in dark mode with
+reduced motion. Android captures were inspected. No hardware speed or iOS visual
+claim. The demo is not a pricing service.

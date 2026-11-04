@@ -1,0 +1,66 @@
+---
+title: Payment and refund detail
+description: A mobile host block that keeps the original payment's success and amount while showing a separate refund lifecycle and a read-only receipt.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+Show a confirmed payment and its refund. The original payment keeps its success
+and amount in every refund state. The refund is a separate section with its own
+status, amount and masked reference, all from the host. The person can ask for a
+newer refund status and open a read-only receipt.
+
+<Screens>
+  <Screen name="android_block_refund" dark="android_block_refund_dark" alt="Succeeded payment of Rp240.000 with merchant, date, method and transaction ID, and a Refresh refund status action." caption="Original payment" />
+  <Screen name="android_block_refund_partial" alt="Separate refund section marked partially refunded with Rp50.000, last update and masked refund reference." caption="Partial refund" />
+  <Screen name="android_block_refund_receipt" alt="Receipt sheet for the original payment with line items, bank fee, total Rp240.000, method and transaction ID." caption="Read-only receipt" />
+</Screens>
+
+## Run and try
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/refund_detail_demo.dart
+```
+
+Tap **Perbarui status refund**: the synthetic host moves the refund from pending
+to partial. Tap **Lihat struk** for the receipt. The developer menu offers
+**Refund penuh** (the refund completes for the whole amount) and **Cek refund
+gagal** (the first refresh fails, the last known refund status stays and the next
+refresh succeeds). Changing a fixture starts a fresh synthetic session.
+
+## Composition and boundaries
+
+`PaymentRefundDetail` takes the host's `TransactionRecord` with its `RefundInfo`
+and callbacks for refreshing and copying. `PaymentRefundReceiptSheet` shows the
+host's `PaymentReceiptData`. The refresh action disappears once the refund is
+final.
+
+| UI | Existing library surface |
+| --- | --- |
+| Original payment, refund section and copy | `TransactionDetail`, `TransactionRecord`, `RefundInfo` |
+| Receipt sheet | `PaymentReceipt`, `PaymentReceiptData`, `PaymentSheet` (opened by the host with `showPaymentSheet`) |
+| Pinned actions and refresh failure | `PaymentFullPageView`, `PaymentBanner` |
+
+This block never starts, edits or cancels a refund. The host owns refund
+requests, their status, masking and the clipboard. All records are fictional.
+See the [transaction history pattern](/patterns/history/) and the
+[status and receipt pattern](/patterns/status-receipt/).
+
+## Source
+
+<BlockSource name="refundDetail" />
+<BlockSource name="refundDetailDemo" />
+<BlockSource name="demoShell" />
+
+## Proof and limits
+
+Tests prove that the original payment keeps its success and amount while the
+refund moves from pending to partial, that a failed refund check keeps the last
+known status and can be retried, and that the refund action stays reachable at
+320 dp and 200% text in dark mode with reduced motion. Android captures were
+inspected. No hardware speed or iOS visual claim. The demo is not a refund
+service.

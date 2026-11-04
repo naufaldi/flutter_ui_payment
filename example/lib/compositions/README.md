@@ -19,6 +19,36 @@
 Source, inspected Android captures and paired pattern contracts are published
 in the Blocks section. Roadmap and reference links: GitHub issue #223.
 
+## Payment and KYC host blocks
+
+Each runs from `example/` with `flutter run -t lib/<demo>.dart` and offers
+synthetic fixtures in its developer menu. `block_demo_shell.dart` is the shared
+demo frame: theme toggle, fixture menu and edge-to-edge system bars.
+
+- Manual VA transfer: `manual_transfer_demo.dart`. Copy
+  `manual_transfer_block.dart`; supply the host attempt, amount, clock and
+  callbacks. The deadline never decides the payment; Check status reconciles the
+  same attempt, and a lost issuing response hides the account.
+- Method choice and quote changes: `method_quote_demo.dart`. Copy
+  `method_quote_block.dart`; Continue needs a settled quote for the current
+  method. Pass the approved quote as `previousQuote` when the host re-prices so
+  Pay waits for acceptance.
+- Payment and refund detail: `refund_detail_demo.dart`. Copy
+  `payment_refund_detail.dart`; the original payment keeps its success and
+  amount while the refund is a separate section with a read-only receipt.
+- KYC onboarding and consent: `kyc_onboarding_demo.dart`. Copy
+  `kyc_onboarding_block.dart`; purpose comes before an unchecked consent box,
+  the host supplies fields, rules and server errors, and saving never verifies.
+- KYC capture and upload recovery: `kyc_capture_demo.dart`. Copy
+  `kyc_capture_block.dart`; keep upload state keyed by request id so a late
+  answer cannot replace a retaken photo. Upload is not verification.
+- Payment preferences: `payment_preferences_demo.dart`. Copy
+  `payment_preferences_block.dart`; "saved" appears only after the host
+  confirms, and a failed save keeps the draft.
+
+The host owns clipboard, camera, permissions, uploads, quotes, persistence and
+every payment or identity verdict. No demo calls a network or a real camera.
+
 ## Checkout and recovery demo
 
 Run `flutter run -t lib/checkout_block_demo.dart` from `example/`.
