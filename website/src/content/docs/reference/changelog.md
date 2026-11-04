@@ -5,6 +5,11 @@ description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repo
 
 Copied verbatim from `CHANGELOG.md`. Version 0.1.0 is unreleased and not published.
 
+## Mobile blocks and pattern guides (2026-11-04)
+
+
+
+
 ## Foundation customization and host checkout (2026-11-04)
 
 - Enable theme-first foundation customization and copyable host checkout/recovery compositions, including a connected checkout-to-confirmed-receipt journey with safe unknown/offline states and host-owned merchant verification.

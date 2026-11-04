@@ -1,3 +1,8 @@
+## Mobile blocks and pattern guides (2026-11-04)
+
+
+
+
 ## Foundation customization and host checkout (2026-11-04)
 
 - Enable theme-first foundation customization and copyable host checkout/recovery compositions, including a connected checkout-to-confirmed-receipt journey with safe unknown/offline states and host-owned merchant verification.
