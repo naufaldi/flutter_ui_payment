@@ -2006,7 +2006,13 @@
   "android_tablet_catalog_data_table_variants": {
     "width": 1280,
     "height": 1539,
-    "caption": "Settlement table with search, selection, pagination, loading rows and an empty state; later examples extend beyond the 1200 dp crop cap, English on Android tablet."
+    "caption": "Settlement table with search, selection, pagination, loading rows and an empty state; later examples extend beyond the 1200 dp crop cap, English on Android tablet.",
+    "parts": [
+      {
+        "width": 1280,
+        "height": 291
+      }
+    ]
   },
   "android_tablet_catalog_detail_page_variants": {
     "width": 1280,
