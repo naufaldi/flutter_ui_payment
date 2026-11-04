@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 
-/// Two independent brands applied from outside the package, without forking.
-enum DemoBrand { ruangBayar, lumen }
+/// Three independent brands applied from outside the package, without forking.
+enum DemoBrand { ruangBayar, lumen, soft }
 
 ThemeData buildTheme(DemoBrand brand, Brightness brightness) {
   final dark = brightness == Brightness.dark;
@@ -62,6 +62,48 @@ ThemeData buildTheme(DemoBrand brand, Brightness brightness) {
         amountWeight: FontWeight.w700,
       );
       return _base(scheme, payment, background: surface);
+    case DemoBrand.soft:
+      // "Soft": a tinted page with white inset panels, an indigo accent,
+      // rounder corners and a lighter amount. Tokens only; the panels are
+      // host styling (SoftInsetPanel). Contrast on the tinted page: body
+      // text 14.3:1, secondary 5.6:1, accent 6.3:1, control edge 3.5:1,
+      // status tones at least 5.6:1 (docs/design-research.md, section 9).
+      final page = dark ? const Color(0xFF0E0F13) : const Color(0xFFF1F2F6);
+      final surface = dark ? const Color(0xFF18191E) : Colors.white;
+      final ink = dark ? const Color(0xFFECEDF1) : const Color(0xFF1C2133);
+      final accent = dark ? const Color(0xFFAEB7FF) : const Color(0xFF3D4AC4);
+      final onAccent = dark ? page : Colors.white;
+      final scheme = ColorScheme.fromSeed(
+        seedColor: const Color(0xFF3D4AC4),
+        brightness: brightness,
+        primary: accent,
+        onPrimary: onAccent,
+        surface: surface,
+        onSurface: ink,
+      );
+      final payment = PaymentTheme.fromColorScheme(scheme).copyWith(
+        accent: accent,
+        onAccent: onAccent,
+        surface: surface,
+        surfaceMuted: dark ? const Color(0xFF212329) : const Color(0xFFF4F5F9),
+        outline: dark ? const Color(0xFF2E3038) : const Color(0xFFE2E4EB),
+        textPrimary: ink,
+        textSecondary: dark ? const Color(0xFFA4AAB7) : const Color(0xFF586074),
+        border: dark ? const Color(0xFF7F8592) : const Color(0xFF7A8090),
+        disabled: dark ? const Color(0xFF62656E) : const Color(0xFFA3A8B4),
+        // D101 radius roles: 8 tags, 12 controls, 16 boxes, 20 sheets.
+        radius: 16,
+        controlRadius: 12,
+        sheetRadius: 20,
+        amountWeight: FontWeight.w500,
+      );
+      // D102: fields stay white on the tinted page.
+      return _base(
+        scheme,
+        payment,
+        background: page,
+        field: PaymentFieldTheme(fillColor: surface),
+      );
   }
 }
 
@@ -69,6 +111,7 @@ ThemeData _base(
   ColorScheme scheme,
   PaymentTheme payment, {
   required Color background,
+  PaymentFieldTheme? field,
 }) {
   final controlRadius = payment.controlBorderRadius;
   return ThemeData(
@@ -80,7 +123,7 @@ ThemeData _base(
       _ => null,
     },
     scaffoldBackgroundColor: background,
-    extensions: [payment],
+    extensions: [payment, ?field],
     dividerTheme: DividerThemeData(color: payment.outline, space: 1),
     appBarTheme: AppBarTheme(
       backgroundColor: background,

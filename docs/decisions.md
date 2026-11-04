@@ -4,6 +4,18 @@ This page preserves rationale, costs and historical evidence. The [foundation PR
 
 ## Customization
 
+### D106 — Soft host preset in the example (4 November 2026)
+
+The example app has a third named host preset, **Soft** (`DemoBrand.soft` in `example/lib/themes.dart`), beside Hairline (the default) and Contrast/Lumen. Soft is a token change only: a tinted page (`#F1F2F6` light, `#0E0F13` dark) with white or lifted panels, an indigo accent (`#3D4AC4` / `#AEB7FF`), D101 radius roles of 8 (tags), 12 (controls), 16 (boxes) and 20 (sheets), white field fills through `PaymentFieldTheme` (D102) and a lighter `amountWeight` (w500). The inset panel (`SoftInsetPanel`, `example/lib/compositions/`) is host styling: a surface panel with a 1 dp outline and the sheet corners, inset `related` from the page, with no shadow, scale or motion. `lib/soft_merchant_demo.dart` runs the Merchant overview block in it; the gallery's brand setting also offers Soft.
+
+**Why:** issue #151 asked for a showcase theme that reads clearly unlike Hairline and Contrast, so a host can see that the same widgets carry a softer product look. PR #152 planned this direction in `docs/design-research.md` §9; this decision implements the part that is useful now and records it there as current.
+
+**Contrast:** on the tinted light page, body text is 14.3:1, secondary text 5.6:1, the accent 6.3:1, the control edge 3.5:1 and the fixed status tones at least 5.6:1; in dark mode every pair is higher. Disabled labels stay above 2:1 on the muted fill, as for Hairline.
+
+**Unchanged:** no package API, variant, brand API, chart series palette API or new dependency. Charts keep D39 ramps and dash. Kit rules override generic web guidance: 48 dp targets (B5) rather than 44 px, no press scale on full-width buttons, and no optimistic payment states. Hairline stays the default for docs captures; Soft has its own Merchant overview captures.
+
+**Not chosen:** a decorative layer (confetti, colored shapes), a desktop dashboard shell and a kit-level panel widget. A panel is layout the host owns. Cost: a third preset to keep in contrast checks. Proof: one widget story at 320 dp and 200% text (`example/test/merchant_overview_test.dart`) and Android phone captures in light and dark.
+
 ### D104 — Connected host checkout example (4 November 2026)
 
 `HostCheckoutJourney` is copyable application source in `example/lib/compositions/`, not a package export. It reuses the invoice and recovery compositions with a pinned priority action and the product Button/Field theme. One host-provided attempt identity survives submission uncertainty and status checks; host snapshots reconcile through the existing model. Failed refresh retains last-known state, and a failed receipt load can retry without resubmitting. `order.reference` identifies the mounted session, while the submitted order fixes the displayed amount; a generation check prevents callbacks from a previous session populating a new one. The host must not change that reference merely to refresh a quote or abandon an unresolved payment.

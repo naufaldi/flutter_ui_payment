@@ -69,6 +69,16 @@
     "height": 1138,
     "caption": "Merchant transaction-detail sheet with amount hierarchy, hatched unknown state and safe-area return action."
   },
+  "android_block_merchant_soft": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Merchant Overview in the Soft host preset: a white inset panel with rounder corners on a tinted page, indigo accent and lighter balance."
+  },
+  "android_block_merchant_soft_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Merchant Overview in the Soft host preset in dark mode: a lifted panel on a near-black page."
+  },
   "android_block_checkout_review": {
     "width": 640,
     "height": 1095,
@@ -909,6 +919,16 @@
     "height": 1138,
     "caption": "Toast controls with a pending balance refresh message over the gallery. Dark mode."
   },
+  "android_catalog_toast_footer": {
+    "width": 640,
+    "height": 1138,
+    "caption": "A success toast floating above a page footer with its Continue action still uncovered."
+  },
+  "android_catalog_toast_footer_dark": {
+    "width": 640,
+    "height": 1138,
+    "caption": "A success toast floating above a page footer with its Continue action still uncovered. Dark mode."
+  },
   "android_catalog_tooltip_tap": {
     "width": 640,
     "height": 1138,
@@ -1254,7 +1274,7 @@
       },
       {
         "width": 640,
-        "height": 1395
+        "height": 1480
       }
     ]
   },
@@ -1269,7 +1289,7 @@
       },
       {
         "width": 640,
-        "height": 1395
+        "height": 1480
       }
     ]
   },
@@ -1292,7 +1312,7 @@
       },
       {
         "width": 640,
-        "height": 1489
+        "height": 1674
       }
     ]
   },
@@ -1315,7 +1335,7 @@
       },
       {
         "width": 640,
-        "height": 637
+        "height": 822
       }
     ]
   },

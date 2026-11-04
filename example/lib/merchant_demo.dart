@@ -5,6 +5,7 @@ import 'package:flutter_ui_payment/flutter_ui_payment.dart';
 
 import 'compositions/merchant_overview.dart';
 import 'compositions/merchant_transaction_detail.dart';
+import 'compositions/soft_inset_panel.dart';
 import 'themes.dart';
 
 void main() {
@@ -60,7 +61,11 @@ final merchantTransactions = [
 ];
 
 class MerchantDemo extends StatefulWidget {
-  const MerchantDemo({super.key});
+  const MerchantDemo({super.key, this.brand = DemoBrand.ruangBayar});
+
+  /// Hairline by default. [DemoBrand.soft] also frames each tab in a
+  /// [SoftInsetPanel] on the tinted page.
+  final DemoBrand brand;
 
   @override
   State<MerchantDemo> createState() => _MerchantDemoState();
@@ -72,8 +77,8 @@ class _MerchantDemoState extends State<MerchantDemo> {
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
-    theme: buildTheme(DemoBrand.ruangBayar, Brightness.light),
-    darkTheme: buildTheme(DemoBrand.ruangBayar, Brightness.dark),
+    theme: buildTheme(widget.brand, Brightness.light),
+    darkTheme: buildTheme(widget.brand, Brightness.dark),
     themeMode: dark ? ThemeMode.dark : ThemeMode.light,
     locale: const Locale('id'),
     supportedLocales: const [Locale('id'), Locale('en')],
@@ -84,6 +89,7 @@ class _MerchantDemoState extends State<MerchantDemo> {
       GlobalCupertinoLocalizations.delegate,
     ],
     home: _MerchantShell(
+      inset: widget.brand == DemoBrand.soft,
       dark: dark,
       onDarkChanged: (v) => setState(() => dark = v),
     ),
@@ -91,9 +97,14 @@ class _MerchantDemoState extends State<MerchantDemo> {
 }
 
 class _MerchantShell extends StatefulWidget {
-  const _MerchantShell({required this.dark, required this.onDarkChanged});
+  const _MerchantShell({
+    required this.dark,
+    required this.onDarkChanged,
+    this.inset = false,
+  });
   final bool dark;
   final ValueChanged<bool> onDarkChanged;
+  final bool inset;
 
   @override
   State<_MerchantShell> createState() => _MerchantShellState();
@@ -119,6 +130,9 @@ class _MerchantShellState extends State<_MerchantShell> {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
+    // Soft frames the tab in a host inset panel; Hairline uses the page.
+    Widget frame(Widget body) =>
+        widget.inset ? SoftInsetPanel(child: body) : body;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value:
           (widget.dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
@@ -129,7 +143,7 @@ class _MerchantShellState extends State<_MerchantShell> {
               ),
       child: Scaffold(
         body: SafeArea(
-          child: switch (tab) {
+          child: frame(switch (tab) {
             0 => MerchantOverview(
               data: merchantFixture,
               onInspectUnconfirmed: () => transactions(unconfirmed: true),
@@ -172,7 +186,7 @@ class _MerchantShellState extends State<_MerchantShell> {
                 ),
               ],
             ),
-          },
+          }),
         ),
         // The native host shell owns navigation and safe-area handling.
         bottomNavigationBar: BottomNavigationBar(
