@@ -4,11 +4,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment_example/coordinator/demo_coordinator.dart';
-import 'package:flutter_ui_payment_example/main.dart';
-import 'package:flutter_ui_payment_example/screens/flow_screen.dart';
-import 'package:flutter_ui_payment_example/screens/steps/order_context.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui_example/coordinator/demo_coordinator.dart';
+import 'package:rakit_ui_example/main.dart';
+import 'package:rakit_ui_example/screens/flow_screen.dart';
+import 'package:rakit_ui_example/screens/steps/order_context.dart';
 import '../integration_test/support.dart';
 
 // D62: on the payment path the priority action pins to the bottom and the

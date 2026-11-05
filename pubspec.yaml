@@ -1,6 +1,6 @@
-name: flutter_ui_payment
+name: rakit_ui
 description: >-
-  Composable Flutter UI for optional identity verification (KYC), checkout,
+  Rakit UI: composable Flutter UI for optional identity verification (KYC), checkout,
   host-owned authorization, payment instructions, payment status and receipts.
   Host callbacks own every business decision; the package never moves money.
 version: 0.1.0

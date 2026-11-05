@@ -1,6 +1,6 @@
-# flutter_ui_payment
+# Rakit UI
 
-> Composable Flutter widgets for checkout, host-owned authorization, payment status, receipts and optional KYC. The widgets render structured data from the host app and report intent through callbacks. Version 0.1.0: install with flutter pub add flutter_ui_payment from pub.dev. Targets iOS and Android phones and tablets; the web build is a docs preview only.
+> Composable Flutter widgets for checkout, host-owned authorization, payment status, receipts and optional KYC. The widgets render structured data from the host app and report intent through callbacks. Version 0.1.0: install with flutter pub add rakit_ui from pub.dev. Targets iOS and Android phones and tablets; the web build is a docs preview only.
 
 Rules the kit keeps:
 - The host owns network, clipboard, URL launching, camera, routing, auth, pricing, KYC decisions, payment status, idempotency and polling. The kit makes no network or platform-channel calls. It holds no secrets and has no dependency other than the Flutter SDK.
@@ -19,7 +19,7 @@ Rules the kit keeps:
 ## API
 - [Component catalog](https://flutter-ui-payment.netlify.app/components/): one page per component, with a Props table
 - [Blocks](https://flutter-ui-payment.netlify.app/blocks/): complete host screens with copyable source
-- [Public exports](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/flutter_ui_payment.dart)
+- [Public exports](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/rakit_ui.dart)
 - [Generated API data](https://github.com/naufaldi/flutter_ui_payment/blob/main/website/src/data/api.json): every exported class, constructor and parameter
 
 ## Contributing

@@ -11,7 +11,7 @@
 // buttons and fields here take no `style`.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:rakit_ui/rakit_ui.dart';
 
 /// The host's checkout state. Immutable; the host rebuilds it on change.
 class CheckoutOrder {

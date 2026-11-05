@@ -1,5 +1,5 @@
-name: flutter_ui_payment_example
-description: Ruang Bayar demo — gallery, scenario picker and complete flow for flutter_ui_payment.
+name: rakit_ui_example
+description: Ruang Bayar demo — gallery, scenario picker and complete flow for rakit_ui.
 publish_to: none
 version: 0.1.0+1
 
@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_ui_payment:
+  rakit_ui:
     path: ../
   # Example-only media adapter. The package itself has no media dependency;
   # see lib/adapters/video_adapter.dart. 2.11.x needs Android minSdk 24.

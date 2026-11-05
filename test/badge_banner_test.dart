@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment/src/foundation/token_resolvers.dart'
-    show toneIcon;
+import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui/src/foundation/token_resolvers.dart' show toneIcon;
 import 'first_line_test.dart' show host;
 
 void main() {

@@ -1,6 +1,6 @@
-# flutter_ui_payment
+# Rakit UI
 
-Flutter components for checkout, payment status, receipts and optional identity verification (KYC). Build screens for pending, failed and unknown payment results, with host-owned authorization and recovery. The kit also includes navigation, forms, charts, sheets, feedback and transaction history.
+Rakit UI provides Flutter components for checkout, payment status, receipts and optional identity verification (KYC). Build screens for pending, failed and unknown payment results, with host-owned authorization and recovery. The kit also includes navigation, forms, charts, sheets, feedback and transaction history.
 
 > **Ringkasan.** Library komponen UI Flutter untuk KYC opsional dan pembayaran. Komponen hanya merender data terstruktur dari host dan melaporkan aksi lewat callback. Host/backend tetap memutuskan KYC, harga, otorisasi, idempotency, status, dan refund. Library tidak memproses uang, tidak melakukan network call, dan tidak memerlukan router, state manager, kamera, atau SDK payment. Keputusan produk ada di [PRD.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/PRD.md).
 
@@ -8,7 +8,7 @@ Targets iOS and Android, phones and tablets. The web build is a documentation pr
 
 **Docs:** https://flutter-ui-payment.netlify.app
 
-**Release:** `0.1.0`. Install with `flutter pub add flutter_ui_payment`. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
+**Release:** `0.1.0`. Install with `flutter pub add rakit_ui`. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
 
 ## Start here
 
@@ -29,7 +29,7 @@ Coding agents and maintainers should start with [AGENTS.md](https://github.com/n
 | Question | Where to look |
 | --- | --- |
 | Which rule wins? | [PRD.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/PRD.md) and the [foundation PRD](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/prd-foundation-components.md), including its [§8 decision register](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/prd-foundation-components.md#8-decisions). [decisions.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/decisions.md) holds rationale and history only. |
-| What is exported, with which parameters? | [lib/flutter_ui_payment.dart](lib/flutter_ui_payment.dart) and the generated [website/src/data/api.json](https://github.com/naufaldi/flutter_ui_payment/blob/main/website/src/data/api.json). Don't invent API names. |
+| What is exported, with which parameters? | [lib/rakit_ui.dart](lib/rakit_ui.dart) and the generated [website/src/data/api.json](https://github.com/naufaldi/flutter_ui_payment/blob/main/website/src/data/api.json). Don't invent API names. |
 | How do I style something? | The [adoption order](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/design-system.md#customization-today-versus-approved-migration): theme, then a family theme, then a host preset, then a one-off `style`. Some families, such as fields, have no instance `style`; check the component's Props table. |
 | What must stay in the host? | [Host boundary](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/design-system.md#host-boundary): no network, clipboard, URL launching, platform channels, polling timers or secrets in `lib/`. Flutter SDK is the only dependency (B11). |
 | Before changing a component? | The [Button bar (B1–B13)](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/prd-foundation-components.md#the-button-bar-tier-1-quality-checklist), the component's spec section, and [Testing scope](https://github.com/naufaldi/flutter_ui_payment/blob/main/AGENTS.md#testing-scope). |
@@ -56,17 +56,34 @@ When a payment request times out, the server may already have accepted it. The s
 Add the package from pub.dev:
 
 ```sh
-flutter pub add flutter_ui_payment
+flutter pub add rakit_ui
 ```
 
 Or declare the dependency directly:
 
 ```yaml
 dependencies:
-  flutter_ui_payment: ^0.1.0
+  rakit_ui: ^0.1.0
 ```
 
 Requires Dart `^3.12.0` and Flutter `>=3.44.0` (tested with Flutter 3.44.6 stable). The only dependency is the Flutter SDK.
+
+## Migrating from flutter_ui_payment
+
+Rakit UI continues the same UI kit under the `rakit_ui` package name. Replace the old dependency and update imports:
+
+```yaml
+dependencies:
+  rakit_ui: ^0.1.0
+```
+
+```dart
+import 'package:rakit_ui/rakit_ui.dart';
+```
+
+Remove `flutter_ui_payment` from your dependencies, then run `flutter pub get`. Widget names, theme APIs, models and host callbacks are unchanged. Replace private `package:flutter_ui_payment/src/...` imports with the public Rakit UI API where possible.
+
+The old package and its published versions remain available for existing apps. Use one package identity throughout an app: types from the two separately published packages are distinct. The compatibility filename `package:rakit_ui/flutter_ui_payment.dart` forwards to the new library, but does not redirect old-package imports.
 
 ## Quick start
 

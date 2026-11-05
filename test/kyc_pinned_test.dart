@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:rakit_ui/rakit_ui.dart';
 
 // D62 (UI review P7a): the KYC form steps inside PaymentOnboardingView pin
 // their submit at the bottom; without a controller or primaryAction they

@@ -834,3 +834,7 @@ The 320 dp gesture rows were measured with the tab fold alone (+18.2 / +30.2 dp 
 ### First pub.dev release, 5 November 2026
 
 - **D108: publish 0.1.0 with a focused archive (#246).** The owner requested the first public release. Enable hosted publication, declare Android/iOS per D64, use hosted installation instructions and consolidate the initial changelog while preserving implementation history in Git. Exclude the website, contributor/research records, build outputs and capture tooling; retain library source, tests, MIT license and example source/assets. Keep existing SDK constraints, runtime/API behavior and documented compatibility limits. Required checks, archive inspection, a clean publish dry run, independent review and host installation proof gate delivery. Publication requires authenticated pub.dev access.
+
+### Rakit UI identity, 5 November 2026
+
+- **D109: Rakit UI / rakit_ui (#248).** The owner selected Rakit UI after the initial flutter_ui_payment 0.1.0 publication. The canonical import becomes package:rakit_ui/rakit_ui.dart. Keep component names, models, host responsibilities and runtime behavior; retain a forwarding barrel for the old filename inside the new package. Migrate dependency and imports together because separate package identities produce distinct Dart types. Preserve existing repository and docs addresses. Publish and verify the new hosted package before marking the old package discontinued with rakit_ui as its replacement; old versions remain installable.

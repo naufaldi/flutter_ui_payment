@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment_example/coordinator/demo_coordinator.dart';
+import 'package:rakit_ui_example/coordinator/demo_coordinator.dart';
 import '../integration_test/support.dart';
 
 // #237: a person who picks a second scenario while the first is still

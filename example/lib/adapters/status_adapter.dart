@@ -1,4 +1,4 @@
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:rakit_ui/rakit_ui.dart';
 
 import 'fake_host.dart';
 

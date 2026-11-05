@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment/src/foundation/loading_handoff.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui/src/foundation/loading_handoff.dart';
 
 import 'content_host.dart';
 import 'helpers/reduced_motion.dart';

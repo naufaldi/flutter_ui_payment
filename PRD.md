@@ -1,11 +1,11 @@
-# PRD: Flutter UI Payment
+# PRD: Rakit UI
 
 Tanggal: 30 Oktober 2026  
-Status: PRD produk; package versi `0.1.0` dapat dipasang dari repository ini, belum dipublikasikan ke pub.dev. Status ini bukan klaim semua gate v0.1 selesai.
+Status: Rakit UI; package `rakit_ui` versi `0.1.0` meneruskan rilis awal `flutter_ui_payment`. Identitas baru mengikuti D109; batas verifikasi tetap berlaku.
 
 Pusat proyek: repository ini (`.`)
 
-Nama package sementara: `flutter_ui_payment`; ketersediaan nama belum diperiksa.
+Nama package: `rakit_ui` (Rakit UI), menggantikan `flutter_ui_payment` sesuai D109.
 
 Navigasi dokumentasi: [peta dokumen](docs/README.md), [panduan harian design system](docs/design-system.md), dan [spesifikasi fondasi serta register keputusan §8](docs/prd-foundation-components.md#8-decisions). Dokumen ini tetap menjadi kontrak scope, cerita pengguna, dan penerimaan produk.
 
@@ -242,7 +242,7 @@ flutter-ui-payment/
   PRD.md
   pubspec.yaml                 # root menjadi package, setelah scaffold
   lib/
-    flutter_ui_payment.dart    # public exports yang disengaja
+    rakit_ui.dart    # public exports yang disengaja
     src/
       foundation/
       verification/

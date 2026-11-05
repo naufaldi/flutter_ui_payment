@@ -2,7 +2,7 @@
 
 Use this guide to find the active rule before changing a component or composing a host screen. It is derived navigation, not a new contract. [Documentation map](README.md) explains document roles.
 
-The [product PRD](../PRD.md) and [foundation specs](prd-foundation-components.md) define requirements. The [§8 register](prd-foundation-components.md#8-decisions) records approved decisions: apply the latest relevant amendment or supersession, not an isolated older row. [Source exports](../lib/flutter_ui_payment.dart), generated [API data](../website/src/data/api.json) and [component docs](components.md) describe shipped APIs. Approved requirements can remain unimplemented; report that gap explicitly.
+The [product PRD](../PRD.md) and [foundation specs](prd-foundation-components.md) define requirements. The [§8 register](prd-foundation-components.md#8-decisions) records approved decisions: apply the latest relevant amendment or supersession, not an isolated older row. [Source exports](../lib/rakit_ui.dart), generated [API data](../website/src/data/api.json) and [component docs](components.md) describe shipped APIs. Approved requirements can remain unimplemented; report that gap explicitly.
 
 ## Scope and layers
 

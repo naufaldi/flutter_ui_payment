@@ -31,7 +31,7 @@ export default defineConfig({
   },
   integrations: [
     starlight({
-      title: 'flutter_ui_payment',
+      title: 'Rakit UI',
       description:
         'Composable Flutter UI for checkout, payment status, receipts and optional KYC that stays honest when a payment result is not known yet.',
       social: [

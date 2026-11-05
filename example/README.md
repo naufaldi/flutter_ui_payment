@@ -24,7 +24,7 @@ For the copyable mobile Merchant Overview block, see
 [the composition guide](lib/compositions/README.md). Run it with
 `flutter run -t lib/merchant_demo.dart`.
 
-Example app for `flutter_ui_payment`. Everything is simulated: synthetic identity, document fixtures, references and money. Nothing leaves the device.
+Example app for `rakit_ui`. Everything is simulated: synthetic identity, document fixtures, references and money. Nothing leaves the device.
 
 ```sh
 flutter run            # Android emulator/device (API 24+) or iOS simulator

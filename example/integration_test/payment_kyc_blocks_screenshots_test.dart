@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment_example/compositions/kyc_onboarding_block.dart';
-import 'package:flutter_ui_payment_example/kyc_capture_demo.dart';
-import 'package:flutter_ui_payment_example/kyc_onboarding_demo.dart';
-import 'package:flutter_ui_payment_example/manual_transfer_demo.dart';
-import 'package:flutter_ui_payment_example/method_quote_demo.dart';
-import 'package:flutter_ui_payment_example/payment_preferences_demo.dart';
-import 'package:flutter_ui_payment_example/refund_detail_demo.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui_example/compositions/kyc_onboarding_block.dart';
+import 'package:rakit_ui_example/kyc_capture_demo.dart';
+import 'package:rakit_ui_example/kyc_onboarding_demo.dart';
+import 'package:rakit_ui_example/manual_transfer_demo.dart';
+import 'package:rakit_ui_example/method_quote_demo.dart';
+import 'package:rakit_ui_example/payment_preferences_demo.dart';
+import 'package:rakit_ui_example/refund_detail_demo.dart';
 import 'package:integration_test/integration_test.dart';
 import 'support.dart';
 

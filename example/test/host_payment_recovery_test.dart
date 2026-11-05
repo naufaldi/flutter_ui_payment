@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment_example/compositions/host_checkout.dart';
-import 'package:flutter_ui_payment_example/compositions/host_payment_recovery.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui_example/compositions/host_checkout.dart';
+import 'package:rakit_ui_example/compositions/host_payment_recovery.dart';
 
 const unknown = PaymentAttempt(
   attemptId: 'attempt-restored',

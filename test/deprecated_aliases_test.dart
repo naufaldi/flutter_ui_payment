@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:rakit_ui/rakit_ui.dart';
 import 'first_line_test.dart' show host;
 
 void main() {

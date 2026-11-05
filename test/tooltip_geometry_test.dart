@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment/src/foundation/tooltip_geometry.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui/src/foundation/tooltip_geometry.dart';
 
 void main() {
   const expected = [

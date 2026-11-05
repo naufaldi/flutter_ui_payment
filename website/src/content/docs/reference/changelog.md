@@ -1,11 +1,15 @@
 ---
 title: Changelog
-description: Changes in flutter_ui_payment, copied from CHANGELOG.md in the repository.
+description: Changes in Rakit UI, copied from CHANGELOG.md in the repository.
 ---
 
 Copied verbatim from `CHANGELOG.md`.
 
 ## 0.1.0
+
+First Rakit UI release, continuing the previously published flutter_ui_payment 0.1.0.
+
+- Rename the package to `rakit_ui`, with canonical import `package:rakit_ui/rakit_ui.dart`. Existing widget/model names and runtime behavior are unchanged; replace the old dependency and imports.
 
 First public release. Requires Dart ^3.12.0 and Flutter >=3.44.0; targets Android and iOS phones and tablets.
 

@@ -6,10 +6,12 @@ Add the package, configure theme and language, then connect host data and callba
 
 ```yaml
 dependencies:
-  flutter_ui_payment: ^0.1.0
+  rakit_ui: ^0.1.0
 ```
 
 No other dependency is required. Add a media plugin only if you use `PaymentVideoPlayer` (see step 5).
+
+For an existing `flutter_ui_payment` host, replace the dependency with `rakit_ui` and change imports to `package:rakit_ui/rakit_ui.dart`. Public widget and model names are unchanged; do not mix types from both package identities.
 
 ## 2. Theme and language
 

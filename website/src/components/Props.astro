@@ -37,7 +37,7 @@ type Entry = {
 const { names, level = 3, members = false } = Astro.props;
 const all = api as Record<string, Entry>;
 for (const n of names) {
-  if (!all[n]) throw new Error(`Props: "${n}" is not a public declaration of flutter_ui_payment`);
+  if (!all[n]) throw new Error(`Props: "${n}" is not a public declaration of rakit_ui`);
 }
 
 const escape = (s: string) =>
