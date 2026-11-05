@@ -1,21 +1,25 @@
 ---
 title: Not in the kit
-description: Stripe props intentionally omitted under D28, with the host or token alternative.
+description: API differences from Stripe, with Flutter composition and host integration alternatives.
 ---
 
-D28 mirrors all 48 Stripe components while keeping the package SDK-only and host-owned. These props are deliberately omitted:
+The kit adapts Stripe-inspired components to Flutter. It does not reproduce every Stripe prop. This reference explains the differences and what to use in your app.
+
+Authentication and platform effects belong to the host app. Layout and appearance use Flutter composition and the kit's supported tokens, themes and slots. The omissions below cover different concerns: product scope, data representation and APIs that do not apply to Flutter.
 
 | Stripe prop | Reason / alternative |
 | --- | --- |
-| TextField password type | D1a: the kit never collects secrets; host sign-in is external. |
+| TextField password type | Password entry is outside this kit's scope. Connect sign-in to your host app's authentication flow. |
 | CurrencyField fractionDigitOffset | Money stores integer minor units; formatting follows currency metadata. |
-| Box/Inline numeric sizes | Use semantic layout tokens (B2). |
+| Box/Inline numeric sizes | Use semantic layout tokens for kit spacing and sizing. Compose host layouts with Flutter widgets. |
 | Box/Inline margin and bleed | Parent composition owns spacing. |
-| Box/Inline shadows, zIndex and overflow | Surface and stacking rules stay controlled by the kit. |
+| Box/Inline shadows, zIndex and overflow | Use supported theme and surface options. Compose host stacking and clipping with Flutter widgets; Box/Inline have no matching props. |
 | DOM attributes | Flutter has no DOM contract. |
 | SVG-string brandIcon | Pass a supported host brand widget. |
 | DateRangePicker timeZone | Dates and zone policy belong to the host. |
-| OnboardingView auto-close delay | D44: host completion action decides when to leave. |
-| DataTable enableColumnReorder / enableColumnResize | D30 collapses phone columns into rows; the host configures wide columns. The legacy flags and callback are deprecated until removal in 0.2.0. |
+| OnboardingView auto-close delay | Navigate from the host's completion callback when the flow is finished. |
+| DataTable enableColumnReorder / enableColumnResize | On phones, columns collapse into rows. Configure wide-screen columns in the host. The legacy flags and callback are deprecated until removal in 0.2.0. |
 
 Smaller per-component props that are not mirrored are listed in each component's Stripe → kit table.
+
+For customization, start with [theming](/concepts/theming/) and each component's Props. Use [Blocks](/blocks/) for complete host compositions you can copy and edit.

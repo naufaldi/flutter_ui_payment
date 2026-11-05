@@ -1,8 +1,8 @@
 # Compatibility
 
-What each platform needs, where the number comes from, and what was actually run. Platform baseline checked on 30 October 2026 with Flutter 3.44.6 (stable); Android documentation captures updated on 2 November 2026.
+Platform requirements and verification coverage for integrating the kit. The platform baseline was checked on 30 October 2026 with Flutter 3.44.6 (stable). Android documentation captures include phone and tablet layouts.
 
-**Scope (D64, owner decision 1 Nov 2026).** Phase 1 targets iOS on iPhone and iPad, and Android phones and tablets. Web is documentation only, not a product target. Desktop (macOS, Windows, Linux) is out of scope.
+The kit targets iOS on iPhone and iPad, and Android phones and tablets. Web is used for documentation and previews. Desktop (macOS, Windows, Linux) is outside the supported product scope.
 
 ## Android
 
@@ -20,7 +20,7 @@ What that means:
 - **Declared and built for Android 7.0+.** Nothing in the package raises the floor; it has no Android dependency at all. Only the example's video adapter adds one, at the same floor.
 - **Runtime baseline on Android 11; docs captures on API 37.** No API 24–29 image is installed, and none was downloaded for this pass. Android 7–10 behavior is unverified, not proven broken.
 - **32-bit ARM is built, not run.** The release APK contains `armeabi-v7a` code, but the earlier Android 11 runtime pass used an arm64 emulator. Old 32-bit phones, their GPUs and Impeller's OpenGL ES path on them are untested.
-- **Android tablets are a target (D64), not verified yet.** The 1 Nov 2026 UI review (D45–D63a) used iOS. The documentation phone capture pass now uses Android API 37; tablet documentation recapture remains pending.
+- **Android phone and tablet documentation captures are available.** They show the captured layouts on API 37 emulators; they do not establish runtime compatibility with every supported Android version or physical device.
 - **Video:** the bundled clip is H.264 Constrained Baseline 640×360 plus AAC, the most widely decodable combination on old Android. The decoders of specific old devices are not verified.
 
 To check an older version, first list available system images and choose one supported by the host architecture. An API 24 arm64 image must not be assumed to exist; older x86 images may need an Intel test host. Installing an image is a separate, potentially large download. After preparing a suitable emulator, run sequentially:
