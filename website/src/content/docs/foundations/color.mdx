@@ -7,7 +7,7 @@ import Props from '../../../components/Props.astro';
 import TokenTable from '../../../components/TokenTable.astro';
 import Screen from '../../../components/Screen.astro';
 
-Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
+Choose semantic colors from `PaymentTheme` so components share the host theme.
 
 ## Which text color
 
@@ -81,6 +81,6 @@ D22 is implemented: toasts use textPrimary fill and surface text, with zero elev
 | attention | `warning` | `warning.foreground` |
 | critical | `danger` | `danger.foreground` |
 
-These enums and theme tokens are the closed color set. Nothing else exists. **New** `PaymentBox` and **New** `PaymentKeyline` are planned consumers, not usable APIs.
+`PaymentBox` uses the theme's semantic surfaces and `PaymentKeyline` options for outlines. See [Box](/components/box/) for its supported properties.
 
 <Props names={['PaymentTheme','ToneColors','StatusTone','PaymentTextColor']} members />

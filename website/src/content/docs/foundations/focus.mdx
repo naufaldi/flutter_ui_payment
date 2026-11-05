@@ -27,7 +27,7 @@ Buttons, action rows, the action menu button, checkbox, radio and switch rows, t
 
 ## Press scale
 
-Compact controls shrink to 0.96 while held and return to full size on release, over 100 ms (`PaymentMotion.press`). It says the press was heard. The press releases as soon as the touch moves past the platform's touch slop, so a control under a scrolling finger returns to full size. Disabled controls don't scale. There is no press delay inside scroll views, so a touch that starts a scroll dips for a few frames before slop.
+Compact controls shrink to 0.96 while held and return to full size on release, over 100 ms (`PaymentMotion.press`). The scale releases when the touch moves past the platform's touch slop, so a control returns to full size when scrolling starts. Disabled controls don't scale. Because there is no press delay inside scroll views, the scale can appear briefly before a scroll begins.
 
 - **Compact only.** Copy buttons, the sheet close button, tabs, promotion actions, the video controls and the review's edit actions scale.
 - **Full-width buttons and rows do not.** Scaling a 320 dp slab moves its edges by several pixels, which reads as a lurch rather than a press. They use Material's pressed layer instead.
@@ -35,7 +35,7 @@ Compact controls shrink to 0.96 while held and return to full size on release, o
 
 ## Press splash
 
-Press splash is host-owned through `ThemeData.splashFactory` (D72). The kit inherits it. The example turns the splash off on iOS, including iPadOS, and keeps `InkSparkle` on Android:
+Press splash is host-owned through `ThemeData.splashFactory`. The kit inherits it. The example turns the splash off on iOS, including iPadOS, and keeps `InkSparkle` on Android:
 
 ```dart
 import 'package:flutter/foundation.dart';
@@ -73,7 +73,7 @@ The ring and press widgets are internal to the package. To match them on your ow
 | Token / rule | Value | Source |
 | --- | --- | --- |
 | Focus ring | 2 px stroke, 2 px outside the control, radius +3, in `textPrimary` (white on pictures), keyboard highlight mode only | `focus_ring.dart:6-12, 101-110` |
-| Text input focus | 2 px `accent` border, never also the ring (B8) | D1 |
+| Text input focus | 2 px `accent` border, never also the ring | D1 |
 | Press, compact controls (≤ 48 dp wide icon buttons, links, tabs) | `PaymentPressScale` → 0.96 over `press` | `focus_ring.dart:118-162`, `controls.dart:398` |
 | Press, full-width buttons and rows | Material pressed layer, no scale | `primitives.dart:423-426` |
 | Hover/focus fill | Removed by `PaymentFocusRing.withoutFocusFill`; pressed and hovered layers are kept | `focus_ring.dart:32-44` |
@@ -86,13 +86,13 @@ The ring and press widgets are internal to the package. To match them on your ow
 | A compact control being pressed | `pressedScale` |
 | A full-width button or row being pressed | Material pressed layer |
 
-Use semantic tokens only. Do: preserve 4 dp clearance around the existing focus ring. Don't: clip it or add a second ring to a field. PaymentSize small/medium/large changes only visual treatment; every layout and hit box stays at least 48×48 dp, visual centered (D29). PaymentButton is the first size consumer. Internal ring and press helpers are not exported. There is no Stripe mapping. Nothing else exists.
+Leave 4 dp clearance around the focus ring and avoid adding a second ring to a field. `PaymentSize` changes visual size while keeping targets at least 48×48 dp. The ring and press helpers are internal; host controls can follow the guidance above.
 
 Text inputs, including history search, use the accent border only.
 
 ## Haptics
 
-The host owns native haptics (D73). The kit only calls Dart callbacks and plays no haptic itself.
+The host owns native haptics. The kit only calls Dart callbacks and plays no haptic itself.
 
 | Event | Host wiring |
 | --- | --- |

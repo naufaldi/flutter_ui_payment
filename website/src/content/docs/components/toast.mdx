@@ -8,7 +8,7 @@ import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
-`showPaymentToast` confirms that something happened: "Reference copied", "Share canceled". It floats at the bottom of the screen and goes away on its own. On a screen with a pinned kit footer, such as a detail page or the payment path, it floats 16 dp above the footer, so the footer actions stay visible and tappable (D95).
+`showPaymentToast` confirms that something happened: "Reference copied", "Share canceled". It floats at the bottom of the screen and goes away on its own. On a screen with a pinned kit footer, such as a detail page or the payment path, it floats 16 dp above the footer, so the footer actions stay visible and tappable.
 
 <HostOwns>the message and what its action does, for example restoring something the person hid.</HostOwns>
 
@@ -34,7 +34,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: neutral, info, success, warning, danger; pending. Nothing else exists.
+Variants: neutral, info, success, warning, danger; pending.
 
 ### Tones
 
@@ -73,7 +73,7 @@ Short messages last 4 seconds, or 6 with an action. Longer messages get 1 second
 
 ### Above a pinned footer
 
-A toast floats `group` above the kit's pinned footer on the current route, so the footer's actions stay reachable (D95). This covers view and page footers, `ActionFrame`, the action bar and the KYC capture footer. The scaffold already lifts the toast above its bottom navigation bar, floating action button, safe area and keyboard.
+A toast floats `group` above the kit's pinned footer on the current route, so the footer's actions stay reachable. This covers view and page footers, `ActionFrame`, the action bar and the KYC capture footer. The scaffold already lifts the toast above its bottom navigation bar, floating action button, safe area and keyboard.
 
 <Screens>
   <Screen name="android_catalog_toast_footer" dark="android_catalog_toast_footer_dark" alt="A success toast floating above a page footer with its Continue action still uncovered." caption="Toast above a pinned footer" />
@@ -81,16 +81,16 @@ A toast floats `group` above the kit's pinned footer on the current route, so th
 
 Known limits. These are unsupported cases, not fixed behaviour:
 
-- **The clearance is measured once, when the toast shows.** If a pinned footer appears, leaves or changes height while a toast is up, the toast stays where it is. The theme is also captured once (D103). Workaround: show the toast after the footer change settles. If a footer appears while feedback is still useful, show the toast again; the new toast replaces the old one (D77).
+- **The clearance is measured once, when the toast shows.** If a pinned footer appears, leaves or changes height while a toast is up, the toast stays where it is. The theme is also captured once. Workaround: show the toast after the footer change settles. If a footer appears while feedback is still useful, show the toast again; the new toast replaces the old one.
 - **`Scaffold.persistentFooterButtons` is not measured.** The kit doesn't use that slot. The scaffold still lifts the toast above those buttons. But on a screen with both a kit pinned footer in the body and `persistentFooterButtons`, the kit measures from the screen's bottom edge, so the toast sits higher than needed by the buttons' height. It never covers either footer. Workaround: put the actions in the kit footer, such as a view's `primaryAction` or a `PaymentActionBar` in `bottomNavigationBar`, instead of `persistentFooterButtons`.
 
 ### Replacing a toast
 
-Only the newest toast counts. Showing a toast replaces the kit toast on screen and drops any kit toast still waiting, so feedback never waits behind another toast's reading time (D77). The toast on screen leaves over 150 ms, then the new one enters. With reduced motion the swap is instant. A replaced toast's controller stops responding: `update` and `dismiss` do nothing, and `closed` completes when it leaves. A waiting kit toast dropped by your app's `clearSnackBars()` completes when a later kit toast reaches the front; a dropped waiting legacy `showPaymentSnackBar` future never completes. A controller keeps working until its toast closes, even after a route with its own `Scaffold` is popped.
+Only the newest toast counts. Showing a toast replaces the kit toast on screen and drops any kit toast still waiting, so feedback never waits behind another toast's reading time. The toast on screen leaves over 150 ms, then the new one enters. With reduced motion the swap is instant. A replaced toast's controller stops responding: `update` and `dismiss` do nothing, and `closed` completes when it leaves. A waiting kit toast dropped by your app's `clearSnackBars()` completes when a later kit toast reaches the front; a dropped waiting legacy `showPaymentSnackBar` future never completes. A controller keeps working until its toast closes, even after a route with its own `Scaffold` is popped.
 
-A toast takes its look from where you show it. Themes scoped between your `context` and the `ScaffoldMessenger`, such as a feature's own `PaymentTheme`, are captured once when the toast shows; app themes above the messenger remain live only where no captured theme shadows them (D103). A captured Material Theme freezes its full ThemeData, including copied app values. To restyle toasts, scope `PaymentTheme`; there is no toast style.
+A toast takes its look from where you show it. Themes scoped between your `context` and the `ScaffoldMessenger`, such as a feature's own `PaymentTheme`, are captured once when the toast shows; app themes above the messenger remain live only where no captured theme shadows them. A captured Material Theme freezes its full ThemeData, including copied app values. To restyle toasts, scope `PaymentTheme`; there is no toast style.
 
-If your app also calls `ScaffoldMessenger.showSnackBar`, a kit toast replaces your snack bar when it is on screen. When reduced motion turns on or off, and before the first kit toast on a messenger, the kit clears the whole snack bar queue, your bars included (D78). Flutter rebuilds its snack bar animation when the timing changes, and a bar left waiting would freeze the queue. A dropped bar's `closed` never completes. If your own bars pass `snackBarAnimationStyle`, the kit can't see that change.
+If your app also calls `ScaffoldMessenger.showSnackBar`, a kit toast replaces your snack bar when it is on screen. When reduced motion turns on or off, and before the first kit toast on a messenger, the kit clears the whole snack bar queue, your bars included. Flutter rebuilds its snack bar animation when the timing changes, and a bar left waiting would freeze the queue. A dropped bar's `closed` never completes. If your own bars pass `snackBarAnimationStyle`, the kit can't see that change.
 
 ## Which variant when
 
@@ -102,9 +102,9 @@ Use inline error for correcting a field or report.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Show success only after the host operation succeeds. Pending can be replaced with its result through the returned controller.
 
-**Layout.** The icon or spinner and the action centre on the message's first line, so a short toast reads on one line and a long one keeps the icon beside its first line. At large text, an action that would squeeze the message onto several lines moves under it, on the end edge; a close button from your snack bar theme stays on the first line (D88).
+**Layout.** The icon or spinner and the action centre on the message's first line, so a short toast reads on one line and a long one keeps the icon beside its first line. At large text, an action that would squeeze the message onto several lines moves under it, on the end edge; a close button from your snack bar theme stays on the first line.
 
 ## Do and don't
 
@@ -119,8 +119,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Never report a payment result in a toast. Payment status belongs on the [status screen](/patterns/status-receipt/).
 - Action labels are one verb: "Undo", "View".
 
-Use short outcome copy; pending controllers can update or dismiss host work.
-
 ## Accessibility
 
 - Screen readers announce snack bars automatically.
@@ -128,7 +126,7 @@ Use short outcome copy; pending controllers can update or dismiss host work.
 
 ## Used in
 
-Report A02; statement A03; gallery actions. Real composition: `example/lib/screens/steps/transaction_detail_step.dart`.
+Report A02; statement A03; gallery actions. Example source: `example/lib/screens/steps/transaction_detail_step.dart`.
 
 ## API
 

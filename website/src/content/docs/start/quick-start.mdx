@@ -9,7 +9,7 @@ import Screens from '../../../components/Screens.astro';
 import RepoNote from '../../../components/RepoNote.astro';
 import { REPO_URL } from '../../../consts';
 
-This walkthrough builds one checkout from start to finish. Step 2 is a complete `lib/main.dart` you can run as is. From step 3 on, the snippets are **fragments** that plug into your own screen: `host`, `serverQuote`, `previousQuote` and similar names stand for your code (the adapter that talks to your backend, your auth SDK, your clipboard and share helpers). Every kit class and parameter shown is the real API.
+This walkthrough builds a checkout through to its receipt. Step 2 is a complete `lib/main.dart` you can run. From step 3, the snippets are fragments for your own screen. Names such as `host`, `serverQuote` and `previousQuote` stand for data and adapters you supply, including backend, authorization, clipboard and sharing operations.
 
 ## Run the complete example first
 
@@ -398,7 +398,7 @@ PaymentReceipt(
 );
 ```
 
-A clipboard helper that reports failure honestly:
+A clipboard helper returns `false` when copying fails:
 
 ```dart
 import 'package:flutter/services.dart';
@@ -419,7 +419,7 @@ Future<bool> copyToClipboard(String value) async {
 
 ## 9. Done: what your app must implement
 
-The widgets keep the screen honest. These parts are yours, and a checkout is not finished until each one exists:
+Before connecting real payments, implement these operations in your app and backend:
 
 - **Idempotency on the server.** Send `attemptId` with every submit and status check of an attempt, and deduplicate on it in your backend. `PaymentButton` locking is interaction protection only.
 - **A new key only for a new legitimate attempt.** Create a new `PaymentAttempt` only when `attempt.allowsNewAttempt` is true: your backend allowed it and the previous result is final and not a success.

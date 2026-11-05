@@ -7,19 +7,17 @@ import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-The kit separates three things that payment screens tend to blur:
+`PaymentAttempt` tracks three aspects of one payment:
 
 1. **What the client knows about its own submit** (`SubmissionState`): was it sent, did an answer arrive?
 2. **The business status the server reports** (`PaymentStatus` inside a `PaymentStatusSnapshot`).
 3. **How fresh the last observation is** (`Observation`: `fresh`, `refreshing`, `unavailable`).
 
-`PaymentAttempt` holds all three for one payment.
-
 ## Unknown is not failure
 
 When a submit times out before a server reference arrives, the attempt keeps going as `SubmissionState.outcomeUnknown`. The server may already have charged. Only a host status check with the same attempt reference can resolve it.
 
-"Unknown" is not a provider status; it is the client admitting it has no answer yet. The screen leads with "Don't pay again.", shows a hatched band so it never looks like an ordinary pending state, and offers exactly one action: check status.
+"Unknown" means the client has no confirmed answer; it is not a provider status. The screen leads with "Don't pay again.", uses a hatched band to distinguish it from pending, and offers one action: check status.
 
 <Screens>
   <Screen name="android_refined_status_unknown_light" dark="android_refined_status_unknown_dark" alt="Unknown outcome: hatched amber band, Result not confirmed yet, the amount, Don't pay again, Check status." caption="Unknown: hatched band" />

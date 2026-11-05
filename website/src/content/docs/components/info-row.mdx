@@ -25,11 +25,11 @@ InfoRow(label: 'Total', value: AmountText(Money.idr(104000)));
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: CheckoutSummary; PaymentReceipt; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Pair a payment fact with its value and optional copy action.
 
 ## Variants
 
-Variants: plain, emphasis, caption, trailing action. Nothing else exists.
+Variants: plain, emphasis, caption, trailing action.
 
 ### Emphasis
 
@@ -45,11 +45,11 @@ InfoRow(
 
 ### With a trailing action
 
-`trailing` puts an action after the value, such as a 48 dp copy button. The action centres on the first line (D56). A `PaymentIconButton` or `PaymentCopyButton` there puts its glyph on the value edge, in line with the other rows' values, and keeps its 48 dp target inside the row.
+`trailing` puts an action after the value, such as a 48 dp copy button. The action centres on the first line. A `PaymentIconButton` or `PaymentCopyButton` there puts its glyph on the value edge, in line with the other rows' values, and keeps its 48 dp target inside the row.
 
 ### References and IDs
 
-Set `reference: true` for a transaction ID, VA number or order reference (D57). The value becomes monospace tabular text on the value edge with no fill, and a copy button follows it. Keep [`PaymentCode`](/components/code/) for multi-line technical text; its grey block reads as a disabled field inside a row.
+Set `reference: true` for a transaction ID, VA number or order reference. The value becomes monospace tabular text on the value edge with no fill, and a copy button follows it. Keep [`PaymentCode`](/components/code/) for multi-line technical text; its grey block reads as a disabled field inside a row.
 
 ```dart
 InfoRow(
@@ -89,7 +89,7 @@ Use Property list for a group of facts.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The row displays the host value. Keep an unavailable amount distinct from zero, and show copy feedback beside the reference it belongs to.
 
 ## Do and don't
 
@@ -102,8 +102,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Labels are short nouns in sentence case: "Service fee", "Payment reference".
 - Keep values as the host gave them. Do not shorten references yourself; let `MiddleEllipsisText` do it, so screen readers still get the whole value.
 
-Reserve emphasis for the total; captions explain a fact and trailing copy delegates to the host.
-
 ## Accessibility
 
 - Label, caption and value are merged into one screen-reader node, read in order.
@@ -111,7 +109,7 @@ Reserve emphasis for the total; captions explain a fact and trailing copy delega
 
 ## Used in
 
-CheckoutSummary; PaymentReceipt. Real composition: `example/lib/screens/gallery_kit.dart`.
+CheckoutSummary; PaymentReceipt. Example source: `example/lib/screens/gallery_kit.dart`.
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

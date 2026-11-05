@@ -30,7 +30,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: small, medium, large; delayed. Nothing else exists.
+Variants: small, medium, large; delayed.
 
 ### When to use something else
 
@@ -64,7 +64,7 @@ Use Loading skeleton when the content shape is known.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Use the delay to avoid flashing the indicator for short requests. Under reduced motion, it shows a still hourglass instead of rotating.
 
 ## Do and don't
 
@@ -74,9 +74,7 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Delay brief indicators; busy actions use the button's built-in spinner.
+Use a label that names the work, such as "Checking status". Loading alone does not mean the payment succeeded.
 
 ## Accessibility
 
@@ -84,7 +82,7 @@ Delay brief indicators; busy actions use the button's built-in spinner.
 
 ## Used in
 
-PaymentButton; PaymentOnboardingView; PaymentVideoPlayer. Real composition: `example/lib/screens/gallery_feedback.dart`.
+PaymentButton; PaymentOnboardingView; PaymentVideoPlayer. Example source: `example/lib/screens/gallery_feedback.dart`.
 
 ## API
 

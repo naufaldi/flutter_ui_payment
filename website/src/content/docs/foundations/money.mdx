@@ -107,13 +107,13 @@ Use semantic number and date APIs only.
 | `compact(money)` (`:133`) | `1,2 jt` / `1.2M` (NBSP) | **Chart axes only** (decisions.md, charts) | Totals, buttons, confirmations |
 | `AmountParseResult` / `AmountIssue` (`:263-276`) | Strict parse | `PaymentCurrencyField` | Accept floats |
 
-Do: `format.format` for checkout amounts, as in the existing AmountText. Don't: compact a confirmation total. The supported formatting choices are closed. Nothing else exists.
+Use `format.format` or `AmountText` for checkout amounts. Reserve compact formatting for chart axes so confirmation totals keep every digit.
 
 ## Dates
 
-`PaymentLocalizations.formatDate` returns “30 Oct 2026” or “30 Okt 2026” without converting zones or using the time. Calendar dates belong to the host. `formatDateTime` converts an instant to device-local time and adds “14:05” or “14.05”. Never use it to re-zone a date of birth.
+`PaymentLocalizations.formatDate` returns "30 Oct 2026" or "30 Okt 2026" without converting zones or using the time. Calendar dates belong to the host. `formatDateTime` converts an instant to device-local time and adds "14:05" or "14.05". Never use it to re-zone a date of birth.
 
-Day, month and year are joined by no-break spaces (U+00A0), so a date never wraps as “1 Oct / 2026” at large text. `formatDateRange` glues the dash of a same-month range (“1–31 Oct 2026”) with U+2060 and lets a longer range wrap only after “– ”. Compare formatted dates with `\u00A0`, not a plain space.
+Day, month and year are joined by no-break spaces (U+00A0), so a date never wraps as "1 Oct / 2026" at large text. `formatDateRange` glues the dash of a same-month range ("1–31 Oct 2026") with U+2060 and lets a longer range wrap only after "– ". Compare formatted dates with `\u00A0`, not a plain space.
 
 `dateInputPattern` is DD/MM/YYYY for both locales (Q12). A language change must not change the order in which an Indonesian user types their birth date. Grammar: DD, MM, YYYY exactly once, separated by the same /, . or - character. The pattern must stay visible as the hint; it does not replace a field label. The host supplies a delegate returning:
 
@@ -121,7 +121,7 @@ Day, month and year are joined by no-break spaces (U+00A0), so a date never wrap
 PaymentLocalizations(code, dateInputPattern: 'MM/DD/YYYY');
 ```
 
-Per-field date controls are **New**, planned for Phase 4B. The kit owns formatting and form validation; the host owns valid ranges, business-day rules and zones.
+Use [Date field](/components/date-field/) for typed dates and [Date range picker](/components/date-range-picker/) for ranges. The kit handles formatting and form validation; the host supplies valid ranges, business-day rules and time-zone policy.
 
 <Props names={['PaymentLocalizations']} members />
 

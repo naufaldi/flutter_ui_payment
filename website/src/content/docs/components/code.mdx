@@ -28,24 +28,22 @@ PaymentCode('TRX-DEMO-42');
 | Code | `PaymentCode` |
 | css and numeric styling | Semantic token enums |
 
-Variants: code, pre, samp, kbd. Nothing else exists.
-
 ## Variants
 
-Variants: code, pre, samp, kbd. Nothing else exists.
+Variants: code, pre, samp, kbd.
 
 ## Which variant when
 
 | Situation | Variant / composition | Payment example |
 | --- | --- | --- |
 | Virtual account number | code | Use a reference display with a host copy action; pre preserves line breaks. |
-| Transaction ID in a row | not `PaymentCode` | Use `InfoRow` or a property list item with `reference: true` and a copy button (D57). |
+| Transaction ID in a row | not `PaymentCode` | Use `InfoRow` or a property list item with `reference: true` and a copy button. |
 
-Use Amount text for money. `PaymentCode`'s filled block is for multi-line technical text such as webhook payloads and debug output, plus the large VA number with its emphasis. A reference or ID inside a row uses `reference: true` on the row instead (D57).
+Use Amount text for money. `PaymentCode`'s filled block is for multi-line technical text such as webhook payloads and debug output, plus the large VA number with its emphasis. A reference or ID inside a row uses `reference: true` on the row instead.
 
 ## States
 
-Layout and inline text are passive. Images preserve a loading surface and recover from decode failures. Copy feedback stays with the value.
+The code display renders the supplied reference or technical text. A host copy action reports its own success or failure.
 
 ## Do and don't
 
@@ -55,17 +53,15 @@ Layout and inline text are passive. Images preserve a loading surface and recove
 
 ## Content guidelines
 
-Use short payment labels and synthetic references in examples.
-
-Use a reference display with a host copy action; pre preserves line breaks.
+Preserve the reference exactly. Use synthetic identifiers in examples and keep credentials out of technical samples.
 
 ## Accessibility
 
-Keep reading order aligned with layout. Decorative glyphs are excluded from semantics. Images require alt text; copy actions have labeled targets and confirmation.
+Provide a descriptive label for copy actions. Long code wraps by default or scrolls within the block when `noWrap` is set.
 
 ## Used in
 
-PaymentInstructions; Gallery Layout. Real composition: `example/lib/screens/gallery_content.dart`.
+PaymentInstructions; Gallery Layout. Example source: `example/lib/screens/gallery_content.dart`.
 
 ## API
 

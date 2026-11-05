@@ -24,7 +24,7 @@ import HostOwns from '../../../components/HostOwns.astro';
 PaymentLineChart(points: points);
 ```
 
-Use `onSelectionChanged` to receive each new selected period index and `null` on return to rest. On touch, a scrub reports `null` when the finger lifts. The index addresses `points` or the series' shared periods. Repeated events within one period do not notify or rebuild. New periods reset selection silently. The host owns haptics (D73); the kit plays none.
+Use `onSelectionChanged` to receive each new selected period index and `null` on return to rest. On touch, a scrub reports `null` when the finger lifts. The index addresses `points` or the series' shared periods. Repeated events within one period do not notify or rebuild. New periods reset selection silently. The host owns haptics; the kit plays none.
 
 ```dart
 import 'package:flutter/services.dart';
@@ -47,7 +47,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: one to three series, money, percentage, number. Nothing else exists.
+Variants: one to three series, money, percentage, number.
 
 ### States and variants
 
@@ -78,7 +78,7 @@ Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to 
 
 <Props names={['PaymentChartSeries', 'PaymentChartAxis', 'PaymentChartUnit', 'ChartPoint', 'MeterSegment']} />
 
-Parameters: `points`, `series`, `zeroBased`, `inspectable`, `axis`, `grid`, `showLegend`, `unit`, `semanticLabel`, `onSelectionChanged`. Nothing else exists.
+Parameters: `points`, `series`, `zeroBased`, `inspectable`, `axis`, `grid`, `showLegend`, `unit`, `semanticLabel`, `onSelectionChanged`.
 
 ## Which variant when
 
@@ -90,7 +90,7 @@ Use Bar chart for month-versus-month categories.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+A missing value leaves a gap. Settled, pending and unknown readings keep distinct line or mark patterns; none is inferred from another reading.
 
 ## Do and don't
 
@@ -102,15 +102,13 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 Use short period labels and a clear title. Explain what is settled in the headline caption. The host supplies the headline; the kit never adds plotted values to produce a customer total.
 
-Use an explicitly labeled timeline; add series only for a real comparison.
-
 ## Accessibility
 
 A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. The value label is supplemental: the summary already announces the latest amount, and selection has no keyboard focus target. Status is conveyed by shape and words as well as color.
 
 ## Used in
 
-Gallery Charts; spending layout pattern. Real composition: `example/lib/screens/gallery_charts.dart`.
+Gallery Charts; spending layout pattern. Example source: `example/lib/screens/gallery_charts.dart`.
 
 ## API
 

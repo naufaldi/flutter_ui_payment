@@ -1,6 +1,6 @@
 # flutter_ui_payment
 
-Composable Flutter UI for optional identity verification (KYC), checkout, host-owned authorization, manual payment instructions, payment status and receipts. It stays clear when a payment is pending, failed, or its result is not known yet. Around that core it ships the pieces a payment app is built from: action rows and menus, confirmations and feedback, a responsive sidebar/drawer shell, sheets, a host-driven video player, labeled promotions, and transaction history.
+Flutter components for checkout, payment status, receipts and optional identity verification (KYC). Build screens for pending, failed and unknown payment results, with host-owned authorization and recovery. The kit also includes navigation, forms, charts, sheets, feedback and transaction history.
 
 > **Ringkasan.** Library komponen UI Flutter untuk KYC opsional dan pembayaran. Komponen hanya merender data terstruktur dari host dan melaporkan aksi lewat callback. Host/backend tetap memutuskan KYC, harga, otorisasi, idempotency, status, dan refund. Library tidak memproses uang, tidak melakukan network call, dan tidak memerlukan router, state manager, kamera, atau SDK payment. Keputusan produk ada di [PRD.md](PRD.md).
 
@@ -22,9 +22,9 @@ flutter run -t lib/checkout_block_demo.dart   # one checkout, with its recovery 
 flutter run                                   # the full example app: Demo, Scenarios, Gallery
 ```
 
-**Building an app with the kit:** [Install](#install) → the docs [Quick start](https://flutter-ui-payment.netlify.app/start/quick-start/) (a complete `lib/main.dart`, then each step to a receipt) → pick a component in the [catalog](https://flutter-ui-payment.netlify.app/components/) → copy a host screen from [Blocks](https://flutter-ui-payment.netlify.app/blocks/) → connect your backend through the [host-owned decisions](https://flutter-ui-payment.netlify.app/concepts/host-owned/) and [integration](docs/integration.md) guides.
+To build an app, [install the package](#install) and follow the [Quick start](https://flutter-ui-payment.netlify.app/start/quick-start/). It starts with a complete `lib/main.dart`, then covers checkout through receipt. Use the [catalog](https://flutter-ui-payment.netlify.app/components/) for individual widgets or copy a complete screen from [Blocks](https://flutter-ui-payment.netlify.app/blocks/). The [host integration guide](docs/integration.md) explains how to connect your backend.
 
-**Coding agents and maintainers:** read [AGENTS.md](AGENTS.md), then the [documentation map](docs/README.md) and the [daily design-system guide](docs/design-system.md). They cover the rules; this table shows where each answer lives.
+Coding agents and maintainers should start with [AGENTS.md](AGENTS.md), the [documentation map](docs/README.md) and the [daily design-system guide](docs/design-system.md). Use this table for task-specific references.
 
 | Question | Where to look |
 | --- | --- |
@@ -39,7 +39,7 @@ flutter run                                   # the full example app: Demo, Scen
 
 ## Why
 
-Payment UIs are mostly happy-path screenshots. Real flows have to answer harder questions: what does the screen say when the submit timed out after the server accepted it? Can the user pay twice? What if an older status arrives after a newer one? This kit makes those states first-class and keeps the business decisions with the host.
+When a payment request times out, the server may already have accepted it. The screen needs to offer a status check for that attempt, block another payment while the result is unresolved, and ignore stale responses. This kit provides those presentation rules while your app and backend decide the payment result.
 
 | Concern | Owner | What the kit does |
 | --- | --- | --- |

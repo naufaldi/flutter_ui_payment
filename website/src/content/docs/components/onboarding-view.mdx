@@ -1,15 +1,15 @@
 ---
 title: Onboarding view
-description: Add context, full-page, focus, settings, sign-in and onboarding view bodies.
+description: Show the current onboarding step, task progress and a pinned completion action.
 ---
 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-KYC setup gets to current-step value first on phones, with all tasks in a collapsed accordion. At 840 dp a 280 dp task sidebar accompanies the current content. Variants: ready, pending, error, completed. Nothing else exists. The host owns every task status. onCompleted fires post-frame once when completed turns true, including an initially completed view; there is no timer or kit navigation.
+KYC setup gets to current-step value first on phones, with all tasks in a collapsed accordion. At 840 dp a 280 dp task sidebar accompanies the current content. Variants: ready, pending, error, completed. The host owns every task status. onCompleted fires post-frame once when completed turns true, including an initially completed view; there is no timer or kit navigation.
 
-**Pinned step action (D62).** `primaryAction`, with at most one quiet `secondaryAction`, is the current step's submit. Given a bounded height the content scrolls and the actions pin to a footer above the bottom safe area, full width on phones; inside a scroll view they follow the content. The footer is hidden while `pending` or `completed`, when the step isn't shown. A step's form then leaves out its own button: `IdentityForm` takes an `IdentityFormController`, and `VerificationReview` takes `inlineSubmit: false` with `VerificationReview.submitButton`. See [Verification](/patterns/verification/).
+**Pinned step action.** `primaryAction`, with at most one quiet `secondaryAction`, is the current step's submit. Given a bounded height the content scrolls and the actions pin to a footer above the bottom safe area, full width on phones; inside a scroll view they follow the content. The footer is hidden while `pending` or `completed`, when the step isn't shown. A step's form then leaves out its own button: `IdentityForm` takes an `IdentityFormController`, and `VerificationReview` takes `inlineSubmit: false` with `VerificationReview.submitButton`. See [Verification](/patterns/verification/).
 
 <Screens>
   <Screen name="android_catalog_onboarding_view_variants" dark="android_catalog_onboarding_view_variants_dark" alt="Onboarding content with progress and continuation actions." caption="Onboarding view" />
@@ -69,11 +69,11 @@ PaymentOnboardingView(
 
 <Screen name="android_tablet_catalog_onboarding_view_variants" alt="Identity verification with the step sidebar beside the documents content, in English on Android tablet." caption="Wide (tablet)" />
 
-Variants: ready, pending, error, completed. Nothing else exists.
+Variants: ready, pending, error, completed.
 
 ### States and content
 
-The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+Phones show the current step with tasks in a collapsed accordion. From 840 dp, a task sidebar sits beside the content.
 
 ## Which variant when
 
@@ -85,7 +85,7 @@ Use Sign-in view for the external sign-in action.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host sets task status and completion. `onCompleted` reports completion once; the host decides when to navigate away.
 
 ## Do and don't
 
@@ -95,19 +95,17 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-The host supplies task status and decides completion; current content precedes tasks on phones.
+Name tasks by what the person needs to do. Show the host's reason beside a blocked task and explain how to continue.
 
 ## Accessibility
 
-Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+Task marks include spoken status. Keep the current step and its pinned action reachable at large text.
 
 Used in H04 and K01 for identity details, document fixtures and review. The host decides task states; consent and verification results remain separate steps.
 
 ## Used in
 
-H04/K01 KYC onboarding. Real composition: `example/lib/screens/gallery_views.dart`.
+H04/K01 KYC onboarding. Example source: `example/lib/screens/gallery_views.dart`.
 
 <Screen name="android_kyc_onboarding_light" dark="android_kyc_onboarding_dark" alt="Example kyc onboarding screen with synthetic data" caption="Example: kyc onboarding" />
 

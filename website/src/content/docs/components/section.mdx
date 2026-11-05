@@ -24,11 +24,11 @@ PaymentSection(child: LoadingSkeleton(rows: 3, leading: false));
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: Checkout and overview; Gallery Kit; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Group related payment content under a heading.
 
 ## Variants
 
-Variants: titled, untitled, trailing action. Nothing else exists.
+Variants: titled, untitled, trailing action.
 
 ### With a header action
 
@@ -60,7 +60,7 @@ Use Form field group for controls with a legend.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The section groups its children. Loading, empty and error presentations belong to the content inside it.
 
 ## Do and don't
 
@@ -74,15 +74,13 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Use a section per topic. If a section needs a sub-section, consider an [expandable section](/components/accordion/) or a separate screen.
 - Use a [divider](/components/divider/) between sections only when space alone does not separate them.
 
-Use one short heading for a related block and a secondary trailing action.
-
 ## Accessibility
 
 - The title is marked as a header, so screen-reader users can jump between sections.
 
 ## Used in
 
-Checkout and overview; Gallery Kit. Real composition: `example/lib/screens/flow_screen.dart`.
+Checkout and overview; Gallery Kit. Example source: `example/lib/screens/flow_screen.dart`.
 
 ## API
 

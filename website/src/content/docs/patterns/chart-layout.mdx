@@ -8,7 +8,7 @@ import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 import HostOwns from '../../../components/HostOwns.astro';
 
-Choose the chart from the customer’s question. These are customer-facing spending summaries, not an operational dashboard.
+Choose the chart from the customer's question. These are customer-facing spending summaries, not an operational dashboard.
 
 <HostOwns>data loading, the chosen ChartState, every amount, headline, delta and verdict.</HostOwns>
 
@@ -27,7 +27,7 @@ The full-screen phone captures show one viewport. Transaction rows and, at 200% 
 
 ## Usage
 
-The container owns height: 180 for compact plots, 320 for featured plots. Meter charts use intrinsic height. Show the host headline first. On a history screen the list comes first and the spending summary follows it (D63); the gallery specimen "In context: spending above history" shows the chart module itself. At most three plots belong in one row, each around 200px or wider; stack them on phones.
+The container owns height: 180 for compact plots, 320 for featured plots. Meter charts use intrinsic height. Show the host headline first. On a history screen the list comes first and the spending summary follows it; the gallery specimen "In context: spending above history" shows the chart module itself. At most three plots belong in one row, each around 200px or wider; stack them on phones.
 
 ```dart
 Row(children: [
@@ -53,7 +53,7 @@ Choose loading before error, error before empty, then ready. `ChartModule` keeps
 
 ## Reading the exact amount
 
-Line and bar charts show one exact value at rest: the latest settled period is selected, with a guide line up to a label above the plot ("29 Okt · Rp420.000"). Tap or drag to read another period (D58). The y-axis gutter grows with its scaled labels, so "Rp600K" never touches the plot at 200%. Above 1.5× text the module caps the plot at `ChartModule.compactHeight`, so the rows under a chart stay on the first screen of a small phone.
+Line and bar charts show one exact value at rest: the latest settled period is selected, with a guide line up to a label above the plot ("29 Okt · Rp420.000"). Tap or drag to read another period. The y-axis gutter grows with its scaled labels, so "Rp600K" never touches the plot at 200%. Above 1.5× text the module caps the plot at `ChartModule.compactHeight`, so the rows under a chart stay on the first screen of a small phone.
 
 ## The payment boundary
 
@@ -74,7 +74,7 @@ The chart summary announces the same latest amount the label shows, so nothing d
 ## See also
 
 - [Line chart](/components/line-chart/), [bar chart](/components/bar-chart/), [meter chart](/components/meter-chart/), [sparkline](/components/sparkline/).
-- Layout guidance adapted from [Stripe’s chart layout pattern](https://docs.stripe.com/stripe-apps/patterns/chart-layout).
+- Layout guidance adapted from [Stripe's chart layout pattern](https://docs.stripe.com/stripe-apps/patterns/chart-layout).
 
 ## Comparing periods
 

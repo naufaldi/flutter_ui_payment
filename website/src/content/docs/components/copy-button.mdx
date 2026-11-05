@@ -7,7 +7,7 @@ import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-The host owns copying through onCopy and returns a boolean. Success shows a check and live Copied announcement for 1500 ms. Failure shows Copy failed beneath the icon until the next attempt. Pending presses cannot duplicate the host call. Value changes invalidate stale results. There are no additional variants. Nothing else exists.
+The host owns copying through onCopy and returns a boolean. Success shows a check and live Copied announcement for 1500 ms. Failure shows Copy failed beneath the icon until the next attempt. Pending presses cannot duplicate the host call. Value changes invalidate stale results. There are no additional variants.
 
 <Screens>
   <Screen name="android_catalog_copy_button_variants" dark="android_catalog_copy_button_variants_dark" alt="Copy actions for payment references, including a failed copy with a retry action." caption="Copy button" />
@@ -37,7 +37,7 @@ Width and alignment follow content. Host widgets own keyboard ordering and platf
 
 ## Variants
 
-Variants: idle, pending, copied, failed. Nothing else exists.
+Variants: idle, pending, copied, failed.
 
 ## Which variant when
 
@@ -51,7 +51,7 @@ Use Icon button for actions without copy feedback.
 
 The glyph cross-fades over 150 ms; instant under reduced motion.
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+`onCopy` returns whether copying succeeded. The button blocks repeat presses while waiting, announces success, and keeps a failure message visible until the next attempt.
 
 **Layout.** The button keeps its 48 dp box in every state. A failed copy shows an error glyph in the danger tone and a persistent "Copy failed" label under the button's end edge, laid over the content below so nothing moves; the next press or a new value clears it.
 
@@ -63,9 +63,7 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Supply the exact reference and return whether host copying succeeded.
+Identify the value being copied. Report failure beside that value instead of showing a success message before the host finishes.
 
 ## Accessibility
 
@@ -75,7 +73,7 @@ Targets are at least 48 dp. Tooltips name icon actions. Links announce their rol
 
 ## Used in
 
-TransactionDetail A02; PaymentReceipt; PaymentInstructions. Real composition: `example/lib/screens/gallery_selection.dart`.
+TransactionDetail A02; PaymentReceipt; PaymentInstructions. Example source: `example/lib/screens/gallery_selection.dart`.
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

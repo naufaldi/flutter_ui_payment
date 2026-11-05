@@ -28,11 +28,9 @@ PaymentInline('Total');
 | Inline | `PaymentInline` |
 | css and numeric styling | Semantic token enums |
 
-Variants: nine text roles, regular, semibold, bold. Nothing else exists.
-
 ## Variants
 
-Variants: nine text roles; regular, semibold, bold. Nothing else exists.
+Variants: nine text roles; regular, semibold, bold.
 
 ### Stripe font roles
 
@@ -57,7 +55,7 @@ Use Amount text for currency formatting.
 
 ## States
 
-Layout and inline text are passive. Images preserve a loading surface and recover from decode failures. Copy feedback stays with the value.
+Inline text displays its supplied content and type role. It has no loading or interaction state.
 
 ## Do and don't
 
@@ -67,17 +65,15 @@ Layout and inline text are passive. Images preserve a loading surface and recove
 
 ## Content guidelines
 
-Use short payment labels and synthetic references in examples.
-
-Use the nine PaymentType roles and semantic text colors.
+Use the role for the text's place in the hierarchy. Use `AmountText` when the value needs currency formatting.
 
 ## Accessibility
 
-Keep reading order aligned with layout. Decorative glyphs are excluded from semantics. Images require alt text; copy actions have labeled targets and confirmation.
+Preserve reading order and allow text to wrap. Use text labels rather than color alone to communicate status.
 
 ## Used in
 
-PaymentInstructions; PaymentSummary; Gallery Layout. Real composition: `example/lib/screens/gallery_layout.dart`.
+PaymentInstructions; PaymentSummary; Gallery Layout. Example source: `example/lib/screens/gallery_layout.dart`.
 
 ## API
 

@@ -31,7 +31,7 @@ flutter run -d <device-id> -t lib/kyc_onboarding_demo.dart
 Check the consent box and continue, fill the synthetic form, review and save.
 The developer menu offers **NIK ditolak host** (the host rejects the ID number
 after a check; the person corrects only that field) and **Simpan gagal** (the
-first save fails and keeps the details). Changing a fixture starts a fresh
+first save fails and keeps the details). Changing a scenario starts a fresh
 synthetic session and ignores answers from the previous one.
 
 ## Composition and boundaries
@@ -63,10 +63,4 @@ All identities in the demo are fictional. See the
 
 ## Proof and limits
 
-Tests prove that consent starts unchecked and Continue waits for it, that the
-form asks for no PIN or OTP, that a host-rejected ID number is corrected in place
-and reviewed masked, that a failed save keeps the details and a confirmed save
-still says identity is not verified, and that consent and Continue stay reachable
-at 320 dp and 200% text in dark mode with reduced motion. Android captures were
-inspected. No hardware speed or iOS visual claim. The demo is not an identity
-service.
+Widget tests cover consent, field correction, masked review, failed-save recovery and a reachable Continue action at 320 dp with 200% text. Connect your own consent records, persistence and identity service. See [Compatibility](/reference/compatibility/) for device coverage.

@@ -16,7 +16,7 @@ Buttons also support a dedicated `PaymentButtonTheme` and per-instance `PaymentB
 
 Fields (text, search, text area, select, date, date range and currency) have a dedicated `PaymentFieldTheme` for fill, resting outline, corners and input typography, with no per-field style. See [Text field customization](/components/text-field/#customization).
 
-Every other family reads the shared theme, so a scoped `PaymentTheme` restyles it, toasts included (D103). The example app's host checkout shows two different checkout layouts sharing one product button and field theme and one named pay preset.
+Other component families read the shared theme. Scope `PaymentTheme` to a feature to change its appearance; toasts capture the caller's scoped themes when shown. The host checkout example shares a button theme, field theme and named pay-button preset across two layouts.
 
 ```dart
 final scheme = ColorScheme.fromSeed(seedColor: brandColor);
@@ -77,13 +77,13 @@ The second brand, Lumen, is also in `example/lib/themes.dart`: pure black and wh
 
 ## Soft: a third preset
 
-Soft (`DemoBrand.soft`, D106) shows a softer product look with the same widgets and no new API. It sets a tinted page, white or lifted panels, an indigo accent, rounder D101 radius roles (8 tags, 12 controls, 16 boxes, 20 sheets), a white field fill through `PaymentFieldTheme` and a lighter amount weight. The inset panel around the block is host layout, `SoftInsetPanel` in `example/lib/compositions/`, not a kit widget.
+Soft (`DemoBrand.soft`) uses a tinted page, white or lifted panels, an indigo accent and rounder corners: 8 dp for tags, 12 for controls, 16 for boxes and 20 for sheets. It also sets a white field fill through `PaymentFieldTheme` and a lighter amount weight. `SoftInsetPanel` in `example/lib/compositions/` provides the host panel around the block.
 
 <Screens>
   <Screen name="android_block_merchant_soft" dark="android_block_merchant_soft_dark" alt="Merchant Overview in the Soft host preset: a white inset panel with rounder corners on a tinted page, indigo accent and lighter balance." caption="Soft: Merchant overview in a host inset panel" />
 </Screens>
 
-On the tinted light page, secondary text is 5.6:1, the accent 6.3:1, the control edge 3.5:1 and the status tones at least 5.6:1. Targets stay 48 dp and full-width buttons don't scale when pressed, whatever generic web guidance suggests. Charts keep the D39 ramps and dash; there is no series palette API. Run it from `example/`:
+On the tinted light page, secondary text is 5.6:1, the accent 6.3:1, the control edge 3.5:1 and the status tones at least 5.6:1. Targets stay at least 48 dp. Full-width buttons keep their pressed layer without scaling. Charts retain their shared color ramps and dash patterns; there is no series palette API. Run it from `example/`:
 
 ```sh
 flutter run -d <device-id> -t lib/soft_merchant_demo.dart
@@ -95,7 +95,7 @@ flutter run -d <device-id> -t lib/soft_merchant_demo.dart
 
 ## System bars on Android
 
-System chrome belongs to the host (B11, D85). On Android 15 and later, the navigation-bar contrast scrim can follow the window theme while your app uses another theme. Enable edge-to-edge in main(), then wrap the app in an AnnotatedRegion inside MaterialApp.builder. That context reads the resolved app theme, including an in-app theme switch.
+Your app controls system bars. On Android 15 and later, the navigation-bar contrast scrim can follow the window theme while your app uses another theme. Enable edge-to-edge in `main()`, then wrap the app in an `AnnotatedRegion` inside `MaterialApp.builder`. That context reads the resolved app theme, including an in-app theme switch.
 
 ```dart
 import 'package:flutter/material.dart';

@@ -1,13 +1,13 @@
 ---
 title: Focus view
-description: Add context, full-page, focus, settings, sign-in and onboarding view bodies.
+description: Present a focused task in a phone sheet or tablet panel, with optional discard confirmation.
 ---
 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-A report or other focused task presented through existing sheets. Variants: small, large. Nothing else exists. Stripe size maps to showPaymentFocusView(size:), shown/setShown map to its Future and host dismissal, confirmCloseMessages maps to PaymentConfirmClose. On phones, including a phone in landscape (window shorter side under 600 dp, D92), it is a bottom sheet: small hugs content, large fills. On tablets it is a side panel 420/720 dp wide. Drag dismiss is disabled so it cannot bypass confirmation. Close, scrim, Escape and Back ask before discarding when confirmClose is supplied. Inline specimens do not block their host route. Both the phone sheet and the wide panel keep the themes around the caller, so a feature-scoped `PaymentTheme` or `PaymentButtonTheme` also styles the panel and its footer buttons.
+A report or other focused task presented through existing sheets. Variants: small, large. Stripe size maps to showPaymentFocusView(size:), shown/setShown map to its Future and host dismissal, confirmCloseMessages maps to PaymentConfirmClose. On phones, including a phone in landscape (window shorter side under 600 dp, D92), it is a bottom sheet: small hugs content, large fills. On tablets it is a side panel 420/720 dp wide. Drag dismiss is disabled so it cannot bypass confirmation. Close, scrim, Escape and Back ask before discarding when confirmClose is supplied. Inline specimens do not block their host route. Both the phone sheet and the wide panel keep the themes around the caller, so a feature-scoped `PaymentTheme` or `PaymentButtonTheme` also styles the panel and its footer buttons.
 
 <Screens>
   <Screen name="android_catalog_focus_view_variants" dark="android_catalog_focus_view_variants_dark" alt="Focused payment content with a title, body and primary action." caption="Focus view" />
@@ -31,7 +31,7 @@ PaymentFocusView(
 
 ## Footer width
 
-The footer stacks its actions at full width, primary on top, whenever the footer is narrower than 600 dp or the text is large (D59). Wider, the actions hug their labels at the end edge.
+The footer stacks its actions at full width, primary on top, whenever the footer is narrower than 600 dp or the text is large. Wider, the actions hug their labels at the end edge.
 
 ## Stripe → kit
 
@@ -46,11 +46,11 @@ The footer stacks its actions at full width, primary on top, whenever the footer
 
 <Screen name="android_tablet_catalog_focus_view_variants" alt="Report form with Send and Cancel actions aligned in the wide footer, in English on Android tablet." caption="Wide (tablet)" />
 
-Variants: small, large. Nothing else exists.
+Variants: small, large.
 
 ### States and content
 
-The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+Choose small for a short task and large for a task that needs more room. Phone presentation is a bottom sheet; tablets use a side panel.
 
 ## Which variant when
 
@@ -62,7 +62,7 @@ Use Full page view for a destination in the main navigation.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Pass `confirmClose` when a draft has unsaved changes. A failed submit should preserve the draft so the person can correct or retry it.
 
 ## Do and don't
 
@@ -72,19 +72,17 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Use large only for a wider task; confirm close only when the draft is dirty.
+Name the task and its completion action. Explain what will be lost when asking the person to discard a draft.
 
 ## Accessibility
 
-Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+Close, Back, Escape and scrim dismissal use the same discard confirmation when supplied. Labels wrap at large text.
 
 Report a problem (A02/H04) confirms closing only while the local draft is dirty. Sending returns a case ID; failure preserves the draft for retry.
 
 ## Used in
 
-Report A02/H04; sign-in learn-more. Real composition: `example/lib/screens/gallery_views.dart`.
+Report A02/H04; sign-in learn-more. Example source: `example/lib/screens/gallery_views.dart`.
 
 <Screen name="android_report_problem_light" dark="android_report_problem_dark" alt="Example report problem screen with synthetic data" caption="Example: report problem" />
 

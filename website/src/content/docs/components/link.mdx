@@ -7,7 +7,7 @@ import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-Inline actions hug their label with a 48 dp target and no container. Primary uses an underlined accent heading; secondary uses an underlined caption. The underline marks a link even when the accent is monochrome and matches heading text (D96). External destinations have a trailing glyph, link role and spoken hint. In-place actions use the button role. The host opens the destination. Variants: primary, secondary. Nothing else exists.
+Inline actions hug their label with a 48 dp target and no container. Primary uses an underlined accent heading; secondary uses an underlined caption. The underline marks a link even when the accent is monochrome and matches heading text. External destinations have a trailing glyph, link role and spoken hint. In-place actions use the button role. The host opens the destination. Variants: primary, secondary.
 
 <Screens>
   <Screen name="android_catalog_link_variants" dark="android_catalog_link_variants_dark" alt="Inline Edit, external help and explanatory links, including disabled actions and a wrapping label." caption="Link" />
@@ -35,7 +35,7 @@ Width and alignment follow content. Host widgets own keyboard ordering and platf
 
 ## Variants
 
-Variants: primary, secondary. Nothing else exists.
+Variants: primary, secondary.
 
 ## Which variant when
 
@@ -47,7 +47,7 @@ Use Button for the main task action.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host handles the destination or in-place action. A disabled link keeps its label visible and cannot be activated.
 
 ## Do and don't
 
@@ -57,9 +57,7 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Use a host callback and external indicator for a destination outside the app.
+Use a destination or action as the label, such as "View statement". Mark external destinations so the person knows they are leaving the app.
 
 ## Accessibility
 
@@ -69,7 +67,7 @@ Targets are at least 48 dp. Tooltips name icon actions. Links announce their rol
 
 ## Used in
 
-Merchant support A02; sign-in legal links H04. Real composition: `example/lib/screens/gallery_selection.dart`.
+Merchant support A02; sign-in legal links H04. Example source: `example/lib/screens/gallery_selection.dart`.
 
 <Screen name="android_sign_in_light" dark="android_sign_in_dark" alt="Example sign in screen with synthetic data" caption="Example: sign in" />
 

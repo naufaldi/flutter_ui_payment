@@ -73,7 +73,7 @@ The full sequence, including `PaymentAttempt` and `reconcile`, is in the [Quick 
 
 ## Behavior
 
-- **Pinned action (D62).** Given a bounded height, for example as a `Scaffold` body, the status scrolls and the first action pins to a footer at the bottom. Under it goes one quiet action: your `secondaryAction` (such as "Done" once the attempt is final), otherwise "Contact support". The other actions stay in the content as hug buttons, after the instructions. Pass a banner, such as "Cancellation requested", as `header` so it scrolls with the status. Inside a scroll view every action follows the status as before.
+- **Pinned action.** Given a bounded height, for example as a `Scaffold` body, the status scrolls and the first action pins to a footer at the bottom. Under it goes one quiet action: your `secondaryAction` (such as "Done" once the attempt is final), otherwise "Contact support". The other actions stay in the content as hug buttons, after the instructions. Pass a banner, such as "Cancellation requested", as `header` so it scrolls with the status. Inside a scroll view every action follows the status as before.
 - **Actions** come only from `attempt.availableActions`. While the outcome is unknown that is `checkStatus` alone. `startNewAttempt` appears only when your host allows it and the previous attempt is final and not a success.
 - **Unknown** reads "Don't pay again." first, with a hatched band. The "last updated" row appears only once a host snapshot exists.
 - **Instructions** sit after the explanation and before the actions, so the account to pay into comes before Check status. Above 1.5× text, when the actions are inline, they move after the actions; with a pinned footer they keep their place. They are not shown while the outcome is unknown, where an account to pay into would read as an invitation to pay again.
@@ -116,4 +116,4 @@ Use [Property list](/components/property-list/) for grouped payment facts and [T
 [Button group](/components/button-group/) now composes related status and dialog actions. Overflow menus wrap long labels at large text.
 
 
-Phase 5 composes these pages into the payment patterns.
+Use the [Checkout and recovery block](/blocks/checkout-recovery/) for a complete host composition from checkout through status and receipt.

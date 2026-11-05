@@ -29,11 +29,9 @@ PaymentImage(image: provider, alt: 'Bank Contoh');
 | Img | `PaymentImage` |
 | css and numeric styling | Semantic token enums |
 
-Variants: loading, loaded, failed. Nothing else exists.
-
 ## Variants
 
-Variants: loading, loaded, failed. Nothing else exists.
+Variants: loading, loaded, failed.
 
 ## Which variant when
 
@@ -47,7 +45,7 @@ Use Icon for a symbolic status mark.
 
 The image fades in over its placeholder; instant under reduced motion.
 
-Layout and inline text are passive. Images preserve a loading surface and recover from decode failures. Copy feedback stays with the value.
+The image preserves its loading surface and handles decode failure. It fades in when loaded, with no fade under reduced motion.
 
 ## Do and don't
 
@@ -57,17 +55,15 @@ Layout and inline text are passive. Images preserve a loading surface and recove
 
 ## Content guidelines
 
-Use short payment labels and synthetic references in examples.
-
-Pass a host ImageProvider and alt; empty alt means decorative.
+Supply alt text that explains the image's purpose. Use an empty alt for decorative images.
 
 ## Accessibility
 
-Keep reading order aligned with layout. Decorative glyphs are excluded from semantics. Images require alt text; copy actions have labeled targets and confirmation.
+Meaningful images need alt text. Decorative images use an empty alt so they do not interrupt reading order.
 
 ## Used in
 
-KYC capture and Gallery Layout. Real composition: `example/lib/screens/gallery_layout.dart`.
+KYC capture and Gallery Layout. Example source: `example/lib/screens/gallery_layout.dart`.
 
 ## API
 

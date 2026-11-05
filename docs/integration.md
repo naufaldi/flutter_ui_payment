@@ -1,6 +1,6 @@
 # Integrating the kit into an app
 
-A host app adds the kit in five steps. Each step names what your code must do, because the kit renders state and reports intent but never decides anything about money.
+Add the package, configure theme and language, then connect host data and callbacks. Your app and backend own pricing, authorization and payment results; the kit displays them.
 
 ## 1. Depend on it
 
@@ -32,9 +32,9 @@ MaterialApp(
 );
 ```
 
-Without the extension, the kit derives every token from your `ColorScheme`. The example's two brands live in `example/lib/themes.dart`.
+Without the extension, the kit derives tokens from your `ColorScheme`. The example's Hairline, Lumen and Soft themes live in `example/lib/themes.dart`.
 
-For a product look, add `PaymentButtonTheme` and `PaymentFieldTheme` to the app theme or to a feature's scoped `Theme`, keeping the parent's other extensions. Put a repeated look in a named preset that takes `BuildContext`. `example/lib/compositions/host_checkout.dart` builds two different checkout layouts from the same host data and callbacks this way (D98).
+For a product look, add `PaymentButtonTheme` and `PaymentFieldTheme` to the app theme or to a feature's scoped `Theme`, keeping the parent's other extensions. Reuse a repeated look through a named host preset that takes `BuildContext`. `example/lib/compositions/host_checkout.dart` builds two checkout layouts from the same host data and callbacks.
 
 For a connected host example, copy `host_checkout.dart`, `host_payment_recovery.dart` and `host_checkout_journey.dart` from `example/lib/compositions/`. `HostCheckoutJourney` pins the invoice pay action and then renders the existing recovery/receipt composition from host callback results. Its gallery fixture demonstrates a lost submit response and pending/offline recovery without `DemoCoordinator`. The host persists the attempt before sending and supplies revalidated quotes, authoritative snapshots and matching receipt data; the screen keeps only mounted presentation state. The website's Checkout pattern explains callback ownership and session identity.
 

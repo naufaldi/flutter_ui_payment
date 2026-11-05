@@ -42,7 +42,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: single currency, allowlisted currency switch. Nothing else exists.
+Variants: single currency, allowlisted currency switch.
 
 ### Default
 
@@ -57,7 +57,7 @@ Every change is parsed, but the error text appears only after the field loses fo
 | `empty` | Nothing entered | Enter an amount. |
 | `invalidFormat` | Letters or misplaced separators | Use digits only, for example 150000. |
 | `ambiguous` | Text that could be read two ways, such as `100,000` for IDR in Indonesian | This format can be read two ways. Remove separators and try again. |
-| `negative` | A minus sign | Amount can’t be negative. |
+| `negative` | A minus sign | Amount can't be negative. |
 | `zero` | Zero | Amount must be more than 0. |
 | `belowMinimum` | Under `minimum` | Minimum amount is Rp10,000. |
 | `aboveMaximum` | Over `maximum` | Maximum amount is Rp5,000,000. |
@@ -70,7 +70,7 @@ The currency symbol or code, spaces and correctly placed group separators are ac
 
 Stripe CurrencyField maps to PaymentCurrencyField; description appears above limits. Size keeps the amountLarge style: small subtracts 8 dp from today's default input padding, medium keeps it, large adds 8 dp; even small stays at least 48 dp. Helpers and errors can add height.
 
-PadAllFractionDigits maps to padFractionDigits: on blur or submit, valid USD 5 becomes 5.00 (5,00 in Indonesian); IDR and invalid entries stay unchanged. This is formatting only and emits no onChanged callback. FractionDigitOffset is refused (D28). Currency allowlists arrive in Phase 4B; parse issues and values remain AmountParseResult.
+Stripe `padAllFractionDigits` maps to `padFractionDigits`: on blur or submit, valid USD 5 becomes 5.00 (5,00 in Indonesian); IDR and invalid entries stay unchanged. Formatting emits no `onChanged` callback. There is no `fractionDigitOffset` prop. Supply a `currencies` allowlist to offer currency selection, and handle parse issues through `AmountParseResult`.
 
 Migration: AmountInput remains a deprecated typedef until 0.2.0. Rename the constructor to PaymentCurrencyField; existing arguments keep compiling.
 
@@ -92,7 +92,7 @@ Use Text field for non-monetary numbers.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Use `AmountParseResult` to distinguish valid input from a parse issue. Do not replace incomplete or invalid input with a guessed amount.
 
 **Layout.** The entered amount keeps the 20 px amount style on the input's 24 dp line, so the field is 48, 56 or 64 dp like a text field of the same size, at every text scale. The amount follows text scaling up to 1.6×.
 
@@ -108,8 +108,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Always pass the limits you enforce, so people see them before they type.
 - Do not format or rewrite what people type; show the formatted amount elsewhere, for example in the [summary](/patterns/checkout/).
 
-Keep currency fixed unless the host explicitly allows switching.
-
 ## Accessibility
 
 - The entered amount follows text scaling up to 1.6×, like other large amounts.
@@ -117,11 +115,11 @@ Keep currency fixed unless the host explicitly allows switching.
 
 ## Used in
 
-Top-up scenarios; Gallery Controls. Real composition: `example/lib/screens/gallery_selection.dart`.
+Top-up scenarios; Gallery Controls. Example source: `example/lib/screens/gallery_selection.dart`.
 
 ## Customization
 
-The amount box follows the field-family `PaymentFieldTheme` (D102): fill, resting outline and corners. The entered amount keeps the amount type role; themed input typography changes only its line height, with the default input line as its minimum to keep digits visible. A smaller input font can therefore make text fields shorter than currency fields. See [Text field customization](/components/text-field/#customization).
+The amount box follows the field-family `PaymentFieldTheme`: fill, resting outline and corners. The entered amount keeps the amount type role; themed input typography changes only its line height, with the default input line as its minimum to keep digits visible. A smaller input font can therefore make text fields shorter than currency fields. See [Text field customization](/components/text-field/#customization).
 
 ## API
 

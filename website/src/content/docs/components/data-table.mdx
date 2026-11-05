@@ -1,13 +1,19 @@
 ---
 title: Data table
-description: Add responsive DataTable with typed cells, paging, selection, actions and local sort/filter. Closes #17.
+description: Display host records with typed cells, selection, sorting and local or server paging.
 ---
 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-Settlement statements use host data. Variants: text, link, date, id, status, currency cells; local, offset, cursor pagination. Nothing else exists. Under local paging or no pagination, a host predicate filters rows and sortable columns reorder copies. Under offset/cursor paging, rows are displayed as supplied and sort/page changes call the host. Selection is controlled, and select-all covers the current page. Narrow and large-text layouts collapse to labeled rows. The selection count and batch actions share one line when the actions fit on one line beside the count; otherwise the actions move under the count, so a button label never wraps (D97). Column reorder/resize are not mirrored (D28); legacy flags must remain false and are deprecated until 0.2.0. Stripe batchable maps to selection/onSelectionChanged; loading maps to pending; linkMap maps to column callbacks. No network or destination handling is performed.
+`PaymentDataTable` displays host records with typed cells, selection, row actions and paging. Select-all covers the current page. On narrow screens and at large text, columns become labeled rows.
+
+With local paging or no pagination, the table filters through a host predicate and sorts copies of the rows. With offset or cursor paging, it displays rows as supplied and calls the host when sorting or paging changes.
+
+Batch actions sit beside the selection count when they fit; otherwise they move below it without wrapping their labels. Column reorder and resize are unsupported. Their deprecated flags must remain false until removal in 0.2.0.
+
+For Stripe integrations, `batchable` maps to selection and `onSelectionChanged`, `loading` maps to `pending`, and `linkMap` maps to column callbacks. Your host handles networking and destinations.
 
 <Screens>
   <Screen name="android_catalog_data_table_variants" dark="android_catalog_data_table_variants_dark" alt="Settlement records with labelled row values, selection and table actions." caption="Data table" />
@@ -44,11 +50,11 @@ PaymentDataTable<int>(
 
 <Screen name="android_tablet_catalog_data_table_variants" alt="Settlement table with search, selection, pagination, loading rows and an empty state; later examples extend beyond the 1200 dp crop cap, in English on Android tablet." caption="Wide (tablet)" />
 
-Variants: text, link, date, id, status, currency cells; local, offset, cursor pages. Nothing else exists.
+Variants: text, link, date, id, status, currency cells; local, offset, cursor pages.
 
 ### States and content
 
-The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+Choose local paging for records already held by the app. With offset or cursor paging, supply the current page and handle page and sort callbacks in the host.
 
 ## Which variant when
 
@@ -68,7 +74,7 @@ Choose paging by who holds the rows:
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host supplies loading, error and empty state, selected row IDs and paging data. For server paging, keep sorting and filtering on the server as well.
 
 ## Do and don't
 
@@ -78,23 +84,21 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Use offset/cursor callbacks for host pages; never reorder those rows locally.
+Use short column labels and explicit status words. Keep currency visible and references distinguishable from amounts.
 
 ## Accessibility
 
-Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+Narrow rows retain column context in semantics. Select-all names its page scope, and sorting announces the column and direction.
 
 On phones, select-all has a visible label. The sort trigger names its column and direction; Default order restores host order.
 
 A03 is a searchable settlement statement: local pages select ten rows, sort summaries describe the current order and a secondary batch action prepares the selected synthetic settlements.
 
-Column reorder/resize are not mirrored (D28): phones show a list, and the host configures wide column order and width. The legacy flags and order callback are deprecated and removed in 0.2.0.
+Column reorder/resize are not mirrored: phones show a list, and the host configures wide column order and width. The legacy flags and order callback are deprecated and removed in 0.2.0.
 
 ## Used in
 
-Statement A03; PaymentDetailPageTable. Real composition: `example/lib/screens/gallery_content.dart`.
+Statement A03; PaymentDetailPageTable. Example source: `example/lib/screens/gallery_content.dart`.
 
 <Screen name="android_statement_light" dark="android_statement_dark" alt="Example statement screen with synthetic data" caption="Example: statement" />
 

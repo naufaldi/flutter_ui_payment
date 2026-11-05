@@ -54,7 +54,7 @@ PaymentTable(
 
 <Screen name="android_tablet_catalog_table_variants" alt="Payment methods, fees, arrival times and total in a wide table, in English on Android tablet." caption="Wide (tablet)" />
 
-Variants: wide table, narrow labeled rows. Nothing else exists.
+Variants: wide table, narrow labeled rows.
 
 Use for fee schedules or host-computed statement summaries. Below 600 dp or at large text, rows become labeled lists. Wide tables pin the row-header column and scroll other columns with an edge fade. Numeric columns align to the end with tabular figures. No stripes. Spans, centered columns, and arbitrary cell widths are not supported.
 
@@ -84,17 +84,15 @@ Static rows collapse below 600 dp or at large text: the row header is the title 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Keep amounts numeric and method as the row header; phones collapse automatically.
+Give every column a descriptive heading. Include the currency with amounts and show unknown status explicitly.
 
 ## Accessibility
 
-Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+Keep column labels in the semantics of narrow rows. Use status words as well as color and tabular figures for amounts.
 
 ## Used in
 
-Fees A04. Real composition: `example/lib/screens/steps/fees_step.dart`.
+Fees A04. Example source: `example/lib/screens/steps/fees_step.dart`.
 
 <Screen name="android_fees_light" dark="android_fees_dark" alt="Example fees screen with synthetic data" caption="Example: fees" />
 

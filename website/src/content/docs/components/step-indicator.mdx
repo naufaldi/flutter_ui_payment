@@ -22,11 +22,11 @@ PaymentStepIndicator(steps: steps, current: _step);
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: Checkout merchant steps; Gallery Kit; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Show the current step in the host-defined checkout sequence.
 
 ## Variants
 
-Variants: current step in a host-defined sequence. Nothing else exists.
+Variants: current step in a host-defined sequence.
 
 ## Which variant when
 
@@ -48,17 +48,15 @@ The host supplies current progress. Completed and upcoming steps remain readable
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Pass current and steps from the host; the indicator never advances itself.
+Use short step names that describe the checkout sequence. Do not mark a step complete before the host reports completion.
 
 ## Accessibility
 
-Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+Step labels and the current step communicate progress without relying on color.
 
 ## Used in
 
-Checkout merchant steps; Gallery Kit. Real composition: `example/lib/screens/gallery_kit.dart`.
+Checkout merchant steps; Gallery Kit. Example source: `example/lib/screens/gallery_kit.dart`.
 
 ## API
 

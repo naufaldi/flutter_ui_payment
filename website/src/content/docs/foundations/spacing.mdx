@@ -8,9 +8,9 @@ import Screen from '../../../components/Screen.astro';
 import Props from '../../../components/Props.astro';
 import TokenTable from '../../../components/TokenTable.astro';
 
-Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
+Use `PaymentSpace` for spacing and `PaymentRadius` for corner roles. Resolve them from the current theme rather than repeating numeric values at component call sites.
 
-The scale is **4 / 8 / 12 / 16 / 24 / 32** on the 8 base: an 8 pt grid with 4 pt half-steps, so `block` (12) is on the grid (D46). Every kit spacing value resolves through `theme.space(PaymentSpace.<role>)`, and **one role uses one value**: icon → text uses `block` (12) in the toast, banner, state message, accordion, skeleton, list row and status header alike.
+The scale is **4 / 8 / 12 / 16 / 24 / 32** on the 8 base: an 8 pt grid with 4 pt half-steps, so `block` (12) is on the grid. Every kit spacing value resolves through `theme.space(PaymentSpace.<role>)`, and **one role uses one value**: icon → text uses `block` (12) in the toast, banner, state message, accordion, skeleton, list row and status header alike.
 
 <Screen name="android_catalog_spacing_roles" dark="android_catalog_spacing_roles_dark" alt="All seven spacing roles, from none at 0 dp to major at 32 dp, with labelled gaps between paired markers." caption="PaymentSpace roles resolved by the example theme" />
 

@@ -1,13 +1,13 @@
 ---
 title: Detail page table
-description: Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
+description: A detail module for payment attempts, with loading, empty and retry states.
 ---
 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-Payment attempts as a detail module. Variants: pending, ready, empty, error. Nothing else exists. Composes DataTable with pagination null and no selection. The host owns row actions, retry and Create. Module errors use warning tone. Stripe extraActions render as a dropdown; dashboard-only showOpenAppAction is not mirrored.
+Payment attempts as a detail module. Variants: pending, ready, empty, error. Composes DataTable with pagination null and no selection. The host owns row actions, retry and Create. Module errors use warning tone. Stripe extraActions render as a dropdown; dashboard-only showOpenAppAction is not mirrored.
 
 <Screens>
   <Screen name="android_catalog_detail_page_table_variants" dark="android_catalog_detail_page_table_variants_dark" alt="Payment detail table with labelled rows and supporting information." caption="Detail page table" />
@@ -72,11 +72,11 @@ PaymentDetailPageTable<int>(
 
 ## Variants
 
-Variants: pending, ready, empty, error. Nothing else exists.
+Variants: pending, ready, empty, error.
 
 ### States and content
 
-The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+This detail module composes `PaymentDataTable` without paging or selection. Use the standalone data table when those interactions are needed.
 
 ## Which variant when
 
@@ -88,7 +88,7 @@ Use Data table for selectable settlement pages.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Use pending while attempts load. An empty result explains that there are no attempts; a failed load shows a warning and a host retry action.
 
 ## Do and don't
 
@@ -98,19 +98,17 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Use direct columns and explicit status mapping; the module omits paging and selection.
+Name each attempt's reference, method, time and status. Use an explicit unknown label when no result is confirmed.
 
 ## Accessibility
 
-Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+Keep the attempt status in words and retain column labels when rows collapse on phones.
 
 A02 uses a direct attempts module with reference, date, method, status and amount columns. Unknown status uses a neutral explicit label.
 
 ## Used in
 
-Transaction detail A02/H04. Real composition: `example/lib/screens/gallery_views.dart`.
+Transaction detail A02/H04. Example source: `example/lib/screens/gallery_views.dart`.
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

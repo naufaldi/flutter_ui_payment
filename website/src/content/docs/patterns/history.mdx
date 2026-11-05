@@ -65,15 +65,15 @@ TransactionHistory(
 
 ## Statement link
 
-The history page opens the statement from its title row: `PaymentFullPageView(pageLink: PaymentLink(label: 'Laporan', …))` shows "Laporan ›" beside the title (D59a). The title has priority and never breaks inside a word: when the title on one line and the link don't fit side by side, as with "Transactions" and "Statement ›" on a small phone at 200%, at large text the link becomes the first item behind ⋮, merged with any existing header actions (D83). At normal text it keeps its own line when needed; external links always keep their own line. History has no priority action, so it has no footer.
+The history page opens the statement from its title row: `PaymentFullPageView(pageLink: PaymentLink(label: 'Laporan', …))` shows "Laporan ›" beside the title. The title has priority and never breaks inside a word: when the title on one line and the link don't fit side by side, as with "Transactions" and "Statement ›" on a small phone at 200%, at large text the link becomes the first item behind ⋮, merged with any existing header actions. At normal text it keeps its own line when needed; external links always keep their own line. History has no priority action, so it has no footer.
 
-History is for finding a payment, so the list leads at every text size and locale (D63): the header, the active-filter chips, then search, the tabs (the filter button on phones at large text, D91) and the rows, then the spending chart and the month's figures (payments, refunds, most-used method). There is no large-text mode and no chart toggle. The full report opens through "Laporan ›", or through ⋮ then "Laporan" when the link cannot fit at large text.
+History is for finding a payment, so the list leads at every text size and locale: the header, the active-filter chips, then search, the tabs (the filter button on phones at large text, D91) and the rows, then the spending chart and the month's figures (payments, refunds, most-used method). There is no large-text mode and no chart toggle. The full report opens through "Laporan ›", or through ⋮ then "Laporan" when the link cannot fit at large text.
 
 ## Filters on one line
 
-The date range is a calendar button at the end of the search line, not a labelled field above it (D63a): pass `PaymentDateRangePicker.button` in `searchActions`. It opens the same presets and range calendar, reads "Rentang tanggal" / "Date range" as its tooltip and spoken name, and fills with the accent while a range is set. The chosen range shows as the "Tanggal: …" chip with ×, so nothing is hidden. With actions on the line, the search shows its label as the placeholder, and the label stays its spoken name. At 200% on the 360×640 dp Android phone, the header link stays beside the title when it fits and moves into the menu when it cannot (D83). The first transaction fits above the tab bar.
+The date range is a calendar button at the end of the search line, not a labelled field above it: pass `PaymentDateRangePicker.button` in `searchActions`. It opens the same presets and range calendar, reads "Rentang tanggal" / "Date range" as its tooltip and spoken name, and fills with the accent while a range is set. The chosen range shows as the "Tanggal: …" chip with ×, so nothing is hidden. With actions on the line, the search shows its label as the placeholder, and the label stays its spoken name. At 200% on the 360×640 dp Android phone, the header link stays beside the title when it fits and moves into the menu when it cannot. The first transaction fits above the tab bar.
 
-On phones at large text the status tabs become a filter button at the end of the search line, after your `searchActions` (D91). It reads "Filter by status" / "Saring menurut status" with the current status as its value, opens the action sheet with every status (the current one checked), and fills with the accent while a status other than All is set; show that status as a chip too. Every page header also sits 8 dp closer to its body at large text. With both, a whole first row, badge included, fits above the tab bar on a 320 dp Android phone at 200% with gesture or three-button navigation ([measurements](/reference/design-decisions/#d91-acceptance-measurements-3-nov-2026)). Normal text and screens 600 dp and wider keep the tabs.
+On phones at large text the status tabs become a filter button at the end of the search line, after your `searchActions`. It reads "Filter by status" / "Saring menurut status" with the current status as its value, opens the action sheet with every status (the current one checked), and fills with the accent while a status other than All is set; show that status as a chip too. Every page header also sits 8 dp closer to its body at large text. With both, a whole first row, badge included, fits above the tab bar on a 320 dp Android phone at 200% with gesture or three-button navigation ([measurements](/reference/design-decisions/#d91-acceptance-measurements-3-nov-2026)). Normal text and screens 600 dp and wider keep the tabs.
 
 <Screen name="android_history_light_200" alt="History on 360×640 dp Android phone at 200% text: the search line with its calendar and status filter buttons, then a whole first transaction row above the tab bar" caption="360×640 dp Android phone, 200%, Indonesian" />
 
@@ -81,7 +81,7 @@ On phones at large text the status tabs become a filter button at the end of the
 
 - A record with `status: null` is "not confirmed yet". It falls under **In progress**, never **Unsuccessful**, and its detail should offer a status check, never paying again.
 - Failed and canceled amounts are struck through; refunded amounts are not. Refunds appear as their own section next to the original payment.
-- Filters are text tabs with a 2 px underline; on phones at large text they are the filter button on the search line (D91). Pending and unknown share the amber tag in the list and differ by icon and word; the hatched band appears only on the detail.
+- Filters are text tabs with a 2 px underline; on phones at large text they are the filter button on the search line. Pending and unknown share the amber tag in the list and differ by icon and word; the hatched band appears only on the detail.
 - `TransactionHistory` lays records out in a column. For long lists, build `TransactionListItem`s in a `ListView.builder` yourself.
 
 Pass `onCopyReference` to TransactionDetail to show reference copying; the host performs the copy and reports success.
@@ -100,9 +100,6 @@ Search uses PaymentTextField.search. Focus uses the accent border; clearing retu
 
 ## Filter foundation
 
-Date range filters and chips arrive in Phase 5.
-
-
-Phase 5 composes the detail and overview pages into transaction history.
+Use the date-range button and removable chips to show active filters. `TransactionHistory` combines the search, status filters and host-provided records; detail and overview pages compose around it.
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history with synthetic data" />

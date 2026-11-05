@@ -28,7 +28,7 @@ flutter run -d <device-id> -t lib/checkout_block_demo.dart
 ```
 
 1. Review **Paket Belajar Rp100.000 + Biaya layanan Rp2.500** and pay the total.
-2. The default **Respons hilang** fixture loses the response. No receipt appears.
+2. The default **Respons hilang** scenario loses the response. No receipt appears.
 3. Tap **Cek status**. The synthetic host confirms the same attempt; only then
    does its matching receipt appear. **Selesai** starts a fresh demo session.
 
@@ -37,14 +37,14 @@ The top bar is developer tooling: switch light/dark or choose **Skenario demo**.
 the next check. **Struk gagal dimuat** confirms payment but fails the first receipt
 load; **Lihat struk** retries without sending another payment. Selecting a scenario
 deliberately resets the synthetic session; this is not a customer recovery action.
-The fixed fixture clock is not a verdict source. Share is dismissed and copy
-reports unavailable: the demo performs no platform effect.
+The demo uses a fixed clock; elapsed time never decides payment status. Sharing
+returns dismissed and copying returns unavailable, without opening platform services.
 
 ## Composition and ownership
 
 `HostCheckoutJourney` connects `InvoiceCheckout` and `HostPaymentRecovery`.
-It accepts host data and async callbacks, and expects bounded height such as a
-`Scaffold.body`. There is no `DemoCoordinator`, router dependency or block runtime.
+It accepts host data and async callbacks. Place it in a bounded body such as
+`Scaffold.body` so the main action can stay pinned.
 
 | Concern | Existing surface |
 | --- | --- |
@@ -69,7 +69,7 @@ status check or a missing response into a new submission.
 
 Copy all three compositions below and inject your own callbacks. `CheckoutOrder`
 is a host model you can adapt. The standalone shell and adapter show wiring with
-synthetic data; replace them rather than shipping the fixture as an integration.
+synthetic data; replace them with your backend and platform adapters.
 Theme-dependent presets resolve from the current context.
 
 <BlockSource name="checkout" />
@@ -80,9 +80,4 @@ Theme-dependent presets resolve from the current context.
 
 ## Verification and limits
 
-Focused widget stories cover one submission through unknown to a matching receipt,
-offline checks without resubmission, receipt retry while preserving success, and
-320 dp/200% dark/reduced-motion layout with a reachable action. Existing journey
-tests additionally cover stale sessions and quote expiry at submission. Android
-phone captures are native, not web mockups. There is no iOS visual or physical-device
-speed claim. Persistence across process death remains a host responsibility.
+Widget tests cover same-attempt recovery, offline checks without resubmission, receipt retry and a reachable action at 320 dp with 200% text. The host must persist attempts across process restarts. See [Compatibility](/reference/compatibility/) for device coverage.

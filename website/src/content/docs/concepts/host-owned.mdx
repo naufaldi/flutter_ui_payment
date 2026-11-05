@@ -5,7 +5,7 @@ description: The kit renders state and reports intent. Every decision about mone
 
 import Props from '../../../components/Props.astro';
 
-A payment screen and a payment are different things. A request timeout is a network fact; a failed payment is a decision by your backend or provider. The kit keeps that line by never deciding anything about money itself: it renders the data you give it and reports what the customer did through callbacks.
+Your app and backend determine payment results. A request timeout means the client has no answer yet; it does not establish payment failure. The kit displays the data you supply and reports user actions through callbacks.
 
 The data flow is always the same:
 
@@ -27,11 +27,11 @@ Widgets never trust raw JSON. Your adapter maps unknown values to a safe "unavai
 | Payment status, idempotency, refund | Host/backend/provider | Renders authoritative state; does not claim the UI alone prevents a double charge |
 | Status polling, recovery, lifecycle | Host coordinator | Offers events and callbacks; widgets start no hidden polling |
 
-The host also owns Android system-bar styling (B11, D85); see [System bars on Android](/concepts/theming/#system-bars-on-android).
+Your app also controls Android system-bar styling. See [System bars on Android](/concepts/theming/#system-bars-on-android).
 
 ## Host verdicts, not UI math
 
-Where a widget could be tempted to compute something, it takes your verdict instead:
+Pass these results from your app or backend:
 
 - `BalanceCard` takes a `BalanceState` (`sufficient`, `insufficient`, `unavailable`) and an optional `shortfall`. It never compares the balance with the total.
 - `PromoCodeInput` takes a `PromoCodeStatus` (`idle`, `checking`, `applied`, `rejected`). A discount reaches the total only as a new host quote with a `QuoteLineKind.discount` line.
@@ -41,10 +41,10 @@ Where a widget could be tempted to compute something, it takes your verdict inst
 
 ## Layout: the height you give opts into the pinned action
 
-You also own the screen's layout. `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentStatusView`, `VerificationIntro` and `VerificationStatusView` read the height you give them (D62):
+Your app also controls screen layout. `PaymentConfirmation`, `AuthorizationPrompt`, `PaymentStatusView`, `VerificationIntro` and `VerificationStatusView` adapt to the height constraints you provide:
 
 - **Bounded** (a `Scaffold` body, an `Expanded`, a `SizedBox`): the content scrolls and the priority action pins to a footer at the bottom, inside the safe area, with at most one quiet action under it.
-- **Unbounded** (inside your `ListView` or `SingleChildScrollView`): the actions follow the content, as before.
+- **Unbounded** (inside your `ListView` or `SingleChildScrollView`): the actions follow the content.
 
 Put a banner or summary that belongs above the widget in its `header`, so it scrolls with the content; wrapping both in a `Column` makes the height unbounded. In a payment flow, hide your app's tab bar so the pinned action is the only thing at the bottom. If you already gave one of these widgets a bounded height and want the old inline layout, put it in a scroll view.
 

@@ -17,6 +17,6 @@ import Screen from '../../../components/Screen.astro';
 
 Run A01 variants 1 and 2 for no transactions and retry. Run A03 and search for an unknown settlement for no matches. Clear search restores rows; Retry repeats the host request.
 
-D25: danger belongs to failure of primary content. A failed optional module uses warning. Never change an unresolved payment to failed because a supporting request failed.
+Use danger when the screen's primary content fails to load and warning when an optional module fails. A failed supporting request must not change an unresolved payment to failed.
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history with synthetic data" />

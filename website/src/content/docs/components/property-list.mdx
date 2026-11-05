@@ -30,9 +30,9 @@ PaymentPropertyList(items: facts);
 
 ## Variants
 
-Variants: vertical, horizontal. Nothing else exists.
+Variants: vertical, horizontal.
 
-Use vertical for receipt and status details; horizontal for a few short summary facts. Show a reference or ID with `reference: true` and a `PaymentCopyButton` as `trailing`: monospace text on the value edge, no fill (D57). Horizontal facts stack below 360 dp or at large text. Nested property lists are not supported.
+Use vertical for receipt and status details; horizontal for a few short summary facts. Show a reference or ID with `reference: true` and a `PaymentCopyButton` as `trailing`: monospace text on the value edge, no fill. Horizontal facts stack below 360 dp or at large text. Nested property lists are not supported.
 
 ### Content and accessibility
 
@@ -58,17 +58,15 @@ The host supplies ready values. Use `LoadingSkeleton.table` for loading and `Sta
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Use horizontal only for short facts that fit; narrow/large text stacks.
+Use short fact labels and show the currency with amounts. Use linked values only when the host provides a destination.
 
 ## Accessibility
 
-Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+Keep each label with its value in reading order. Headings identify groups; linked values retain their link semantics.
 
 ## Used in
 
-Sign-in H04; CheckoutSummary; PaymentReceipt. Real composition: `example/lib/screens/gallery_views.dart`.
+Sign-in H04; CheckoutSummary; PaymentReceipt. Example source: `example/lib/screens/gallery_views.dart`.
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

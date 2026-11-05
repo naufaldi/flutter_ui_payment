@@ -31,11 +31,11 @@ StatusHeader(
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: PaymentStatusView; TransactionDetail A02; VerificationStatusView; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Identify a payment or verification status using words, icon, tone and band pattern.
 
 ## Variants
 
-Variants: neutral, info, success, warning, danger; hatched unknown. Nothing else exists.
+Variants: neutral, info, success, warning, danger; hatched unknown.
 
 ### Solid
 
@@ -63,7 +63,7 @@ Use Badge for a short status inside a row.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host chooses the label, tone and band pattern. Use a hatched band for an unknown result and a solid band for pending.
 
 ## Do and don't
 
@@ -77,8 +77,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Do not use "Processing" for an unknown outcome. Say that the result is not confirmed, and say what to do (see [Payment attempt and status](/concepts/payment-attempt/)).
 - Pick an icon that agrees with the title.
 
-Use an explicit not-confirmed label and hatching when the host lacks an outcome.
-
 ## Accessibility
 
 - The title is marked as a header for screen readers. The band is decorative and excluded from semantics.
@@ -86,7 +84,7 @@ Use an explicit not-confirmed label and hatching when the host lacks an outcome.
 
 ## Used in
 
-PaymentStatusView; TransactionDetail A02; VerificationStatusView. Real composition: `lib/src/receipt/payment_receipt.dart`.
+PaymentStatusView; TransactionDetail A02; VerificationStatusView. Example source: `lib/src/receipt/payment_receipt.dart`.
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

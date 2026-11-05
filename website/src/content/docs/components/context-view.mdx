@@ -1,6 +1,6 @@
 ---
 title: Context view
-description: Add context, full-page, focus, settings, sign-in and onboarding view bodies.
+description: Supporting merchant and order context beside a checkout, with host-owned actions and navigation.
 ---
 
 import Screen from '../../../components/Screen.astro';
@@ -41,7 +41,7 @@ PaymentContextView(
 
 - The brand icon centres on the title's first line, 12 dp from it.
 - On phones one header action sits on the title row as "Label ›" and more go behind ⋮; nothing stacks under the title. Keep the task's own step in `primaryAction`.
-- An ID such as the order ID is a reference row with a copy button (D57), not a separate "Copy order ID" button. Close and Cancel are quiet.
+- An ID such as the order ID is a reference row with a copy button, not a separate "Copy order ID" button. Close and Cancel are quiet.
 - At large text the header scrolls with the body, so the total and help link stay reachable on the first screen.
 
 ## Stripe → kit
@@ -52,11 +52,11 @@ PaymentContextView(
 
 ## Variants
 
-Variants: context body with optional actions and footer. Nothing else exists.
+Variants: context body with optional actions and footer.
 
 ### States and content
 
-The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+Use the brand slots for `PaymentImage` or `PaymentIcon`, and mark an external destination with an external `PaymentLink`.
 
 ## Which variant when
 
@@ -68,7 +68,7 @@ Use Full page view for the main page body.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host supplies order context and its actions. Keep supporting information here; put the main Pay action in the checkout body or footer.
 
 ## Do and don't
 
@@ -78,13 +78,11 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-At 840 dp show supporting merchant/order facts beside payment.
+Show the merchant, order and supporting facts. Avoid repeating the main Pay action in this context panel.
 
 ## Accessibility
 
-Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+Preserve a clear reading order between merchant, order and actions. Brand images need meaningful alt text unless decorative.
 
 Header actions align to the content start. Phone footers stack full-width actions, primary first.
 
@@ -92,7 +90,7 @@ Used beside checkout at widths of at least 840 dp. The order context has support
 
 ## Used in
 
-Wide checkout H02/H04. Real composition: `example/lib/screens/gallery_views.dart`.
+Wide checkout H02/H04. Example source: `example/lib/screens/gallery_views.dart`.
 
 ## API
 

@@ -27,12 +27,12 @@ flutter run -d <device-id> -t lib/kyc_review_demo.dart
 ```
 
 Tap **Perbarui data**, then **Coba lagi** to replace the synthetic rejected file.
-The fixture provides metadata only, with no camera, picker or upload effect.
+The scenario provides metadata only, with no camera, picker or upload effect.
 Continue to review: the identity reference is masked. Submit the correction;
 it becomes **in review**. Only **Cek status** returns an explicit synthetic
 host-verified snapshot. No elapsed delay or uploaded badge establishes that result.
 
-The developer menu's **Gagal kirim pertama** fixture explicitly rejects the first
+The developer menu's **Gagal kirim pertama** scenario explicitly rejects the first
 submit before acceptance. Review data remains and the customer can retry. This is
 not a lost-response simulation: a real transport timeout may have been accepted,
 so the host must reconcile the same request instead of blindly resubmitting.
@@ -59,7 +59,7 @@ in the host. Use safe reasons suitable for display. The example uses fictional
 metadata and no real identity/document content. See the
 [verification pattern](/patterns/verification/) and [capture pattern](/patterns/kyc-capture/).
 For an uncertain submit, use the pattern's `VerificationStatusView.outcomeUnknown`
-presentation and host reconciliation; this fixture covers known rejection/retry.
+presentation and host reconciliation; this scenario covers known rejection/retry.
 
 ## Source
 
@@ -69,8 +69,4 @@ presentation and host reconciliation; this fixture covers known rejection/retry.
 
 ## Proof and limits
 
-Tests prove correction/upload doesn't set verified, masking, explicit in-review
-then host verdict, known rejection/retry, and a 320 dp/200% dark/reduced-motion
-review with reachable submit. Android captures were inspected. The small fixed
-fixture has no polling or new animation engine; no hardware speed or iOS visual
-claim. The demo is not an identity-verification service or a production adapter.
+Widget tests cover correction and masked review, failed-submit retry and a reachable submit action at 320 dp with 200% text. The demo uses fictional metadata and no real documents. Connect your own upload and verification services. See [Compatibility](/reference/compatibility/) for device coverage.

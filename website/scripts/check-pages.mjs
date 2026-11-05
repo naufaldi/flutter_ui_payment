@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 const dir = new URL('../src/content/docs/components/', import.meta.url);
 const required = ['## Usage', '## Stripe → kit', '## Which variant when',
-  "## Do and don't", '## Used in', '## API', 'Nothing else exists.',
+  "## Do and don't", '## Used in', '## API', '## Variants',
   '**Do**', "**Don't**"];
 let problems = 0;
 let pages = 0;
@@ -13,6 +13,13 @@ for (const file of readdirSync(dir)) {
   const headings = new Set(prose.split('\n').filter((line) => line.startsWith('## ')));
   const missing = required.filter((part) => part.startsWith('## ')
     ? !headings.has(part) : !prose.includes(part));
+  const section = (heading) => prose.split(heading + '\n')[1]?.split(/^## /m)[0].trim();
+  if (headings.has('## Variants') && !section('## Variants')) {
+    missing.push('variant descriptions');
+  }
+  if (headings.has('## API') && !/<Props\b[^>]*\bnames=\{/.test(section('## API') ?? '')) {
+    missing.push('API Props table');
+  }
   if (missing.length) {
     problems++;
     console.error(`${file}: missing ${missing.join(', ')}`);

@@ -7,7 +7,7 @@ import Props from '../../../components/Props.astro';
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 
-Pick provinces or banks from a long list. On a phone (window shorter side under 600 dp, in either orientation, D92) the field is a trigger that opens a full-height search sheet; on a tablet it is an inline field with a floating list (D50).
+Pick provinces or banks from a long list. On a phone (window shorter side under 600 dp, in either orientation, D92) the field is a trigger that opens a full-height search sheet; on a tablet it is an inline field with a floating list.
 
 <Screens>
   <Screen name="android_catalog_search_field_variants" dark="android_catalog_search_field_variants_dark" alt="Province and bank search triggers, including selected banks, validation and remote search examples." caption="Search field" />
@@ -41,13 +41,13 @@ PaymentSearchField<String>(
 
 Use the combobox for selecting values; PaymentTextField.search filters a host list. Local filtering folds common Latin diacritics. onQueryChanged delegates searching to the host and accepts replacement options; new options and `loading` reach an open sheet. Arrow keys navigate, Enter selects, Escape closes. Counts announce through a live region. Multiple selections render removable chips under the field.
 
-**Phones (D50).** Tapping the field, or Enter or Space on it, opens a full-height sheet: the label and close on top, a focused search field, then 48 dp result rows above the keyboard. A single choice closes the sheet. Multiple selection keeps a draft, with its chips and a full-width Done in the footer; close discards the draft, as `PaymentSelect.multiple` does. Focus returns to the field. Focusing the field from code (for example the form's first error) never opens the sheet.
+**Phones.** Tapping the field, or Enter or Space on it, opens a full-height sheet: the label and close on top, a focused search field, then 48 dp result rows above the keyboard. A single choice closes the sheet. Multiple selection keeps a draft, with its chips and a full-width Done in the footer; close discards the draft, as `PaymentSelect.multiple` does. Focus returns to the field. Focusing the field from code (for example the form's first error) never opens the sheet.
 
 **Wide screens.** The field stays inline and the list floats under it in an overlay with the surface fill, the control edge and elevation, so the page doesn't move. Any edit clears a single selection; clearing the text clears multiple selections.
 
 ## Variants
 
-Variants: single, multiple. Nothing else exists.
+Variants: single, multiple.
 
 ## Which variant when
 
@@ -73,8 +73,6 @@ Empty, selected, disabled and error states use semantic tokens. Search additiona
 
 Use short labels and compact localized values.
 
-Use multiple only for a set of values; preserve host option IDs and focus first error.
-
 ## Accessibility
 
 Targets are at least 48 dp. Pickers restore focus; result counts announce without platform calls. Keyboard navigation preserves Tab traversal.
@@ -83,13 +81,13 @@ Pass an optional `focusNode` to focus the search after form validation. The host
 
 ## Used in
 
-IdentityForm H04; Gallery Forms. Real composition: `example/lib/screens/gallery_forms.dart`.
+IdentityForm H04; Gallery Forms. Example source: `example/lib/screens/gallery_forms.dart`.
 
 <Screen name="android_kyc_onboarding_light" dark="android_kyc_onboarding_dark" alt="Example kyc onboarding screen with synthetic data" caption="Example: kyc onboarding" />
 
 ## Customization
 
-The search box follows the field-family `PaymentFieldTheme` (D102). The results list and sheet keep their own styling. See [Text field customization](/components/text-field/#customization).
+The search box follows the field-family `PaymentFieldTheme`. The results list and sheet keep their own styling. See [Text field customization](/components/text-field/#customization).
 
 ## API
 

@@ -36,7 +36,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: primary, secondary, quiet, destructive. Nothing else exists.
+Variants: primary, secondary, quiet, destructive.
 
 ### Primary
 
@@ -96,11 +96,11 @@ PaymentButton(
 
 ### One primary per surface
 
-A screen, sheet or dialog has at most one primary button: its completion action (D54). A button that only opens another surface, such as "Open sheet", is secondary, and the sheet's own "Done" is primary. Use equal-weight secondaries only for peer alternatives with no default, such as Share and Download.
+A screen, sheet or dialog has at most one primary button: its completion action. A button that only opens another surface, such as "Open sheet", is secondary, and the sheet's own "Done" is primary. Use equal-weight secondaries only for peer alternatives with no default, such as Share and Download.
 
 ### No warning button
 
-There is no warning variant (D47). A warning is a state, so show it with a [banner](/components/banner/), a [badge](/components/badge/) or a [toast](/components/toast/) next to the action. The button's label says what happens.
+There is no warning variant. A warning is a state, so show it with a [banner](/components/banner/), a [badge](/components/badge/) or a [toast](/components/toast/) next to the action. The button's label says what happens.
 
 ### Busy
 
@@ -121,11 +121,11 @@ Pass `onPressed: null`. Every variant uses the `disabled` label color; the fille
 
 ### With an icon
 
-`icon` puts a 16 px icon in small buttons and a 20 px icon in medium and large buttons before the label. In medium and large buttons it grows with the text up to 32 px at 200%. When the label wraps at large text, the icon sits beside its first line and the two stay centred together (D56). Use it when the icon adds meaning (delete, download), not as decoration on every button.
+`icon` puts a 16 px icon in small buttons and a 20 px icon in medium and large buttons before the label. In medium and large buttons it grows with the text up to 32 px at 200%. When the label wraps at large text, the icon sits beside its first line and the two stay centred together. Use it when the icon adds meaning (delete, download), not as decoration on every button.
 
 ### Sizes and widths
 
-Variants: primary, secondary, quiet, destructive. Nothing else exists.
+Variants: primary, secondary, quiet, destructive.
 
 | Size | Visual height | Horizontal padding at 100% | Icon / busy spinner |
 | --- | --- | --- | --- |
@@ -133,7 +133,7 @@ Variants: primary, secondary, quiet, destructive. Nothing else exists.
 | medium (default) | 48 dp | Material default: 24 dp; quiet 12 dp | 20 dp |
 | large | 56 dp | 24 dp | 20 dp |
 
-Every size occupies a hit box of at least 48 × 48 dp. The small visual is centered inside it; the keyboard ring follows the visual. Use small for a module-header action such as Add card. Keep the main Pay action medium or large. Material density is pinned to standard, so medium buttons draw at 48 dp. Product targets are iOS and Android phones and tablets (D64).
+Every size occupies a hit box of at least 48 × 48 dp. The small visual is centered inside it; the keyboard ring follows the visual. Use small for a module-header action such as Add card. Keep the main Pay action medium or large. Material density is pinned to standard, so medium buttons draw at 48 dp. Product targets are iOS and Android phones and tablets.
 
 `width: PaymentWidth.fill` fills the parent by default. `PaymentWidth.hug` sizes to the label with a 112 dp minimum; a quiet hug button outside a button group hugs its label with only the 48 dp floor, so its text can start on the column edge. Put hug buttons inside an Align or Wrap; a stretching parent overrides hug. Long labels wrap and never truncate.
 
@@ -160,7 +160,7 @@ focusNode supports host focus return, including custom menu triggers.
 | Page header | Not a button: one action is a title-row link "Label ›", more go behind ⋮ | Hug |
 | Rows, cards, banners, state messages, tables | Hug | Hug |
 
-The screen's priority action pins at the bottom (D62); a full-width button in a header would read as the main step and push the content down.
+The screen's priority action pins at the bottom; a full-width button in a header would read as the main step and push the content down.
 
 ## Which variant when
 
@@ -181,7 +181,7 @@ Use the first row that matches:
 
 ## Customization
 
-`PaymentButtonStyle` changes enabled appearance. `PaymentButtonTheme` is a Flutter theme extension for button-family defaults, independent of input and sheet styling (D100).
+`PaymentButtonStyle` changes enabled appearance. `PaymentButtonTheme` is a Flutter theme extension for button-family defaults, independent of input and sheet styling.
 
 Adopt customization in this order. Most buttons need only the first step.
 
@@ -342,7 +342,7 @@ The host verifies custom foreground/background pairs and outlines in light/dark 
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+A null `onPressed` disables the button. While a returned `Future` runs, the button shows its busy state and blocks repeated activation. Server-side idempotency remains the host's responsibility.
 
 ## Do and don't
 
@@ -358,8 +358,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Keep labels short enough for one line at normal text size. At large text they wrap rather than truncate.
 - A destructive label names the thing it destroys: "Remove card", not "Remove".
 
-One primary per view; supporting receipt/report actions are secondary; Cancel is quiet.
-
 ## Accessibility
 
 - 48 dp minimum height. Keyboard focus draws the kit's [focus ring](/foundations/focus/), never the brand color.
@@ -368,7 +366,7 @@ One primary per view; supporting receipt/report actions are secondary; Cancel is
 
 ## Used in
 
-H04 sign-in/KYC; report A02; settings A05. Real composition: `example/lib/screens/gallery_content.dart`.
+H04 sign-in/KYC; report A02; settings A05. Example source: `example/lib/screens/gallery_content.dart`.
 
 <Screen name="android_sign_in_light" dark="android_sign_in_dark" alt="Example sign in screen with synthetic data" caption="Example: sign in" />
 

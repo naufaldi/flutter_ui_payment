@@ -21,12 +21,12 @@ The kit targets iOS on iPhone and iPad, and Android phones and tablets. Web is u
 What that means:
 
 - **Declared and built for Android 7.0+.** Nothing in the package raises the floor; it has no Android dependency at all. Only the example's video adapter adds one, at the same floor.
-- **Runtime baseline on Android 11; docs captures on API 37.** No API 24–29 image is installed, and none was downloaded for this pass. Android 7–10 behavior is unverified, not proven broken.
+- **Runtime baseline on Android 11; docs captures on API 37.** Android 7–10 has not been runtime-tested.
 - **32-bit ARM is built, not run.** The release APK contains `armeabi-v7a` code, but the earlier Android 11 runtime pass used an arm64 emulator. Old 32-bit phones, their GPUs and Impeller's OpenGL ES path on them are untested.
 - **Android phone and tablet documentation captures are available.** They show the captured layouts on API 37 emulators; they do not establish runtime compatibility with every supported Android version or physical device.
 - **Video:** the bundled clip is H.264 Constrained Baseline 640×360 plus AAC, the most widely decodable combination on old Android. The decoders of specific old devices are not verified.
 
-To check an older version, first list available system images and choose one supported by the host architecture. An API 24 arm64 image must not be assumed to exist; older x86 images may need an Intel test host. Installing an image is a separate, potentially large download. After preparing a suitable emulator, run sequentially:
+To test another Android version, choose an emulator image supported by the test machine. Check image availability before installing it, then run the example flow tests. The commands below illustrate a local test setup:
 
 ```sh
 sdkmanager --list
@@ -46,9 +46,9 @@ flutter drive --driver=test_driver/integration_driver.dart \
 ## Web
 
 - `flutter build web --release` succeeds. The build served locally returns the page, `main.dart.js`, CanvasKit and the video asset.
-- The gallery has not been checked in a browser in this pass. The only automation-capable Chrome on this machine belonged to the user and another task, so it was left alone.
+- The Flutter web gallery has not been browser-tested.
 - `video_player_web` plays the bundled MP4 through an HTML video element. Browser autoplay rules don't matter because nothing autoplays.
-- Web is documentation only (D64): the build is the docs site's gallery preview, not a product target, so web-specific layout and behaviour are not designed or fixed. It does not prove camera capture, native share or screen protection.
+- The web build is a documentation preview, outside the supported mobile product scope. It does not establish support for camera capture, native sharing or screen protection.
 
 ## Package
 

@@ -34,7 +34,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: neutral, info, success, warning, danger, urgent. Nothing else exists.
+Variants: neutral, info, success, warning, danger, urgent.
 
 ### Tones
 
@@ -52,9 +52,9 @@ Never pick `success` from what the UI saw (an upload finished, a button was pres
 
 ### Stripe mapping and variants
 
-Stripe neutral, info, positive, negative and warning map to neutral, info, success, danger and warning. Urgent maps to `PaymentBadge.urgent`. Variants: these five tones and urgent. Nothing else exists.
+Stripe neutral, info, positive, negative and warning map to neutral, info, success, danger and warning. Urgent maps to `PaymentBadge.urgent`. Variants: these five tones and urgent.
 
-Use urgent only when a person must act now to continue. Use schedule plus “Pending” for a bank wait, and help_outline plus “Not confirmed” when the result is unknown. Do not use a badge as the only failure explanation. Icons scale with text up to 1.6×.
+Use urgent only when a person must act now to continue. Use schedule plus "Pending" for a bank wait, and help_outline plus "Not confirmed" when the result is unknown. Do not use a badge as the only failure explanation. Icons scale with text up to 1.6×.
 
 ## Which variant when
 
@@ -66,7 +66,7 @@ Use Banner for a sentence about the screen.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Choose the tone, icon and label from the host status. A finished upload or button press does not establish payment success or identity verification.
 
 ## Do and don't
 
@@ -80,8 +80,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Pick an icon that agrees with the word. The icon and the label are what make the status readable without color.
 - Do not put amounts or dates in a badge. Use an [info row](/components/info-row/).
 
-Pair the tone with a status word; urgent is reserved for immediate danger.
-
 ## Accessibility
 
 - Icon, label and tone are three signals, so the status never depends on color alone.
@@ -90,7 +88,7 @@ Pair the tone with a status word; urgent is reserved for immediate danger.
 
 ## Used in
 
-TransactionHistory A01 and PaymentStatusView. Real composition: `example/lib/screens/gallery_feedback.dart`.
+TransactionHistory A01 and PaymentStatusView. Example source: `example/lib/screens/gallery_feedback.dart`.
 
 ## API
 

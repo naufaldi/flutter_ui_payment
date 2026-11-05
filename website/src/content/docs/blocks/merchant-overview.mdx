@@ -50,7 +50,7 @@ flutter run -d <device-id> -t lib/soft_merchant_demo.dart
 
 The host supplies authoritative totals, method percentages and unconfirmed count,
 which may include records outside the preview. Null balance means unavailable,
-never zero. The detail fixture covers confirmed and unknown only; map other
+never zero. The detail scenario covers confirmed and unknown only; map other
 provider states explicitly in your host. A dismissed sheet never changes status.
 Read the [history pattern](/patterns/history/) and
 [status/recovery pattern](/patterns/status-receipt/) before integrating.
@@ -68,8 +68,4 @@ the shared theme in the host; the supplied themes demonstrate both looks.
 
 ## Verification and limits
 
-Android phone captures were inspected, including the revised detail sheet.
-Widget stories cover inspection/return, success versus unknown, unavailable/empty
-data, 320 dp at 200% text in dark/reduced-motion settings and a reachable 48 dp
-detail footer. This is a synthetic ready snapshot, not a loading/data adapter or
-ledger. There is no hardware performance or iOS visual claim.
+Widget tests cover transaction inspection, unavailable and empty data, and a reachable 48 dp detail action at 320 dp with 200% text. The demo starts with a fixed data snapshot; add host loading, retrieval and reconciliation. See [Compatibility](/reference/compatibility/) for device coverage.

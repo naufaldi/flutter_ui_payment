@@ -20,6 +20,6 @@ IdentityFieldSpec(
 );
 ```
 
-D1a: do not collect PIN, OTP, passwords or card secrets with these fields. H04 sign-in delegates to the host with no credential inputs. Reports in A02 keep free text local and send only category and length; never log what a customer typed.
+Keep PIN, OTP, password and card-secret entry in the host authentication flow. These fields collect non-secret payment or identity details. In the example's report flow, free text stays local and only its category and length are sent. Do not log customer-entered text.
 
 <Screen name="android_kyc_onboarding_light_200" alt="KYC grouped identity at 200 percent text" />

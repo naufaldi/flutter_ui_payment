@@ -30,7 +30,7 @@ Tap **Perbarui status refund**: the synthetic host moves the refund from pending
 to partial. Tap **Lihat struk** for the receipt. The developer menu offers
 **Refund penuh** (the refund completes for the whole amount) and **Cek refund
 gagal** (the first refresh fails, the last known refund status stays and the next
-refresh succeeds). Changing a fixture starts a fresh synthetic session.
+refresh succeeds). Changing a scenario starts a fresh synthetic session.
 
 ## Composition and boundaries
 
@@ -58,9 +58,4 @@ See the [transaction history pattern](/patterns/history/) and the
 
 ## Proof and limits
 
-Tests prove that the original payment keeps its success and amount while the
-refund moves from pending to partial, that a failed refund check keeps the last
-known status and can be retried, and that the refund action stays reachable at
-320 dp and 200% text in dark mode with reduced motion. Android captures were
-inspected. No hardware speed or iOS visual claim. The demo is not a refund
-service.
+Widget tests cover the original payment remaining unchanged, failed refund-check recovery and a reachable refresh action at 320 dp with 200% text. Connect your own refund-status service; this block does not initiate refunds. See [Compatibility](/reference/compatibility/) for device coverage.

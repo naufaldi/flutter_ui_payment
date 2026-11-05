@@ -35,11 +35,11 @@ StateMessage(
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: TransactionHistory A01; DataTable and detail empty states; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Explain an empty list, no matches or a failed request and offer recovery.
 
 ## Variants
 
-Variants: neutral, info, success, warning, danger. Nothing else exists.
+Variants: neutral, info, success, warning, danger.
 
 ### Empty
 
@@ -61,7 +61,7 @@ The list has items but none match the search or filter. Offer to clear the filte
 
 Loading failed. Use `tone: StatusTone.danger`: the message is then announced to screen readers when it appears. Offer one way forward, usually "Try again".
 
-The action is a secondary button that hugs its label, inside the text column (D59). It is never stretched across a module. The message uses the body size for the current text scale, like a banner's.
+The action is a secondary button that hugs its label, inside the text column. It is never stretched across a module. The message uses the body size for the current text scale, like a banner's.
 
 ### PaymentEmptyMessage
 
@@ -77,7 +77,7 @@ Use Banner when surrounding content remains useful.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Distinguish no items, no matches and failed loading. The recovery action should address that state, such as clearing filters or retrying the request.
 
 ## Do and don't
 
@@ -87,12 +87,10 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-- The title says what happened: "No saved billers", "No payments match ‘pulsa’", "Couldn’t load billers".
+- The title says what happened: "No saved billers", "No payments match 'pulsa'", "Couldn't load billers".
 - The message is one line on why or what to do next.
 - One action at most. If there is nothing the person can do, leave it out.
 - The headline carries the meaning, so the icon stays muted in every tone.
-
-Explain why content is empty and offer recovery; danger is for primary-content failure.
 
 ## Accessibility
 
@@ -101,7 +99,7 @@ Explain why content is empty and offer recovery; danger is for primary-content f
 
 ## Used in
 
-TransactionHistory A01; DataTable and detail empty states. Real composition: `example/lib/screens/gallery_kit.dart`.
+TransactionHistory A01; DataTable and detail empty states. Example source: `example/lib/screens/gallery_kit.dart`.
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 

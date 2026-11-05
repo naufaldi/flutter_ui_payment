@@ -27,11 +27,11 @@ LoadingSkeleton(rows: 3, leading: false);
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: TransactionHistory A01; ChartModule; detail modules; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Reserve space for payment content while the host loads it.
 
 ## Variants
 
-Variants: list, text block, table. Nothing else exists.
+Variants: list, text block, table.
 
 ### Rows
 
@@ -59,7 +59,7 @@ Use Spinner when the content shape is unknown.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Show the placeholder only while the host loads content. Replace it with the result or an error message when that request finishes.
 
 **Layout.** A list skeleton row has the geometry of a two-line `PaymentListItem`: 12 dp padding, a 20 dp square on the first line and bars centred in the label and caption lines, so content does not move when it loads. The fill is the outline tone, visible in light and dark.
 
@@ -71,9 +71,7 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Use the shape that matches the pending content to preserve layout.
+Match the expected content shape. Put request failures in a message with recovery guidance instead of leaving the placeholder visible.
 
 ## Accessibility
 
@@ -81,7 +79,7 @@ Use the shape that matches the pending content to preserve layout.
 
 ## Used in
 
-TransactionHistory A01; ChartModule; detail modules. Real composition: `example/lib/screens/flow_screen.dart`.
+TransactionHistory A01; ChartModule; detail modules. Example source: `example/lib/screens/flow_screen.dart`.
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 

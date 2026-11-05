@@ -27,7 +27,7 @@ flutter run -d <device-id> -t lib/payment_preferences_demo.dart
 ```
 
 Change the default method or a notification and tap **Simpan**. The developer
-menu's **Simpan pertama gagal** fixture fails the first save; the choice stays
+menu's **Simpan pertama gagal** scenario fails the first save; the choice stays
 and the next save is confirmed. Controls lock while the host saves.
 
 ## Composition and boundaries
@@ -55,9 +55,4 @@ methods are fictional. See the [forms guide](/patterns/forms/) and the
 
 ## Proof and limits
 
-Tests prove that a failed save keeps the edit and never says saved, that the
-retry is confirmed by the host, that choices lock while the host saves and an
-unavailable method explains why, and that Save stays reachable at 320 dp and 200%
-text in dark mode with 48 dp rows and reduced motion. Android captures were
-inspected. No hardware speed or iOS visual claim. The demo does not persist
-anything.
+Widget tests cover failed-save recovery, confirmed save, locked controls while saving and a reachable Save action at 320 dp with 200% text. The demo keeps choices in memory; add account-scoped persistence in your host. See [Compatibility](/reference/compatibility/) for device coverage.

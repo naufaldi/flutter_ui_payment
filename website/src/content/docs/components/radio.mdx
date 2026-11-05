@@ -45,7 +45,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: selected, unselected. Nothing else exists.
+Variants: selected, unselected.
 
 ### Selected
 
@@ -73,7 +73,7 @@ Use Checkbox for independent options.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host supplies the selected value. A null `onChanged` disables the option; keep an unavailable option's reason visible.
 
 ## Do and don't
 
@@ -89,8 +89,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - For more options than fit on screen, use a list on its own screen or sheet.
 - Payment methods have their own picker with unavailable reasons: use `PaymentMethodPicker` from [Checkout](/patterns/checkout/).
 
-Use one groupValue for mutually exclusive options; choosing the selected row is a no-op.
-
 ## Accessibility
 
 - Each option is one row of at least 48 dp and one screen-reader node, announced as checked or not checked in a group of mutually exclusive options.
@@ -98,7 +96,7 @@ Use one groupValue for mutually exclusive options; choosing the selected row is 
 
 ## Used in
 
-Settings A05; PaymentSelect; checkout. Real composition: `example/lib/screens/gallery_selection.dart`.
+Settings A05; PaymentSelect; checkout. Example source: `example/lib/screens/gallery_selection.dart`.
 
 <Screen name="android_account_settings_light" dark="android_account_settings_dark" alt="Example account settings screen with synthetic data" caption="Example: account settings" />
 
