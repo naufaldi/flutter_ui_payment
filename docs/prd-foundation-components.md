@@ -245,7 +245,7 @@ Each item is testable. "Widget test" means a test in `test/`, run per file with 
 
 | # | Requirement | How it is checked |
 | --- | --- | --- |
-| B1 | Exported from `lib/flutter_ui_payment.dart`; dartdoc on the class and on every parameter | `flutter analyze` (`public_member_api_docs` where enabled); appears in `website/src/data/api.json` after `pnpm gen:api` |
+| B1 | Exported from `lib/rakit_ui.dart` (D109); dartdoc on the class and on every parameter | `flutter analyze` (`public_member_api_docs` where enabled); appears in `website/src/data/api.json` after `pnpm gen:api` |
 | B2 | Kit-owned default color, radius, spacing, type and motion come only from `PaymentTheme`, `PaymentType` and `PaymentMotion`. No `Color(0x…)` or `Colors.*` literals, except a documented scrim like the camera overlay. No literal spacing outside the §3.3 multiples. Host customization follows D98. | Review grep on the new file; renders under both example brands: Hairline (`DemoBrand.ruangBayar`) and Contrast (`DemoBrand.lumen`) (`example/lib/themes.dart:5`) |
 | B3 | Light and dark | Widget test pumps both; specimen screenshot pair (§10) |
 | B4 | 200% text at 320 dp width: no overflow, nothing clipped, primary action reachable | Widget test with `TextScaler.linear(2)` and no `FlutterError`; `_200` specimen when text-heavy |
