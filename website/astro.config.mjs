@@ -2,6 +2,9 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
+const ogAlt =
+  'Example checkout on an Android tablet: order summary led by the total Rp102,500, a service fee line, two payment methods and a Review payment button.';
+
 export default defineConfig({
   site: 'https://flutter-ui-payment.netlify.app',
   // Pages that moved or were split into the component catalog. Astro writes a
@@ -42,6 +45,19 @@ export default defineConfig({
         baseUrl: 'https://github.com/naufaldi/flutter_ui_payment/edit/main/website/',
       },
       customCss: ['./src/styles/hairline.css'],
+      // Starlight sets twitter:card to summary_large_image; give it a real,
+      // landscape docs capture so shared links show a preview (#234).
+      head: [
+        ['og:image', 'https://flutter-ui-payment.netlify.app/screens/android_tablet_checkout_en.webp'],
+        ['og:image:type', 'image/webp'],
+        ['og:image:width', '1280'],
+        ['og:image:height', '776'],
+        ['og:image:alt', ogAlt],
+      ].map(([property, content]) => ({ tag: 'meta', attrs: { property, content } }))
+        .concat([
+          ['twitter:image', 'https://flutter-ui-payment.netlify.app/screens/android_tablet_checkout_en.webp'],
+          ['twitter:image:alt', ogAlt],
+        ].map(([name, content]) => ({ tag: 'meta', attrs: { name, content } }))),
       components: {
         Hero: './src/components/Hero.astro',
       },

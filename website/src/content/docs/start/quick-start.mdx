@@ -9,7 +9,20 @@ import Screens from '../../../components/Screens.astro';
 import RepoNote from '../../../components/RepoNote.astro';
 import { REPO_URL } from '../../../consts';
 
-This walkthrough builds one checkout from start to finish. The `host` object in the snippets stands for your own code: the adapter that talks to your backend, your auth SDK, your clipboard and share helpers. Every kit class and parameter shown is the real API.
+This walkthrough builds one checkout from start to finish. Step 2 is a complete `lib/main.dart` you can run as is. From step 3 on, the snippets are **fragments** that plug into your own screen: `host`, `serverQuote`, `previousQuote` and similar names stand for your code (the adapter that talks to your backend, your auth SDK, your clipboard and share helpers). Every kit class and parameter shown is the real API.
+
+## Run the complete example first
+
+To see a finished checkout before writing any code, run the block demo from a clone of the repository. It uses synthetic data and a fake host, and opens on an Android emulator or an iOS Simulator:
+
+```sh
+git clone https://github.com/naufaldi/flutter_ui_payment.git
+cd flutter_ui_payment/example
+flutter pub get
+flutter run -t lib/checkout_block_demo.dart
+```
+
+Its source is on the [Checkout recovery block](/blocks/checkout-recovery/) page. Then build your own, step by step:
 
 The example app's `example/lib/screens/flow_screen.dart` and `example/lib/coordinator/demo_coordinator.dart` show the same composition in full, with a fake host.
 
@@ -37,6 +50,8 @@ The package is not on pub.dev yet. [Installation](/start/installation/) has both
 ## 2. Localization and theme
 
 Register `PaymentLocalizations.delegate` next to Flutter's own delegates. The kit ships English (`en`) and Indonesian (`id`). Without a `PaymentTheme` extension the kit derives every token from your `ColorScheme`; add one to set your brand.
+
+This file runs on its own. `CheckoutPage` shows a synthetic quote and method list; the next steps replace that data with your backend's.
 
 ```dart title="lib/main.dart"
 import 'package:flutter/material.dart';
@@ -68,13 +83,62 @@ class ShopApp extends StatelessWidget {
     );
   }
 }
+
+class CheckoutPage extends StatefulWidget {
+  const CheckoutPage({super.key});
+
+  @override
+  State<CheckoutPage> createState() => _CheckoutPageState();
+}
+
+class _CheckoutPageState extends State<CheckoutPage> {
+  // Synthetic data for a first run. Step 3 maps your backend's quote.
+  final quote = PaymentQuote(
+    id: 'q-1',
+    revision: 1,
+    lines: const [
+      QuoteLine(label: 'Paket Belajar', amount: Money.idr(100000)),
+    ],
+    total: const Money.idr(100000),
+    expiresAt: DateTime.now().add(const Duration(minutes: 15)),
+  );
+  static const methods = [
+    PaymentMethod(
+      id: 'balance',
+      label: 'Balance',
+      kind: PaymentMethodKind.balance,
+    ),
+  ];
+  String? selectedId = 'balance';
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Checkout')),
+    body: ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        PaymentSummary(quote: quote),
+        const SizedBox(height: 24),
+        PaymentMethodPicker(
+          methods: methods,
+          selectedId: selectedId,
+          onChanged: (method) => setState(() => selectedId = method.id),
+        ),
+      ],
+    ),
+    bottomNavigationBar: PaymentActionBar(
+      total: quote.total,
+      action: PaymentButton(label: 'Review payment', onPressed: () {}),
+    ),
+  );
+}
 ```
 
 [Theming](/concepts/theming/) lists every token; [Localization](/foundations/localization/) covers formats and fallbacks.
 
 ## 3. Render the summary and the method picker
 
-Map your backend's quote and payment methods into the kit's models. The kit renders `total` as given and never recomputes it.
+From here the snippets are fragments for your own screen. Map your backend's quote and payment methods into the kit's models. The kit renders `total` as given and never recomputes it.
 
 ```dart
 final quote = PaymentQuote(

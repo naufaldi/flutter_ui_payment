@@ -66,6 +66,86 @@ void main() {
     await t.pump(const Duration(milliseconds: 75, microseconds: 1));
     expect(find.text('Hint'), findsNothing);
   });
+  // #236: reduced motion turned on while the hint fades ends the fade on the
+  // next frame, for the host flag and for iOS Reduce Motion.
+  for (final source in [
+    ReducedMotion.mediaQuery,
+    ReducedMotion.iosReduceMotion,
+  ]) {
+    testWidgets('reduced motion mid-fade ends the tooltip (${source.name})', (
+      t,
+    ) async {
+      final reduce = ValueNotifier(false);
+      addTearDown(reduce.dispose);
+      await t.pumpWidget(
+        host(
+          ValueListenableBuilder<bool>(
+            valueListenable: reduce,
+            builder: (context, on, child) => MediaQuery(
+              data: MediaQuery.of(context).copyWith(disableAnimations: on),
+              child: child!,
+            ),
+            child: const PaymentTooltip(message: 'Hint', child: Text('Term')),
+          ),
+          1,
+        ),
+      );
+      void turnOn() => source == ReducedMotion.mediaQuery
+          ? reduce.value = true
+          : source.apply(t, const SizedBox());
+      void turnOff() {
+        reduce.value = false;
+        t.platformDispatcher.clearAccessibilityFeaturesTestValue();
+      }
+
+      Animation<double> fade() => t
+          .widget<FadeTransition>(
+            find
+                .ancestor(
+                  of: find.text('Hint'),
+                  matching: find.byType(FadeTransition),
+                )
+                .first,
+          )
+          .opacity;
+      double opacity() => fade().value;
+      bool fading() =>
+          ((fade() as CurvedAnimation).parent as AnimationController)
+              .isAnimating;
+
+      // Mid-enter: the person sees the whole hint on the next frame.
+      await t.tap(find.text('Term'));
+      await t.pump();
+      await t.pump(const Duration(milliseconds: 50));
+      expect(opacity(), inExclusiveRange(0, 1));
+      turnOn();
+      await t.pump();
+      expect(opacity(), 1);
+      // The visible portal keeps an SDK layout callback, so check the fade.
+      expect(fading(), isFalse);
+
+      // Mid-exit: the hint is gone on the next frame.
+      turnOff();
+      await t.pump();
+      await t.tap(find.text('Term'));
+      await t.pump();
+      await t.pump(const Duration(milliseconds: 50));
+      expect(opacity(), inExclusiveRange(0, 1));
+      turnOn();
+      await t.pump();
+      // Invisible on this frame; the portal leaves once the frame is built.
+      expect(find.text('Hint').evaluate().isEmpty || opacity() == 0, isTrue);
+      await t.pump();
+      expect(find.text('Hint'), findsNothing);
+      expect(t.hasRunningAnimations, isFalse);
+
+      // Still a working hint afterwards: it shows again, instantly.
+      await t.tap(find.text('Term'));
+      await t.pump();
+      expect(opacity(), 1);
+      expect(t.takeException(), isNull);
+    });
+  }
   for (final setup in ReducedMotion.values) {
     testWidgets('tooltip shows and hides still (${setup.name})', (t) async {
       await t.pumpWidget(

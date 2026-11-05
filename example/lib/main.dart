@@ -96,12 +96,15 @@ class DemoAppState extends State<DemoApp> with WidgetsBindingObserver {
     host = DemoHost(variant.config)
       ..languageCode = settings.locale.languageCode;
     coordinator = DemoCoordinator(host);
-    unawaited(_startAt(variant.start));
+    unawaited(_startAt(coordinator, variant.start));
   }
 
-  Future<void> _startAt(FlowStep start) async {
-    await coordinator.start();
-    await coordinator.setUpScenario(start);
+  // A scenario picked while another is still starting replaces [coordinator];
+  // the older start must not set up its step on the newer run (#237).
+  Future<void> _startAt(DemoCoordinator booted, FlowStep start) async {
+    await booted.start();
+    if (!mounted || !identical(booted, coordinator)) return;
+    await booted.setUpScenario(start);
   }
 
   @override

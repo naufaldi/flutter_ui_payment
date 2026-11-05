@@ -2,6 +2,7 @@ import '../foundation/field_decoration.dart';
 import 'dart:ui' show SemanticsRole, SemanticsValidationResult;
 import '../foundation/payment_tokens.dart';
 import 'dart:async';
+import 'package:flutter/scheduler.dart' show SchedulerPhase;
 import 'package:flutter/services.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/tooltip_geometry.dart';
@@ -834,7 +835,7 @@ class PaymentTooltip extends StatefulWidget {
 }
 
 class _PaymentTooltipState extends State<PaymentTooltip>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late final _fade = AnimationController(vsync: this);
   late final _opacity = CurvedAnimation(
     parent: _fade,
@@ -850,9 +851,43 @@ class _PaymentTooltipState extends State<PaymentTooltip>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _fade.addStatusListener((status) {
-      if (status.isDismissed && !_visible) _portal.hide();
+      if (status.isDismissed && !_visible) _hidePortal();
     });
+  }
+
+  void _hidePortal() {
+    final binding = WidgetsBinding.instance;
+    if (binding.schedulerPhase != SchedulerPhase.persistentCallbacks) {
+      _portal.hide();
+      return;
+    }
+    // A fade cut short during build is already invisible on this frame; the
+    // portal can only be removed once the frame is built.
+    binding.addPostFrameCallback((_) {
+      if (mounted && !_visible && _fade.isDismissed) _portal.hide();
+    });
+  }
+
+  // Reduced motion turned on mid-fade ends the fade at its target (B9/D66).
+  // The host flag arrives as a dependency change; iOS Reduce Motion is not
+  // part of MediaQueryData, so it needs the binding observer (#236).
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _finishReducedMotion();
+  }
+
+  @override
+  void didChangeAccessibilityFeatures() => _finishReducedMotion();
+
+  void _finishReducedMotion() {
+    // Read on every call so the MediaQuery dependency is registered.
+    final reduced = PaymentMotion.of(context).reduced;
+    if (!reduced || !_fade.isAnimating) return;
+    // Hidden: the dismissed status listener then hides the portal.
+    _fade.value = _visible ? 1 : 0;
   }
 
   void _show() {
@@ -893,6 +928,7 @@ class _PaymentTooltipState extends State<PaymentTooltip>
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _showTimer?.cancel();
     _hideTimer?.cancel();
     HardwareKeyboard.instance.removeHandler(_onKey);

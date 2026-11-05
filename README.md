@@ -10,7 +10,30 @@ Targets iOS and Android, phones and tablets. The web build is a documentation pr
 
 **Status:** `0.1.0`. Install from this GitHub repository; it is not published to pub.dev yet, and the package name is unverified. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
 
-**Maintainers:** [documentation map](docs/README.md) · [daily design-system guide](docs/design-system.md).
+## Start here
+
+**See it run (about 2 minutes, synthetic data).** Open an Android emulator or iOS Simulator, then:
+
+```sh
+git clone https://github.com/naufaldi/flutter_ui_payment.git
+cd flutter_ui_payment/example
+flutter pub get
+flutter run -t lib/checkout_block_demo.dart   # one checkout, with its recovery states
+flutter run                                   # the full example app: Demo, Scenarios, Gallery
+```
+
+**Building an app with the kit:** [Install](#install) → the docs [Quick start](https://flutter-ui-payment.netlify.app/start/quick-start/) (a complete `lib/main.dart`, then each step to a receipt) → pick a component in the [catalog](https://flutter-ui-payment.netlify.app/components/) → copy a host screen from [Blocks](https://flutter-ui-payment.netlify.app/blocks/) → connect your backend through the [host-owned decisions](https://flutter-ui-payment.netlify.app/concepts/host-owned/) and [integration](docs/integration.md) guides.
+
+**Coding agents and maintainers:** read [AGENTS.md](AGENTS.md), then the [documentation map](docs/README.md) and the [daily design-system guide](docs/design-system.md). They cover the rules; this table shows where each answer lives.
+
+| Question | Where to look |
+| --- | --- |
+| Which rule wins? | [PRD.md](PRD.md) and the [foundation PRD](docs/prd-foundation-components.md), including its [§8 decision register](docs/prd-foundation-components.md#8-decisions). [decisions.md](docs/decisions.md) holds rationale and history only. |
+| What is exported, with which parameters? | [lib/flutter_ui_payment.dart](lib/flutter_ui_payment.dart) and the generated [website/src/data/api.json](website/src/data/api.json). Don't invent API names. |
+| How do I style something? | The [adoption order](docs/design-system.md#customization-today-versus-approved-migration): theme, then a family theme, then a host preset, then a one-off `style`. Some families, such as fields, have no instance `style`; check the component's Props table. |
+| What must stay in the host? | [Host boundary](docs/design-system.md#host-boundary): no network, clipboard, URL launching, platform channels, polling timers or secrets in `lib/`. Flutter SDK is the only dependency (B11). |
+| Before changing a component? | The [Button bar (B1–B13)](docs/prd-foundation-components.md#the-button-bar-tier-1-quality-checklist), the component's spec section, and [Testing scope](AGENTS.md#testing-scope). |
+| Which checks run? | [AGENTS.md → Checks](AGENTS.md#checks). |
 
 **Docs:** [components](docs/components.md) (inventory, API, what the host owns) · [integration](docs/integration.md) · [compatibility](docs/compatibility.md) (Android 7.0+/API 24 declared, what was actually run) · [decisions](docs/decisions.md) (design and engineering tradeoffs, performance findings).
 
@@ -195,7 +218,7 @@ Money is an integer number of minor units plus a currency code. `MoneyFormat.par
 
 ## Example app
 
-`example/` is one app with three tabs, all in Bahasa Indonesia or English, two brands (Ruang Bayar, Lumen), light/dark, text size up to 200% and reduced motion (settings icon in the app bar). Phones get a bottom bar; windows 840 dp and wider get a side rail.
+`example/` is one app with three tabs, all in Bahasa Indonesia or English, three brands (Ruang Bayar, Lumen, Soft), light/dark, text size up to 200% and reduced motion (settings icon in the app bar). Phones get a bottom bar; windows 840 dp and wider get a side rail.
 
 - **Demo:** the full journey for the fictional brand Ruang Bayar: consent → identity → document fixtures → review → in review → verified → checkout (Paket Belajar, Rp100.000 + Rp2.500 = Rp102.500, total and action pinned at the bottom) → host challenge → one submit → status → receipt. The virtual account path shows instructions, a host-clock countdown and status checks without a new payment.
 - **Scenarios:** every row of the PRD edge matrix (K01–K08, P01–P15, X01–X04) plus three main journeys, each a deterministic fake-host fixture with variants.
