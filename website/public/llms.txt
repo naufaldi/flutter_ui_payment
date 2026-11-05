@@ -1,0 +1,27 @@
+# flutter_ui_payment
+
+> Composable Flutter widgets for checkout, host-owned authorization, payment status, receipts and optional KYC. The widgets render structured data from the host app and report intent through callbacks. Version 0.1.0, not on pub.dev: install it from GitHub by git or path. Targets iOS and Android phones and tablets; the web build is a docs preview only.
+
+Rules the kit keeps:
+- The host owns network, clipboard, URL launching, camera, routing, auth, pricing, KYC decisions, payment status, idempotency and polling. The kit makes no network or platform-channel calls. It holds no secrets and has no dependency other than the Flutter SDK.
+- An unknown or timed-out payment is never shown as failed or paid. Only host snapshots change the status.
+- Styling order: PaymentTheme / PaymentType / PaymentMotion, then a family theme (PaymentButtonTheme, PaymentFieldTheme), then a host preset, then a one-off `style`. Fields have no instance `style`. Do not invent variants, preset APIs or API names; check the component page's Props table.
+- Touch targets are at least 48 dp, and layouts work at 200% text on 320 dp. With reduced motion on, the kit runs no animation.
+
+## Start
+- [Introduction](https://flutter-ui-payment.netlify.app/start/introduction/): what the kit owns and what the host keeps
+- [Installation](https://flutter-ui-payment.netlify.app/start/installation/): git or path dependency, SDK requirements
+- [Quick start](https://flutter-ui-payment.netlify.app/start/quick-start/): a complete lib/main.dart, then fragments from quote to receipt
+- [Host-owned decisions](https://flutter-ui-payment.netlify.app/concepts/host-owned/)
+- [Payment attempt and status](https://flutter-ui-payment.netlify.app/concepts/payment-attempt/)
+- [Theming](https://flutter-ui-payment.netlify.app/concepts/theming/)
+
+## API
+- [Component catalog](https://flutter-ui-payment.netlify.app/components/): one page per component, with a Props table
+- [Blocks](https://flutter-ui-payment.netlify.app/blocks/): complete host screens with copyable source
+- [Public exports](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/flutter_ui_payment.dart)
+- [Generated API data](https://github.com/naufaldi/flutter_ui_payment/blob/main/website/src/data/api.json): every exported class, constructor and parameter
+
+## Contributing
+- [AGENTS.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/AGENTS.md): workflow, checks and testing scope
+- [Daily design-system guide](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/design-system.md): active rules, linked to the PRD and decisions

@@ -50,7 +50,7 @@ and state recipes appear under Guides; their existing URLs stay stable.
 
 **`0.1.0`, not on pub.dev yet.** Install it from the [GitHub repository](https://github.com/naufaldi/flutter_ui_payment); it is not on pub.dev, and the package name has not been checked for availability. All data in the example app is synthetic.
 
-Documentation captures use Flutter 3.44.6 on the 360×640 dp Android API 37 phone (2 November 2026). The formatter, analyzers, example widget tests and website checks cover this docs update. Earlier platform runs remain recorded in [Compatibility](/reference/compatibility/).
+Documentation captures use Flutter 3.44.6 on the 360×640 dp Android API 37 phone, and wide layouts on the 1280×800 dp Android tablet. The formatter, analyzers, example widget tests and website checks cover this docs update. Earlier platform runs remain recorded in [Compatibility](/reference/compatibility/).
 
 Targets iOS and Android, phones and tablets ([D64](/reference/design-decisions/)). The web build is a documentation preview, not a product target; desktop is out of scope.
 
@@ -59,11 +59,14 @@ Not done yet:
 - An external developer integrating a checkout from these docs (the 30-minute goal is unproven).
 - A browser check of the web gallery.
 - Android 7–10 runtime tests.
-- The Android tablet capture pass (D64); phone documentation now uses Android captures.
 - Package name availability and `flutter pub publish --dry-run`.
 
 ## Where to go next
 
 1. [Installation](/start/installation/): add the dependency.
-2. [Quick start](/start/quick-start/): build a checkout from quote to receipt, including the states that go wrong.
+2. [Quick start](/start/quick-start/): run the block demo, then build a checkout from quote to receipt, including the states that go wrong.
 3. [Payment attempt and status](/concepts/payment-attempt/): the rules behind "unknown is not failure".
+
+After that, pick a component from the [catalog](/components/), copy a complete host screen from [Blocks](/blocks/), and connect your backend through [Host-owned decisions](/concepts/host-owned/).
+
+**Using a coding agent?** Point it at [`llms.txt`](/llms.txt): a short index of these pages, the exported API and the rules the kit keeps. In the repository, agents start with `AGENTS.md` and the README's *Start here* table.

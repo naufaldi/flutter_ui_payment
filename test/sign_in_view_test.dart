@@ -1,10 +1,11 @@
 // learnMore and footnote are deprecated but must keep working until 0.2.0.
 // ignore_for_file: deprecated_member_use_from_same_package
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:flutter_ui_payment/src/foundation/focus_ring.dart';
 import 'content_host.dart';
 
 void main() {
@@ -161,22 +162,17 @@ void main() {
     final legal = find.byWidgetPredicate(
       (w) => w is RichText && w.text.toPlainText().startsWith('By continuing'),
     );
+    // The links sit inside the one sentence, in reading order.
     expect(
       t.widget<RichText>(legal).text.toPlainText(),
-      'By continuing you agree to Ruang Bayar’s Terms and Privacy.',
+      'By continuing you agree to Ruang Bayar’s ￼ and ￼.',
     );
-    Future<void> tapSpan(String label) async {
-      final paragraph = t.renderObject<RenderParagraph>(legal);
-      final text = paragraph.text.toPlainText();
-      final start = text.indexOf(label);
-      final boxes = paragraph.getBoxesForSelection(
-        TextSelection(baseOffset: start, extentOffset: start + label.length),
-      );
-      await t.tapAt(paragraph.localToGlobal(boxes.first.toRect().center));
-    }
-
-    await tapSpan('Terms');
-    await tapSpan('Privacy');
+    expect(
+      find.descendant(of: legal, matching: find.text('Terms')),
+      findsOneWidget,
+    );
+    await t.tap(find.text('Terms'));
+    await t.tap(find.text('Privacy'));
     expect(opened, ['terms', 'privacy']);
     // The legal sentence sits in the pinned footer, above the primary.
     final primary = t.getRect(find.byKey(const Key('continue')));
@@ -184,6 +180,63 @@ void main() {
     final cancel = t.getRect(find.widgetWithText(PaymentButton, 'Cancel'));
     expect(primary.width, cancel.width);
     expect(primary.top, lessThan(cancel.top));
+  });
+
+  // #235: a keyboard user reaches Terms and Privacy in the sentence, sees
+  // the focus ring and opens each with Enter or Space.
+  testWidgets('keyboard reaches and opens the inline legal links', (t) async {
+    await setSurface(t, const Size(393, 844));
+    FocusManager.instance.highlightStrategy =
+        FocusHighlightStrategy.alwaysTraditional;
+    addTearDown(
+      () => FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.automatic,
+    );
+    final opened = <String>[];
+    await t.pumpWidget(
+      boundedHost(
+        linking(
+          onTerms: () => opened.add('terms'),
+          onPrivacy: () => opened.add('privacy'),
+          onContinue: () => opened.add('continue'),
+        ),
+      ),
+    );
+    bool focusedOn(String label) =>
+        Focus.of(t.element(find.text(label))).hasPrimaryFocus;
+
+    Finder ring(String label) => find.ancestor(
+      of: find.text(label),
+      matching: find.byWidgetPredicate(
+        (w) => w is CustomPaint && w.foregroundPainter is FocusRingPainter,
+      ),
+    );
+
+    for (var i = 0; i < 8 && !focusedOn('Terms'); i++) {
+      await t.sendKeyEvent(LogicalKeyboardKey.tab);
+      await t.pump();
+    }
+    expect(focusedOn('Terms'), isTrue);
+    expect(ring('Terms'), findsOneWidget);
+    expect(ring('Privacy'), findsNothing);
+    await t.sendKeyEvent(LogicalKeyboardKey.enter);
+    expect(opened, ['terms']);
+
+    await t.sendKeyEvent(LogicalKeyboardKey.tab);
+    await t.pump();
+    expect(focusedOn('Privacy'), isTrue);
+    await t.sendKeyEvent(LogicalKeyboardKey.space);
+    expect(opened, ['terms', 'privacy']);
+
+    // Reading order continues to the primary action.
+    await t.sendKeyEvent(LogicalKeyboardKey.tab);
+    await t.pump();
+    expect(focusedOn('Continue'), isTrue);
+
+    // Screen readers still get a named link.
+    final terms = t.getSemantics(find.text('Terms'));
+    expect(terms.label, 'Terms');
+    expect(terms.flagsCollection.isLink, isTrue);
   });
 
   testWidgets('small phone, 2x, Indonesian: the primary is on screen (#58-1)', (
@@ -208,6 +261,9 @@ void main() {
     final primary = find.byKey(const Key('continue'));
     expect(primary.hitTestable(), findsOneWidget);
     expect(t.getRect(primary).bottom, lessThanOrEqualTo(667));
+    // The legal links stay readable and tappable in the wrapped sentence.
+    expect(find.text('Ketentuan').hitTestable(), findsOneWidget);
+    expect(find.text('Privasi').hitTestable(), findsOneWidget);
     await t.tap(primary);
     expect(calls, 1);
     expect(find.byType(EditableText), findsNothing);

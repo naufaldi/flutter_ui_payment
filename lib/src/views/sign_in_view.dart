@@ -1,7 +1,7 @@
-import 'package:flutter/gestures.dart';
 import '../interaction/interaction.dart';
 import 'package:flutter/material.dart';
 import '../foundation/primitives.dart';
+import '../foundation/focus_ring.dart';
 import '../foundation/payment_icons.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
@@ -118,21 +118,6 @@ class PaymentSignInView extends StatefulWidget {
 
 class _PaymentSignInViewState extends State<PaymentSignInView> {
   final _errorFocus = FocusNode();
-  // One recognizer per legal link; each reads the current link on tap.
-  final _recognizers = <TapGestureRecognizer>[];
-  void syncRecognizers() {
-    while (_recognizers.length > widget.legalLinks.length) {
-      _recognizers.removeLast().dispose();
-    }
-    while (_recognizers.length < widget.legalLinks.length) {
-      final i = _recognizers.length;
-      _recognizers.add(
-        TapGestureRecognizer()
-          ..onTap = () => widget.legalLinks[i].onPressed?.call(),
-      );
-    }
-  }
-
   void focusError() {
     if (widget.errorText != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -144,27 +129,27 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
   @override
   void initState() {
     super.initState();
-    syncRecognizers();
     focusError();
   }
 
   @override
   void didUpdateWidget(covariant PaymentSignInView old) {
     super.didUpdateWidget(old);
-    syncRecognizers();
     if (old.errorText != widget.errorText) focusError();
   }
 
   @override
   void dispose() {
     _errorFocus.dispose();
-    for (final r in _recognizers) {
-      r.dispose();
-    }
     super.dispose();
   }
 
   /// The legal sentence with `{n}` replaced by inline links.
+  ///
+  /// Each link is a focusable inline control (#235): keyboard focus reaches
+  /// it in reading order, Enter or Space activates it and it shows the kit
+  /// focus ring. It stays an inline caption link, exempt from the 48 dp
+  /// target rule (D61, WCAG 2.5.8).
   Widget _legal(BuildContext context, String notice) {
     final theme = PaymentTheme.of(context);
     final type = PaymentType.of(context);
@@ -174,15 +159,16 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
       spans.add(TextSpan(text: notice.substring(start, m.start)));
       final i = int.parse(m.group(1)!);
       if (i < widget.legalLinks.length) {
-        final link = widget.legalLinks[i];
         spans.add(
-          TextSpan(
-            text: link.label,
-            recognizer: _recognizers[i],
-            semanticsLabel: link.semanticLabel,
-            style: TextStyle(
-              color: theme.textPrimary,
-              decoration: TextDecoration.underline,
+          WidgetSpan(
+            alignment: PlaceholderAlignment.baseline,
+            baseline: TextBaseline.alphabetic,
+            child: _InlineLegalLink(
+              link: widget.legalLinks[i],
+              style: type.caption.copyWith(
+                color: theme.textPrimary,
+                decoration: TextDecoration.underline,
+              ),
             ),
           ),
         );
@@ -355,6 +341,56 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
         footer: legal,
         primaryAction: w.primaryAction,
         secondaryAction: w.secondaryAction,
+      ),
+    );
+  }
+}
+
+/// One link inside the legal sentence: the host's [PaymentLink] label and
+/// callback, drawn as underlined caption text that a keyboard can reach.
+class _InlineLegalLink extends StatelessWidget {
+  const _InlineLegalLink({required this.link, required this.style});
+
+  final PaymentLink link;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    final onPressed = link.onPressed;
+    final enabled = onPressed != null;
+    return PaymentFocusRing(
+      radius: PaymentTheme.of(context).controlBorderRadius,
+      child: Semantics(
+        container: true,
+        link: true,
+        enabled: enabled,
+        label: link.semanticLabel ?? link.label,
+        onTap: onPressed,
+        child: FocusableActionDetector(
+          enabled: enabled,
+          mouseCursor: enabled ? SystemMouseCursors.click : MouseCursor.defer,
+          actions: {
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                onPressed?.call();
+                return null;
+              },
+            ),
+          },
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            excludeFromSemantics: true,
+            onTap: onPressed,
+            // The sentence already scales this placeholder with the text.
+            child: ExcludeSemantics(
+              child: Text(
+                link.label,
+                style: style,
+                textScaler: TextScaler.noScaling,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
