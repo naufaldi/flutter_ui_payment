@@ -448,3 +448,61 @@ starlight-theme-select select {
   font-size: var(--sl-text-xs);
   color: var(--fup-muted);
 }
+
+/* Homepage call-to-action buttons (Hero and Cta). One solid ink primary, one
+   ruled secondary. Prefixed classes, so docs pages are unaffected. */
+.fup-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: var(--fup-radius-control);
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 150ms ease,
+    transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.fup-btn-primary {
+  background: var(--fup-ink);
+  color: var(--fup-surface);
+}
+.fup-btn-secondary {
+  border: 1px solid var(--fup-border);
+  color: var(--fup-ink);
+}
+/* Hover only where a pointer can hover; touch taps get the :active press. */
+@media (hover: hover) and (pointer: fine) {
+  .fup-btn-primary:hover {
+    background: color-mix(in srgb, var(--fup-ink) 88%, var(--fup-surface));
+    color: var(--fup-surface);
+  }
+  .fup-btn-secondary:hover {
+    background: var(--fup-surface-muted);
+    color: var(--fup-ink);
+  }
+}
+.fup-btn:active {
+  transform: scale(0.97);
+}
+.fup-btn-primary:active {
+  background: color-mix(in srgb, var(--fup-ink) 80%, var(--fup-surface));
+}
+.fup-btn-secondary:active {
+  background: var(--fup-surface-muted);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fup-btn {
+    transition: background-color 150ms ease;
+  }
+  .fup-btn:active {
+    transform: none;
+  }
+}
+
+/* Homepage (the only page with a hero): keep prose to a readable measure on
+   the wide splash layout. */
+:root[data-has-hero] .sl-markdown-content > p {
+  max-width: 65ch;
+}
