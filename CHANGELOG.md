@@ -1,3 +1,8 @@
+## Release readiness and onboarding (2026-11-05)
+
+- Docs: new "Start here" routes for app developers and coding agents. The quick start opens with a complete, compile-checked `lib/main.dart`, and the site has an `llms.txt` index. Fixes: sign-in legal links now work from a keyboard, the tooltip honours reduced motion turned on mid-fade, and a quickly re-picked example scenario opens its own step.
+- Finish touch-safe docs CTA hover handling and remove an unmeasured onboarding time promise.
+
 ## Soft showcase and remaining UI fixes (2026-11-04)
 
 - Docs: the Sparkline comparison specimen now shows two distinct trends for this month and last month.
