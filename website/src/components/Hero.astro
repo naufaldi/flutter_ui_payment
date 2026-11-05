@@ -213,6 +213,9 @@ const [primary, ...secondary] = hero.actions;
   }
   /* Narrow phones: stack the two actions full width so each reads as a button. */
   @media (max-width: 30rem) {
+    h1 {
+      font-size: clamp(1.5rem, 10vw, 2rem);
+    }
     .fup-actions {
       flex-direction: column;
     }
