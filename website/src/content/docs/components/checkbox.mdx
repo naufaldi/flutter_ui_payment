@@ -41,7 +41,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: unchecked, checked, indeterminate. Nothing else exists.
+Variants: unchecked, checked, indeterminate.
 
 ### Checked and unchecked
 
@@ -78,7 +78,7 @@ Use Radio for one mutually exclusive choice.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host supplies unchecked, checked or indeterminate state. A null `onChanged` disables interaction while keeping the label and description readable.
 
 ## Do and don't
 
@@ -93,8 +93,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Use the description for a consequence or a detail, not for terms that must be read; link those separately.
 - For a setting that takes effect at once, use a [switch](/components/switch/) instead.
 
-Use mixed state when some page rows are selected; consent starts unchecked.
-
 ## Accessibility
 
 - The whole row is one target of at least 48 dp and one screen-reader node that reads the label, the description and the checked state together.
@@ -103,7 +101,7 @@ Use mixed state when some page rows are selected; consent starts unchecked.
 
 ## Used in
 
-Statement A03; VerificationIntro; CheckoutReview. Real composition: `example/lib/screens/gallery_selection.dart`.
+Statement A03; VerificationIntro; CheckoutReview. Example source: `example/lib/screens/gallery_selection.dart`.
 
 ## API
 

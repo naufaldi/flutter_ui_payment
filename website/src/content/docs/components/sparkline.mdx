@@ -22,7 +22,7 @@ It answers "which way is this going?" at a glance. It has no axes, labels or val
 PaymentSparkline(points: points);
 ```
 
-Use `onSelectionChanged` to receive each new selected period index and `null` on return to rest. The index addresses `points` or the series' shared periods. Repeated events within one period do not notify or rebuild. New periods reset selection silently. The host owns haptics (D73); the kit plays none.
+Use `onSelectionChanged` to receive each new selected period index and `null` on return to rest. The index addresses `points` or the series' shared periods. Repeated events within one period do not notify or rebuild. New periods reset selection silently. The host owns haptics; the kit plays none.
 
 ```dart
 import 'package:flutter/services.dart';
@@ -46,7 +46,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: money, percentage, number; optional inspection. Nothing else exists.
+Variants: money, percentage, number; optional inspection.
 
 ### States and variants
 
@@ -65,13 +65,13 @@ Use named series with identical period labels and ordering. Line and bar charts 
 
 Use a line for direction, bars for period comparisons, a meter for category proportions and a sparkline beside a KPI. Percent and number units read `measure`; money reads `value`. A measure of 45 means 45 percent. Missing readings remain gaps.
 
-Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to read a value. Unlike line and bar charts (D58), a sparkline has no value label at rest: it sits beside a KPI that already states the amount. Meter `onSegmentPressed` activates full-width legend rows; the painted bar takes no taps.
+Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to read a value. Unlike line and bar charts, a sparkline has no value label at rest: it sits beside a KPI that already states the amount. Meter `onSegmentPressed` activates full-width legend rows; the painted bar takes no taps.
 
 **Breaking:** `MeterSegment.color` is removed. Use the semantic category ramp. `MeterSegment.value` is optional; supply `measure` for numeric units. Point `value` and chart `points` are optional when using measures or series.
 
 <Props names={['PaymentChartSeries', 'PaymentChartAxis', 'PaymentChartUnit', 'ChartPoint', 'MeterSegment']} />
 
-Parameters: `points`, `series`, `width`, `height`, `inspectable`, `unit`, `semanticLabel`, `onSelectionChanged`. Nothing else exists.
+Parameters: `points`, `series`, `width`, `height`, `inspectable`, `unit`, `semanticLabel`, `onSelectionChanged`.
 
 ## Which variant when
 
@@ -83,7 +83,7 @@ Use Line chart for axes and detailed reading.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Missing readings leave gaps. Keep the host amount beside the trend; the sparkline does not compute a payment total.
 
 ## Do and don't
 
@@ -95,15 +95,13 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 Use short period labels and a clear title. Explain what is settled in the headline caption. The host supplies the headline; the kit never adds plotted values to produce a customer total.
 
-Use as a supporting trend; put exact values elsewhere when they matter.
-
 ## Accessibility
 
 A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. Pointer inspection on line/bar charts is supplemental; it has no keyboard focus target. Status is conveyed by shape and words as well as color.
 
 ## Used in
 
-Gallery Charts; compact spending summaries. Real composition: `example/lib/screens/gallery_charts.dart`.
+Gallery Charts; compact spending summaries. Example source: `example/lib/screens/gallery_charts.dart`.
 
 ## API
 

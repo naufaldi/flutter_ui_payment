@@ -1,10 +1,10 @@
 ---
 title: flutter_ui_payment
-description: Composable Flutter UI for checkout, payment status, receipts and optional KYC that stays honest when a payment result is not known yet.
+description: Flutter components for checkout, payment status, receipts and optional KYC, including recovery when a payment result is unknown.
 template: splash
 hero:
-  title: 'Payment UI that stays honest <span>when the result is not known yet.</span>'
-  tagline: 'Composable Flutter widgets for checkout, payment status, receipts and optional KYC. Your backend decides money, identity and authorization. The kit renders its answers and never moves money.'
+  title: 'Flutter payment UI <span>for checkout and recovery.</span>'
+  tagline: 'Build checkout, payment status, receipts and optional KYC with Flutter widgets. Your app and backend handle pricing, authorization and verification. The kit displays their results.'
   actions:
     - text: Get started
       link: /start/quick-start/
@@ -19,7 +19,7 @@ import Screens from '../../components/Screens.astro';
 
 ## The hard states are the product
 
-Most payment UIs are happy-path screenshots. Real flows have to answer harder questions, and this kit makes each answer part of the widget, not a convention you remember to follow.
+Payment screens need to handle missing responses, late status updates and changed totals. The kit provides these behaviors:
 
 **The submit timed out after the server accepted it.** The screen says "Don't pay again." first, shows a hatched band that never looks like an ordinary pending state, and offers one action: check status, using the same attempt reference.
 
@@ -27,7 +27,7 @@ Most payment UIs are happy-path screenshots. Real flows have to answer harder qu
 
 **The total changed after the customer chose a method.** `PaymentConfirmation` shows the old and new total and keeps the confirm action unreachable until the customer accepts the new terms.
 
-**Can the customer pay twice?** Not from this UI while a payment is pending or unknown. A new attempt is offered only when the host allows it and the previous attempt is final and not a success.
+**The payment is still pending or unknown.** The UI offers no pay-again action. A new attempt is offered only when the host allows it and the previous attempt is final and not a success. Your backend must still enforce idempotency.
 
 ```dart
 // Every status response goes through reconcile. Rejected snapshots leave the

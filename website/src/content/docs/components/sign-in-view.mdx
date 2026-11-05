@@ -1,13 +1,13 @@
 ---
 title: Sign in view
-description: Add context, full-page, focus, settings, sign-in and onboarding view bodies.
+description: Explain account linking and permissions before handing sign-in to the host authentication flow.
 ---
 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-Entry point for external bank sign-in. Variants: ready, host error. Nothing else exists. D32: no credential inputs and no free widget slot. The widget test asserts no EditableText anywhere in its subtree with all slots filled. Brand accepts only PaymentImage or PaymentIcon. Supplemental learnMore content opens separately in FocusView and is outside that guarantee. A host error takes focus and is announced. The host handles sign-in, destinations and legal links.
+`PaymentSignInView` explains which apps are connecting and what permissions that grants. Continue opens your host authentication flow; this view has no credential fields or arbitrary content slot. Brand slots accept `PaymentImage` or `PaymentIcon`. The host handles sign-in, navigation and legal-link destinations.
 
 <Screens>
   <Screen name="android_catalog_sign_in_view_variants" dark="android_catalog_sign_in_view_variants_dark" alt="External bank sign-in with requester branding, permissions, legal links and pinned Continue and Cancel actions." caption="Sign in view" />
@@ -44,7 +44,7 @@ PaymentSignInView(
 
 ## Account linking (D61)
 
-The screen says who is connecting and what that allows, then puts one short action where the thumb is.
+Show the connecting apps, their permissions and a pinned Continue action.
 
 - **Two tiles:** the connecting app (`requesterBrand`) · · · the account (`brand`).
 - **One specific headline**, such as "Masuk dengan Ruang Bayar", not "Sign in to continue".
@@ -66,11 +66,11 @@ The screen says who is connecting and what that allows, then puts one short acti
 
 ## Variants
 
-Variants: ready, busy, host error. Nothing else exists.
+Variants: ready, busy, host error.
 
 ### States and content
 
-The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+Use ready for account-linking information, busy while the host starts sign-in, and a host error when that operation fails.
 
 ## Which variant when
 
@@ -82,7 +82,7 @@ Use Onboarding view for working KYC tasks.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Continue delegates to host sign-in. A host error receives focus and is announced; it does not turn into a payment result.
 
 ## Do and don't
 
@@ -92,13 +92,11 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Continue delegates to host sign-in; learn-more is a disclosure and legal destinations are links.
+Name the connecting apps and their permissions. Explain legal links in one sentence above Continue; collect credentials in the host authentication flow.
 
 ## Accessibility
 
-Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+Terms and privacy links can receive keyboard focus and activate with Enter or Space. The legal sentence wraps at large text; its inline links retain link semantics.
 
 Learn-more is a disclosure row with an information icon and chevron. The brand icon aligns with the heading.
 
@@ -106,7 +104,7 @@ Used in H04: the fake host handles sign-in and cancellation retry; no credential
 
 ## Used in
 
-H04 signed-out scenario. Real composition: `example/lib/screens/gallery_views.dart`.
+H04 signed-out scenario. Example source: `example/lib/screens/gallery_views.dart`.
 
 <Screen name="android_sign_in_light" dark="android_sign_in_dark" alt="Example sign in screen with synthetic data" caption="Example: sign in" />
 

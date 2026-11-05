@@ -34,11 +34,11 @@ PaymentSheet(
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: Capture source sheet; PaymentSelect; report presentation; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Present payment details, selection or focused tasks in an overlay.
 
 ## Variants
 
-Variants: bottom sheet, side sheet. Nothing else exists.
+Variants: bottom sheet, side sheet.
 
 ### Behavior
 
@@ -49,11 +49,11 @@ Variants: bottom sheet, side sheet. Nothing else exists.
 - Pass `isDismissible: false` / `barrierDismissible: false` while a host call that must finish is running.
 - Sheets open in 280 ms and close in 200 ms on the drawer curve; zero under reduced motion.
 - The header's title centres its first line on the 48 dp close button at every text scale. The header keeps that height while `onClose` is null, so hiding Close during a host call does not move the title.
-- On phones, `showPaymentConfirmDialog` and `PaymentMenu` open as sheets too (D45, D55). A confirmation opened from a sheet stacks on top of it.
+- On phones, `showPaymentConfirmDialog` and `PaymentMenu` open as sheets too. A confirmation opened from a sheet stacks on top of it.
 
 ### Footer: one primary
 
-The footer's completion action is the sheet's one primary button ("Done", "Apply"). The button that opened the sheet stays secondary (D54). Use a quiet button for "Cancel" or "Not now".
+The footer's completion action is the sheet's one primary button ("Done", "Apply"). The button that opened the sheet stays secondary. Use a quiet button for "Cancel" or "Not now".
 
 ## Which variant when
 
@@ -65,7 +65,7 @@ Use Focus view for a focused task with its own footer.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host supplies content and handles actions. Closing a sheet dismisses its UI; it does not cancel a payment.
 
 ## Do and don't
 
@@ -80,15 +80,13 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Put the actions in the footer, the main one as the primary. Keep the footer to one or two buttons.
 - Never label the close button or any footer action in a way that suggests closing cancels a payment. Write the cancel request as its own action, such as "Request cancellation".
 
-Use the provided presentation functions; close never cancels a payment operation.
-
 ## Accessibility
 
-Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+Keep the close control labeled and the footer reachable with the keyboard open. Dismissal returns focus to the opener.
 
 ## Used in
 
-Capture source sheet; PaymentSelect; report presentation. Real composition: `example/lib/screens/gallery_kit.dart`.
+Capture source sheet; PaymentSelect; report presentation. Example source: `example/lib/screens/gallery_kit.dart`.
 
 ## API
 

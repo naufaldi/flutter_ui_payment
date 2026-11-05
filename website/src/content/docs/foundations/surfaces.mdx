@@ -7,7 +7,7 @@ import Props from '../../../components/Props.astro';
 import TokenTable from '../../../components/TokenTable.astro';
 import Screen from '../../../components/Screen.astro';
 
-Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
+Use shared surface and outline tokens to keep sections, controls and overlays consistent with the host theme.
 
 | The content is… | Surface |
 | --- | --- |
@@ -27,14 +27,14 @@ Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
 | Tinted | `tone.container` fill, no edge | `PaymentBanner`, `PaymentBadge` | Use for the normal path (decisions.md: "tinted boxes are for problems") |
 | Muted | `surfaceMuted` fill | Disabled fill, skeleton, selected nav item | — |
 | Ink | textPrimary fill, surface text, elevation 0, control radius | Toast and tooltip | Add a shadow |
-| Floating | `surface` + `outline` edge + elevation 2 | `PaymentMenu` on tablets only (`interaction.dart:464`); on phones, in either orientation, the menu is an overlay action sheet (D55, D92) | Add a shadow anywhere else |
+| Floating | `surface` + `outline` edge + elevation 2 | `PaymentMenu` on tablets only (`interaction.dart:464`); on phones, in either orientation, the menu is an overlay action sheet | Add a shadow anywhere else |
 | Overlay | `surface`, elevation 0, top radius 12, scrim | Bottom sheet (`sheets.dart:163`), side sheet with `Colors.black54` barrier (`:192`), dialog | Tint the surface (`surfaceTintColor` is transparent everywhere) |
 
 Do: a flat `PaymentSection` as in checkout. Don't: wrap every section in a Material Card. Nested boxes compete with the primary action and make host composition harder.
 
 ## Stripe mapping
 
-Stripe Box backgroundColor maps to semantic surface or tone fills; keyline maps to the existing outline, border or danger foreground; boxShadow is refused (D28). **New** `PaymentBox` and **New** `PaymentKeyline` will expose these recipes. They do not exist yet. No new shadows or elevation tokens are added. The seven recipes above are closed. Nothing else exists.
+Stripe Box `backgroundColor` maps to supported semantic surfaces or tone fills. Keylines use the theme's outline, border or danger foreground. `PaymentBox` exposes token-based backgrounds and `PaymentKeyline` options; it has no `boxShadow` prop. See [Box](/components/box/) for the available options.
 
 <Screen name="android_refined_checkout_light" alt="Checkout with flat sections and ruled action area." />
 <Screen name="android_catalog_menu_sheet" alt="Phone action menu with grouped rows, a destructive action and Cancel." caption="A phone's action menu is an overlay sheet (D55)" />

@@ -35,7 +35,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: neutral, info, success, warning, danger. Nothing else exists.
+Variants: neutral, info, success, warning, danger.
 
 ### Tones
 
@@ -50,7 +50,7 @@ Variants: neutral, info, success, warning, danger. Nothing else exists.
 
 ### Anatomy
 
-One layout in every tone (D48a):
+One layout in every tone:
 
 ```
 [icon]  Title                                  [×]
@@ -86,7 +86,7 @@ PaymentBanner(
 
 ### Changed amounts
 
-A banner about a changed payment amount states old → new, for example "Was Rp102.500, now Rp104.000". It has no `onDismiss` while the payment is open (D48), so the only cue that the total changed cannot be hidden before paying. The same rule covers a danger banner that blocks the flow. `PaymentSummary` shows such a banner after a re-quote, using `totalChangedMessage`.
+A banner about a changed payment amount states old → new, for example "Was Rp102.500, now Rp104.000". It has no `onDismiss` while the payment is open, so the only cue that the total changed cannot be hidden before paying. The same rule covers a danger banner that blocks the flow. `PaymentSummary` shows such a banner after a re-quote, using `totalChangedMessage`.
 
 **Migration (UI review P2):** the tightened assert rejects a second button, a quiet button and a second link. Turn the extra action into a `PaymentLink`, and remove `onDismiss` from a total-changed banner.
 
@@ -108,7 +108,7 @@ Use Toast for feedback after an action.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Keep the banner visible while its message applies. Supply `onDismiss` only when the person may safely hide it; a changed-total notice stays visible through review.
 
 ## Do and don't
 
@@ -123,8 +123,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Do not stack banners. Show the one that matters most.
 - Use a [toast](/components/toast/) for passing feedback that does not need to stay on screen.
 
-Use warning for a supporting module failure; danger when primary content failed.
-
 ## Accessibility
 
 - The tone always comes with an icon and a title, so color is not the only signal.
@@ -133,7 +131,7 @@ Use warning for a supporting module failure; danger when primary content failed.
 
 ## Used in
 
-History A01; report A02; VerificationIntro. Real composition: `example/lib/screens/steps/kyc_onboarding_step.dart`.
+History A01; report A02; VerificationIntro. Example source: `example/lib/screens/steps/kyc_onboarding_step.dart`.
 
 ## API
 

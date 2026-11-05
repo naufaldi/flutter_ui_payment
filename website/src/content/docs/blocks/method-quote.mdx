@@ -28,7 +28,7 @@ flutter run -d <device-id> -t lib/method_quote_demo.dart
 
 Pick a method. Continue stays disabled until the host quote for that method
 arrives, then shows the total. Continue to the review and tap **Bayar**. The
-developer menu offers two more fixtures:
+developer menu offers two more scenarios:
 
 - **Biaya VA berubah saat bayar**: the host answers the first Pay with a new
   bank fee. The review shows the change, and Pay waits for the payer to check
@@ -36,7 +36,7 @@ developer menu offers two more fixtures:
 - **Biaya gagal dihitung**: the first quote fails and **Coba lagi** asks again.
 
 If the payer switches method while a quote is running, the older answer is
-ignored. Changing a fixture starts a fresh synthetic session.
+ignored. Changing a scenario starts a fresh synthetic session.
 
 ## Composition and boundaries
 
@@ -66,9 +66,4 @@ collects no credentials. All prices are fictional. See the
 
 ## Proof and limits
 
-Tests prove that a late quote for an earlier choice cannot enable Continue, that
-a re-priced total keeps Pay disabled until the payer accepts it, that an
-unavailable method says why and a pricing failure offers a retry, and that the
-method list and Continue stay reachable at 320 dp and 200% text in dark mode with
-reduced motion. Android captures were inspected. No hardware speed or iOS visual
-claim. The demo is not a pricing service.
+Widget tests cover late quotes, changed-total acceptance, unavailable methods, pricing retry and a reachable Continue action at 320 dp with 200% text. Connect your own pricing and authorization services. See [Compatibility](/reference/compatibility/) for device coverage.

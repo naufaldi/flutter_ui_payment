@@ -7,7 +7,7 @@ import Props from '../../../components/Props.astro';
 import TokenTable from '../../../components/TokenTable.astro';
 import Screen from '../../../components/Screen.astro';
 
-Use semantic tokens from the kit. Never invent raw colors, sizes or weights.
+Choose a `PaymentType` role for each text element. Roles inherit the host font and keep hierarchy consistent across components.
 
 `PaymentType.of(context)` exposes nine roles. Every role inherits the host font from textTheme.bodyMedium; the kit bundles no fonts. Values below show size, line, weight and tracking.
 
@@ -102,7 +102,7 @@ Above 1.5×, rows wrap values and bodyFor uses 1.3 leading. At 200%, titles stil
 | caption | caption |
 | kicker | tag |
 
-PaymentFontWeight is regular (400), semibold (600), bold (700). Bold is only for emphasis inside running text. **New** `PaymentInline` is its planned consumer. This does not add a tenth role. Nothing else exists.
+`PaymentFontWeight` provides regular (400), semibold (600) and bold (700) emphasis for `PaymentInline` and `PaymentSpan`. Use bold for emphasis within running text; choose a type role for headings.
 
 ## Migration
 

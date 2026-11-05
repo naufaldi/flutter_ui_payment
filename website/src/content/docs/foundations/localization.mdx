@@ -50,7 +50,7 @@ Amounts follow the language too: `id` groups with `.` and uses `,` for decimals,
 - [Accessibility](/concepts/accessibility/) for spoken amounts and labels.
 
 
-Use semantic formatting APIs only. Choose en or id; no third locale exists. Nothing else exists.
+Built-in translations support `en` and `id`. Use the formatting methods below for dates and amounts.
 
 | You are showing… | Use |
 | --- | --- |
@@ -63,4 +63,4 @@ Do: register the existing localization delegates above. Don't: hardcode translat
 
 ## Field foundation
 
-New field strings include invalid-date, calendar, optional, character counter and currency labels. Indonesian Material calendar labels require GlobalMaterialLocalizations.delegate in the host.
+Field strings include invalid-date, calendar, optional, character counter and currency labels. Register `GlobalMaterialLocalizations.delegate` for Indonesian Material calendar labels.

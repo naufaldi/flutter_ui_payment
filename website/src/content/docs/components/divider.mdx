@@ -25,11 +25,11 @@ PaymentDivider(height: theme.space(PaymentSpace.section));
 
 ## Stripe → kit
 
-Divider has no props; `height` is the kit's spacing knob. Nothing else exists.
+Use `height` for the space around the rule. The rule stays 1 dp thick and uses `PaymentTheme.outline`.
 
 ## Variants
 
-Variants: horizontal, vertical. Nothing else exists.
+Variants: horizontal, vertical.
 
 ### Between rows
 
@@ -57,7 +57,7 @@ Use Section for a titled content group.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The divider is decorative and has no loading, error or interaction state.
 
 ## Do and don't
 
@@ -70,15 +70,13 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Prefer space to separate sections. Add a rule only where space alone does not read as a break, such as before a total.
 - Do not use a divider as a border around content. Sections are flat by design.
 
-Use the theme outline and spacing from the surrounding composition.
-
 ## Accessibility
 
-Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+The divider is excluded from semantics. Use headings or labels to communicate the grouping it supports.
 
 ## Used in
 
-PaymentReceipt; RefundSection. Real composition: `example/lib/screens/gallery_layout.dart`.
+PaymentReceipt; RefundSection. Example source: `example/lib/screens/gallery_layout.dart`.
 
 ## API
 

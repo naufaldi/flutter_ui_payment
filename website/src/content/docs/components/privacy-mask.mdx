@@ -30,11 +30,11 @@ PrivacyMask(
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: FlowScreen; synthetic capture preview; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Hide sensitive payment or identity content when the host requests it.
 
 ## Variants
 
-Variants: visible, obscured. Nothing else exists.
+Variants: visible, obscured.
 
 ### Obscured
 
@@ -50,7 +50,7 @@ Use masked text for NIK in review.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+`obscured: true` covers the content and removes it from semantics. The host decides when sensitive content should be hidden.
 
 ## Do and don't
 
@@ -63,15 +63,13 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Mask whole blocks, not single digits. A half-covered number still leaks.
 - Unmask as soon as the app is active again. The mask is not a lock screen; it asks for nothing.
 
-Cover sensitive screen content when the host says it is obscured.
-
 ## Accessibility
 
 - While obscured, the child is excluded from semantics and screen readers hear "Content hidden" instead.
 
 ## Used in
 
-FlowScreen; synthetic capture preview. Real composition: `example/lib/adapters/synthetic_capture.dart`.
+FlowScreen; synthetic capture preview. Example source: `example/lib/adapters/synthetic_capture.dart`.
 
 ## API
 

@@ -36,22 +36,22 @@ No network, platform effect or financial operation occurs.
 
 Copy `merchant_history.dart`. Supply already-filtered records, the current query,
 filter, safe loading/error state and callbacks. The demo uses
-`TransactionRecord.where` for five local fixtures; replace that with your own
+`TransactionRecord.where` for five local scenarios; replace that with your own
 retrieval strategy. For long histories, use lazy `TransactionListItem` rows and
 host pagination instead of passing an unbounded list into this column-based kit
 pattern. A server query needs host cancellation/stale-response protection.
 
 `MerchantHistoryDetail` composes `PaymentSheet`, `TransactionDetail` and a pinned
-return button. It deliberately offers read-only inspection. Add a status-check
-or receipt action only when your host actually implements it; unknown never
-authorizes a new payment. Copying or sharing is absent from this fixture.
+return button for read-only inspection. Add a status-check
+or receipt action when your host implements it; an unknown result never
+authorizes a new payment. Copying or sharing is absent from this scenario.
 
 | UI | Existing library surface |
 | --- | --- |
 | Search, filter and list states | `TransactionHistory` |
 | Matching local records | `TransactionRecord.where` |
 | Status and facts | `TransactionDetail`, `StatusHeader`, `PaymentPropertyList` |
-| Refund truth | `RefundSection` |
+| Refund status | `RefundSection` |
 | Detail layout | `PaymentSheet`, `PaymentSheetHeader`, `PaymentButton` |
 
 Read the [history contract](/patterns/history/) and
@@ -66,8 +66,4 @@ rules; this block demonstrates a host screen using them.
 
 ## Proof and limits
 
-Focused stories cover search and unknown inspection, separate refund status,
-failed-load retry/no-match reset, and a 320 dp/200% dark detail with reachable
-filter and return controls. Native Android captures were inspected. Small bounded
-fixtures add no polling or new animation machinery. No iOS visual or physical-device
-speed claim. Auth, retrieval, retention, reconciliation and persistence remain host-owned.
+Widget tests cover search, unknown-result inspection, separate refund status, list retry and reachable controls at 320 dp with 200% text. The host supplies record access, retrieval, reconciliation and persistence. See [Compatibility](/reference/compatibility/) for device coverage.

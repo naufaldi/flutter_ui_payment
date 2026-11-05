@@ -7,7 +7,7 @@ import Props from '../../../components/Props.astro';
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 
-Collect a date by typing it (DD/MM/YYYY). The calendar button opens a kit sheet: a day / month / year wheel for far dates such as a date of birth, or a month calendar for near dates, both ending in a full-width "Choose date" (D52, D52a).
+Collect a date by typing it (DD/MM/YYYY). The calendar button opens a kit sheet: a day / month / year wheel for far dates such as a date of birth, or a month calendar for near dates, both ending in a full-width "Choose date".
 
 <Screens>
   <Screen name="android_catalog_date_field_variants" dark="android_catalog_date_field_variants_dark" alt="Date of birth and transfer date fields with empty, filled, invalid and disabled states." caption="Date field" />
@@ -43,11 +43,11 @@ PaymentDateField(
 
 The app-wide date pattern is a hint and persistent caption. Separators are inserted without moving focus. Invalid input shows on blur or Form validation; correcting it clears the kit error. Host validators own age and range rules. No per-field pattern override exists.
 
-**Picker by purpose (D52a).** The kit picks the sheet from the allowed span; there is no picker parameter. When `lastDate` is more than five years after `firstDate` (`DateTime(first.year + 5, first.month, first.day)` is before `lastDate`), the button opens the wheel: day, month and year columns in the typed pattern's order, opening at the value or, when empty, at `lastDate`. Days clamp to the month, and dates outside the range are drawn disabled and settle back inside it. Otherwise it opens a full-height month calendar at the value's month or today's, with weeks starting on Monday in Indonesian and Sunday in English. Both sheets are built in the kit, so they use kit colours and strings in en and id without `GlobalMaterialLocalizations`. Pass `lastDate: today` for past dates such as a date of birth.
+**Picker by purpose.** The kit picks the sheet from the allowed span; there is no picker parameter. When `lastDate` is more than five years after `firstDate` (`DateTime(first.year + 5, first.month, first.day)` is before `lastDate`), the button opens the wheel: day, month and year columns in the typed pattern's order, opening at the value or, when empty, at `lastDate`. Days clamp to the month, and dates outside the range are drawn disabled and settle back inside it. Otherwise it opens a full-height month calendar at the value's month or today's, with weeks starting on Monday in Indonesian and Sunday in English. Both sheets are built in the kit, so they use kit colours and strings in en and id without `GlobalMaterialLocalizations`. Pass `lastDate: today` for past dates such as a date of birth.
 
 ## Variants
 
-Variants: typed entry with a wheel sheet (span over five years), typed entry with a calendar sheet. Nothing else exists.
+Variants: typed entry with a wheel sheet (span over five years), typed entry with a calendar sheet.
 
 ## Which variant when
 
@@ -72,21 +72,19 @@ Default, focused, disabled and error. Errors include an icon, text and an edge. 
 
 Use short, specific labels and explain how to correct an error.
 
-Use host age/range validation; the app-wide pattern remains visible.
-
 ## Accessibility
 
 Input text is 16 dp. Legends precede fields in reading order. Labels and errors stay in semantics when visually hidden. The sheets return focus to the field. Each calendar day is a 48 dp button read as its full date ("Tuesday, 20 October 2026, today"); arrow keys move by a day or a week and Enter picks. Each wheel column is adjustable (swipe up or down with a screen reader) and its items grow with the text.
 
 ## Used in
 
-IdentityForm H04/K01. Real composition: `example/lib/screens/gallery_forms.dart`.
+IdentityForm H04/K01. Example source: `example/lib/screens/gallery_forms.dart`.
 
 <Screen name="android_kyc_onboarding_light" dark="android_kyc_onboarding_dark" alt="Example kyc onboarding screen with synthetic data" caption="Example: kyc onboarding" />
 
 ## Customization
 
-The date box follows the field-family `PaymentFieldTheme` (D102). The calendar and wheel sheets keep their own styling. See [Text field customization](/components/text-field/#customization).
+The date box follows the field-family `PaymentFieldTheme`. The calendar and wheel sheets keep their own styling. See [Text field customization](/components/text-field/#customization).
 
 ## API
 

@@ -45,7 +45,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: item, group, custom trigger. Nothing else exists.
+Variants: item, group, custom trigger.
 
 ### Disabled entries
 
@@ -57,7 +57,7 @@ An entry with `onSelected: null` is shown disabled. Keep it in the menu when peo
 
 ### Phone: action sheet
 
-On a phone, when the window's shorter side is under 600 dp (so in landscape too, D92), the trigger opens a bottom action sheet instead of an anchored menu (D55):
+On a phone, when the window's shorter side is under 600 dp (so in landscape too, D92), the trigger opens a bottom action sheet instead of an anchored menu:
 
 - every entry is a full-width row at least 48 dp tall; when any entry has an icon, every entry keeps the icon column so labels share one edge;
 - group titles become captions, and groups are separated by a divider;
@@ -90,7 +90,7 @@ Use Select for choosing a field value.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host supplies enabled and disabled actions. Disabled entries retain their reason; destructive entries appear in a separate final group.
 
 ## Do and don't
 
@@ -104,15 +104,13 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Use sentence case and no end punctuation.
 - Keep a menu to a handful of entries. Actions people need on every visit belong on the screen, not in a menu.
 
-Group related actions; keep the main primary action visible outside overflow.
-
 ## Accessibility
 
-Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+Menu items have labeled targets and visible disabled reasons. Back, Escape and dismissal return focus to the opener.
 
 ## Used in
 
-Detail A02; DataTable row actions A03. Real composition: `example/lib/screens/gallery_nav_controls.dart`.
+Detail A02; DataTable row actions A03. Example source: `example/lib/screens/gallery_nav_controls.dart`.
 
 <Screen name="android_statement_light" dark="android_statement_dark" alt="Example statement screen with synthetic data" caption="Example: statement" />
 

@@ -1,13 +1,13 @@
 ---
 title: Overview page
-description: Add page modules and detail/overview pages; code wrapping, edge fades and fitted-tab fallback. Closes #18.
+description: Arrange summary modules in one or two columns inside a host scroll region.
 ---
 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-A spending overview composes flat ruled modules. Variants: single column, primary/secondary columns at 840 dp. Nothing else exists. OverviewPage never scrolls vertically; place it in FullPageView or an existing host scroll region. Module actions are small hug buttons; extra actions collapse into a menu.
+A spending overview composes flat ruled modules. Variants: single column, primary/secondary columns at 840 dp. OverviewPage never scrolls vertically; place it in FullPageView or an existing host scroll region. Module actions are small hug buttons; extra actions collapse into a menu.
 
 <Screens>
   <Screen name="android_catalog_overview_page_variants" dark="android_catalog_overview_page_variants_dark" alt="Payment overview with a header, summary and supporting sections." caption="Overview page" />
@@ -66,7 +66,7 @@ PaymentOverviewPage(
 
 ## Spacing and width
 
-Modules are spaced evenly: a chart module gets the same space under it as a page module (24 dp to the next module's hairline). Inside a view, one column is capped at 640 dp; with a secondary column the page keeps two columns from 840 dp, capped at 1040 dp (D53). Give a chart module the headline it summarises; a "—" beside a chart with data reads as missing.
+Modules are spaced evenly: a chart module gets the same space under it as a page module (24 dp to the next module's hairline). Inside a view, one column is capped at 640 dp; with a secondary column the page keeps two columns from 840 dp, capped at 1040 dp. Give a chart module the headline it summarises; a "—" beside a chart with data reads as missing.
 
 ## Stripe → kit
 
@@ -79,11 +79,11 @@ Modules are spaced evenly: a chart module gets the same space under it as a page
 
 <Screen name="android_tablet_catalog_overview_page_variants" alt="Spending chart and recent transactions beside the balance module, in English on Android tablet." caption="Wide (tablet)" />
 
-Variants: single column, primary/secondary columns. Nothing else exists.
+Variants: single column, primary/secondary columns.
 
 ### States and content
 
-The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+Use one column for a narrow overview or primary and secondary columns from 840 dp. Place the page inside an existing scroll region.
 
 ## Which variant when
 
@@ -95,7 +95,7 @@ Use Detail page for a transaction destination.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Each module shows its own loading, empty or error state. A supporting module failure does not replace the rest of the overview.
 
 ## Do and don't
 
@@ -105,19 +105,17 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Place ChartModule directly in primary and facts directly in secondary.
+Give each module one heading. Keep the most useful payment facts before optional spending summaries.
 
 ## Accessibility
 
-Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+Keep module headings in reading order. Stack columns on narrow screens so supporting facts follow the primary content.
 
 Primary and secondary accept page modules, detail property lists, detail tables and chart modules directly. Arbitrary body widgets fail the debug admission check.
 
 ## Used in
 
-History A01; detail composition. Real composition: `example/lib/screens/gallery_views.dart`.
+History A01; detail composition. Example source: `example/lib/screens/gallery_views.dart`.
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 

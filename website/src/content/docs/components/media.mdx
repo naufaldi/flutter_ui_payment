@@ -37,11 +37,11 @@ PaymentVideoPlayer(
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: Gallery Kit video adapter; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Display instructional video through a host-supplied player adapter.
 
 ## Variants
 
-Variants: idle, loading, ready, playing, paused, buffering, ended, error. Nothing else exists.
+Variants: idle, loading, ready, playing, paused, buffering, ended, error.
 
 ### Behavior
 
@@ -66,7 +66,7 @@ Use Image for a static preview.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host controller reports loading, buffering, playback, completion and error. A playback error offers retry without changing any payment state.
 
 <Screen name="android_catalog_video_loading" alt="Video player loading state in the gallery adapter example." caption="Loading adapter" />
 
@@ -78,17 +78,15 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-The host owns playback and source; display loading/error without guessing readiness.
+Give instructional clips a descriptive title and a useful error message. Keep video separate from payment completion or identity-verification status.
 
 ## Accessibility
 
-Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+Playback state is announced. Give the clip a label, and keep play, seek and mute controls available to keyboard and screen-reader users.
 
 ## Used in
 
-Gallery Kit video adapter. Real composition: `example/lib/screens/gallery_kit.dart`.
+Gallery Kit video adapter. Example source: `example/lib/screens/gallery_kit.dart`.
 
 ## API
 

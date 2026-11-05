@@ -27,11 +27,11 @@ CountdownText.formatDuration(left);
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: PaymentInstructions P12; Gallery Kit; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Show time remaining for host-issued payment instructions.
 
 ## Variants
 
-Variants: remaining, warning, elapsed. Nothing else exists.
+Variants: remaining, warning, elapsed.
 
 ### When the deadline passes
 
@@ -58,7 +58,7 @@ Use Status header for payment outcome.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host supplies the deadline and clock. Reaching zero calls `onElapsed`; it does not change the payment status.
 
 **Layout.** The countdown reserves the width of the longest format it will show, so the text does not jump when 1:00:00 becomes 59:59.
 
@@ -73,8 +73,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Pair the countdown with the deadline itself (a date and time) so the person can plan, as the virtual account instructions do.
 - Label it with what the deadline is for: "Pay before", not "Timer".
 
-Pass the host expiry and clock; elapsed is a display state, not a payment verdict.
-
 ## Accessibility
 
 - Digits are tabular, so the width does not change as they tick.
@@ -83,7 +81,7 @@ Pass the host expiry and clock; elapsed is a display state, not a payment verdic
 
 ## Used in
 
-PaymentInstructions P12; Gallery Kit. Real composition: `lib/src/foundation/primitives.dart`.
+PaymentInstructions P12; Gallery Kit. Example source: `lib/src/foundation/primitives.dart`.
 
 ## API
 

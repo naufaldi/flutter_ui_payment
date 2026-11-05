@@ -7,7 +7,7 @@ import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-A 48 dp icon action needs a nonempty tooltip. Neutral uses secondary text; accent marks a primary value affordance. Keyboard focus draws a circular ring and presses scale to 0.96. Disabled uses the disabled token. Use a labeled button when the glyph cannot explain the action. Variants: neutral, accent. Nothing else exists.
+A 48 dp icon action needs a nonempty tooltip. Neutral uses secondary text; accent marks a primary value affordance. Keyboard focus draws a circular ring and presses scale to 0.96. Disabled uses the disabled token. Use a labeled button when the glyph cannot explain the action. Variants: neutral, accent.
 
 <Screens>
   <Screen name="android_catalog_icon_button_variants" dark="android_catalog_icon_button_variants_dark" alt="Neutral and accent icon actions in enabled, disabled and focused states." caption="Icon button" />
@@ -38,7 +38,7 @@ Width and alignment follow content. Host widgets own keyboard ordering and platf
 
 ## Variants
 
-Variants: neutral, accent. Nothing else exists.
+Variants: neutral, accent.
 
 ## Which variant when
 
@@ -50,7 +50,7 @@ Use Button when a word is needed to explain the action.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+A null callback disables the action. Keep its tooltip specific enough to identify the action without relying on the glyph.
 
 ## Do and don't
 
@@ -60,9 +60,7 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Always provide a tooltip; use accent only for the selected or emphasized action.
+Use a tooltip that names the action, such as "Copy reference". Use a labeled button when the icon needs an explanation.
 
 ## Accessibility
 
@@ -72,7 +70,7 @@ Targets are at least 48 dp. Tooltips name icon actions. Links announce their rol
 
 ## Used in
 
-Fees A04; capture controls; navigation. Real composition: `example/lib/screens/gallery_selection.dart`.
+Fees A04; capture controls; navigation. Example source: `example/lib/screens/gallery_selection.dart`.
 
 <Screen name="android_fees_light" dark="android_fees_dark" alt="Example fees screen with synthetic data" caption="Example: fees" />
 

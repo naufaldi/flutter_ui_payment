@@ -29,11 +29,11 @@ ChartModule(
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: History A01; Gallery Charts; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Group a spending headline, plot and loading or recovery state.
 
 ## Variants
 
-Variants: ready, loading, empty, error. Nothing else exists.
+Variants: ready, loading, empty, error.
 
 ## Which variant when
 
@@ -70,17 +70,15 @@ The headline block reserves a caption line only when you pass `headlineCaption` 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-The host supplies headline and chart state; retry repeats only the chart request.
+Name what the headline measures and the period it covers. Explain an empty or failed plot in its message, with a retry action when available.
 
 ## Accessibility
 
-Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+Supply a headline and chart summary that identify the data without relying on color. Keep error messages and retry reachable at large text.
 
 ## Used in
 
-History A01; Gallery Charts. Real composition: `example/lib/screens/gallery_charts.dart`.
+History A01; Gallery Charts. Example source: `example/lib/screens/gallery_charts.dart`.
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 

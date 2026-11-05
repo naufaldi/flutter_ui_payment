@@ -27,11 +27,9 @@ PaymentIcon.tone(tone);
 | Icon | `PaymentIcon` |
 | css and numeric styling | Semantic token enums |
 
-Variants: xsmall, small, medium, large, xlarge. Nothing else exists.
-
 ## Variants
 
-Variants: xsmall, small, medium, large, xlarge. Nothing else exists.
+Variants: xsmall, small, medium, large, xlarge.
 
 ## Which variant when
 
@@ -43,7 +41,7 @@ Use Image for host artwork.
 
 ## States
 
-Layout and inline text are passive. Images preserve a loading surface and recover from decode failures. Copy feedback stays with the value.
+The icon displays the selected glyph, size and semantic color. It does not determine payment status.
 
 ## Do and don't
 
@@ -53,17 +51,15 @@ Layout and inline text are passive. Images preserve a loading surface and recove
 
 ## Content guidelines
 
-Use short payment labels and synthetic references in examples.
-
-Choose the semantic size token; text still communicates the outcome.
+Choose an icon that agrees with the adjacent label. Keep status meaning in words as well as the glyph.
 
 ## Accessibility
 
-Keep reading order aligned with layout. Decorative glyphs are excluded from semantics. Images require alt text; copy actions have labeled targets and confirmation.
+Decorative icons are excluded from semantics. An icon-only action needs an accessible label or tooltip.
 
 ## Used in
 
-StatusHeader; KYC and checkout. Real composition: `example/lib/screens/gallery_layout.dart`.
+StatusHeader; KYC and checkout. Example source: `example/lib/screens/gallery_layout.dart`.
 
 ## API
 

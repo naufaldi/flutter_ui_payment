@@ -6,9 +6,9 @@ description: What flutter_ui_payment is, what your app keeps, and where the pack
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 
-`flutter_ui_payment` is a Flutter package of composable widgets for optional identity verification (KYC), checkout, host-owned authorization, manual payment instructions, payment status and receipts. It stays clear when a payment is pending, failed, or its result is not known yet.
+`flutter_ui_payment` provides widgets for checkout, payment status, receipts and optional identity verification (KYC). It includes pending, failed and unknown-result screens, manual payment instructions and host-owned authorization.
 
-Around that core it ships the pieces a payment app is built from: action rows and menus, confirmations and feedback, a responsive sidebar/drawer shell, sheets, a host-driven video player, labeled promotions, and transaction history.
+The package also includes forms, navigation, action menus, sheets, charts, feedback, video controls, promotions and transaction history.
 
 <Screens>
   <Screen name="android_refined_checkout_light" dark="android_refined_checkout_dark" alt="Checkout with the order summary led by the total, a fee line, the method list and a pinned Review payment action." caption="Checkout (light: English, dark: Indonesian)" />
@@ -34,9 +34,8 @@ The package renders structured data from your app and reports user intent throug
 
 ## Invariants the kit helps keep
 
-Want a complete host screen first? Start with [Blocks](/blocks/): copy the source,
-run the mobile demo, then follow its links to the domain patterns. General layout
-and state recipes appear under Guides; their existing URLs stay stable.
+Start with [Blocks](/blocks/) to run and copy a complete mobile screen. Patterns
+explain payment and KYC behavior; Guides cover layout, forms and loading states.
 
 - `verified` comes only from the host, never from a finished upload.
 - One active submit per attempt. `PaymentButton` locks while its callback runs; this is interaction protection, not a replacement for server-side deduplication.
@@ -48,18 +47,18 @@ and state recipes appear under Guides; their existing URLs stay stable.
 
 ## Status
 
-**`0.1.0`, not on pub.dev yet.** Install it from the [GitHub repository](https://github.com/naufaldi/flutter_ui_payment); it is not on pub.dev, and the package name has not been checked for availability. All data in the example app is synthetic.
+Version `0.1.0` is available from the [GitHub repository](https://github.com/naufaldi/flutter_ui_payment). It is not published to pub.dev, and the package name has not been checked for availability. All example data is synthetic.
 
-Documentation captures use Flutter 3.44.6 on the 360×640 dp Android API 37 phone, and wide layouts on the 1280×800 dp Android tablet. The formatter, analyzers, example widget tests and website checks cover this docs update. Earlier platform runs remain recorded in [Compatibility](/reference/compatibility/).
+Documentation captures use Flutter 3.44.6 on a 360×640 dp Android API 37 phone emulator and a 1280×800 dp Android tablet emulator. See [Compatibility](/reference/compatibility/) for platform requirements and verification coverage.
 
-Targets iOS and Android, phones and tablets ([D64](/reference/design-decisions/)). The web build is a documentation preview, not a product target; desktop is out of scope.
+The kit targets iOS and Android phones and tablets. The web build is a documentation preview; desktop is outside the supported product scope.
 
-Not done yet:
+Current verification limits:
 
-- An external developer integrating a checkout from these docs (the 30-minute goal is unproven).
-- A browser check of the web gallery.
-- Android 7–10 runtime tests.
-- Package name availability and `flutter pub publish --dry-run`.
+- The 30-minute checkout integration goal has not been tested with an external developer.
+- The Flutter web gallery has not been browser-tested.
+- Android 7–10 has not been runtime-tested.
+- pub.dev name availability and publishing checks have not been completed.
 
 ## Where to go next
 

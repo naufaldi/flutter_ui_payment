@@ -61,11 +61,11 @@ AdaptiveNavShell(
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: GalleryScreen; NavSidebar; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Provide a responsive app shell around host-owned routes.
 
 ## Variants
 
-Variants: sidebar, phone drawer. Nothing else exists.
+Variants: sidebar, phone drawer.
 
 ### Behavior
 
@@ -84,7 +84,7 @@ Use Tabs for alternate views of the same data.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host supplies the selected destination and handles changes. Disabled destinations stay visible with their reason.
 
 ## Do and don't
 
@@ -99,15 +99,13 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Keep a disabled item visible only when people can do something about it, and say what in `disabledReason`: "Verify first".
 - Use `badge` for a count that needs attention, such as unread or pending items, not for marketing.
 
-Keep selected item and host destination synchronized; collapse when space breaks.
-
 ## Accessibility
 
-Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+Selected destinations expose their selected state. Hidden drawer items are removed from the focus order.
 
 ## Used in
 
-GalleryScreen; NavSidebar. Real composition: `example/lib/screens/gallery_screen.dart`.
+GalleryScreen; NavSidebar. Example source: `example/lib/screens/gallery_screen.dart`.
 
 ## API
 

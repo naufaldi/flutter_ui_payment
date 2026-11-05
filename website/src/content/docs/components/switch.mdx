@@ -40,7 +40,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: off, on. Nothing else exists.
+Variants: off, on.
 
 ### Switch or checkbox
 
@@ -77,7 +77,7 @@ Use Radio for default method choices.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host supplies the on/off value. Disable the control while a change cannot be accepted and keep its explanation readable.
 
 ## Do and don't
 
@@ -91,8 +91,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Use the description for what the setting does when on.
 - If applying the setting can fail, show the switch in its old position and tell people with a [toast](/components/toast/).
 
-Use for independent persistent preferences, with the label centered to the mark.
-
 ## Accessibility
 
 - The whole row is one target and one screen-reader node, announced as a toggle that is on or off.
@@ -102,7 +100,7 @@ The switch mark centers on the first label line; the row retains its minimum tou
 
 ## Used in
 
-Settings A05. Real composition: `example/lib/screens/gallery_selection.dart`.
+Settings A05. Example source: `example/lib/screens/gallery_selection.dart`.
 
 <Screen name="android_account_settings_light" dark="android_account_settings_dark" alt="Example account settings screen with synthetic data" caption="Example: account settings" />
 

@@ -7,20 +7,22 @@ import RepoLink from '../../../components/RepoLink.astro';
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 
-The full records live in the repository: <RepoLink path="docs/design-research.md" label="docs/design-research.md" /> (research and art direction) and <RepoLink path="docs/decisions.md" label="docs/decisions.md" /> (engineering and design tradeoffs, performance findings). This page summarizes them.
+Use this reference to understand the tradeoffs behind the kit. To build a screen, start with [theming](/concepts/theming/), the component's Props and [Blocks](/blocks/).
+
+Maintainers can trace the rationale in <RepoLink path="docs/design-research.md" label="design research" /> and <RepoLink path="docs/decisions.md" label="the decision record" />. Decision IDs below link this summary to those records.
 
 ## Customization direction (D98)
 
-**D105:** [Blocks](/blocks/) publish full mobile host compositions and runnable
-synthetic demos. Patterns retain domain contracts; general layout/state recipes
-appear under Guides without changing their existing URLs. Blocks apply D98/D104,
-adding no package runtime or style system.
+[Blocks](/blocks/) provide complete mobile host compositions and runnable
+synthetic demos. Patterns explain payment and KYC behavior; Guides cover general
+layout and state recipes. Copy and edit blocks in your host app using the same
+package components.
 
-D98 approves layered customization: shared semantic defaults, scoped family themes where needed, then typed instance overrides, with children/slots for composition. Button is implemented under D100 with a dedicated family theme and typed instance style, theme radius roles under D101, fields under D102 with a theme-only field theme, and toasts follow the caller's scoped themes under D103. The review of every exported family and two host checkout compositions in the example app are done; combined tests, Android light/dark captures and independent review passed locally on 3 November 2026. This does not mean publication or deployment. See [Button customization](/components/button/#customization) and [Text field customization](/components/text-field/#customization). Current integrations use the documented [theming API](/concepts/theming/) and each component's existing Props. The migration starts with Button, proceeds by family and proves two host checkout layouts while preserving accessibility, interaction protection and host ownership.
+Start customization with shared semantic tokens, then a scoped family theme where the component supports one. Reuse a named host preset for a product look. Use a one-off instance override only where the component exposes it and the screen needs it. Children and slots control structure. For example, buttons support a family theme and an instance style, fields use `PaymentFieldTheme` without an instance `style`, and toasts capture the caller's scoped themes. See [Button customization](/components/button/#customization) and [Text field customization](/components/text-field/#customization).
 
-The derived <RepoLink path="docs/design-system.md" label="daily design-system guide" /> links the active rules and full D98 contract; it does not promise new API names.
+The <RepoLink path="docs/design-system.md" label="daily design-system guide" /> links the active rules for contributors.
 
-**D104:** the [connected host checkout example](/patterns/checkout/#connected-host-example) composes review, lost-response recovery and the matching receipt without `DemoCoordinator`. It pins the priority action, retains one attempt identity and protects a new order from stale callbacks. It is copyable host source; persistence, authoritative terms/auth checks and all platform effects remain with the host.
+The [connected host checkout example](/patterns/checkout/#connected-host-example) composes review, lost-response recovery and the matching receipt. It pins the priority action, retains one attempt identity and protects a new order from stale callbacks. Persistence, authoritative terms/auth checks and platform effects remain with the host.
 
 ## Visual direction: Stripe-calm · Hairline
 

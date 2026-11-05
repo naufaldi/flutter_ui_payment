@@ -74,7 +74,7 @@ Scaffold(
 );
 ```
 
-Then the review and the host challenge, each as a screen's body. Given that bounded height, the content scrolls and the action pins to the bottom (D62):
+Then the review and the host challenge, each as a screen's body. Given that bounded height, the content scrolls and the action pins to the bottom:
 
 ```dart
 Scaffold(
@@ -106,8 +106,8 @@ Inside a `ListView` or `SingleChildScrollView` the height is unbounded, and the 
 - `PaymentSummary` leads with the total, then items, then every fee, discount and tax. Fees are never collapsed. With `previousQuote` it shows a notice with both totals.
 - `PaymentMethodPicker` shows unavailable methods disabled with your `unavailableReason`. `PaymentMethodPicker.validSelection(methods, id)` returns `null` when a selected method disappeared or became unavailable, so you can clear it.
 - `PaymentConfirmation` keeps `onConfirm` unreachable until the customer accepts a changed total.
-- **Pinned action (D62).** With a bounded height, `PaymentConfirmation` pins pay and `AuthorizationPrompt` pins its confirm button, with the quiet "Back to review" under it, in a footer inside the bottom safe area: full width on phones, hug buttons at the end edge from 600 dp. An approved authorization has no footer. Hide your app's tab bar on these screens so the action is the only thing at the bottom. The example also hides it on pushed detail screens (D84); overview and history keep it, and the wide side rail is unchanged.
-- After a re-quote, `PaymentSummary` shows a warning [banner](/components/banner/) that states old → new ("Was Rp102.500, now Rp104.000"). It has no close button while the payment is open (D48), so the only cue that the total changed cannot be hidden before paying.
+- **Pinned action.** With a bounded height, `PaymentConfirmation` pins pay and `AuthorizationPrompt` pins its confirm button, with the quiet "Back to review" under it, in a footer inside the bottom safe area: full width on phones, hug buttons at the end edge from 600 dp. An approved authorization has no footer. Hide your app's tab bar on these screens so the action is the only thing at the bottom. The example also hides it on pushed detail screens; overview and history keep it, and the wide side rail is unchanged.
+- After a re-quote, `PaymentSummary` shows a warning [banner](/components/banner/) that states old → new ("Was Rp102.500, now Rp104.000"). It has no close button while the payment is open, so the only cue that the total changed cannot be hidden before paying.
 - `AuthorizationPrompt` never receives a PIN, OTP or biometric result. Your SDK runs the challenge; you set the `AuthorizationPhase`. Canceled and failed have different copy, and neither is shown as a payment.
 - `PaymentActionBar` pins the main action, with an optional total. On a phone in landscape it adds the side safe-area insets to its 16 dp gutters, the way a body in a `SafeArea` with 16 dp padding does, so the bar's content edges match the body's (#88). While `updating` is true it says "Updating total…"; disable the action yourself. When the summary above already shows the total, leave `total` out and show the update on the button (`busy` with a `busyLabel`), so the total isn't on the screen three times.
 - For free-form amounts, such as a top-up, use [`PaymentCurrencyField`](/components/currency-field/).

@@ -4,8 +4,8 @@ description: Copyable mobile host screens assembled from the Flutter payment UI 
 ---
 
 Start with a complete mobile screen, then adapt its host data, callbacks and theme.
-These are Flutter **host source**, not additional package widgets or a runtime you
-must install. All demo records and money are synthetic.
+Copy the Dart source into your app and use it with the package. All demo records
+and amounts are synthetic.
 
 | Start here | What you can try |
 | --- | --- |
@@ -29,9 +29,8 @@ must install. All demo records and money are synthetic.
 | [Guides](/patterns/views-and-pages/) | Solve general layout, forms and loading/empty/error presentation |
 | Blocks | Copy a full host composition and run a mobile demo |
 
-A block can use several patterns. Domain rules stay in their pattern pages;
-block pages link to them and explain adoption. General guides keep their existing
-`/patterns/…` URLs so bookmarks remain valid.
+A block can use several patterns. Follow its pattern links for the payment or KYC
+rules behind the screen.
 
 ## Adoption order
 
@@ -43,17 +42,15 @@ block pages link to them and explain adoption. General guides keep their existin
 
 You own auth, networking, durable attempt persistence, quotes and status verdicts,
 plus routing and platform effects. Demo adapters are not production integrations.
-Copying source does not establish payment-provider compliance or production readiness.
+Connect the block to your authenticated backend and review your provider's integration requirements before accepting real payments.
 
 ## Roadmap and references
 
 The [Payment/KYC block tracker #223](https://github.com/naufaldi/flutter_ui_payment/issues/223)
-tracks the Payment/KYC block set. Every block in the table above is shipped and
-runnable; open issues there describe planned work, not additional shipped blocks.
+records the work behind this set. Every block listed above has source and a runnable demo.
 
 We use [shadcn Blocks](https://ui.shadcn.com/blocks) as a reference for visible
 preview/source/file composition, [Flutter Templates Finance](https://www.fluttertemplates.dev/widgets/finance/)
-for mobile screen categories, and [FlockUI](https://www.flockui.com/) for direct
-ownership of copied Dart source. We adapt those presentation ideas to this kit's
-mobile and host-ownership rules. No third-party code, assets, desktop dashboard
-layout or financial behavior is imported.
+for mobile screen categories, and [FlockUI](https://www.flockui.com/) for copying
+Dart source into a host app. These are design references; the blocks use this kit's
+components and payment/KYC behavior.

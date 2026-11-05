@@ -37,7 +37,7 @@ Text scales fully up to 200%, and layouts reflow instead of clipping:
 
 ## Focus
 
-- A neutral 2 px focus ring appears on keyboard focus only, on the core and secondary controls. It is never brand-colored. This is verified by widget tests; static screenshots cannot show it.
+- A neutral 2 px focus ring appears on keyboard focus only. It uses the theme's text color rather than its brand accent.
 - Drawers and sheets close with the scrim, Back or Escape and return focus to what opened them. Opening the drawer moves focus into it; hidden navigation is not in the focus order.
 - Destructive confirmations put initial focus on the safe choice (Cancel).
 - Disabled navigation items and action rows stay visible with their reason, but are not focusable.
@@ -48,4 +48,4 @@ Under `MediaQuery.disableAnimations` every kit duration collapses to zero, the b
 
 ## What is still yours
 
-The PRD's edge matrix (X02, X03) is exercised in the example's scenario picker, but your app owns its own screens around the kit: safe areas, keyboard insets in your layouts, and OS-level screenshot protection on sensitive pages.
+Your app handles safe areas and keyboard insets around its own layouts, plus OS-level screenshot protection on sensitive screens. Check these when composing kit widgets into a complete screen.

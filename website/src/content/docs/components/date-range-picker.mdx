@@ -7,7 +7,7 @@ import Props from '../../../components/Props.astro';
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 
-A complete calendar range for payment history filters. Presets come first; "Custom range" opens a full-height kit range calendar with a pinned Apply footer (D51).
+A complete calendar range for payment history filters. Presets come first; "Custom range" opens a full-height kit range calendar with a pinned Apply footer.
 
 <Screens>
   <Screen name="android_catalog_date_range_picker_variants" dark="android_catalog_date_range_picker_variants_dark" alt="Payment history date range triggers with custom dates, presets and a disabled field." caption="Date range picker" />
@@ -45,11 +45,11 @@ PaymentDateRangePicker(
 
 Presets live in a kit sheet before the calendar; "Custom range" is a radio row on the presets' text column. Partial ranges and timeZone are not mirrored. The host owns zone interpretation. Granularity tabs remain below the trigger. fromPreset preserves the named range. formatDateRange produces shared localized text for fields and chips.
 
-**Range calendar (D51).** A full-height sheet with a scrolling list of months from `firstDate` to `lastDate`, opened at the range's start or today. The first tap sets the start, the second the end; a tap before the start, or after a complete range, starts again. The range is shown in the accent: filled circles on its ends and a band between them. "Type dates" in the header swaps the calendar for two typed date fields (start on or before end, both in range). The pinned footer shows the range (or "Choose an end date"), a full-width "Apply" that is enabled once a start exists (a start alone applies a one-day range) and a quiet "Clear" that reports `null`. Pass `lastDate: today` for history, so future days are disabled.
+**Range calendar.** A full-height sheet with a scrolling list of months from `firstDate` to `lastDate`, opened at the range's start or today. The first tap sets the start, the second the end; a tap before the start, or after a complete range, starts again. The range is shown in the accent: filled circles on its ends and a band between them. "Type dates" in the header swaps the calendar for two typed date fields (start on or before end, both in range). The pinned footer shows the range (or "Choose an end date"), a full-width "Apply" that is enabled once a start exists (a start alone applies a one-day range) and a quiet "Clear" that reports `null`. Pass `lastDate: today` for history, so future days are disabled.
 
 ## Variants
 
-Variants: preset, custom range; day, week, month, year granularity; field or `.button`. Nothing else exists.
+Variants: preset, custom range; day, week, month, year granularity; field or `.button`.
 
 ## Which variant when
 
@@ -59,7 +59,7 @@ Variants: preset, custom range; day, week, month, year granularity; field or `.b
 
 Use Date field for a single birthday.
 
-**Icon button (D63a).** `PaymentDateRangePicker.button` opens the same presets sheet and range calendar from a 48 dp calendar icon instead of a labelled field, for a filter line such as `TransactionHistory.searchActions`. `label` is its tooltip and spoken name. While a range is set the glyph fills, takes the accent and reads as selected, with the range as its spoken value. It shows no value on screen, so show the range as an active-filter `PaymentChip` with a close button.
+**Icon button.** `PaymentDateRangePicker.button` opens the same presets sheet and range calendar from a 48 dp calendar icon instead of a labelled field, for a filter line such as `TransactionHistory.searchActions`. `label` is its tooltip and spoken name. While a range is set the glyph fills, takes the accent and reads as selected, with the range as its spoken value. It shows no value on screen, so show the range as an active-filter `PaymentChip` with a close button.
 
 ```dart
 TransactionHistory(
@@ -89,21 +89,19 @@ Empty, selected, disabled and error states use semantic tokens. In the calendar,
 
 Use short labels and compact localized values.
 
-Offer last seven days and month presets; custom range handles other periods.
-
 ## Accessibility
 
 Targets are at least 48 dp. The sheets return focus to the trigger. Each day is read as its full date with its state ("Monday, 5 October 2026, selected, range start"); arrow keys move by a day or a week and Enter picks. The footer summary is a live region. Weeks start on Monday in Indonesian and Sunday in English.
 
 ## Used in
 
-History A01. Real composition: `example/lib/screens/gallery_forms.dart`.
+History A01. Example source: `example/lib/screens/gallery_forms.dart`.
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 
 ## Customization
 
-The default `PaymentDateRangePicker` field follows the field-family `PaymentFieldTheme` (D102); the calendar and preset panels keep their own styling. `PaymentDateRangePicker.button` is an icon button, so the field theme does not change it. See [Text field customization](/components/text-field/#customization).
+The default `PaymentDateRangePicker` field follows the field-family `PaymentFieldTheme`; the calendar and preset panels keep their own styling. `PaymentDateRangePicker.button` is an icon button, so the field theme does not change it. See [Text field customization](/components/text-field/#customization).
 
 ## API
 

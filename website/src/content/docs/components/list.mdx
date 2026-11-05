@@ -57,7 +57,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: standard, large. Nothing else exists.
+Variants: standard, large.
 
 ### Default
 
@@ -82,7 +82,7 @@ PaymentListItem(
 
 ### Variants, behavior and migration
 
-Stripe List/ListItem map to PaymentList/PaymentListItem. Standard uses a 48 dp minimum and label title; large uses 64 dp and heading. Variants: size, value, icon, destructive, disabledReason and trailing. Nothing else exists. Read-only rows keep ink titles without a button role; disabled rows explain why. Do not put selection controls in value or trailing; use their dedicated rows. Values align to the first line before the navigation chevron.
+Stripe List/ListItem map to PaymentList/PaymentListItem. Standard uses a 48 dp minimum and label title; large uses 64 dp and heading. Variants: size, value, icon, destructive, disabledReason and trailing. Read-only rows keep ink titles without a button role; disabled rows explain why. Do not put selection controls in value or trailing; use their dedicated rows. Values align to the first line before the navigation chevron.
 
 PaymentList.onAction receives a row id unless its own onPressed overrides it. No handler and no reason means read-only. The forward glyph mirrors once in RTL.
 
@@ -102,9 +102,9 @@ Use Checkbox, Radio or Switch for selected values.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Disabled rows keep their title and reason visible. The host enables each action and handles navigation or work from its callback.
 
-**Layout.** In a single-line row the title, value and trailing control share one centre line; in a multi-line row the icon and the trailing control centre on the title's first line (D56). Above 1.5× text the value moves under the title at label size instead of shrinking beside it. A two-line row is 62 dp; rows with a trailing action are at least 48 dp.
+**Layout.** In a single-line row the title, value and trailing control share one centre line; in a multi-line row the icon and the trailing control centre on the title's first line. Above 1.5× text the value moves under the title at label size instead of shrinking beside it. A two-line row is 62 dp; rows with a trailing action are at least 48 dp.
 
 ## Do and don't
 
@@ -119,8 +119,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Write disabled reasons as the cause or the way out: "Managed by your bank app", "Verify your identity first".
 - Use an icon on every row of a group or on none, so titles line up.
 
-Use large for more descriptive rows; the whole action row is tappable.
-
 ## Accessibility
 
 - Rows are at least 48 dp tall and announce as buttons; disabled rows announce as disabled.
@@ -129,7 +127,7 @@ Use large for more descriptive rows; the whole action row is tappable.
 
 ## Used in
 
-Overview account list; sign-in disclosure H04. Real composition: `example/lib/screens/flow_screen.dart`.
+Overview account list; sign-in disclosure H04. Example source: `example/lib/screens/flow_screen.dart`.
 
 <Screen name="android_sign_in_light" dark="android_sign_in_dark" alt="Example sign in screen with synthetic data" caption="Example: sign in" />
 

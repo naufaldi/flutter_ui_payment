@@ -7,7 +7,7 @@ import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-`PaymentTooltip` adds a one-line, non-interactive hint to a control or a short value: the full date behind "2 days ago", the name of an icon button. It opens on tap as well as on long press, hover and keyboard focus (D49). It is the theme's ink color with the surface color for text, the strongest contrast the theme has.
+`PaymentTooltip` adds a one-line, non-interactive hint to a control or a short value: the full date behind "2 days ago", the name of an icon button. It opens on tap as well as on long press, hover and keyboard focus. It is the theme's ink color with the surface color for text, the strongest contrast the theme has.
 
 <Screens>
   <Screen name="android_catalog_tooltip_tap" dark="android_catalog_tooltip_tap_dark" alt="Tooltip opened by tapping the relative payment date to reveal the full date and time." caption="Tooltip tap" />
@@ -51,7 +51,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: label, description; twelve placements. Nothing else exists.
+Variants: label, description; twelve placements.
 
 ### Tap, one line, and `trigger`
 
@@ -87,7 +87,7 @@ Use a focus view for interactive help content.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The hint opens on tap, long press, hover or keyboard focus. Longer explanations belong in a sheet.
 
 ## Do and don't
 
@@ -100,8 +100,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - One short sentence or a label, in sentence case, without end punctuation for labels.
 - Do not repeat the visible text word for word. Add the detail it leaves out, such as the exact time.
 
-Attach to a focusable 48 dp trigger; use label only when replacing the trigger name.
-
 ## Accessibility
 
 - The message is also the control's tooltip in the semantics tree, so screen readers read it with the control.
@@ -111,7 +109,7 @@ A04 gives the fee policy a real tooltip use: a focusable information button with
 
 ## Used in
 
-Fees A04; charts; Gallery Feedback. Real composition: `example/lib/screens/gallery_feedback.dart`.
+Fees A04; charts; Gallery Feedback. Example source: `example/lib/screens/gallery_feedback.dart`.
 
 <Screen name="android_fees_light" dark="android_fees_dark" alt="Example fees screen with synthetic data" caption="Example: fees" />
 

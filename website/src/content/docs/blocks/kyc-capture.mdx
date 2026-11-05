@@ -35,7 +35,7 @@ The developer menu offers **Izin kamera ditolak**, **Foto buram** and
 specimen card and never opens a real camera or gallery.
 
 If the person retakes while an upload is running, the older upload's answer is
-ignored because each upload has its own request id. Changing a fixture starts a
+ignored because each upload has its own request id. Changing a scenario starts a
 fresh synthetic session.
 
 ## Composition and boundaries
@@ -65,10 +65,4 @@ checks, upload, retention and the verification verdict. See the
 
 ## Proof and limits
 
-Tests prove that an older upload answer cannot overwrite the retaken photo and a
-finished upload is not a verification, that a denied camera explains why and
-offers settings, that an interrupted upload retries the same photo and a blurry
-one asks for a retake, and that the capture action stays reachable at 320 dp and
-200% text in dark mode with reduced motion. Android captures were inspected. No
-real camera, hardware speed or iOS visual claim. The demo is not an identity
-service.
+Widget tests cover retake with an upload still running, permission denial, upload retry and a reachable capture action at 320 dp with 200% text. The demo uses a synthetic camera; connect your own camera, upload and verification services. See [Compatibility](/reference/compatibility/) for device coverage.

@@ -40,7 +40,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: money, percentage, number; up to five categories. Nothing else exists.
+Variants: money, percentage, number; up to five categories.
 
 ### States and variants
 
@@ -59,13 +59,13 @@ Use named series with identical period labels and ordering. Line and bar charts 
 
 Use a line for direction, bars for period comparisons, a meter for category proportions and a sparkline beside a KPI. Percent and number units read `measure`; money reads `value`. A measure of 45 means 45 percent. Missing readings remain gaps.
 
-Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to read a value. Unlike line and bar charts (D58), a sparkline has no value label at rest: it sits beside a KPI that already states the amount. Meter `onSegmentPressed` activates full-width legend rows; the painted bar takes no taps.
+Sparklines can opt into `inspectable`, giving a 48 dp target. Press and hold to read a value. Unlike line and bar charts, a sparkline has no value label at rest: it sits beside a KPI that already states the amount. Meter `onSegmentPressed` activates full-width legend rows; the painted bar takes no taps.
 
 **Breaking:** `MeterSegment.color` is removed. Use the semantic category ramp. `MeterSegment.value` is optional; supply `measure` for numeric units. Point `value` and chart `points` are optional when using measures or series.
 
 <Props names={['PaymentChartSeries', 'PaymentChartAxis', 'PaymentChartUnit', 'ChartPoint', 'MeterSegment']} />
 
-Parameters: `segments`, `showLegend`, `unit`, `onSegmentPressed`, `semanticLabel`. Nothing else exists.
+Parameters: `segments`, `showLegend`, `unit`, `onSegmentPressed`, `semanticLabel`.
 
 ### Filter foundation
 
@@ -81,7 +81,7 @@ Use Bar chart to compare periods.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host supplies non-negative category amounts and their status. Use the legend to distinguish settled, pending and unknown values.
 
 ## Do and don't
 
@@ -93,15 +93,13 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 Use short period labels and a clear title. Explain what is settled in the headline caption. The host supplies the headline; the kit never adds plotted values to produce a customer total.
 
-Show host-computed totals and category labels in legend rows.
-
 ## Accessibility
 
 A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. Pointer inspection on line/bar charts is supplemental; it has no keyboard focus target. Status is conveyed by shape and words as well as color.
 
 ## Used in
 
-Gallery Charts; spending layout pattern. Real composition: `example/lib/screens/gallery_charts.dart`.
+Gallery Charts; spending layout pattern. Example source: `example/lib/screens/gallery_charts.dart`.
 
 ## API
 

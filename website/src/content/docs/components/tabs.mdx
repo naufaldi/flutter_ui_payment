@@ -44,7 +44,7 @@ DOM-specific props are not mirrored: Flutter uses widget composition and host ca
 
 ## Variants
 
-Variants: small, medium, large; fitted or intrinsic. Nothing else exists.
+Variants: small, medium, large; fitted or intrinsic.
 
 ### Selected
 
@@ -74,7 +74,7 @@ Use List for navigation to separate account destinations.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+The host supplies the selected tab. Disabled tabs stay visible but cannot be selected.
 
 **Layout.** When the tabs do not fit, the row scrolls and fades at the edge that has more tabs. Selecting or focusing a tab scrolls the row so that tab is fully visible; only the tab row moves, never the page. Under reduced motion the row jumps instead of animating.
 
@@ -90,8 +90,6 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - Use sentence case and no end punctuation.
 - Use tabs for views of the same content. To move between screens use the [navigation shell](/components/navigation/); to make a choice that is saved, use [radios](/components/radio/).
 
-Use views of the same records; disabled tabs need a reason.
-
 ## Accessibility
 
 - Each tab is a button at least 48 × 48 dp, marked selected or not.
@@ -99,7 +97,7 @@ Use views of the same records; disabled tabs need a reason.
 
 ## Used in
 
-TransactionHistory A01; DateRangePicker. Real composition: `example/lib/screens/gallery_selection.dart`.
+TransactionHistory A01; DateRangePicker. Example source: `example/lib/screens/gallery_selection.dart`.
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 

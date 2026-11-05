@@ -26,11 +26,11 @@ AmountText(Money.idr(fee));
 
 ## Stripe → kit
 
-No Stripe equivalent. Admitted because: Checkout H01/H04; TransactionListItem and PaymentReceipt; this reusable payment composition keeps host state outside presentation.
+No direct Stripe equivalent. Format host amounts consistently in summaries, transaction rows and receipts.
 
 ## Variants
 
-Variants: caption, row, total, large, display. Nothing else exists.
+Variants: caption, row, total, large, display.
 
 | Variant | Role | Use |
 | --- | --- | --- |
@@ -97,7 +97,7 @@ Choose the variant by where the amount is read:
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Pass the amount from the host. For failed or canceled payments, apply the documented strike-through style; a refund keeps the original amount unchanged.
 
 ## Do and don't
 
@@ -111,15 +111,13 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 - One display amount per screen. Two totals that look equal compete.
 - Never animate an amount changing. Show the new value, and explain the change with a [notice banner](/components/banner/) when it matters.
 
-Use total once beside the Pay action; row for list amounts.
-
 ## Accessibility
 
 - Screen readers hear `MoneyFormat.spoken`, not the symbol-and-digits string.
 
 ## Used in
 
-Checkout H01/H04; TransactionListItem and PaymentReceipt. Real composition: `example/lib/screens/steps/fees_step.dart`.
+Checkout H01/H04; TransactionListItem and PaymentReceipt. Example source: `example/lib/screens/steps/fees_step.dart`.
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

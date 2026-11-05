@@ -33,7 +33,7 @@ minLines and maxLines replace rows. maxLines null allows growth. Enter inserts a
 
 ## Variants
 
-Variants: small, medium, large; multiline. Nothing else exists.
+Variants: small, medium, large; multiline.
 
 ## Which variant when
 
@@ -57,8 +57,6 @@ Default, focused, disabled and error. Errors include an icon, text and an edge. 
 
 Use short, specific labels and explain how to correct an error.
 
-Keep the privacy instruction visible and cap reports at 500 characters.
-
 ## Accessibility
 
 Input text is 16 dp. Legends precede fields in reading order. Labels and errors stay in semantics when visually hidden. Pickers restore focus.
@@ -67,13 +65,13 @@ The report example never logs free text. Only category and character count cross
 
 ## Used in
 
-Report A02/H04. Real composition: `example/lib/screens/gallery_forms.dart`.
+Report A02/H04. Example source: `example/lib/screens/gallery_forms.dart`.
 
 <Screen name="android_report_problem_light" dark="android_report_problem_dark" alt="Example report problem screen with synthetic data" caption="Example: report problem" />
 
 ## Customization
 
-Fill, resting outline, corners and input typography come from the field-family `PaymentFieldTheme` (D102). See [Text field customization](/components/text-field/#customization) for the adoption order, supported properties and the states the kit keeps.
+Fill, resting outline, corners and input typography come from the field-family `PaymentFieldTheme`. See [Text field customization](/components/text-field/#customization) for the adoption order, supported properties and the states the kit keeps.
 
 ## API
 

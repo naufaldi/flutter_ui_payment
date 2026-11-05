@@ -1,13 +1,13 @@
 ---
 title: Button group
-description: Add responsive ButtonGroup and host-owned TaskList; migrate status and dialog actions.
+description: Arrange related actions in a row, overflow menu or vertical stack.
 ---
 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-Related payment actions. Variants: horizontal auto overflow, horizontal none (stack on overflow), vertical. Nothing else exists. Use for payment status actions, confirmations and module headers. Horizontal buttons are normalized to hug width. The first action never collapses; destructive actions occupy a separate final overflow group.
+`PaymentButtonGroup` arranges related payment actions in a row or vertical stack. Use it for status actions, confirmations and module headers. Horizontal buttons hug their labels; the first action stays visible, and destructive actions occupy a separate final overflow group.
 
 <Screens>
   <Screen name="android_catalog_button_group_variants" dark="android_catalog_button_group_variants_dark" alt="Grouped payment actions using different collapse rules and a long wrapping label." caption="Button group" />
@@ -33,7 +33,7 @@ PaymentButtonGroup(
 
 ## In footers
 
-`ViewFooter` stacks its group vertically at full width below 600 dp and at large text, primary on top (D45, D59). In page headers, groups only appear on wide screens; phones show a title-row link or ⋮ instead (D59a).
+`ViewFooter` stacks its group vertically at full width below 600 dp and at large text, primary on top. In page headers, groups only appear on wide screens; phones show a title-row link or ⋮ instead.
 
 ## Stripe → kit
 
@@ -44,7 +44,7 @@ PaymentButtonGroup(
 
 ## Variants
 
-Variants: horizontal auto overflow, horizontal none, vertical. Nothing else exists.
+Variants: horizontal auto overflow, horizontal none, vertical.
 
 ### Horizontal none
 
@@ -56,7 +56,7 @@ The first action stays visible; trailing actions move into a ⋮ [menu](/compone
 
 ### States and content
 
-The host supplies state and callbacks. Explain empty states and offer a next action. Use specific labels that wrap. Keep one primary action; separate destructive actions. Use semantic tokens and status text alongside visual marks.
+Choose horizontal overflow when supporting actions may move into a menu, no-collapse when all actions must remain visible, or vertical for a stacked group.
 
 ## Which variant when
 
@@ -68,7 +68,7 @@ Use a single Button when there is one action.
 
 ## States
 
-Host state is explicit. Loading does not imply success; disabled actions retain a readable explanation. Interactive controls retain focus and pressed feedback.
+Each button keeps its own disabled and busy state. Overflow changes where an action appears, not when it is available.
 
 ## Do and don't
 
@@ -78,17 +78,15 @@ Host state is explicit. Loading does not imply success; disabled actions retain 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Stack Send before Cancel on phones; use automatic menu overflow for detail header actions.
+Use action labels such as "View receipt" and "Contact support". Keep destructive actions separate from ordinary alternatives.
 
 ## Accessibility
 
-Labels wrap at large text. Controls retain their keyboard and screen-reader behavior. The host owns navigation and side effects.
+Buttons keep their labels and keyboard behavior when moved into overflow. Long overflow labels wrap at large text.
 
 ## Used in
 
-PaymentStatusView; detail A02; focus-view footer. Real composition: `example/lib/screens/gallery_content.dart`.
+PaymentStatusView; detail A02; focus-view footer. Example source: `example/lib/screens/gallery_content.dart`.
 
 <Screen name="android_statement_light" dark="android_statement_dark" alt="Example statement screen with synthetic data" caption="Example: statement" />
 

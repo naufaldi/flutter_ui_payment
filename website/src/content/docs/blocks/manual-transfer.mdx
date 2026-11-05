@@ -28,7 +28,7 @@ flutter run -d <device-id> -t lib/manual_transfer_demo.dart
 
 Tap the copy icon: the demo's host adapter writes the number to the clipboard.
 Tap **Cek status**; the synthetic host confirms success for the same attempt.
-The developer menu offers four fixtures:
+The developer menu offers four scenarios:
 
 - **Batas waktu lewat**: the countdown reaches zero and a warning appears. The
   status stays pending until **Cek status** returns the host's answer.
@@ -38,7 +38,7 @@ The developer menu offers four fixtures:
   account. **Cek status** reconciles the same attempt and then shows the number.
   The block never offers a second transfer or a new attempt.
 
-Changing a fixture starts a fresh synthetic session and ignores answers that
+Changing a scenario starts a fresh synthetic session and ignores answers that
 belong to the previous one.
 
 ## Composition and boundaries
@@ -68,10 +68,4 @@ account number and amount in the demo is fictional. See the
 
 ## Proof and limits
 
-Tests prove that the payer reads the exact account and amount and the check
-reports success for the same attempt, that a passed deadline never decides the
-payment, that a lost issuing response hides the account and offers only Check
-status, that a failed check keeps the last known status, and that Check status
-stays reachable at 320 dp and 200% text in dark mode with reduced motion.
-Android captures were inspected. There is no polling and no hardware speed or iOS
-visual claim. The demo is not a bank integration.
+Widget tests cover the exact account and amount, same-attempt status checks, elapsed deadlines, failed checks and a reachable action at 320 dp with 200% text. The demo does not connect to a bank. See [Compatibility](/reference/compatibility/) for device coverage.

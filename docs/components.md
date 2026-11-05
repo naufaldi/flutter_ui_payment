@@ -1,6 +1,6 @@
 # Components
 
-Current public visual families, their host boundary, and canonical usage. Import from `package:flutter_ui_payment/flutter_ui_payment.dart`. Supporting models and enum values are listed in the generated [API data](../website/src/data/api.json); the [export file](../lib/flutter_ui_payment.dart) identifies public modules. This inventory describes shipped APIs, while the [daily guide](design-system.md) links approved requirements.
+Use this inventory to find a component, its host responsibilities and an example. Import from `package:flutter_ui_payment/flutter_ui_payment.dart`. The generated [API data](../website/src/data/api.json) lists models and enum values; the [export file](../lib/flutter_ui_payment.dart) identifies public modules. Contributors can use the [daily guide](design-system.md) for requirements.
 
 "Gallery" means the example app's Galeri tab. The catalog groups families alphabetically; payment patterns also appear in the demo screens. The website owns usage examples and Props tables.
 

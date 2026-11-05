@@ -43,13 +43,13 @@ Autofocus is omitted because touch keyboards should be requested deliberately th
 
 ## Variants
 
-Variants: text, number, tel, url, email, search; small, medium, large. Nothing else exists.
+Variants: text, number, tel, url, email, search; small, medium, large.
 
 ### Which variant
 
 Use a general field for names and addresses, reference typography for identifiers, a currency field for money parsing, and `.search` for immediate local filtering. Remote search debounce belongs to the host.
 
-Variants: `type` × `size`, `reference`, `.search`. Nothing else exists.
+Variants: `type` × `size`, `reference`, `.search`.
 
 ### Content and accessibility
 
@@ -84,7 +84,7 @@ Choose the type by what the value means:
 
 <Screens><Screen name="android_catalog_field_customization_variants" dark="android_catalog_field_customization_variants_dark" alt="Rounded filled fields share input typography while error and disabled states retain their meaning; the button keeps its own theme." caption="Field theme" /></Screens>
 
-`PaymentFieldTheme` is a Flutter theme extension for the field family: fill, resting outline color, corners and input typography (D102). It applies to text, search, text-area, select, date, date-range field and currency fields, and to fields composed from them, such as the promo code input and identity form. Buttons, cards, sheets, chips, checkboxes, radios, switches and option lists keep their own styling. This page is the canonical guide for every field.
+`PaymentFieldTheme` is a Flutter theme extension for the field family: fill, resting outline color, corners and input typography. It applies to text, search, text-area, select, date, date-range field and currency fields, and to fields composed from them, such as the promo code input and identity form. Buttons, cards, sheets, chips, checkboxes, radios, switches and option lists keep their own styling. This page is the canonical guide for every field.
 
 Fields have no per-instance `style` parameter. Adopt in this order:
 
@@ -93,7 +93,7 @@ Fields have no per-instance `style` parameter. Adopt in this order:
 3. **Host preset:** a named host function that returns a `PaymentFieldTheme` for a look repeated on several screens. Presets are host code, not kit API.
 4. **One-off:** wrap the single field in a scoped `Theme`. There is no inline field override.
 
-Radius alone often needs no field theme: `PaymentTheme.controlRadius` (D101) changes inputs together with the other control-radius surfaces. Use `PaymentFieldTheme.borderRadius` when only fields should change.
+Radius alone often needs no field theme: `PaymentTheme.controlRadius` changes inputs together with the other control-radius surfaces. Use `PaymentFieldTheme.borderRadius` when only fields should change.
 
 ### Product default
 
@@ -169,17 +169,15 @@ Default uses a border edge; focus uses a 2 px accent edge. Errors show an icon, 
 
 ## Content guidelines
 
-Use sentence case and name the payment fact or action. Keep instructions visible and use semantic type, color and spacing tokens.
-
-Use search for list filtering; labels persist after entry.
+Keep the label visible after entry. Use the hint for an example and the error message for a specific correction.
 
 ## Accessibility
 
-Preserve reading order, visible labels and semantic descriptions. Interactive targets remain at least 48 dp; status is conveyed in words as well as color.
+Keep labels, helper text and errors available to assistive technology. Focus uses an accent edge; an error includes an icon and message.
 
 ## Used in
 
-TransactionHistory A01; IdentityForm; statement A03. Real composition: `example/lib/screens/gallery_forms.dart`.
+TransactionHistory A01; IdentityForm; statement A03. Example source: `example/lib/screens/gallery_forms.dart`.
 
 <Screen name="android_kyc_onboarding_light" dark="android_kyc_onboarding_dark" alt="Example kyc onboarding screen with synthetic data" caption="Example: kyc onboarding" />
 
