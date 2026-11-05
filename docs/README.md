@@ -27,6 +27,7 @@ changes, KYC onboarding, capture and correction, and payment preferences.
 | [Compatibility](compatibility.md) | Integrators: declared platform support and recorded verification limits. |
 | [Decisions and tradeoffs](decisions.md) | Maintainers: rationale, costs and historical evidence; consult the PRD register for the decision contract. |
 | [Design research](design-research.md#0-current-direction-stripe-calm) | Designers: chosen direction in §0; earlier alternatives remain research history. |
+| [Launch kit](launch-kit.md) | Owner: draft announcement copy, links and claim limits. Draft only; not posted. |
 
 **Requirements and implementation answer different questions.** PRDs and the decision register specify approved requirements. Exported [source](../lib/rakit_ui.dart), generated [API data](../website/src/data/api.json) and component documentation describe what ships. D98's family review and host adoption are implemented and locally verified under D100–D103; see the [family disposition](decisions.md#d98-family-disposition) for supported surfaces and limits. This is not a package publication or deployment. A mismatch is a gap to resolve, not permission to silently replace the requirement with the implementation. The daily guide is navigation derived from these sources.
 

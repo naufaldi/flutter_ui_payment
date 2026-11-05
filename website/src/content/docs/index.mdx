@@ -8,6 +8,8 @@ hero:
   actions:
     - text: Get started
       link: /start/quick-start/
+    - text: Try the demo
+      link: /blocks/checkout-recovery/
     - text: Components
       link: /components/
 pagefind: true
@@ -49,6 +51,19 @@ PaymentStatusView(
   <Screen name="android_refined_status_unknown_light_200" alt="The unknown-outcome screen in Indonesian at 200% text size; the Cek status button is still on the first screen." caption="Unknown outcome at 200% text; the action stays reachable (Indonesian)" />
   <Screen name="android_receipt_light" dark="android_receipt_dark" alt="Receipt in Indonesian with a green success band, merchant, amount, date, line items, total, masked method and pinned Selesai and Lihat detail actions." caption="Receipt, shared from an allowlist (Indonesian)" />
 </Screens>
+
+## See it run
+
+The checkout demo pays once, loses the response, checks the same attempt's status, and only then shows the receipt. It runs on an Android emulator or an iOS Simulator with synthetic data and a fake host: no real money, accounts or network calls.
+
+```sh
+git clone https://github.com/naufaldi/flutter_ui_payment.git
+cd flutter_ui_payment/example
+flutter pub get
+flutter run -t lib/checkout_block_demo.dart
+```
+
+[Walk through the recovery story](/blocks/checkout-recovery/) · [Try it and send feedback](/start/try-it/)
 
 ## Who decides what
 

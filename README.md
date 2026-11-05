@@ -22,6 +22,8 @@ flutter run -t lib/checkout_block_demo.dart   # one checkout, with its recovery 
 flutter run                                   # the full example app: Demo, Scenarios, Gallery
 ```
 
+Trying it for the first time? [Try it](https://flutter-ui-payment.netlify.app/start/try-it/) has a short trial and a feedback checklist.
+
 To build an app, [install the package](#install) and follow the [Quick start](https://flutter-ui-payment.netlify.app/start/quick-start/). It starts with a complete `lib/main.dart`, then covers checkout through receipt. Use the [catalog](https://flutter-ui-payment.netlify.app/components/) for individual widgets or copy a complete screen from [Blocks](https://flutter-ui-payment.netlify.app/blocks/). The [host integration guide](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/integration.md) explains how to connect your backend.
 
 Coding agents and maintainers should start with [AGENTS.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/AGENTS.md), the [documentation map](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/README.md) and the [daily design-system guide](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/design-system.md). Use this table for task-specific references.
