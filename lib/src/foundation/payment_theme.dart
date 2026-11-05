@@ -21,7 +21,7 @@ class ToneColors {
   );
 }
 
-/// Brand tokens for every flutter_ui_payment widget.
+/// Brand tokens for every rakit_ui widget.
 ///
 /// Register it on `ThemeData.extensions`. Widgets fall back to
 /// [PaymentTheme.fromColorScheme] when no extension is installed, so the kit

@@ -5434,7 +5434,7 @@
   "PaymentTheme": {
     "kind": "class",
     "file": "lib/src/foundation/payment_theme.dart",
-    "doc": "Brand tokens for every flutter_ui_payment widget.\n\nRegister it on `ThemeData.extensions`. Widgets fall back to\n`PaymentTheme.fromColorScheme` when no extension is installed, so the kit\nfollows the host `ColorScheme` by default and a full brand is opt-in.",
+    "doc": "Brand tokens for every rakit_ui widget.\n\nRegister it on `ThemeData.extensions`. Widgets fall back to\n`PaymentTheme.fromColorScheme` when no extension is installed, so the kit\nfollows the host `ColorScheme` by default and a full brand is opt-in.",
     "extends": "ThemeExtension<PaymentTheme>",
     "constructors": [
       {

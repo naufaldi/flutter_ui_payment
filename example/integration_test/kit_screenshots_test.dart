@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment_example/coordinator/demo_coordinator.dart';
-import 'package:flutter_ui_payment_example/main.dart';
-import 'package:flutter_ui_payment_example/themes.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui_example/coordinator/demo_coordinator.dart';
+import 'package:rakit_ui_example/main.dart';
+import 'package:rakit_ui_example/themes.dart';
 import 'package:integration_test/integration_test.dart';
 
 import 'support.dart';

@@ -1,6 +1,6 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:rakit_ui/rakit_ui.dart';
 
 class SyntheticIdCard extends StatelessWidget {
   const SyntheticIdCard({super.key, required this.obscured});

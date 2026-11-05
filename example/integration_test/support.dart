@@ -3,12 +3,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:rakit_ui/rakit_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment_example/adapters/fake_host.dart';
-import 'package:flutter_ui_payment_example/coordinator/demo_coordinator.dart';
-import 'package:flutter_ui_payment_example/main.dart';
-import 'package:flutter_ui_payment_example/scenarios/catalog.dart';
+import 'package:rakit_ui_example/adapters/fake_host.dart';
+import 'package:rakit_ui_example/coordinator/demo_coordinator.dart';
+import 'package:rakit_ui_example/main.dart';
+import 'package:rakit_ui_example/scenarios/catalog.dart';
 import 'package:integration_test/integration_test.dart';
 
 import 'capture_slices.dart';

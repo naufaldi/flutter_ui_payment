@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment/src/foundation/token_resolvers.dart';
-import 'package:flutter_ui_payment_example/themes.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui/src/foundation/token_resolvers.dart';
+import 'package:rakit_ui_example/themes.dart';
 
 String hex(Color color) =>
     '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}';

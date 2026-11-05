@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment_example/compositions/payment_preferences_block.dart';
-import 'package:flutter_ui_payment_example/payment_preferences_demo.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui_example/compositions/payment_preferences_block.dart';
+import 'package:rakit_ui_example/payment_preferences_demo.dart';
 
 import 'support/small_screen.dart';
 

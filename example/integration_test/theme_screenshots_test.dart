@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment_example/merchant_demo.dart';
-import 'package:flutter_ui_payment_example/themes.dart';
+import 'package:rakit_ui_example/merchant_demo.dart';
+import 'package:rakit_ui_example/themes.dart';
 import 'package:integration_test/integration_test.dart';
 
 import 'support.dart';

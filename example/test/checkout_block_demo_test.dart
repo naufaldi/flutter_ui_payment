@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment_example/checkout_block_demo.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui_example/checkout_block_demo.dart';
 
 Finder get pay => find.textContaining(RegExp(r'^Bayar Rp'));
 Finder get check => find.text('Cek status');

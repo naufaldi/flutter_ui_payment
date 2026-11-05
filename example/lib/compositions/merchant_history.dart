@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:rakit_ui/rakit_ui.dart';
 
 /// Copyable host block. Supply already-filtered records; the host owns query,
 /// loading, safe error messages and retrieval. No network or ledger logic.

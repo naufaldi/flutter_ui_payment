@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment_example/main.dart';
-import 'package:flutter_ui_payment_example/screens/flow_screen.dart';
-import 'package:flutter_ui_payment_example/themes.dart';
+import 'package:rakit_ui_example/main.dart';
+import 'package:rakit_ui_example/screens/flow_screen.dart';
+import 'package:rakit_ui_example/themes.dart';
 
 void main() {
   test(

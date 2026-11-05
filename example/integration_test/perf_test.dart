@@ -4,12 +4,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
-import 'package:flutter_ui_payment_example/adapters/fake_host.dart';
-import 'package:flutter_ui_payment_example/demo_strings.dart';
-import 'package:flutter_ui_payment_example/scenarios/catalog.dart';
-import 'package:flutter_ui_payment_example/scenarios/scenario_config.dart';
-import 'package:flutter_ui_payment_example/screens/flow_screen.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui_example/adapters/fake_host.dart';
+import 'package:rakit_ui_example/demo_strings.dart';
+import 'package:rakit_ui_example/scenarios/catalog.dart';
+import 'package:rakit_ui_example/scenarios/scenario_config.dart';
+import 'package:rakit_ui_example/screens/flow_screen.dart';
 import 'package:integration_test/integration_test.dart';
 
 import 'support.dart';

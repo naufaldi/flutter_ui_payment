@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_ui_payment/flutter_ui_payment.dart';
+import 'package:rakit_ui/rakit_ui.dart';
 import 'package:video_player/video_player.dart';
 
 /// Adapts the official `video_player` plugin to [PaymentVideoController].

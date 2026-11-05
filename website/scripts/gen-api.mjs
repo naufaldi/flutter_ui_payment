@@ -1,4 +1,4 @@
-// Extracts the public API of flutter_ui_payment from ../lib into
+// Extracts the public API of rakit_ui from ../lib into
 // src/data/api.json, so every props table on the site comes from the Dart
 // source instead of hand-written copies. Runs before `astro build`.
 //
@@ -15,7 +15,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const lib = resolve(here, '../../lib');
 const out = resolve(here, '../src/data/api.json');
 
-const barrel = readFileSync(join(lib, 'flutter_ui_payment.dart'), 'utf8');
+const barrel = readFileSync(join(lib, 'rakit_ui.dart'), 'utf8');
 const files = [...barrel.matchAll(/^export '([^']+)'(?:\s+show\s+([^;]+))?;/gm)].map((m) => ({ rel: m[1], show: m[2] ? new Set(m[2].split(',').map((n) => n.trim())) : null }));
 if (files.length === 0) throw new Error('No exports found in the barrel file');
 
