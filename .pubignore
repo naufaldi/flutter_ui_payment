@@ -1,0 +1,64 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+# Libraries should not include pubspec.lock, per https://dart.dev/guides/libraries/private-files#pubspeclock.
+/pubspec.lock
+**/doc/api/
+.dart_tool/
+.flutter-plugins-dependencies
+/build/
+/coverage/
+
+# Example build output and screenshot runs (regenerable; large)
+example/build/
+
+# Third-party reference captures used only for design research.
+# Not licensed for redistribution: never publish them.
+docs/design-research/refs/*.png
+
+# Docs website
+website/node_modules/
+website/dist/
+website/.astro/
+website/.netlify/
+
+# Retain git exclusions: pubignore overrides gitignore in this directory.
+# Site media and contributor/research records are not library assets.
+/website/
+/docs/
+/AGENTS.md
+/CLAUDE.md
+/PRD.md
+/skills-lock.json
+# Retain the runnable example source/assets without platform or capture tooling.
+/example/android/
+/example/ios/
+/example/linux/
+/example/macos/
+/example/windows/
+/example/web/
+/example/integration_test/
+/example/test_driver/
+/example/test/
+/example/pubspec.lock

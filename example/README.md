@@ -1,5 +1,14 @@
 # Ruang Bayar demo
 
+Clone the [repository](https://github.com/naufaldi/flutter_ui_payment) to run the
+example with its Android/iOS projects. The pub.dev archive includes example source
+and synthetic assets; to run that copy, generate the platform projects first:
+
+```sh
+flutter create --platforms=android,ios .
+flutter pub get
+```
+
 New mobile blocks: `flutter run -t lib/<demo>.dart` with `history_block_demo`,
 `kyc_review_demo`, `manual_transfer_demo`, `method_quote_demo`,
 `refund_detail_demo`, `kyc_onboarding_demo`, `kyc_capture_demo` or
