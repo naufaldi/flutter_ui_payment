@@ -6,8 +6,7 @@ Add the package, configure theme and language, then connect host data and callba
 
 ```yaml
 dependencies:
-  flutter_ui_payment:
-    path: ../flutter-ui-payment # not on pub.dev yet
+  flutter_ui_payment: ^0.1.0
 ```
 
 No other dependency is required. Add a media plugin only if you use `PaymentVideoPlayer` (see step 5).

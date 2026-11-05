@@ -2,13 +2,13 @@
 
 Flutter components for checkout, payment status, receipts and optional identity verification (KYC). Build screens for pending, failed and unknown payment results, with host-owned authorization and recovery. The kit also includes navigation, forms, charts, sheets, feedback and transaction history.
 
-> **Ringkasan.** Library komponen UI Flutter untuk KYC opsional dan pembayaran. Komponen hanya merender data terstruktur dari host dan melaporkan aksi lewat callback. Host/backend tetap memutuskan KYC, harga, otorisasi, idempotency, status, dan refund. Library tidak memproses uang, tidak melakukan network call, dan tidak memerlukan router, state manager, kamera, atau SDK payment. Keputusan produk ada di [PRD.md](PRD.md).
+> **Ringkasan.** Library komponen UI Flutter untuk KYC opsional dan pembayaran. Komponen hanya merender data terstruktur dari host dan melaporkan aksi lewat callback. Host/backend tetap memutuskan KYC, harga, otorisasi, idempotency, status, dan refund. Library tidak memproses uang, tidak melakukan network call, dan tidak memerlukan router, state manager, kamera, atau SDK payment. Keputusan produk ada di [PRD.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/PRD.md).
 
 Targets iOS and Android, phones and tablets. The web build is a documentation preview.
 
 **Docs:** https://flutter-ui-payment.netlify.app
 
-**Status:** `0.1.0`. Install from this GitHub repository; it is not published to pub.dev yet, and the package name is unverified. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
+**Release:** `0.1.0`. Install with `flutter pub add flutter_ui_payment`. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
 
 ## Start here
 
@@ -22,20 +22,20 @@ flutter run -t lib/checkout_block_demo.dart   # one checkout, with its recovery 
 flutter run                                   # the full example app: Demo, Scenarios, Gallery
 ```
 
-To build an app, [install the package](#install) and follow the [Quick start](https://flutter-ui-payment.netlify.app/start/quick-start/). It starts with a complete `lib/main.dart`, then covers checkout through receipt. Use the [catalog](https://flutter-ui-payment.netlify.app/components/) for individual widgets or copy a complete screen from [Blocks](https://flutter-ui-payment.netlify.app/blocks/). The [host integration guide](docs/integration.md) explains how to connect your backend.
+To build an app, [install the package](#install) and follow the [Quick start](https://flutter-ui-payment.netlify.app/start/quick-start/). It starts with a complete `lib/main.dart`, then covers checkout through receipt. Use the [catalog](https://flutter-ui-payment.netlify.app/components/) for individual widgets or copy a complete screen from [Blocks](https://flutter-ui-payment.netlify.app/blocks/). The [host integration guide](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/integration.md) explains how to connect your backend.
 
-Coding agents and maintainers should start with [AGENTS.md](AGENTS.md), the [documentation map](docs/README.md) and the [daily design-system guide](docs/design-system.md). Use this table for task-specific references.
+Coding agents and maintainers should start with [AGENTS.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/AGENTS.md), the [documentation map](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/README.md) and the [daily design-system guide](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/design-system.md). Use this table for task-specific references.
 
 | Question | Where to look |
 | --- | --- |
-| Which rule wins? | [PRD.md](PRD.md) and the [foundation PRD](docs/prd-foundation-components.md), including its [§8 decision register](docs/prd-foundation-components.md#8-decisions). [decisions.md](docs/decisions.md) holds rationale and history only. |
-| What is exported, with which parameters? | [lib/flutter_ui_payment.dart](lib/flutter_ui_payment.dart) and the generated [website/src/data/api.json](website/src/data/api.json). Don't invent API names. |
-| How do I style something? | The [adoption order](docs/design-system.md#customization-today-versus-approved-migration): theme, then a family theme, then a host preset, then a one-off `style`. Some families, such as fields, have no instance `style`; check the component's Props table. |
-| What must stay in the host? | [Host boundary](docs/design-system.md#host-boundary): no network, clipboard, URL launching, platform channels, polling timers or secrets in `lib/`. Flutter SDK is the only dependency (B11). |
-| Before changing a component? | The [Button bar (B1–B13)](docs/prd-foundation-components.md#the-button-bar-tier-1-quality-checklist), the component's spec section, and [Testing scope](AGENTS.md#testing-scope). |
-| Which checks run? | [AGENTS.md → Checks](AGENTS.md#checks). |
+| Which rule wins? | [PRD.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/PRD.md) and the [foundation PRD](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/prd-foundation-components.md), including its [§8 decision register](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/prd-foundation-components.md#8-decisions). [decisions.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/decisions.md) holds rationale and history only. |
+| What is exported, with which parameters? | [lib/flutter_ui_payment.dart](lib/flutter_ui_payment.dart) and the generated [website/src/data/api.json](https://github.com/naufaldi/flutter_ui_payment/blob/main/website/src/data/api.json). Don't invent API names. |
+| How do I style something? | The [adoption order](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/design-system.md#customization-today-versus-approved-migration): theme, then a family theme, then a host preset, then a one-off `style`. Some families, such as fields, have no instance `style`; check the component's Props table. |
+| What must stay in the host? | [Host boundary](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/design-system.md#host-boundary): no network, clipboard, URL launching, platform channels, polling timers or secrets in `lib/`. Flutter SDK is the only dependency (B11). |
+| Before changing a component? | The [Button bar (B1–B13)](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/prd-foundation-components.md#the-button-bar-tier-1-quality-checklist), the component's spec section, and [Testing scope](https://github.com/naufaldi/flutter_ui_payment/blob/main/AGENTS.md#testing-scope). |
+| Which checks run? | [AGENTS.md → Checks](https://github.com/naufaldi/flutter_ui_payment/blob/main/AGENTS.md#checks). |
 
-**Docs:** [components](docs/components.md) (inventory, API, what the host owns) · [integration](docs/integration.md) · [compatibility](docs/compatibility.md) (Android 7.0+/API 24 declared, what was actually run) · [decisions](docs/decisions.md) (design and engineering tradeoffs, performance findings).
+**Docs:** [components](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/components.md) (inventory, API, what the host owns) · [integration](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/integration.md) · [compatibility](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/compatibility.md) (Android 7.0+/API 24 declared, what was actually run) · [decisions](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/decisions.md) (design and engineering tradeoffs, performance findings).
 
 ## Why
 
@@ -53,12 +53,17 @@ When a payment request times out, the server may already have accepted it. The s
 
 ## Install
 
-The package is not on pub.dev yet. Depend on it by path or git:
+Add the package from pub.dev:
+
+```sh
+flutter pub add flutter_ui_payment
+```
+
+Or declare the dependency directly:
 
 ```yaml
 dependencies:
-  flutter_ui_payment:
-    path: ../flutter-ui-payment
+  flutter_ui_payment: ^0.1.0
 ```
 
 Requires Dart `^3.12.0` and Flutter `>=3.44.0` (tested with Flutter 3.44.6 stable). The only dependency is the Flutter SDK.
@@ -194,7 +199,7 @@ KYC is optional and composes the same way: `VerificationIntro`, `IdentityForm`, 
 | `CaptureSource`, `CaptureKind`, `showCaptureSourceSheet` | Source intent before host permission. |
 | `CaptureFrameOverlay`, `KycCaptureGuide` | Passive framing, review and host upload state. |
 
-Usage, states and host responsibilities for each: [docs/components.md](docs/components.md).
+Usage, states and host responsibilities for each: [docs/components.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/components.md).
 
 Money is an integer number of minor units plus a currency code. `MoneyFormat.parse` rejects input that could be read two ways (for example `100,000` for IDR in `id`) instead of guessing.
 
@@ -257,16 +262,16 @@ flutter drive --profile --driver=test_driver/integration_driver.dart \
 
 ## What is verified
 
-**Historical v0.1 baseline, 30 October 2026 (Flutter 3.44.6).** The results and pending items below describe that snapshot, not current-head verification or release readiness. For later evidence and remaining limits, read [compatibility](docs/compatibility.md) and the [decision record](docs/decisions.md#performance).
+**Historical v0.1 baseline, 30 October 2026 (Flutter 3.44.6).** The results and pending items below describe that snapshot, not current-head verification or release readiness. For later evidence and remaining limits, read [compatibility](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/compatibility.md) and the [decision record](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/decisions.md#performance).
 
 - Formatter and analyzer clean (package and example). The full 54-test package run passed. After review, the component suite passed 14/14, including an added regression that prevents autoplay when loading finishes in the background. Unchanged package test evidence is reused.
 - `flow_test.dart` (12 tests) passes on an Android 11 arm64 emulator (API 30, 60 Hz) after this pass's UI changes. The earlier iPhone 16 simulator (iOS 18.1) flow run predates them. The new component/screenshot journey was subsequently run successfully on that iOS simulator: video advanced to 4.5 s and paused on tab change, and refined screens, drawer, sheet and gallery captures were inspected (`ios_refined_*`, `ios_kit_*`).
 - `kit_screenshots_test.dart` passes on the same Android emulator: refined KYC review, checkout and unknown-status screens in light, dark and 200% text; gallery sections in light, dark, 200% and the Lumen brand; drawer, sheet, confirmation and history detail. The bundled video played to 4.7 s and paused when its tab was hidden. All captures were inspected (`example/build/screenshots/android_refined_*`, `android_kit_*`). Earlier captures from both platforms are kept alongside them.
-- Android build: debug, profile and release APKs build. The merged manifest declares `minSdkVersion 24`, and the release APK contains `armeabi-v7a`, `arm64-v8a` and `x86_64`. Only API 30 arm64 was run; see [compatibility](docs/compatibility.md).
+- Android build: debug, profile and release APKs build. The merged manifest declares `minSdkVersion 24`, and the release APK contains `armeabi-v7a`, `arm64-v8a` and `x86_64`. Only API 30 arm64 was run; see [compatibility](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/compatibility.md).
 - Web: `flutter build web --release` succeeds and serves locally. No browser check was done (the only automation-capable Chrome belonged to the user/another task).
-- Performance (Android emulator, profile, Impeller/OpenGL ES, 30 s warm-up + 30 s measured): the last profile run reported checkout p95 build 2.02 ms and raster 20.41 ms. The plain Material control also missed the raster budget. This suggests a substantial environment effect; it does not prove that kit rendering has no cost. The raster requirement remains unmet. Measurement and artifact limitations are in [decisions](docs/decisions.md#performance). Earlier: status updates p95 build 2.55 / raster 6.15 ms; 10 document replace cycles left 2 slots and 10 stale uploads ignored, RSS 236–249 MB. No physical device was profiled.
+- Performance (Android emulator, profile, Impeller/OpenGL ES, 30 s warm-up + 30 s measured): the last profile run reported checkout p95 build 2.02 ms and raster 20.41 ms. The plain Material control also missed the raster budget. This suggests a substantial environment effect; it does not prove that kit rendering has no cost. The raster requirement remains unmet. Measurement and artifact limitations are in [decisions](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/decisions.md#performance). Earlier: status updates p95 build 2.55 / raster 6.15 ms; 10 document replace cycles left 2 slots and 10 stale uploads ignored, RSS 236–249 MB. No physical device was profiled.
 
-Not done yet: an external developer integrating a checkout from this README (the ≤30 minute goal is unproven), a browser check of the web gallery, Android 7–10 runtime tests, the Android phone and tablet UI review pass (D64), package name availability, `flutter pub publish --dry-run`, and a public repository. Publication remains deferred.
+At that historical snapshot, external developer onboarding, web gallery browser checks, Android 7–10 runtime tests and the D64 mobile review were still pending. Later evidence is recorded in the compatibility guide and decision history linked above; these historical results are not a claim of current release verification.
 
 ## License
 

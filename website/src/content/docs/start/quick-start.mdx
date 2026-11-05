@@ -6,8 +6,6 @@ description: From dependency to receipt. Build a checkout, hand authorization to
 import { Code, Aside } from '@astrojs/starlight/components';
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
-import RepoNote from '../../../components/RepoNote.astro';
-import { REPO_URL } from '../../../consts';
 
 This walkthrough builds a checkout through to its receipt. Step 2 is a complete `lib/main.dart` you can run. From step 3, the snippets are fragments for your own screen. Names such as `host`, `serverQuote` and `previousQuote` stand for data and adapters you supply, including backend, authorization, clipboard and sharing operations.
 
@@ -36,16 +34,10 @@ The example app's `example/lib/screens/flow_screen.dart` and `example/lib/coordi
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_ui_payment:
-    git:
-      url: ${REPO_URL}
-    # or, from a local checkout:
-    # path: ../flutter-ui-payment`}
+  flutter_ui_payment: ^0.1.0`}
 />
 
-<RepoNote />
-
-The package is not on pub.dev yet. [Installation](/start/installation/) has both options and the SDK requirements.
+Run `flutter pub get`. [Installation](/start/installation/) also covers local development and the SDK requirements.
 
 ## 2. Localization and theme
 

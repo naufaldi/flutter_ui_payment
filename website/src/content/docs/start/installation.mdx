@@ -1,15 +1,13 @@
 ---
 title: Installation
-description: Add flutter_ui_payment to a Flutter app as a git or path dependency. It is not on pub.dev yet.
+description: Install flutter_ui_payment from pub.dev, or use a local checkout for development.
 ---
 
-import { Code, Aside } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
 import RepoNote from '../../../components/RepoNote.astro';
 import { REPO_URL } from '../../../consts';
 
-<Aside type="caution" title="Not on pub.dev yet">
-`flutter_ui_payment` 0.1.0 has not been published to pub.dev, and the package name has not been checked for availability. Until it is published, depend on it from git or from a local path.
-</Aside>
+Install `flutter_ui_payment` 0.1.0 from [pub.dev](https://pub.dev/packages/flutter_ui_payment).
 
 ## Requirements
 
@@ -17,7 +15,24 @@ import { REPO_URL } from '../../../consts';
 - The only dependency is the Flutter SDK. The package adds no network, analytics, media, camera, ad or payment SDK.
 - `flutter_localizations` from the Flutter SDK, for the Material and Cupertino delegates you register next to `PaymentLocalizations.delegate`.
 
-## Option A: git dependency
+## Install from pub.dev
+
+```sh
+flutter pub add flutter_ui_payment
+```
+
+Include the Flutter localization delegates when using the quick start:
+
+```yaml title="pubspec.yaml"
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_ui_payment: ^0.1.0
+```
+
+## Development: git dependency
 
 <Code
   lang="yaml"
@@ -30,12 +45,12 @@ import { REPO_URL } from '../../../consts';
   flutter_ui_payment:
     git:
       url: ${REPO_URL}
-      ref: main`}
+      ref: v0.1.0`}
 />
 
 <RepoNote />
 
-## Option B: path dependency
+## Development: path dependency
 
 Use this when the package sits next to your app on disk, for example while evaluating it.
 
