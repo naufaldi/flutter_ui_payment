@@ -12,7 +12,7 @@ Targets iOS and Android, phones and tablets. The web build is a documentation pr
 
 ## Start here
 
-**See it run (about 2 minutes, synthetic data).** Open an Android emulator or iOS Simulator, then:
+**See it run with synthetic data.** Open an Android emulator or iOS Simulator, then:
 
 ```sh
 git clone https://github.com/naufaldi/flutter_ui_payment.git
