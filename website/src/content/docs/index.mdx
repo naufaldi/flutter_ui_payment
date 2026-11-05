@@ -11,6 +11,51 @@ hero:
     - text: See the recovery demo
       link: /blocks/checkout-recovery/
 pagefind: true
+# Homepage-only head entries. Starlight merges these with its defaults by key,
+# so each replaces the default tag instead of adding a second one (#253).
+head:
+  - tag: title
+    content: 'Rakit UI: Flutter UI kit for checkout, payment status and receipts'
+  - tag: meta
+    attrs:
+      property: og:title
+      content: 'Rakit UI: Flutter UI kit for checkout, payment status and receipts'
+  - tag: meta
+    attrs:
+      property: og:type
+      content: website
+  - tag: script
+    attrs:
+      type: application/ld+json
+    content: |
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://flutter-ui-payment.netlify.app/#website",
+            "name": "Rakit UI",
+            "url": "https://flutter-ui-payment.netlify.app/",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "@id": "https://flutter-ui-payment.netlify.app/#package",
+            "name": "rakit_ui",
+            "alternateName": "Rakit UI",
+            "description": "Flutter UI widgets for checkout, payment status, receipts and optional KYC on iOS and Android phones and tablets. The widgets render data from the host app; the host owns network calls, pricing and payment results, and the package moves no money.",
+            "url": "https://flutter-ui-payment.netlify.app/",
+            "codeRepository": "https://github.com/naufaldi/flutter_ui_payment",
+            "sameAs": ["https://pub.dev/packages/rakit_ui"],
+            "programmingLanguage": "Dart",
+            "runtimePlatform": "Flutter",
+            "version": "0.1.0",
+            "license": "https://opensource.org/license/mit",
+            "keywords": ["Flutter", "checkout UI", "payment status", "receipts", "KYC", "design system"],
+            "isPartOf": { "@id": "https://flutter-ui-payment.netlify.app/#website" }
+          }
+        ]
+      }
 ---
 
 import Screen from '../../components/Screen.astro';
