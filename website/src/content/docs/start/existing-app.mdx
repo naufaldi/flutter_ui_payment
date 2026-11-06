@@ -28,13 +28,13 @@ You can start with one [button](/components/button/#minimal) or [text field](/co
 | `colorScheme` | Derives semantic colors when no `PaymentTheme` is installed. An installed extension supplies its own tokens. |
 | `textTheme.bodyMedium.fontFamily` and `fontFamilyFallback` | Inherited by the kit's type roles, except explicit amount/reference font overrides. |
 | `textTheme.bodyMedium.fontSize` | Does not resize the kit roles: body is 15, input 16, title 17. See [type defaults](/concepts/theming/#default-shape-and-type). |
-| `filledButtonTheme` | Does not define `PaymentButton` appearance. Use `PaymentButtonTheme`. |
-| `inputDecorationTheme` | Does not define kit field appearance. Use `PaymentFieldTheme`. |
+| `filledButtonTheme` | Partially inherited by primary/destructive `PaymentButton`s. The kit sets background/foreground colors (including disabled colors), shape, text style, minimum size, tap-target size and visual density, plus padding for small/large sizes. Unset properties still inherit: a host `fixedSize` can make a small button 72 dp tall. Use `PaymentButtonTheme` for supported, stable customization. |
+| `inputDecorationTheme` | Partially inherited. The kit sets resting, focus, error and disabled borders, label/hint styles and helper/error line limits; field callers supply content padding. Without `PaymentFieldTheme.fillColor`, `filled` and `fillColor` remain unset, so a host `filled: true, fillColor: Colors.red` can fill `PaymentTextField` red. Use `PaymentFieldTheme` for supported, stable customization. |
 | `bottomSheetTheme` | Does not define the kit surface's corners and layout. Use `PaymentTheme.sheetRadius`. |
 | `visualDensity` | Does not shrink the kit's 48 dp target floor. |
 | Host control shape radii | Not copied automatically. Map them to the kit's corner roles or family themes. |
 
-Material component themes are not a general styling pass-through. The supported bridge uses public theme extensions, keeping focus, error and disabled states under the kit's accessibility rules.
+Material component themes still supply properties the kit leaves unset; they are not isolated from kit controls. Host settings such as button `fixedSize` and field fill can leak into their appearance. Use the public `PaymentButtonTheme` and `PaymentFieldTheme` extensions as the supported, stable brand bridge, and check inherited Material settings when a control looks unexpected. These extensions do not clear unrelated host Material properties.
 
 ## Bridge your brand once
 
@@ -93,7 +93,7 @@ Setting only `radius: 4` derives control 3, sheet 6 and tag 2. Set each role exp
 
 ### Compact controls
 
-`PaymentButton(size: PaymentSize.small, ...)` draws a 36 dp visual inside a target of at least 48 × 48 dp. Medium draws at 48 dp. Host `VisualDensity.compact` does not remove this space. The B5 touch floor is deliberate for iOS and Android; do not constrain a small button into a 36 dp parent to imitate a dense host toolbar.
+`PaymentButton(size: PaymentSize.small, ...)` has a default visual height of 36 dp inside a target of at least 48 × 48 dp. Medium has a default visual height of 48 dp. Inherited Material settings such as `fixedSize`, larger text or wrapping labels can increase the visual height. Host `VisualDensity.compact` does not remove the target floor. The B5 touch floor is deliberate for iOS and Android; do not constrain a small button into a 36 dp parent to imitate a dense host toolbar.
 
 ## Adopt only what you need
 

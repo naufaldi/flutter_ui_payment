@@ -16,6 +16,12 @@ Buttons also support a dedicated `PaymentButtonTheme` and per-instance `PaymentB
 
 Fields (text, search, text area, select, date, date range and currency) have a dedicated `PaymentFieldTheme` for fill, resting outline, corners and input typography, with no per-field style. See [Text field customization](/components/text-field/#customization).
 
+Material component themes are partially inherited. Primary/destructive `PaymentButton`s set background/foreground colors (including disabled colors), shape, text style, minimum size, tap-target size and visual density, plus padding for small/large sizes. They leave properties such as `fixedSize` unset, so a host `filledButtonTheme` can make a small button 72 dp tall instead of its default 36 dp visual height.
+
+Fields set resting, focus, error and disabled borders, label/hint styles and helper/error line limits; field callers supply content padding. Without `PaymentFieldTheme.fillColor`, decoration `filled` and `fillColor` remain unset, so host `inputDecorationTheme` fill settings can show through.
+
+Use `PaymentButtonTheme` and `PaymentFieldTheme` for supported, stable customization, and check host Material properties that can leak into kit controls. These extensions do not clear unrelated host Material properties. See [existing-app adoption](/start/existing-app/#what-follows-your-host-theme).
+
 Other component families read the shared theme. Scope `PaymentTheme` to a feature to change its appearance; toasts capture the caller's scoped themes when shown. The host checkout example shares a button theme, field theme and named pay-button preset across two layouts.
 
 ```dart
