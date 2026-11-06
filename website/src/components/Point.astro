@@ -38,4 +38,14 @@ const { title } = Astro.props;
   .fup-point-body > :global(* + *) {
     margin-top: 0.5rem;
   }
+  /* Phones: a tighter rhythm, since the points stack in one column (D116). */
+  @media (max-width: 45rem) {
+    .fup-point {
+      padding-block: 1rem;
+    }
+    .fup-point-body {
+      margin-top: 0.25rem;
+      line-height: 1.55;
+    }
+  }
 </style>

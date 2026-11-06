@@ -862,3 +862,18 @@ The 320 dp gesture rows were measured with the tab fold alone (+18.2 / +30.2 dp 
 ### Host languages, 6 November 2026
 
 - **D115: every kit string is host-overridable (#261).** Move `KitStrings` and `PaymentStatusLabel` extension members onto `PaymentLocalizations`, preserving their names, signatures and en/id expressions. A host subclasses the public class and registers a `LocalizationsDelegate<PaymentLocalizations>` that returns it; `of(context)` already returns that registered instance. Unknown language codes keep English defaults for un-overridden members. Extension members were statically resolved, so subclass overrides could not reach kit components. Instance dispatch fixes that boundary without ARB generation or new dependencies. Chart number and percent formatting also dispatches through the overridable `formatNumber(num value, {bool grouping = true})`, preserving one-decimal rounding and optional grouping. Removing the exported extension names breaks explicit extension references and `show KitStrings`; ordinary member calls remain compatible. The built-in delegate remains en/id only; hosts register added locales and Flutter localization delegates.
+
+### Landing length on phones, 6 November 2026
+
+- **D116: shorter landing page on phones (#278).** At 390 px the homepage was 12,961 px tall. Three full-height flow captures (2,532 px), stacked brand looks (1,719 px) and repeated copy made up most of it. Below 50rem the recovery demo becomes a native horizontal strip with scroll snap and a peek of the next step. It is a focusable, labelled region, so arrow keys scroll it, and it needs no JavaScript or auto-advance. The Hairline and Soft looks stay side by side on phones and stack only when the columns get too narrow, such as at 200% text. "Who decides what" merges into "Built to fit your app, not replace it". Removed:
+  - the flow intro;
+  - the localization point, because the hero already says English or Indonesian;
+  - the showcase count line, because the counts remain in the links under the grid;
+  - the duplicate recovery-demo sentence in Proof.
+
+  The accessibility point becomes a run-in paragraph. Phones get a tighter rhythm for points, h2 headings and the closing call to action. On phones the responsibilities blocks use run-in labels. A higher-specificity selector stops the site-wide `.sl-markdown-content` table rule from drawing a rule and padding under every cell. Desktop keeps its layout; only the merged section and the shorter copy change it. Every fact and link stays. Result: 390 px page height 12,961 → 9,083 px; 1280 px 7,577 → 7,131 px. Rejected:
+  - a carousel with buttons or auto-advance, because motion stays input-only;
+  - dropping captures or facts;
+  - hiding content behind `<details>` on phones.
+
+  The brief named D112, which was already taken by existing-app adoption, so this decision is D116.

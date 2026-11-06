@@ -1,6 +1,9 @@
 ---
 // Homepage only: the checkout recovery demo as three numbered steps, each a
 // real Android capture from the registry (light and dark pairs, lazy-loaded).
+// Wide screens show the steps side by side. Phones get a native sideways
+// strip with scroll snap and a peek of the next step (D116): no JavaScript,
+// and the region is focusable so arrow keys scroll it.
 import Screen from './Screen.astro';
 
 const steps = [
@@ -28,18 +31,20 @@ const steps = [
 ];
 ---
 
-<ol class="fup-flow not-content">
-  {
-    steps.map((s, i) => (
-      <li class="fup-flow-step">
-        <p class="fup-flow-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
-        <h3>{s.title}</h3>
-        <p class="fup-flow-text">{s.text}</p>
-        <Screen name={s.name} dark={s.dark} alt={s.alt} caption="" />
-      </li>
-    ))
-  }
-</ol>
+<div class="fup-flow-scroll not-content" role="region" aria-label="Checkout recovery demo, three steps" tabindex="0">
+  <ol class="fup-flow">
+    {
+      steps.map((s, i) => (
+        <li class="fup-flow-step">
+          <p class="fup-flow-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
+          <h3>{s.title}</h3>
+          <p class="fup-flow-text">{s.text}</p>
+          <Screen name={s.name} dark={s.dark} alt={s.alt} caption="" />
+        </li>
+      ))
+    }
+  </ol>
+</div>
 
 <style>
   .fup-flow {
@@ -86,13 +91,42 @@ const steps = [
     margin-top: auto;
     max-width: 20rem;
   }
+  /* Phones: one sideways strip instead of three full-height captures. The
+     strip runs to the screen edges; each step snaps to the content edge and
+     the next one peeks in. */
   @media (max-width: 50rem) {
+    .fup-flow-scroll {
+      margin: 1.5rem calc(-1 * var(--sl-content-pad-x)) 0;
+      padding: 0 var(--sl-content-pad-x) 0.75rem;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--sl-content-pad-x);
+      scrollbar-width: thin;
+    }
+    .fup-flow-scroll:focus-visible {
+      outline-offset: -2px;
+    }
     .fup-flow {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 2.5rem;
+      margin: 0;
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      /* vw, not %, so the list can be max-content wide and the strip keeps
+         its end padding after the last step. */
+      grid-auto-columns: min(14rem, 70vw);
+      gap: 1rem;
+      width: max-content;
+    }
+    .fup-flow-step {
+      scroll-snap-align: start;
+    }
+    .fup-flow-text {
+      margin-bottom: 0.5rem;
+      font-size: var(--sl-text-sm);
+      line-height: 1.5;
     }
     .fup-flow-step :global(.fup-screen) {
-      max-width: 18rem;
+      max-width: none;
     }
   }
 </style>

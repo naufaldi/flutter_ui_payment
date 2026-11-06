@@ -63,4 +63,11 @@ const { title, primary, secondary } = Astro.props;
       text-decoration-color: currentColor;
     }
   }
+  /* Phones: the same closing rule with less air above it (D116). */
+  @media (max-width: 50rem) {
+    .fup-cta {
+      margin-top: 3rem;
+      padding-top: 2rem;
+    }
+  }
 </style>

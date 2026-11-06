@@ -1,7 +1,9 @@
 ---
 // Homepage only (D111): the same Merchant Overview block in two looks, the
-// default Hairline and the Soft host preset, side by side on wide screens and
-// stacked on phones. Real Android captures with their dark pairs.
+// default Hairline and the Soft host preset, side by side. Phones keep the
+// pair side by side at a smaller size so the two looks compare at a glance
+// (D116); they stack only when the columns get too narrow, such as at 200%
+// text. Real Android captures with their dark pairs.
 import Screen from './Screen.astro';
 
 const looks = [
@@ -64,10 +66,20 @@ const looks = [
   .fup-brand-look :global(.fup-screen) {
     max-width: 22.5rem;
   }
+  /* Columns are sized in rem, so larger text stacks them instead of
+     squeezing the titles. */
   @media (max-width: 45rem) {
     .fup-brand {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+      gap: 1.5rem 1rem;
+    }
+    h3 {
+      font-size: var(--sl-text-base);
+    }
+    p {
+      margin-bottom: 0.75rem;
+      font-size: var(--sl-text-sm);
+      line-height: 1.5;
     }
   }
 </style>

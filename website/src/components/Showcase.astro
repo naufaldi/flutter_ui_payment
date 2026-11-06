@@ -1,7 +1,8 @@
 ---
 // Homepage only (D111): six real catalog specimens in a ruled grid, each
 // linking to its component page. The component and block counts come from the
-// docs collection at build time, so they cannot drift from the sidebar.
+// docs collection at build time, so they cannot drift from the sidebar. They
+// appear once, in the links under the grid (D116).
 import { getCollection } from 'astro:content';
 import screens from '../data/screens.json';
 
@@ -67,11 +68,6 @@ const items = [
 ---
 
 <div class="fup-showcase not-content">
-  <p class="fup-showcase-count">
-    <span>{components} components</span>
-    <span aria-hidden="true">·</span>
-    <span>{blocks} blocks</span>
-  </p>
   <ul class="fup-showcase-grid">
     {
       items.map((item) => (
@@ -97,15 +93,6 @@ const items = [
 <style>
   .fup-showcase {
     margin-top: 1.5rem;
-  }
-  .fup-showcase-count {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 0 0 1rem;
-    font-family: var(--__sl-font-mono);
-    font-size: var(--sl-text-sm);
-    color: var(--fup-muted);
   }
   /* A ruled grid: the outer rule and the gaps draw the lines between tiles. */
   .fup-showcase-grid {
