@@ -3,9 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui/src/charts/chart_geometry.dart';
 
 class GermanPaymentLocalizations extends PaymentLocalizations {
   GermanPaymentLocalizations() : super('de');
+
+  @override
+  String formatNumber(num value, {bool grouping = true}) {
+    final english = super.formatNumber(value, grouping: grouping);
+    return english
+        .replaceAll(',', '#')
+        .replaceAll('.', ',')
+        .replaceAll('#', '.');
+  }
 
   @override
   String get save => 'Speichern';
@@ -60,6 +70,10 @@ void main() {
               expect(strings.paymentStatusShort(null), 'Zahlungsstatus');
               expect(strings.tryAgain, 'Try again');
               expect(strings.search, 'Search');
+              expect(
+                formatChartValue(strings, 1234.5, PaymentChartUnit.number),
+                '1.234,5',
+              );
               return PaymentSettingsView(
                 title: 'Einstellungen',
                 onSave: () async => saved = true,

@@ -103,6 +103,7 @@ With `super('de')`, any getter or method you do not override keeps its English
 default. The same applies to other language codes besides `id`. Override
 parameterized methods too, such as `timeRemaining(String time)` and
 `paymentStatusShort(PaymentStatus? status)`, to translate those messages.
+Override `formatNumber(num value, {bool grouping = true})` for chart numbers and percentages, including axis labels, tooltips and spoken values. The default rounds to at most one decimal digit and omits a trailing zero; percentages pass `grouping: false`. Return only the digits and separators, since charts add the percent unit. For example, a German override should return `1.234,5` for `1234.5`.
 Money and date formatters retain their built-in English conventions for unknown
 languages unless you override them as well. Host-provided titles, labels and
 content remain the host's responsibility.

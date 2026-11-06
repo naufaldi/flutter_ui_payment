@@ -81,6 +81,26 @@ class PaymentLocalizations {
   final String languageCode;
   final MoneyFormat moneyFormat;
 
+  /// Chart number with at most one decimal digit, omitting a trailing zero.
+  ///
+  /// Uses English separators by default and Indonesian separators for `id`.
+  /// Override for additional languages. Charts use this for visible and spoken
+  /// numbers; percentages pass [grouping] as false and add their own unit label.
+  /// Money continues to use [moneyFormat].
+  String formatNumber(num value, {bool grouping = true}) {
+    final parts = value
+        .toStringAsFixed(1)
+        .replaceFirst(RegExp(r'\.0$'), '')
+        .split('.');
+    final whole = grouping
+        ? parts[0].replaceAllMapped(
+            RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+            (m) => '${m[1]}${_id ? '.' : ','}',
+          )
+        : parts[0];
+    return '$whole${parts.length == 2 ? '${_id ? ',' : '.'}${parts[1]}' : ''}';
+  }
+
   static const supportedLanguages = ['en', 'id'];
 
   static const LocalizationsDelegate<PaymentLocalizations> delegate =

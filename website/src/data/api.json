@@ -4642,6 +4642,14 @@
         "doc": ""
       },
       {
+        "name": "formatNumber",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String formatNumber(num value, {bool grouping = true})",
+        "doc": "Chart number with at most one decimal digit, omitting a trailing zero.\n\nUses English separators by default and Indonesian separators for `id`.\nOverride for additional languages. Charts use this for visible and spoken\nnumbers; percentages pass `grouping` as false and add their own unit label.\nMoney continues to use `moneyFormat`."
+      },
+      {
         "name": "supportedLanguages",
         "kind": "static",
         "static": true,
