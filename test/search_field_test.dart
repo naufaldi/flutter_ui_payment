@@ -173,6 +173,145 @@ void main() {
       expect(reports, hasLength(1));
     });
 
+    testWidgets(
+      'offline lookup announces the error and Retry re-sends the query',
+      (tester) async {
+        surface(tester, compact);
+        final queries = <String>[];
+        String? error;
+        var options = <PaymentSearchOption<String>>[];
+        late StateSetter update;
+        await tester.pumpWidget(
+          host(
+            StatefulBuilder(
+              builder: (context, setState) {
+                update = setState;
+                return PaymentSearchField<String>(
+                  label: 'Remote',
+                  options: options,
+                  selected: null,
+                  onSelected: (_) {},
+                  onQueryChanged: queries.add,
+                  errorText: error,
+                );
+              },
+            ),
+            1,
+          ),
+        );
+        await tester.tap(find.byType(InkWell).first);
+        await tester.pumpAndSettle();
+        await tester.enterText(_sheetEditor, 'jawa');
+        update(() => error = 'You are offline. Check your connection.');
+        await tester.pumpAndSettle();
+        final message = find.descendant(
+          of: find.byType(BottomSheet),
+          matching: find.text(error!),
+        );
+        expect(message, findsOneWidget);
+        expect(find.text('No matches'), findsNothing);
+        expect(
+          tester.widget<Text>(message).style!.color,
+          PaymentTheme.of(tester.element(message)).danger.foreground,
+        );
+        final announcement = find.ancestor(
+          of: message,
+          matching: find.byWidgetPredicate(
+            (w) => w is Semantics && w.properties.liveRegion == true,
+          ),
+        );
+        expect(announcement, findsOneWidget);
+        final retry = find.widgetWithText(PaymentButton, 'Retry');
+        expect(tester.getSize(retry).height, greaterThanOrEqualTo(48));
+        expect(tester.getSize(retry).width, greaterThanOrEqualTo(48));
+        await tester.tap(retry);
+        expect(queries, ['jawa', 'jawa']);
+        update(() {
+          error = null;
+          options = _options;
+        });
+        await tester.pumpAndSettle();
+        expect(find.text('Retry'), findsNothing);
+        expect(find.text('Jawa Barat'), findsOneWidget);
+      },
+    );
+
+    testWidgets('local validation error still allows choosing a province', (
+      tester,
+    ) async {
+      surface(tester, compact);
+      String? selected;
+      await tester.pumpWidget(
+        host(
+          StatefulBuilder(
+            builder: (context, setState) => PaymentSearchField<String>(
+              label: 'Province',
+              options: _options,
+              selected: selected,
+              onSelected: (value) => setState(() => selected = value),
+              errorText: selected == null ? 'Choose a province' : null,
+            ),
+          ),
+          1,
+        ),
+      );
+      await tester.tap(find.byType(InkWell).first);
+      await tester.pumpAndSettle();
+      final message = find.descendant(
+        of: find.byType(BottomSheet),
+        matching: find.text('Choose a province'),
+      );
+      expect(message, findsOneWidget);
+      expect(find.text('Retry'), findsNothing);
+      expect(
+        tester.getBottomLeft(message).dy,
+        lessThan(tester.getTopLeft(find.text('Jawa Barat')).dy),
+      );
+      await tester.tap(find.text('Jawa Barat'));
+      await tester.pumpAndSettle();
+      expect(selected, 'barat');
+      expect(find.byType(BottomSheet), findsNothing);
+      expect(find.text('Jawa Barat'), findsOneWidget);
+      expect(find.text('Choose a province'), findsNothing);
+    });
+
+    testWidgets('offline error and Retry fit at 320 dp with 200% text', (
+      tester,
+    ) async {
+      surface(tester, const Size(320, 640));
+      const error = 'You are offline. Check your connection and try again.';
+      await tester.pumpWidget(
+        host(
+          PaymentSearchField<String>(
+            label: 'Remote',
+            options: const [],
+            selected: null,
+            onSelected: (_) {},
+            onQueryChanged: (_) {},
+            errorText: error,
+          ),
+          2,
+        ),
+      );
+      await tester.tap(find.byType(InkWell).first);
+      await tester.pumpAndSettle();
+      final sheet = find.byType(BottomSheet);
+      final message = find.descendant(of: sheet, matching: find.text(error));
+      final retry = find.widgetWithText(PaymentButton, 'Retry');
+      expect(message, findsOneWidget);
+      expect(retry.hitTestable(), findsOneWidget);
+      expect(
+        tester.getRect(sheet).contains(tester.getRect(message).topLeft),
+        isTrue,
+      );
+      expect(
+        tester.getRect(sheet).contains(tester.getRect(retry).bottomRight),
+        isTrue,
+      );
+      expect(tester.widget<Text>(message).maxLines, isNull);
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('host results reach the open sheet', (tester) async {
       surface(tester, compact);
       var loading = true;
