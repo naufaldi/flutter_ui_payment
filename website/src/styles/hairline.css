@@ -1,7 +1,7 @@
 /*
   Hairline: the kit's own visual language (docs/design-research.md, section 0)
   applied to Starlight through its custom properties. White surface, navy-black
-  ink, 1 px rules instead of cards, ink as the only accent, radii 6â€“8, system
+  ink, 1 px rules instead of cards, ink as the only accent, radii 6–8, system
   fonts, monospace only for code and references.
 
   Starlight's dark theme lives on :root and its light theme on
