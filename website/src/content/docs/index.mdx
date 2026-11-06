@@ -71,28 +71,26 @@ import Contact from '../../components/Contact.astro';
 
 ## One payment, a lost response, no second payment offered
 
-This is the example app's checkout demo. The submit reaches the server, the response never comes back, and the screen recovers without offering a second payment.
-
 <HomeFlow />
 
-The demo runs on an Android emulator or an iOS Simulator with synthetic data and a fake host. No money moves and no network calls are made. [Walk through the demo](/blocks/checkout-recovery/) or [run it yourself](/start/try-it/).
+This is the example app's checkout demo. It runs on an Android emulator or an iOS Simulator with synthetic data and a fake host: no money moves and no network calls are made. [Walk through the demo](/blocks/checkout-recovery/) or [run it yourself](/start/try-it/).
 
 ## The hard states are already designed
 
-Happy-path checkout screens are easy. These are the cases that cost money and support time. Each has a designed answer; [switch between them at the top of the page](#states).
+These cases cost money and support time. Each has a designed answer; [switch between them at the top](#states).
 
 <Points>
   <Point title="The submit timed out after the server accepted it">
-    The screen leads with “Don’t pay again.”, shows a hatched band that never looks like ordinary pending, and offers one action: check status, using the same attempt reference.
+    The screen says “Don’t pay again.” A hatched band never looks like ordinary pending, and the one action is check status with the same attempt reference.
   </Point>
   <Point title="An older status arrives after a newer one">
     `PaymentAttempt.reconcile` rejects stale revisions, another attempt’s data, a mismatched server reference, and a success that turns into anything else without an official provider correction.
   </Point>
   <Point title="The total changed after the customer chose a method">
-    `PaymentConfirmation` shows the old and new total and keeps confirm unreachable until the customer accepts the new terms.
+    `PaymentConfirmation` shows the old and new total and keeps confirm unreachable until the customer accepts.
   </Point>
   <Point title="The payment is still pending or unknown">
-    No pay-again action. A new attempt is offered only when the host allows it and the previous attempt is final and not a success. Your backend still enforces idempotency.
+    No pay-again action. A new attempt appears only when the host allows it and the previous attempt is final and not a success. Your backend still enforces idempotency.
   </Point>
 </Points>
 
@@ -114,40 +112,25 @@ PaymentStatusView(
 
 ## Components and blocks, captured on Android
 
-Use single components, follow the [patterns](/patterns/checkout/), or copy a whole block such as checkout and recovery, then wire your own callbacks. Every image here is a real capture from the example app.
+Use single components, follow the [patterns](/patterns/checkout/), or copy a whole block and wire your own callbacks. Every image is a real capture from the example app.
 
 <Showcase />
 
 ## Your brand, light and dark
 
-`PaymentTheme` is a `ThemeExtension`. Without it the kit follows your `ColorScheme`; with it you set colors, radius and amount style for light and dark. Here is the same block in two looks, from one package. [Theming](/concepts/theming/)
+`PaymentTheme` is a `ThemeExtension`. Without it the kit follows your `ColorScheme`; with it you set colors, radius and amount style for light and dark. Same block, two looks, one package. [Theming](/concepts/theming/)
 
 <BrandCompare />
 
 ## Built to fit your app, not replace it
 
-<Points>
-  <Point title="Your backend stays in charge">
-    Widgets render the data you pass and report what the customer did through callbacks. No network calls, no payment SDK, no router or state manager required.
-  </Point>
-  <Point title="English and Indonesian included">
-    Strings, money separators and dates are localized for `en` and `id`. Register `PaymentLocalizations.delegate` and pick the locale. [Localization](/foundations/localization/)
-  </Point>
-  <Point title="Accessibility is documented, not implied">
-    Status never relies on color alone, focus is visible, and the captured checkout and status screens reflow at 200% text with the key action still reachable. [Accessibility](/concepts/accessibility/)
-  </Point>
-  <Point title="Optional KYC, same rules">
-    Identity capture, review and onboarding screens show progress and structured errors. The decision and document validation stay with your backend. [KYC capture](/patterns/kyc-capture/)
-  </Point>
-</Points>
-
-## Who decides what
-
-The kit never decides a price, a payment result or an identity check. It shows what your backend decided.
+The kit never decides a price, a payment result or an identity check. Widgets render the data your backend passes and report what the customer did through callbacks. No network calls, no payment SDK, no router or state manager required.
 
 <Responsibilities />
 
-The full list, including input and consent, is on [Host-owned decisions](/concepts/host-owned/).
+The full list, including input and consent, is on [Host-owned decisions](/concepts/host-owned/). Optional KYC capture, review and onboarding screens follow the same split: [KYC capture](/patterns/kyc-capture/).
+
+**Accessibility is documented, not implied.** Status never relies on color alone, focus is visible, and the captured checkout and status screens reflow at 200% text with the key action still reachable. [Accessibility](/concepts/accessibility/)
 
 ## Proof you can check yourself
 
@@ -155,7 +138,7 @@ Rakit UI is new and has no verified production testimonials yet. Each fact below
 
 <Facts />
 
-The [recovery demo](/blocks/checkout-recovery/) runs locally with synthetic data and a fake host. The flow test passed earlier on an iPhone 16 simulator; there are no iOS performance numbers. [What was run](/reference/compatibility/)
+The flow test passed earlier on an iPhone 16 simulator; there are no iOS performance numbers. [What was run](/reference/compatibility/)
 
 **Be one of the first teams to try it.** Build a checkout in a fresh Flutter app, then tell us what blocked you or what was missing. [Try it and send feedback](/start/try-it/)
 

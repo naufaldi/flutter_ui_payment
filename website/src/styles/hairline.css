@@ -511,3 +511,11 @@ starlight-theme-select select {
 :root[data-has-hero] .sl-markdown-content .sl-anchor-link {
   display: none;
 }
+/* Phones: a slightly tighter section rhythm on the homepage, so the page
+   stays short without losing the rule between sections (D116). */
+@media (max-width: 50rem) {
+  :root[data-has-hero] .sl-markdown-content .sl-heading-wrapper.level-h2:not(:first-child) {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+  }
+}
