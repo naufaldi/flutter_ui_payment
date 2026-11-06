@@ -4,9 +4,11 @@
 // and host names (anything not in api.json) are skipped.
 // Usage: node scripts/check-snippets.mjs (after gen-api).
 
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join, resolve, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { tmpdir } from 'node:os';
+import { spawnSync } from 'node:child_process';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
@@ -139,3 +141,56 @@ if (problems.length) {
   process.exit(1);
 }
 console.log('check-snippets: every kit class and named argument exists in lib/');
+
+// Compile complete examples separately: API-name checks cannot catch undefined
+// host helpers, missing imports, callback return types or incomplete state.
+const standalonePages = [
+  'start/existing-app.mdx',
+  ...['button', 'text-field', 'switch', 'dialog', 'sheets', 'state-message']
+    .map((name) => `components/${name}.mdx`),
+];
+const project = mkdtempSync(join(tmpdir(), 'rakit-doc-snippets-'));
+try {
+  mkdirSync(join(project, 'lib'));
+  writeFileSync(join(project, 'pubspec.yaml'), `name: rakit_doc_snippets
+publish_to: none
+environment:
+  sdk: '>=3.11.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  rakit_ui:
+    path: ${JSON.stringify(resolve(root, '..').replaceAll('\\', '/'))}
+`);
+  for (const [index, page] of standalonePages.entries()) {
+    const source = readFileSync(join(root, 'src/content/docs', page), 'utf8');
+    const blocks = [...source.matchAll(/```dart standalone\r?\n([\s\S]*?)```/g)];
+    if (blocks.length !== 1 || !/\bvoid main\(/.test(blocks[0][1])) {
+      throw new Error(`${page}: expected one standalone Dart example with main()`);
+    }
+    if (/package:rakit_ui\/src\//.test(blocks[0][1])) {
+      throw new Error(`${page}: standalone examples must use public imports`);
+    }
+    writeFileSync(join(project, 'lib', `example_${index}.dart`), blocks[0][1]);
+    console.log(`check-snippets: example_${index}.dart = ${page}`);
+  }
+  function run(command, args) {
+    const windows = process.platform === 'win32';
+    const result = spawnSync(windows ? 'cmd.exe' : command,
+      windows ? ['/d', '/s', '/c', command, ...args] : args, {
+      cwd: project,
+      encoding: 'utf8',
+      timeout: 180_000,
+    });
+    if (result.stdout) process.stdout.write(result.stdout);
+    if (result.stderr) process.stderr.write(result.stderr);
+    if (result.error || result.status !== 0) {
+      throw new Error(`${command} ${args.join(' ')} failed: ${result.error ?? result.status}`);
+    }
+  }
+  run('flutter', ['pub', 'get']);
+  run('dart', ['analyze', '--fatal-infos', 'lib']);
+  console.log(`check-snippets: ${standalonePages.length} standalone examples analyzed`);
+} finally {
+  rmSync(project, { recursive: true, force: true });
+}

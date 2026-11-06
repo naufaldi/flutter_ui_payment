@@ -144,6 +144,19 @@ The full token reference, with swatches and values, is in Foundations: [Color](/
 
 The package bundles no fonts. Use your app's text theme for everything else.
 
+## Default shape and type
+
+Without corner overrides, the base radius is 8 dp:
+
+| Role | Default | Derivation |
+| --- | --- | --- |
+| Box | 8 dp | `radius` |
+| Control | 6 dp | `radius * 0.75` |
+| Sheet/dialog | 12 dp | `radius * 1.5` |
+| Tag | 4 dp | `radius * 0.5` |
+
+`PaymentType` takes the font family and fallback from `textTheme.bodyMedium`, but defines its own sizes and line heights: body 15/22, label and heading 15/20, input 16/24, title 17/24, caption 13/18 and tag 12/16. Changing the host's body-medium font size does not resize these roles. Text still follows the ambient text scaler. Use `PaymentButtonTheme` for button typography and `PaymentFieldTheme.textStyle` for entered text/placeholders; field labels and helper/error text keep their roles. See [existing-app adoption](/start/existing-app/) for a complete brand bridge.
+
 ## Corner roles
 
 <Screens><Screen name="android_catalog_theme_shape_roles_variants" dark="android_catalog_theme_shape_roles_variants_dark" alt="Default corners beside a product theme with square boxes, pill badges, unchanged controls and rounder sheets." caption="Independent corner roles" /></Screens>

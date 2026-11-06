@@ -21,16 +21,42 @@ import HostOwns from '../../../components/HostOwns.astro';
 
 ## Usage
 
-```dart
-// example/lib/screens/gallery_kit.dart
-PaymentSheet(
-      header: PaymentSheetHeader(
-        title: t('Transaction', 'Transaksi'),
-        onClose: () => Navigator.pop(context),
+### Minimal
+
+Add the [published package](/start/installation/), then paste this complete example into `lib/main.dart`.
+
+```dart standalone
+import 'package:flutter/material.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+
+void main() => runApp(MaterialApp(
+  home: Scaffold(
+    appBar: AppBar(title: const Text('Example')),
+    body: Builder(builder: (context) => Padding(
+      padding: const EdgeInsets.all(16),
+      child: PaymentButton(
+        label: 'Note actions',
+        variant: PaymentButtonVariant.secondary,
+        onPressed: () => showPaymentSheet<void>(
+          context: context,
+          builder: (sheetContext) => PaymentSheet(
+            header: PaymentSheetHeader(
+              title: 'Note actions',
+              onClose: () => Navigator.of(sheetContext).pop(),
+            ),
+            body: const Text('Choose what to do with this note.'),
+            footer: PaymentButton(
+              label: 'Done',
+              onPressed: () => Navigator.of(sheetContext).pop(),
+            ),
+          ),
+        ),
       ),
-      body: TransactionDetail(record: r, actions: actions),
-    );
+    )),
+  ),
+));
 ```
+
 
 ## Stripe → kit
 

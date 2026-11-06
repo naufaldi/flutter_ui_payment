@@ -25,6 +25,10 @@ Widgets never trust raw JSON. Your adapter maps unknown values to a safe "unavai
 | Price, fees, limits, quote expiry | Host/backend | Renders the full snapshot; asks for re-approval when it changes |
 | Authorization challenge and credentials | Host auth SDK/backend | Shows the state and delegates the action; no raw PIN/OTP in public models |
 | Payment status, idempotency, refund | Host/backend/provider | Renders authoritative state; does not claim the UI alone prevents a double charge |
+| Async search | Host state/coordinator | Receives query intent; host fetches options, owns loading/errors, rejects stale responses and decides retry policy |
+| Settings persistence | Host store/backend | Renders supplied values and reports edits/Save; host persists them and handles failure |
+| Validation | Host form/backend | Shows supplied errors and runs supplied validators; host defines business rules and server validation |
+| Navigation from sheets | Host router | Presents/dismisses the surface; host closes it and routes using the appropriate navigator |
 | Status polling, recovery, lifecycle | Host coordinator | Offers events and callbacks; widgets start no hidden polling |
 
 Your app also controls Android system-bar styling. See [System bars on Android](/concepts/theming/#system-bars-on-android).

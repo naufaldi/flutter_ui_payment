@@ -1,0 +1,125 @@
+---
+title: Adopt in an existing app
+description: Add selected Rakit components to your branded Flutter app while keeping your theme, router, state and localization.
+---
+
+Install the published package in your existing Flutter project:
+
+```sh
+flutter pub add rakit_ui
+```
+
+Import `package:rakit_ui/rakit_ui.dart` where you use a component. Keep your current app shell, router, state manager and localization delegates. You do not need to clone the repository or adopt a checkout flow.
+
+## Start with no kit setup
+
+Under your existing `MaterialApp`, components work without registering a `PaymentTheme` extension or `PaymentLocalizations.delegate`:
+
+- `PaymentTheme.of(context)` derives tokens from the ambient `ThemeData.colorScheme` when there is no extension. Light and dark schemes resolve independently.
+- `PaymentLocalizations.of(context)` first looks for a registered kit delegate. Without one, the ambient locale's language code selects Indonesian for `id`, and English for everything else, including an absent locale. Your own app delegate does not translate kit-owned labels such as Close or Cancel.
+- Labels you pass yourself stay yours to translate. For supported kit languages and explicit delegate setup, see [Localization](/foundations/localization/).
+
+You can start with one [button](/components/button/#minimal) or [text field](/components/text-field/#minimal), then add a brand bridge when the defaults differ from your app.
+
+## What follows your host theme
+
+| Host setting | What Rakit uses |
+| --- | --- |
+| `colorScheme` | Derives semantic colors when no `PaymentTheme` is installed. An installed extension supplies its own tokens. |
+| `textTheme.bodyMedium.fontFamily` and `fontFamilyFallback` | Inherited by the kit's type roles, except explicit amount/reference font overrides. |
+| `textTheme.bodyMedium.fontSize` | Does not resize the kit roles: body is 15, input 16, title 17. See [type defaults](/concepts/theming/#default-shape-and-type). |
+| `filledButtonTheme` | Does not define `PaymentButton` appearance. Use `PaymentButtonTheme`. |
+| `inputDecorationTheme` | Does not define kit field appearance. Use `PaymentFieldTheme`. |
+| `bottomSheetTheme` | Does not define the kit surface's corners and layout. Use `PaymentTheme.sheetRadius`. |
+| `visualDensity` | Does not shrink the kit's 48 dp target floor. |
+| Host control shape radii | Not copied automatically. Map them to the kit's corner roles or family themes. |
+
+Material component themes are not a general styling pass-through. The supported bridge uses public theme extensions, keeping focus, error and disabled states under the kit's accessibility rules.
+
+## Bridge your brand once
+
+This complete `lib/main.dart` uses the published import. In your app, call `withRakit(yourExistingTheme)` for each light/dark theme instead of replacing the app or its router. It preserves unrelated extensions and replaces only the three kit extensions it configures.
+
+```dart standalone
+import 'package:flutter/material.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+
+ThemeData withRakit(ThemeData host) {
+  const radius = 4.0;
+  final payment = PaymentTheme.fromColorScheme(host.colorScheme).copyWith(
+    radius: radius,
+    controlRadius: radius,
+    sheetRadius: radius,
+    tagRadius: radius,
+  );
+  return host.copyWith(extensions: [
+    ...host.extensions.values.where((extension) =>
+        extension is! PaymentTheme &&
+        extension is! PaymentButtonTheme &&
+        extension is! PaymentFieldTheme),
+    payment,
+    PaymentButtonTheme(
+      style: PaymentButtonStyle(
+        borderRadius: BorderRadius.circular(radius),
+        textStyle: const TextStyle(fontWeight: FontWeight.w500),
+      ),
+    ),
+    PaymentFieldTheme(
+      fillColor: host.colorScheme.surface,
+      borderRadius: BorderRadius.circular(radius),
+      textStyle: const TextStyle(fontSize: 15),
+    ),
+  ]);
+}
+
+void main() => runApp(MaterialApp(
+  theme: withRakit(ThemeData(
+    colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF7C3AED)),
+  )),
+  home: Scaffold(
+    appBar: AppBar(title: const Text('Notes')),
+    body: ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const PaymentTextField(label: 'Notebook name'),
+        PaymentButton(label: 'Done', onPressed: () {}),
+      ],
+    ),
+  ),
+));
+```
+
+Setting only `radius: 4` derives control 3, sheet 6 and tag 2. Set each role explicitly, as above, when your brand uses the same corner everywhere. The field text override changes entered text and placeholders; labels and helper/error text keep their roles. Button typography changes through its family style. Check custom colors in light/dark and long labels at 200% text, including disabled, focus and error states.
+
+### Compact controls
+
+`PaymentButton(size: PaymentSize.small, ...)` draws a 36 dp visual inside a target of at least 48 × 48 dp. Medium draws at 48 dp. Host `VisualDensity.compact` does not remove this space. The B5 touch floor is deliberate for iOS and Android; do not constrain a small button into a 36 dp parent to imitate a dense host toolbar.
+
+## Adopt only what you need
+
+A notes app can use [`PaymentSearchField<String>`](/components/search-field/) with its own tags and query callback, [`showPaymentSheet`](/components/sheets/#minimal) for note actions, and [`PaymentSettingsView`](/components/settings-view/) around its own settings controls. None requires `PaymentQuote`, `Money`, a payment attempt or a payment provider. The component pages describe their specific data contracts.
+
+### Why the Payment prefix
+
+`Payment` is the package namespace retained from the kit's payment origins (D34). It does not make every component payment-only. Existing public names stay stable; D112 does not rename them. Typedef aliases are deferred until a demonstrated need, rather than adding a second name for every widget.
+
+| General UI, usable without payment models | Payment-specific composition and data |
+| --- | --- |
+| `PaymentButton`, `PaymentTextField`, `PaymentSearchField`, `PaymentSwitch` | `PaymentSummary`, `PaymentMethodPicker`, `PaymentConfirmation` |
+| `PaymentSheet`, `PaymentSettingsView`, `StateMessage` | `PaymentStatusView`, `PaymentInstructions`, `PaymentReceipt` |
+| Layout, navigation, tables and charts in the [component catalog](/components/) | `PaymentQuote`, `PaymentAttempt`, `PaymentStatusSnapshot`, `Money` |
+
+This is a selection, not an exhaustive export list. KYC patterns have their own identity contracts; general controls do not require them either.
+
+## Keep the host in charge
+
+The kit reports intent through callbacks. Your app owns navigation (including destinations chosen from sheets), async loading/error/retry state, settings persistence, validation rules, authentication, networking and business decisions. Close dismisses UI; it does not cancel a backend operation. A button's busy lock does not replace server idempotency. Keep credentials and raw provider errors in your host boundary, and pass only safe display messages. See [Host-owned decisions](/concepts/host-owned/).
+
+## Adoption checklist
+
+- Install the hosted package and copy a component's **Minimal** example to confirm the integration.
+- Keep your router, state and localization setup; decide whether the English/Indonesian fallback is enough for kit-owned strings.
+- Build the brand bridge for light and dark, preserving unrelated theme extensions.
+- Check 48 dp targets, 200% text at 320 dp, keyboard focus and custom color contrast.
+- Connect host-owned loading, errors, validation, persistence and navigation before replacing demo callbacks.
+- Add payment or KYC models only when adopting those domain patterns. The [quick start](/start/quick-start/) is optional for a general UI integration.
