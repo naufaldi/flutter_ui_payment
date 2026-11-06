@@ -682,3 +682,18 @@ mobile-starlight-toc a:not([aria-current='true']):active {
     }
   }
 }
+
+/* Print (D118): content never scrolled into view still prints, and nothing
+   prints mid-animation. */
+@media print {
+  :root[data-fup-motion] :is([data-fup-reveal], [data-fup-reveal='stagger'] > *, .sl-heading-wrapper.level-h2) {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  :root[data-fup-motion] *,
+  :root[data-fup-motion] *::before,
+  :root[data-fup-motion] *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
