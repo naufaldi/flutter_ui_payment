@@ -1,0 +1,260 @@
+---
+// Homepage hero media (D111): one large real capture and a four-way state
+// switcher. It works without JavaScript: the options are native radio inputs
+// (arrow keys move between them), and CSS `:has(:checked)` shows the matching
+// light/dark capture pair. Browsers without `:has` keep showing the default
+// state. All four captures share one size, and every state sits in the same
+// grid cell, so switching never shifts the page.
+import screens from '../data/screens.json';
+
+const all = screens as Record<string, { width: number; height: number }>;
+const shot = (name: string) => {
+  if (!all[name]) throw new Error(`Unknown screenshot "${name}". Add it to scripts/screens.mjs.`);
+  return { src: `/screens/${name}.webp`, ...all[name] };
+};
+
+const states = [
+  {
+    id: 'success',
+    label: 'Success',
+    light: shot('android_receipt_light'),
+    dark: shot('android_receipt_dark'),
+    alt: 'Receipt in Indonesian after host-confirmed success: green band, "Pembayaran berhasil", Rp102.500, item and service fee lines, the total, the masked wallet method and a Selesai button.',
+    darkAlt: 'The same receipt in dark mode: green band, "Pembayaran berhasil", Rp102.500, line items, total and a Selesai button.',
+    caption: 'A receipt appears only after your host confirms success, with the same reference and total.',
+  },
+  {
+    id: 'pending',
+    label: 'Pending',
+    light: shot('android_status_va_pending_light'),
+    dark: shot('android_status_va_pending_dark'),
+    alt: 'Pending virtual-account payment in Indonesian: solid amber band, amount, a monospace account number with a copy button, a countdown, folded steps and a Check status button.',
+    darkAlt: 'The same pending virtual-account payment in dark mode: solid amber band, amount, account number with a copy button, countdown and a Cek status button.',
+    caption: 'Waiting for a transfer: the account number to copy, the deadline and Check status. No pay-again button.',
+  },
+  {
+    id: 'unknown',
+    label: 'Unknown',
+    light: shot('android_refined_status_unknown_light'),
+    dark: shot('android_refined_status_unknown_dark'),
+    alt: 'Payment screen with a hatched amber band, the title "Result not confirmed yet", the amount Rp102,500, the line "Don\'t pay again." and one action, Check status.',
+    darkAlt: 'The same unknown-outcome screen in dark mode, in Indonesian: hatched amber band, "Hasil belum terkonfirmasi", Rp102.500, "Jangan bayar lagi." and one action, Cek status.',
+    caption: 'The response was lost after the server accepted the payment. “Don’t pay again” and one action: check status.',
+  },
+  {
+    id: 'changed',
+    label: 'Changed total',
+    light: shot('android_requote_light'),
+    dark: shot('android_requote_dark'),
+    alt: 'Checkout notice in Indonesian saying the total changed from Rp102.500 to Rp103.500, the new line items, and an unchecked box to accept the new total; the pay button is disabled.',
+    darkAlt: 'The same changed-total notice in dark mode: old and new totals, an unchecked box to accept Rp103.500, and a disabled pay button.',
+    caption: 'The total changed after review. Pay stays disabled until the customer accepts the new total.',
+  },
+];
+const initial = 'unknown';
+---
+
+<section id="states" class="fup-states not-content" aria-label="Payment states">
+  <fieldset class="fup-states-control">
+    <legend class="fup-states-legend">Show the screen for a payment that is</legend>
+    {
+      states.map((s) => (
+        <label class="fup-states-option">
+          <input type="radio" name="fup-state" value={s.id} checked={s.id === initial} />
+          <span>{s.label}</span>
+        </label>
+      ))
+    }
+  </fieldset>
+  <div class="fup-states-stage">
+    {
+      states.map((s) => (
+        <figure class="fup-states-shot" data-state={s.id} data-initial={s.id === initial ? '' : undefined}>
+          <img
+            class="fup-only-light"
+            src={s.light.src}
+            width={s.light.width}
+            height={s.light.height}
+            alt={s.alt}
+            loading={s.id === initial ? 'eager' : 'lazy'}
+            fetchpriority={s.id === initial ? 'high' : 'auto'}
+            decoding="async"
+          />
+          <img
+            class="fup-only-dark"
+            src={s.dark.src}
+            width={s.dark.width}
+            height={s.dark.height}
+            alt={s.darkAlt}
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>{s.caption}</figcaption>
+        </figure>
+      ))
+    }
+  </div>
+  <p class="fup-states-note">Real Flutter output from the example app on Android.</p>
+</section>
+
+<style>
+  .fup-states {
+    width: 100%;
+    max-width: 22.5rem;
+    justify-self: center;
+  }
+  /* A ruled segmented control: one outline, rules between options, the
+     selected option filled with ink. */
+  .fup-states-control {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0 0 1rem;
+    padding: 0;
+    border: 1px solid var(--fup-border);
+    border-radius: var(--fup-radius-control);
+    min-inline-size: 0;
+  }
+  .fup-states-legend {
+    float: left;
+    grid-column: 1 / -1;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: var(--sl-text-xs);
+    color: var(--fup-muted);
+    border-bottom: 1px solid var(--fup-rule);
+  }
+  .fup-states-option {
+    position: relative;
+    display: flex;
+    min-width: 0;
+  }
+  .fup-states-option + .fup-states-option {
+    border-inline-start: 1px solid var(--fup-rule);
+  }
+  .fup-states-option input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .fup-states-option span {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.25rem 0.5rem;
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--fup-muted);
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+  .fup-states-option input:checked + span {
+    background: var(--fup-ink);
+    color: var(--fup-surface);
+  }
+  /* The floated legend is the first grid item, so options are children 2–5. */
+  .fup-states-option:nth-child(2) input:checked + span {
+    border-end-start-radius: calc(var(--fup-radius-control) - 1px);
+  }
+  .fup-states-option:nth-child(5) input:checked + span {
+    border-end-end-radius: calc(var(--fup-radius-control) - 1px);
+  }
+  .fup-states-option input:focus-visible + span {
+    outline: 2px solid var(--fup-ink);
+    outline-offset: 2px;
+    position: relative;
+    z-index: 1;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .fup-states-option input:not(:checked):hover + span {
+      background: var(--fup-surface-muted);
+      color: var(--fup-ink);
+    }
+  }
+
+  /* Every state occupies the same cell; only the selected one is visible. */
+  .fup-states-stage {
+    display: grid;
+  }
+  .fup-states-shot {
+    grid-area: 1 / 1;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 150ms ease-out,
+      visibility 0s linear 150ms;
+  }
+  /* Without :has() support the default state stays visible. */
+  .fup-states-shot[data-initial] {
+    opacity: 1;
+    visibility: visible;
+  }
+  .fup-states:has(input:checked) .fup-states-shot {
+    opacity: 0;
+    visibility: hidden;
+  }
+  .fup-states:has(input[value='success']:checked) [data-state='success'],
+  .fup-states:has(input[value='pending']:checked) [data-state='pending'],
+  .fup-states:has(input[value='unknown']:checked) [data-state='unknown'],
+  .fup-states:has(input[value='changed']:checked) [data-state='changed'] {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 150ms ease-out,
+      visibility 0s;
+  }
+  .fup-states-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--fup-rule);
+    border-radius: var(--fup-radius-box);
+    background: var(--fup-surface-muted);
+  }
+  .fup-states-shot figcaption {
+    margin-top: 0.75rem;
+    font-size: var(--sl-text-sm);
+    line-height: 1.45;
+    color: var(--fup-ink);
+    text-wrap: pretty;
+  }
+  .fup-states-note {
+    margin: 0.5rem 0 0;
+    font-size: var(--sl-text-xs);
+    color: var(--fup-muted);
+  }
+
+  /* Narrow phones: two rows of two, so "Changed total" keeps one line. */
+  @media (max-width: 24rem) {
+    .fup-states-control {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .fup-states-option:nth-child(4) {
+      border-inline-start: 0;
+    }
+    .fup-states-option:nth-child(n + 4) {
+      border-top: 1px solid var(--fup-rule);
+    }
+    .fup-states-option:nth-child(2) input:checked + span {
+      border-radius: 0;
+    }
+    .fup-states-option:nth-child(4) input:checked + span {
+      border-end-start-radius: calc(var(--fup-radius-control) - 1px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fup-states-option span,
+    .fup-states-shot,
+    .fup-states:has(input:checked) .fup-states-shot {
+      transition: none !important;
+    }
+  }
+</style>

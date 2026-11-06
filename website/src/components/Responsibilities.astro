@@ -1,0 +1,143 @@
+---
+// Homepage only (D111): who decides what, as a two-column comparison. A real
+// table (row headers name the concern) on wide screens; on phones each concern
+// becomes a block with the two answers labeled and stacked, so nothing is
+// squeezed into narrow columns at 320 px.
+const rows = [
+  {
+    concern: 'Price, fees, limits and quote expiry',
+    kit: 'Renders the quote you pass. Asks the customer to approve again when the total changes.',
+    host: 'Calculates prices, fees and limits, and decides when a quote expires.',
+  },
+  {
+    concern: 'PIN, OTP or biometric challenge',
+    kit: 'Shows the challenge state. Never receives the secret.',
+    host: 'Runs the challenge through your auth SDK.',
+  },
+  {
+    concern: 'Payment status, idempotency and refunds',
+    kit: 'Renders the snapshots you pass and rejects stale ones. Never infers success.',
+    host: 'Creates and settles payments with your provider, and enforces idempotency.',
+  },
+  {
+    concern: 'Polling and recovery',
+    kit: 'Reports what the customer tapped through callbacks. Widgets never poll.',
+    host: 'Decides when to check status, retry or recover.',
+  },
+  {
+    concern: 'KYC decision and document checks',
+    kit: 'Shows capture, progress, structured errors and the result.',
+    host: 'Validates documents and makes the decision.',
+  },
+];
+---
+
+<div class="fup-split not-content">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col"><span class="fup-split-hidden">Concern</span></th>
+        <th scope="col">Rakit UI does</th>
+        <th scope="col">Your backend does</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((r) => (
+          <tr>
+            <th scope="row">{r.concern}</th>
+            <td data-label="Rakit UI does">{r.kit}</td>
+            <td data-label="Your backend does">{r.host}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .fup-split {
+    margin-top: 1.5rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: var(--sl-text-sm);
+    line-height: 1.5;
+  }
+  th,
+  td {
+    text-align: start;
+    vertical-align: top;
+    padding: 0.875rem 1.25rem 0.875rem 0;
+    border-bottom: 1px solid var(--fup-rule);
+  }
+  thead th {
+    padding-block: 0 0.625rem;
+    font-size: var(--sl-text-base);
+    font-weight: 600;
+    color: var(--fup-ink);
+    border-bottom: 2px solid var(--fup-ink);
+  }
+  thead th:first-child {
+    width: 28%;
+    border-bottom-color: var(--fup-rule);
+  }
+  tbody th {
+    font-weight: 600;
+    color: var(--fup-muted);
+  }
+  td {
+    color: var(--sl-color-gray-2);
+  }
+  .fup-split-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  /* Phones: one block per concern, the two answers labeled and stacked. */
+  @media (max-width: 40rem) {
+    table,
+    tbody,
+    tr,
+    th,
+    td {
+      display: block;
+    }
+    thead {
+      display: none;
+    }
+    tr {
+      padding-block: 1rem;
+      border-bottom: 1px solid var(--fup-rule);
+    }
+    tr:first-child {
+      border-top: 2px solid var(--fup-ink);
+    }
+    th,
+    td {
+      border: 0;
+      padding: 0;
+    }
+    tbody th {
+      color: var(--fup-ink);
+      margin-bottom: 0.5rem;
+    }
+    td + td {
+      margin-top: 0.5rem;
+    }
+    td::before {
+      content: attr(data-label);
+      display: block;
+      font-size: var(--sl-text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--fup-muted);
+    }
+  }
+</style>

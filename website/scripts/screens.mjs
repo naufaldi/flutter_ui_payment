@@ -370,6 +370,7 @@ const screens = {
   android_receipt_dark: 'Receipt, dark, Indonesian',
   android_authorize_light: 'Host authorization, Indonesian',
   android_requote_light: 'Changed total needs re-approval, Indonesian',
+  android_requote_dark: 'Changed total needs re-approval, dark, Indonesian',
   android_kit_checkout: 'Gallery: checkout components, Indonesian',
   android_kit_checkout_dark: 'Gallery: checkout components, dark',
   android_kit_checkout_lumen: 'Gallery: checkout in the Lumen brand',
