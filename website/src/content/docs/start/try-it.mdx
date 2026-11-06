@@ -1,0 +1,50 @@
+---
+title: Try it
+description: Run the checkout recovery demo, try Rakit UI in a fresh Flutter app, and send feedback on GitHub.
+---
+
+Rakit UI 0.1.0 is new. This page helps you try it in under an hour and tell us what got in the way. Everything here uses synthetic data and a fake host. No real money moves, and nothing needs an account, a payment provider or network access.
+
+## 1. Run the recovery demo
+
+Open an Android emulator or an iOS Simulator, then:
+
+```sh
+git clone https://github.com/naufaldi/flutter_ui_payment.git
+cd flutter_ui_payment/example
+flutter pub get
+flutter run -t lib/checkout_block_demo.dart
+```
+
+1. Pay the total on the review screen.
+2. The default scenario loses the response. No receipt appears, and the screen says not to pay again.
+3. Tap **Cek status**. The fake host confirms the same attempt, and only then does the receipt appear.
+
+The [Checkout and recovery](/blocks/checkout-recovery/) page explains the other demo scenarios and has the full source. Run `flutter run` in the same folder for the complete example app with its Demo, Scenarios and Gallery tabs.
+
+## 2. Try it in a fresh app
+
+Our target is that a Flutter developer can go from an empty app to a rendered checkout in 30 minutes. We have not measured this with outside developers yet. Your timing tells us whether it holds.
+
+```sh
+flutter create rakit_trial
+cd rakit_trial
+flutter pub add rakit_ui
+flutter pub add flutter_localizations --sdk=flutter
+```
+
+Replace `lib/main.dart` with the complete file in [Quick start, step 2](/start/quick-start/#2-localization-and-theme), then run `flutter run`. Continue with the later Quick start steps if you want to go as far as status and receipt. [Installation](/start/installation/) covers requirements and local path or git dependencies.
+
+The widgets only display what your app gives them. Your app and backend still own pricing, authorization, payment status, idempotency and KYC decisions. Read [Host-owned decisions](/concepts/host-owned/) before you connect anything real.
+
+## 3. Send feedback
+
+[Open a GitHub issue](https://github.com/naufaldi/flutter_ui_payment/issues/new) and answer what you can:
+
+- **Version:** Rakit UI version, and the output of `flutter --version`.
+- **Platform:** Android or iOS, emulator, simulator or device, and the OS version.
+- **Time:** about how long the demo and the fresh-app trial took.
+- **Blocker:** the first step that failed or confused you, with the error text.
+- **Host boundary:** was it clear which parts your app and backend must own? What was missing?
+
+Do not include secrets, API keys, real payment data or real identity documents in an issue. Redact logs and screenshots before you post them.

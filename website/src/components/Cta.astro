@@ -1,0 +1,66 @@
+---
+// Homepage only: the closing call to action. One primary button and one
+// secondary text link; the shared button styles live in hairline.css.
+interface Props {
+  title: string;
+  primary: { text: string; link: string };
+  secondary?: { text: string; link: string };
+}
+const { title, primary, secondary } = Astro.props;
+---
+
+<section class="fup-cta not-content" aria-labelledby="fup-cta-title">
+  <h2 id="fup-cta-title">{title}</h2>
+  <div class="fup-cta-body"><slot /></div>
+  <div class="fup-cta-actions">
+    <a class="fup-btn fup-btn-primary" href={primary.link}>{primary.text}</a>
+    {secondary && <a class="fup-cta-link" href={secondary.link}>{secondary.text}</a>}
+  </div>
+</section>
+
+<style>
+  .fup-cta {
+    margin-top: 4rem;
+    padding: 2.5rem 0 1rem;
+    border-top: 2px solid var(--fup-ink);
+  }
+  h2 {
+    margin: 0;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--fup-ink);
+    text-wrap: balance;
+  }
+  .fup-cta-body {
+    margin-top: 0.75rem;
+    max-width: 40rem;
+    color: var(--sl-color-gray-2);
+    line-height: 1.6;
+  }
+  .fup-cta-body > :global(*) {
+    margin: 0;
+  }
+  .fup-cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .fup-cta-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    color: var(--fup-ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--fup-border);
+    text-underline-offset: 0.2em;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .fup-cta-link:hover {
+      text-decoration-color: currentColor;
+    }
+  }
+</style>

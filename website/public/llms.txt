@@ -1,26 +1,53 @@
 # Rakit UI
 
-> Composable Flutter widgets for checkout, host-owned authorization, payment status, receipts and optional KYC. The widgets render structured data from the host app and report intent through callbacks. Version 0.1.0: install with flutter pub add rakit_ui from pub.dev. Targets iOS and Android phones and tablets; the web build is a docs preview only.
+> Rakit UI (Dart package `rakit_ui`, version 0.1.0, MIT) is a set of composable Flutter widgets for checkout, host-owned authorization, payment status, receipts and optional KYC. The widgets render structured data from the host app and report intent through callbacks. The package is UI only: it moves no money and processes no payments. It targets iOS and Android phones and tablets; the web build is a docs preview only.
+
+Install and import:
+
+```sh
+flutter pub add rakit_ui
+```
+
+```dart
+import 'package:rakit_ui/rakit_ui.dart';
+```
+
+Requires Dart ^3.12.0 and Flutter >=3.44.0 (tested with Flutter 3.44.6 stable). Register `PaymentLocalizations.delegate` together with the Material and Cupertino delegates from `flutter_localizations`. English and Indonesian strings are included.
 
 Rules the kit keeps:
 - The host owns network, clipboard, URL launching, camera, routing, auth, pricing, KYC decisions, payment status, idempotency and polling. The kit makes no network or platform-channel calls. It holds no secrets and has no dependency other than the Flutter SDK.
 - An unknown or timed-out payment is never shown as failed or paid. Only host snapshots change the status.
-- Styling order: PaymentTheme / PaymentType / PaymentMotion, then a family theme (PaymentButtonTheme, PaymentFieldTheme), then a host preset, then a one-off `style`. Fields have no instance `style`. Do not invent variants, preset APIs or API names; check the component page's Props table.
+- Styling order: PaymentTheme / PaymentType / PaymentMotion, then a family theme (PaymentButtonTheme, PaymentFieldTheme), then a host preset, then a one-off `style`. Fields have no instance `style`. Do not invent variants, preset APIs or API names; check the component page's Props table or the generated API data.
 - Touch targets are at least 48 dp, and layouts work at 200% text on 320 dp. With reduced motion on, the kit runs no animation.
 
 ## Start
 - [Introduction](https://flutter-ui-payment.netlify.app/start/introduction/): what the kit owns and what the host keeps
-- [Installation](https://flutter-ui-payment.netlify.app/start/installation/): git or path dependency, SDK requirements
+- [Installation](https://flutter-ui-payment.netlify.app/start/installation/): pub.dev install, SDK requirements, git or path dependency for development
 - [Quick start](https://flutter-ui-payment.netlify.app/start/quick-start/): a complete lib/main.dart, then fragments from quote to receipt
+- [Try it](https://flutter-ui-payment.netlify.app/start/try-it/): run the checkout recovery demo or try the kit in a fresh app
 - [Host-owned decisions](https://flutter-ui-payment.netlify.app/concepts/host-owned/)
 - [Payment attempt and status](https://flutter-ui-payment.netlify.app/concepts/payment-attempt/)
 - [Theming](https://flutter-ui-payment.netlify.app/concepts/theming/)
+- [Accessibility](https://flutter-ui-payment.netlify.app/concepts/accessibility/)
 
 ## API
 - [Component catalog](https://flutter-ui-payment.netlify.app/components/): one page per component, with a Props table
 - [Blocks](https://flutter-ui-payment.netlify.app/blocks/): complete host screens with copyable source
+- [Patterns](https://flutter-ui-payment.netlify.app/patterns/checkout/): checkout, status and receipt, history, verification (KYC)
+- [Dart API reference on pub.dev](https://pub.dev/documentation/rakit_ui/latest/)
 - [Public exports](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/rakit_ui.dart)
-- [Generated API data](https://github.com/naufaldi/flutter_ui_payment/blob/main/website/src/data/api.json): every exported class, constructor and parameter
+- [Generated API data (JSON)](https://raw.githubusercontent.com/naufaldi/flutter_ui_payment/main/website/src/data/api.json): every exported class, constructor and parameter, generated from the Dart source
+
+## Examples
+- [Example app](https://github.com/naufaldi/flutter_ui_payment/tree/main/example): the demos shown in the docs, with a fake host and synthetic data
+- [Checkout recovery demo](https://flutter-ui-payment.netlify.app/blocks/checkout-recovery/): a lost submit response recovered without offering a second payment
+
+## Reference
+- [Compatibility](https://flutter-ui-payment.netlify.app/reference/compatibility/): platform requirements and what has been run
+- [Changelog](https://flutter-ui-payment.netlify.app/reference/changelog/)
+- [Not in the kit](https://flutter-ui-payment.netlify.app/reference/not-in-the-kit/)
+- [pub.dev package page](https://pub.dev/packages/rakit_ui)
+- [Source on GitHub](https://github.com/naufaldi/flutter_ui_payment)
 
 ## Contributing
 - [AGENTS.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/AGENTS.md): workflow, checks and testing scope

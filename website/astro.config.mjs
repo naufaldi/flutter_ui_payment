@@ -46,16 +46,18 @@ export default defineConfig({
       },
       customCss: ['./src/styles/hairline.css'],
       // Starlight sets twitter:card to summary_large_image; give it a real,
-      // landscape docs capture so shared links show a preview (#234).
+      // landscape docs capture so shared links show a preview (#234). JPEG copy
+      // of the tablet checkout capture (pnpm og:image), since some preview
+      // crawlers skip WebP (#253).
       head: [
-        ['og:image', 'https://flutter-ui-payment.netlify.app/screens/android_tablet_checkout_en.webp'],
-        ['og:image:type', 'image/webp'],
+        ['og:image', 'https://flutter-ui-payment.netlify.app/og-image.jpg'],
+        ['og:image:type', 'image/jpeg'],
         ['og:image:width', '1280'],
         ['og:image:height', '776'],
         ['og:image:alt', ogAlt],
       ].map(([property, content]) => ({ tag: 'meta', attrs: { property, content } }))
         .concat([
-          ['twitter:image', 'https://flutter-ui-payment.netlify.app/screens/android_tablet_checkout_en.webp'],
+          ['twitter:image', 'https://flutter-ui-payment.netlify.app/og-image.jpg'],
           ['twitter:image:alt', ogAlt],
         ].map(([name, content]) => ({ tag: 'meta', attrs: { name, content } }))),
       components: {
@@ -81,6 +83,7 @@ export default defineConfig({
             { label: 'Introduction', slug: 'start/introduction' },
             { label: 'Installation', slug: 'start/installation' },
             { label: 'Quick start', slug: 'start/quick-start' },
+            { label: 'Try it', slug: 'start/try-it' },
           ],
         },
         {

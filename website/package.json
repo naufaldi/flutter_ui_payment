@@ -10,7 +10,8 @@
     "check:links": "node scripts/check-links.mjs",
     "check:snippets": "node scripts/gen-api.mjs && node scripts/check-snippets.mjs",
     "screens": "node scripts/screens.mjs",
-    "check:pages": "node scripts/check-pages.mjs"
+    "check:pages": "node scripts/check-pages.mjs",
+    "og:image": "node scripts/og-image.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.42.8",

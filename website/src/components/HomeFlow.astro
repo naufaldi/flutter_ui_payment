@@ -1,0 +1,98 @@
+---
+// Homepage only: the checkout recovery demo as three numbered steps, each a
+// real Android capture from the registry (light and dark pairs, lazy-loaded).
+import Screen from './Screen.astro';
+
+const steps = [
+  {
+    title: 'Pay once',
+    text: 'The customer reviews the item, the visible service fee and the method, then pays. The host starts one payment attempt.',
+    name: 'android_block_checkout_review',
+    dark: 'android_block_checkout_review_dark',
+    alt: 'Checkout review in Indonesian: merchant, item Rp100.000, service fee Rp2.500, wallet method and a pinned pay button.',
+  },
+  {
+    title: 'The response is lost',
+    text: 'No receipt and no pay-again button. The screen says “Don’t pay again” and offers one action: check status of the same attempt.',
+    name: 'android_block_checkout_unknown',
+    dark: 'android_block_checkout_unknown_dark',
+    alt: 'Unknown result in Indonesian: hatched amber band, "Hasil belum terkonfirmasi", Rp102.500, "Jangan bayar lagi.", reference DEMO-1 and one Cek status button.',
+  },
+  {
+    title: 'Confirmed, then the receipt',
+    text: 'The host confirms that same attempt. Only then does the matching receipt appear, with the same reference and total.',
+    name: 'android_block_checkout_receipt',
+    dark: 'android_block_checkout_receipt_dark',
+    alt: 'Receipt in Indonesian after host-confirmed success, with the matching reference, total, service fee and masked wallet method.',
+  },
+];
+---
+
+<ol class="fup-flow not-content">
+  {
+    steps.map((s, i) => (
+      <li class="fup-flow-step">
+        <p class="fup-flow-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
+        <h3>{s.title}</h3>
+        <p class="fup-flow-text">{s.text}</p>
+        <Screen name={s.name} dark={s.dark} alt={s.alt} caption="" />
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .fup-flow {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+  .fup-flow-step {
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 2px solid var(--fup-ink);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  /* The middle step is the point of the kit: mark it with the warning tone. */
+  .fup-flow-step:nth-child(2) {
+    border-top-color: var(--fup-warning);
+  }
+  .fup-flow-num {
+    margin: 0;
+    font-family: var(--__sl-font-mono);
+    font-size: var(--sl-text-xs);
+    color: var(--fup-muted);
+  }
+  h3 {
+    margin: 0;
+    font-size: var(--sl-text-h4);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--fup-ink);
+  }
+  .fup-flow-text {
+    margin: 0 0 0.75rem;
+    max-width: 34ch;
+    color: var(--sl-color-gray-2);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+  .fup-flow-step :global(.fup-screen) {
+    margin-top: auto;
+    max-width: 20rem;
+  }
+  @media (max-width: 50rem) {
+    .fup-flow {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.5rem;
+    }
+    .fup-flow-step :global(.fup-screen) {
+      max-width: 18rem;
+    }
+  }
+</style>

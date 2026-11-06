@@ -1,33 +1,96 @@
 ---
 title: Rakit UI
-description: Flutter components for checkout, payment status, receipts and optional KYC, including recovery when a payment result is unknown.
+description: Rakit UI is an MIT-licensed Flutter UI kit for checkout, payment status, receipts and optional KYC. When a payment result is unknown, it offers a check-status action for the host to handle.
 template: splash
 hero:
-  title: 'Flutter payment UI <span>for checkout and recovery.</span>'
-  tagline: 'Build checkout, payment status, receipts and optional KYC with Flutter widgets. Your app and backend handle pricing, authorization and verification. The kit displays their results.'
+  title: 'Flutter UI for checkout, payment status and receipts. <span>Built for the result you don’t know yet.</span>'
+  tagline: 'Composable widgets and copyable blocks for checkout, status, receipts and optional KYC. Your app and backend decide prices and outcomes. Rakit UI shows them clearly, in English or Indonesian, light or dark.'
   actions:
-    - text: Get started
+    - text: Build your checkout
       link: /start/quick-start/
-    - text: Components
-      link: /components/
+    - text: See the recovery demo
+      link: /blocks/checkout-recovery/
 pagefind: true
+# Homepage-only head entries. Starlight merges these with its defaults by key,
+# so each replaces the default tag instead of adding a second one (#253).
+head:
+  - tag: title
+    content: 'Rakit UI: Flutter UI kit for checkout, payment status and receipts'
+  - tag: meta
+    attrs:
+      property: og:title
+      content: 'Rakit UI: Flutter UI kit for checkout, payment status and receipts'
+  - tag: meta
+    attrs:
+      property: og:type
+      content: website
+  - tag: script
+    attrs:
+      type: application/ld+json
+    content: |
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://flutter-ui-payment.netlify.app/#website",
+            "name": "Rakit UI",
+            "url": "https://flutter-ui-payment.netlify.app/",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "@id": "https://flutter-ui-payment.netlify.app/#package",
+            "name": "rakit_ui",
+            "alternateName": "Rakit UI",
+            "description": "Flutter UI widgets for checkout, payment status, receipts and optional KYC on iOS and Android phones and tablets. The widgets render data from the host app; the host owns network calls, pricing and payment results, and the package moves no money.",
+            "url": "https://flutter-ui-payment.netlify.app/",
+            "codeRepository": "https://github.com/naufaldi/flutter_ui_payment",
+            "sameAs": ["https://pub.dev/packages/rakit_ui"],
+            "programmingLanguage": "Dart",
+            "runtimePlatform": "Flutter",
+            "version": "0.1.0",
+            "license": "https://opensource.org/license/mit",
+            "keywords": ["Flutter", "checkout UI", "payment status", "receipts", "KYC", "design system"],
+            "isPartOf": { "@id": "https://flutter-ui-payment.netlify.app/#website" }
+          }
+        ]
+      }
 ---
 
-import { Code } from '@astrojs/starlight/components';
 import Screen from '../../components/Screen.astro';
 import Screens from '../../components/Screens.astro';
+import HomeFlow from '../../components/HomeFlow.astro';
+import Points from '../../components/Points.astro';
+import Point from '../../components/Point.astro';
+import Cta from '../../components/Cta.astro';
 
-## The hard states are the product
+## One payment, a lost response, no second payment offered
 
-Payment screens need to handle missing responses, late status updates and changed totals. The kit provides these behaviors:
+This is the example app's checkout demo. The submit reaches the server, the response never comes back, and the screen recovers without offering a second payment.
 
-**The submit timed out after the server accepted it.** The screen says "Don't pay again." first, shows a hatched band that never looks like an ordinary pending state, and offers one action: check status, using the same attempt reference.
+<HomeFlow />
 
-**An older status arrives after a newer one.** `PaymentAttempt.reconcile` rejects stale revisions, another attempt's data, a mismatched server reference, and a success that turns into anything else without an official provider correction.
+The demo runs on an Android emulator or an iOS Simulator with synthetic data and a fake host. No money moves and no network calls are made. [Walk through the demo](/blocks/checkout-recovery/) or [run it yourself](/start/try-it/).
 
-**The total changed after the customer chose a method.** `PaymentConfirmation` shows the old and new total and keeps the confirm action unreachable until the customer accepts the new terms.
+## The hard states are already designed
 
-**The payment is still pending or unknown.** The UI offers no pay-again action. A new attempt is offered only when the host allows it and the previous attempt is final and not a success. Your backend must still enforce idempotency.
+Happy-path checkout screens are easy. These are the cases that cost money and support time. The kit has a designed answer for each:
+
+<Points>
+  <Point title="The submit timed out after the server accepted it">
+    The screen leads with “Don’t pay again.”, shows a hatched band that never looks like ordinary pending, and offers one action: check status, using the same attempt reference.
+  </Point>
+  <Point title="An older status arrives after a newer one">
+    `PaymentAttempt.reconcile` rejects stale revisions, another attempt’s data, a mismatched server reference, and a success that turns into anything else without an official provider correction.
+  </Point>
+  <Point title="The total changed after the customer chose a method">
+    `PaymentConfirmation` shows the old and new total and keeps confirm unreachable until the customer accepts the new terms.
+  </Point>
+  <Point title="The payment is still pending or unknown">
+    No pay-again action. A new attempt is offered only when the host allows it and the previous attempt is final and not a success. Your backend still enforces idempotency.
+  </Point>
+</Points>
 
 ```dart
 // Every status response goes through reconcile. Rejected snapshots leave the
@@ -43,16 +106,41 @@ PaymentStatusView(
 );
 ```
 
+[How the payment attempt works](/concepts/payment-attempt/)
+
+## Built to fit your app, not replace it
+
+<Points>
+  <Point title="Compose what you need">
+    Use single [components](/components/), follow the [patterns](/patterns/checkout/), or copy a whole [block](/blocks/) such as checkout and recovery, then wire your own callbacks.
+  </Point>
+  <Point title="Your brand, light and dark">
+    `PaymentTheme` is a `ThemeExtension`. Without it the kit follows your `ColorScheme`; with it you set colors, radius and amount style for light and dark. [Theming](/concepts/theming/)
+  </Point>
+  <Point title="Your backend stays in charge">
+    Widgets render the data you pass and report what the customer did through callbacks. No network calls, no payment SDK, no router or state manager required.
+  </Point>
+  <Point title="English and Indonesian included">
+    Strings, money separators and dates are localized for `en` and `id`. Register `PaymentLocalizations.delegate` and pick the locale. [Localization](/foundations/localization/)
+  </Point>
+  <Point title="Accessibility is documented, not implied">
+    Status never relies on color alone, focus is visible, and the captured checkout and status screens reflow at 200% text with the key action still reachable. [Accessibility](/concepts/accessibility/)
+  </Point>
+  <Point title="Optional KYC, same rules">
+    Identity capture, review and onboarding screens show progress and structured errors. The decision and document validation stay with your backend. [KYC capture](/patterns/kyc-capture/)
+  </Point>
+</Points>
+
 <Screens>
   <Screen name="android_requote_light" alt="Checkout notice in Indonesian saying the total changed, with old and new totals and a checkbox to accept the new total before confirming." caption="A changed total needs re-approval (Indonesian)" />
   <Screen name="android_status_va_pending_light" dark="android_status_va_pending_dark" alt="Pending virtual-account payment in Indonesian: solid amber band, amount, a monospace account number with a copy button, a countdown, folded steps and a Check status button." caption="Virtual account waiting for transfer (Indonesian)" />
+  <Screen name="android_refined_kyc_review_light" dark="android_refined_kyc_review_dark" alt="KYC review screen in English summarizing the captured identity details before the customer submits them." caption="Optional KYC review (English)" />
   <Screen name="android_refined_status_unknown_light_200" alt="The unknown-outcome screen in Indonesian at 200% text size; the Cek status button is still on the first screen." caption="Unknown outcome at 200% text; the action stays reachable (Indonesian)" />
-  <Screen name="android_receipt_light" dark="android_receipt_dark" alt="Receipt in Indonesian with a green success band, merchant, amount, date, line items, total, masked method and pinned Selesai and Lihat detail actions." caption="Receipt, shared from an allowlist (Indonesian)" />
 </Screens>
 
 ## Who decides what
 
-The widgets render data the host gives them and report what the customer did through callbacks. They make no network calls and need no router, state manager, camera or payment SDK.
+The kit never decides a price, a payment result or an identity check. It shows what your host decided.
 
 | Concern | Owner | What the kit does |
 | --- | --- | --- |
@@ -64,8 +152,47 @@ The widgets render data the host gives them and report what the customer did thr
 
 The full table, including input and consent, is on [Host-owned decisions](/concepts/host-owned/).
 
-## Status
+## Proof you can check yourself
 
-Install version `0.1.0` from [pub.dev](https://pub.dev/packages/rakit_ui). The source is on [GitHub](https://github.com/naufaldi/flutter_ui_payment). Documentation captures use Flutter 3.44.6 on the 360×640 dp Android API 37 phone; [Compatibility](/reference/compatibility/) lists exactly what was run and what was not. Targets iOS and Android, phones and tablets; the web build is a documentation preview. MIT licensed.
+Rakit UI is new. We have no verified production testimonials yet, so here is what you can inspect today:
 
-[Install it](/start/installation/) · [Walk through a checkout](/start/quick-start/) · [Browse components](/components/)
+<Points>
+  <Point title="Open source, MIT licensed">
+    Every widget, block and test is on [GitHub](https://github.com/naufaldi/flutter_ui_payment). Read the code before you depend on it.
+  </Point>
+  <Point title="One dependency: the Flutter SDK">
+    The package has no network, analytics, camera or payment SDK dependencies. [Compatibility](/reference/compatibility/#package)
+  </Point>
+  <Point title="A demo you can run locally">
+    The recovery demo uses synthetic data and a fake host, with scenarios such as a lost response, pending then offline, and a receipt that fails to load.
+  </Point>
+  <Point title="Verification, with its limits stated">
+    Documentation captures come from Android API 37 phone and tablet emulators. The flow test passed earlier on an iPhone 16 simulator. There are no iOS performance numbers. [What was run](/reference/compatibility/)
+  </Point>
+</Points>
+
+**Be one of the first teams to try it.** Build a checkout in a fresh Flutter app, then tell us what blocked you or what was missing. [Try it and send feedback](/start/try-it/)
+
+## Questions
+
+<Points variant="faq">
+  <Point title="Does Rakit UI process payments?">
+    No. It is UI only. Your backend and payment provider create, authorize and settle payments, and enforce idempotency. The kit displays the snapshots they return.
+  </Point>
+  <Point title="Which payment provider or backend does it need?">
+    Any. You map your provider’s responses to the kit’s models, such as `PaymentAttempt` snapshots, in your own adapter. [Host-owned decisions](/concepts/host-owned/)
+  </Point>
+  <Point title="Which platforms are supported?">
+    iOS (iPhone, iPad) and Android (phones, tablets). Flutter web is used only to preview the docs; desktop is out of scope. [Compatibility](/reference/compatibility/)
+  </Point>
+  <Point title="What does it cost?">
+    Nothing. The package is MIT licensed and free to use in commercial apps. See the [licence](https://github.com/naufaldi/flutter_ui_payment/blob/main/LICENSE).
+  </Point>
+  <Point title="Is it ready for production?">
+    It is an early 0.1.0 release with no known production users yet. Under Dart’s versioning convention, a 0.x minor release can include breaking changes. Review the code, test it with your backend, and [report what you find](https://github.com/naufaldi/flutter_ui_payment/issues/new).
+  </Point>
+</Points>
+
+<Cta title="Build your first checkout" primary={{ text: 'Build your checkout', link: '/start/quick-start/' }} secondary={{ text: 'Or run the recovery demo first', link: '/blocks/checkout-recovery/' }}>
+  Install `rakit_ui`, add the theme and localization, and render a checkout from your own data.
+</Cta>
