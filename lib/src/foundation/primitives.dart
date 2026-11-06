@@ -528,7 +528,10 @@ class _PaymentButtonState extends State<PaymentButton> {
             ),
             text: text,
           );
-    final child = Stack(
+    // A disabled reason from the surrounding view merges into the
+    // button's own semantics node as its hint (D119).
+    final hint = enabled ? null : DisabledButtonHint.of(context);
+    final Widget stack = Stack(
       alignment: Alignment.center,
       children: [
         // The label keeps its size while busy so the layout does not jump;
@@ -557,12 +560,43 @@ class _PaymentButtonState extends State<PaymentButton> {
         ),
       ],
     );
+    final child = hint == null ? stack : Semantics(hint: hint, child: stack);
     final radius = appearance.borderRadius!;
     final shape = RoundedRectangleBorder(borderRadius: radius);
     final minimumSize = Size(
       widget.width == PaymentWidth.hug ? 112 : 48,
       metrics.height,
     );
+    // The kit owns the size scale (D118): pin every size property a host
+    // Material button theme could otherwise fill in, so a host `fixedSize`,
+    // `maximumSize` or `padding` cannot change the 36/48/56 dp heights or the
+    // label inset. Infinite fixed and maximum sizes leave the button
+    // unconstrained; medium uses the variant's own Material default padding.
+    EdgeInsetsGeometry paddingFor({bool quiet = false}) {
+      if (metrics.padding case final padding?) return padding;
+      // Mirrors the SDK defaults for FilledButton/OutlinedButton and
+      // TextButton (its private _scaledPadding), so medium looks as before.
+      final material = Theme.of(context);
+      final m3 = material.useMaterial3;
+      final scale =
+          MediaQuery.textScalerOf(
+            context,
+          ).scale(material.textTheme.labelLarge?.fontSize ?? 14) /
+          14;
+      final inset = m3 ? 24.0 : 16.0;
+      return ButtonStyleButton.scaledPadding(
+        quiet
+            ? (m3
+                  ? const EdgeInsets.symmetric(horizontal: 12, vertical: 8)
+                  : const EdgeInsets.all(8))
+            : EdgeInsets.symmetric(horizontal: inset),
+        EdgeInsets.symmetric(horizontal: quiet ? 8 : inset / 2),
+        EdgeInsets.symmetric(horizontal: quiet ? 4 : inset / 4),
+        scale,
+      );
+    }
+
+    const unconstrained = Size.infinite;
     // The heading role carries the host font; a const style would not.
     final onPressed = enabled ? _handle : null;
     final button = switch (widget.variant) {
@@ -577,7 +611,9 @@ class _PaymentButtonState extends State<PaymentButton> {
             disabledBackgroundColor: theme.surfaceMuted,
             disabledForegroundColor: theme.disabled,
             minimumSize: minimumSize,
-            padding: metrics.padding,
+            fixedSize: unconstrained,
+            maximumSize: unconstrained,
+            padding: paddingFor(),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             visualDensity: VisualDensity.standard,
             shape: shape,
@@ -599,7 +635,9 @@ class _PaymentButtonState extends State<PaymentButton> {
             disabledBackgroundColor: theme.surfaceMuted,
             disabledForegroundColor: theme.disabled,
             minimumSize: minimumSize,
-            padding: metrics.padding,
+            fixedSize: unconstrained,
+            maximumSize: unconstrained,
+            padding: paddingFor(),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             visualDensity: VisualDensity.standard,
             shape: shape,
@@ -619,7 +657,9 @@ class _PaymentButtonState extends State<PaymentButton> {
             disabledBackgroundColor: theme.surfaceMuted,
             disabledForegroundColor: theme.disabled,
             minimumSize: minimumSize,
-            padding: metrics.padding,
+            fixedSize: unconstrained,
+            maximumSize: unconstrained,
+            padding: paddingFor(),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             visualDensity: VisualDensity.standard,
             shape: shape,
@@ -649,7 +689,9 @@ class _PaymentButtonState extends State<PaymentButton> {
             foregroundColor: appearance.foregroundColor,
             disabledForegroundColor: theme.disabled,
             minimumSize: onEdge ? Size(48, metrics.height) : minimumSize,
-            padding: onEdge ? edgePadding : metrics.padding,
+            fixedSize: unconstrained,
+            maximumSize: unconstrained,
+            padding: onEdge ? edgePadding : paddingFor(quiet: true),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             visualDensity: VisualDensity.standard,
             shape: shape,

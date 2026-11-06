@@ -16,7 +16,7 @@ Buttons also support a dedicated `PaymentButtonTheme` and per-instance `PaymentB
 
 Fields (text, search, text area, select, date, date range and currency) have a dedicated `PaymentFieldTheme` for fill, resting outline, corners and input typography, with no per-field style. See [Text field customization](/components/text-field/#customization).
 
-Material component themes are partially inherited. Primary/destructive `PaymentButton`s set background/foreground colors (including disabled colors), shape, text style, minimum size, tap-target size and visual density, plus padding for small/large sizes. They leave properties such as `fixedSize` unset, so a host `filledButtonTheme` can make a small button 72 dp tall instead of its default 36 dp visual height.
+Material component themes are partially inherited. Primary/destructive `PaymentButton`s set background/foreground colors (including disabled colors), shape and text style. The kit owns every button size property (D118): minimum, fixed and maximum size, padding, tap-target size and visual density, so a host `filledButtonTheme` `fixedSize` cannot stretch a small button past its 36 dp visual height. Properties the kit leaves unset, such as overlay color, still inherit.
 
 Fields set resting, focus, error and disabled borders, label/hint styles and helper/error line limits; field callers supply content padding. Without `PaymentFieldTheme.fillColor`, decoration `filled` and `fillColor` remain unset, so host `inputDecorationTheme` fill settings can show through.
 

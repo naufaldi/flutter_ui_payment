@@ -203,12 +203,19 @@ const links = primaryLinks.map((link) => ({
   }
   .fup-menu-prefs {
     display: flex;
+    /* At 200% text the theme select drops below the social links. */
+    flex-wrap: wrap;
     justify-content: space-between;
     padding-top: 0.5rem;
     border-top: 1px solid var(--fup-rule);
   }
   .fup-prefs {
     display: none;
+  }
+  .fup-menu-prefs :global(starlight-theme-select),
+  .fup-menu-prefs :global(select) {
+    min-width: 0;
+    max-width: 100%;
   }
   .fup-prefs .fup-social::after {
     content: '';

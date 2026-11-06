@@ -124,7 +124,8 @@ void main() {
           .style!;
       expect(style.padding?.resolve({}), switch (size) {
         PaymentSize.small => const EdgeInsets.symmetric(horizontal: 12),
-        PaymentSize.medium => null,
+        // Pinned to Material's own default so host themes cannot change it.
+        PaymentSize.medium => const EdgeInsets.symmetric(horizontal: 24),
         PaymentSize.large => const EdgeInsets.symmetric(horizontal: 24),
       });
     }
