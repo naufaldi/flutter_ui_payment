@@ -25,24 +25,40 @@ On a phone the confirmation is a bottom sheet; on a wider window it is a centred
 
 ## Usage
 
-```dart
-// example/lib/screens/gallery_kit.dart
-showPaymentConfirmDialog(
-      context,
-      title: _t(
-        context,
-        'Sign out of all devices?',
-        'Keluar dari semua perangkat?',
+### Minimal
+
+Add the [published package](/start/installation/), then paste this complete example into `lib/main.dart`.
+
+```dart standalone
+import 'package:flutter/material.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+
+void main() => runApp(MaterialApp(
+  home: Scaffold(
+    appBar: AppBar(title: const Text('Example')),
+    body: Builder(builder: (context) => Padding(
+      padding: const EdgeInsets.all(16),
+      child: PaymentButton(
+        label: 'Archive note',
+        variant: PaymentButtonVariant.secondary,
+        onPressed: () async {
+          final confirmed = await showPaymentConfirmDialog(
+            context,
+            title: 'Archive this note?',
+            message: 'You can restore it later.',
+            confirmLabel: 'Archive',
+          );
+          if (!context.mounted || !confirmed) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Archive confirmed')),
+          );
+        },
       ),
-      message: _t(
-        context,
-        'You will need to sign in again on every device. Payments already sent are not affected.',
-        'Anda perlu masuk lagi di setiap perangkat. Pembayaran yang sudah dikirim tidak terpengaruh.',
-      ),
-      confirmLabel: _t(context, 'Sign out', 'Keluar'),
-      destructive: true,
-    );
+    )),
+  ),
+));
 ```
+
 
 ## Stripe → kit
 

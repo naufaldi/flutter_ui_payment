@@ -9,20 +9,7 @@ import Screens from '../../../components/Screens.astro';
 
 This walkthrough builds a checkout through to its receipt. Step 2 is a complete `lib/main.dart` you can run. From step 3, the snippets are fragments for your own screen. Names such as `host`, `serverQuote` and `previousQuote` stand for data and adapters you supply, including backend, authorization, clipboard and sharing operations.
 
-## Run the complete example first
-
-To see a finished checkout before writing any code, run the block demo from a clone of the repository. It uses synthetic data and a fake host, and opens on an Android emulator or an iOS Simulator:
-
-```sh
-git clone https://github.com/naufaldi/flutter_ui_payment.git
-cd flutter_ui_payment/example
-flutter pub get
-flutter run -t lib/checkout_block_demo.dart
-```
-
-Its source is on the [Checkout recovery block](/blocks/checkout-recovery/) page. Then build your own, step by step:
-
-The example app's `example/lib/screens/flow_screen.dart` and `example/lib/coordinator/demo_coordinator.dart` show the same composition in full, with a fake host.
+For selected controls in a branded app, start with the [existing-app guide](/start/existing-app/).
 
 ## 1. Add the dependency
 
@@ -428,3 +415,18 @@ Before connecting real payments, implement these operations in your app and back
 <Aside>
 Optional KYC composes the same way: `VerificationIntro`, `IdentityForm`, `DocumentUploadTile`, `VerificationReview` and `VerificationStatusView`. See [Verification (KYC)](/patterns/verification/).
 </Aside>
+
+## Optional: explore the repository example
+
+To see a finished checkout before writing any code, run the block demo from a clone of the repository. It uses synthetic data and a fake host, and opens on an Android emulator or an iOS Simulator:
+
+```sh
+git clone https://github.com/naufaldi/flutter_ui_payment.git
+cd flutter_ui_payment/example
+flutter pub get
+flutter run -t lib/checkout_block_demo.dart
+```
+
+Its source is on the [Checkout recovery block](/blocks/checkout-recovery/) page. Cloning is optional; the published-package steps above need no repository files.
+
+The example app's `example/lib/screens/flow_screen.dart` and `example/lib/coordinator/demo_coordinator.dart` show the same composition in full, with a fake host.

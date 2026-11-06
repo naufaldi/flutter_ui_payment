@@ -19,14 +19,36 @@ import HostOwns from '../../../components/HostOwns.astro';
 
 ## Usage
 
-```dart
-// example/lib/screens/gallery_selection.dart
-PaymentSwitch(
-              value: _sms,
-              onChanged: (v) => setState(() => _sms = v),
-              label: 'SMS receipts',
-            );
+### Minimal
+
+Add the [published package](/start/installation/), then paste this complete example into `lib/main.dart`.
+
+```dart standalone
+import 'package:flutter/material.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+
+void main() => runApp(const MaterialApp(home: SettingsPage()));
+
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  bool alerts = false;
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Example')),
+    body: PaymentSwitch(
+      label: 'Email alerts',
+      value: alerts,
+      onChanged: (value) => setState(() => alerts = value),
+    ),
+  );
+}
 ```
+
 
 ## Stripe → kit
 

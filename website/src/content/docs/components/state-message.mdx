@@ -21,17 +21,29 @@ import HostOwns from '../../../components/HostOwns.astro';
 
 ## Usage
 
-```dart
-// example/lib/screens/gallery_kit.dart
-StateMessage(
-            icon: Icons.bookmark_border,
-            title: t('No saved billers', 'Belum ada tagihan tersimpan'),
-            message: t(
-              'Save a biller after paying to find it here.',
-              'Simpan tagihan setelah membayar agar muncul di sini.',
-            ),
-          );
+### Minimal
+
+Add the [published package](/start/installation/), then paste this complete example into `lib/main.dart`.
+
+```dart standalone
+import 'package:flutter/material.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+
+void main() => runApp(MaterialApp(
+  home: Scaffold(
+    appBar: AppBar(title: const Text('Example')),
+    body: Builder(builder: (context) => Padding(
+      padding: const EdgeInsets.all(16),
+      child: const StateMessage(
+        icon: Icons.note_outlined,
+        title: 'No notes yet',
+        message: 'Notes you create will appear here.',
+      ),
+    )),
+  ),
+));
 ```
+
 
 ## Stripe → kit
 

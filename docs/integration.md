@@ -33,11 +33,7 @@ MaterialApp(
 );
 ```
 
-Without the extension, the kit derives tokens from your `ColorScheme`. The example's Hairline, Lumen and Soft themes live in `example/lib/themes.dart`.
-
-For a product look, add `PaymentButtonTheme` and `PaymentFieldTheme` to the app theme or to a feature's scoped `Theme`, keeping the parent's other extensions. Reuse a repeated look through a named host preset that takes `BuildContext`. `example/lib/compositions/host_checkout.dart` builds two checkout layouts from the same host data and callbacks.
-
-For a connected host example, copy `host_checkout.dart`, `host_payment_recovery.dart` and `host_checkout_journey.dart` from `example/lib/compositions/`. `HostCheckoutJourney` pins the invoice pay action and then renders the existing recovery/receipt composition from host callback results. Its gallery fixture demonstrates a lost submit response and pending/offline recovery without `DemoCoordinator`. The host persists the attempt before sending and supplies revalidated quotes, authoritative snapshots and matching receipt data; the screen keeps only mounted presentation state. The website's Checkout pattern explains callback ownership and session identity.
+Without the extension, the kit derives tokens from your `ColorScheme`. For a complete public-API brand bridge, see the [existing-app guide](https://flutter-ui-payment.netlify.app/start/existing-app/).
 
 ## 3. App shell
 
@@ -55,7 +51,7 @@ On phones and tablets, use `AdaptiveNavShell` for the app frame, or `NavSidebar`
 | One attempt per payment | `PaymentAttempt`, `reconcile()` | Stale, duplicate and other-attempt snapshots are rejected; unknown is not failure |
 | History | `TransactionRecord` list, query, filter | Unknown outcome is "in progress"; refunds stay separate |
 
-Follow `example/lib/coordinator/demo_coordinator.dart` for a single owner of this state, and `example/lib/adapters/fake_host.dart` for the backend contract the UI expects.
+Keep a single host owner for this state and map your backend responses into the public models.
 
 ## 5. Optional integrations
 
@@ -72,7 +68,22 @@ Create the controller in your state, pass it to `PaymentVideoPlayer`, and dispos
 
 **Feedback.** Use `showPaymentToast` for share/copy results and `showPaymentConfirmDialog` before any irreversible action you run.
 
-## Run the example
+## Optional: repository examples
+
+The published-package path above requires no clone. For further reading, the [example source](https://github.com/naufaldi/flutter_ui_payment/tree/main/example) includes Hairline, Lumen and Soft themes in `example/lib/themes.dart`, a demo coordinator and a fake host.
+
+For a product look, add `PaymentButtonTheme` and `PaymentFieldTheme` to the app theme or to a feature's scoped `Theme`, keeping the parent's other extensions. Reuse a repeated look through a named host preset that takes `BuildContext`. `example/lib/compositions/host_checkout.dart` builds two checkout layouts from the same host data and callbacks.
+
+For a connected host example, copy `host_checkout.dart`, `host_payment_recovery.dart` and `host_checkout_journey.dart` from `example/lib/compositions/`. `HostCheckoutJourney` pins the invoice pay action and then renders the existing recovery/receipt composition from host callback results. Its gallery fixture demonstrates a lost submit response and pending/offline recovery without `DemoCoordinator`. The host persists the attempt before sending and supplies revalidated quotes, authoritative snapshots and matching receipt data; the screen keeps only mounted presentation state. The website's Checkout pattern explains callback ownership and session identity.
+
+To run the synthetic demo locally, clone the repository first:
+
+```sh
+git clone https://github.com/naufaldi/flutter_ui_payment.git
+cd flutter_ui_payment
+```
+
+### Run the example
 
 ```sh
 cd example

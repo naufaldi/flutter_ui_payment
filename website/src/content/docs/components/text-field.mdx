@@ -19,10 +19,41 @@ import Props from '../../../components/Props.astro';
 
 ## Usage
 
-```dart
-// example/lib/screens/gallery_forms.dart
-PaymentTextField(label: 'Name');
+### Minimal
+
+Add the [published package](/start/installation/), then paste this complete example into `lib/main.dart`.
+
+```dart standalone
+import 'package:flutter/material.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+
+void main() => runApp(const MaterialApp(home: NamePage()));
+
+class NamePage extends StatefulWidget {
+  const NamePage({super.key});
+  @override
+  State<NamePage> createState() => _NamePageState();
+}
+
+class _NamePageState extends State<NamePage> {
+  String name = '';
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Example')),
+    body: ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        PaymentTextField(
+          label: 'Name',
+          onChanged: (value) => setState(() => name = value),
+        ),
+        Text('Hello, $name'),
+      ],
+    ),
+  );
+}
 ```
+
 
 ## Stripe → kit
 
