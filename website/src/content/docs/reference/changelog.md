@@ -5,6 +5,17 @@ description: Changes in Rakit UI, copied from CHANGELOG.md in the repository.
 
 Copied verbatim from `CHANGELOG.md`.
 
+## Unreleased
+
+### Docs site
+
+No package changes; these update https://flutter-ui-payment.netlify.app.
+
+- The homepage is now a product page, with a hero, a checkout recovery flow, benefits, an ownership table, checkable proof, an FAQ and a clear "Build your checkout" path. It adds a descriptive title with schema.org data, a JPEG social preview, robots.txt with the sitemap and an up-to-date llms.txt.
+- A new Try it page and a corrected `../flutter_ui_payment` path-dependency example.
+- The homepage lets you switch between success, pending, unknown and changed-total payment screens, shows real component specimens and compares the Hairline and Soft looks.
+- A header with section links and Get started, a homepage footer and contact section, and a copy button for the install command. The contact link opens a new GitHub issue, the footer attribution link has a 44 px tap target, and header buttons don't animate under reduced motion.
+
 ## 0.1.0
 
 First Rakit UI release, continuing the previously published flutter_ui_payment 0.1.0.
