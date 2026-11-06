@@ -71,6 +71,13 @@
 
   --fup-radius-control: 6px;
   --fup-radius-box: 8px;
+
+  /* Motion (D121): one ease-out curve and four durations. */
+  --fup-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --fup-dur-press: 120ms;
+  --fup-dur-ui: 180ms;
+  --fup-dur-exit: 140ms;
+  --fup-dur-enter: 360ms;
 }
 
 :root[data-theme='light'] {
@@ -466,7 +473,7 @@ starlight-theme-select select {
   text-decoration: none;
   transition:
     background-color 150ms ease,
-    transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
+    transform var(--fup-dur-press) var(--fup-ease-out);
 }
 .fup-btn-primary {
   background: var(--fup-ink);
@@ -521,5 +528,176 @@ starlight-theme-select select {
   :root[data-has-hero] .sl-markdown-content .sl-heading-wrapper.level-h2:not(:first-child) {
     margin-top: 1.75rem;
     padding-top: 1.25rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Motion (D121). Interaction feedback plus enter and exit; opacity and
+   transform only. Everything that hides or moves content sits under
+   :root[data-fup-motion], a pre-paint attribute set by an inline script only
+   when JavaScript runs and reduced motion is off (see astro.config.mjs).
+   Without JavaScript, or under reduced motion, all content is visible and still.
+   Press transforms sit under prefers-reduced-motion: no-preference; opacity
+   presses on text links stay for everyone.
+   --------------------------------------------------------------------------- */
+@keyframes fup-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fup-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Landing hero: a staggered entrance on load, 40 ms apart. No exit. */
+:root[data-fup-motion]
+  :is(.fup-eyebrow, .fup-hero-copy h1, .fup-lede, .fup-actions, .fup-install, .fup-source, .fup-states) {
+  animation: fup-enter var(--fup-dur-enter) var(--fup-ease-out) both;
+  animation-delay: calc(var(--fup-i, 0) * 40ms);
+}
+.fup-eyebrow { --fup-i: 0; }
+.fup-hero-copy h1 { --fup-i: 1; }
+.fup-lede { --fup-i: 2; }
+.fup-actions { --fup-i: 3; }
+.fup-install { --fup-i: 4; }
+.fup-source { --fup-i: 5; }
+.fup-states { --fup-i: 6; }
+
+/* Landing sections: hidden until motion.ts reveals them once, in view. The
+   marked element reveals itself; a "stagger" group reveals its children. */
+:root[data-fup-motion]
+  :is([data-fup-reveal]:not([data-fup-reveal='stagger']), [data-fup-reveal='stagger'] > *):not([data-fup-revealed]),
+:root[data-fup-motion][data-has-hero]
+  .sl-markdown-content
+  > .sl-heading-wrapper.level-h2:not([data-fup-revealed]) {
+  opacity: 0;
+}
+
+/* Docs pages: the content fades in once on load. */
+:root[data-fup-motion]:not([data-has-hero]) main .content-panel {
+  animation: fup-fade 220ms var(--fup-ease-out) both;
+}
+
+/* Press feedback on Starlight's own controls. Hover stays limited to fine
+   pointers elsewhere; presses use :active so touch gets them too. */
+.pagination-links a,
+.sl-menu-button,
+site-search button[data-open-modal],
+.expressive-code .copy button,
+.fup-social a {
+  transition:
+    transform var(--fup-dur-press) var(--fup-ease-out),
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+.sidebar-content a,
+.right-sidebar-panel a,
+mobile-starlight-toc a {
+  transition: opacity var(--fup-dur-press) var(--fup-ease-out);
+}
+.sidebar-content a:not([aria-current='page']):active,
+.right-sidebar-panel a:not([aria-current='true']):active,
+mobile-starlight-toc a:not([aria-current='true']):active {
+  opacity: 0.6;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pagination-links a:active {
+    transform: scale(0.98);
+  }
+  .sl-menu-button:active,
+  site-search button[data-open-modal]:active,
+  .expressive-code .copy button:active,
+  .fup-social a:active {
+    transform: scale(0.94);
+  }
+}
+
+/* Search dialog: 180 ms in, 140 ms out. The discrete transitions keep the
+   dialog displayed while it fades; browsers without support open and close
+   instantly. */
+:root[data-fup-motion] site-search dialog {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--fup-dur-exit) var(--fup-ease-out),
+    transform var(--fup-dur-exit) var(--fup-ease-out),
+    display var(--fup-dur-exit) allow-discrete,
+    overlay var(--fup-dur-exit) allow-discrete;
+}
+:root[data-fup-motion] site-search dialog[open] {
+  opacity: 1;
+  transform: none;
+  transition-duration: var(--fup-dur-ui);
+}
+:root[data-fup-motion] site-search dialog::backdrop {
+  opacity: 0;
+  transition:
+    opacity var(--fup-dur-exit) var(--fup-ease-out),
+    display var(--fup-dur-exit) allow-discrete,
+    overlay var(--fup-dur-exit) allow-discrete;
+}
+:root[data-fup-motion] site-search dialog[open]::backdrop {
+  opacity: 1;
+  transition-duration: var(--fup-dur-ui);
+}
+@starting-style {
+  :root[data-fup-motion] site-search dialog[open] {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  :root[data-fup-motion] site-search dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+/* Phone sidebar (a popover under 50rem): the same 180/140 ms enter and exit. */
+@media (max-width: 49.99rem) {
+  :root[data-fup-motion] #starlight__sidebar {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+    transition:
+      opacity var(--fup-dur-exit) var(--fup-ease-out),
+      transform var(--fup-dur-exit) var(--fup-ease-out),
+      display var(--fup-dur-exit) allow-discrete,
+      overlay var(--fup-dur-exit) allow-discrete;
+  }
+  :root[data-fup-motion] #starlight__sidebar:popover-open {
+    opacity: 1;
+    transform: none;
+    transition-duration: var(--fup-dur-ui);
+  }
+  @starting-style {
+    :root[data-fup-motion] #starlight__sidebar:popover-open {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+  }
+}
+
+/* Print (D121): content never scrolled into view still prints, and nothing
+   prints mid-animation. */
+@media print {
+  :root[data-fup-motion] :is([data-fup-reveal], [data-fup-reveal='stagger'] > *, .sl-heading-wrapper.level-h2) {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  :root[data-fup-motion] *,
+  :root[data-fup-motion] *::before,
+  :root[data-fup-motion] *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }

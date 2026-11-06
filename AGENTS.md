@@ -70,7 +70,7 @@ flutter analyze                       # root
 flutter test                          # package tests
 (cd example && flutter test test/)
 (cd example && flutter test --no-pub integration_test/flow_test.dart -d <device>)
-cd website && pnpm build && pnpm check:pages && pnpm check:links && pnpm check:snippets
+cd website && pnpm build && pnpm check:pages && pnpm check:links && pnpm check:snippets && pnpm test:motion
 ```
 
 The flow test runs on a device: take the device lock (Screenshots) first and follow the owner's global device rules.

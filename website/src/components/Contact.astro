@@ -5,7 +5,7 @@ import { REPO_URL } from '../consts';
 const email = 'naufaldi.rafif@gmail.com';
 ---
 
-<section class="fup-contact not-content" aria-labelledby="fup-contact-title">
+<section class="fup-contact not-content" data-fup-reveal aria-labelledby="fup-contact-title">
   <h2 id="fup-contact-title">Questions or stuck setting up?</h2>
   <p>Write to the maintainer, or open an issue so the answer helps the next team too.</p>
   <ul>
@@ -69,6 +69,10 @@ const email = 'naufaldi.rafif@gmail.com';
     text-decoration-color: var(--fup-border);
     text-underline-offset: 0.2em;
     overflow-wrap: anywhere;
+    transition: opacity var(--fup-dur-press) var(--fup-ease-out);
+  }
+  a:active {
+    opacity: 0.6;
   }
   @media (hover: hover) and (pointer: fine) {
     a:hover {

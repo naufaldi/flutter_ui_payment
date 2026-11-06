@@ -42,7 +42,7 @@ const columns = [
 
 {
   isHome ? (
-    <footer class="fup-footer not-content">
+    <footer class="fup-footer not-content" data-fup-reveal>
       <div class="fup-footer-cols">
         {columns.map((c, i) => (
           <section aria-labelledby={`fup-footer-${i}`}>
@@ -97,7 +97,12 @@ const columns = [
     text-decoration: underline;
     text-decoration-color: var(--fup-rule);
     text-underline-offset: 0.2em;
-    transition: text-decoration-color 150ms ease;
+    transition:
+      text-decoration-color 150ms ease,
+      opacity var(--fup-dur-press) var(--fup-ease-out);
+  }
+  a:active {
+    opacity: 0.6;
   }
   ul a {
     display: inline-flex;

@@ -68,7 +68,7 @@ const items = [
 ---
 
 <div class="fup-showcase not-content">
-  <ul class="fup-showcase-grid">
+  <ul class="fup-showcase-grid" data-fup-reveal="stagger">
     {
       items.map((item) => (
         <li>
@@ -83,7 +83,7 @@ const items = [
       ))
     }
   </ul>
-  <p class="fup-showcase-more">
+  <p class="fup-showcase-more" data-fup-reveal>
     <a href="/components/">Browse all {components} components</a>
     <span aria-hidden="true">·</span>
     <a href="/blocks/">See the {blocks} blocks</a>
@@ -120,7 +120,17 @@ const items = [
     padding: 1rem;
     color: var(--fup-ink);
     text-decoration: none;
-    transition: background-color 150ms ease;
+    transition:
+      background-color 150ms ease,
+      transform var(--fup-dur-press) var(--fup-ease-out);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .fup-showcase-item:active {
+      transform: scale(0.98);
+    }
+    .fup-showcase-more a:active {
+      transform: scale(0.97);
+    }
   }
   .fup-showcase-item:focus-visible {
     outline-offset: -4px;
@@ -176,6 +186,7 @@ const items = [
     text-decoration: underline;
     text-decoration-color: var(--fup-border);
     text-underline-offset: 0.2em;
+    transition: transform var(--fup-dur-press) var(--fup-ease-out);
   }
   .fup-showcase-more span {
     display: inline-flex;

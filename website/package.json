@@ -11,10 +11,12 @@
     "check:snippets": "node scripts/gen-api.mjs && node scripts/check-snippets.mjs",
     "screens": "node scripts/screens.mjs",
     "check:pages": "node scripts/check-pages.mjs",
-    "og:image": "node scripts/og-image.mjs"
+    "og:image": "node scripts/og-image.mjs",
+    "test:motion": "node --test scripts/motion.test.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.42.8",
-    "astro": "^7.4.4"
+    "astro": "^7.4.4",
+    "motion": "14.6.0"
   }
 }

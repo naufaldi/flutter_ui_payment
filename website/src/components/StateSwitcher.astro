@@ -155,7 +155,13 @@ const initial = 'unknown';
     color: var(--fup-muted);
     transition:
       background-color 150ms ease,
-      color 150ms ease;
+      color 150ms ease,
+      transform var(--fup-dur-press) var(--fup-ease-out);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .fup-states-option input:active + span {
+      transform: scale(0.97);
+    }
   }
   .fup-states-option input:checked + span {
     background: var(--fup-ink);
@@ -191,7 +197,7 @@ const initial = 'unknown';
     opacity: 0;
     visibility: hidden;
     transition:
-      opacity 150ms ease-out,
+      opacity 150ms var(--fup-ease-out),
       visibility 0s linear 150ms;
   }
   /* Without :has() support the default state stays visible. */
@@ -210,7 +216,7 @@ const initial = 'unknown';
     opacity: 1;
     visibility: visible;
     transition:
-      opacity 150ms ease-out,
+      opacity 150ms var(--fup-ease-out),
       visibility 0s;
   }
   .fup-states-shot img {

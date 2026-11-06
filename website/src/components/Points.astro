@@ -8,7 +8,7 @@ interface Props {
 const { variant = 'grid' } = Astro.props;
 ---
 
-<div class:list={['fup-points', `fup-points-${variant}`]}><slot /></div>
+<div class:list={['fup-points', `fup-points-${variant}`]} data-fup-reveal="stagger"><slot /></div>
 
 <style>
   .fup-points {
