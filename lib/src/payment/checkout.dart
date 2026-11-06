@@ -1,5 +1,4 @@
 import '../forms/select.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/action_frame.dart';
 import '../foundation/field_decoration.dart';
 import '../foundation/field_style.dart';

@@ -2,7 +2,6 @@ import '../foundation/payment_icons.dart';
 import '../foundation/payment_tokens.dart';
 import '../layout/content.dart';
 import 'package:flutter/material.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';

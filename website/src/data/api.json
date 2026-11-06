@@ -2708,175 +2708,10 @@
     ],
     "copyWith": null
   },
-  "KitStrings": {
-    "kind": "extension",
-    "file": "lib/src/foundation/kit_strings.dart",
-    "on": "PaymentLocalizations",
-    "doc": "English/Indonesian strings for the interaction, navigation, sheet, media,\npromotion and transaction components. Kept apart from the payment strings\nso each file stays readable; hosts use them through\n`PaymentLocalizations.of` like every other kit string.",
-    "members": [
-      "chartPercent",
-      "sortBy",
-      "sortDefault",
-      "sortDirection",
-      "chartLine",
-      "chartBar",
-      "chartMeter",
-      "chartSparkline",
-      "chartNoData",
-      "chartPendingKey",
-      "chartUnknownKey",
-      "chartLoadFailed",
-      "chartEmptyTitle",
-      "chartRange",
-      "chartLowest",
-      "chartHighest",
-      "chartLatest",
-      "chartPendingCount",
-      "chartUnknownCount",
-      "chartMissingCount",
-      "meterItem",
-      "captureSourceTitle",
-      "captureSourceCamera",
-      "captureSourceGallery",
-      "captureSourceFile",
-      "captureTipLight",
-      "captureTipGlare",
-      "captureTipCorners",
-      "captureTipFaceAndCard",
-      "captureTipNoCover",
-      "captureTake",
-      "captureRetake",
-      "captureUse",
-      "captureTitle",
-      "captureFramingHint",
-      "capturePhotoLabel",
-      "captureFrameLabel",
-      "opensExternally",
-      "hideBanner",
-      "enterValidDate",
-      "chooseDate",
-      "optional",
-      "charactersLeft",
-      "currencyLabel",
-      "chooseDates",
-      "customRange",
-      "clearDates",
-      "typeDates",
-      "useCalendar",
-      "startDate",
-      "endDate",
-      "chooseEndDate",
-      "applyDates",
-      "clear",
-      "day",
-      "month",
-      "year",
-      "today",
-      "rangeStart",
-      "rangeEnd",
-      "startAfterEnd",
-      "dateOutOfRange",
-      "removeItem",
-      "done",
-      "resultsCount",
-      "dateGranularity",
-      "close",
-      "cancel",
-      "confirm",
-      "moreActions",
-      "loading",
-      "retry",
-      "expand",
-      "collapse",
-      "dismiss",
-      "openNavigation",
-      "navigation",
-      "selected",
-      "closeSheet",
-      "imageUnavailable",
-      "play",
-      "pause",
-      "replay",
-      "mute",
-      "unmute",
-      "seek",
-      "videoLoading",
-      "videoBuffering",
-      "videoEnded",
-      "videoErrorTitle",
-      "videoErrorMessage",
-      "videoUnsupported",
-      "videoPosition",
-      "sponsored",
-      "promotion",
-      "whyThisAd",
-      "promoUnavailable",
-      "promoLoadFailed",
-      "updatingTotal",
-      "stepOf",
-      "completedStep",
-      "balanceTitle",
-      "balanceUnavailable",
-      "balanceInsufficient",
-      "balanceShortfall",
-      "limitUsed",
-      "promoCodeLabel",
-      "apply",
-      "remove",
-      "checkingCode",
-      "promoCodeEmpty",
-      "promoApplied",
-      "merchantVerified",
-      "orderRef",
-      "search",
-      "transactionsTitle",
-      "searchTransactions",
-      "clearSearch",
-      "noTransactionsTitle",
-      "noTransactionsMessage",
-      "noMatchesTitle",
-      "noMatchesMessage",
-      "transactionsFailedTitle",
-      "resetFilters",
-      "filterByStatus",
-      "transactionFilterLabel",
-      "paymentLabel",
-      "dateLabel",
-      "methodLabel",
-      "merchantLabel",
-      "taskStatus",
-      "subTasksComplete",
-      "selectAllOnPage",
-      "previousPage",
-      "nextPage",
-      "emptyTitle",
-      "sort",
-      "moveLeft",
-      "moveRight",
-      "wider",
-      "narrower",
-      "selectRow",
-      "rowsSelected",
-      "pageRange",
-      "pageNumber",
-      "rowActions",
-      "sortedAscending",
-      "sortedDescending",
-      "columnOptions",
-      "save",
-      "signInTitle",
-      "allSteps",
-      "onboardingDone",
-      "backTo",
-      "create",
-      "signInCan",
-      "signInCannot"
-    ]
-  },
   "TransactionFilter": {
     "kind": "enum",
     "file": "lib/src/foundation/kit_strings.dart",
-    "doc": "Groups used by transaction filters. Defined here so the strings and the\nfilter stay in one vocabulary; the matching rules live with the records.",
+    "doc": "Groups used by transaction filters. The matching rules live with the records.",
     "values": [
       {
         "name": "all",
@@ -2898,15 +2733,6 @@
         "name": "refunds",
         "doc": ""
       }
-    ]
-  },
-  "PaymentStatusLabel": {
-    "kind": "extension",
-    "file": "lib/src/foundation/kit_strings.dart",
-    "on": "PaymentLocalizations",
-    "doc": "Short status label shared by transaction rows and details.",
-    "members": [
-      "paymentStatusShort"
     ]
   },
   "CurrencySpec": {
@@ -3615,7 +3441,7 @@
   "PaymentLocalizations": {
     "kind": "class",
     "file": "lib/src/foundation/payment_localizations.dart",
-    "doc": "Strings and formatters for the kit in English (`en`) and Indonesian (`id`).\n\nAdd `PaymentLocalizations.delegate` to `localizationsDelegates`. Without\nit, widgets still pick a language from the ambient locale.",
+    "doc": "Overridable strings and formatters for every kit component.\n\nDefaults support English (`en`) and Indonesian (`id`); other languages use\nEnglish. To add a language, subclass this class and register a host\n`LocalizationsDelegate<PaymentLocalizations>` that returns the subclass.\nOverride any string getter or method; unmodified members keep their defaults.\n\nAdd `PaymentLocalizations.delegate` to `localizationsDelegates`. Without\nit, widgets still pick a language from the ambient locale.",
     "extends": null,
     "constructors": [
       {
@@ -4168,6 +3994,601 @@
         "name": "firstDayOfWeek",
         "type": "int",
         "doc": "First column of the calendar, as a `DateTime.weekday` value: Monday\nin Indonesian, Sunday in English."
+      },
+      {
+        "name": "sortDefault",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartLine",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartBar",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartMeter",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartSparkline",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartNoData",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartPendingKey",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartUnknownKey",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartLoadFailed",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartEmptyTitle",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureSourceTitle",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureSourceCamera",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureSourceGallery",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureSourceFile",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTipLight",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTipGlare",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTipCorners",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTipFaceAndCard",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTipNoCover",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTake",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureRetake",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureUse",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "opensExternally",
+        "type": "String",
+        "doc": "Hint for external destinations."
+      },
+      {
+        "name": "hideBanner",
+        "type": "String",
+        "doc": "Banner dismiss action."
+      },
+      {
+        "name": "enterValidDate",
+        "type": "String",
+        "doc": "Invalid calendar date."
+      },
+      {
+        "name": "chooseDate",
+        "type": "String",
+        "doc": "Calendar action."
+      },
+      {
+        "name": "optional",
+        "type": "String",
+        "doc": "Optional field marker."
+      },
+      {
+        "name": "currencyLabel",
+        "type": "String",
+        "doc": "Currency switch label."
+      },
+      {
+        "name": "chooseDates",
+        "type": "String",
+        "doc": "Calendar range action."
+      },
+      {
+        "name": "customRange",
+        "type": "String",
+        "doc": "Custom range action."
+      },
+      {
+        "name": "clearDates",
+        "type": "String",
+        "doc": "Clear range action."
+      },
+      {
+        "name": "typeDates",
+        "type": "String",
+        "doc": "Switches the range sheet to typed entry."
+      },
+      {
+        "name": "useCalendar",
+        "type": "String",
+        "doc": "Switches the range sheet back to the calendar."
+      },
+      {
+        "name": "startDate",
+        "type": "String",
+        "doc": "First typed date of a range."
+      },
+      {
+        "name": "endDate",
+        "type": "String",
+        "doc": "Last typed date of a range."
+      },
+      {
+        "name": "chooseEndDate",
+        "type": "String",
+        "doc": "Range summary while only the start is chosen."
+      },
+      {
+        "name": "applyDates",
+        "type": "String",
+        "doc": "Applies the chosen range."
+      },
+      {
+        "name": "clear",
+        "type": "String",
+        "doc": "Clears the chosen dates."
+      },
+      {
+        "name": "day",
+        "type": "String",
+        "doc": "Wheel column names."
+      },
+      {
+        "name": "month",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "year",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "today",
+        "type": "String",
+        "doc": "Spoken marker on today's date."
+      },
+      {
+        "name": "rangeStart",
+        "type": "String",
+        "doc": "Spoken markers on the ends of a range."
+      },
+      {
+        "name": "rangeEnd",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "startAfterEnd",
+        "type": "String",
+        "doc": "Typed range whose start is after its end."
+      },
+      {
+        "name": "done",
+        "type": "String",
+        "doc": "Finishes a multiple-choice search sheet."
+      },
+      {
+        "name": "close",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "cancel",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "confirm",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "moreActions",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "loading",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "retry",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "expand",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "collapse",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "dismiss",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "openNavigation",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "navigation",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "selected",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "closeSheet",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "imageUnavailable",
+        "type": "String",
+        "doc": "Image decode failure."
+      },
+      {
+        "name": "play",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "pause",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "replay",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "mute",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "unmute",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "seek",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoLoading",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoBuffering",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoEnded",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoErrorTitle",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoErrorMessage",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoUnsupported",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "sponsored",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "promotion",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "whyThisAd",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "promoUnavailable",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "promoLoadFailed",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "updatingTotal",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "completedStep",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "balanceTitle",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "balanceUnavailable",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "balanceInsufficient",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "promoCodeLabel",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "apply",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "remove",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "checkingCode",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "promoCodeEmpty",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "merchantVerified",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "search",
+        "type": "String",
+        "doc": "Default search field label."
+      },
+      {
+        "name": "transactionsTitle",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "searchTransactions",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "clearSearch",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "noTransactionsTitle",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "noTransactionsMessage",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "noMatchesTitle",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "noMatchesMessage",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "transactionsFailedTitle",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "resetFilters",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "filterByStatus",
+        "type": "String",
+        "doc": "Spoken name of the status filter button that replaces the filter tabs\non phones at large text (D91)."
+      },
+      {
+        "name": "paymentLabel",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "dateLabel",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "methodLabel",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "merchantLabel",
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "selectAllOnPage",
+        "type": "String",
+        "doc": "Select all on this page."
+      },
+      {
+        "name": "previousPage",
+        "type": "String",
+        "doc": "Previous page."
+      },
+      {
+        "name": "nextPage",
+        "type": "String",
+        "doc": "Next page."
+      },
+      {
+        "name": "emptyTitle",
+        "type": "String",
+        "doc": "Nothing here yet."
+      },
+      {
+        "name": "sort",
+        "type": "String",
+        "doc": "Sort."
+      },
+      {
+        "name": "moveLeft",
+        "type": "String",
+        "doc": "Move left."
+      },
+      {
+        "name": "moveRight",
+        "type": "String",
+        "doc": "Move right."
+      },
+      {
+        "name": "wider",
+        "type": "String",
+        "doc": "Wider."
+      },
+      {
+        "name": "narrower",
+        "type": "String",
+        "doc": "Narrower."
+      },
+      {
+        "name": "save",
+        "type": "String",
+        "doc": "Save."
+      },
+      {
+        "name": "signInTitle",
+        "type": "String",
+        "doc": "Sign in to continue."
+      },
+      {
+        "name": "allSteps",
+        "type": "String",
+        "doc": "All steps."
+      },
+      {
+        "name": "onboardingDone",
+        "type": "String",
+        "doc": "All steps complete."
+      },
+      {
+        "name": "create",
+        "type": "String",
+        "doc": "Create an item."
+      },
+      {
+        "name": "signInCan",
+        "type": "String",
+        "doc": "Sign-in heading over what the connecting app can do (D61)."
+      },
+      {
+        "name": "signInCannot",
+        "type": "String",
+        "doc": "Sign-in heading over what the connecting app can never do (D61)."
       }
     ],
     "statics": [
@@ -5156,6 +5577,1151 @@
         "static": false,
         "type": "int",
         "doc": "First column of the calendar, as a `DateTime.weekday` value: Monday\nin Indonesian, Sunday in English."
+      },
+      {
+        "name": "chartPercent",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String chartPercent(String value)",
+        "doc": "Spoken percentage."
+      },
+      {
+        "name": "sortBy",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String sortBy(String summary)",
+        "doc": "Current local sort summary."
+      },
+      {
+        "name": "sortDefault",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "sortDirection",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String sortDirection(PaymentCellType cell, bool ascending)",
+        "doc": "Direction words matching the column's value kind."
+      },
+      {
+        "name": "chartLine",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartBar",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartMeter",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartSparkline",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartNoData",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartPendingKey",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartUnknownKey",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartLoadFailed",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartEmptyTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "chartRange",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String chartRange(String from, String to, int count)",
+        "doc": ""
+      },
+      {
+        "name": "chartLowest",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String chartLowest(String amount, String label)",
+        "doc": ""
+      },
+      {
+        "name": "chartHighest",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String chartHighest(String amount, String label)",
+        "doc": ""
+      },
+      {
+        "name": "chartLatest",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String chartLatest(String amount, String label)",
+        "doc": ""
+      },
+      {
+        "name": "chartPendingCount",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String chartPendingCount(int n)",
+        "doc": ""
+      },
+      {
+        "name": "chartUnknownCount",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String chartUnknownCount(int n)",
+        "doc": ""
+      },
+      {
+        "name": "chartMissingCount",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String chartMissingCount(int n)",
+        "doc": ""
+      },
+      {
+        "name": "meterItem",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String meterItem(String label, String amount)",
+        "doc": ""
+      },
+      {
+        "name": "captureSourceTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureSourceCamera",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureSourceGallery",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureSourceFile",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTipLight",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTipGlare",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTipCorners",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTipFaceAndCard",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTipNoCover",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTake",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureRetake",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureUse",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "captureTitle",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String captureTitle(CaptureKind kind)",
+        "doc": ""
+      },
+      {
+        "name": "captureFramingHint",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String captureFramingHint(CaptureKind kind)",
+        "doc": ""
+      },
+      {
+        "name": "capturePhotoLabel",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String capturePhotoLabel(CaptureKind kind)",
+        "doc": ""
+      },
+      {
+        "name": "captureFrameLabel",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String captureFrameLabel(CaptureKind kind)",
+        "doc": ""
+      },
+      {
+        "name": "opensExternally",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Hint for external destinations."
+      },
+      {
+        "name": "hideBanner",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Banner dismiss action."
+      },
+      {
+        "name": "enterValidDate",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Invalid calendar date."
+      },
+      {
+        "name": "chooseDate",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Calendar action."
+      },
+      {
+        "name": "optional",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Optional field marker."
+      },
+      {
+        "name": "charactersLeft",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String charactersLeft(int n)",
+        "doc": "Remaining character count."
+      },
+      {
+        "name": "currencyLabel",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Currency switch label."
+      },
+      {
+        "name": "chooseDates",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Calendar range action."
+      },
+      {
+        "name": "customRange",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Custom range action."
+      },
+      {
+        "name": "clearDates",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Clear range action."
+      },
+      {
+        "name": "typeDates",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Switches the range sheet to typed entry."
+      },
+      {
+        "name": "useCalendar",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Switches the range sheet back to the calendar."
+      },
+      {
+        "name": "startDate",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "First typed date of a range."
+      },
+      {
+        "name": "endDate",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Last typed date of a range."
+      },
+      {
+        "name": "chooseEndDate",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Range summary while only the start is chosen."
+      },
+      {
+        "name": "applyDates",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Applies the chosen range."
+      },
+      {
+        "name": "clear",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Clears the chosen dates."
+      },
+      {
+        "name": "day",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Wheel column names."
+      },
+      {
+        "name": "month",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "year",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "today",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Spoken marker on today's date."
+      },
+      {
+        "name": "rangeStart",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Spoken markers on the ends of a range."
+      },
+      {
+        "name": "rangeEnd",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "startAfterEnd",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Typed range whose start is after its end."
+      },
+      {
+        "name": "dateOutOfRange",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String dateOutOfRange(String first, String last)",
+        "doc": "Typed date outside the allowed range."
+      },
+      {
+        "name": "removeItem",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String removeItem(String label)",
+        "doc": "Chip remove action."
+      },
+      {
+        "name": "done",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Finishes a multiple-choice search sheet."
+      },
+      {
+        "name": "resultsCount",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String resultsCount(int n)",
+        "doc": "Search result count."
+      },
+      {
+        "name": "dateGranularity",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String dateGranularity(PaymentDateGranularity g)",
+        "doc": "Calendar grouping label."
+      },
+      {
+        "name": "close",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "cancel",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "confirm",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "moreActions",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "loading",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "retry",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "expand",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "collapse",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "dismiss",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "openNavigation",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "navigation",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "selected",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "closeSheet",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "imageUnavailable",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Image decode failure."
+      },
+      {
+        "name": "play",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "pause",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "replay",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "mute",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "unmute",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "seek",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoLoading",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoBuffering",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoEnded",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoErrorTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoErrorMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoUnsupported",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "videoPosition",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String videoPosition(String position, String duration)",
+        "doc": ""
+      },
+      {
+        "name": "sponsored",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "promotion",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "whyThisAd",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "promoUnavailable",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "promoLoadFailed",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "updatingTotal",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "stepOf",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String stepOf(int current, int total, String label)",
+        "doc": ""
+      },
+      {
+        "name": "completedStep",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "balanceTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "balanceUnavailable",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "balanceInsufficient",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "balanceShortfall",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String balanceShortfall(String amount)",
+        "doc": ""
+      },
+      {
+        "name": "limitUsed",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String limitUsed(String used, String total)",
+        "doc": ""
+      },
+      {
+        "name": "promoCodeLabel",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "apply",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "remove",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "checkingCode",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "promoCodeEmpty",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "promoApplied",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String promoApplied(String code)",
+        "doc": ""
+      },
+      {
+        "name": "merchantVerified",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "orderRef",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String orderRef(String ref)",
+        "doc": ""
+      },
+      {
+        "name": "search",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Default search field label."
+      },
+      {
+        "name": "transactionsTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "searchTransactions",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "clearSearch",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "noTransactionsTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "noTransactionsMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "noMatchesTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "noMatchesMessage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "transactionsFailedTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "resetFilters",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "filterByStatus",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Spoken name of the status filter button that replaces the filter tabs\non phones at large text (D91)."
+      },
+      {
+        "name": "transactionFilterLabel",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String transactionFilterLabel(TransactionFilter filter)",
+        "doc": ""
+      },
+      {
+        "name": "paymentLabel",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "dateLabel",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "methodLabel",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "merchantLabel",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": ""
+      },
+      {
+        "name": "taskStatus",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String taskStatus(PaymentTaskStatus status)",
+        "doc": "Spoken task status."
+      },
+      {
+        "name": "subTasksComplete",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String subTasksComplete(int done, int total)",
+        "doc": "Spoken child task completion count."
+      },
+      {
+        "name": "selectAllOnPage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Select all on this page."
+      },
+      {
+        "name": "previousPage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Previous page."
+      },
+      {
+        "name": "nextPage",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Next page."
+      },
+      {
+        "name": "emptyTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Nothing here yet."
+      },
+      {
+        "name": "sort",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Sort."
+      },
+      {
+        "name": "moveLeft",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Move left."
+      },
+      {
+        "name": "moveRight",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Move right."
+      },
+      {
+        "name": "wider",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Wider."
+      },
+      {
+        "name": "narrower",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Narrower."
+      },
+      {
+        "name": "selectRow",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String selectRow(String title)",
+        "doc": "Localized selectRow label."
+      },
+      {
+        "name": "rowsSelected",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String rowsSelected(int n)",
+        "doc": "Localized rowsSelected label."
+      },
+      {
+        "name": "pageRange",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String pageRange(int from, int to, int total)",
+        "doc": "Localized pageRange label."
+      },
+      {
+        "name": "pageNumber",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String pageNumber(int n)",
+        "doc": "Localized pageNumber label."
+      },
+      {
+        "name": "rowActions",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String rowActions(String title)",
+        "doc": "Localized rowActions label."
+      },
+      {
+        "name": "sortedAscending",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String sortedAscending(String label)",
+        "doc": "Localized sortedAscending label."
+      },
+      {
+        "name": "sortedDescending",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String sortedDescending(String label)",
+        "doc": "Localized sortedDescending label."
+      },
+      {
+        "name": "columnOptions",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String columnOptions(String label)",
+        "doc": "Localized columnOptions label."
+      },
+      {
+        "name": "save",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Save."
+      },
+      {
+        "name": "signInTitle",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Sign in to continue."
+      },
+      {
+        "name": "allSteps",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "All steps."
+      },
+      {
+        "name": "onboardingDone",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "All steps complete."
+      },
+      {
+        "name": "backTo",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String backTo(String label)",
+        "doc": "Ancestor navigation label."
+      },
+      {
+        "name": "create",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Create an item."
+      },
+      {
+        "name": "signInCan",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Sign-in heading over what the connecting app can do (D61)."
+      },
+      {
+        "name": "signInCannot",
+        "kind": "getter",
+        "static": false,
+        "type": "String",
+        "doc": "Sign-in heading over what the connecting app can never do (D61)."
+      },
+      {
+        "name": "paymentStatusShort",
+        "kind": "method",
+        "static": false,
+        "type": "String",
+        "signature": "String paymentStatusShort(PaymentStatus? status)",
+        "doc": "Short status label shared by transaction rows and details."
       }
     ],
     "copyWith": null

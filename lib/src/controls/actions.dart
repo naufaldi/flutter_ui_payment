@@ -9,7 +9,6 @@ import '../foundation/payment_icons.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/payment_tokens.dart';
 import '../foundation/payment_localizations.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/tap_target.dart';
 
 /// Semantic icon colors. Nothing else exists.

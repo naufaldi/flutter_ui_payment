@@ -5,7 +5,6 @@ import '../foundation/primitives.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/payment_localizations.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/payment_tokens.dart';
 import '../foundation/money.dart';
 import '../foundation/table_grid.dart';

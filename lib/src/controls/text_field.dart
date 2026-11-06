@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/semantics.dart';
 import '../foundation/field_decoration.dart';
 import '../foundation/field_style.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';

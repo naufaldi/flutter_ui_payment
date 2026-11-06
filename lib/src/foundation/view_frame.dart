@@ -16,7 +16,6 @@ import '../interaction/menu_key_handoff.dart';
 import '../controls/actions.dart';
 import 'token_resolvers.dart';
 import 'payment_localizations.dart';
-import 'kit_strings.dart';
 
 /// Internal: the width [text] takes on one line in [style], as a `Text`
 /// under the ambient default style and text scale draws it.

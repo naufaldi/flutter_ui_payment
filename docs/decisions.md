@@ -858,3 +858,7 @@ The 320 dp gesture rows were measured with the tab fold alone (+18.2 / +30.2 dp 
 ### Settings availability, 6 November 2026
 
 - **D114: settings disabled Save with a reason (#263).** Add optional `PaymentSettingsView.saveDisabledReason`. With a null `onSave` and a reason, the existing footer shows a disabled Save and a readable caption in the semantics tree. `ViewFooter` places the reason beside Save on wide layouts and above it on phones and at large text. Both null keeps Save hidden for compatibility. A non-null callback ignores the reason, matching the kit's disabled-control pattern. Reuse the footer and button rather than add a parallel action layout; the host still owns availability, explanation and persistence.
+
+### Host languages, 6 November 2026
+
+- **D115: every kit string is host-overridable (#261).** Move `KitStrings` and `PaymentStatusLabel` extension members onto `PaymentLocalizations`, preserving their names, signatures and en/id expressions. A host subclasses the public class and registers a `LocalizationsDelegate<PaymentLocalizations>` that returns it; `of(context)` already returns that registered instance. Unknown language codes keep English defaults for un-overridden members. Extension members were statically resolved, so subclass overrides could not reach kit components. Instance dispatch fixes that boundary without ARB generation or new dependencies. The built-in delegate remains en/id only; hosts register added locales and Flutter localization delegates.
