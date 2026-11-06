@@ -91,49 +91,54 @@ void main() {
       }
     },
   );
-  testWidgets('settings keeps disabled Save visible with a readable reason', (
-    t,
-  ) async {
-    final semantics = t.ensureSemantics();
-    await setSurface(t, const Size(320, 700));
-    const reason = 'Make a change before saving your settings.';
-    await t.pumpWidget(
-      contentHostBounded(
-        const PaymentSettingsView(
-          title: 'Settings',
-          saveDisabledReason: reason,
-          child: Text('Notifications'),
+  testWidgets(
+    'settings keeps disabled Save visible and tells a screen reader why',
+    (t) async {
+      final semantics = t.ensureSemantics();
+      await setSurface(t, const Size(320, 700));
+      const reason = 'Make a change before saving your settings.';
+      await t.pumpWidget(
+        contentHostBounded(
+          const PaymentSettingsView(
+            title: 'Settings',
+            saveDisabledReason: reason,
+            child: Text('Notifications'),
+          ),
+          scale: 2,
         ),
-        scale: 2,
-      ),
-    );
-    final save = find.widgetWithText(PaymentButton, 'Save');
-    expect(save, findsOneWidget);
-    expect(t.widget<PaymentButton>(save).onPressed, isNull);
-    expect(
-      t.getSemantics(find.text('Save')),
-      matchesSemantics(
-        label: 'Save',
-        isButton: true,
-        hasEnabledState: true,
-        isEnabled: false,
-      ),
-    );
-    expect(find.text(reason), findsOneWidget);
-    expect(find.bySemanticsLabel(reason), findsOneWidget);
-    final buttonRect = t.getRect(save);
-    expect(buttonRect.width, greaterThanOrEqualTo(48));
-    expect(buttonRect.height, greaterThanOrEqualTo(48));
-    final reasonRect = t.getRect(find.text(reason));
-    expect(reasonRect.left, greaterThanOrEqualTo(0));
-    expect(reasonRect.right, lessThanOrEqualTo(320));
-    expect(reasonRect.bottom, lessThanOrEqualTo(buttonRect.top));
-    expect(buttonRect.bottom, lessThanOrEqualTo(700));
-    await t.tap(save);
-    await t.pump();
-    semantics.dispose();
-    expect(t.takeException(), isNull);
-  });
+      );
+      final save = find.widgetWithText(PaymentButton, 'Save');
+      expect(save, findsOneWidget);
+      expect(t.widget<PaymentButton>(save).onPressed, isNull);
+      expect(
+        t.getSemantics(find.text('Save')),
+        matchesSemantics(
+          label: 'Save',
+          hint: reason,
+          isButton: true,
+          hasEnabledState: true,
+          isEnabled: false,
+          isFocusable: false,
+          hasTapAction: false,
+        ),
+      );
+      // The reason is read once, as Save's hint, not again as a caption (#275).
+      expect(find.text(reason), findsOneWidget);
+      expect(find.bySemanticsLabel(reason), findsNothing);
+      final buttonRect = t.getRect(save);
+      expect(buttonRect.width, greaterThanOrEqualTo(48));
+      expect(buttonRect.height, greaterThanOrEqualTo(48));
+      final reasonRect = t.getRect(find.text(reason));
+      expect(reasonRect.left, greaterThanOrEqualTo(0));
+      expect(reasonRect.right, lessThanOrEqualTo(320));
+      expect(reasonRect.bottom, lessThanOrEqualTo(buttonRect.top));
+      expect(buttonRect.bottom, lessThanOrEqualTo(700));
+      await t.tap(save);
+      await t.pump();
+      semantics.dispose();
+      expect(t.takeException(), isNull);
+    },
+  );
 
   testWidgets('settings hides Save when callback and reason are absent', (
     t,

@@ -235,6 +235,10 @@ starlight-theme-select select {
   border-inline-start-width: 2px;
   border-radius: 0 var(--fup-radius-box) var(--fup-radius-box) 0;
 }
+/* At 200% text on a 320 px phone a title word can be wider than the aside. */
+.starlight-aside__title {
+  overflow-wrap: anywhere;
+}
 
 /* Keyboard focus: 2 px ink outline at a 2 px offset, never brand-colored. */
 :focus-visible {
