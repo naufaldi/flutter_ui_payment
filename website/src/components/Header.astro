@@ -1,0 +1,290 @@
+---
+// Site header (D110): Starlight's title, search, GitHub link and theme select,
+// plus the primary section links and one "Get started" action.
+//
+// Wide screens (72rem and up) show the links inline. Below that they move
+// into a no-JS <details> menu. On docs pages narrower than 50rem Starlight's
+// own menu button takes over and the links sit at the top of its sidebar
+// (Sidebar.astro), so the <details> menu is hidden there.
+import Search from '@astrojs/starlight/components/Search.astro';
+import SiteTitle from '@astrojs/starlight/components/SiteTitle.astro';
+import SocialIcons from '@astrojs/starlight/components/SocialIcons.astro';
+import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
+import { GET_STARTED_HREF, currentState, primaryLinks } from '../nav';
+
+const { id } = Astro.locals.starlightRoute;
+const links = primaryLinks.map((link) => ({
+  ...link,
+  current: currentState(link, id, Astro.url.pathname),
+}));
+---
+
+<div class="fup-header">
+  <div class="title-wrapper sl-flex">
+    <SiteTitle />
+  </div>
+  <div class="sl-flex print:hidden">
+    <Search />
+  </div>
+  <div class="fup-header-end print:hidden">
+    <nav class="fup-nav" aria-label="Primary">
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={l.current}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <a class="fup-btn fup-btn-primary fup-header-cta" href={GET_STARTED_HREF}>Get started</a>
+    <details class="fup-menu" data-fup-menu>
+      <summary class="fup-btn fup-btn-secondary">Menu</summary>
+      <div class="fup-menu-panel">
+        <nav aria-label="Primary">
+          <ul>
+            {
+              links.map((l) => (
+                <li>
+                  <a href={l.href} aria-current={l.current}>
+                    {l.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+        <a class="fup-btn fup-btn-primary" href={GET_STARTED_HREF}>Get started</a>
+        <div class="fup-menu-prefs">
+          <div class="sl-flex fup-social">
+            <SocialIcons />
+          </div>
+          <ThemeSelect />
+        </div>
+      </div>
+    </details>
+    <div class="fup-prefs">
+      <div class="sl-flex fup-social">
+        <SocialIcons />
+      </div>
+      <ThemeSelect />
+    </div>
+  </div>
+</div>
+
+<script>
+  // Enhancement only: the menu opens and closes without JavaScript. With it,
+  // Escape closes the menu and returns focus, and a click outside closes it.
+  for (const menu of document.querySelectorAll<HTMLDetailsElement>('[data-fup-menu]')) {
+    const summary = menu.querySelector('summary');
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.open) {
+        menu.open = false;
+        summary?.focus();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (menu.open && e.target instanceof Node && !menu.contains(e.target)) menu.open = false;
+    });
+  }
+</script>
+
+<style>
+  .fup-header {
+    display: flex;
+    gap: var(--sl-nav-gap);
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+  }
+  .title-wrapper {
+    /* Long titles must not cover search and the menu on narrow screens. */
+    overflow: clip;
+    /* Keep the title link's focus ring unclipped. */
+    padding: 0.25rem;
+    margin: -0.25rem;
+    min-width: 0;
+  }
+  .fup-header-end {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  /* Inline links: muted until current; the current section gets an ink
+     underline, so the state never relies on color alone. */
+  .fup-nav {
+    display: none;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .fup-nav ul {
+    display: flex;
+    gap: 0.25rem;
+  }
+  nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding-inline: 0.625rem;
+    border-radius: var(--fup-radius-control);
+    color: var(--fup-muted);
+    font-size: var(--sl-text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    text-underline-offset: 0.45em;
+    transition: color 150ms ease;
+  }
+  nav a[aria-current] {
+    color: var(--fup-ink);
+    font-weight: 600;
+    text-decoration: underline 2px var(--fup-ink);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    nav a:hover {
+      color: var(--fup-ink);
+    }
+  }
+  .fup-header-cta {
+    display: none;
+    white-space: nowrap;
+  }
+
+  /* The <details> menu. */
+  .fup-menu {
+    position: relative;
+  }
+  .fup-menu summary {
+    list-style: none;
+    cursor: pointer;
+    padding-inline: 1rem;
+    font-size: var(--sl-text-sm);
+    user-select: none;
+  }
+  .fup-menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .fup-menu[open] summary {
+    background: var(--fup-surface-muted);
+  }
+  .fup-menu-panel {
+    position: absolute;
+    inset-inline-end: 0;
+    top: calc(100% + 0.5rem);
+    z-index: var(--sl-z-index-menu);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: min(18rem, calc(100vw - 2 * var(--sl-nav-pad-x)));
+    padding: 0.5rem 0.75rem 0.75rem;
+    border: 1px solid var(--fup-rule);
+    border-radius: var(--fup-radius-box);
+    background: var(--fup-surface);
+    box-shadow: var(--sl-shadow-lg);
+  }
+  .fup-menu-panel nav a {
+    display: flex;
+    font-size: var(--sl-text-base);
+    padding-inline: 0.25rem;
+  }
+  .fup-menu-panel nav li + li {
+    border-top: 1px solid var(--fup-rule);
+  }
+  .fup-menu-prefs,
+  .fup-prefs {
+    align-items: center;
+    gap: 1rem;
+  }
+  .fup-menu-prefs {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--fup-rule);
+  }
+  .fup-prefs {
+    display: none;
+  }
+  .fup-prefs .fup-social::after {
+    content: '';
+    height: 2rem;
+    margin-inline-start: 1rem;
+    border-inline-end: 1px solid var(--fup-rule);
+  }
+  .fup-social {
+    align-items: center;
+    gap: 1rem;
+  }
+  /* Starlight's social links are 32px; give them a 44px target. */
+  .fup-social :global(a) {
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    margin: 0 -0.75rem;
+    padding: 0;
+  }
+
+  /* Docs pages on phones: Starlight's menu button owns this space. */
+  @media (max-width: 49.99rem) {
+    :global(:root[data-has-sidebar]) .fup-menu {
+      display: none;
+    }
+  }
+
+  @media (min-width: 50rem) {
+    /* Starlight's grid: the title column lines up with the sidebar and the
+       search box with the content column. */
+    :global(:root[data-has-sidebar]) {
+      --__sidebar-pad: calc(2 * var(--sl-nav-pad-x));
+    }
+    :global(:root:not([data-has-toc])) {
+      --__toc-width: 0rem;
+    }
+    .fup-header {
+      --__sidebar-width: max(0rem, var(--sl-content-inline-start, 0rem) - var(--sl-nav-pad-x));
+      --__main-column-fr: calc(
+        (
+            100% + var(--__sidebar-pad, 0rem) - var(--__toc-width, var(--sl-sidebar-width)) -
+              (2 * var(--__toc-width, var(--sl-nav-pad-x))) - var(--sl-content-inline-start, 0rem) -
+              var(--sl-content-width)
+          ) / 2
+      );
+      display: grid;
+      grid-template-columns:
+        minmax(calc(var(--__sidebar-width) + max(0rem, var(--__main-column-fr) - var(--sl-nav-gap))), auto)
+        1fr
+        auto;
+      align-content: center;
+    }
+    .fup-prefs {
+      display: flex;
+    }
+    .fup-menu-prefs {
+      display: none;
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .fup-nav {
+      display: block;
+    }
+    .fup-header-cta {
+      display: inline-flex;
+    }
+    .fup-menu {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    nav a {
+      transition: none;
+    }
+  }
+</style>

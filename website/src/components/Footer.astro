@@ -1,0 +1,147 @@
+---
+// Footer (D110). The homepage gets a ruled four-column site footer; every
+// other page keeps Starlight's footer (edit link and pagination) unchanged.
+import Default from '@astrojs/starlight/components/Footer.astro';
+import { PACKAGE_VERSION, REPO_URL } from '../consts';
+
+const isHome = Astro.locals.starlightRoute.id === '';
+
+const columns = [
+  {
+    title: 'Product',
+    links: [
+      { text: 'Quick start', href: '/start/quick-start/' },
+      { text: 'Components', href: '/components/' },
+      { text: 'Blocks', href: '/blocks/' },
+      { text: 'Changelog', href: '/reference/changelog/' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { text: 'Compatibility', href: '/reference/compatibility/' },
+      { text: 'Accessibility', href: '/concepts/accessibility/' },
+      { text: 'Host-owned decisions', href: '/concepts/host-owned/' },
+      { text: 'llms.txt', href: '/llms.txt' },
+    ],
+  },
+  {
+    title: 'Community',
+    links: [
+      { text: 'GitHub repository', href: REPO_URL },
+      { text: 'Report a problem', href: `${REPO_URL}/issues/new` },
+      { text: 'Email', href: 'mailto:naufaldi.rafif@gmail.com' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [{ text: 'MIT licence', href: '/reference/license/' }],
+  },
+];
+---
+
+{
+  isHome ? (
+    <footer class="fup-footer not-content">
+      <div class="fup-footer-cols">
+        {columns.map((c, i) => (
+          <section aria-labelledby={`fup-footer-${i}`}>
+            <h2 id={`fup-footer-${i}`}>{c.title}</h2>
+            <ul>
+              {c.links.map((l) => (
+                <li>
+                  <a href={l.href}>{l.text}</a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+      <p class="fup-footer-line">
+        rakit_ui {PACKAGE_VERSION} · MIT · by <a href="https://github.com/naufaldi">naufaldi</a>
+      </p>
+    </footer>
+  ) : (
+    <Default />
+  )
+}
+
+<style>
+  .fup-footer {
+    margin-top: 4rem;
+    border-top: 1px solid var(--fup-rule);
+  }
+  .fup-footer-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 2rem;
+  }
+  section {
+    padding-block: 1.5rem 1rem;
+    border-bottom: 1px solid var(--fup-rule);
+  }
+  h2 {
+    margin: 0 0 0.5rem;
+    font-size: var(--sl-text-xs);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--fup-muted);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  a {
+    color: var(--fup-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--fup-rule);
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 150ms ease;
+  }
+  ul a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    font-size: var(--sl-text-sm);
+    overflow-wrap: anywhere;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    a:hover {
+      text-decoration-color: currentColor;
+    }
+  }
+  .fup-footer-line {
+    margin: 0;
+    padding-block: 1.25rem 2rem;
+    font-family: var(--__sl-font-mono);
+    font-size: var(--sl-text-xs);
+    color: var(--fup-muted);
+  }
+  .fup-footer-line a {
+    color: var(--fup-muted);
+  }
+
+  /* Two columns on most phones, four once there is room. */
+  @media (min-width: 22rem) {
+    .fup-footer-cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 50rem) {
+    /* One row: a single rule under all four columns. */
+    .fup-footer-cols {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-bottom: 1px solid var(--fup-rule);
+    }
+    section {
+      border-bottom: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a {
+      transition: none;
+    }
+  }
+</style>

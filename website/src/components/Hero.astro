@@ -39,9 +39,20 @@ const [primary, ...secondary] = hero.actions;
       {primary && <a class="fup-btn fup-btn-primary" href={primary.link}>{primary.text}</a>}
       {secondary.map((a) => <a class="fup-btn fup-btn-secondary" href={a.link}>{a.text}</a>)}
     </div>
-    <p class="fup-install">
+    <p class="fup-install" data-fup-copy>
       <span class="fup-install-label">Install</span>
       <code>flutter pub add rakit_ui</code>
+      {/* Hidden until the script runs; without JS the command stays selectable. */}
+      <button type="button" class="fup-copy" aria-label="Copy install command" hidden>
+        <svg class="fup-copy-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="11" height="11" rx="2" />
+          <path d="M5 15V6a2 2 0 0 1 2-2h9" />
+        </svg>
+        <svg class="fup-done-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12.5l4.5 4.5L19 7.5" />
+        </svg>
+      </button>
+      <span class="sr-only" aria-live="polite" data-fup-copy-status></span>
     </p>
     <p class="fup-source">
       <a href="https://github.com/naufaldi/flutter_ui_payment">Source on GitHub</a>
@@ -147,6 +158,39 @@ const [primary, ...secondary] = hero.actions;
     user-select: all;
     overflow-wrap: anywhere;
   }
+  .fup-copy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: -0.5rem -0.625rem -0.5rem auto;
+    padding: 0;
+    border: 0;
+    border-radius: var(--fup-radius-control);
+    background: none;
+    color: var(--fup-muted);
+    cursor: pointer;
+    transition: color 150ms ease;
+  }
+  .fup-copy[hidden] {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .fup-copy:hover {
+      color: var(--fup-ink);
+    }
+  }
+  .fup-copy .fup-done-icon,
+  .fup-copy[data-copied] .fup-copy-icon {
+    display: none;
+  }
+  .fup-copy[data-copied] {
+    color: var(--fup-ink);
+  }
+  .fup-copy[data-copied] .fup-done-icon {
+    display: block;
+  }
   .fup-source {
     display: flex;
     flex-wrap: wrap;
@@ -221,8 +265,50 @@ const [primary, ...secondary] = hero.actions;
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .fup-source a {
+    .fup-source a,
+    .fup-copy {
       transition: none;
     }
   }
 </style>
+
+<script>
+  // Install copy button (D110): copies the command, shows a check for 1.5 s
+  // and announces the result. Without the Clipboard API it selects the
+  // command so the reader can copy it with the keyboard.
+  for (const box of document.querySelectorAll<HTMLElement>('[data-fup-copy]')) {
+    const button = box.querySelector<HTMLButtonElement>('button');
+    const code = box.querySelector('code');
+    const status = box.querySelector<HTMLElement>('[data-fup-copy-status]');
+    if (!button || !code || !status) continue;
+    button.hidden = false;
+    let timer: number | undefined;
+    const announce = (text: string) => {
+      status.textContent = text;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        status.textContent = '';
+        delete button.dataset.copied;
+      }, 1500);
+    };
+    const select = () => {
+      const range = document.createRange();
+      range.selectNodeContents(code);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+      announce('Command selected. Press Ctrl+C or Command+C to copy.');
+    };
+    button.addEventListener('click', async () => {
+      const text = code.textContent?.trim() ?? '';
+      if (!navigator.clipboard?.writeText) return select();
+      try {
+        await navigator.clipboard.writeText(text);
+        button.dataset.copied = '';
+        announce('Copied');
+      } catch {
+        select();
+      }
+    });
+  }
+</script>
