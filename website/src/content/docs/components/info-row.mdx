@@ -9,8 +9,6 @@ import Props from '../../../components/Props.astro';
 
 `InfoRow` is a label and value pair: a fee and its amount, a reference and its number, a deadline and its countdown. Rows stack into the property lists of summaries, receipts and transaction details.
 
-
-
 <Screens>
   <Screen name="android_catalog_info_row_variants" dark="android_catalog_info_row_variants_dark" alt="Payment information rows with labels, values and supporting details." caption="Light and dark variants" />
   <Screen name="android_catalog_info_row_variants_200" alt="Payment information rows with labels, values and supporting details at 200 percent text." caption="200% text" />
@@ -22,10 +20,6 @@ import Props from '../../../components/Props.astro';
 // example/lib/screens/gallery_kit.dart
 InfoRow(label: 'Total', value: AmountText(Money.idr(104000)));
 ```
-
-## Stripe → kit
-
-No direct Stripe equivalent. Pair a payment fact with its value and optional copy action.
 
 ## Variants
 
@@ -107,9 +101,7 @@ The row displays the host value. Keep an unavailable amount distinct from zero, 
 - Label, caption and value are merged into one screen-reader node, read in order.
 - `MiddleEllipsisText` gives screen readers the full text, not the elided one.
 
-## Used in
-
-CheckoutSummary; PaymentReceipt. Example source: `example/lib/screens/gallery_kit.dart`.
+## In the example app
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

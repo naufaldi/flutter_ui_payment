@@ -34,16 +34,9 @@ PaymentDateRangePicker(
         );
 ```
 
-## Stripe → kit
+## Behavior
 
-| Stripe | Kit |
-| --- | --- |
-| value | PaymentDateRange |
-| presets | PaymentDatePreset in a sheet |
-| granularity | PaymentDateGranularity tabs |
-| timeZone / PartialDateRange | host zone / complete ranges only |
-
-Presets live in a kit sheet before the calendar; "Custom range" is a radio row on the presets' text column. Partial ranges and timeZone are not mirrored. The host owns zone interpretation. Granularity tabs remain below the trigger. fromPreset preserves the named range. formatDateRange produces shared localized text for fields and chips.
+Presets live in a kit sheet before the calendar; "Custom range" is a radio row on the presets' text column. The picker returns calendar dates; you decide which time zone they mean. Granularity tabs remain below the trigger. fromPreset preserves the named range. formatDateRange produces shared localized text for fields and chips.
 
 **Range calendar.** A full-height sheet with a scrolling list of months from `firstDate` to `lastDate`, opened at the range's start or today. The first tap sets the start, the second the end; a tap before the start, or after a complete range, starts again. The range is shown in the accent: filled circles on its ends and a band between them. "Type dates" in the header swaps the calendar for two typed date fields (start on or before end, both in range). The pinned footer shows the range (or "Choose an end date"), a full-width "Apply" that is enabled once a start exists (a start alone applies a one-day range) and a quiet "Clear" that reports `null`. Pass `lastDate: today` for history, so future days are disabled.
 
@@ -93,9 +86,7 @@ Use short labels and compact localized values.
 
 Targets are at least 48 dp. The sheets return focus to the trigger. Each day is read as its full date with its state ("Monday, 5 October 2026, selected, range start"); arrow keys move by a day or a week and Enter picks. The footer summary is a live region. Weeks start on Monday in Indonesian and Sunday in English.
 
-## Used in
-
-History A01. Example source: `example/lib/screens/gallery_forms.dart`.
+## In the example app
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 

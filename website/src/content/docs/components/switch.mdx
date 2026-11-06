@@ -6,11 +6,8 @@ description: PaymentSwitch is an on/off setting that takes effect at once. The t
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentSwitch` turns a setting on or off immediately, such as "Refund alerts". The switch sits at the end of the row, and the whole row is the target.
-
-<HostOwns>the value, applying the setting, and why the row is disabled.</HostOwns>
 
 <Screens>
   <Screen name="android_catalog_switch_variants" dark="android_catalog_switch_variants_dark" alt="Email, SMS and payment notification switches in enabled and disabled states." caption="Switch" />
@@ -49,17 +46,6 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 ```
 
-
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| value | value | Semantic kit value; see API for the default. |
-| onChange | onChanged | Host callback owns the effect. |
-| label | label | Semantic kit value; see API for the default. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
-
 ## Variants
 
 Variants: off, on.
@@ -87,7 +73,7 @@ const PaymentSwitch(
 
 ### Behavior, states and migration
 
-Stripe error maps to errorText: icon, danger caption and off-track danger edge. Required is spoken, with gating owned by the host. HiddenElements retains hidden text in semantics. Use a switch for an immediate setting, not consent applied after a later submit.
+`errorText` shows an icon, danger caption and off-track danger edge. Required is spoken, with gating owned by the host. HiddenElements retains hidden text in semantics. Use a switch for an immediate setting, not consent applied after a later submit.
 
 ## Which variant when
 
@@ -120,9 +106,7 @@ The host supplies the on/off value. Disable the control while a change cannot be
 
 The switch mark centers on the first label line; the row retains its minimum touch target.
 
-## Used in
-
-Settings A05. Example source: `example/lib/screens/gallery_selection.dart`.
+## In the example app
 
 <Screen name="android_account_settings_light" dark="android_account_settings_dark" alt="Example account settings screen with synthetic data" caption="Example: account settings" />
 

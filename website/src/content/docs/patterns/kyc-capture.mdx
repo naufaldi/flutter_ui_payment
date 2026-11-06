@@ -6,11 +6,10 @@ description: Passive KTP and selfie framing, review actions and host upload stat
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `KycCaptureGuide` composes framing, tips, photo review, upload progress and host rejection messages. `CaptureFrameOverlay` can sit over a host camera preview. Neither widget reads or judges the image.
 
-<HostOwns>camera, permission, photo bytes, upload, safe rejection reasons and every verdict. No OCR, liveness, face matching or photo scoring is performed.</HostOwns>
+Your app runs the camera, permission, photo bytes, upload, safe rejection reasons and every verdict. The kit performs no OCR, liveness, face matching or photo scoring.
 
 The [KYC capture and upload recovery block](/blocks/kyc-capture/) runs this guide in a mobile host screen with permission, quality and upload recovery and stale-upload protection.
 
@@ -92,7 +91,7 @@ PaymentImage preserves a muted loading surface. On decode failure the framing fa
 
 `showCaptureSourceSheet` reports the source the customer chose. It opens no device source itself.
 
-<HostOwns>available sources, permission, OS picker, camera, and opening settings.</HostOwns>
+Your app decides the available sources and runs the permission request, OS picker, camera and the link to settings.
 
 <Screens><Screen name="android_catalog_capture_source_sheet" dark="android_catalog_capture_source_sheet_dark" alt="Add a photo sheet offering camera, gallery and file sources." caption="Source choice before permission" /></Screens>
 

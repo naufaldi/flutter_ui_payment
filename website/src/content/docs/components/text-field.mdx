@@ -7,7 +7,7 @@ import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-`PaymentTextField` is a labeled single-line input. The host owns values, validation and submission.
+`PaymentTextField` is a labeled single-line input. Your app handles values, validation and submission.
 
 <Screens>
   <Screen name="android_catalog_text_field_variants" dark="android_catalog_text_field_variants_dark" alt="Name fields in three sizes and receipt, phone, promo, order and company fields with validation and disabled states." caption="Text field" />
@@ -54,23 +54,9 @@ class _NamePageState extends State<NamePage> {
 }
 ```
 
+## Behavior
 
-## Stripe → kit
-
-| Stripe | Kit |
-| --- | --- |
-| label | label |
-| placeholder | hint |
-| description | description, descriptionTone |
-| error / invalid | errorText / derived from validation |
-| required / hiddenElements | required / hiddenElements |
-| size / type | size / type, with no sensitive input types |
-| defaultValue | initialValue |
-| value / onChange | controller / onChanged |
-| disabled / readOnly | enabled / readOnly |
-| spellCheck / autoComplete | type traits / autofillHints |
-
-Autofocus is omitted because touch keyboards should be requested deliberately through a focus node. Host forms own names, ordering and keyboard handlers. Use input formatters for length constraints and validators for meaning. Width is deferred until field groups define it. `keyboardType` preserves custom host keyboards, including dates.
+There is no autofocus: touch keyboards open only when you request focus through a `focusNode`. Use input formatters for length constraints and validators for meaning. `keyboardType` keeps custom keyboards, including dates.
 
 ## Variants
 
@@ -90,7 +76,7 @@ Keep a persistent label. Never put the only instruction in `hint`. Explain how t
 
 ### Field foundation
 
-Fields fill their parent. Stripe css width is not mirrored. PaymentFormFieldGroup adds optional marks when required and optional fields are mixed. Use [Text area](/components/text-area/) for several lines.
+Fields fill their parent. PaymentFormFieldGroup adds optional marks when required and optional fields are mixed. Use [Text area](/components/text-area/) for several lines.
 
 Labels at large text: an outlined floating label keeps one line, so above 1.5× text every field (text, currency, date, select and search) shows its label above the box instead, where it wraps (#73). The box keeps its height, so fields of different types still line up, and the label stays the field's spoken name. While the label is above, the hint shows only when the field has focus, as it does behind a floating label. Keep labels short anyway and put instructions in description.
 
@@ -206,9 +192,7 @@ Keep the label visible after entry. Use the hint for an example and the error me
 
 Keep labels, helper text and errors available to assistive technology. Focus uses an accent edge; an error includes an icon and message.
 
-## Used in
-
-TransactionHistory A01; IdentityForm; statement A03. Example source: `example/lib/screens/gallery_forms.dart`.
+## In the example app
 
 <Screen name="android_kyc_onboarding_light" dark="android_kyc_onboarding_dark" alt="Example kyc onboarding screen with synthetic data" caption="Example: kyc onboarding" />
 

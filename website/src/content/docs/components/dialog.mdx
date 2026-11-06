@@ -6,13 +6,10 @@ description: showPaymentConfirmDialog asks before an action that cannot be undon
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `showPaymentConfirmDialog` asks a yes-or-no question before an action that cannot be undone, and returns a `Future<bool>`.
 
-<HostOwns>the action itself, which you run only after the dialog resolves to true.</HostOwns>
-
-
+Run the action only after the dialog resolves to `true`.
 
 On a phone the confirmation is a bottom sheet; on a wider window it is a centred dialog. The page keeps the name "Dialog".
 
@@ -58,11 +55,6 @@ void main() => runApp(MaterialApp(
   ),
 ));
 ```
-
-
-## Stripe → kit
-
-No direct Stripe equivalent. Ask for confirmation before a destructive or consequential host action.
 
 ## Variants
 
@@ -137,9 +129,7 @@ Confirm resolves to `true`. Cancel, Back, Escape and scrim dismissal resolve to 
 
 Initial focus is on Cancel for destructive actions and Confirm otherwise. Dismissal returns `false`; labels and messages remain readable at large text.
 
-## Used in
-
-Report A02; Gallery Kit. Example source: `example/lib/screens/gallery_kit.dart`.
+## In the example app
 
 <Screen name="android_report_problem_light" dark="android_report_problem_dark" alt="Example report problem screen with synthetic data" caption="Example: report problem" />
 

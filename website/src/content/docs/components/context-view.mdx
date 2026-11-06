@@ -44,12 +44,6 @@ PaymentContextView(
 - An ID such as the order ID is a reference row with a copy button, not a separate "Copy order ID" button. Close and Cancel are quiet.
 - At large text the header scrolls with the body, so the total and help link stay reachable on the first screen.
 
-## Stripe → kit
-
-| Stripe | Kit |
-| --- | --- |
-| ContextView | `PaymentContextView` |
-
 ## Variants
 
 Variants: context body with optional actions and footer.
@@ -87,10 +81,6 @@ Preserve a clear reading order between merchant, order and actions. Brand images
 Header actions align to the content start. Phone footers stack full-width actions, primary first.
 
 Used beside checkout at widths of at least 840 dp. The order context has supporting merchant help; the pinned checkout bar owns the primary Pay action.
-
-## Used in
-
-Wide checkout H02/H04. Example source: `example/lib/screens/gallery_views.dart`.
 
 ## API
 

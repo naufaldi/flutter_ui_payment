@@ -6,11 +6,8 @@ description: Shows direction across ordered periods, with gaps for missing amoun
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentLineChart` shows direction across ordered periods, with gaps for missing amounts.
-
-<HostOwns>amounts, currency, period labels, settled/pending/unknown status, and every headline or delta.</HostOwns>
 
 <Screens>
   <Screen name="android_catalog_line_chart_variants" dark="android_catalog_line_chart_variants_dark" alt="Spending over time with labelled values and comparison periods." caption="Line chart" />
@@ -24,7 +21,7 @@ import HostOwns from '../../../components/HostOwns.astro';
 PaymentLineChart(points: points);
 ```
 
-Use `onSelectionChanged` to receive each new selected period index and `null` on return to rest. On touch, a scrub reports `null` when the finger lifts. The index addresses `points` or the series' shared periods. Repeated events within one period do not notify or rebuild. New periods reset selection silently. The host owns haptics; the kit plays none.
+Use `onSelectionChanged` to receive each new selected period index and `null` on return to rest. On touch, a scrub reports `null` when the finger lifts. The index addresses `points` or the series' shared periods. Repeated events within one period do not notify or rebuild. New periods reset selection silently. The kit plays no haptics; add them in your callback if you want them.
 
 ```dart
 import 'package:flutter/services.dart';
@@ -36,14 +33,6 @@ PaymentLineChart(
   },
 );
 ```
-
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| children | child | Flutter body composition. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
 
 ## Variants
 
@@ -57,12 +46,7 @@ Settled marks are solid, pending marks are outlined or dashed, and unknown marks
 
 Use named series with identical period labels and ordering. Line and bar charts accept up to three series; sparklines accept two. Series use an accent ramp and distinct dash patterns, never status tones. All series share a scale. `showLegend` controls the legend for multiple series.
 
-| Stripe | Kit |
-| --- | --- |
-| x / y | `axis` and `grid`: x, y, both or none |
-| color / z | Named `PaymentChartSeries` |
-| format / tickFormat / unitFormat | `unit`: money, percent or number |
-| legend | `showLegend` |
+`axis` and `grid` each take x, y, both or none. Colors come from named `PaymentChartSeries`. `unit` is money, percent or number.
 
 Use a line for direction, bars for period comparisons, a meter for category proportions and a sparkline beside a KPI. Percent and number units read `measure`; money reads `value`. A measure of 45 means 45 percent. Missing readings remain gaps.
 
@@ -105,10 +89,6 @@ Use short period labels and a clear title. Explain what is settled in the headli
 ## Accessibility
 
 A single generated summary announces settled lowest, highest and latest amounts plus pending, unknown and missing counts. Supply `semanticLabel` for a host-authored equivalent. The value label is supplemental: the summary already announces the latest amount, and selection has no keyboard focus target. Status is conveyed by shape and words as well as color.
-
-## Used in
-
-Gallery Charts; spending layout pattern. Example source: `example/lib/screens/gallery_charts.dart`.
 
 ## API
 

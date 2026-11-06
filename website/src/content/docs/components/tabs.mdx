@@ -6,11 +6,8 @@ description: PaymentTabs are text tabs on a hairline for switching between views
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentTabs` switches between views of the same content: filters of a list, or "Card" and "Bank transfer" details. `TransactionHistory` uses it for its filters.
-
-<HostOwns>the selected index and the content shown for it.</HostOwns>
 
 <Screens>
   <Screen name="android_catalog_tabs_variants" dark="android_catalog_tabs_variants_dark" alt="Card, bank transfer and wallet tabs with selected, disabled and overflowing labels." caption="Tabs" />
@@ -34,14 +31,6 @@ PaymentTabs(
         );
 ```
 
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| size | size | Semantic kit value; see API for the default. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
-
 ## Variants
 
 Variants: small, medium, large; fitted or intrinsic.
@@ -56,7 +45,7 @@ The row scrolls sideways instead of wrapping, so long or enlarged labels never s
 
 ### Behavior, states and migration
 
-Stripe TabList is PaymentTabs, Tab is PaymentTab, and TabPanels/TabPanel are PaymentTabPanels. selectedKey maps to selectedIndex, and onSelectionChange to onSelected. Sizes are small (caption, 8 dp sides), medium (label, 12 dp), and large (heading, 16 dp); every target stays at least 48 dp. Fitted divides the available width equally. Arrow keys move focus without selection and skip disabled tabs; Enter or Space selects. A disabledReason is spoken as a hint and shown in a tooltip; explain unavailability in visible content too.
+`PaymentTabs` holds the `PaymentTab`s and `PaymentTabPanels` the panels; `selectedIndex` and `onSelected` control selection. Sizes are small (caption, 8 dp sides), medium (label, 12 dp), and large (heading, 16 dp); every target stays at least 48 dp. Fitted divides the available width equally. Arrow keys move focus without selection and skip disabled tabs; Enter or Space selects. A disabledReason is spoken as a hint and shown in a tooltip; explain unavailability in visible content too.
 
 Panels build on first selection and keep state. Offstage, TickerMode and ExcludeFocus hide inactive panels and pause their tickers. Do not put a requirement exclusively in a hidden panel.
 
@@ -95,9 +84,7 @@ The host supplies the selected tab. Disabled tabs stay visible but cannot be sel
 - Each tab is a button at least 48 × 48 dp, marked selected or not.
 - Tabs press to 0.96 like other compact controls, and keyboard focus draws the kit's [focus ring](/foundations/focus/); the row clips only at its sides so the ring stays visible.
 
-## Used in
-
-TransactionHistory A01; DateRangePicker. Example source: `example/lib/screens/gallery_selection.dart`.
+## In the example app
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 

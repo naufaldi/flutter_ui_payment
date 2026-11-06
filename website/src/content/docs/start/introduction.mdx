@@ -40,7 +40,7 @@ Start with [Blocks](/blocks/) to run and copy a complete mobile screen. Patterns
 explain payment and KYC behavior; Guides cover layout, forms and loading states.
 
 - `verified` comes only from the host, never from a finished upload.
-- One active submit per attempt. `PaymentButton` locks while its callback runs; this is interaction protection, not a replacement for server-side deduplication.
+- One active submit per attempt: `PaymentButton` blocks repeated taps while its callback runs.
 - Timeouts, offline refreshes and an elapsed countdown never become "failed" or "paid".
 - Older or duplicate snapshots cannot overwrite newer ones; a success changes only through an official provider correction.
 - A changed total or method requires review and a new authorization.

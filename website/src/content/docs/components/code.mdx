@@ -21,13 +21,6 @@ References people copy into a banking app.
 PaymentCode('TRX-DEMO-42');
 ```
 
-## Stripe → kit
-
-| Stripe | Kit |
-| --- | --- |
-| Code | `PaymentCode` |
-| css and numeric styling | Semantic token enums |
-
 ## Variants
 
 Variants: code, pre, samp, kbd.
@@ -59,10 +52,6 @@ Preserve the reference exactly. Use synthetic identifiers in examples and keep c
 
 Provide a descriptive label for copy actions. Long code wraps by default or scrolls within the block when `noWrap` is set.
 
-## Used in
-
-PaymentInstructions; Gallery Layout. Example source: `example/lib/screens/gallery_content.dart`.
-
 ## API
 
 <Props names={["PaymentCode", "PaymentCodeKind", "PaymentSize"]} />
@@ -72,4 +61,4 @@ PaymentInstructions; Gallery Layout. Example source: `example/lib/screens/galler
 - [Spacing](/foundations/spacing/)
 - [Typography](/foundations/typography/)
 
-Code wraps by default. noWrap keeps one line and scrolls inside the block; an edge fade shows there is more. Stripe noWrap maps directly to the kit noWrap parameter.
+Code wraps by default. noWrap keeps one line and scrolls inside the block; an edge fade shows there is more.

@@ -6,11 +6,8 @@ description: PaymentRadio is one option of a single choice. The selected option 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentRadio` is one option of a single choice. Use radios for two to about five options that all fit on screen.
-
-<HostOwns>the selected value and what each option means.</HostOwns>
 
 <Screens>
   <Screen name="android_catalog_radio_variants" dark="android_catalog_radio_variants_dark" alt="Receipt delivery radio options in default, invalid and disabled states." caption="Radio" />
@@ -33,16 +30,6 @@ PaymentRadio(
               );
 ```
 
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| value | value | Semantic kit value; see API for the default. |
-| onChange | onChanged | Host callback owns the effect. |
-| label | label | Semantic kit value; see API for the default. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
-
 ## Variants
 
 Variants: selected, unselected.
@@ -61,7 +48,7 @@ The payment method picker shares the same radio mark. An unavailable method has 
 
 ### Behavior, states and migration
 
-Stripe error maps to errorText: icon, danger caption and unchecked danger ring. Required is semantics-only; hosts own validation and progression. HiddenElements keeps hidden label, description and error text spoken. Keep a group's labels visible when they distinguish choices, and use specific recovery copy. A group error goes on the last option only, so it shows once under the group instead of under every option (#65).
+`errorText` shows an icon, danger caption and unchecked danger ring. Required is semantics-only; hosts own validation and progression. HiddenElements keeps hidden label, description and error text spoken. Keep a group's labels visible when they distinguish choices, and use specific recovery copy. A group error goes on the last option only, so it shows once under the group instead of under every option (#65).
 
 ## Which variant when
 
@@ -94,9 +81,7 @@ The host supplies the selected value. A null `onChanged` disables the option; ke
 - Each option is one row of at least 48 dp and one screen-reader node, announced as checked or not checked in a group of mutually exclusive options.
 - The selected option stays in the focus order, so Tab reaches every option. Keyboard focus draws the kit's [focus ring](/foundations/focus/).
 
-## Used in
-
-Settings A05; PaymentSelect; checkout. Example source: `example/lib/screens/gallery_selection.dart`.
+## In the example app
 
 <Screen name="android_account_settings_light" dark="android_account_settings_dark" alt="Example account settings screen with synthetic data" caption="Example: account settings" />
 

@@ -6,11 +6,8 @@ description: PaymentListItem is a flat row that opens something or runs an actio
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentListItem` is a tappable row for settings, menus and action lists: an outlined icon, a title and a muted detail line, with no box around it.
-
-<HostOwns>what each tap does, and the reason a row is disabled.</HostOwns>
 
 <Screens>
   <Screen name="android_catalog_list_variants" dark="android_catalog_list_variants_dark" alt="Payment method rows with icons, descriptions, actions and disabled states." caption="List variants" />
@@ -47,14 +44,6 @@ PaymentList(
           );
 ```
 
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| children | children | Semantic kit value; see API for the default. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
-
 ## Variants
 
 Variants: standard, large.
@@ -82,7 +71,7 @@ PaymentListItem(
 
 ### Variants, behavior and migration
 
-Stripe List/ListItem map to PaymentList/PaymentListItem. Standard uses a 48 dp minimum and label title; large uses 64 dp and heading. Variants: size, value, icon, destructive, disabledReason and trailing. Read-only rows keep ink titles without a button role; disabled rows explain why. Do not put selection controls in value or trailing; use their dedicated rows. Values align to the first line before the navigation chevron.
+Standard uses a 48 dp minimum and label title; large uses 64 dp and heading. Variants: size, value, icon, destructive, disabledReason and trailing. Read-only rows keep ink titles without a button role; disabled rows explain why. Do not put selection controls in value or trailing; use their dedicated rows. Values align to the first line before the navigation chevron.
 
 PaymentList.onAction receives a row id unless its own onPressed overrides it. No handler and no reason means read-only. The forward glyph mirrors once in RTL.
 
@@ -125,9 +114,7 @@ Disabled rows keep their title and reason visible. The host enables each action 
 - The icon and chevron center on the title's first line, so they stay beside the title when it wraps at large text. The icon grows with text up to 1.6×.
 - Keyboard focus draws the kit's [focus ring](/foundations/focus/).
 
-## Used in
-
-Overview account list; sign-in disclosure H04. Example source: `example/lib/screens/flow_screen.dart`.
+## In the example app
 
 <Screen name="android_sign_in_light" dark="android_sign_in_dark" alt="Example sign in screen with synthetic data" caption="Example: sign in" />
 

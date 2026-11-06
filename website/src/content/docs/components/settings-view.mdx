@@ -8,7 +8,7 @@ import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-Group payment preferences with PaymentFormFieldGroup sections such as Notifications, Payments and Language. Do not use one flat list. Save is the primary action and locks repeat taps while its Future runs. The host owns values, persistence and statusMessage; status is announced in the header. Avoid another primary action in child.
+Group payment preferences with PaymentFormFieldGroup sections such as Notifications, Payments and Language. Do not use one flat list. Save is the primary action and locks repeat taps while its Future runs. Your app supplies values, persistence and statusMessage; status is announced in the header. Avoid another primary action in child.
 
 <Screens>
   <Screen name="android_catalog_settings_view_variants" dark="android_catalog_settings_view_variants_dark" alt="Payment settings grouped into labelled sections." caption="Settings view" />
@@ -20,7 +20,7 @@ Group payment preferences with PaymentFormFieldGroup sections such as Notificati
 ### Minimal
 
 This complete example keeps Save visible until there are changes to persist.
-The host owns the disabled reason and persistence.
+Your app supplies the disabled reason and saves the values.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -110,12 +110,6 @@ PaymentSettingsView(
       );
 ```
 
-## Stripe → kit
-
-| Stripe | Kit |
-| --- | --- |
-| SettingsView | `PaymentSettingsView` |
-
 ## Variants
 
 Variants: idle, saving, saved, error.
@@ -163,11 +157,7 @@ Use field-group legends for related settings. The header announces status, and S
 
 Save fills the phone footer and hugs the end on wide layouts. The host supplies the save result.
 
-A05 groups Notifications, Payments and Language. Save is the sole primary action; failure supports retry, and editing clears stale save feedback.
-
-## Used in
-
-Settings A05. Example source: `example/lib/screens/gallery_views.dart`.
+## In the example app
 
 <Screen name="android_account_settings_light" dark="android_account_settings_dark" alt="Example account settings screen with synthetic data" caption="Example: account settings" />
 

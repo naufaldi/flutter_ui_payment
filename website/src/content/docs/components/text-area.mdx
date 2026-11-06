@@ -21,15 +21,9 @@ Several lines of payment support context.
 PaymentTextArea(label: 'Notes');
 ```
 
-## Stripe → kit
+## Behavior
 
-| Stripe | Kit |
-| --- | --- |
-| rows | minLines / maxLines |
-| resizeable | maxLines: null |
-| onChange | onChanged |
-
-minLines and maxLines replace rows. maxLines null allows growth. Enter inserts a newline; Command or Control plus Enter submits. A character counter announces remaining space near the limit. cols, wrap, spellCheck, autoComplete and css width are not mirrored.
+`minLines` and `maxLines` set the height; `maxLines: null` lets the field grow. Enter inserts a newline; Command or Control plus Enter submits. A character counter announces remaining space near the limit.
 
 ## Variants
 
@@ -63,9 +57,7 @@ Input text is 16 dp. Legends precede fields in reading order. Labels and errors 
 
 The report example never logs free text. Only category and character count cross the host boundary; the controller is disposed on close.
 
-## Used in
-
-Report A02/H04. Example source: `example/lib/screens/gallery_forms.dart`.
+## In the example app
 
 <Screen name="android_report_problem_light" dark="android_report_problem_dark" alt="Example report problem screen with synthetic data" caption="Example: report problem" />
 

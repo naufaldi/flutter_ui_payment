@@ -6,11 +6,8 @@ description: PaymentMenu is an overflow menu behind an icon button, a bottom act
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentMenu` keeps secondary actions behind one icon button, usually in a [section](/components/section/) header or an app bar.
-
-<HostOwns>the entries and what each one does.</HostOwns>
 
 <Screens>
   <Screen name="android_catalog_menu_sheet" alt="Phone action menu with grouped rows, a destructive action and Cancel." caption="Phone: action sheet" />
@@ -34,14 +31,6 @@ PaymentMenu(
           entries: [PaymentMenuItem(label: 'Download', onSelected: () {})],
         );
 ```
-
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| children | child | Flutter body composition. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
 
 ## Variants
 
@@ -108,9 +97,7 @@ The host supplies enabled and disabled actions. Disabled entries retain their re
 
 Menu items have labeled targets and visible disabled reasons. Back, Escape and dismissal return focus to the opener.
 
-## Used in
-
-Detail A02; DataTable row actions A03. Example source: `example/lib/screens/gallery_nav_controls.dart`.
+## In the example app
 
 <Screen name="android_statement_light" dark="android_statement_dark" alt="Example statement screen with synthetic data" caption="Example: statement" />
 

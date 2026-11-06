@@ -6,11 +6,10 @@ import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentCurrencyField` lets people type an amount, for a top-up or a transfer. It parses strictly for the current locale and reports the result on every change; it never guesses what an unclear amount means.
 
-<HostOwns>the currency, the minimum and maximum, and whether a valid amount may be paid. Enable your confirm action only for a valid result.</HostOwns>
+Enable your confirm action only for a valid result.
 
 <Screens>
   <Screen name="android_catalog_currency_field_variants" dark="android_catalog_currency_field_variants_dark" alt="Currency amount inputs in three sizes, with an available balance hint and a filled USD amount." caption="Currency field" />
@@ -29,16 +28,6 @@ PaymentCurrencyField(
             onChanged: (_) {},
           );
 ```
-
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| onChange | onChanged | Host callback owns the effect. |
-| label | label | Semantic kit value; see API for the default. |
-| size | size | Semantic kit value; see API for the default. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
 
 ## Variants
 
@@ -68,9 +57,9 @@ The currency symbol or code, spaces and correctly placed group separators are ac
 
 ### Behavior, states and migration
 
-Stripe CurrencyField maps to PaymentCurrencyField; description appears above limits. Size keeps the amountLarge style: small subtracts 8 dp from today's default input padding, medium keeps it, large adds 8 dp; even small stays at least 48 dp. Helpers and errors can add height.
+The description appears above limits. Size keeps the amountLarge style: small subtracts 8 dp from today's default input padding, medium keeps it, large adds 8 dp; even small stays at least 48 dp. Helpers and errors can add height.
 
-Stripe `padAllFractionDigits` maps to `padFractionDigits`: on blur or submit, valid USD 5 becomes 5.00 (5,00 in Indonesian); IDR and invalid entries stay unchanged. Formatting emits no `onChanged` callback. There is no `fractionDigitOffset` prop. Supply a `currencies` allowlist to offer currency selection, and handle parse issues through `AmountParseResult`.
+`padFractionDigits`: on blur or submit, valid USD 5 becomes 5.00 (5,00 in Indonesian); IDR and invalid entries stay unchanged. Formatting emits no `onChanged` callback. Supply a `currencies` allowlist to offer currency selection, and handle parse issues through `AmountParseResult`.
 
 Migration: AmountInput remains a deprecated typedef until 0.2.0. Rename the constructor to PaymentCurrencyField; existing arguments keep compiling.
 
@@ -112,10 +101,6 @@ Use `AmountParseResult` to distinguish valid input from a parse issue. Do not re
 
 - The entered amount follows text scaling up to 1.6×, like other large amounts.
 - Error text is shown under the field in the danger tone and wraps up to three lines.
-
-## Used in
-
-Top-up scenarios; Gallery Controls. Example source: `example/lib/screens/gallery_selection.dart`.
 
 ## Customization
 

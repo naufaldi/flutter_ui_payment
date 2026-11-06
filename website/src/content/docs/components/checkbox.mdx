@@ -6,11 +6,8 @@ description: PaymentCheckbox is a checkbox with its label, for consent and opt-i
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentCheckbox` lets people agree to something or opt in, such as saving a card. The box, the label and the description form one row that toggles on a tap anywhere.
-
-<HostOwns>the value, what checking it means, and why the row is disabled.</HostOwns>
 
 <Screens>
   <Screen name="android_catalog_checkbox_variants" dark="android_catalog_checkbox_variants_dark" alt="Receipt options with selected, unselected, mixed, invalid and disabled checkboxes." caption="Checkbox" />
@@ -28,16 +25,6 @@ PaymentCheckbox(
               label: 'SMS receipt',
             );
 ```
-
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| value | value | Semantic kit value; see API for the default. |
-| onChange | onChanged | Host callback owns the effect. |
-| label | label | Semantic kit value; see API for the default. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
 
 ## Variants
 
@@ -62,11 +49,11 @@ const PaymentCheckbox(
 
 ### Pattern adoption
 
-Used in `VerificationIntro` for consent and `PaymentConfirmation` for changed-total approval. Both use the same 48 dp row and 20 dp mark slot, aligned with the section gutter. The consent sentence uses the label role and wraps at large text.
+`VerificationIntro` uses a checkbox for consent and `PaymentConfirmation` uses one for changed-total approval. Both use the same 48 dp row and 20 dp mark slot, aligned with the section gutter. The consent sentence uses the label role and wraps at large text.
 
 ### Behavior, states and migration
 
-Stripe indeterminate paints a dash and announces mixed. It ignores value and reports true when tapped, supporting select-all controls. Error text adds a danger icon, text and an unchecked danger edge. Required is spoken; the host still gates submission. HiddenElements hides label, description or error visually while retaining them in semantics. Do not rely on color alone or hide the only visible recovery instruction.
+Indeterminate paints a dash and announces mixed. It ignores value and reports true when tapped, supporting select-all controls. Error text adds a danger icon, text and an unchecked danger edge. Required is spoken; the host still gates submission. HiddenElements hides label, description or error visually while retaining them in semantics. Do not rely on color alone or hide the only visible recovery instruction.
 
 ## Which variant when
 
@@ -98,10 +85,6 @@ The host supplies unchecked, checked or indeterminate state. A null `onChanged` 
 - The whole row is one target of at least 48 dp and one screen-reader node that reads the label, the description and the checked state together.
 - The painted box takes no focus of its own, so one Tab reaches the row and Space toggles it. Keyboard focus draws the kit's [focus ring](/foundations/focus/).
 - The box centers on the label's first line, so it stays beside the label when the label wraps at large text.
-
-## Used in
-
-Statement A03; VerificationIntro; CheckoutReview. Example source: `example/lib/screens/gallery_selection.dart`.
 
 ## API
 

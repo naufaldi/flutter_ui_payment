@@ -1,8 +1,21 @@
 import { readFileSync, readdirSync } from 'node:fs';
 const dir = new URL('../src/content/docs/components/', import.meta.url);
-const required = ['## Usage', '## Stripe → kit', '## Which variant when',
-  "## Do and don't", '## Used in', '## API', '## Variants',
+const required = ['## Usage', '## Which variant when',
+  "## Do and don't", '## API', '## Variants',
   '**Do**', "**Don't**"];
+// D122: component pages carry no Stripe prop-mapping tables, host-ownership
+// callouts or internal example-scenario codes. Checked on prose only, so code
+// samples may still contain these words.
+const banned = [
+  [/^#+ .*Stripe/m, 'Stripe heading'],
+  [/^## Used in$/m, '"Used in" section'],
+  [/^\|\s*Stripe\b/m, 'Stripe mapping table'],
+  [/<HostOwns\b/, 'HostOwns callout'],
+  [/Example source:/, 'example source path'],
+  [/DOM-specific props are not mirrored/, 'DOM mapping note'],
+  [/Semantic kit value/, 'mapping boilerplate'],
+  [/\b(?:H0[1-4]|A0[1-5]|K01|P12)\b/, 'internal scenario code'],
+];
 let problems = 0;
 let pages = 0;
 for (const file of readdirSync(dir)) {
@@ -20,9 +33,17 @@ for (const file of readdirSync(dir)) {
   if (headings.has('## API') && !/<Props\b[^>]*\bnames=\{/.test(section('## API') ?? '')) {
     missing.push('API Props table');
   }
+  const found = [];
+  for (const [pattern, label] of banned) {
+    if (pattern.test(prose)) found.push(label);
+  }
   if (missing.length) {
     problems++;
     console.error(`${file}: missing ${missing.join(', ')}`);
+  }
+  if (found.length) {
+    problems++;
+    console.error(`${file}: remove ${found.join(', ')} (D122)`);
   }
 }
 

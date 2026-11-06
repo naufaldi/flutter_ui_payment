@@ -6,11 +6,10 @@ description: AmountText formats Money for the active locale with tabular figures
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `AmountText` shows a `Money` value. It formats through the active locale's `MoneyFormat`, uses tabular figures so digits line up, and gives screen readers the amount in words.
 
-<HostOwns>the amount and its currency. The widget formats; it never adds, rounds or converts.</HostOwns>
+The widget formats the amount and currency you pass; it never adds, rounds or converts.
 
 <Screens>
   <Screen name="android_catalog_amount_text_variants" dark="android_catalog_amount_text_variants_dark" alt="Amount roles from caption to display, followed by total, muted and struck amounts." caption="Amount text" />
@@ -23,10 +22,6 @@ import HostOwns from '../../../components/HostOwns.astro';
 // example/lib/screens/steps/fees_step.dart
 AmountText(Money.idr(fee));
 ```
-
-## Stripe → kit
-
-No direct Stripe equivalent. Format host amounts consistently in summaries, transaction rows and receipts.
 
 ## Variants
 
@@ -115,9 +110,7 @@ Pass the amount from the host. For failed or canceled payments, apply the docume
 
 - Screen readers hear `MoneyFormat.spoken`, not the symbol-and-digits string.
 
-## Used in
-
-Checkout H01/H04; TransactionListItem and PaymentReceipt. Example source: `example/lib/screens/steps/fees_step.dart`.
+## In the example app
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

@@ -33,15 +33,9 @@ PaymentDateField(
         );
 ```
 
-## Stripe → kit
+## Behavior
 
-| Stripe | Kit |
-| --- | --- |
-| value / onChange | DateTime value / onChanged |
-| format | app-wide dateInputPattern |
-| disabled | enabled: false |
-
-The app-wide date pattern is a hint and persistent caption. Separators are inserted without moving focus. Invalid input shows on blur or Form validation; correcting it clears the kit error. Host validators own age and range rules. No per-field pattern override exists.
+The app-wide date pattern is a hint and persistent caption. Separators are inserted without moving focus. Invalid input shows on blur or Form validation; correcting it clears the kit error. Put age and range rules in your own validator. No per-field pattern override exists.
 
 **Picker by purpose.** The kit picks the sheet from the allowed span; there is no picker parameter. When `lastDate` is more than five years after `firstDate` (`DateTime(first.year + 5, first.month, first.day)` is before `lastDate`), the button opens the wheel: day, month and year columns in the typed pattern's order, opening at the value or, when empty, at `lastDate`. Days clamp to the month, and dates outside the range are drawn disabled and settle back inside it. Otherwise it opens a full-height month calendar at the value's month or today's, with weeks starting on Monday in Indonesian and Sunday in English. Both sheets are built in the kit, so they use kit colours and strings in en and id without `GlobalMaterialLocalizations`. Pass `lastDate: today` for past dates such as a date of birth.
 
@@ -76,9 +70,7 @@ Use short, specific labels and explain how to correct an error.
 
 Input text is 16 dp. Legends precede fields in reading order. Labels and errors stay in semantics when visually hidden. The sheets return focus to the field. Each calendar day is a 48 dp button read as its full date ("Tuesday, 20 October 2026, today"); arrow keys move by a day or a week and Enter picks. Each wheel column is adjustable (swipe up or down with a screen reader) and its items grow with the text.
 
-## Used in
-
-IdentityForm H04/K01. Example source: `example/lib/screens/gallery_forms.dart`.
+## In the example app
 
 <Screen name="android_kyc_onboarding_light" dark="android_kyc_onboarding_dark" alt="Example kyc onboarding screen with synthetic data" caption="Example: kyc onboarding" />
 

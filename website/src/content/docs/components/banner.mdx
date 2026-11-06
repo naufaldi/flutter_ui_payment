@@ -6,11 +6,8 @@ description: PaymentBanner is an inline message for errors, warnings and explana
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentBanner` explains something on the page where it applies: a total that changed, a method that is unavailable, a status that is not confirmed yet. It stays until the situation changes.
-
-<HostOwns>when the banner appears, its words, and what its actions do.</HostOwns>
 
 <Screens>
   <Screen name="android_catalog_banner_variants" dark="android_catalog_banner_variants_dark" alt="Information, changed total and payment error banners with review, retry and support actions." caption="Banner" />
@@ -24,14 +21,6 @@ import HostOwns from '../../../components/HostOwns.astro';
 // example/lib/screens/steps/kyc_onboarding_step.dart
 PaymentBanner(tone: StatusTone.warning, title: s.fixHighlighted);
 ```
-
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| title | title | Semantic kit value; see API for the default. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
 
 ## Variants
 
@@ -94,7 +83,7 @@ A banner about a changed payment amount states old → new, for example "Was Rp1
 
 `announce: true` makes the banner a live region, so screen readers read it when it appears. Use it for a banner that appears in response to something, such as a re-quote or a failed request. Leave it off for a banner that is part of the page from the start.
 
-### Stripe mapping and actions
+### Actions
 
 Use onDismiss for a Hide banner action reported once; the host removes the banner. Actions accept at most one hug secondary PaymentButton plus one PaymentLink.
 
@@ -128,10 +117,6 @@ Keep the banner visible while its message applies. Supply `onDismiss` only when 
 - The tone always comes with an icon and a title, so color is not the only signal.
 - The icon grows with text size up to 1.6× and stays centered on the title's first line however far the title wraps. The close button's label is "Hide banner:" followed by the title.
 - The banner is one semantics container, so its title and message are read together.
-
-## Used in
-
-History A01; report A02; VerificationIntro. Example source: `example/lib/screens/steps/kyc_onboarding_step.dart`.
 
 ## API
 

@@ -65,7 +65,7 @@ if (!result.applied) debugPrint('ignored: ${result.rejection}');
 
 `allowsNewAttempt` is true only when the submit was accepted, the status is final, it is not `succeeded`, and your host listed `PaymentAction.startNewAttempt`. So a new attempt appears only after a confirmed failure, cancellation or expiry, and only if you allow it. It never appears while the payment is pending or unknown.
 
-Disabling buttons is interaction protection. It does not replace deduplication on your server: keep the same idempotency key (`attemptId`) for every retry and status check of an attempt, and create a new key only for a new legitimate attempt.
+The button blocks repeated taps while loading. Your backend must still prevent duplicate payments: keep the same idempotency key (`attemptId`) for every retry and status check of an attempt, and create a new key only for a new legitimate attempt.
 
 ## Changed terms need new consent
 
