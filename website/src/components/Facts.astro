@@ -55,6 +55,10 @@ const facts = [
     line-height: 1.45;
   }
   dt a {
+    /* B5: a 44 px tap target even for one-line labels. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
     color: var(--fup-muted);
     text-decoration: underline;
     text-decoration-color: var(--fup-rule);
