@@ -16,6 +16,40 @@ Group payment preferences with PaymentFormFieldGroup sections such as Notificati
 
 ## Usage
 
+### Minimal
+
+This complete example keeps Save visible until there are changes to persist.
+The host owns the disabled reason and persistence.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+
+void main() => runApp(const SettingsApp());
+
+class SettingsApp extends StatelessWidget {
+  const SettingsApp({super.key});
+
+  @override
+  Widget build(BuildContext context) => const MaterialApp(
+    localizationsDelegates: [PaymentLocalizations.delegate],
+    supportedLocales: [Locale('en'), Locale('id')],
+    home: Scaffold(
+      body: PaymentSettingsView(
+        title: 'Settings',
+        saveDisabledReason: 'Make a change before saving.',
+        child: PaymentFormFieldGroup(
+          legend: 'Notifications',
+          children: [Text('Refund notifications are enabled.')],
+        ),
+      ),
+    ),
+  );
+}
+```
+
+### Editable settings
+
 ```dart
 // example/lib/screens/gallery_views.dart
 PaymentSettingsView(
@@ -100,6 +134,12 @@ Use Full page view for read-only account facts.
 ## States
 
 Return the save `Future` so repeat taps stay blocked. Show saved status only after the host confirms persistence; preserve edits after a failure.
+
+With `onSave: null`, pass `saveDisabledReason` to show a disabled Save and a
+readable explanation beside it on wide layouts or above it on phones and at
+large text. The explanation is included in the semantics tree. When both are
+null, Save is hidden as before. A non-null `onSave` enables Save and ignores
+`saveDisabledReason`.
 
 ## Do and don't
 

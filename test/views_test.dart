@@ -91,6 +91,65 @@ void main() {
       }
     },
   );
+  testWidgets('settings keeps disabled Save visible with a readable reason', (
+    t,
+  ) async {
+    final semantics = t.ensureSemantics();
+    await setSurface(t, const Size(320, 700));
+    const reason = 'Make a change before saving your settings.';
+    await t.pumpWidget(
+      contentHostBounded(
+        const PaymentSettingsView(
+          title: 'Settings',
+          saveDisabledReason: reason,
+          child: Text('Notifications'),
+        ),
+        scale: 2,
+      ),
+    );
+    final save = find.widgetWithText(PaymentButton, 'Save');
+    expect(save, findsOneWidget);
+    expect(t.widget<PaymentButton>(save).onPressed, isNull);
+    expect(
+      t.getSemantics(find.text('Save')),
+      matchesSemantics(
+        label: 'Save',
+        isButton: true,
+        hasEnabledState: true,
+        isEnabled: false,
+      ),
+    );
+    expect(find.text(reason), findsOneWidget);
+    expect(find.bySemanticsLabel(reason), findsOneWidget);
+    final buttonRect = t.getRect(save);
+    expect(buttonRect.width, greaterThanOrEqualTo(48));
+    expect(buttonRect.height, greaterThanOrEqualTo(48));
+    final reasonRect = t.getRect(find.text(reason));
+    expect(reasonRect.left, greaterThanOrEqualTo(0));
+    expect(reasonRect.right, lessThanOrEqualTo(320));
+    expect(reasonRect.bottom, lessThanOrEqualTo(buttonRect.top));
+    expect(buttonRect.bottom, lessThanOrEqualTo(700));
+    await t.tap(save);
+    await t.pump();
+    semantics.dispose();
+    expect(t.takeException(), isNull);
+  });
+
+  testWidgets('settings hides Save when callback and reason are absent', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      bounded(
+        const PaymentSettingsView(
+          title: 'Settings',
+          child: Text('Notifications'),
+        ),
+      ),
+    );
+    expect(find.text('Save'), findsNothing);
+    expect(find.byType(PaymentButton), findsNothing);
+  });
+
   testWidgets('settings waits for save and announces host status', (t) async {
     await setSurface(t, const Size(800, 1000));
     var calls = 0;
@@ -99,6 +158,7 @@ void main() {
         PaymentSettingsView(
           title: 'Settings',
           statusMessage: 'Saved',
+          saveDisabledReason: 'Ignored while enabled',
           onSave: () async {
             calls++;
           },
@@ -110,6 +170,7 @@ void main() {
     await t.pumpAndSettle();
     expect(calls, 1);
     expect(find.text('Saved'), findsOneWidget);
+    expect(find.text('Ignored while enabled'), findsNothing);
   });
   testWidgets(
     'context rejects arbitrary branding and multiple primary actions',
