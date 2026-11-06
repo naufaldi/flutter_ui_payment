@@ -6,7 +6,6 @@ description: PaymentStatusView, manual payment instructions, the separate refund
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 Try the [Checkout and Recovery block](/blocks/checkout-recovery/) for a runnable
 mobile journey from review through an unknown result to a confirmed receipt.
@@ -17,7 +16,7 @@ payment intact beside its refund.
 
 Renders one payment attempt from host-authoritative data. It never infers success, never polls, and never offers paying again while the outcome is unresolved.
 
-<HostOwns>the status snapshots, idempotency, polling, the virtual account and its expiry, cancellation and refunds, and the share and clipboard implementations.</HostOwns>
+Your app supplies the status snapshots, polling, the virtual account and its expiry, cancellation and refunds, and the share and clipboard implementations.
 
 <Screens>
   <Screen name="android_refined_status_unknown_light" dark="android_refined_status_unknown_dark" alt="Unknown outcome: hatched band, Result not confirmed yet, amount, Don't pay again, Check status, payment reference." caption="Unknown outcome" />

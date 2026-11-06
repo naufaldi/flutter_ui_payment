@@ -21,16 +21,9 @@ Compact payment filters and applied promo codes.
 PaymentChip(label: 'Currency', value: 'IDR');
 ```
 
-## Stripe → kit
+## Behavior
 
-| Stripe | Kit |
-| --- | --- |
-| onClose | separate remove target |
-| onDropdown | editable body |
-| onAddSuggestion | suggested body |
-| direction | ChipList.reverse |
-
-Callbacks select static, removable, dropdown or suggested kinds. Removal uses a separate 48 dp action; suggested chips have a dashed edge. Multiple values summarize the first two labels plus a count. Arrow keys move between chip targets.
+Callbacks choose the static, removable, dropdown or suggested kind. Removal uses a separate 48 dp action; suggested chips have a dashed edge. Multiple values summarize the first two labels plus a count. Arrow keys move between chip targets.
 
 ## Variants
 
@@ -64,9 +57,7 @@ Use short labels and compact localized values.
 
 Targets are at least 48 dp. Pickers restore focus; result counts announce without platform calls. Keyboard navigation preserves Tab traversal.
 
-## Used in
-
-History A01; PromoCodeField. Example source: `example/lib/screens/gallery_forms.dart`.
+## In the example app
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 

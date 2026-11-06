@@ -27,15 +27,9 @@ PaymentSelect<String>(
         );
 ```
 
-## Stripe → kit
+## Behavior
 
-| Stripe | Kit |
-| --- | --- |
-| value / onChange | value / onChanged |
-| multiple | PaymentSelect.multiple |
-| disabled | onChanged: null |
-
-Single selection uses radios and closes on a changed choice. Multiple selection uses draft checkboxes and Apply. Seven or more options add a local filter. Disabled choices explain why. Focus returns to the trigger. Re-tapping the selected radio leaves the sheet open. validator integrates with Form; focusNode supports focusing the first error. Fields fill; css width, autoComplete, name and form are not mirrored.
+Single selection uses radios and closes on a changed choice. Multiple selection uses draft checkboxes and Apply. Seven or more options add a local filter. Disabled choices explain why. Focus returns to the trigger. Re-tapping the selected radio leaves the sheet open. `validator` integrates with `Form`; `focusNode` supports focusing the first error. Fields fill the available width.
 
 ## Variants
 
@@ -69,9 +63,7 @@ Use short, specific labels and explain how to correct an error.
 
 Input text is 16 dp. Legends precede fields in reading order. Labels and errors stay in semantics when visually hidden. Pickers restore focus.
 
-## Used in
-
-Report A02; IdentityForm occupation; settings language. Example source: `example/lib/screens/gallery_forms.dart`.
+## In the example app
 
 <Screen name="android_kyc_onboarding_light" dark="android_kyc_onboarding_dark" alt="Example kyc onboarding screen with synthetic data" caption="Example: kyc onboarding" />
 

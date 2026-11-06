@@ -6,13 +6,10 @@ description: CountdownText counts down to a deadline using your clock, stops at 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `CountdownText` shows the time left until a deadline, such as when a virtual account expires: `14:59`, or `1:04:09` when there is an hour or more.
 
-<HostOwns>the deadline, the clock, and what happens when it passes. A countdown reaching zero is not proof of non-payment; ask your backend for the status.</HostOwns>
-
-
+A countdown reaching zero is not proof of non-payment; ask your backend for the payment status.
 
 <Screens>
   <Screen name="android_catalog_countdown_variants" dark="android_catalog_countdown_variants_dark" alt="Countdown values for long, short and expired payment deadlines." caption="Light and dark variants" />
@@ -24,10 +21,6 @@ import HostOwns from '../../../components/HostOwns.astro';
 // lib/src/foundation/primitives.dart
 CountdownText.formatDuration(left);
 ```
-
-## Stripe → kit
-
-No direct Stripe equivalent. Show time remaining for host-issued payment instructions.
 
 ## Variants
 
@@ -78,10 +71,6 @@ The host supplies the deadline and clock. Reaching zero calls `onElapsed`; it do
 - Digits are tabular, so the width does not change as they tick.
 - Screen readers hear "Time remaining 14:59" (or the Indonesian equivalent).
 - The countdown is never animated beyond its once-a-second text change.
-
-## Used in
-
-PaymentInstructions P12; Gallery Kit. Example source: `lib/src/foundation/primitives.dart`.
 
 ## API
 

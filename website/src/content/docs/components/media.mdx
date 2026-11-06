@@ -6,13 +6,10 @@ description: An accessible video player driven by your own media engine through 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentVideoPlayer` plays a how-to clip with play/pause, seek, mute, retry and loading, buffering, ended and error states. The package has no media dependency: you adapt your player once by extending `PaymentVideoController`.
 
-<HostOwns>the media engine (plugin), the source, and the controller's lifetime. You create and dispose the controller; the widget never disposes it.</HostOwns>
-
-
+You create and dispose the controller; the widget never disposes it.
 
 <Screens>
   <Screen name="android_catalog_media_variants" dark="android_catalog_media_variants_dark" alt="Video player loading indicator, disabled transport controls and progress track." caption="Light and dark variants" />
@@ -35,10 +32,6 @@ PaymentVideoPlayer(
           );
 ```
 
-## Stripe → kit
-
-No direct Stripe equivalent. Display instructional video through a host-supplied player adapter.
-
 ## Variants
 
 Variants: idle, loading, ready, playing, paused, buffering, ended, error.
@@ -60,7 +53,7 @@ Media controls use secondary text icons. Retry uses PaymentLink.
 
 | Situation | Variant / composition | Payment example |
 | --- | --- | --- |
-| Host video adapter | loading | The host owns playback and source; display loading/error without guessing readiness. |
+| Host video adapter | loading | Your adapter controls playback and source; show loading or error without guessing readiness. |
 
 Use Image for a static preview.
 
@@ -72,7 +65,7 @@ The host controller reports loading, buffering, playback, completion and error. 
 
 ## Do and don't
 
-**Do**: The host owns playback and source; display loading/error without guessing readiness.
+**Do**: Your adapter controls playback and source; show loading or error without guessing readiness.
 
 **Don't**: Put media transport or decoding policy into the kit.
 
@@ -83,10 +76,6 @@ Give instructional clips a descriptive title and a useful error message. Keep vi
 ## Accessibility
 
 Playback state is announced. Give the clip a label, and keep play, seek and mute controls available to keyboard and screen-reader users.
-
-## Used in
-
-Gallery Kit video adapter. Example source: `example/lib/screens/gallery_kit.dart`.
 
 ## API
 

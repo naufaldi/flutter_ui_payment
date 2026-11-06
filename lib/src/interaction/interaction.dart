@@ -32,7 +32,7 @@ import 'menu_key_handoff.dart';
 /// Disabled rows stay visible; pass [disabledReason] so people know why.
 /// [destructive] uses the danger tone for both icon and label, never color
 /// alone: the label must already say what happens.
-/// Stripe ListItem sizes. Both keep at least a 48 dp target.
+/// List item sizes. Both keep at least a 48 dp target.
 enum PaymentListItemSize {
   /// Standard label row.
   standard,

@@ -23,7 +23,7 @@ import Props from '../../../components/Props.astro';
 PaymentDivider(height: theme.space(PaymentSpace.section));
 ```
 
-## Stripe → kit
+## Behavior
 
 Use `height` for the space around the rule. The rule stays 1 dp thick and uses `PaymentTheme.outline`.
 
@@ -73,10 +73,6 @@ The divider is decorative and has no loading, error or interaction state.
 ## Accessibility
 
 The divider is excluded from semantics. Use headings or labels to communicate the grouping it supports.
-
-## Used in
-
-PaymentReceipt; RefundSection. Example source: `example/lib/screens/gallery_layout.dart`.
 
 ## API
 

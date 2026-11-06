@@ -68,13 +68,6 @@ PaymentOverviewPage(
 
 Modules are spaced evenly: a chart module gets the same space under it as a page module (24 dp to the next module's hairline). Inside a view, one column is capped at 640 dp; with a secondary column the page keeps two columns from 840 dp, capped at 1040 dp. Give a chart module the headline it summarises; a "—" beside a chart with data reads as missing.
 
-## Stripe → kit
-
-| Stripe | Kit |
-| --- | --- |
-| OverviewPage | `PaymentOverviewPage` |
-| PageModule | `PaymentPageModule` |
-
 ## Variants
 
 <Screen name="android_tablet_catalog_overview_page_variants" alt="Spending chart and recent transactions beside the balance module, in English on Android tablet." caption="Wide (tablet)" />
@@ -113,9 +106,7 @@ Keep module headings in reading order. Stack columns on narrow screens so suppor
 
 Primary and secondary accept page modules, detail property lists, detail tables and chart modules directly. Arbitrary body widgets fail the debug admission check.
 
-## Used in
-
-History A01; detail composition. Example source: `example/lib/screens/gallery_views.dart`.
+## In the example app
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 

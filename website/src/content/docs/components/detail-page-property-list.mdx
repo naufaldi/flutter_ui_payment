@@ -7,7 +7,7 @@ import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-Transaction facts with optional linked values and subText. Variants: vertical, horizontal; pending, ready, empty, error. Stripe values map to PaymentDetailValue text or link with optional subText; extraActions are links in an overflow dropdown. A failed module uses warning tone because it is secondary content. The host owns retry, Create and link destinations. Empty messages explain why and offer an action.
+Transaction facts with optional linked values and subText. Variants: vertical, horizontal; pending, ready, empty, error. Values are `PaymentDetailValue` text or links with optional subText; extra actions are links in an overflow menu. A failed module uses warning tone because it is secondary content. Your app handles retry, Create and link destinations. Empty messages explain why and offer an action.
 
 <Screens>
   <Screen name="android_catalog_detail_page_property_list_variants" dark="android_catalog_detail_page_property_list_variants_dark" alt="Payment detail properties with labels, amounts and references." caption="Detail page property list" />
@@ -41,15 +41,6 @@ PaymentDetailPagePropertyList(
             ],
           );
 ```
-
-## Stripe → kit
-
-| Stripe | Kit |
-| --- | --- |
-| DetailPagePropertyList | `PaymentDetailPagePropertyList` |
-| DetailProperty | `PaymentDetailProperty` |
-| DetailValue | `PaymentDetailValue` |
-| EmptyMessage | `PaymentEmptyMessage` |
 
 ## Variants
 
@@ -87,9 +78,7 @@ Keep fact labels with their values. Linked values and overflow actions need desc
 
 A single link-only value centers with its label; at large text it wraps.
 
-## Used in
-
-Transaction detail A02; history summary A01. Example source: `example/lib/screens/gallery_views.dart`.
+## In the example app
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

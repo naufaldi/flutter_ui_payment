@@ -13,8 +13,6 @@ With local paging or no pagination, the table filters through a host predicate a
 
 Batch actions sit beside the selection count when they fit; otherwise they move below it without wrapping their labels. Column reorder and resize are unsupported. Their deprecated flags must remain false until removal in 0.2.0.
 
-For Stripe integrations, `batchable` maps to selection and `onSelectionChanged`, `loading` maps to `pending`, and `linkMap` maps to column callbacks. Your host handles networking and destinations.
-
 <Screens>
   <Screen name="android_catalog_data_table_variants" dark="android_catalog_data_table_variants_dark" alt="Settlement records with labelled row values, selection and table actions." caption="Data table" />
   <Screen name="android_catalog_data_table_variants_200" alt="Settlement records with labelled row values, selection and table actions at 200 percent text." caption="200% text" />
@@ -31,20 +29,6 @@ PaymentDataTable<int>(
           pending: true,
         );
 ```
-
-## Stripe → kit
-
-| Stripe | Kit |
-| --- | --- |
-| DataTable | `PaymentDataTable` |
-| DataColumn | `PaymentDataColumn` |
-| CellType | `PaymentCellType` |
-| RowActionEntry | `PaymentRowActionEntry` |
-| RowAction | `PaymentRowAction` |
-| RowActionGroup | `PaymentRowActionGroup` |
-| Pagination | `PaymentPagination` |
-| DataSort | `PaymentDataSort` |
-| EmptyMessage | `PaymentEmptyMessage` |
 
 ## Variants
 
@@ -92,13 +76,7 @@ Narrow rows retain column context in semantics. Select-all names its page scope,
 
 On phones, select-all has a visible label. The sort trigger names its column and direction; Default order restores host order.
 
-A03 is a searchable settlement statement: local pages select ten rows, sort summaries describe the current order and a secondary batch action prepares the selected synthetic settlements.
-
-Column reorder/resize are not mirrored: phones show a list, and the host configures wide column order and width. The legacy flags and order callback are deprecated and removed in 0.2.0.
-
-## Used in
-
-Statement A03; PaymentDetailPageTable. Example source: `example/lib/screens/gallery_content.dart`.
+## In the example app
 
 <Screen name="android_statement_light" dark="android_statement_dark" alt="Example statement screen with synthetic data" caption="Example: statement" />
 

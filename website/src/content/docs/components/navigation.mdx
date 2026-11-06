@@ -6,13 +6,8 @@ description: A grouped sidebar on wide windows and a modal drawer below the brea
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 An app frame for payment apps: a sidebar at or above a breakpoint, a modal drawer below it.
-
-<HostOwns>the selected id, routing and the pages themselves.</HostOwns>
-
-
 
 <Screens>
   <Screen name="android_catalog_navigation_variants" dark="android_catalog_navigation_variants_dark" alt="Adaptive navigation with destinations and selected-state indicators." caption="Light and dark variants" />
@@ -59,10 +54,6 @@ AdaptiveNavShell(
     );
 ```
 
-## Stripe → kit
-
-No direct Stripe equivalent. Provide a responsive app shell around host-owned routes.
-
 ## Variants
 
 Variants: sidebar, phone drawer.
@@ -102,10 +93,6 @@ The host supplies the selected destination and handles changes. Disabled destina
 ## Accessibility
 
 Selected destinations expose their selected state. Hidden drawer items are removed from the focus order.
-
-## Used in
-
-GalleryScreen; NavSidebar. Example source: `example/lib/screens/gallery_screen.dart`.
 
 ## API
 

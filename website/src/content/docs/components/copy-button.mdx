@@ -1,13 +1,13 @@
 ---
 title: Copy button
-description: The host owns copying through onCopy and returns a boolean.
+description: A copy action whose onCopy callback does the copying and reports whether it worked.
 ---
 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-The host owns copying through onCopy and returns a boolean. Success shows a check and live Copied announcement for 1500 ms. Failure shows Copy failed beneath the icon until the next attempt. Pending presses cannot duplicate the host call. Value changes invalidate stale results. There are no additional variants.
+Your `onCopy` callback does the copying and returns whether it worked. Success shows a check and live Copied announcement for 1500 ms. Failure shows Copy failed beneath the icon until the next attempt. Pending presses cannot duplicate the host call. Value changes invalidate stale results. There are no additional variants.
 
 <Screens>
   <Screen name="android_catalog_copy_button_variants" dark="android_catalog_copy_button_variants_dark" alt="Copy actions for payment references, including a failed copy with a retry action." caption="Copy button" />
@@ -22,18 +22,6 @@ PaymentCopyButton(
                 onCopy: _copyGalleryValue,
               );
 ```
-
-## Stripe → kit
-
-| Source | Kit |
-| --- | --- |
-| children | label or icon |
-| disabled | onPressed: null (icon and link) |
-| onPress | onPressed, or host onCopy for copy |
-| external / href / target / rel | external visual/semantics; host callback owns destination |
-| type | variant where supported |
-
-Width and alignment follow content. Host widgets own keyboard ordering and platform services. Do use a clear action name; avoid unlabeled glyphs and button-like containers for links.
 
 ## Variants
 
@@ -71,9 +59,7 @@ Targets are at least 48 dp. Tooltips name icon actions. Links announce their rol
 
 <Props names={['PaymentCopyButton']} />
 
-## Used in
-
-TransactionDetail A02; PaymentReceipt; PaymentInstructions. Example source: `example/lib/screens/gallery_selection.dart`.
+## In the example app
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

@@ -6,11 +6,8 @@ description: PaymentButton runs one action at a time. Primary, secondary, quiet 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentButton` starts an action. When `onPressed` returns a Future, the button shows a busy state and ignores more taps until it completes, so a double tap sends one callback.
-
-<HostOwns>what the action does, and deduplicating it on your server. The busy lock is interaction protection, not idempotency.</HostOwns>
 
 <Screens>
   <Screen name="android_catalog_button_variants" dark="android_catalog_button_variants_dark" alt="Primary, secondary, quiet and destructive buttons in default, disabled, busy and focused states, with three sizes." caption="Button" />
@@ -42,17 +39,6 @@ void main() => runApp(MaterialApp(
   ),
 ));
 ```
-
-
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| label | label | Semantic kit value; see API for the default. |
-| onAction | onPressed | Host callback owns the effect. |
-| size | size | Semantic kit value; see API for the default. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
 
 ## Variants
 
@@ -158,13 +144,6 @@ Every size occupies a hit box of at least 48 × 48 dp. The small visual is cente
 `width: PaymentWidth.fill` fills the parent by default. `PaymentWidth.hug` sizes to the label with a 112 dp minimum; a quiet hug button outside a button group hugs its label with only the 48 dp floor, so its text can start on the column edge. Put hug buttons inside an Align or Wrap; a stretching parent overrides hug. Long labels wrap and never truncate.
 
 `autofocus` focuses the action when its route opens. Focus Cancel in a destructive confirmation; focus Confirm for an ordinary confirmation.
-
-| Stripe | Kit |
-| --- | --- |
-| primary | primary for the one next action |
-| secondary | secondary for a supporting action |
-| tertiary | quiet for dismissing or deferring |
-| destructive | destructive only when confirming the named consequence |
 
 The documentation specimen intentionally shows multiple primary states together. Product views keep one primary action.
 
@@ -362,7 +341,7 @@ The host verifies custom foreground/background pairs and outlines in light/dark 
 
 ## States
 
-A null `onPressed` disables the button. While a returned `Future` runs, the button shows its busy state and blocks repeated activation. Server-side idempotency remains the host's responsibility.
+A null `onPressed` disables the button. While a returned `Future` runs, the button shows its busy state and blocks repeated activation.
 
 ## Do and don't
 
@@ -384,9 +363,7 @@ A null `onPressed` disables the button. While a returned `Future` runs, the butt
 - Full-width buttons do not scale on press; Material's pressed layer is the feedback.
 - While busy, the button is a live region that announces `busyLabel`.
 
-## Used in
-
-H04 sign-in/KYC; report A02; settings A05. Example source: `example/lib/screens/gallery_content.dart`.
+## In the example app
 
 <Screen name="android_sign_in_light" dark="android_sign_in_dark" alt="Example sign in screen with synthetic data" caption="Example: sign in" />
 
@@ -398,4 +375,4 @@ H04 sign-in/KYC; report A02; settings A05. Example source: `example/lib/screens/
 
 - [Dialog](/components/dialog/) to confirm before a destructive action.
 - [Action tile](/components/list/) for rows that open something.
-- [Payment attempt and status](/concepts/payment-attempt/) for why the lock does not replace server-side deduplication.
+- [Payment attempt and status](/concepts/payment-attempt/) for the payment flow around the pay button.

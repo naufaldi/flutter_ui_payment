@@ -6,11 +6,8 @@ description: PaymentAccordionItem is a titled section whose body can be shown or
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentAccordionItem` hides secondary detail behind its title: how long a transfer takes, step-by-step payment instructions, buyer protection terms.
-
-<HostOwns>the content, and the open state when you control it.</HostOwns>
 
 <Screens>
   <Screen name="android_catalog_accordion_variants" dark="android_catalog_accordion_variants_dark" alt="Transfer arrival instructions, expanded receipt details and a saved payment method with secondary actions." caption="Accordion variants" />
@@ -72,14 +69,6 @@ PaymentAccordion(
     );
 ```
 
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| children | children | Semantic kit value; see API for the default. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
-
 ## Variants
 
 Variants: single item, grouped items.
@@ -108,7 +97,7 @@ The chevron turns in 150 ms. The body's height eases open in 220 ms and closed i
 
 ### Variants, behavior and migration
 
-Stripe Accordion/AccordionItem map to `PaymentAccordion`/`PaymentAccordionItem`. Use `initiallyExpanded` for `defaultOpen` and `onExpandedChanged` for `onChange`. Actions allow up to two small hug `PaymentButton`s and one `PaymentMenu`. They sit beside the toggle and do not expand the item. Actions stack below the header under 400 dp or at large text. Keep disabled content readable and fees visible. Use the `media` slot for a `PaymentIcon` or `PaymentImage`.
+Actions allow up to two small hug `PaymentButton`s and one `PaymentMenu`. They sit beside the toggle and do not expand the item. Actions stack below the header under 400 dp or at large text. Keep disabled content readable and fees visible. Use the `media` slot for a `PaymentIcon` or `PaymentImage`.
 
 Migration: ExpandableSection remains a deprecated alias until 0.2.0; rename the constructor to PaymentAccordionItem.
 
@@ -154,10 +143,6 @@ Use `initiallyExpanded` for local expansion state, or pass `expanded` and `onExp
 
 - The header is a 48 dp minimum button that reports expanded or collapsed, with a "Show details" or "Hide details" hint.
 - Collapsed content is removed from the tree, so Tab and screen readers never reach it.
-
-## Used in
-
-Payment instructions and Gallery Interaction. Example source: `example/lib/screens/gallery_nav_controls.dart`.
 
 ## API
 

@@ -21,18 +21,6 @@ Inline actions hug their label with a 48 dp target and no container. Primary use
 PaymentLink(label: 'Edit', onPressed: null);
 ```
 
-## Stripe → kit
-
-| Source | Kit |
-| --- | --- |
-| children | label or icon |
-| disabled | onPressed: null (icon and link) |
-| onPress | onPressed, or host onCopy for copy |
-| external / href / target / rel | external visual/semantics; host callback owns destination |
-| type | variant where supported |
-
-Width and alignment follow content. Host widgets own keyboard ordering and platform services. Do use a clear action name; avoid unlabeled glyphs and button-like containers for links.
-
 ## Variants
 
 Variants: primary, secondary.
@@ -65,9 +53,7 @@ Targets are at least 48 dp. Tooltips name icon actions. Links announce their rol
 
 <Props names={['PaymentLink', 'PaymentLinkVariant']} />
 
-## Used in
-
-Merchant support A02; sign-in legal links H04. Example source: `example/lib/screens/gallery_selection.dart`.
+## In the example app
 
 <Screen name="android_sign_in_light" dark="android_sign_in_dark" alt="Example sign in screen with synthetic data" caption="Example: sign in" />
 

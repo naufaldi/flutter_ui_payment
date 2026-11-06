@@ -6,7 +6,6 @@ description: Optional identity verification UI. Consent, a host-driven identity 
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 The [KYC Review and Correction block](/blocks/kyc-review/) demonstrates a host
 correction journey with source and a runnable native demo. Keep document upload
@@ -19,7 +18,7 @@ For first-time consent, details and a masked review, see the
 
 KYC is optional and composes with checkout; not every payment has to pass through it. The widgets show what you ask for and why, collect it, and display your decision.
 
-<HostOwns>the identity rules and consent policy, field validators, document limits, the picker or camera, uploads, server-side document validation, and the verification decision itself. `verified` comes only from your snapshot, never from a finished upload.</HostOwns>
+Your app sets the identity rules and consent policy, field validators and document limits, runs the picker or camera, uploads and server-side document validation, and makes the verification decision. `verified` comes only from your snapshot, never from a finished upload.
 
 <Screens>
   <Screen name="android_refined_kyc_review_light" dark="android_refined_kyc_review_dark" alt="KYC review: identity details with masked values, document slots with file names shortened in the middle, and Edit actions in the section headers." caption="VerificationReview" />

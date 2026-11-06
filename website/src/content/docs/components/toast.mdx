@@ -6,11 +6,8 @@ description: showPaymentToast shows short feedback after an action, with a toned
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `showPaymentToast` confirms that something happened: "Reference copied", "Share canceled". It floats at the bottom of the screen and goes away on its own. On a screen with a pinned kit footer, such as a detail page or the payment path, it floats 16 dp above the footer, so the footer actions stay visible and tappable.
-
-<HostOwns>the message and what its action does, for example restoring something the person hid.</HostOwns>
 
 <Screens>
   <Screen name="android_catalog_toast_variants" dark="android_catalog_toast_variants_dark" alt="Toast controls with a Reference copied success toast over the gallery." caption="Toast" />
@@ -23,14 +20,6 @@ import HostOwns from '../../../components/HostOwns.astro';
 // example/lib/screens/steps/transaction_detail_step.dart
 showPaymentToast(context, message: s.viewReceipt);
 ```
-
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| children | child | Flutter body composition. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
 
 ## Variants
 
@@ -62,7 +51,7 @@ showPaymentToast(
 
 ### Pending and reading time
 
-Stripe none, success and caution map to neutral, success and warning. Pending uses a small spinner and never times out. A blocking failure belongs in a banner.
+Tones are neutral, success and warning. Pending uses a small spinner and never times out. A blocking failure belongs in a banner.
 
 ```dart
 final toast = showPaymentToast(context, message: 'Refreshing balance…', pending: true);
@@ -123,10 +112,6 @@ Show success only after the host operation succeeds. Pending can be replaced wit
 
 - Screen readers announce snack bars automatically.
 - The tone adds an icon, so the message is not carried by color alone. The icon is excluded from semantics; the message is what is read.
-
-## Used in
-
-Report A02; statement A03; gallery actions. Example source: `example/lib/screens/steps/transaction_detail_step.dart`.
 
 ## API
 

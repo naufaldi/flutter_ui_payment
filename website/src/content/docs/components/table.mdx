@@ -41,15 +41,6 @@ PaymentTable(
           );
 ```
 
-## Stripe → kit
-
-| Stripe | Kit |
-| --- | --- |
-| Table | `PaymentTable` |
-| TableRow | `PaymentTableRow` |
-| TableHeaderCell | `PaymentTableHeaderCell` |
-| TableCell | `PaymentTableCell` |
-
 ## Variants
 
 <Screen name="android_tablet_catalog_table_variants" alt="Payment methods, fees, arrival times and total in a wide table, in English on Android tablet." caption="Wide (tablet)" />
@@ -61,8 +52,6 @@ Use for fee schedules or host-computed statement summaries. Below 600 dp or at l
 ### Content and accessibility
 
 Use short, descriptive labels. Labels and narrow values wrap. Do show the currency beside an amount. Do not use color alone to communicate a result. Headings carry header semantics; facts merge their label and value. Wide table cells repeat their column label for assistive technology. Totals are computed by the host.
-
-A04 is a static fee schedule with tabular amounts, phone row collapse and contextual fee help.
 
 ## Which variant when
 
@@ -90,9 +79,7 @@ Give every column a descriptive heading. Include the currency with amounts and s
 
 Keep column labels in the semantics of narrow rows. Use status words as well as color and tabular figures for amounts.
 
-## Used in
-
-Fees A04. Example source: `example/lib/screens/steps/fees_step.dart`.
+## In the example app
 
 <Screen name="android_fees_light" dark="android_fees_dark" alt="Example fees screen with synthetic data" caption="Example: fees" />
 

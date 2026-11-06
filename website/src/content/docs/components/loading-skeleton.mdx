@@ -6,13 +6,8 @@ description: LoadingSkeleton shows still placeholder rows shaped like the conten
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `LoadingSkeleton` stands in for a list while it loads: a few muted bars where the rows will be, with an optional square where each row's icon goes.
-
-<HostOwns>loading the data and deciding when to swap the skeleton for the content, an empty state or an error.</HostOwns>
-
-
 
 <Screens>
   <Screen name="android_catalog_loading_skeleton_variants" dark="android_catalog_loading_skeleton_variants_dark" alt="Loading placeholders for payment text, rows and cards." caption="Light and dark variants" />
@@ -24,10 +19,6 @@ import HostOwns from '../../../components/HostOwns.astro';
 // example/lib/screens/flow_screen.dart
 LoadingSkeleton(rows: 3, leading: false);
 ```
-
-## Stripe → kit
-
-No direct Stripe equivalent. Reserve space for payment content while the host loads it.
 
 ## Variants
 
@@ -77,9 +68,7 @@ Match the expected content shape. Put request failures in a message with recover
 
 - Screen readers hear one "Loading" (or `semanticLabel`) instead of a series of empty boxes.
 
-## Used in
-
-TransactionHistory A01; ChartModule; detail modules. Example source: `example/lib/screens/flow_screen.dart`.
+## In the example app
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 

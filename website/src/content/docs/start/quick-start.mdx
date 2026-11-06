@@ -400,7 +400,7 @@ Future<bool> copyToClipboard(String value) async {
 
 Before connecting real payments, implement these operations in your app and backend:
 
-- **Idempotency on the server.** Send `attemptId` with every submit and status check of an attempt, and deduplicate on it in your backend. `PaymentButton` locking is interaction protection only.
+- **Idempotency on the server.** Send `attemptId` with every submit and status check of an attempt, and deduplicate on it in your backend. See [Payment attempt and status](/concepts/payment-attempt/).
 - **A new key only for a new legitimate attempt.** Create a new `PaymentAttempt` only when `attempt.allowsNewAttempt` is true: your backend allowed it and the previous result is final and not a success.
 - **Quote revalidation.** Check the quote revision before authorizing; a changed total or method needs review and a new authorization.
 - **Authorization.** Your auth SDK runs PIN, OTP or biometrics and maps the result to `AuthorizationPhase`.

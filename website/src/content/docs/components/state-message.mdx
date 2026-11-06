@@ -6,13 +6,8 @@ description: "StateMessage covers empty, error and no-match states: what happene
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `StateMessage` replaces a list when there is nothing to show: no items yet, nothing matches a search, or the list failed to load. It is compact and left-aligned, so it reads as part of the list it replaces rather than as an illustration.
-
-<HostOwns>which state applies, its words, and what the action does (usually retry).</HostOwns>
-
-
 
 <Screens>
   <Screen name="android_catalog_state_message_variants" dark="android_catalog_state_message_variants_dark" alt="Empty transaction, spending failure, transaction failure and no-match messages with recovery actions." caption="Light and dark variants" />
@@ -43,11 +38,6 @@ void main() => runApp(MaterialApp(
   ),
 ));
 ```
-
-
-## Stripe → kit
-
-No direct Stripe equivalent. Explain an empty list, no matches or a failed request and offer recovery.
 
 ## Variants
 
@@ -109,9 +99,7 @@ Distinguish no items, no matches and failed loading. The recovery action should 
 - The message is one semantics container.
 - `tone: StatusTone.danger` makes it a live region, so errors are announced. Other tones are read in place.
 
-## Used in
-
-TransactionHistory A01; DataTable and detail empty states. Example source: `example/lib/screens/gallery_kit.dart`.
+## In the example app
 
 <Screen name="android_history_light" dark="android_history_dark" alt="Example history screen with synthetic data" caption="Example: history" />
 

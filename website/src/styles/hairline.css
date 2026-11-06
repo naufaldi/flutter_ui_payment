@@ -307,16 +307,6 @@ starlight-theme-select select {
   display: none !important;
 }
 
-/* Small "the host owns" note at the top of component pages. */
-.fup-owns {
-  border-inline-start: 2px solid var(--fup-ink);
-  padding: 0.25rem 0 0.25rem 1rem;
-  color: var(--fup-ink);
-}
-.fup-owns strong {
-  font-weight: 600;
-}
-
 /* Placeholder note next to the repository URL. */
 .fup-placeholder {
   font-size: var(--sl-text-xs);

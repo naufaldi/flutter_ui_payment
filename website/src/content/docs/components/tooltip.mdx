@@ -41,14 +41,6 @@ PaymentTooltip(
 );
 ```
 
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| children | child, trigger | Flutter body composition; `trigger` for an interactive trigger. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
-
 ## Variants
 
 Variants: label, description; twelve placements.
@@ -105,11 +97,7 @@ The hint opens on tap, long press, hover or keyboard focus. Longer explanations 
 - The message is also the control's tooltip in the semantics tree, so screen readers read it with the control.
 - Keyboard focus opens it. Do not rely on a tooltip for anything a keyboard user needs.
 
-A04 gives the fee policy a real tooltip use: a focusable information button with a 48 dp target that toggles the hint on tap.
-
-## Used in
-
-Fees A04; charts; Gallery Feedback. Example source: `example/lib/screens/gallery_feedback.dart`.
+## In the example app
 
 <Screen name="android_fees_light" dark="android_fees_dark" alt="Example fees screen with synthetic data" caption="Example: fees" />
 

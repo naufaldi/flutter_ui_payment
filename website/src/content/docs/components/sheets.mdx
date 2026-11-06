@@ -6,13 +6,8 @@ description: Bottom sheets and end-edge side panels with a header, scrolling bod
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `PaymentSheet` lays out a header, a scrolling body and a fixed footer, with safe-area and keyboard insets handled. Open it as a bottom sheet or as a side panel from the end edge.
-
-<HostOwns>the content and actions, whether the sheet may be dismissed while a host call runs, and the result of any cancel request.</HostOwns>
-
-
 
 <Screens>
   <Screen name="android_catalog_sheets_variants" dark="android_catalog_sheets_variants_dark" alt="Payment sheet examples with headers, content and close controls." caption="Light and dark variants" />
@@ -56,11 +51,6 @@ void main() => runApp(MaterialApp(
   ),
 ));
 ```
-
-
-## Stripe → kit
-
-No direct Stripe equivalent. Present payment details, selection or focused tasks in an overlay.
 
 ## Variants
 
@@ -109,10 +99,6 @@ The host supplies content and handles actions. Closing a sheet dismisses its UI;
 ## Accessibility
 
 Keep the close control labeled and the footer reachable with the keyboard open. Dismissal returns focus to the opener.
-
-## Used in
-
-Capture source sheet; PaymentSelect; report presentation. Example source: `example/lib/screens/gallery_kit.dart`.
 
 ## API
 

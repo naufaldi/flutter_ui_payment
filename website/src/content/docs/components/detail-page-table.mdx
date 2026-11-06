@@ -7,7 +7,7 @@ import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
 
-Payment attempts as a detail module. Variants: pending, ready, empty, error. Composes DataTable with pagination null and no selection. The host owns row actions, retry and Create. Module errors use warning tone. Stripe extraActions render as a dropdown; dashboard-only showOpenAppAction is not mirrored.
+Payment attempts as a detail module. Variants: pending, ready, empty, error. Composes DataTable with pagination null and no selection. Your app handles row actions, retry and Create. Module errors use warning tone. Extra actions render as a dropdown.
 
 <Screens>
   <Screen name="android_catalog_detail_page_table_variants" dark="android_catalog_detail_page_table_variants_dark" alt="Payment detail table with labelled rows and supporting information." caption="Detail page table" />
@@ -62,14 +62,6 @@ PaymentDetailPageTable<int>(
   );
 ```
 
-## Stripe → kit
-
-| Stripe | Kit |
-| --- | --- |
-| DetailPageTable | `PaymentDetailPageTable` |
-| DataColumn | `PaymentDataColumn` |
-| EmptyMessage | `PaymentEmptyMessage` |
-
 ## Variants
 
 Variants: pending, ready, empty, error.
@@ -104,11 +96,9 @@ Name each attempt's reference, method, time and status. Use an explicit unknown 
 
 Keep the attempt status in words and retain column labels when rows collapse on phones.
 
-A02 uses a direct attempts module with reference, date, method, status and amount columns. Unknown status uses a neutral explicit label.
+Show an unknown status as an explicit label in the neutral tone.
 
-## Used in
-
-Transaction detail A02/H04. Example source: `example/lib/screens/gallery_views.dart`.
+## In the example app
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

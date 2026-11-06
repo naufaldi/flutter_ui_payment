@@ -67,14 +67,6 @@ PaymentDetailPage(
 <Screen name="android_transaction_detail_light_200" alt="Transaction detail on 360×640 dp Android phone at 200% text: Lihat struk pinned as the primary with Laporkan masalah under it" caption="360×640 dp Android phone, 200%, Indonesian" />
 <Screen name="android_tablet_transaction_detail_en" alt="Transaction detail on Android tablet with payment details and merchant information in two columns above the footer actions" caption="Android tablet, English" />
 
-## Stripe → kit
-
-| Stripe | Kit |
-| --- | --- |
-| DetailPage | `PaymentDetailPage` |
-| PageModule | `PaymentPageModule` |
-| Breadcrumb | `PaymentBreadcrumb` |
-
 ## Variants
 
 <Screen name="android_tablet_catalog_detail_page_variants" alt="Payment details and merchant modules in two columns with receipt and report actions, in English on Android tablet." caption="Wide (tablet)" />
@@ -113,11 +105,9 @@ Use one heading per module. Keep the primary action reachable and omit a second 
 
 Place page modules, detail property lists, detail tables or chart modules directly in primary and secondary. Do not wrap a titled module in another titled module.
 
-Used in A02 and H04. Receipt and report actions are secondary; the payment, attempts and merchant modules have one heading each.
+Keep receipt and report actions secondary.
 
-## Used in
-
-Transaction detail A02/H04. Example source: `example/lib/screens/gallery_views.dart`.
+## In the example app
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

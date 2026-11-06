@@ -6,11 +6,10 @@ description: Customer spending summaries with host-owned amounts and stable plot
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 Choose the chart from the customer's question. These are customer-facing spending summaries, not an operational dashboard.
 
-<HostOwns>data loading, the chosen ChartState, every amount, headline, delta and verdict.</HostOwns>
+Your app loads the data, chooses the `ChartState`, and supplies every amount, headline, delta and verdict.
 
 <Screens><Screen name="android_catalog_chart_in_context" dark="android_catalog_chart_in_context_dark" alt="Spending headline, weekly bars and method totals in a phone viewport." caption="Spending in context" /><Screen name="android_catalog_chart_in_context_200" alt="Spending headline, weekly bars and method totals in a phone viewport at 200 percent text." caption="200% text" /></Screens>
 

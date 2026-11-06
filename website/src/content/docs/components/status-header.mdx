@@ -6,13 +6,10 @@ description: StatusHeader and StatusBand open a status screen. The band is solid
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 `StatusHeader` is the top of a status screen: a thin band, then an icon beside the state in words. Band shape, tone, icon and words are four signals, so a hatched band (the outcome is not known yet) never reads as a plain "pending".
 
-<HostOwns>the status, from a snapshot your host produced. The header never infers it.</HostOwns>
-
-
+Pass the status from your own payment snapshot; the header never infers it.
 
 <Screens>
   <Screen name="android_catalog_status_header_variants" dark="android_catalog_status_header_variants_dark" alt="Payment outcome headers with semantic icons, labels and status bands." caption="Light and dark variants" />
@@ -28,10 +25,6 @@ StatusHeader(
           title: l10n.statusSucceededTitle,
         );
 ```
-
-## Stripe → kit
-
-No direct Stripe equivalent. Identify a payment or verification status using words, icon, tone and band pattern.
 
 ## Variants
 
@@ -82,9 +75,7 @@ The host chooses the label, tone and band pattern. Use a hatched band for an unk
 - The title is marked as a header for screen readers. The band is decorative and excluded from semantics.
 - The title scales with the text and wraps. The icon grows up to 1.6× and stays centered on the title's first line.
 
-## Used in
-
-PaymentStatusView; TransactionDetail A02; VerificationStatusView. Example source: `lib/src/receipt/payment_receipt.dart`.
+## In the example app
 
 <Screen name="android_transaction_detail_light" dark="android_transaction_detail_dark" alt="Example transaction detail screen with synthetic data" caption="Example: transaction detail" />
 

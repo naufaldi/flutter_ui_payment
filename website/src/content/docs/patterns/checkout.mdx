@@ -6,11 +6,10 @@ description: Order summary, method picker, confirmation with re-approval, host a
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
-import HostOwns from '../../../components/HostOwns.astro';
 
 Everything between "what am I paying for" and "send it": every fee shown before paying, methods with reasons when unavailable, and re-approval when the terms change.
 
-<HostOwns>the quote (lines, fees, discounts, total, expiry), the available methods and why some are unavailable, the balance and promo-code verdicts, and the authorization challenge.</HostOwns>
+Your app supplies the quote (lines, fees, discounts, total, expiry), the available methods and why some are unavailable, the balance and promo-code verdicts, and the authorization challenge.
 
 <Screens>
   <Screen name="android_refined_checkout_light" dark="android_refined_checkout_dark" alt="Checkout: summary led by the total, fee line, bordered method list with radios and an outlined selected row, and a pinned full-width Review payment with no tab bar under it." caption="PaymentSummary, PaymentMethodPicker, PaymentActionBar" />

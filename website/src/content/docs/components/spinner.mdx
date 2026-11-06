@@ -20,14 +20,6 @@ import Props from '../../../components/Props.astro';
 PaymentSpinner(size: size);
 ```
 
-## Stripe → kit
-
-| Stripe prop | Kit | Note |
-| --- | --- | --- |
-| size | size | Semantic kit value; see API for the default. |
-
-DOM-specific props are not mirrored: Flutter uses widget composition and host callbacks. See [Not in the kit](/reference/not-in-the-kit/).
-
 ## Variants
 
 Variants: small, medium, large; delayed.
@@ -79,10 +71,6 @@ Use a label that names the work, such as "Checking status". Loading alone does n
 ## Accessibility
 
 - Screen readers hear `semanticLabel`, "Loading" by default (or the Indonesian equivalent). Set a more specific label when the words beside it do not already say what is loading, or wrap the spinner in ExcludeSemantics when they do.
-
-## Used in
-
-PaymentButton; PaymentOnboardingView; PaymentVideoPlayer. Example source: `example/lib/screens/gallery_feedback.dart`.
 
 ## API
 

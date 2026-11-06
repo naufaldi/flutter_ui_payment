@@ -1,21 +1,21 @@
 /// Visual size only; layout box and hit area stay at least 48×48 dp. Components document their heights.
 enum PaymentSize {
-  /// Module headers, table or chip rows; never the main action. Stripe small.
+  /// Module headers, table or chip rows; never the main action.
   small,
 
-  /// Default, today's visual size. Stripe medium.
+  /// Default, today's visual size.
   medium,
 
-  /// One primary action on a full-screen wide view. Stripe large.
+  /// One primary action on a full-screen wide view.
   large,
 }
 
 /// Width policy; labels wrap and never truncate.
 enum PaymentWidth {
-  /// Parent width, the default. Stripe fill.
+  /// Parent width, the default.
   fill,
 
-  /// Content width. Stripe hug.
+  /// Content width.
   hug,
 }
 
@@ -26,151 +26,150 @@ enum PaymentWidth {
 /// no other. Component sizes (36, 40, 48, 52, 56, 60, 64 dp) are sizes, not
 /// spacing roles.
 enum PaymentSpace {
-  /// Zero gap. Stripe has no equivalent.
+  /// Zero gap.
   none,
 
   /// spacing × 0.5 (4): label → caption, title → message, title → meta,
   /// a small glyph beside its text, a field's label above its box at large
-  /// text. Stripe xxsmall.
+  /// text.
   inline,
 
   /// spacing (8): between stacked or adjacent actions and chips, text →
-  /// trailing control, compact control padding. Stripe xsmall.
+  /// trailing control, compact control padding.
   related,
 
   /// spacing × 1.5 (12): icon → text, band → title, list row and header
-  /// padding, notice and banner padding. Stripe small.
+  /// padding, notice and banner padding.
   block,
 
   /// spacing × 2 (16): screen, sheet and field gutters, label → value,
-  /// state message padding. Stripe medium.
+  /// state message padding.
   group,
 
   /// spacing × 3 (24): content → primary action, between field groups,
-  /// ruled section gaps. Stripe large.
+  /// ruled section gaps.
   section,
 
-  /// spacing × 4 (32): largest gap; unused by kit widgets today. Stripe
-  /// xlarge and xxlarge.
+  /// spacing × 4 (32): largest gap; unused by kit widgets today.
   major,
 }
 
 /// Corner roles for PaymentBox and PaymentImage.
 enum PaymentRadius {
-  /// BorderRadius.zero. Stripe none.
+  /// BorderRadius.zero.
   none,
 
-  /// tagBorderRadius (4 by default). Stripe xsmall.
+  /// tagBorderRadius (4 by default).
   tag,
 
-  /// controlBorderRadius (6 by default). Stripe small.
+  /// controlBorderRadius (6 by default).
   control,
 
-  /// borderRadius (8 by default). Stripe medium.
+  /// borderRadius (8 by default).
   box,
 
-  /// sheetBorderRadius (12 by default). Stripe large.
+  /// sheetBorderRadius (12 by default).
   sheet,
 
-  /// BorderRadius.circular(999), existing navigation pill. Stripe rounded.
+  /// BorderRadius.circular(999), existing navigation pill.
   circle,
 }
 
 /// The nine PaymentType roles; no additional role exists.
 enum PaymentTextRole {
-  /// display: one display amount. Stripe has no equivalent.
+  /// display: one display amount.
   display,
 
-  /// amountLarge: totals and balances. Stripe has no equivalent.
+  /// amountLarge: totals and balances.
   amountLarge,
 
-  /// title: sheet and app-bar titles. Stripe title.
+  /// title: sheet and app-bar titles.
   title,
 
-  /// heading: section titles. Stripe subtitle, heading and subheading.
+  /// heading: section titles.
   heading,
 
-  /// bodyFor(context): paragraphs. Stripe lead, body and bodyEmphasized with semibold.
+  /// bodyFor(context): paragraphs.
   body,
 
-  /// label: row labels and values. Stripe has no equivalent.
+  /// label: row labels and values.
   label,
 
-  /// caption: supporting text. Stripe caption.
+  /// caption: supporting text.
   caption,
 
-  /// tag: short status words. Stripe kicker.
+  /// tag: short status words.
   tag,
 
-  /// input: field text. Stripe has no equivalent.
+  /// input: field text.
   input,
 }
 
 /// Semantic text and icon colors.
 enum PaymentTextColor {
-  /// textPrimary. Stripe primary.
+  /// textPrimary.
   primary,
 
-  /// textSecondary. Stripe secondary.
+  /// textSecondary.
   secondary,
 
-  /// disabled. Stripe disabled.
+  /// disabled.
   disabled,
 
-  /// accent. Stripe brand.
+  /// accent.
   accent,
 
-  /// info.foreground. Stripe info.
+  /// info.foreground.
   info,
 
-  /// success.foreground. Stripe success.
+  /// success.foreground.
   success,
 
-  /// warning.foreground. Stripe attention.
+  /// warning.foreground.
   warning,
 
-  /// danger.foreground. Stripe critical.
+  /// danger.foreground.
   danger,
 }
 
 /// Running-text emphasis only; choose a PaymentType role for hierarchy.
 enum PaymentFontWeight {
-  /// FontWeight.w400. Stripe regular.
+  /// FontWeight.w400.
   regular,
 
-  /// FontWeight.w600. Stripe semibold.
+  /// FontWeight.w600.
   semibold,
 
-  /// FontWeight.w700; emphasis inside running text only. Stripe bold.
+  /// FontWeight.w700; emphasis inside running text only.
   bold,
 }
 
 /// Existing icon sizes; medium scales with text up to 1.6×.
 enum PaymentIconSize {
-  /// 14, existing badge. Stripe 12.
+  /// 14, existing badge.
   xsmall,
 
-  /// 16, existing merchant mark. Stripe 16.
+  /// 16, existing merchant mark.
   small,
 
-  /// 20 scaled up to 1.6×, existing rows. Stripe 20.
+  /// 20 scaled up to 1.6×, existing rows.
   medium,
 
-  /// 32, existing video control. Stripe 32.
+  /// 32, existing video control.
   large,
 
-  /// 48, existing state icon. Stripe 64.
+  /// 48, existing state icon.
   xlarge,
 }
 
 /// A hidden field part stays in semantics; consumers arrive in later phases.
 enum PaymentFieldPart {
-  /// Label field part. Stripe label.
+  /// Label field part.
   label,
 
-  /// Description field part. Stripe description.
+  /// Description field part.
   description,
 
-  /// Error field part. Stripe error.
+  /// Error field part.
   error,
 }

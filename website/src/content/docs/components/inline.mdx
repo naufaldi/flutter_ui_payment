@@ -21,29 +21,13 @@ Text roles for payment instructions and references.
 PaymentInline('Total');
 ```
 
-## Stripe → kit
-
-| Stripe | Kit |
-| --- | --- |
-| Inline | `PaymentInline` |
-| css and numeric styling | Semantic token enums |
-
 ## Variants
 
 Variants: nine text roles; regular, semibold, bold.
 
-### Stripe font roles
+### Text roles
 
-| Stripe | Kit role |
-| --- | --- |
-| title | title |
-| subtitle, heading, subheading | heading |
-| lead, body | body |
-| bodyEmphasized | body with semibold |
-| caption | caption |
-| kicker | tag |
-
-Payment totals and entered amounts use amountLarge; the single screen amount uses display. These payment roles have no Stripe equivalent.
+Use `title` for a page title, `heading` for headings and subheadings, `body` for running text (semibold for emphasis), `caption` for supporting text and `tag` for a short label above a heading. Payment totals and entered amounts use amountLarge; the single screen amount uses display.
 
 ## Which variant when
 
@@ -70,10 +54,6 @@ Use the role for the text's place in the hierarchy. Use `AmountText` when the va
 ## Accessibility
 
 Preserve reading order and allow text to wrap. Use text labels rather than color alone to communicate status.
-
-## Used in
-
-PaymentInstructions; PaymentSummary; Gallery Layout. Example source: `example/lib/screens/gallery_layout.dart`.
 
 ## API
 
