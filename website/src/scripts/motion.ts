@@ -1,4 +1,4 @@
-// Docs site motion (D118). Two jobs only: reveal landing sections once as they
+// Docs site motion (D121). Two jobs only: reveal landing sections once as they
 // scroll into view, and fade a panel out before it closes. Everything else is
 // CSS. The pre-paint gate in astro.config.mjs sets data-fup-motion on <html>
 // only when JavaScript runs and reduced motion is off; every hide in

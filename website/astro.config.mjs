@@ -61,7 +61,7 @@ export default defineConfig({
           ['twitter:image:alt', ogAlt],
         ].map(([name, content]) => ({ tag: 'meta', attrs: { name, content } })))
         .concat([
-          // Motion gate (D118): set before first paint, only when JavaScript runs
+          // Motion gate (D121): set before first paint, only when JavaScript runs
           // and reduced motion is off. motion.ts flags itself ready; if it never
           // loads, the gate is removed after 2.5 s so nothing stays hidden.
           {

@@ -360,6 +360,7 @@ void main() {
 
     final pay = payButtons();
     await tester.ensureVisible(pay);
+    await settle(tester);
     await tester.tap(pay);
     await tester.tap(pay, warnIfMissed: false);
     await pumpUntil(tester, () => c.step == FlowStep.authorize);

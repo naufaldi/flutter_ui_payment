@@ -3,6 +3,7 @@ title: Settings view
 description: Group account preferences with a save action and host-confirmed status.
 ---
 
+import { Aside } from '@astrojs/starlight/components';
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
@@ -137,9 +138,14 @@ Return the save `Future` so repeat taps stay blocked. Show saved status only aft
 
 With `onSave: null`, pass `saveDisabledReason` to show a disabled Save and a
 readable explanation beside it on wide layouts or above it on phones and at
-large text. The explanation is included in the semantics tree. When both are
-null, Save is hidden as before. A non-null `onSave` enables Save and ignores
-`saveDisabledReason`.
+large text. Screen readers hear the explanation as Save's hint, so a person who
+moves straight to Save hears why it is unavailable; the visible caption is not
+read a second time. When both are null, Save is hidden as before. A non-null
+`onSave` enables Save and ignores `saveDisabledReason`.
+
+<Aside type="caution" title="Unreleased: available on main, not in 0.1.0">
+`saveDisabledReason` (D114) is not in `rakit_ui` 0.1.0 on pub.dev, so the Minimal example above needs a [git dependency](/start/installation/#development-git-dependency) on `main` until the next release. With 0.1.0, omit it: a null `onSave` hides Save.
+</Aside>
 
 ## Do and don't
 

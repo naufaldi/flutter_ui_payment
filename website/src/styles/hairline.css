@@ -72,7 +72,7 @@
   --fup-radius-control: 6px;
   --fup-radius-box: 8px;
 
-  /* Motion (D118): one ease-out curve and four durations. */
+  /* Motion (D121): one ease-out curve and four durations. */
   --fup-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --fup-dur-press: 120ms;
   --fup-dur-ui: 180ms;
@@ -241,6 +241,10 @@ starlight-theme-select select {
 .starlight-aside {
   border-inline-start-width: 2px;
   border-radius: 0 var(--fup-radius-box) var(--fup-radius-box) 0;
+}
+/* At 200% text on a 320 px phone a title word can be wider than the aside. */
+.starlight-aside__title {
+  overflow-wrap: anywhere;
 }
 
 /* Keyboard focus: 2 px ink outline at a 2 px offset, never brand-colored. */
@@ -528,7 +532,7 @@ starlight-theme-select select {
 }
 
 /* ---------------------------------------------------------------------------
-   Motion (D118). Interaction feedback plus enter and exit; opacity and
+   Motion (D121). Interaction feedback plus enter and exit; opacity and
    transform only. Everything that hides or moves content sits under
    :root[data-fup-motion], a pre-paint attribute set by an inline script only
    when JavaScript runs and reduced motion is off (see astro.config.mjs).
@@ -683,7 +687,7 @@ mobile-starlight-toc a:not([aria-current='true']):active {
   }
 }
 
-/* Print (D118): content never scrolled into view still prints, and nothing
+/* Print (D121): content never scrolled into view still prints, and nothing
    prints mid-animation. */
 @media print {
   :root[data-fup-motion] :is([data-fup-reveal], [data-fup-reveal='stagger'] > *, .sl-heading-wrapper.level-h2) {

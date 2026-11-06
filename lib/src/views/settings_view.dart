@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../foundation/button_copy.dart';
 import '../foundation/primitives.dart';
 import '../foundation/payment_icons.dart';
 import '../foundation/payment_theme.dart';
@@ -68,18 +69,25 @@ class PaymentSettingsView extends StatelessWidget {
       body: child,
       footer: onSave == null && saveDisabledReason == null
           ? null
-          : ViewFooter(
-              footer: onSave == null && saveDisabledReason != null
-                  ? Text(
-                      saveDisabledReason!,
-                      style: PaymentType.of(context).caption,
-                    )
-                  : null,
-              primaryAction: PaymentButton(
-                label: saveLabel ?? l.save,
-                onPressed: onSave,
-              ),
-            ),
+          : _footer(context, l),
+    );
+  }
+
+  Widget _footer(BuildContext context, PaymentLocalizations l) {
+    final save = PaymentButton(label: saveLabel ?? l.save, onPressed: onSave);
+    final reason = onSave == null ? saveDisabledReason : null;
+    if (reason == null) return ViewFooter(primaryAction: save);
+    // A screen reader that moves straight to Save hears why it is disabled:
+    // the reason is the button's hint, and the visible caption is excluded
+    // so it is not read twice (D119).
+    return DisabledButtonHint(
+      hint: reason,
+      child: ViewFooter(
+        footer: ExcludeSemantics(
+          child: Text(reason, style: PaymentType.of(context).caption),
+        ),
+        primaryAction: save,
+      ),
     );
   }
 }

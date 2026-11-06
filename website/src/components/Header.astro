@@ -79,7 +79,7 @@ const links = primaryLinks.map((link) => ({
   // Enhancement only: the menu opens and closes without JavaScript. With it,
   // Escape closes the menu and returns focus, and a click outside closes it.
   // Every close goes through closeMenu(), which fades the panel out first when
-  // motion is on (D118) and closes at once otherwise.
+  // motion is on (D121) and closes at once otherwise.
   import { fadeOut, motionOn } from '../scripts/motion';
 
   const closing = new WeakSet<HTMLDetailsElement>();
@@ -221,7 +221,7 @@ const links = primaryLinks.map((link) => ({
     font-size: var(--sl-text-base);
     padding-inline: 0.25rem;
   }
-  /* Press feedback (D118): transforms only when motion is allowed. */
+  /* Press feedback (D121): transforms only when motion is allowed. */
   @media (prefers-reduced-motion: no-preference) {
     nav a:active {
       transform: scale(0.97);
@@ -251,12 +251,19 @@ const links = primaryLinks.map((link) => ({
   }
   .fup-menu-prefs {
     display: flex;
+    /* At 200% text the theme select drops below the social links. */
+    flex-wrap: wrap;
     justify-content: space-between;
     padding-top: 0.5rem;
     border-top: 1px solid var(--fup-rule);
   }
   .fup-prefs {
     display: none;
+  }
+  .fup-menu-prefs :global(starlight-theme-select),
+  .fup-menu-prefs :global(select) {
+    min-width: 0;
+    max-width: 100%;
   }
   .fup-prefs .fup-social::after {
     content: '';

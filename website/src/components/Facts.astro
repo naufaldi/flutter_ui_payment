@@ -10,18 +10,20 @@ const facts = [
 ];
 ---
 
-<dl class="fup-facts not-content" data-fup-reveal="stagger">
-  {
-    facts.map((f) => (
-      <div class="fup-fact">
-        <dt>
-          <a href={f.href}>{f.label}</a>
-        </dt>
-        <dd>{f.value}</dd>
-      </div>
-    ))
-  }
-</dl>
+<div class="fup-facts-wrap not-content">
+  <dl class="fup-facts not-content" data-fup-reveal="stagger">
+    {
+      facts.map((f) => (
+        <div class="fup-fact">
+          <dt>
+            <a href={f.href}>{f.label}</a>
+          </dt>
+          <dd>{f.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
+</div>
 
 <style>
   .fup-facts {
@@ -43,7 +45,9 @@ const facts = [
     border-inline-start: 1px solid var(--fup-rule);
   }
   dd {
+    min-width: 0;
     margin: 0;
+    overflow-wrap: anywhere;
     font-family: var(--__sl-font-mono);
     font-size: var(--sl-text-xl);
     font-weight: 600;
@@ -51,6 +55,7 @@ const facts = [
     color: var(--fup-ink);
   }
   dt {
+    min-width: 0;
     font-size: var(--sl-text-xs);
     line-height: 1.45;
   }
@@ -59,6 +64,9 @@ const facts = [
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;
+    max-width: 100%;
+    /* At 200% text on a 320 px phone a long word is wider than its column. */
+    overflow-wrap: anywhere;
     color: var(--fup-muted);
     text-decoration: underline;
     text-decoration-color: var(--fup-rule);
@@ -89,6 +97,25 @@ const facts = [
       border-inline-start: 1px solid var(--fup-rule);
     }
     .fup-fact:nth-child(n + 3) {
+      border-top: 1px solid var(--fup-rule);
+    }
+  }
+  /* Large text on a narrow phone (200% at 320 px): one fact per row so values
+     and links wrap at word breaks. Container em units follow the text size. */
+  .fup-facts-wrap {
+    container-type: inline-size;
+  }
+  @container (max-width: 12em) {
+    .fup-facts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .fup-fact,
+    .fup-fact + .fup-fact,
+    .fup-fact:nth-child(2n) {
+      padding: 0.875rem 0;
+      border-inline-start: 0;
+    }
+    .fup-fact + .fup-fact {
       border-top: 1px solid var(--fup-rule);
     }
   }

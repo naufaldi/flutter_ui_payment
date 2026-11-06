@@ -54,3 +54,4 @@ flutter drive --driver=test_driver/integration_driver.dart \
 
 - Dart `^3.12.0`, Flutter `>=3.44.0`. The only dependency is the Flutter SDK.
 - No network calls, analytics, media, camera, ad or payment SDKs in the package.
+- Published version: `rakit_ui` 0.1.0 on pub.dev. The docs follow `main`. APIs on `main` that are not in 0.1.0 carry an "Unreleased: available on main, not in 0.1.0" note on their page: the settings view's `saveDisabledReason`, overridable kit strings with `formatNumber`, and search errors inside the open phone sheet. Overridable kit strings remove the exported `KitStrings` and `PaymentStatusLabel` extension names, a breaking change for code that names them. The quick start compiles against 0.1.0.

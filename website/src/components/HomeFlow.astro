@@ -3,7 +3,10 @@
 // real Android capture from the registry (light and dark pairs, lazy-loaded).
 // Wide screens show the steps side by side. Phones get a native sideways
 // strip with scroll snap and a peek of the next step (D116): no JavaScript,
-// and the region is focusable so arrow keys scroll it.
+// and the region is focusable so arrow keys scroll it. D120: the markup keeps
+// tabindex as the no-JavaScript fallback; the script below drops it while the
+// steps fit side by side, so desktop Tab does not stop on a region with
+// nothing to scroll.
 import Screen from './Screen.astro';
 
 const steps = [
@@ -45,6 +48,21 @@ const steps = [
     }
   </ol>
 </div>
+
+<script>
+  // D120: focusable only while the strip actually overflows. The observer
+  // re-checks on viewport, font-size and layout changes; no timers.
+  for (const strip of document.querySelectorAll<HTMLElement>('.fup-flow-scroll')) {
+    const update = () => {
+      if (strip.scrollWidth > strip.clientWidth) strip.setAttribute('tabindex', '0');
+      else strip.removeAttribute('tabindex');
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(strip);
+    if (strip.firstElementChild) observer.observe(strip.firstElementChild);
+  }
+</script>
 
 <style>
   .fup-flow {

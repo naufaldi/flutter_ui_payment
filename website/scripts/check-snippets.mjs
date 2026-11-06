@@ -145,7 +145,11 @@ console.log('check-snippets: every kit class and named argument exists in lib/')
 // Compile complete examples separately: API-name checks cannot catch undefined
 // host helpers, missing imports, callback return types or incomplete state.
 const standalonePages = [
+  // The quick start must also compile against the published release; check
+  // that by hand with `flutter pub add rakit_ui:<version>` before a release.
+  'start/quick-start.mdx',
   'start/existing-app.mdx',
+  'foundations/localization.mdx',
   ...['button', 'text-field', 'switch', 'dialog', 'sheets', 'state-message']
     .map((name) => `components/${name}.mdx`),
 ];
@@ -159,12 +163,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   rakit_ui:
     path: ${JSON.stringify(resolve(root, '..').replaceAll('\\', '/'))}
 `);
   for (const [index, page] of standalonePages.entries()) {
     const source = readFileSync(join(root, 'src/content/docs', page), 'utf8');
-    const blocks = [...source.matchAll(/```dart standalone\r?\n([\s\S]*?)```/g)];
+    // The fence may carry other meta, such as a title, beside `standalone`.
+    const blocks = [...source.matchAll(/```dart\b[^\n]*\bstandalone\b[^\n]*\r?\n([\s\S]*?)```/g)];
     if (blocks.length !== 1 || !/\bvoid main\(/.test(blocks[0][1])) {
       throw new Error(`${page}: expected one standalone Dart example with main()`);
     }

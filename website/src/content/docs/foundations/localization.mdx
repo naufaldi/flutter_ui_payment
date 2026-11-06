@@ -3,6 +3,7 @@ title: Localization
 description: Built-in English and Indonesian strings, custom languages, and locale-aware money and dates.
 ---
 
+import { Aside } from '@astrojs/starlight/components';
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
 import Props from '../../../components/Props.astro';
@@ -33,9 +34,15 @@ labels and transaction status labels. Subclass it and register your own
 `LocalizationsDelegate<PaymentLocalizations>` for the added language. The public
 constructor takes a language code, not a `Locale`, and is not const.
 
-This complete example translates Save and the sheet close action into German:
+<Aside type="caution" title="Unreleased: available on main, not in 0.1.0">
+Overridable kit strings and `formatNumber` (D115) are not in `rakit_ui` 0.1.0 on pub.dev. In 0.1.0, kit strings are extension members, so a subclass override compiles but does not reach kit widgets, and `formatNumber` does not exist. Use a [git dependency](/start/installation/#development-git-dependency) on `main` to try them before the next release. The next release removes the exported `KitStrings` and `PaymentStatusLabel` extension names; ordinary member calls keep working.
+</Aside>
 
-```dart
+This complete example translates Save and the sheet close action into German and
+formats chart numbers the German way, so the bar chart shows `1.234,5` for
+`1234.5`:
+
+```dart standalone
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -49,6 +56,14 @@ class GermanPaymentLocalizations extends PaymentLocalizations {
 
   @override
   String get closeSheet => 'Schließen';
+
+  // German groups with "." and uses "," for decimals: 1234.5 -> 1.234,5.
+  @override
+  String formatNumber(num value, {bool grouping = true}) => super
+      .formatNumber(value, grouping: grouping)
+      .replaceAll(',', '#')
+      .replaceAll('.', ',')
+      .replaceAll('#', '.');
 }
 
 class GermanPaymentDelegate extends LocalizationsDelegate<PaymentLocalizations> {
@@ -81,9 +96,20 @@ void main() {
         body: PaymentSettingsView(
           title: 'Einstellungen',
           onSave: () async {},
-          child: PaymentSheetHeader(
-            title: 'Details',
-            onClose: () {},
+          child: Column(
+            children: [
+              PaymentSheetHeader(title: 'Details', onClose: () {}),
+              const SizedBox(
+                height: 240,
+                child: PaymentBarChart(
+                  unit: PaymentChartUnit.number,
+                  points: [
+                    ChartPoint(label: 'Jan', measure: 1234.5),
+                    ChartPoint(label: 'Feb', measure: 980),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

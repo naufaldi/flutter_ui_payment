@@ -143,12 +143,15 @@ const initial = 'unknown';
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 0;
     min-height: 3rem;
     padding: 0.25rem 0.5rem;
     font-size: var(--sl-text-sm);
     font-weight: 600;
     line-height: 1.2;
     text-align: center;
+    /* At 200% text on a 320 px phone a label can be wider than its cell. */
+    overflow-wrap: anywhere;
     color: var(--fup-muted);
     transition:
       background-color 150ms ease,
@@ -252,6 +255,28 @@ const initial = 'unknown';
       border-radius: 0;
     }
     .fup-states-option:nth-child(4) input:checked + span {
+      border-end-start-radius: calc(var(--fup-radius-control) - 1px);
+    }
+  }
+
+  /* Large text on a narrow phone (200% at 320 px): one option per row so
+     labels wrap at word breaks. Container em units follow the text size. */
+  .fup-states {
+    container-type: inline-size;
+  }
+  @container (max-width: 12em) {
+    .fup-states-control {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .fup-states-option + .fup-states-option {
+      border-inline-start: 0;
+      border-top: 1px solid var(--fup-rule);
+    }
+    .fup-states-option:nth-child(2) input:checked + span,
+    .fup-states-option:nth-child(4) input:checked + span {
+      border-radius: 0;
+    }
+    .fup-states-option:nth-child(5) input:checked + span {
       border-end-start-radius: calc(var(--fup-radius-control) - 1px);
     }
   }
