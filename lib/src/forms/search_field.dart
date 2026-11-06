@@ -173,7 +173,7 @@ class _PaymentSearchFieldState<T> extends State<PaymentSearchField<T>> {
   int? _active;
 
   /// What an open phone sheet shows; updated after each host rebuild so new
-  /// options, loading and remote results reach the sheet.
+  /// options, loading and errors reach the sheet.
   late final _source = ValueNotifier(_snapshot());
 
   /// The phone sheet starts from [PaymentSearchField.initialQuery] once.
@@ -184,6 +184,7 @@ class _PaymentSearchFieldState<T> extends State<PaymentSearchField<T>> {
   _SearchSource<T> _snapshot() => _SearchSource(
     options: widget.options,
     loading: widget.loading,
+    errorText: widget.errorText,
     selected: widget.selected,
     values: widget._values,
   );
@@ -475,11 +476,13 @@ class _SearchSource<T> {
     required this.loading,
     required this.selected,
     required this.values,
+    required this.errorText,
   });
   final List<PaymentSearchOption<T>> options;
   final bool loading;
   final T? selected;
   final Set<T> values;
+  final String? errorText;
 }
 
 /// What the phone sheet returns; null means it was closed without a choice.
@@ -741,14 +744,51 @@ class _SearchSheetState<T> extends State<_SearchSheet<T>> {
           ),
         ),
       ),
-      body: _SearchResults<T>(
-        options: visible,
-        loading: source.loading,
-        isSelected: (v) =>
-            widget.multiple ? _draft.contains(v) : source.selected == v,
-        active: _active,
-        rowKeys: _rowKeys,
-        onPick: _pick,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (source.errorText != null)
+            Flexible(
+              fit: FlexFit.loose,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(t.space(PaymentSpace.group)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: t.space(PaymentSpace.block),
+                  children: [
+                    Semantics(
+                      liveRegion: true,
+                      child: Text(
+                        source.errorText!,
+                        style: PaymentType.of(
+                          context,
+                        ).label.copyWith(color: t.danger.foreground),
+                      ),
+                    ),
+                    if (widget.onQueryChanged != null)
+                      PaymentButton(
+                        label: l.retry,
+                        variant: PaymentButtonVariant.secondary,
+                        onPressed: () =>
+                            widget.onQueryChanged!(_controller.text),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          if (source.errorText == null || visible.isNotEmpty || source.loading)
+            Expanded(
+              child: _SearchResults<T>(
+                options: visible,
+                loading: source.loading,
+                isSelected: (v) =>
+                    widget.multiple ? _draft.contains(v) : source.selected == v,
+                active: _active,
+                rowKeys: _rowKeys,
+                onPick: _pick,
+              ),
+            ),
+        ],
       ),
       footer: widget.multiple
           ? Column(
