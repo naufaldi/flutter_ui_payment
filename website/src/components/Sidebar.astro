@@ -1,0 +1,64 @@
+---
+// Docs sidebar (D110): Starlight's sidebar, unchanged, with the primary site
+// links above it in the phone menu only. Wider screens show them in the header.
+import Default from '@astrojs/starlight/components/Sidebar.astro';
+import { GET_STARTED_HREF, currentState, primaryLinks } from '../nav';
+
+const { id } = Astro.locals.starlightRoute;
+---
+
+<div class="fup-sidebar-primary">
+  <ul aria-label="Site sections">
+    {
+      primaryLinks.map((l) => (
+        <li>
+          <a href={l.href} aria-current={currentState(l, id, Astro.url.pathname)}>
+            {l.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <a class="fup-btn fup-btn-primary" href={GET_STARTED_HREF}>Get started</a>
+</div>
+<Default />
+
+<style>
+  .fup-sidebar-primary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--fup-rule);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li + li {
+    border-top: 1px solid var(--fup-rule);
+  }
+  ul a {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding-inline: 0.25rem;
+    color: var(--fup-muted);
+    font-weight: 500;
+    text-decoration: none;
+    text-underline-offset: 0.45em;
+  }
+  ul a[aria-current] {
+    color: var(--fup-ink);
+    font-weight: 600;
+    text-decoration: underline 2px var(--fup-ink);
+  }
+  /* The header carries these links from 50rem up. (Starlight's layered
+     md:sl-hidden utility loses to the unlayered display above.) */
+  @media (min-width: 50rem) {
+    .fup-sidebar-primary {
+      display: none;
+    }
+  }
+</style>

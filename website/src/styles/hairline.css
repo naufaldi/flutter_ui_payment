@@ -506,3 +506,8 @@ starlight-theme-select select {
 :root[data-has-hero] .sl-markdown-content > p {
   max-width: 65ch;
 }
+/* The homepage reads as a landing page: no "#" link icons beside its
+   headings (D110). Docs pages keep them. */
+:root[data-has-hero] .sl-markdown-content .sl-anchor-link {
+  display: none;
+}

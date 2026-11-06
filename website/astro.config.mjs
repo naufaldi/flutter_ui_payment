@@ -62,6 +62,11 @@ export default defineConfig({
         ].map(([name, content]) => ({ tag: 'meta', attrs: { name, content } }))),
       components: {
         Hero: './src/components/Hero.astro',
+        // Landing frame (D110): primary links in the header and phone menu,
+        // and a site footer on the homepage only.
+        Header: './src/components/Header.astro',
+        Sidebar: './src/components/Sidebar.astro',
+        Footer: './src/components/Footer.astro',
       },
       lastUpdated: false,
       pagination: true,
