@@ -10,20 +10,20 @@ Rakit UI is an MIT-licensed Flutter UI kit for checkout, payment status and rece
 
 I published Rakit UI 0.1.0 on pub.dev. It's a Flutter UI kit for checkout, payment status, receipts and optional KYC. The part I care about most is the unknown result. If the submit times out after the server accepted it, the screen says not to pay again and offers one action, check status for the same attempt. The widgets make no network calls. Your app and backend still own pricing, auth and idempotency. There's a demo with a fake host, and I'd like feedback.
 
-Links: try it at https://flutter-ui-payment.netlify.app/start/try-it/ and the package is at https://pub.dev/packages/rakit_ui.
+Links: try it at https://rakit-ui.netlify.app/start/try-it/ and the package is at https://pub.dev/packages/rakit_ui.
 
 ## Short social post
 
 Rakit UI 0.1.0 is on pub.dev. Flutter widgets for checkout, payment status and receipts, built around the hard case. The response is lost, so the screen checks the same attempt instead of offering pay again. Synthetic demo, no real money. Feedback welcome.
 
-https://flutter-ui-payment.netlify.app/start/try-it/
+https://rakit-ui.netlify.app/start/try-it/
 
 ## Links
 
 - Package: https://pub.dev/packages/rakit_ui
 - Source: https://github.com/naufaldi/flutter_ui_payment
-- Try it and feedback checklist: https://flutter-ui-payment.netlify.app/start/try-it/
-- Recovery demo: https://flutter-ui-payment.netlify.app/blocks/checkout-recovery/
+- Try it and feedback checklist: https://rakit-ui.netlify.app/start/try-it/
+- Recovery demo: https://rakit-ui.netlify.app/blocks/checkout-recovery/
 - Feedback: https://github.com/naufaldi/flutter_ui_payment/issues/new
 
 ## Claims we can make

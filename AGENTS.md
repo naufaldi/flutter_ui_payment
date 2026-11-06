@@ -4,7 +4,7 @@ Machine-wide simulator and browser rules live in the owner's global instructions
 
 ## What this is
 
-- `lib/`: the Flutter payment UI kit. `example/`: the example app. `website/`: the Astro Starlight docs site, deployed to Netlify.
+- `lib/`: the Flutter payment UI kit. `example/`: the example app. `website/`: the Astro Starlight docs site, deployed to the Netlify site `rakit-ui` (id `4dbabf95-de04-4c30-aeae-e95069a73272`), canonical https://rakit-ui.netlify.app (D117). The old `flutter-ui-payment` site (id `d9b5f0fb-8ed1-44c4-8a89-d7daebdc6936`) only 301-redirects there; see `website/redirect-old-site/README.md`.
 - Platform scope (D64): phase 1 targets iOS (iPhone, iPad) and Android (phones, tablets). Web is documentation only. Desktop is out of scope.
 - Source of truth: `PRD.md` and `docs/prd-foundation-components.md` specs, plus its §8 register of current applicable decisions, including amendments and supersession. `docs/decisions.md` preserves rationale/history. Start with `docs/README.md` and the derived daily guide `docs/design-system.md` for navigation. Follow recorded decisions; don't reopen them. Propose a change as a new decision.
 

@@ -6,7 +6,7 @@ const ogAlt =
   'Example checkout on an Android tablet: order summary led by the total Rp102,500, a service fee line, two payment methods and a Review payment button.';
 
 export default defineConfig({
-  site: 'https://flutter-ui-payment.netlify.app',
+  site: 'https://rakit-ui.netlify.app',
   // Pages that moved or were split into the component catalog. Astro writes a
   // redirect page for each; public/_redirects makes them real 301s on Netlify.
   redirects: {
@@ -50,14 +50,14 @@ export default defineConfig({
       // of the tablet checkout capture (pnpm og:image), since some preview
       // crawlers skip WebP (#253).
       head: [
-        ['og:image', 'https://flutter-ui-payment.netlify.app/og-image.jpg'],
+        ['og:image', 'https://rakit-ui.netlify.app/og-image.jpg'],
         ['og:image:type', 'image/jpeg'],
         ['og:image:width', '1280'],
         ['og:image:height', '776'],
         ['og:image:alt', ogAlt],
       ].map(([property, content]) => ({ tag: 'meta', attrs: { property, content } }))
         .concat([
-          ['twitter:image', 'https://flutter-ui-payment.netlify.app/og-image.jpg'],
+          ['twitter:image', 'https://rakit-ui.netlify.app/og-image.jpg'],
           ['twitter:image:alt', ogAlt],
         ].map(([name, content]) => ({ tag: 'meta', attrs: { name, content } }))),
       components: {

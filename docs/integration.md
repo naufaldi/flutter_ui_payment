@@ -33,7 +33,7 @@ MaterialApp(
 );
 ```
 
-Without the extension, the kit derives tokens from your `ColorScheme`. For a complete public-API brand bridge, see the [existing-app guide](https://flutter-ui-payment.netlify.app/start/existing-app/).
+Without the extension, the kit derives tokens from your `ColorScheme`. For a complete public-API brand bridge, see the [existing-app guide](https://rakit-ui.netlify.app/start/existing-app/).
 
 ## 3. App shell
 

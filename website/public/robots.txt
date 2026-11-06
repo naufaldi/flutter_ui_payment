@@ -2,7 +2,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://flutter-ui-payment.netlify.app/sitemap-index.xml
+Sitemap: https://rakit-ui.netlify.app/sitemap-index.xml
 
 # A plain-text summary for tools and language models:
-# https://flutter-ui-payment.netlify.app/llms.txt
+# https://rakit-ui.netlify.app/llms.txt

@@ -22,7 +22,7 @@ changes, KYC onboarding, capture and correction, and payment preferences.
 
 | Document | Audience and role |
 | --- | --- |
-| [Component inventory](components.md) and [component site](https://flutter-ui-payment.netlify.app/components/) | Host developers: current public names, shipped usage, states and host responsibilities. |
+| [Component inventory](components.md) and [component site](https://rakit-ui.netlify.app/components/) | Host developers: current public names, shipped usage, states and host responsibilities. |
 | [Integration](integration.md) | Host developers: state ownership, adapters and recovery. |
 | [Compatibility](compatibility.md) | Integrators: declared platform support and recorded verification limits. |
 | [Decisions and tradeoffs](decisions.md) | Maintainers: rationale, costs and historical evidence; consult the PRD register for the decision contract. |
