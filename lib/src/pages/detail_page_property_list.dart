@@ -4,7 +4,6 @@ import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/payment_tokens.dart';
 import '../foundation/payment_localizations.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/page_module_frame.dart';
 import '../foundation/first_line.dart';
 import '../foundation/loading_handoff.dart';

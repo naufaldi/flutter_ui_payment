@@ -5,7 +5,6 @@ import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/payment_tokens.dart';
 import '../foundation/payment_localizations.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/view_frame.dart';
 
 /// Grouped host settings with a future-locked Save action.

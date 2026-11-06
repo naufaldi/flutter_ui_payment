@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import '../controls/text_field.dart';
 import '../foundation/field_decoration.dart';
 import '../foundation/field_trigger.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/payment_icons.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';

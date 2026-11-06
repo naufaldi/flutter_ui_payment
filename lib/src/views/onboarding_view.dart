@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../foundation/primitives.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_localizations.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/view_frame.dart';
 import '../foundation/layout_rules.dart';
 import '../foundation/first_line.dart';

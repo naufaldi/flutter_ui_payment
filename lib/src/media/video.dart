@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../foundation/focus_ring.dart';
 import '../foundation/primitives.dart';
 import '../foundation/payment_tokens.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';

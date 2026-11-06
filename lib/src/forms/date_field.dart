@@ -3,7 +3,6 @@ import '../controls/actions.dart';
 import '../controls/text_field.dart';
 import '../foundation/date_input.dart';
 import '../foundation/field_decoration.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_tokens.dart';
 import 'calendar/date_sheets.dart';

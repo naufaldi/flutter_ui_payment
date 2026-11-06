@@ -7,7 +7,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../foundation/button_copy.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/money.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';

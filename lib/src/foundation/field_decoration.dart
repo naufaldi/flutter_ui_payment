@@ -1,5 +1,4 @@
 import 'payment_localizations.dart';
-import 'kit_strings.dart';
 import 'package:flutter/material.dart';
 import 'payment_theme.dart';
 import 'payment_type.dart';

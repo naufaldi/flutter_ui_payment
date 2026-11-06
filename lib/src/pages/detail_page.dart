@@ -4,7 +4,6 @@ import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/layout_rules.dart';
 import '../foundation/payment_localizations.dart';
-import '../foundation/kit_strings.dart';
 import '../controls/actions.dart';
 import '../foundation/view_frame.dart';
 import 'page_module.dart';

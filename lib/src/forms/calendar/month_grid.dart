@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../foundation/first_line.dart';
-import '../../foundation/kit_strings.dart';
 import '../../foundation/payment_localizations.dart';
 import '../../foundation/payment_theme.dart';
 import '../../foundation/payment_tokens.dart';

@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/money.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';
@@ -211,19 +210,10 @@ String formatChartValue(
         ? l10n.moneyFormat.compact(money)
         : l10n.moneyFormat.format(money);
   }
-  final parts = value
-      .toStringAsFixed(1)
-      .replaceFirst(RegExp(r'\.0$'), '')
-      .split('.');
-  final id = l10n.languageCode == 'id';
-  final whole = unit == PaymentChartUnit.number
-      ? parts[0].replaceAllMapped(
-          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-          (m) => '${m[1]}${id ? '.' : ','}',
-        )
-      : parts[0];
-  final digits =
-      '$whole${parts.length == 2 ? '${id ? ',' : '.'}${parts[1]}' : ''}';
+  final digits = l10n.formatNumber(
+    value,
+    grouping: unit == PaymentChartUnit.number,
+  );
   return unit == PaymentChartUnit.percent ? '$digits%' : digits;
 }
 

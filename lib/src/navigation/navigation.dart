@@ -5,7 +5,6 @@ import '../foundation/tap_target.dart';
 import 'package:flutter/material.dart';
 
 import '../foundation/focus_ring.dart';
-import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';

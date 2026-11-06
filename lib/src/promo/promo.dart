@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../foundation/kit_strings.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';

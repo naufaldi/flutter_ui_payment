@@ -1,6 +1,6 @@
 ---
 title: Localization
-description: English and Indonesian strings, locale-aware money separators and dates, and how to register the delegate.
+description: Built-in English and Indonesian strings, custom languages, and locale-aware money and dates.
 ---
 
 import Screen from '../../../components/Screen.astro';
@@ -25,7 +25,93 @@ MaterialApp(
 
 The `Global…` delegates come from `flutter_localizations` (add it to your `pubspec.yaml`). Without `PaymentLocalizations.delegate`, widgets still pick a language from the ambient locale: Indonesian for `id`, English otherwise. `PaymentLocalizations.supportedLanguages` is `['en', 'id']`.
 
-The strings for the interaction, navigation, sheet, media, promotion and transaction components live in the `KitStrings` extension on `PaymentLocalizations`, so you keep one delegate.
+## Add a language
+
+Every kit string is an overridable instance getter or method on
+`PaymentLocalizations`, including payment messages, settings actions, sheet
+labels and transaction status labels. Subclass it and register your own
+`LocalizationsDelegate<PaymentLocalizations>` for the added language. The public
+constructor takes a language code, not a `Locale`, and is not const.
+
+This complete example translates Save and the sheet close action into German:
+
+```dart
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+
+class GermanPaymentLocalizations extends PaymentLocalizations {
+  GermanPaymentLocalizations() : super('de');
+
+  @override
+  String get save => 'Speichern';
+
+  @override
+  String get closeSheet => 'Schließen';
+}
+
+class GermanPaymentDelegate extends LocalizationsDelegate<PaymentLocalizations> {
+  const GermanPaymentDelegate();
+
+  @override
+  bool isSupported(Locale locale) => locale.languageCode == 'de';
+
+  @override
+  Future<PaymentLocalizations> load(Locale locale) =>
+      SynchronousFuture(GermanPaymentLocalizations());
+
+  @override
+  bool shouldReload(GermanPaymentDelegate old) => false;
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      locale: const Locale('de'),
+      supportedLocales: const [Locale('de'), Locale('en'), Locale('id')],
+      localizationsDelegates: const [
+        GermanPaymentDelegate(),
+        PaymentLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: Scaffold(
+        body: PaymentSettingsView(
+          title: 'Einstellungen',
+          onSave: () async {},
+          child: PaymentSheetHeader(
+            title: 'Details',
+            onClose: () {},
+          ),
+        ),
+      ),
+    ),
+  );
+}
+```
+
+Add the Flutter SDK's `flutter_localizations` dependency to your host app for
+the `Global…` delegates. These translate Flutter's own controls; your subclass
+translates Rakit strings. `PaymentLocalizations.of(context)` returns the instance
+loaded by your delegate, so existing kit widgets use your overrides automatically.
+Register the host delegate before the built-in delegate when both support the
+same language: Flutter uses the first supported delegate for each localization type.
+
+With `super('de')`, any getter or method you do not override keeps its English
+default. The same applies to other language codes besides `id`. Override
+parameterized methods too, such as `timeRemaining(String time)` and
+`paymentStatusShort(PaymentStatus? status)`, to translate those messages.
+Override `formatNumber(num value, {bool grouping = true})` for chart numbers and percentages, including axis labels, tooltips and spoken values. The default rounds to at most one decimal digit and omits a trailing zero; percentages pass `grouping: false`. Return only the digits and separators, since charts add the percent unit. For example, a German override should return `1.234,5` for `1234.5`.
+Money and date formatters retain their built-in English conventions for unknown
+languages unless you override them as well. Host-provided titles, labels and
+content remain the host's responsibility.
+
+The built-in delegate still supports only `en` and `id`; add new locales to
+`MaterialApp.supportedLocales` and your delegate's `isSupported`.
+Without a matching kit delegate, the ambient locale selects Indonesian for
+`id` and English otherwise.
 
 ## Money
 
@@ -42,7 +128,7 @@ Amounts follow the language too: `id` groups with `.` and uses `,` for decimals,
 
 ## API
 
-<Props names={['PaymentLocalizations', 'KitStrings']} />
+<Props names={['PaymentLocalizations']} />
 
 ## See also
 
@@ -57,7 +143,7 @@ Built-in translations support `en` and `id`. Use the formatting methods below fo
 | A calendar date | `formatDate` |
 | An instant | `formatDateTime` |
 | An amount | `moneyFormat` |
-| The kit's built-in words | `PaymentLocalizations` / `KitStrings` |
+| The kit's built-in words | `PaymentLocalizations` |
 
 Do: register the existing localization delegates above. Don't: hardcode translated strings in a widget. See [Money and dates](/foundations/money/#dates) for calendar formatting and typed-date pattern overrides.
 
