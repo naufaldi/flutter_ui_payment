@@ -2,13 +2,13 @@
 
 Rakit UI provides Flutter components for checkout, payment status, receipts and optional identity verification (KYC). Build screens for pending, failed and unknown payment results, with host-owned authorization and recovery. The kit also includes navigation, forms, charts, sheets, feedback and transaction history.
 
-Adopt selected controls in your own branded app while keeping your theme, router and state: [existing-app guide](https://flutter-ui-payment.netlify.app/start/existing-app/).
+Adopt selected controls in your own branded app while keeping your theme, router and state: [existing-app guide](https://rakit-ui.netlify.app/start/existing-app/).
 
 > **Ringkasan.** Library komponen UI Flutter untuk KYC opsional dan pembayaran. Komponen hanya merender data terstruktur dari host dan melaporkan aksi lewat callback. Host/backend tetap memutuskan KYC, harga, otorisasi, idempotency, status, dan refund. Library tidak memproses uang, tidak melakukan network call, dan tidak memerlukan router, state manager, kamera, atau SDK payment. Keputusan produk ada di [PRD.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/PRD.md).
 
 Targets iOS and Android, phones and tablets. The web build is a documentation preview.
 
-**Docs:** https://flutter-ui-payment.netlify.app
+**Docs:** https://rakit-ui.netlify.app
 
 **Release:** `0.1.0`. Install with `flutter pub add rakit_ui`. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
 
@@ -24,9 +24,9 @@ flutter run -t lib/checkout_block_demo.dart   # one checkout, with its recovery 
 flutter run                                   # the full example app: Demo, Scenarios, Gallery
 ```
 
-Trying it for the first time? [Try it](https://flutter-ui-payment.netlify.app/start/try-it/) has a short trial and a feedback checklist.
+Trying it for the first time? [Try it](https://rakit-ui.netlify.app/start/try-it/) has a short trial and a feedback checklist.
 
-To build an app, [install the package](#install) and follow the [Quick start](https://flutter-ui-payment.netlify.app/start/quick-start/). It starts with a complete `lib/main.dart`, then covers checkout through receipt. Use the [catalog](https://flutter-ui-payment.netlify.app/components/) for individual widgets or copy a complete screen from [Blocks](https://flutter-ui-payment.netlify.app/blocks/). The [host integration guide](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/integration.md) explains how to connect your backend.
+To build an app, [install the package](#install) and follow the [Quick start](https://rakit-ui.netlify.app/start/quick-start/). It starts with a complete `lib/main.dart`, then covers checkout through receipt. Use the [catalog](https://rakit-ui.netlify.app/components/) for individual widgets or copy a complete screen from [Blocks](https://rakit-ui.netlify.app/blocks/). The [host integration guide](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/integration.md) explains how to connect your backend.
 
 Coding agents and maintainers should start with [AGENTS.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/AGENTS.md), the [documentation map](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/README.md) and the [daily design-system guide](https://github.com/naufaldi/flutter_ui_payment/blob/main/docs/design-system.md). Use this table for task-specific references.
 

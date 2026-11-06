@@ -1,6 +1,6 @@
 # Design research and art direction
 
-> **Research reference.** [§0](#0-current-direction-stripe-calm) records the chosen Stripe-calm direction; earlier alternatives and proposals remain historical evidence. Use the [daily guide](design-system.md) for active rules and the [site summary](https://flutter-ui-payment.netlify.app/reference/design-decisions/) for the documented visual direction. Research proposals are not a shipped API inventory.
+> **Research reference.** [§0](#0-current-direction-stripe-calm) records the chosen Stripe-calm direction; earlier alternatives and proposals remain historical evidence. Use the [daily guide](design-system.md) for active rules and the [site summary](https://rakit-ui.netlify.app/reference/design-decisions/) for the documented visual direction. Research proposals are not a shipped API inventory.
 
 Date: 30 October 2026. Phase: research only. No production component, gallery or website code was changed.
 

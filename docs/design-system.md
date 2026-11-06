@@ -33,7 +33,7 @@ D73 keeps haptics host-owned through existing callbacks. Material controls retai
 - Use semantic type, radius, icon and motion roles. Brands change tokens rather than adding branded variants.
 - Radius roles (D101): `PaymentTheme.radius` is the box corner and the base. Set `tagRadius`, `controlRadius` or `sheetRadius` on the theme to change one role, for example square boxes with pill tags; an unset role keeps 0.5 / 0.75 / 1.5 × `radius`. Widgets read roles through the getters or `PaymentRadius`; never hard-code a corner. To change only fields, use `PaymentFieldTheme` (D102). Verify the example's Hairline and Contrast brands, light and dark.
 
-Details: [token boundary §3.0](prd-foundation-components.md#30-token-layer-rule), [color](prd-foundation-components.md#31-color), [type](prd-foundation-components.md#32-typography-font-and-its-variants), [spacing](prd-foundation-components.md#33-spacing), [radius](prd-foundation-components.md#34-radius), [motion](prd-foundation-components.md#37-motion), [shipped theming](https://flutter-ui-payment.netlify.app/concepts/theming/).
+Details: [token boundary §3.0](prd-foundation-components.md#30-token-layer-rule), [color](prd-foundation-components.md#31-color), [type](prd-foundation-components.md#32-typography-font-and-its-variants), [spacing](prd-foundation-components.md#33-spacing), [radius](prd-foundation-components.md#34-radius), [motion](prd-foundation-components.md#37-motion), [shipped theming](https://rakit-ui.netlify.app/concepts/theming/).
 
 ## Customization: today versus approved migration
 

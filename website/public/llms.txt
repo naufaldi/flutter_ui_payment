@@ -21,31 +21,31 @@ Rules the kit keeps:
 - Touch targets are at least 48 dp, and layouts work at 200% text on 320 dp. With reduced motion on, the kit runs no animation.
 
 ## Start
-- [Introduction](https://flutter-ui-payment.netlify.app/start/introduction/): what the kit owns and what the host keeps
-- [Installation](https://flutter-ui-payment.netlify.app/start/installation/): pub.dev install, SDK requirements, git or path dependency for development
-- [Quick start](https://flutter-ui-payment.netlify.app/start/quick-start/): a complete lib/main.dart, then fragments from quote to receipt
-- [Try it](https://flutter-ui-payment.netlify.app/start/try-it/): run the checkout recovery demo or try the kit in a fresh app
-- [Host-owned decisions](https://flutter-ui-payment.netlify.app/concepts/host-owned/)
-- [Payment attempt and status](https://flutter-ui-payment.netlify.app/concepts/payment-attempt/)
-- [Theming](https://flutter-ui-payment.netlify.app/concepts/theming/)
-- [Accessibility](https://flutter-ui-payment.netlify.app/concepts/accessibility/)
+- [Introduction](https://rakit-ui.netlify.app/start/introduction/): what the kit owns and what the host keeps
+- [Installation](https://rakit-ui.netlify.app/start/installation/): pub.dev install, SDK requirements, git or path dependency for development
+- [Quick start](https://rakit-ui.netlify.app/start/quick-start/): a complete lib/main.dart, then fragments from quote to receipt
+- [Try it](https://rakit-ui.netlify.app/start/try-it/): run the checkout recovery demo or try the kit in a fresh app
+- [Host-owned decisions](https://rakit-ui.netlify.app/concepts/host-owned/)
+- [Payment attempt and status](https://rakit-ui.netlify.app/concepts/payment-attempt/)
+- [Theming](https://rakit-ui.netlify.app/concepts/theming/)
+- [Accessibility](https://rakit-ui.netlify.app/concepts/accessibility/)
 
 ## API
-- [Component catalog](https://flutter-ui-payment.netlify.app/components/): one page per component, with a Props table
-- [Blocks](https://flutter-ui-payment.netlify.app/blocks/): complete host screens with copyable source
-- [Patterns](https://flutter-ui-payment.netlify.app/patterns/checkout/): checkout, status and receipt, history, verification (KYC)
+- [Component catalog](https://rakit-ui.netlify.app/components/): one page per component, with a Props table
+- [Blocks](https://rakit-ui.netlify.app/blocks/): complete host screens with copyable source
+- [Patterns](https://rakit-ui.netlify.app/patterns/checkout/): checkout, status and receipt, history, verification (KYC)
 - [Dart API reference on pub.dev](https://pub.dev/documentation/rakit_ui/latest/)
 - [Public exports](https://github.com/naufaldi/flutter_ui_payment/blob/main/lib/rakit_ui.dart)
 - [Generated API data (JSON)](https://raw.githubusercontent.com/naufaldi/flutter_ui_payment/main/website/src/data/api.json): every exported class, constructor and parameter, generated from the Dart source
 
 ## Examples
 - [Example app](https://github.com/naufaldi/flutter_ui_payment/tree/main/example): the demos shown in the docs, with a fake host and synthetic data
-- [Checkout recovery demo](https://flutter-ui-payment.netlify.app/blocks/checkout-recovery/): a lost submit response recovered without offering a second payment
+- [Checkout recovery demo](https://rakit-ui.netlify.app/blocks/checkout-recovery/): a lost submit response recovered without offering a second payment
 
 ## Reference
-- [Compatibility](https://flutter-ui-payment.netlify.app/reference/compatibility/): platform requirements and what has been run
-- [Changelog](https://flutter-ui-payment.netlify.app/reference/changelog/)
-- [Not in the kit](https://flutter-ui-payment.netlify.app/reference/not-in-the-kit/)
+- [Compatibility](https://rakit-ui.netlify.app/reference/compatibility/): platform requirements and what has been run
+- [Changelog](https://rakit-ui.netlify.app/reference/changelog/)
+- [Not in the kit](https://rakit-ui.netlify.app/reference/not-in-the-kit/)
 - [pub.dev package page](https://pub.dev/packages/rakit_ui)
 - [Source on GitHub](https://github.com/naufaldi/flutter_ui_payment)
 

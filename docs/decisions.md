@@ -877,3 +877,7 @@ The 320 dp gesture rows were measured with the tab fold alone (+18.2 / +30.2 dp 
   - hiding content behind `<details>` on phones.
 
   The brief named D112, which was already taken by existing-app adoption, so this decision is D116.
+
+### Docs domain, 6 November 2026
+
+- **D117: docs canonical domain is rakit-ui.netlify.app.** The package is now `rakit_ui`, so the docs move from https://flutter-ui-payment.netlify.app to https://rakit-ui.netlify.app, deployed to the Netlify site `rakit-ui`. The Astro `site`, Open Graph and Twitter images, sitemap, `robots.txt`, `llms.txt`, homepage JSON-LD, README and docs links all use the new address. The old `flutter-ui-payment` site serves only `website/redirect-old-site/_redirects`: a forced 301 from every path to the same path on rakit-ui, so pub.dev 0.1.0 homepage and documentation links, posts and search results keep working. `pubspec.yaml` homepage and documentation point at rakit-ui and reach pub.dev with the next release. Released changelog entries keep the old URL as history. Rejected: keeping both sites live, because duplicate content splits search ranking and leaves two addresses to maintain.
