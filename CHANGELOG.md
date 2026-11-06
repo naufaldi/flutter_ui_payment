@@ -8,6 +8,7 @@ No package changes; these update https://flutter-ui-payment.netlify.app.
 - A new Try it page and a corrected `../flutter_ui_payment` path-dependency example.
 - The homepage lets you switch between success, pending, unknown and changed-total payment screens, shows real component specimens and compares the Hairline and Soft looks.
 - A header with section links and Get started, a homepage footer and contact section, and a copy button for the install command. The contact link opens a new GitHub issue, the footer attribution link has a 44 px tap target, and header buttons don't animate under reduced motion.
+- The homepage is about 30% shorter on phones: the recovery demo is a sideways strip, the brand looks sit side by side, and repeated copy is gone.
 
 ## 0.1.0
 
