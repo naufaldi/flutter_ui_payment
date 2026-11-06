@@ -7,7 +7,7 @@ import { Code } from '@astrojs/starlight/components';
 import RepoNote from '../../../components/RepoNote.astro';
 import { REPO_URL } from '../../../consts';
 
-Install `rakit_ui` 0.1.0 from [pub.dev](https://pub.dev/packages/rakit_ui).
+Install `rakit_ui` 0.2.0 from [pub.dev](https://pub.dev/packages/rakit_ui).
 
 ## Requirements
 
@@ -29,7 +29,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  rakit_ui: ^0.1.0
+  rakit_ui: ^0.2.0
 ```
 
 ## Development: git dependency
@@ -45,12 +45,12 @@ dependencies:
   rakit_ui:
     git:
       url: ${REPO_URL}
-      ref: rakit-ui-v0.1.0`}
+      ref: rakit-ui-v0.2.0`}
 />
 
 <RepoNote />
 
-To try APIs that are on `main` but not yet released, set `ref: main` instead. Pages mark those APIs "Unreleased: available on main, not in 0.1.0"; [Compatibility](/reference/compatibility/#package) lists them. The [quick start](/start/quick-start/) works with 0.1.0 from pub.dev.
+To try changes on `main` before the next release, set `ref: main` instead. The [quick start](/start/quick-start/) works with 0.2.0 from pub.dev.
 
 ## Development: path dependency
 
@@ -78,14 +78,14 @@ Rakit UI continues the same UI kit under the `rakit_ui` package name. Replace th
 
 ```yaml
 dependencies:
-  rakit_ui: ^0.1.0
+  rakit_ui: ^0.2.0
 ```
 
 ```dart
 import 'package:rakit_ui/rakit_ui.dart';
 ```
 
-Remove `flutter_ui_payment` from your dependencies, then run `flutter pub get`. Widget names, theme APIs, models and host callbacks are unchanged. Replace private `package:flutter_ui_payment/src/...` imports with the public Rakit UI API where possible.
+Remove `flutter_ui_payment` from your dependencies, then run `flutter pub get`. Widget names, theme APIs, models and host callbacks are unchanged. Code that names the `KitStrings` or `PaymentStatusLabel` extensions needs the 0.2.0 [localization migration](/foundations/localization/). Replace private `package:flutter_ui_payment/src/...` imports with the public Rakit UI API where possible.
 
 The old package and its published versions remain available for existing apps. Use one package identity throughout an app: types from the two separately published packages are distinct. The compatibility filename `package:rakit_ui/flutter_ui_payment.dart` forwards to the new library, but does not redirect old-package imports.
 

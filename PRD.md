@@ -1,7 +1,7 @@
 # PRD: Rakit UI
 
 Tanggal: 30 Oktober 2026  
-Status: Rakit UI; package `rakit_ui` versi `0.1.0` meneruskan rilis awal `flutter_ui_payment`. Identitas baru mengikuti D109; batas verifikasi tetap berlaku.
+Status: Rakit UI; package `rakit_ui` versi `0.2.0`; rilis `0.1.0` meneruskan rilis awal `flutter_ui_payment`. Identitas baru mengikuti D109; batas verifikasi tetap berlaku.
 
 Pusat proyek: repository ini (`.`)
 

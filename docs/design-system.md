@@ -87,7 +87,7 @@ Sources: [§8 current decisions](prd-foundation-components.md#8-decisions), [mot
 
 ## Variants, documentation and proof
 
-Use the closed variant sets in shipped APIs; a brand is not a variant. New non-parity variants require two real uses that differ in meaning. Follow [§9 governance](prd-foundation-components.md#9-variant-governance) and D34 compatibility: old renamed APIs remain deprecated for the compatibility window, with removal scheduled for 0.2.0; they are still present today.
+Use the closed variant sets in shipped APIs; a brand is not a variant. New non-parity variants require two real uses that differ in meaning. Follow [§9 governance](prd-foundation-components.md#9-variant-governance) and D34 compatibility: old renamed APIs remain deprecated for the compatibility window, with removal scheduled for 0.3.0 (D123); they are still present in 0.2.0.
 
 Write one focused widget test per changed host-visible story and representative affected-rule checks. Test relevant failure/disabled/custom-content edges, not every combination. Follow [AGENTS.md](../AGENTS.md) for final-head checks and the flow test only when its path changes. Public API changes regenerate API data; documentation-only organization adds no runtime verification claim.
 

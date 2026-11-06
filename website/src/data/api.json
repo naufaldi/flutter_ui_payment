@@ -7543,7 +7543,7 @@
         "kind": "method",
         "static": false,
         "type": "TextStyle",
-        "signature": "TextStyle amountStyle( BuildContext context, { @Deprecated( 'Row amounts use PaymentType.of(context).label with tabular figures (AmountText does this). Removed in 0.2.0.', ) bool large = true, })",
+        "signature": "TextStyle amountStyle( BuildContext context, { @Deprecated( 'Row amounts use PaymentType.of(context).label with tabular figures (AmountText does this). Removed in 0.3.0.', ) bool large = true, })",
         "doc": "Text style for amounts: the 32/36 display total when `large`, otherwise\na 15/20 row amount. Both use `amountWeight` and tabular figures, and the\nhost's font unless `amountFontFamily` is set.\nSame as `PaymentType.of(context).display`."
       }
     ],
@@ -8767,7 +8767,7 @@
     "file": "lib/src/foundation/primitives.dart",
     "doc": "Deprecated alias of `PaymentBadge`.",
     "aliasOf": "PaymentBadge",
-    "deprecated": "Use PaymentBadge. Removed in 0.2.0."
+    "deprecated": "Use PaymentBadge. Removed in 0.3.0."
   },
   "PaymentBanner": {
     "kind": "class",
@@ -8920,7 +8920,7 @@
     "file": "lib/src/foundation/primitives.dart",
     "doc": "Deprecated alias of `PaymentBanner`.",
     "aliasOf": "PaymentBanner",
-    "deprecated": "Use PaymentBanner. Removed in 0.2.0."
+    "deprecated": "Use PaymentBanner. Removed in 0.3.0."
   },
   "PaymentSection": {
     "kind": "class",
@@ -9598,10 +9598,10 @@
     "file": "lib/src/interaction/interaction.dart",
     "doc": "Deprecated alias of `PaymentList`.",
     "aliasOf": "PaymentList",
-    "deprecated": "Use PaymentList. Removed in 0.2.0."
+    "deprecated": "Use PaymentList. Removed in 0.3.0."
   },
   "ActionTile": {
-    "deprecated": "Use PaymentListItem. Removed in 0.2.0.",
+    "deprecated": "Use PaymentListItem. Removed in 0.3.0.",
     "kind": "class",
     "file": "lib/src/interaction/interaction.dart",
     "doc": "Deprecated wrapper: subtitle is secondaryTitle and onTap is onPressed.",
@@ -10086,14 +10086,14 @@
     "file": "lib/src/interaction/interaction.dart",
     "doc": "Deprecated alias of `PaymentMenu`.",
     "aliasOf": "PaymentMenu",
-    "deprecated": "Use PaymentMenu. Removed in 0.2.0."
+    "deprecated": "Use PaymentMenu. Removed in 0.3.0."
   },
   "ActionMenuEntry": {
     "kind": "typedef",
     "file": "lib/src/interaction/interaction.dart",
     "doc": "Deprecated alias of `PaymentMenuItem`.",
     "aliasOf": "PaymentMenuItem",
-    "deprecated": "Use PaymentMenuItem. Removed in 0.2.0."
+    "deprecated": "Use PaymentMenuItem. Removed in 0.3.0."
   },
   "showPaymentConfirmDialog": {
     "kind": "function",
@@ -10288,7 +10288,7 @@
   },
   "showPaymentSnackBar": {
     "kind": "function",
-    "deprecated": "Use showPaymentToast. Removed in 0.2.0.",
+    "deprecated": "Use showPaymentToast. Removed in 0.3.0.",
     "file": "lib/src/interaction/interaction.dart",
     "doc": "Deprecated wrapper of `showPaymentToast` returning the Material controller.",
     "returns": "ScaffoldFeatureController<SnackBar, SnackBarClosedReason>",
@@ -10576,7 +10576,7 @@
     "file": "lib/src/interaction/interaction.dart",
     "doc": "Deprecated alias of `PaymentAccordionItem`.",
     "aliasOf": "PaymentAccordionItem",
-    "deprecated": "Use PaymentAccordionItem. Removed in 0.2.0."
+    "deprecated": "Use PaymentAccordionItem. Removed in 0.3.0."
   },
   "LoadingSkeleton": {
     "kind": "class",
@@ -12513,7 +12513,7 @@
     "file": "lib/src/payment/checkout.dart",
     "doc": "Deprecated alias of `PaymentCurrencyField`.",
     "aliasOf": "PaymentCurrencyField",
-    "deprecated": "Use PaymentCurrencyField. Removed in 0.2.0."
+    "deprecated": "Use PaymentCurrencyField. Removed in 0.3.0."
   },
   "PaymentSummary": {
     "kind": "class",

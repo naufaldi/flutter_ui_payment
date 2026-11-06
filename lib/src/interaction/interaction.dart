@@ -238,11 +238,11 @@ class _PaymentListScope extends InheritedWidget {
 }
 
 /// Deprecated alias of [PaymentList].
-@Deprecated('Use PaymentList. Removed in 0.2.0.')
+@Deprecated('Use PaymentList. Removed in 0.3.0.')
 typedef ActionTileGroup = PaymentList;
 
 /// Deprecated wrapper: subtitle is secondaryTitle and onTap is onPressed.
-@Deprecated('Use PaymentListItem. Removed in 0.2.0.')
+@Deprecated('Use PaymentListItem. Removed in 0.3.0.')
 class ActionTile extends StatelessWidget {
   const ActionTile({
     super.key,
@@ -655,11 +655,11 @@ class _MenuSheet extends StatelessWidget {
 }
 
 /// Deprecated alias of [PaymentMenu].
-@Deprecated('Use PaymentMenu. Removed in 0.2.0.')
+@Deprecated('Use PaymentMenu. Removed in 0.3.0.')
 typedef ActionMenu = PaymentMenu;
 
 /// Deprecated alias of [PaymentMenuItem].
-@Deprecated('Use PaymentMenuItem. Removed in 0.2.0.')
+@Deprecated('Use PaymentMenuItem. Removed in 0.3.0.')
 typedef ActionMenuEntry = PaymentMenuItem;
 
 /// Asks before an action that cannot be undone. Resolves to true only when
@@ -970,7 +970,7 @@ PaymentToastController showPaymentToast(
 );
 
 /// Deprecated wrapper of [showPaymentToast] returning the Material controller.
-@Deprecated('Use showPaymentToast. Removed in 0.2.0.')
+@Deprecated('Use showPaymentToast. Removed in 0.3.0.')
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showPaymentSnackBar(
   BuildContext context, {
   required String message,
@@ -1351,7 +1351,7 @@ class PaymentAccordionItem extends StatefulWidget {
     required this.title,
     required this.child,
     this.subtitle,
-    @Deprecated('Use media: PaymentIcon(icon). Removed in 0.2.0.') this.leading,
+    @Deprecated('Use media: PaymentIcon(icon). Removed in 0.3.0.') this.leading,
     this.media,
     this.expanded,
     this.initiallyExpanded = false,
@@ -1372,7 +1372,7 @@ class PaymentAccordionItem extends StatefulWidget {
   final Widget? media;
 
   /// Legacy header glyph; use media.
-  @Deprecated('Use media: PaymentIcon(icon). Removed in 0.2.0.')
+  @Deprecated('Use media: PaymentIcon(icon). Removed in 0.3.0.')
   final IconData? leading;
 
   /// child for this section.
@@ -1664,7 +1664,7 @@ class PaymentAccordion extends StatelessWidget {
 }
 
 /// Deprecated alias of [PaymentAccordionItem].
-@Deprecated('Use PaymentAccordionItem. Removed in 0.2.0.')
+@Deprecated('Use PaymentAccordionItem. Removed in 0.3.0.')
 typedef ExpandableSection = PaymentAccordionItem;
 
 /// Placeholder blocks shaped like the content that is loading.
