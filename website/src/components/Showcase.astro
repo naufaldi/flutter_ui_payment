@@ -1,0 +1,212 @@
+---
+// Homepage only (D111): six real catalog specimens in a ruled grid, each
+// linking to its component page. The component and block counts come from the
+// docs collection at build time, so they cannot drift from the sidebar.
+import { getCollection } from 'astro:content';
+import screens from '../data/screens.json';
+
+const all = screens as Record<string, { width: number; height: number }>;
+const docs = await getCollection('docs');
+const count = (section: string) =>
+  docs.filter((d) => d.id.startsWith(`${section}/`) && d.id !== `${section}/index`).length;
+const components = count('components');
+const blocks = count('blocks');
+
+// Tiles share one 4:3 frame. A taller specimen is cropped (`focus` keeps the
+// part that matters in view); a wider one is shown whole at the top.
+const items = [
+  {
+    title: 'Status header',
+    href: '/components/status-header/',
+    name: 'android_catalog_status_header_variants',
+    alt: 'Payment outcome headers for paid, pending, failed and not confirmed, each with a status band, icon and label; not confirmed uses a hatched band.',
+  },
+  {
+    title: 'Banner',
+    href: '/components/banner/',
+    name: 'android_catalog_banner_variants',
+    alt: 'Information, success, changed total and payment error banners with review, retry and support actions.',
+  },
+  {
+    title: 'Currency field',
+    href: '/components/currency-field/',
+    name: 'android_catalog_currency_field_variants',
+    alt: 'Currency amount inputs in three sizes, with an available balance hint and a filled USD amount.',
+  },
+  {
+    title: 'List',
+    href: '/components/list/',
+    name: 'android_catalog_list_variants',
+    alt: 'Payment method rows with icons, descriptions, actions and disabled states.',
+  },
+  {
+    title: 'Step indicator',
+    href: '/components/step-indicator/',
+    name: 'android_catalog_step_indicator_variants',
+    alt: 'Order, review and pay progress at each of the three steps.',
+  },
+  {
+    title: 'Toast',
+    href: '/components/toast/',
+    name: 'android_catalog_toast_footer',
+    alt: 'A "Reference copied" toast sitting above a pinned Continue button, so the footer action stays reachable.',
+    focus: 'bottom',
+  },
+].map((item) => {
+  for (const n of [item.name, `${item.name}_dark`]) {
+    if (!all[n]) throw new Error(`Unknown screenshot "${n}". Add it to scripts/screens.mjs.`);
+  }
+  const size = all[item.name];
+  return {
+    ...item,
+    fit: size.height / size.width < 3 / 4 ? 'whole' : undefined,
+    light: { src: `/screens/${item.name}.webp`, ...all[item.name] },
+    dark: { src: `/screens/${item.name}_dark.webp`, ...all[`${item.name}_dark`] },
+  };
+});
+---
+
+<div class="fup-showcase not-content">
+  <p class="fup-showcase-count">
+    <span>{components} components</span>
+    <span aria-hidden="true">·</span>
+    <span>{blocks} blocks</span>
+  </p>
+  <ul class="fup-showcase-grid">
+    {
+      items.map((item) => (
+        <li>
+          <a class="fup-showcase-item" href={item.href}>
+            <span class="fup-showcase-title">{item.title}</span>
+            <span class="fup-showcase-frame" data-focus={item.focus} data-fit={item.fit}>
+              <img class="fup-only-light" src={item.light.src} width={item.light.width} height={item.light.height} alt={item.alt} loading="lazy" decoding="async" />
+              <img class="fup-only-dark" src={item.dark.src} width={item.dark.width} height={item.dark.height} alt={item.alt} loading="lazy" decoding="async" />
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="fup-showcase-more">
+    <a href="/components/">Browse all {components} components</a>
+    <span aria-hidden="true">·</span>
+    <a href="/blocks/">See the {blocks} blocks</a>
+  </p>
+</div>
+
+<style>
+  .fup-showcase {
+    margin-top: 1.5rem;
+  }
+  .fup-showcase-count {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+    font-family: var(--__sl-font-mono);
+    font-size: var(--sl-text-sm);
+    color: var(--fup-muted);
+  }
+  /* A ruled grid: the outer rule and the gaps draw the lines between tiles. */
+  .fup-showcase-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--fup-rule);
+    border: 1px solid var(--fup-rule);
+    border-radius: var(--fup-radius-box);
+    overflow: hidden;
+  }
+  .fup-showcase-grid li {
+    margin: 0;
+    background: var(--fup-surface);
+    display: flex;
+  }
+  .fup-showcase-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    color: var(--fup-ink);
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+  .fup-showcase-item:focus-visible {
+    outline-offset: -4px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .fup-showcase-item:hover {
+      background: var(--fup-surface-muted);
+    }
+    .fup-showcase-item:hover .fup-showcase-title {
+      text-decoration-color: currentColor;
+    }
+  }
+  /* Every tile has the same frame; tall specimens are cropped, short ones
+     sit at the top. */
+  .fup-showcase-frame {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--fup-radius-control);
+    background: var(--fup-surface-muted);
+  }
+  .fup-showcase-frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+  .fup-showcase-frame[data-focus='bottom'] img {
+    object-position: bottom center;
+  }
+  .fup-showcase-frame[data-fit='whole'] img {
+    height: auto;
+  }
+  .fup-showcase-title {
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--fup-border);
+    text-underline-offset: 0.2em;
+  }
+  .fup-showcase-more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.5rem;
+    margin: 1rem 0 0;
+  }
+  .fup-showcase-more a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    color: var(--fup-ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--fup-border);
+    text-underline-offset: 0.2em;
+  }
+  .fup-showcase-more span {
+    display: inline-flex;
+    align-items: center;
+    color: var(--fup-muted);
+  }
+  @media (max-width: 45rem) {
+    .fup-showcase-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .fup-showcase-item {
+      padding: 0.75rem;
+      gap: 0.5rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fup-showcase-item {
+      transition: none;
+    }
+  }
+</style>

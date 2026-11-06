@@ -1873,6 +1873,11 @@
     "height": 1095,
     "caption": "Changed total needs re-approval, Indonesian"
   },
+  "android_requote_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Changed total needs re-approval, dark, Indonesian"
+  },
   "android_kit_checkout": {
     "width": 640,
     "height": 1138,

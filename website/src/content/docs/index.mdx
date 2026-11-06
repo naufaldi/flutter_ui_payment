@@ -58,11 +58,14 @@ head:
       }
 ---
 
-import Screen from '../../components/Screen.astro';
-import Screens from '../../components/Screens.astro';
 import HomeFlow from '../../components/HomeFlow.astro';
 import Points from '../../components/Points.astro';
 import Point from '../../components/Point.astro';
+import Question from '../../components/Question.astro';
+import Showcase from '../../components/Showcase.astro';
+import BrandCompare from '../../components/BrandCompare.astro';
+import Responsibilities from '../../components/Responsibilities.astro';
+import Facts from '../../components/Facts.astro';
 import Cta from '../../components/Cta.astro';
 import Contact from '../../components/Contact.astro';
 
@@ -76,7 +79,7 @@ The demo runs on an Android emulator or an iOS Simulator with synthetic data and
 
 ## The hard states are already designed
 
-Happy-path checkout screens are easy. These are the cases that cost money and support time. The kit has a designed answer for each:
+Happy-path checkout screens are easy. These are the cases that cost money and support time. Each has a designed answer; [switch between them at the top of the page](#states).
 
 <Points>
   <Point title="The submit timed out after the server accepted it">
@@ -109,15 +112,21 @@ PaymentStatusView(
 
 [How the payment attempt works](/concepts/payment-attempt/)
 
+## Components and blocks, captured on Android
+
+Use single components, follow the [patterns](/patterns/checkout/), or copy a whole block such as checkout and recovery, then wire your own callbacks. Every image here is a real capture from the example app.
+
+<Showcase />
+
+## Your brand, light and dark
+
+`PaymentTheme` is a `ThemeExtension`. Without it the kit follows your `ColorScheme`; with it you set colors, radius and amount style for light and dark. Here is the same block in two looks, from one package. [Theming](/concepts/theming/)
+
+<BrandCompare />
+
 ## Built to fit your app, not replace it
 
 <Points>
-  <Point title="Compose what you need">
-    Use single [components](/components/), follow the [patterns](/patterns/checkout/), or copy a whole [block](/blocks/) such as checkout and recovery, then wire your own callbacks.
-  </Point>
-  <Point title="Your brand, light and dark">
-    `PaymentTheme` is a `ThemeExtension`. Without it the kit follows your `ColorScheme`; with it you set colors, radius and amount style for light and dark. [Theming](/concepts/theming/)
-  </Point>
   <Point title="Your backend stays in charge">
     Widgets render the data you pass and report what the customer did through callbacks. No network calls, no payment SDK, no router or state manager required.
   </Point>
@@ -132,66 +141,42 @@ PaymentStatusView(
   </Point>
 </Points>
 
-<Screens>
-  <Screen name="android_requote_light" alt="Checkout notice in Indonesian saying the total changed, with old and new totals and a checkbox to accept the new total before confirming." caption="A changed total needs re-approval (Indonesian)" />
-  <Screen name="android_status_va_pending_light" dark="android_status_va_pending_dark" alt="Pending virtual-account payment in Indonesian: solid amber band, amount, a monospace account number with a copy button, a countdown, folded steps and a Check status button." caption="Virtual account waiting for transfer (Indonesian)" />
-  <Screen name="android_refined_kyc_review_light" dark="android_refined_kyc_review_dark" alt="KYC review screen in English summarizing the captured identity details before the customer submits them." caption="Optional KYC review (English)" />
-  <Screen name="android_refined_status_unknown_light_200" alt="The unknown-outcome screen in Indonesian at 200% text size; the Cek status button is still on the first screen." caption="Unknown outcome at 200% text; the action stays reachable (Indonesian)" />
-</Screens>
-
 ## Who decides what
 
-The kit never decides a price, a payment result or an identity check. It shows what your host decided.
+The kit never decides a price, a payment result or an identity check. It shows what your backend decided.
 
-| Concern | Owner | What the kit does |
-| --- | --- | --- |
-| Price, fees, limits, quote expiry | Host/backend | Renders the snapshot; asks for re-approval when terms change |
-| PIN/OTP/biometric challenge | Host auth SDK | Shows the challenge state; never receives the secret |
-| Payment status, idempotency, refund | Host/backend/provider | Renders authoritative snapshots; never infers success |
-| Polling, recovery, lifecycle | Host coordinator | Exposes callbacks; widgets never poll on their own |
-| KYC decision, document validation | Host/backend | Shows progress, structured errors and the result |
+<Responsibilities />
 
-The full table, including input and consent, is on [Host-owned decisions](/concepts/host-owned/).
+The full list, including input and consent, is on [Host-owned decisions](/concepts/host-owned/).
 
 ## Proof you can check yourself
 
-Rakit UI is new. We have no verified production testimonials yet, so here is what you can inspect today:
+Rakit UI is new and has no verified production testimonials yet. Each fact below links to where you can check it.
 
-<Points>
-  <Point title="Open source, MIT licensed">
-    Every widget, block and test is on [GitHub](https://github.com/naufaldi/flutter_ui_payment). Read the code before you depend on it.
-  </Point>
-  <Point title="One dependency: the Flutter SDK">
-    The package has no network, analytics, camera or payment SDK dependencies. [Compatibility](/reference/compatibility/#package)
-  </Point>
-  <Point title="A demo you can run locally">
-    The recovery demo uses synthetic data and a fake host, with scenarios such as a lost response, pending then offline, and a receipt that fails to load.
-  </Point>
-  <Point title="Verification, with its limits stated">
-    Documentation captures come from Android API 37 phone and tablet emulators. The flow test passed earlier on an iPhone 16 simulator. There are no iOS performance numbers. [What was run](/reference/compatibility/)
-  </Point>
-</Points>
+<Facts />
+
+The [recovery demo](/blocks/checkout-recovery/) runs locally with synthetic data and a fake host. The flow test passed earlier on an iPhone 16 simulator; there are no iOS performance numbers. [What was run](/reference/compatibility/)
 
 **Be one of the first teams to try it.** Build a checkout in a fresh Flutter app, then tell us what blocked you or what was missing. [Try it and send feedback](/start/try-it/)
 
 ## Questions
 
 <Points variant="faq">
-  <Point title="Does Rakit UI process payments?">
+  <Question title="Does Rakit UI process payments?">
     No. It is UI only. Your backend and payment provider create, authorize and settle payments, and enforce idempotency. The kit displays the snapshots they return.
-  </Point>
-  <Point title="Which payment provider or backend does it need?">
+  </Question>
+  <Question title="Which payment provider or backend does it need?">
     Any. You map your provider’s responses to the kit’s models, such as `PaymentAttempt` snapshots, in your own adapter. [Host-owned decisions](/concepts/host-owned/)
-  </Point>
-  <Point title="Which platforms are supported?">
+  </Question>
+  <Question title="Which platforms are supported?">
     iOS (iPhone, iPad) and Android (phones, tablets). Flutter web is used only to preview the docs; desktop is out of scope. [Compatibility](/reference/compatibility/)
-  </Point>
-  <Point title="What does it cost?">
+  </Question>
+  <Question title="What does it cost?">
     Nothing. The package is MIT licensed and free to use in commercial apps. See the [licence](https://github.com/naufaldi/flutter_ui_payment/blob/main/LICENSE).
-  </Point>
-  <Point title="Is it ready for production?">
+  </Question>
+  <Question title="Is it ready for production?">
     It is an early 0.1.0 release with no known production users yet. Under Dart’s versioning convention, a 0.x minor release can include breaking changes. Review the code, test it with your backend, and [report what you find](https://github.com/naufaldi/flutter_ui_payment/issues/new).
-  </Point>
+  </Question>
 </Points>
 
 <Cta title="Build your first checkout" primary={{ text: 'Build your checkout', link: '/start/quick-start/' }} secondary={{ text: 'Or run the recovery demo first', link: '/blocks/checkout-recovery/' }}>

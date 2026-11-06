@@ -1,0 +1,91 @@
+---
+// Homepage only (D111): checkable facts as one compact ruled row. Static text
+// only; no star counts or other fetched numbers.
+const facts = [
+  { value: 'MIT', label: 'Open source licence', href: 'https://github.com/naufaldi/flutter_ui_payment/blob/main/LICENSE' },
+  { value: 'flutter', label: 'The only package dependency', href: '/reference/compatibility/#package' },
+  { value: '0', label: 'Network calls, polling timers or platform channels in the package', href: '/concepts/host-owned/' },
+  { value: 'en · id', label: 'Strings, money and dates localized', href: '/foundations/localization/' },
+  { value: 'API 37', label: 'Android phone and tablet emulators behind every capture', href: '/reference/compatibility/' },
+];
+---
+
+<dl class="fup-facts not-content">
+  {
+    facts.map((f) => (
+      <div class="fup-fact">
+        <dt>
+          <a href={f.href}>{f.label}</a>
+        </dt>
+        <dd>{f.value}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .fup-facts {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin: 1.5rem 0 0;
+    border-top: 1px solid var(--fup-rule);
+    border-bottom: 1px solid var(--fup-rule);
+  }
+  .fup-fact {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    padding: 1rem 1rem 1rem 0;
+  }
+  .fup-fact + .fup-fact {
+    padding-inline-start: 1rem;
+    border-inline-start: 1px solid var(--fup-rule);
+  }
+  dd {
+    margin: 0;
+    font-family: var(--__sl-font-mono);
+    font-size: var(--sl-text-xl);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--fup-ink);
+  }
+  dt {
+    font-size: var(--sl-text-xs);
+    line-height: 1.45;
+  }
+  dt a {
+    /* B5: a 44 px tap target even for one-line labels. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    color: var(--fup-muted);
+    text-decoration: underline;
+    text-decoration-color: var(--fup-rule);
+    text-underline-offset: 0.2em;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    dt a:hover {
+      color: var(--fup-ink);
+      text-decoration-color: currentColor;
+    }
+  }
+  /* Phones and narrow tablets: two facts per row, ruled between rows. */
+  @media (max-width: 50rem) {
+    .fup-facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .fup-fact,
+    .fup-fact + .fup-fact {
+      padding: 0.875rem 0.75rem 0.875rem 0;
+      border-inline-start: 0;
+    }
+    .fup-fact:nth-child(2n) {
+      padding-inline-start: 0.75rem;
+      border-inline-start: 1px solid var(--fup-rule);
+    }
+    .fup-fact:nth-child(n + 3) {
+      border-top: 1px solid var(--fup-rule);
+    }
+  }
+</style>
