@@ -28,9 +28,12 @@ export async function fadeOut(el: HTMLElement): Promise<void> {
   await animate(el, { opacity: 0, transform: 'scale(0.97)' }, { duration: 0.14, ease }).finished;
 }
 
+/** The elements CSS hides until revealed: the marked element, or a group's children. */
+const revealTargets = (el: HTMLElement) =>
+  el.dataset.fupReveal === 'stagger' ? (Array.from(el.children) as HTMLElement[]) : [el];
+
 function reveal(el: HTMLElement) {
-  const stagger = el.dataset.fupReveal === 'stagger';
-  const targets = stagger ? (Array.from(el.children) as HTMLElement[]) : [el];
+  const targets = revealTargets(el);
   if (!motionOn()) {
     // The gate went away while we waited: show everything, animate nothing.
     for (const t of targets) t.dataset.fupRevealed = '';
@@ -55,24 +58,46 @@ function reveal(el: HTMLElement) {
   });
 }
 
-if (motionOn()) {
-  const targets = [
-    ...document.querySelectorAll<HTMLElement>('[data-fup-reveal]'),
-    ...(root.hasAttribute('data-has-hero')
-      ? document.querySelectorAll<HTMLElement>('.sl-markdown-content > .sl-heading-wrapper.level-h2')
-      : []),
-  ];
-  for (const el of targets) {
-    // A group taller than the viewport can never show 20% at once.
-    const amount = el.offsetHeight > innerHeight * 4 ? 'some' : 0.2;
-    // inView fires once per entry; the callback returns nothing, so the
-    // element is unobserved after the first reveal.
-    inView(
-      el,
-      () => {
-        reveal(el);
-      },
-      { amount },
-    );
-  }
+const sections = motionOn()
+  ? [
+      ...document.querySelectorAll<HTMLElement>('[data-fup-reveal]'),
+      ...(root.hasAttribute('data-has-hero')
+        ? document.querySelectorAll<HTMLElement>('.sl-markdown-content > .sl-heading-wrapper.level-h2')
+        : []),
+    ]
+  : [];
+
+for (const el of sections) {
+  // A group taller than the viewport can never show 20% at once.
+  const amount = el.offsetHeight > innerHeight * 4 ? 'some' : 0.2;
+  // inView fires once per entry; the callback returns nothing, so the
+  // element is unobserved after the first reveal.
+  inView(
+    el,
+    () => {
+      reveal(el);
+    },
+    { amount },
+  );
 }
+
+// Reduced motion turned on while the page is open: mark every section shown,
+// drop the gate so no CSS motion starts, then jump every running animation
+// to its end. A transition already under way keeps running when its rule goes
+// away, so it is finished too. finish() also settles Motion's `finished`
+// promise, so a pending menu close still runs; cancel() would leave it hanging.
+// Turning reduced motion off again keeps this page still: putting the gate
+// back would replay the entrance keyframes and hide content already on screen.
+// The next page load picks the preference up again.
+reduced.addEventListener('change', () => {
+  if (!reduced.matches) return;
+  for (const el of sections) for (const t of revealTargets(el)) t.dataset.fupRevealed = '';
+  delete root.dataset.fupMotion;
+  for (const a of document.getAnimations()) {
+    try {
+      a.finish();
+    } catch {
+      // An infinite animation cannot finish; none of ours are, so leave it.
+    }
+  }
+});
