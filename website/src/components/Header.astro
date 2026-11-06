@@ -1,4 +1,4 @@
----
+﻿---
 // Site header (D110): Starlight's title, search, GitHub link and theme select,
 // plus the primary section links and one "Get started" action.
 //
@@ -78,16 +78,42 @@ const links = primaryLinks.map((link) => ({
 <script>
   // Enhancement only: the menu opens and closes without JavaScript. With it,
   // Escape closes the menu and returns focus, and a click outside closes it.
+  // Every close goes through closeMenu(), which fades the panel out first when
+  // motion is on (D118) and closes at once otherwise.
+  import { fadeOut, motionOn } from '../scripts/motion';
+
+  const closing = new WeakSet<HTMLDetailsElement>();
+  async function closeMenu(menu: HTMLDetailsElement) {
+    if (!menu.open || closing.has(menu)) return;
+    closing.add(menu);
+    const panel = menu.querySelector<HTMLElement>('.fup-menu-panel');
+    try {
+      if (panel && motionOn()) await fadeOut(panel);
+    } finally {
+      menu.open = false;
+      panel?.style.removeProperty('opacity');
+      panel?.style.removeProperty('transform');
+      closing.delete(menu);
+    }
+  }
+
   for (const menu of document.querySelectorAll<HTMLDetailsElement>('[data-fup-menu]')) {
     const summary = menu.querySelector('summary');
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && menu.open) {
-        menu.open = false;
+        closeMenu(menu);
         summary?.focus();
       }
     });
     document.addEventListener('click', (e) => {
-      if (menu.open && e.target instanceof Node && !menu.contains(e.target)) menu.open = false;
+      if (menu.open && e.target instanceof Node && !menu.contains(e.target)) closeMenu(menu);
+    });
+    // Closing through the summary also fades. Opening stays native, so the
+    // toggle, Enter and Space keep working without this script.
+    summary?.addEventListener('click', (e) => {
+      if (!menu.open) return;
+      e.preventDefault();
+      closeMenu(menu);
     });
   }
 </script>
@@ -139,7 +165,9 @@ const links = primaryLinks.map((link) => ({
     font-weight: 500;
     text-decoration: none;
     text-underline-offset: 0.45em;
-    transition: color 150ms ease;
+    transition:
+      color 150ms ease,
+      transform var(--fup-dur-press) var(--fup-ease-out);
   }
   nav a[aria-current] {
     color: var(--fup-ink);
@@ -192,6 +220,26 @@ const links = primaryLinks.map((link) => ({
     display: flex;
     font-size: var(--sl-text-base);
     padding-inline: 0.25rem;
+  }
+  /* Press feedback (D118): transforms only when motion is allowed. */
+  @media (prefers-reduced-motion: no-preference) {
+    nav a:active {
+      transform: scale(0.97);
+    }
+    :global(:root[data-fup-motion]) .fup-menu[open] .fup-menu-panel {
+      transform-origin: top right;
+      animation: fup-menu-in var(--fup-dur-ui) var(--fup-ease-out) both;
+    }
+  }
+  @keyframes fup-menu-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96) translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
   .fup-menu-panel nav li + li {
     border-top: 1px solid var(--fup-rule);

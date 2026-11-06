@@ -10,7 +10,7 @@ const facts = [
 ];
 ---
 
-<dl class="fup-facts not-content">
+<dl class="fup-facts not-content" data-fup-reveal="stagger">
   {
     facts.map((f) => (
       <div class="fup-fact">
@@ -63,6 +63,10 @@ const facts = [
     text-decoration: underline;
     text-decoration-color: var(--fup-rule);
     text-underline-offset: 0.2em;
+    transition: opacity var(--fup-dur-press) var(--fup-ease-out);
+  }
+  dt a:active {
+    opacity: 0.6;
   }
   @media (hover: hover) and (pointer: fine) {
     dt a:hover {

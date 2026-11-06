@@ -1,4 +1,4 @@
----
+﻿---
 // Replaces Starlight's centered hero on the landing page: a left-aligned
 // promise, one primary and one secondary action, the install command, a
 // subordinate source/package line, and the payment-state switcher (D111): one
@@ -13,7 +13,7 @@ const [primary, ...secondary] = hero.actions;
 
 <div class="fup-hero">
   <div class="fup-hero-copy">
-    <p class="fup-eyebrow">Flutter package · rakit_ui 0.1.0 · MIT</p>
+    <p class="fup-eyebrow">Flutter package Â· rakit_ui 0.1.0 Â· MIT</p>
     <h1 id="_top" data-page-title set:html={hero.title} />
     {hero.tagline && <p class="fup-lede" set:html={hero.tagline} />}
     <div class="fup-actions">
@@ -37,7 +37,7 @@ const [primary, ...secondary] = hero.actions;
     </p>
     <p class="fup-source">
       <a href="https://github.com/naufaldi/flutter_ui_payment">Source on GitHub</a>
-      <span aria-hidden="true">·</span>
+      <span aria-hidden="true">Â·</span>
       <a href="https://pub.dev/packages/rakit_ui">rakit_ui on pub.dev</a>
     </p>
   </div>
@@ -127,7 +127,9 @@ const [primary, ...secondary] = hero.actions;
     background: none;
     color: var(--fup-muted);
     cursor: pointer;
-    transition: color 150ms ease;
+    transition:
+      color 150ms ease,
+      transform var(--fup-dur-press) var(--fup-ease-out);
   }
   .fup-copy[hidden] {
     display: none;
@@ -147,6 +149,28 @@ const [primary, ...secondary] = hero.actions;
   .fup-copy[data-copied] .fup-done-icon {
     display: block;
   }
+  @media (prefers-reduced-motion: no-preference) {
+    .fup-copy:active {
+      transform: scale(0.94);
+    }
+    .fup-source a:active {
+      transform: scale(0.97);
+    }
+    /* The check pops in when the copy succeeds (D118). */
+    :global(:root[data-fup-motion]) .fup-copy[data-copied] .fup-done-icon {
+      animation: fup-pop var(--fup-dur-ui) var(--fup-ease-out) both;
+    }
+  }
+  @keyframes fup-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
   .fup-source {
     display: flex;
     flex-wrap: wrap;
@@ -163,7 +187,9 @@ const [primary, ...secondary] = hero.actions;
     text-decoration: underline;
     text-decoration-color: var(--fup-rule);
     text-underline-offset: 0.2em;
-    transition: color 150ms ease;
+    transition:
+      color 150ms ease,
+      transform var(--fup-dur-press) var(--fup-ease-out);
   }
   @media (hover: hover) and (pointer: fine) {
     .fup-source a:hover {
