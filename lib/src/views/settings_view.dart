@@ -16,6 +16,7 @@ class PaymentSettingsView extends StatelessWidget {
     required this.child,
     this.onSave,
     this.saveLabel,
+    this.saveDisabledReason,
     this.statusMessage,
     this.statusTone = StatusTone.neutral,
   });
@@ -31,6 +32,10 @@ class PaymentSettingsView extends StatelessWidget {
 
   /// Save button label; defaults to the localized Save.
   final String? saveLabel;
+
+  /// Keeps Save visible and disabled with this explanation when [onSave] is null.
+  /// Ignored when [onSave] is provided. With both null, Save is hidden.
+  final String? saveDisabledReason;
 
   /// Result of the most recent save.
   final String? statusMessage;
@@ -62,9 +67,15 @@ class PaymentSettingsView extends StatelessWidget {
               ),
       ),
       body: child,
-      footer: onSave == null
+      footer: onSave == null && saveDisabledReason == null
           ? null
           : ViewFooter(
+              footer: onSave == null && saveDisabledReason != null
+                  ? Text(
+                      saveDisabledReason!,
+                      style: PaymentType.of(context).caption,
+                    )
+                  : null,
               primaryAction: PaymentButton(
                 label: saveLabel ?? l.save,
                 onPressed: onSave,

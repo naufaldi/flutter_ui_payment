@@ -23606,6 +23606,17 @@
             "doc": "Save button label; defaults to the localized Save."
           },
           {
+            "name": "saveDisabledReason",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "saveDisabledReason",
+            "doc": "Keeps Save visible and disabled with this explanation when `onSave` is null.\nIgnored when `onSave` is provided. With both null, Save is hidden."
+          },
+          {
             "name": "statusMessage",
             "type": "String?",
             "required": false,
@@ -23654,6 +23665,13 @@
         "static": false,
         "type": "String?",
         "doc": "Save button label; defaults to the localized Save."
+      },
+      {
+        "name": "saveDisabledReason",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Keeps Save visible and disabled with this explanation when `onSave` is null.\nIgnored when `onSave` is provided. With both null, Save is hidden."
       },
       {
         "name": "statusMessage",
