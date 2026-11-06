@@ -2163,7 +2163,7 @@
   "PaymentTab": {
     "kind": "class",
     "file": "lib/src/controls/controls.dart",
-    "doc": "A tab label and optional unavailability reason (Stripe Tab).",
+    "doc": "A tab label and optional unavailability reason.",
     "extends": null,
     "constructors": [
       {
@@ -2389,51 +2389,51 @@
     "values": [
       {
         "name": "top",
-        "doc": "Stripe top."
+        "doc": "Above the trigger, centered."
       },
       {
         "name": "topStart",
-        "doc": "Stripe top start."
+        "doc": "Above the trigger, aligned to its start edge."
       },
       {
         "name": "topEnd",
-        "doc": "Stripe top end."
+        "doc": "Above the trigger, aligned to its end edge."
       },
       {
         "name": "bottom",
-        "doc": "Stripe bottom."
+        "doc": "Below the trigger, centered."
       },
       {
         "name": "bottomStart",
-        "doc": "Stripe bottom start."
+        "doc": "Below the trigger, aligned to its start edge."
       },
       {
         "name": "bottomEnd",
-        "doc": "Stripe bottom end."
+        "doc": "Below the trigger, aligned to its end edge."
       },
       {
         "name": "start",
-        "doc": "Stripe left in LTR."
+        "doc": "On the start side of the trigger (left in LTR), centered."
       },
       {
         "name": "startTop",
-        "doc": "Stripe left top in LTR."
+        "doc": "On the start side of the trigger (left in LTR), aligned to its top edge."
       },
       {
         "name": "startBottom",
-        "doc": "Stripe left bottom in LTR."
+        "doc": "On the start side of the trigger (left in LTR), aligned to its bottom edge."
       },
       {
         "name": "end",
-        "doc": "Stripe right in LTR."
+        "doc": "On the end side of the trigger (right in LTR), centered."
       },
       {
         "name": "endTop",
-        "doc": "Stripe right top in LTR."
+        "doc": "On the end side of the trigger (right in LTR), aligned to its top edge."
       },
       {
         "name": "endBottom",
-        "doc": "Stripe right bottom in LTR."
+        "doc": "On the end side of the trigger (right in LTR), aligned to its bottom edge."
       }
     ]
   },
@@ -7579,15 +7579,15 @@
     "values": [
       {
         "name": "small",
-        "doc": "Module headers, table or chip rows; never the main action. Stripe small."
+        "doc": "Module headers, table or chip rows; never the main action."
       },
       {
         "name": "medium",
-        "doc": "Default, today's visual size. Stripe medium."
+        "doc": "Default, today's visual size."
       },
       {
         "name": "large",
-        "doc": "One primary action on a full-screen wide view. Stripe large."
+        "doc": "One primary action on a full-screen wide view."
       }
     ]
   },
@@ -7598,11 +7598,11 @@
     "values": [
       {
         "name": "fill",
-        "doc": "Parent width, the default. Stripe fill."
+        "doc": "Parent width, the default."
       },
       {
         "name": "hug",
-        "doc": "Content width. Stripe hug."
+        "doc": "Content width."
       }
     ]
   },
@@ -7613,31 +7613,31 @@
     "values": [
       {
         "name": "none",
-        "doc": "Zero gap. Stripe has no equivalent."
+        "doc": "Zero gap."
       },
       {
         "name": "inline",
-        "doc": "spacing × 0.5 (4): label → caption, title → message, title → meta,\na small glyph beside its text, a field's label above its box at large\ntext. Stripe xxsmall."
+        "doc": "spacing × 0.5 (4): label → caption, title → message, title → meta,\na small glyph beside its text, a field's label above its box at large\ntext."
       },
       {
         "name": "related",
-        "doc": "spacing (8): between stacked or adjacent actions and chips, text →\ntrailing control, compact control padding. Stripe xsmall."
+        "doc": "spacing (8): between stacked or adjacent actions and chips, text →\ntrailing control, compact control padding."
       },
       {
         "name": "block",
-        "doc": "spacing × 1.5 (12): icon → text, band → title, list row and header\npadding, notice and banner padding. Stripe small."
+        "doc": "spacing × 1.5 (12): icon → text, band → title, list row and header\npadding, notice and banner padding."
       },
       {
         "name": "group",
-        "doc": "spacing × 2 (16): screen, sheet and field gutters, label → value,\nstate message padding. Stripe medium."
+        "doc": "spacing × 2 (16): screen, sheet and field gutters, label → value,\nstate message padding."
       },
       {
         "name": "section",
-        "doc": "spacing × 3 (24): content → primary action, between field groups,\nruled section gaps. Stripe large."
+        "doc": "spacing × 3 (24): content → primary action, between field groups,\nruled section gaps."
       },
       {
         "name": "major",
-        "doc": "spacing × 4 (32): largest gap; unused by kit widgets today. Stripe\nxlarge and xxlarge."
+        "doc": "spacing × 4 (32): largest gap; unused by kit widgets today."
       }
     ]
   },
@@ -7648,27 +7648,27 @@
     "values": [
       {
         "name": "none",
-        "doc": "BorderRadius.zero. Stripe none."
+        "doc": "BorderRadius.zero."
       },
       {
         "name": "tag",
-        "doc": "tagBorderRadius (4 by default). Stripe xsmall."
+        "doc": "tagBorderRadius (4 by default)."
       },
       {
         "name": "control",
-        "doc": "controlBorderRadius (6 by default). Stripe small."
+        "doc": "controlBorderRadius (6 by default)."
       },
       {
         "name": "box",
-        "doc": "borderRadius (8 by default). Stripe medium."
+        "doc": "borderRadius (8 by default)."
       },
       {
         "name": "sheet",
-        "doc": "sheetBorderRadius (12 by default). Stripe large."
+        "doc": "sheetBorderRadius (12 by default)."
       },
       {
         "name": "circle",
-        "doc": "BorderRadius.circular(999), existing navigation pill. Stripe rounded."
+        "doc": "BorderRadius.circular(999), existing navigation pill."
       }
     ]
   },
@@ -7679,39 +7679,39 @@
     "values": [
       {
         "name": "display",
-        "doc": "display: one display amount. Stripe has no equivalent."
+        "doc": "display: one display amount."
       },
       {
         "name": "amountLarge",
-        "doc": "amountLarge: totals and balances. Stripe has no equivalent."
+        "doc": "amountLarge: totals and balances."
       },
       {
         "name": "title",
-        "doc": "title: sheet and app-bar titles. Stripe title."
+        "doc": "title: sheet and app-bar titles."
       },
       {
         "name": "heading",
-        "doc": "heading: section titles. Stripe subtitle, heading and subheading."
+        "doc": "heading: section titles."
       },
       {
         "name": "body",
-        "doc": "bodyFor(context): paragraphs. Stripe lead, body and bodyEmphasized with semibold."
+        "doc": "bodyFor(context): paragraphs."
       },
       {
         "name": "label",
-        "doc": "label: row labels and values. Stripe has no equivalent."
+        "doc": "label: row labels and values."
       },
       {
         "name": "caption",
-        "doc": "caption: supporting text. Stripe caption."
+        "doc": "caption: supporting text."
       },
       {
         "name": "tag",
-        "doc": "tag: short status words. Stripe kicker."
+        "doc": "tag: short status words."
       },
       {
         "name": "input",
-        "doc": "input: field text. Stripe has no equivalent."
+        "doc": "input: field text."
       }
     ]
   },
@@ -7722,35 +7722,35 @@
     "values": [
       {
         "name": "primary",
-        "doc": "textPrimary. Stripe primary."
+        "doc": "textPrimary."
       },
       {
         "name": "secondary",
-        "doc": "textSecondary. Stripe secondary."
+        "doc": "textSecondary."
       },
       {
         "name": "disabled",
-        "doc": "disabled. Stripe disabled."
+        "doc": "disabled."
       },
       {
         "name": "accent",
-        "doc": "accent. Stripe brand."
+        "doc": "accent."
       },
       {
         "name": "info",
-        "doc": "info.foreground. Stripe info."
+        "doc": "info.foreground."
       },
       {
         "name": "success",
-        "doc": "success.foreground. Stripe success."
+        "doc": "success.foreground."
       },
       {
         "name": "warning",
-        "doc": "warning.foreground. Stripe attention."
+        "doc": "warning.foreground."
       },
       {
         "name": "danger",
-        "doc": "danger.foreground. Stripe critical."
+        "doc": "danger.foreground."
       }
     ]
   },
@@ -7761,15 +7761,15 @@
     "values": [
       {
         "name": "regular",
-        "doc": "FontWeight.w400. Stripe regular."
+        "doc": "FontWeight.w400."
       },
       {
         "name": "semibold",
-        "doc": "FontWeight.w600. Stripe semibold."
+        "doc": "FontWeight.w600."
       },
       {
         "name": "bold",
-        "doc": "FontWeight.w700; emphasis inside running text only. Stripe bold."
+        "doc": "FontWeight.w700; emphasis inside running text only."
       }
     ]
   },
@@ -7780,23 +7780,23 @@
     "values": [
       {
         "name": "xsmall",
-        "doc": "14, existing badge. Stripe 12."
+        "doc": "14, existing badge."
       },
       {
         "name": "small",
-        "doc": "16, existing merchant mark. Stripe 16."
+        "doc": "16, existing merchant mark."
       },
       {
         "name": "medium",
-        "doc": "20 scaled up to 1.6×, existing rows. Stripe 20."
+        "doc": "20 scaled up to 1.6×, existing rows."
       },
       {
         "name": "large",
-        "doc": "32, existing video control. Stripe 32."
+        "doc": "32, existing video control."
       },
       {
         "name": "xlarge",
-        "doc": "48, existing state icon. Stripe 64."
+        "doc": "48, existing state icon."
       }
     ]
   },
@@ -7807,15 +7807,15 @@
     "values": [
       {
         "name": "label",
-        "doc": "Label field part. Stripe label."
+        "doc": "Label field part."
       },
       {
         "name": "description",
-        "doc": "Description field part. Stripe description."
+        "doc": "Description field part."
       },
       {
         "name": "error",
-        "doc": "Error field part. Stripe error."
+        "doc": "Error field part."
       }
     ]
   },
@@ -9307,7 +9307,7 @@
   "PaymentListItemSize": {
     "kind": "enum",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "A tappable row for settings, menus and action lists.\n\nThe row is flat: a plain outlined icon, a title and a muted detail line,\nwith no container. Put consecutive tiles in a `PaymentList` so they\nare separated by hairlines.\n\nDisabled rows stay visible; pass `disabledReason` so people know why.\n`destructive` uses the danger tone for both icon and label, never color\nalone: the label must already say what happens.\nStripe ListItem sizes. Both keep at least a 48 dp target.",
+    "doc": "A tappable row for settings, menus and action lists.\n\nThe row is flat: a plain outlined icon, a title and a muted detail line,\nwith no container. Put consecutive tiles in a `PaymentList` so they\nare separated by hairlines.\n\nDisabled rows stay visible; pass `disabledReason` so people know why.\n`destructive` uses the danger tone for both icon and label, never color\nalone: the label must already say what happens.\nList item sizes. Both keep at least a 48 dp target.",
     "values": [
       {
         "name": "standard",

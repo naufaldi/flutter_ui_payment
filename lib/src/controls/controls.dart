@@ -401,7 +401,7 @@ class _ControlRow extends StatelessWidget {
   }
 }
 
-/// A tab label and optional unavailability reason (Stripe Tab).
+/// A tab label and optional unavailability reason.
 @immutable
 class PaymentTab {
   const PaymentTab({required this.label, this.disabledReason});
@@ -748,40 +748,40 @@ class _SidesClipper extends CustomClipper<Rect> {
 
 /// Twelve placements; start and end follow the text direction.
 enum PaymentTooltipPlacement {
-  /// Stripe top.
+  /// Above the trigger, centered.
   top,
 
-  /// Stripe top start.
+  /// Above the trigger, aligned to its start edge.
   topStart,
 
-  /// Stripe top end.
+  /// Above the trigger, aligned to its end edge.
   topEnd,
 
-  /// Stripe bottom.
+  /// Below the trigger, centered.
   bottom,
 
-  /// Stripe bottom start.
+  /// Below the trigger, aligned to its start edge.
   bottomStart,
 
-  /// Stripe bottom end.
+  /// Below the trigger, aligned to its end edge.
   bottomEnd,
 
-  /// Stripe left in LTR.
+  /// On the start side of the trigger (left in LTR), centered.
   start,
 
-  /// Stripe left top in LTR.
+  /// On the start side of the trigger (left in LTR), aligned to its top edge.
   startTop,
 
-  /// Stripe left bottom in LTR.
+  /// On the start side of the trigger (left in LTR), aligned to its bottom edge.
   startBottom,
 
-  /// Stripe right in LTR.
+  /// On the end side of the trigger (right in LTR), centered.
   end,
 
-  /// Stripe right top in LTR.
+  /// On the end side of the trigger (right in LTR), aligned to its top edge.
   endTop,
 
-  /// Stripe right bottom in LTR.
+  /// On the end side of the trigger (right in LTR), aligned to its bottom edge.
   endBottom,
 }
 
