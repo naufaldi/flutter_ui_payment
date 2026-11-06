@@ -5,7 +5,7 @@ export const REPO_IS_PLACEHOLDER = false;
 export const REPO_PLACEHOLDER_NOTE =
   'Repository URL is a placeholder until the public repo is created.';
 
-export const PACKAGE_VERSION = '0.1.0';
+export const PACKAGE_VERSION = '0.2.0';
 
 /** A file in the repository's main branch, e.g. repoFile('docs/decisions.md'). */
 export const repoFile = (path: string) => `${REPO_URL}/blob/main/${path}`;

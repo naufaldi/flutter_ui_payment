@@ -34,8 +34,8 @@ labels and transaction status labels. Subclass it and register your own
 `LocalizationsDelegate<PaymentLocalizations>` for the added language. The public
 constructor takes a language code, not a `Locale`, and is not const.
 
-<Aside type="caution" title="Unreleased: available on main, not in 0.1.0">
-Overridable kit strings and `formatNumber` (D115) are not in `rakit_ui` 0.1.0 on pub.dev. In 0.1.0, kit strings are extension members, so a subclass override compiles but does not reach kit widgets, and `formatNumber` does not exist. Use a [git dependency](/start/installation/#development-git-dependency) on `main` to try them before the next release. The next release removes the exported `KitStrings` and `PaymentStatusLabel` extension names; ordinary member calls keep working.
+<Aside type="caution" title="Changed in 0.2.0">
+Overridable kit strings and `formatNumber` (D115) were added in `rakit_ui` 0.2.0. In 0.1.0, kit strings were extension members, so a subclass override compiled but did not reach kit widgets. 0.2.0 removes the exported `KitStrings` and `PaymentStatusLabel` extension names. Calls such as `PaymentLocalizations.of(context).save` keep working; replace `KitStrings(l10n).save` or `PaymentStatusLabel(l10n).paymentStatusShort(status)` with `l10n.save` or `l10n.paymentStatusShort(status)`, and drop those names from `show` imports. See the [changelog](/reference/changelog/).
 </Aside>
 
 This complete example translates Save and the sheet close action into German and

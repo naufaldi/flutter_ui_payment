@@ -20,7 +20,7 @@ class PaymentFullPageView extends StatelessWidget {
     required this.child,
     @Deprecated(
       'Use pageLink to open another screen or primaryAction for the main '
-      'step. Removed in 0.2.0.',
+      'step. Removed in 0.3.0.',
     )
     this.pageAction,
     this.pageLink,
@@ -37,7 +37,7 @@ class PaymentFullPageView extends StatelessWidget {
   /// Supporting action alongside the page heading.
   @Deprecated(
     'Use pageLink to open another screen or primaryAction for the main '
-    'step. Removed in 0.2.0.',
+    'step. Removed in 0.3.0.',
   )
   final PaymentButton? pageAction;
 

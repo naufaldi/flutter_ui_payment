@@ -1,12 +1,5 @@
 ## Unreleased
 
-### Package
-
-- PaymentSettingsView can show a disabled Save with a reason.
-- PaymentSearchField shows the host's error above selectable results in the open search sheet, with Retry for host-driven queries.
-- Apps can translate Rakit strings and chart numbers through a `PaymentLocalizations` subclass, including the new `formatNumber` member. **Breaking:** exported `KitStrings` and `PaymentStatusLabel` extension names were removed, affecting code that explicitly names them or imports with `show KitStrings` / `show PaymentStatusLabel`; ordinary `PaymentLocalizations.of(context).x` calls keep working.
-- Improve disabled Save accessibility, protect kit button sizing from host themes, fix narrow large-text docs layouts and flow-strip focusability, and provide runnable localization examples with clear published-versus-main API guidance.
-
 ### Docs site
 
 These update https://rakit-ui.netlify.app.
@@ -20,6 +13,32 @@ These update https://rakit-ui.netlify.app.
 - A new guide for adopting Rakit in an existing branded app, with copy-runnable component snippets.
 - Buttons and links respond to presses, landing sections fade in, and menus, search and the phone sidebar animate open and closed; everything stays still with reduced motion or without JavaScript, including when reduced motion is turned on while a page is open.
 - Component pages drop Stripe prop-mapping tables and Stripe names in API descriptions, repeated host-ownership callouts and internal example-scenario codes; component behavior, API and example screens remain.
+
+## 0.2.0
+
+Requires Dart ^3.12.0 and Flutter >=3.44.0. Flutter SDK remains the only runtime dependency.
+
+- PaymentSettingsView can show a disabled Save with a reason.
+- PaymentSearchField shows the host's error above selectable results in the open search sheet, with Retry for host-driven queries.
+- Apps can translate Rakit strings and chart numbers through a `PaymentLocalizations` subclass, including the new `formatNumber` member. **Breaking:** exported `KitStrings` and `PaymentStatusLabel` extension names were removed, affecting code that explicitly names them or imports with `show KitStrings` / `show PaymentStatusLabel`; ordinary `PaymentLocalizations.of(context).x` calls keep working.
+- Improve disabled Save accessibility, protect kit button sizing from host themes, fix narrow large-text docs layouts and flow-strip focusability, and provide runnable localization examples.
+- Names deprecated in 0.1.0 (for example `StatusBadge`, `NoticeBanner`, `ActionTile`, `ActionMenu`, `AmountInput`, `ExpandableSection`, `showPaymentSnackBar`, `pageAction`, `learnMore`, `AmountText.emphasis` and the DataTable reorder/resize flags) still compile in 0.2.0. Their removal moves to 0.3.0 (D123).
+
+### Migrating from 0.1.0
+
+The kit strings are now instance members of `PaymentLocalizations`, so a call on the localizations object compiles unchanged. Only code that names the removed extensions needs an edit:
+
+```dart
+// 0.1.0
+import 'package:rakit_ui/rakit_ui.dart' show PaymentLocalizations, KitStrings, PaymentStatusLabel;
+final label = PaymentStatusLabel(PaymentLocalizations.of(context)).paymentStatusShort(status);
+final save = KitStrings(PaymentLocalizations.of(context)).save;
+
+// 0.2.0
+import 'package:rakit_ui/rakit_ui.dart' show PaymentLocalizations;
+final label = PaymentLocalizations.of(context).paymentStatusShort(status);
+final save = PaymentLocalizations.of(context).save;
+```
 
 ## 0.1.0
 
