@@ -1,3 +1,5 @@
+import 'dart:ui' show ColorSpace;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -106,6 +108,36 @@ Color _ringColor(WidgetTester tester, int index) =>
 
 void main() {
   group('RadioMark selection motion (D127)', () {
+    testWidgets('keeps an extended sRGB host color while the ring eases', (
+      tester,
+    ) async {
+      const accent = Color.from(
+        alpha: 1,
+        red: 0.1,
+        green: 0.3,
+        blue: 1.1,
+        colorSpace: ColorSpace.extendedSRGB,
+      );
+      final material = ThemeData();
+      final payment = PaymentTheme.fromColorScheme(
+        material.colorScheme,
+      ).copyWith(accent: accent);
+      await tester.pumpWidget(
+        host(
+          Theme(
+            data: material.copyWith(extensions: [payment]),
+            child: const _RadioHarness(),
+          ),
+        ),
+      );
+      expect(_ringColor(tester, 0), accent);
+      await tester.tap(find.text('b'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(_ringWidth(tester, 1), inExclusiveRange(1.5, 6));
+      expect(_ringColor(tester, 1), accent);
+    });
+
     testWidgets(
       'eases the ring on selection, retargets mid-flight, state stays synchronous',
       (tester) async {

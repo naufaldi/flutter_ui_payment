@@ -1,3 +1,5 @@
+import 'dart:ui' show ColorSpace;
+
 import 'package:flutter/material.dart';
 
 import 'payment_motion.dart';
@@ -92,19 +94,28 @@ class _RadioMarkState extends State<RadioMark>
         : widget.error
         ? theme.danger.foreground
         : theme.textSecondary;
+    // Flutter's Color.lerp does not support extended sRGB. Keep the host's
+    // exact color in that case and animate only the width.
+    final canInterpolateColor =
+        unselectedColor.colorSpace != ColorSpace.extendedSRGB &&
+        selectedColor.colorSpace != ColorSpace.extendedSRGB;
     return AnimatedBuilder(
       animation: _look,
       builder: (context, _) {
         final t = _look.value;
+        final color = switch (t) {
+          _ when !canInterpolateColor =>
+            widget.selected ? selectedColor : unselectedColor,
+          0 => unselectedColor,
+          1 => selectedColor,
+          _ => Color.lerp(unselectedColor, selectedColor, t)!,
+        };
         return Container(
           width: 20,
           height: 20,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(
-              color: Color.lerp(unselectedColor, selectedColor, t)!,
-              width: 1.5 + (6 - 1.5) * t,
-            ),
+            border: Border.all(color: color, width: 1.5 + (6 - 1.5) * t),
           ),
         );
       },
