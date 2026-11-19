@@ -42,7 +42,8 @@ typed receipt email and any live attempt survive the switch. **Dompet** offers
 **Pakai metode lain**, which opens a kit method sheet; choosing **Virtual account**
 asks the synthetic host for a new quote with the bank fee (total Rp104.000). Pay
 stays disabled and busy until that answer arrives, and a slower earlier answer
-never replaces a newer one. Under **Skenario**, **Pending lalu offline** returns
+never replaces a newer one. The wallet review shows the selected method and bank
+before Pay is available. Under **Skenario**, **Pending lalu offline** returns
 pending, fails the first check and confirms on the next check. **Struk gagal
 dimuat** confirms payment but fails the first receipt load; **Lihat struk** retries
 without sending another payment. **Putar ulang** restarts the current scenario and
@@ -102,4 +103,8 @@ Theme-dependent presets resolve from the current context.
 
 ## Verification and limits
 
-Widget tests cover same-attempt recovery, offline checks without resubmission, receipt retry, the quote wait and stale-answer rejection, look switching that keeps the session and attempt, reduced motion and a reachable action at 320 dp with 200% text in both looks. The host must persist attempts across process restarts. See [Compatibility](/reference/compatibility/) for device coverage.
+Widget tests cover same-attempt recovery, offline checks without resubmission,
+receipt retry, quote updates and stale-answer rejection, look switching and
+reduced motion. The wallet review and receipt-retry action are reachable at
+320 dp with 200% text. The host must persist attempts across process restarts.
+See [Compatibility](/reference/compatibility/) for device coverage.

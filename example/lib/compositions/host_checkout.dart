@@ -213,11 +213,30 @@ class WalletReviewCheckout extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final gap = theme.space(PaymentSpace.section);
+    final type = PaymentType.of(context);
+    final selectedMethod = order.methods
+        .where((method) => method.id == order.selectedMethodId)
+        .firstOrNull;
     final wallet = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: gap,
       children: [
-        BalanceCard(state: order.balanceState, balance: order.balance),
+        if (selectedMethod != null &&
+            selectedMethod.kind != PaymentMethodKind.balance)
+          PaymentSection(
+            title: _t(context, 'Pay with', 'Bayar dengan'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: theme.space(PaymentSpace.inline),
+              children: [
+                Text(selectedMethod.label, style: type.body),
+                if (selectedMethod.detail case final detail?)
+                  Text(detail, style: type.caption),
+              ],
+            ),
+          )
+        else
+          BalanceCard(state: order.balanceState, balance: order.balance),
         PaymentButton(
           label: _t(context, 'Use another method', 'Pakai metode lain'),
           variant: PaymentButtonVariant.secondary,

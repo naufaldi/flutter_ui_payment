@@ -126,12 +126,12 @@ class _HostCheckoutJourneyState extends State<HostCheckoutJourney> {
       return;
     }
     final order = widget.order;
-    final l10n = PaymentLocalizations.of(context);
+    final id = Localizations.localeOf(context).languageCode == 'id';
     showPaymentSheet<void>(
       context: context,
       builder: (sheetContext) => PaymentSheet(
         header: PaymentSheetHeader(
-          title: l10n.methodTitle,
+          title: id ? 'Pilih metode' : 'Choose a method',
           onClose: () => Navigator.of(sheetContext).pop(),
         ),
         body: PaymentMethodPicker(

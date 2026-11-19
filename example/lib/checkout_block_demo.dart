@@ -282,6 +282,7 @@ class _CheckoutBlockDemoState extends State<CheckoutBlockDemo> {
       theme: buildTheme(brand, Brightness.light),
       darkTheme: buildTheme(brand, Brightness.dark),
       themeMode: dark ? ThemeMode.dark : ThemeMode.light,
+      themeAnimationDuration: Duration.zero,
       locale: const Locale('id'),
       supportedLocales: const [Locale('id'), Locale('en')],
       localizationsDelegates: const [

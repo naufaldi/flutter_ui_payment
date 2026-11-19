@@ -144,6 +144,9 @@ void main() {
       expect(tester.widget<FilledButton>(payButton).onPressed, isNull);
       vaQuote.complete(quoteFor('va', 104000));
       await tester.pumpAndSettle();
+      expect(find.text('Virtual account').hitTestable(), findsOneWidget);
+      expect(find.text('Bank Demo').hitTestable(), findsOneWidget);
+      expect(find.byType(BalanceCard), findsNothing);
       expect(find.textContaining('Rp104.000'), findsWidgets);
       expect(tester.widget<FilledButton>(payButton).onPressed, isNotNull);
       await tester.tap(pay);
