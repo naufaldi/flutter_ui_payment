@@ -517,6 +517,57 @@ void main() {
         },
       );
     }
+    for (final endsOpen in [false, true]) {
+      testWidgets(
+        'disclosure reversal stops under reduced motion (${setup.name}, endsOpen: $endsOpen)',
+        (tester) async {
+          final reduce = ValueNotifier(false);
+          final expanded = ValueNotifier(endsOpen);
+          addTearDown(reduce.dispose);
+          addTearDown(expanded.dispose);
+          final key = GlobalKey();
+          await tester.pumpWidget(
+            motionHost(
+              ValueListenableBuilder<bool>(
+                valueListenable: expanded,
+                builder: (_, open, _) => PaymentAccordionItem(
+                  title: 'Receipt',
+                  expanded: open,
+                  child: _Body(key: key),
+                ),
+              ),
+              reduce,
+            ),
+          );
+          // A timed move, then a flip back mid-move: the reversal spring is
+          // the animation running when reduced motion lands.
+          expanded.value = !endsOpen;
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 50));
+          expect(tester.hasRunningAnimations, isTrue);
+          expanded.value = endsOpen;
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 30));
+          expect(tester.hasRunningAnimations, isTrue);
+          final state = key.currentState;
+          await expectStill(tester, () => enable(tester, setup, reduce));
+          if (endsOpen) {
+            expect(key.currentState, same(state));
+            final fade = tester.widget<FadeTransition>(
+              find
+                  .ancestor(
+                    of: find.text('Body'),
+                    matching: find.byType(FadeTransition),
+                  )
+                  .first,
+            );
+            expect(fade.opacity.value, 1);
+          } else {
+            expect(find.text('Body'), findsNothing);
+          }
+        },
+      );
+    }
     testWidgets('toast flip mid-update keeps Undo element (${setup.name})', (
       tester,
     ) async {

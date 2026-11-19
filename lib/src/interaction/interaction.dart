@@ -6,6 +6,7 @@ import '../foundation/tap_target.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import '../foundation/footer_clearance.dart';
 
 import '../foundation/focus_ring.dart';
@@ -1396,11 +1397,10 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem>
   late bool _expanded = widget.initiallyExpanded;
 
   // One controller drives the height and the fade, so the content leaves
-  // the way it came and a tap mid-collapse turns it around.
+  // the way it came and a tap mid-collapse turns it around. Its value is the
+  // displayed reveal itself, not a linear progress a curve sits on, so a
+  // reversal can carry the visible velocity into a spring (D126).
   late final AnimationController _controller;
-
-  // No reverse curve: a collapse plays the enter curve backwards.
-  late final CurvedAnimation _reveal;
 
   @override
   void initState() {
@@ -1408,10 +1408,6 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem>
     WidgetsBinding.instance.addObserver(this);
     _controller = AnimationController(vsync: this, value: _isExpanded ? 1 : 0)
       ..addStatusListener(_onStatus);
-    _reveal = CurvedAnimation(
-      parent: _controller,
-      curve: PaymentMotion.easeOut,
-    );
   }
 
   // iOS Reduce Motion isn't part of MediaQueryData, so nothing above
@@ -1428,7 +1424,6 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _reveal.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -1438,17 +1433,59 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem>
     if (status.isDismissed && mounted) setState(() {});
   }
 
+  // Same trade the SDK's fling makes: end on position alone, then snap the
+  // last percent exactly, so the ticker stops when the motion is already
+  // invisible instead of trailing an asymptotic tail.
+  static const _kReversalTolerance = Tolerance(
+    distance: 0.01,
+    velocity: double.infinity,
+  );
+
   // Opens at enter and closes at exit; jumps under reduced motion (D66).
+  // From rest the reveal plays the same curves as before: easeOut going in,
+  // the flipped easeOut going out. Interrupting a running reveal reverses
+  // through a critically damped spring that keeps the displayed velocity, so
+  // the height and fade slow, turn and settle as one movement instead of
+  // snapping to a new speed (D126). The spring takes the matching enter or
+  // exit duration, so a reversal settles inside the same 300 ms budget.
   void _animate() {
     final motion = PaymentMotion.of(context);
     if (motion.reduced) {
       _controller.value = _isExpanded ? 1 : 0;
       return;
     }
-    _controller
-      ..duration = motion.enter
-      ..reverseDuration = motion.exit;
-    _isExpanded ? _controller.forward() : _controller.reverse();
+    final target = _isExpanded ? 1.0 : 0.0;
+    if (_controller.isAnimating) {
+      final spring = SpringSimulation(
+        SpringDescription.withDurationAndBounce(
+          duration: target == 1 ? motion.enter : motion.exit,
+          bounce: 0,
+        ),
+        _controller.value,
+        target,
+        _controller.velocity,
+        snapToEnd: true,
+      )..tolerance = _kReversalTolerance;
+      if (target == 1) {
+        _controller.animateWith(spring);
+      } else {
+        _controller.animateBackWith(spring);
+      }
+      return;
+    }
+    if (target == 1) {
+      _controller.animateTo(
+        1,
+        duration: motion.enter * (1 - _controller.value),
+        curve: PaymentMotion.easeOut,
+      );
+    } else {
+      _controller.animateBack(
+        0,
+        duration: motion.exit * _controller.value,
+        curve: PaymentMotion.easeOut.flipped,
+      );
+    }
   }
 
   // ignore: deprecated_member_use_from_same_package
@@ -1620,21 +1657,21 @@ class _PaymentAccordionItemState extends State<PaymentAccordionItem>
                 child: IgnorePointer(
                   ignoring: !open,
                   child: AnimatedBuilder(
-                    animation: _reveal,
+                    animation: _controller,
                     builder: (context, child) => ClipRect(
                       // Clipped only while it moves, so focus rings show
                       // at rest.
-                      clipBehavior: _reveal.value < 1
+                      clipBehavior: _controller.value < 1
                           ? Clip.hardEdge
                           : Clip.none,
                       child: Align(
                         alignment: Alignment.topCenter,
-                        heightFactor: _reveal.value,
+                        heightFactor: _controller.value,
                         child: child,
                       ),
                     ),
                     child: FadeTransition(
-                      opacity: _reveal,
+                      opacity: _controller,
                       child: Padding(
                         padding: EdgeInsets.only(
                           bottom: theme.space(PaymentSpace.group),
