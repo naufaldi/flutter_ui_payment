@@ -26,6 +26,7 @@ class CheckoutOrder {
     this.merchantVerified = false,
     this.receiptEmail = '',
     this.paying = false,
+    this.quoting = false,
   });
 
   final String merchant;
@@ -42,6 +43,10 @@ class CheckoutOrder {
 
   /// True while the host is paying, so both layouts block a second press.
   final bool paying;
+
+  /// True while the host re-prices the selected method. Both layouts keep
+  /// Pay disabled until a quote for the current method arrives.
+  final bool quoting;
 }
 
 /// The host's callbacks. Both layouts report intent through the same set.
@@ -60,6 +65,11 @@ class CheckoutActions {
   /// The host pays. The button stays busy until the future completes.
   final Future<void> Function() onPay;
 }
+
+/// Which review body a host checkout screen renders. Both share the same
+/// pinned action, callbacks, quote and recovery; only the arrangement of
+/// kit components differs.
+enum CheckoutLayout { invoice, wallet }
 
 /// The product's shared button and field look, as theme extensions. It
 /// reads the current theme, so light, dark and brand changes follow.
@@ -189,10 +199,15 @@ class WalletReviewCheckout extends StatelessWidget {
     super.key,
     required this.order,
     required this.actions,
+    this.showActionBar = true,
   });
 
   final CheckoutOrder order;
   final CheckoutActions actions;
+
+  /// Set false when the host pins the same pay action itself, e.g. in a
+  /// screen footer, so the review does not show two actions for one total.
+  final bool showActionBar;
 
   @override
   Widget build(BuildContext context) {
@@ -235,18 +250,19 @@ class WalletReviewCheckout extends StatelessWidget {
                   children: [wallet, review],
                 ),
         ),
-        PaymentActionBar(
-          total: order.quote.total,
-          action: PaymentButton(
-            label: _t(context, 'Pay from wallet', 'Bayar dari dompet'),
-            width: PaymentWidth.hug,
-            style: payActionStyle(context),
-            busy: order.paying,
-            onPressed: order.balanceState == BalanceState.sufficient
-                ? actions.onPay
-                : null,
+        if (showActionBar)
+          PaymentActionBar(
+            total: order.quote.total,
+            action: PaymentButton(
+              label: _t(context, 'Pay from wallet', 'Bayar dari dompet'),
+              width: PaymentWidth.hug,
+              style: payActionStyle(context),
+              busy: order.paying,
+              onPressed: order.balanceState == BalanceState.sufficient
+                  ? actions.onPay
+                  : null,
+            ),
           ),
-        ),
       ],
     );
   }

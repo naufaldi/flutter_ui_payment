@@ -10,13 +10,16 @@ import BlockSource from '../../../components/BlockSource.astro';
 A single native phone journey: review the order and visible service fee, pay once,
 recover a lost response, then read the matching confirmed receipt. Priority actions
 stay pinned; content scrolls at large text. Amounts use the kit's numeric roles and
-the layout follows the current host theme.
+the layout follows the current host theme. The demo menu switches the same order
+between two host-owned designs — a stacked invoice on Hairline and a wallet review
+on the Soft preset — without restarting the session or the attempt.
 
 <Screens>
   <Screen name="android_block_checkout_review" dark="android_block_checkout_review_dark" alt="Mobile checkout review with merchant, visible item and service fee, wallet method and pinned pay action." caption="Review" />
   <Screen name="android_block_checkout_unknown" dark="android_block_checkout_unknown_dark" alt="Lost response retains the attempt identity, explicitly warns against paying again and offers Check status." caption="Unknown is not failed" />
   <Screen name="android_block_checkout_receipt" dark="android_block_checkout_receipt_dark" alt="Receipt only after host-confirmed success, with the matching reference, total, fee and masked wallet method." caption="Confirmed receipt" />
   <Screen name="android_block_checkout_offline" alt="A failed status refresh retains the trusted pending state and same attempt with Check status still available." caption="Pending while offline" />
+  <Screen name="android_block_checkout_wallet" dark="android_block_checkout_wallet_dark" alt="The same checkout order in the wallet look: Soft preset, balance-first review and the pinned pay action." caption="Wallet look" />
 </Screens>
 
 ## Run the demo
@@ -32,24 +35,43 @@ flutter run -d <device-id> -t lib/checkout_block_demo.dart
 3. Tap **Cek status**. The synthetic host confirms the same attempt; only then
    does its matching receipt appear. **Selesai** starts a fresh demo session.
 
-The top bar is developer tooling: switch light/dark or choose **Skenario demo**.
-**Pending lalu offline** returns pending, fails the first check and confirms on
-the next check. **Struk gagal dimuat** confirms payment but fails the first receipt
-load; **Lihat struk** retries without sending another payment. Selecting a scenario
+The top bar is developer tooling: switch light/dark or open **Menu demo**. Under
+**Tampilan**, **Invoice** and **Dompet** switch the same order between the stacked
+invoice on Hairline and the wallet review on the Soft preset — the session, the
+typed receipt email and any live attempt survive the switch. **Dompet** offers
+**Pakai metode lain**, which opens a kit method sheet; choosing **Virtual account**
+asks the synthetic host for a new quote with the bank fee (total Rp104.000). Pay
+stays disabled and busy until that answer arrives, and a slower earlier answer
+never replaces a newer one. Under **Skenario**, **Pending lalu offline** returns
+pending, fails the first check and confirms on the next check. **Struk gagal
+dimuat** confirms payment but fails the first receipt load; **Lihat struk** retries
+without sending another payment. **Putar ulang** restarts the current scenario and
+**Kurangi gerakan** turns kit motion off for the demo (it joins the OS
+reduce-motion flag rather than replacing it). Selecting a scenario or replaying
 deliberately resets the synthetic session; this is not a customer recovery action.
 The demo uses a fixed clock; elapsed time never decides payment status. Sharing
 returns dismissed and copying returns unavailable, without opening platform services.
 
 ## Composition and ownership
 
-`HostCheckoutJourney` connects `InvoiceCheckout` and `HostPaymentRecovery`.
-It accepts host data and async callbacks. Place it in a bounded body such as
-`Scaffold.body` so the main action can stay pinned.
+`HostCheckoutJourney` connects `InvoiceCheckout` or `WalletReviewCheckout`
+(`layout:`) and `HostPaymentRecovery`. It accepts host data and async callbacks.
+Place it in a bounded body such as `Scaffold.body` so the main action can stay
+pinned. Both layouts render the same `CheckoutOrder` and `CheckoutActions`; the
+wallet look passes `showActionBar: false` so the journey's pinned footer keeps
+the only pay action, and its "use another method" button opens a kit
+`showPaymentSheet` with `PaymentMethodPicker` unless the host passes
+`onChangeMethod`. While the host re-prices the selected method it sets
+`CheckoutOrder.quoting`; Pay stays disabled and busy with the localized
+"Updating total" hint, and submission revalidates that the quote is current,
+unexpired and priced for the selected method.
 
 | Concern | Existing surface |
 | --- | --- |
 | Item, visible fee and method review | `PaymentSummary`, `PaymentMethodPicker`, `MerchantHeader` |
+| Wallet review alternative | `WalletReviewCheckout`, `BalanceCard` |
 | One pinned action and large-text scroll | `PaymentFullPageView`, `PaymentButton` |
+| Quote wait and method gating | `CheckoutOrder.quoting`, `PaymentQuote.methodId` |
 | Same-attempt recovery | `PaymentAttempt`, `PaymentStatusView`, `PaymentAction` |
 | Confirmed receipt | `PaymentReceipt`, `PaymentReceiptData` |
 | Shared look | `PaymentTheme`, scoped button/field themes, named host pay preset |
@@ -80,4 +102,4 @@ Theme-dependent presets resolve from the current context.
 
 ## Verification and limits
 
-Widget tests cover same-attempt recovery, offline checks without resubmission, receipt retry and a reachable action at 320 dp with 200% text. The host must persist attempts across process restarts. See [Compatibility](/reference/compatibility/) for device coverage.
+Widget tests cover same-attempt recovery, offline checks without resubmission, receipt retry, the quote wait and stale-answer rejection, look switching that keeps the session and attempt, reduced motion and a reachable action at 320 dp with 200% text in both looks. The host must persist attempts across process restarts. See [Compatibility](/reference/compatibility/) for device coverage.

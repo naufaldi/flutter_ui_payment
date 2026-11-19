@@ -54,12 +54,20 @@ every payment or identity verdict. No demo calls a network or a real camera.
 Run `flutter run -t lib/checkout_block_demo.dart` from `example/`.
 Copy `host_checkout.dart`, `host_checkout_journey.dart` and
 `host_payment_recovery.dart` into your host and replace the synthetic adapter
-callbacks. Use a bounded Scaffold body. The demo menu offers lost response,
-pending then offline, and receipt retry; light/dark switches in the top bar.
-It performs no networking or platform sharing/clipboard operation. The fixture
-clock and delayed responses are deterministic, not a production quote/status
-source. Persist attempts durably and enforce price/auth/idempotency on your
-authoritative side. Full adoption and source are in the website Blocks pages.
+callbacks. Use a bounded Scaffold body. One `CheckoutOrder`/`CheckoutActions`
+pair drives both layouts: `CheckoutLayout.invoice` (stacked invoice) or
+`CheckoutLayout.wallet` (balance-first review; its "use another method" opens a
+kit `PaymentMethodPicker` sheet unless you pass `onChangeMethod`). While the
+host re-prices the selected method it sets `CheckoutOrder.quoting`; Pay stays
+disabled until a current quote for that method arrives, and the journey
+revalidates quote, method, expiry and balance before submitting. The demo menu
+switches look (invoice on Hairline, wallet on Soft), scenario (lost response,
+pending then offline, receipt retry), replay and reduced motion; light/dark
+switches in the top bar. It performs no networking or platform
+sharing/clipboard operation. The fixture clock and delayed responses are
+deterministic, not a production quote/status source. Persist attempts durably
+and enforce price/auth/idempotency on your authoritative side. Full adoption
+and source are in the website Blocks pages.
 
 ## Merchant overview demo
 
