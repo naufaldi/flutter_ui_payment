@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -89,6 +90,86 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.getSize(find.byType(PaymentActionBar)).height, settled);
     expect(find.text('Updating total…'), findsOneWidget);
+  });
+  testWidgets('a re-quoted total reaches screen readers as soon as it lands '
+      '(#299)', (tester) async {
+    final semantics = tester.ensureSemantics();
+    Widget bar(int amount, bool updating, {bool reduce = false}) => app(
+      Scaffold(
+        bottomNavigationBar: PaymentActionBar(
+          total: Money.idr(amount),
+          updating: updating,
+          action: PaymentButton(
+            label: 'Pay',
+            width: PaymentWidth.hug,
+            onPressed: updating ? null : () {},
+          ),
+        ),
+      ),
+      reduceMotion: reduce,
+    );
+    // What a screen reader can reach inside the bar's live region.
+    String spoken() {
+      final labels = <String>[];
+      void visit(SemanticsNode node) {
+        labels.add(node.getSemanticsData().label);
+        node.visitChildren((child) {
+          visit(child);
+          return true;
+        });
+      }
+
+      visit(tester.getSemantics(find.byType(PaymentActionBar)));
+      return labels.join(' | ');
+    }
+
+    // Opacity the text is painted at, through every fade above it.
+    double painted(Finder text) {
+      var opacity = 1.0;
+      RenderObject? node = tester.renderObject(text);
+      while (node != null && node is! RenderView) {
+        if (node is RenderOpacity) opacity *= node.opacity;
+        if (node is RenderAnimatedOpacity) opacity *= node.opacity.value;
+        node = node.parent;
+      }
+      return opacity;
+    }
+
+    final old = find.textContaining('102');
+    final fresh = find.textContaining('98');
+    await tester.pumpWidget(bar(102500, false));
+    await tester.pumpWidget(bar(102500, true));
+    await tester.pumpAndSettle();
+    // The host replaces the total as the update clears.
+    await tester.pumpWidget(bar(98000, false));
+    expect(spoken(), contains('98000 IDR'));
+    expect(spoken(), isNot(contains('102500')));
+    expect(spoken(), isNot(contains('Updating')));
+    await tester.pump(const Duration(milliseconds: 50));
+    expect(spoken(), contains('98000 IDR'));
+    expect(spoken(), isNot(contains('102500')));
+    // The old amount still fades out under standard motion.
+    expect(painted(old), greaterThan(0));
+    expect(painted(old), lessThan(1));
+    // Reduced motion turns on mid-fade: the current state shows at once.
+    await tester.pumpWidget(bar(98000, false, reduce: true));
+    expect(old, findsNothing);
+    expect(painted(fresh), 1);
+    expect(painted(find.text('Updating total…')), 0);
+    expect(spoken(), contains('98000 IDR'));
+    expect(spoken(), isNot(contains('Updating')));
+    // With reduced motion on, a whole re-quote changes without a fade.
+    await tester.pumpWidget(bar(98000, true, reduce: true));
+    expect(painted(fresh), 0);
+    expect(painted(find.text('Updating total…')), 1);
+    expect(spoken(), contains('Updating'));
+    expect(spoken(), isNot(contains('98000')));
+    await tester.pumpWidget(bar(102500, false, reduce: true));
+    expect(fresh, findsNothing);
+    expect(painted(old), 1);
+    expect(spoken(), contains('102500 IDR'));
+    expect(spoken(), isNot(contains('Updating')));
+    semantics.dispose();
   });
   for (final scale in [1.0, 2.0]) {
     testWidgets('document tile badge placement at ${scale}x', (tester) async {
