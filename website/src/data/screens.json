@@ -114,6 +114,16 @@
     "height": 1095,
     "caption": "Checkout block: failed refresh preserves last-known pending and the same attempt."
   },
+  "android_block_checkout_wallet": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Checkout block wallet look: Soft preset, balance-first review and pinned pay for the same order."
+  },
+  "android_block_checkout_wallet_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Checkout block wallet look in dark mode: lifted balance card on a near-black page."
+  },
   "android_block_transfer": {
     "width": 640,
     "height": 1095,
