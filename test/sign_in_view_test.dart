@@ -326,12 +326,14 @@ void main() {
       );
     });
 
-    testWidgets('the entering error is readable while it fades in and the '
-        'leaving one is already gone', (t) async {
+    testWidgets('the error reaches semantics on the first frame of each '
+        'handoff', (t) async {
       final semantics = t.ensureSemantics();
       await t.pumpWidget(boundedHost(signIn(null)));
 
       await t.pumpWidget(boundedHost(signIn('Sign-in failed')));
+      expect(_opacityOf(t, find.text('Sign-in failed')), 0);
+      expect(_spoken(t), contains('Sign-in failed'), reason: 'first frame');
       await t.pump(const Duration(milliseconds: 40));
       // Still fading in, already in the semantics tree.
       expect(

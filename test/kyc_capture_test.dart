@@ -949,6 +949,8 @@ void main() {
       expect(find.text('Choose document'), findsOneWidget);
 
       await t.pumpWidget(issueTile(interrupted, onPick: () => picks++));
+      expect(_opacityOf(t, find.text('Upload interrupted')), 0);
+      expect(_spoken(t), contains('Upload interrupted'), reason: 'first frame');
       await t.pump(const Duration(milliseconds: 40));
       // Still fading in, already in the semantics tree.
       expect(
@@ -965,8 +967,7 @@ void main() {
       await t.pumpWidget(
         issueTile(const DocumentSlotState.empty(), onPick: () => picks++),
       );
-      await t.pump(const Duration(milliseconds: 40));
-      // Still painted mid-fade, already out of semantics.
+      // Still painted on the first clear frame, already out of semantics.
       expect(find.text('Upload interrupted'), findsOneWidget);
       expect(_spoken(t), isNot(contains('Upload interrupted')));
       await t.pumpAndSettle();

@@ -116,13 +116,11 @@ With the durations from `PaymentMotion.of`, every swap is instant under reduced 
 Content that arrives or leaves moves only on a state change after the widget is built, never on its first build:
 
 - `PaymentOnboardingView` brings in loading, each task's content and the done message with `fadeRise`, and the done mark settles in with `fadeScale`. Its `error` banner fades in and out, and the step below glides.
-- `PaymentSignInView` and `DocumentUploadTile` hand their error and issue banners over with the same full-width fade and eased height, so the content below glides instead of jumping. The error is readable while it fades in, and the leaving banner takes no taps, focus or screen-reader stop; retry, retake and settings actions stay outside the swap and usable throughout.
+- `PaymentSignInView` and `DocumentUploadTile` hand their error and issue banners over with the same full-width fade and eased height, so the content below glides instead of jumping. The error is available to screen readers from the first frame, and the leaving banner takes no taps, focus or screen-reader stop; retry, retake and settings actions stay outside the swap and usable throughout.
 - `TransactionHistory`, `PaymentOverviewPage`, `PaymentDetailPagePropertyList` and `PromoSlot` hand their skeleton over to content with `fullWidthSwap`. Only the loading → ready step moves: a search, a filter or new data in content that is already showing changes at once, height included.
 - `PromoSlot` fades between all its states, and a dismissed offer collapses with `collapseWhenEmpty` while the content below glides up.
 - `PaymentTaskList` turns a task's status mark with `fadeScale` over `quick`.
 - `ChartModule` swaps its plot at once: the plot keeps a fixed height, so nothing below moves.
-
-Content that swaps in is readable by assistive tech from its first painted frames, and content that swaps out leaves the semantics tree, keyboard focus and taps on the first frame — `topLayout` owns that handoff. Give each state its own key so a same-state update changes the text in place instead of restarting the swap.
 
 The kit can only animate slots it owns. When your screen adds or removes a banner itself, wrap that slot in `fullWidthSwap` with a key per state, such as `const SizedBox.shrink(key: ValueKey('none'))` when it's empty.
 

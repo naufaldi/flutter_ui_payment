@@ -335,20 +335,14 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
               ),
             ),
           ],
-          // The error slot is a handoff, not data: it fades in and out and
-          // its height eases, so what sits below glides instead of jumping
-          // (#310, D128). The gap above it travels inside the keyed child,
-          // so the empty slot has no height and no gap of its own. One
-          // stable Focus wraps the swap: the node outlives the banner it
-          // announced, which the swap already keeps painted but inert, and
-          // canRequestFocus takes it out of the traversal order and marks
-          // its semantics node unfocusable on clear. includeSemantics stays
-          // on: toggling it would add or drop the Semantics wrapper and
-          // remount the swap mid-handoff.
+          // The gap travels with the error, so the empty slot takes no space.
+          // One FocusNode serves keyboard focus even when two banners paint
+          // during a rapid retry. Its semantics wrapper would hide the
+          // banner's own live region while the slot is zero height.
           Focus(
             focusNode: _errorFocus,
             canRequestFocus: w.errorText != null,
-            includeSemantics: true,
+            includeSemantics: false,
             child: MotionSwap(
               // The entering banner is readable on its first frame, while
               // it is still transparent; the leaving one is already out of
