@@ -36,12 +36,19 @@ class MotionSwap extends StatefulWidget {
   /// height no longer easing.
   final VoidCallback? onSettled;
 
-  /// A fade only, on [PaymentMotion.easeOut].
-  static Widget fade(Widget child, Animation<double> animation) =>
-      FadeTransition(
-        opacity: animation.drive(CurveTween(curve: PaymentMotion.easeOut)),
-        child: child,
-      );
+  /// A fade only, on [PaymentMotion.easeOut]. [alwaysIncludeSemantics] keeps
+  /// a child's semantics while it is still transparent, so a swap's new
+  /// content is readable on the first frame; the default drops them at
+  /// opacity 0, as [FadeTransition] does.
+  static Widget fade(
+    Widget child,
+    Animation<double> animation, {
+    bool alwaysIncludeSemantics = false,
+  }) => FadeTransition(
+    opacity: animation.drive(CurveTween(curve: PaymentMotion.easeOut)),
+    alwaysIncludeSemantics: alwaysIncludeSemantics,
+    child: child,
+  );
 
   @override
   State<MotionSwap> createState() => _MotionSwapState();

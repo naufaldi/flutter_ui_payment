@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import '../controls/controls.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
+import '../foundation/motion_swap.dart';
 import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/primitives.dart';
@@ -687,17 +688,35 @@ class DocumentUploadTile extends StatelessWidget {
               ),
             ),
           ],
-          if (issue != null) ...[
-            SizedBox(height: theme.space(PaymentSpace.related)),
-            PaymentBanner(
-              tone: StatusTone.danger,
-              announce: true,
-              title: l10n.documentIssueTitle(issue.kind),
-              message:
-                  issue.safeMessage ??
-                  l10n.documentIssueMessage(issue.kind, limits),
-            ),
-          ],
+          // The issue slot is a handoff, not data: it fades in and out and
+          // its height eases, so the actions below glide instead of jumping
+          // (#310, D128). The gap above it travels inside the keyed child,
+          // so an empty slot has no height and no gap of its own. Same-key
+          // issue changes update the banner text in place; the entering
+          // banner is readable on its first frame.
+          MotionSwap(
+            transition: (child, animation) =>
+                MotionSwap.fade(child, animation, alwaysIncludeSemantics: true),
+            child: issue == null
+                ? const SizedBox.shrink(key: ValueKey('none'))
+                : SizedBox(
+                    key: const ValueKey('issue'),
+                    width: double.infinity,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: theme.space(PaymentSpace.related),
+                      ),
+                      child: PaymentBanner(
+                        tone: StatusTone.danger,
+                        announce: true,
+                        title: l10n.documentIssueTitle(issue.kind),
+                        message:
+                            issue.safeMessage ??
+                            l10n.documentIssueMessage(issue.kind, limits),
+                      ),
+                    ),
+                  ),
+          ),
           SizedBox(height: theme.space(PaymentSpace.block)),
           // Controls use the theme's control radius, never the default pill.
           Wrap(
