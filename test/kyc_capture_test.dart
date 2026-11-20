@@ -950,7 +950,11 @@ void main() {
 
       await t.pumpWidget(issueTile(interrupted, onPick: () => picks++));
       expect(_opacityOf(t, find.text('Upload interrupted')), 0);
-      expect(_spoken(t), contains('Upload interrupted'), reason: 'first frame');
+      expect(
+        _spoken(t, visibleOnly: true),
+        contains('Upload interrupted'),
+        reason: 'visible to accessibility on the first frame',
+      );
       await t.pump(const Duration(milliseconds: 40));
       // Still fading in, already in the semantics tree.
       expect(
@@ -1083,8 +1087,9 @@ double _opacityOf(WidgetTester t, Finder finder) => t
     .reduce((a, b) => a < b ? a : b);
 
 /// What a screen reader's traversal can reach, as one string.
-String _spoken(WidgetTester t) => t.semantics
+String _spoken(WidgetTester t, {bool visibleOnly = false}) => t.semantics
     .simulatedAccessibilityTraversal()
     .map((node) => node.getSemanticsData())
+    .where((data) => !visibleOnly || !data.flagsCollection.isHidden)
     .map((data) => '${data.label} ${data.value} ${data.hint}')
     .join(' | ');

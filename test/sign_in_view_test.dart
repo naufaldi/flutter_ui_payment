@@ -333,7 +333,11 @@ void main() {
 
       await t.pumpWidget(boundedHost(signIn('Sign-in failed')));
       expect(_opacityOf(t, find.text('Sign-in failed')), 0);
-      expect(_spoken(t), contains('Sign-in failed'), reason: 'first frame');
+      expect(
+        _spoken(t, visibleOnly: true),
+        contains('Sign-in failed'),
+        reason: 'visible to accessibility on the first frame',
+      );
       await t.pump(const Duration(milliseconds: 40));
       // Still fading in, already in the semantics tree.
       expect(
@@ -440,9 +444,10 @@ double _opacityOf(WidgetTester t, Finder finder) => t
     .reduce((a, b) => a < b ? a : b);
 
 /// What a screen reader's traversal can reach, as one string.
-String _spoken(WidgetTester t) => t.semantics
+String _spoken(WidgetTester t, {bool visibleOnly = false}) => t.semantics
     .simulatedAccessibilityTraversal()
     .map((node) => node.getSemanticsData())
+    .where((data) => !visibleOnly || !data.flagsCollection.isHidden)
     .map((data) => '${data.label} ${data.value} ${data.hint}')
     .join(' | ');
 
