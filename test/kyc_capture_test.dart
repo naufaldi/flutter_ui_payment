@@ -916,4 +916,174 @@ void main() {
       });
     });
   }
+
+  // #310, D128: the issue slot hands off with the shared full-width swap.
+  group('issue slot motion', () {
+    Widget issueTile(
+      DocumentSlotState state, {
+      VoidCallback? onPick,
+      VoidCallback? onOpenSettings,
+      double scale = 1,
+    }) => motionHost(
+      DocumentUploadTile(
+        requirement: requirement,
+        state: state,
+        onPick: onPick ?? () {},
+        onOpenSettings: onOpenSettings,
+      ),
+      scale: scale,
+    );
+
+    const interrupted = DocumentSlotState.failed(
+      DocumentIssue(DocumentIssueKind.uploadInterrupted),
+    );
+
+    testWidgets('the issue fades in readable at once, its actions stay '
+        'live, and it clears while still painted', (t) async {
+      final semantics = t.ensureSemantics();
+      var picks = 0;
+      await t.pumpWidget(
+        issueTile(const DocumentSlotState.empty(), onPick: () => picks++),
+      );
+      expect(find.byType(PaymentBanner), findsNothing);
+      expect(find.text('Choose document'), findsOneWidget);
+
+      await t.pumpWidget(issueTile(interrupted, onPick: () => picks++));
+      await t.pump(const Duration(milliseconds: 40));
+      // Still fading in, already in the semantics tree.
+      expect(
+        _opacityOf(t, find.text('Upload interrupted')),
+        inExclusiveRange(0, 1),
+      );
+      expect(_spoken(t), contains('Upload interrupted'));
+      // The retry action sits outside the swap and works mid-fade.
+      await t.tap(find.text('Try again'));
+      expect(picks, 1);
+      await t.pumpAndSettle();
+      expect(find.text('Upload interrupted'), findsOneWidget);
+
+      await t.pumpWidget(
+        issueTile(const DocumentSlotState.empty(), onPick: () => picks++),
+      );
+      await t.pump(const Duration(milliseconds: 40));
+      // Still painted mid-fade, already out of semantics.
+      expect(find.text('Upload interrupted'), findsOneWidget);
+      expect(_spoken(t), isNot(contains('Upload interrupted')));
+      await t.pumpAndSettle();
+      expect(find.byType(PaymentBanner), findsNothing);
+      expect(find.text('Choose document'), findsOneWidget);
+      semantics.dispose();
+    });
+
+    testWidgets('issue actions fit 320 dp at 200% text with 48 dp targets', (
+      t,
+    ) async {
+      var picks = 0, settings = 0;
+      await t.pumpWidget(
+        issueTile(
+          const DocumentSlotState.failed(
+            DocumentIssue(
+              DocumentIssueKind.permissionDenied,
+              safeMessage: 'Allow camera access to add the ID photo.',
+              canOpenSettings: true,
+            ),
+          ),
+          onPick: () => picks++,
+          onOpenSettings: () => settings++,
+          scale: 2,
+        ),
+      );
+      await t.pumpAndSettle();
+      expect(t.takeException(), isNull);
+      for (final label in ['Open settings', 'Try again']) {
+        final button = find.widgetWithText(OutlinedButton, label);
+        expect(button, findsOneWidget);
+        expect(t.getSize(button).height, greaterThanOrEqualTo(48));
+      }
+      // At 200% text the row can sit below the fold; scroll it in to tap.
+      await t.ensureVisible(find.widgetWithText(OutlinedButton, 'Try again'));
+      await t.tap(find.widgetWithText(OutlinedButton, 'Try again'));
+      await t.ensureVisible(
+        find.widgetWithText(OutlinedButton, 'Open settings'),
+      );
+      await t.tap(find.widgetWithText(OutlinedButton, 'Open settings'));
+      expect(picks, 1);
+      expect(settings, 1);
+    });
+
+    testWidgets('a same-slot issue change updates the text in place', (
+      t,
+    ) async {
+      await t.pumpWidget(
+        issueTile(
+          const DocumentSlotState.failed(
+            DocumentIssue(DocumentIssueKind.tooLarge),
+          ),
+        ),
+      );
+      await t.pumpAndSettle();
+      expect(find.text('File too large'), findsOneWidget);
+
+      await t.pumpWidget(
+        issueTile(
+          const DocumentSlotState.failed(
+            DocumentIssue(
+              DocumentIssueKind.uploadInterrupted,
+              safeMessage: 'Connection dropped.',
+            ),
+          ),
+        ),
+      );
+      // Same 'issue' key: the banner updates in place, so the old text is
+      // gone on the next frame instead of lingering through an exit fade.
+      expect(find.text('File too large'), findsNothing);
+      expect(find.byType(PaymentBanner), findsOneWidget);
+      expect(find.text('Upload interrupted'), findsOneWidget);
+      expect(find.text('Connection dropped.'), findsOneWidget);
+    });
+
+    for (final setup in ReducedMotion.values) {
+      testWidgets('the issue swap is instant under reduced motion '
+          '(${setup.name})', (t) async {
+        await t.pumpWidget(
+          setup.apply(t, issueTile(const DocumentSlotState.empty())),
+        );
+        await expectStill(
+          t,
+          () => t.pumpWidget(setup.apply(t, issueTile(interrupted))),
+        );
+        expect(find.text('Upload interrupted'), findsOneWidget);
+        expect(find.byType(AnimatedSize), findsNothing);
+      });
+    }
+
+    testWidgets('reduced motion turned on mid-swap ends it at once', (t) async {
+      await t.pumpWidget(issueTile(const DocumentSlotState.empty()));
+      await t.pumpWidget(issueTile(interrupted));
+      await t.pump(const Duration(milliseconds: 60));
+      expect(find.byType(AnimatedSize), findsOneWidget, reason: 'easing');
+
+      ReducedMotion.iosReduceMotion.apply(t, const SizedBox());
+      await t.pump();
+      expect(find.byType(AnimatedSize), findsNothing);
+      expect(find.text('Upload interrupted'), findsOneWidget);
+      expect(_opacityOf(t, find.text('Upload interrupted')), 1);
+      expect(t.hasRunningAnimations, isFalse);
+    });
+  });
 }
+
+/// The lowest opacity any fade above [finder] paints it at.
+double _opacityOf(WidgetTester t, Finder finder) => t
+    .widgetList<FadeTransition>(
+      find.ancestor(of: finder, matching: find.byType(FadeTransition)),
+    )
+    .map((fade) => fade.opacity.value)
+    .reduce((a, b) => a < b ? a : b);
+
+/// What a screen reader's traversal can reach, as one string.
+String _spoken(WidgetTester t) => t.semantics
+    .simulatedAccessibilityTraversal()
+    .map((node) => node.getSemanticsData())
+    .map((data) => '${data.label} ${data.value} ${data.hint}')
+    .join(' | ');
