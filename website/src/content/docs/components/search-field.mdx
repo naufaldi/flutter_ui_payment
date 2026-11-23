@@ -3,7 +3,6 @@ title: Search field
 description: Pick provinces or banks from a search sheet on phones or a floating list on wide screens.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
 import Props from '../../../components/Props.astro';
 import Screen from '../../../components/Screen.astro';
 import Screens from '../../../components/Screens.astro';
@@ -88,9 +87,7 @@ Empty, selected, disabled and error states use semantic tokens. Search additiona
 
 **Host search errors.** An `errorText` shows the host's explanation above the open phone sheet's results in the danger tone, announced through a live region. Options remain selectable by tap and keyboard, including when the error is local validation. When there are no visible options, the error suppresses the no-matches message. With `onQueryChanged` supplied, Retry (Coba lagi in Indonesian) re-sends the sheet's current query through that callback. The host clears `errorText` when starting another lookup and updates `loading` and `options` as usual. Without a query callback, the error is still readable and there is no Retry action. Pass only safe, user-facing error text; network requests and recovery stay in the host.
 
-<Aside type="caution" title="Unreleased: available on main, not in 0.1.0">
-In `rakit_ui` 0.1.0 on pub.dev, `errorText` shows on the field but does not reach the open phone sheet, and the sheet has no Retry (D113). Use a [git dependency](/start/installation/#development-git-dependency) on `main` to try it before the next release.
-</Aside>
+The error in the open sheet and its Retry (D113) were added in `rakit_ui` 0.2.0. In 0.1.0, `errorText` shows on the field only.
 
 **Layout.** Result rows are at least 48 dp with text on a 16 dp inset: the field's text edge in the floating list, the sheet gutter in the phone sheet. The loading and no-matches rows keep a 12 dp gap between the spinner or icon and the text.
 

@@ -45,7 +45,7 @@ class AmountText extends StatelessWidget {
     super.key,
     this.style,
     this.variant = AmountTextVariant.row,
-    @Deprecated('Use variant: AmountTextVariant.display. Removed in 0.2.0.')
+    @Deprecated('Use variant: AmountTextVariant.display. Removed in 0.3.0.')
     this.emphasis = false,
   }) : assert(!emphasis || variant == AmountTextVariant.row);
 
@@ -58,7 +58,7 @@ class AmountText extends StatelessWidget {
   final AmountTextVariant variant;
 
   /// Legacy display amount, replaced by the display variant.
-  @Deprecated('Use variant: AmountTextVariant.display. Removed in 0.2.0.')
+  @Deprecated('Use variant: AmountTextVariant.display. Removed in 0.3.0.')
   final bool emphasis;
 
   @override
@@ -877,7 +877,7 @@ class PaymentBadge extends StatelessWidget {
 }
 
 /// Deprecated alias of [PaymentBadge].
-@Deprecated('Use PaymentBadge. Removed in 0.2.0.')
+@Deprecated('Use PaymentBadge. Removed in 0.3.0.')
 typedef StatusBadge = PaymentBadge;
 
 /// Inline message for errors, warnings and explanations.
@@ -1044,7 +1044,7 @@ class _PaymentBannerState extends State<PaymentBanner> {
 }
 
 /// Deprecated alias of [PaymentBanner].
-@Deprecated('Use PaymentBanner. Removed in 0.2.0.')
+@Deprecated('Use PaymentBanner. Removed in 0.3.0.')
 typedef NoticeBanner = PaymentBanner;
 
 /// A titled group of content. Sections are flat: they sit on the page

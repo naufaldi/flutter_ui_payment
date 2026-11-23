@@ -265,15 +265,15 @@ class PaymentDataTable<T> extends StatefulWidget {
   final String? filterQuery;
 
   /// Not supported (D28); must remain false.
-  @Deprecated('Not supported (D28). Removed in 0.2.0.')
+  @Deprecated('Not supported (D28). Removed in 0.3.0.')
   final bool enableColumnReorder;
 
   /// Not supported (D28); must remain false.
-  @Deprecated('Not supported (D28). Removed in 0.2.0.')
+  @Deprecated('Not supported (D28). Removed in 0.3.0.')
   final bool enableColumnResize;
 
   /// Not supported (D28); configure columns through the host.
-  @Deprecated('Not supported (D28). Removed in 0.2.0.')
+  @Deprecated('Not supported (D28). Removed in 0.3.0.')
   final ValueChanged<List<String>>? onColumnOrderChanged;
 
   /// Spoken description of the data set.
