@@ -7,6 +7,16 @@ Copied verbatim from `CHANGELOG.md`.
 
 ## Unreleased
 
+### Package
+
+- Keep the current checkout total readable during re-quotes and end active fades when reduced motion turns on.
+- The checkout action bar's re-quote fade now ends immediately when iOS Reduce Motion is turned on mid-fade.
+- Keep checkout authorization phases connected with a short, accessible fade that respects reduced motion.
+- Let an accordion reverse smoothly when tapped again before it finishes opening or closing.
+- Radio and payment-method selections now ease between checked and unchecked rings, with immediate selection and reduced-motion support.
+- Choosing a payment method with the keyboard now shows its selected outline at once, matching the radio mark.
+- Sign-in and document-upload errors now fade in and out while recovery actions stay usable and error text is available to accessibility immediately.
+
 ### Docs site
 
 These update https://rakit-ui.netlify.app.
@@ -20,6 +30,7 @@ These update https://rakit-ui.netlify.app.
 - A new guide for adopting Rakit in an existing branded app, with copy-runnable component snippets.
 - Buttons and links respond to presses, landing sections fade in, and menus, search and the phone sidebar animate open and closed; everything stays still with reduced motion or without JavaScript, including when reduced motion is turned on while a page is open.
 - Component pages drop Stripe prop-mapping tables and Stripe names in API descriptions, repeated host-ownership callouts and internal example-scenario codes; component behavior, API and example screens remain.
+- Preview one checkout and recovery block in invoice and wallet designs with realistic re-quotes, replay and reduced-motion controls.
 
 ## 0.2.0
 
