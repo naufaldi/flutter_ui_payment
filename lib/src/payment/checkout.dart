@@ -471,6 +471,9 @@ class _MethodTile extends StatelessWidget {
     final radius = theme.borderRadius;
     // The selected row's outline fades in (150 ms); its width never changes
     // the layout because it is painted over the row, not around it.
+    // Keyboard-driven selection lands at once, like the radio mark (D127).
+    final keyboard =
+        FocusManager.instance.highlightMode == FocusHighlightMode.traditional;
     return Semantics(
       inMutuallyExclusiveGroup: true,
       checked: selected,
@@ -479,7 +482,7 @@ class _MethodTile extends StatelessWidget {
       child: PaymentFocusRing(
         radius: radius,
         child: AnimatedContainer(
-          duration: motion.quick,
+          duration: keyboard ? Duration.zero : motion.quick,
           curve: PaymentMotion.easeOut,
           foregroundDecoration: BoxDecoration(
             borderRadius: radius,
