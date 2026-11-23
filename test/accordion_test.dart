@@ -69,16 +69,129 @@ void main() {
     await tester.pump();
     expect(key.currentState, same(state));
     expect(tester.getSize(item).height, closeTo(middle, 0.01));
-    var previous = middle;
     for (var frame = 0; frame < 15; frame++) {
       await tester.pump(const Duration(milliseconds: 16));
       expect(key.currentState, same(state));
       expect(find.text('Body'), findsOneWidget);
-      final height = tester.getSize(item).height;
-      expect(height, greaterThanOrEqualTo(previous));
-      previous = height;
+      // The turn keeps a little of the collapse's momentum, so the reveal
+      // can dip a few pixels before it climbs; it must never jump.
+      expect(tester.getSize(item).height, greaterThanOrEqualTo(middle - 4));
     }
-    expect(previous, full);
+    await tester.pumpAndSettle();
+    expect(tester.getSize(item).height, full);
+  });
+  testWidgets('reopening mid-collapse turns the reveal without a speed snap', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        const SingleChildScrollView(
+          child: PaymentAccordionItem(
+            title: 'Receipt',
+            child: SizedBox(height: 100, child: Text('Body')),
+          ),
+        ),
+        1,
+      ),
+    );
+
+    // The displayed progress: the heightFactor the reveal is painted with.
+    double progress() {
+      for (final align in tester.widgetList<Align>(
+        find.descendant(
+          of: find.byType(PaymentAccordionItem),
+          matching: find.byType(Align),
+        ),
+      )) {
+        if (align.heightFactor != null) return align.heightFactor!;
+      }
+      fail('no reveal Align found');
+    }
+
+    // Open part-way, collapse, then reopen before the collapse settles.
+    await tester.tap(find.text('Receipt'));
+    await tester.pump();
+    for (var i = 0; i < 6; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    await tester.tap(find.text('Receipt'));
+    await tester.pump();
+    final collapse = <double>[];
+    for (var i = 0; i < 4; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      collapse.add(progress());
+    }
+    await tester.tap(find.text('Receipt'));
+    await tester.pump();
+    final atTurn = progress();
+    expect(atTurn, closeTo(collapse.last, 0.0001));
+
+    // Height and fade read the same value, so they cannot disagree mid-turn.
+    final fade = tester.widget<FadeTransition>(
+      find
+          .ancestor(
+            of: find.text('Body'),
+            matching: find.byType(FadeTransition),
+          )
+          .first,
+    );
+    expect(fade.opacity.value, closeTo(atTurn, 0.0001));
+
+    final reopen = <double>[];
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      reopen.add(progress());
+    }
+    // The collapse was still travelling when the tap landed, so the first
+    // frame keeps a small step in the old direction; it cannot already be
+    // moving at reopen speed. A restarted curve snaps here instead.
+    final stepBefore = collapse.last - collapse[collapse.length - 2];
+    final stepAfter = reopen.first - atTurn;
+    expect(stepAfter.abs(), lessThan(stepBefore.abs() * 0.5));
+    // It turns, arrives open and then stops ticking.
+    expect(reopen.last, greaterThan(0.98));
+    await tester.pumpAndSettle();
+    expect(progress(), closeTo(1, 0.0001));
+    expect(tester.hasRunningAnimations, isFalse);
+    expect(find.text('Body'), findsOneWidget);
+  });
+  testWidgets('rapid taps keep the latest target', (tester) async {
+    await tester.pumpWidget(
+      host(
+        const SingleChildScrollView(
+          child: PaymentAccordionItem(
+            title: 'Receipt',
+            child: SizedBox(height: 100, child: Text('Body')),
+          ),
+        ),
+        1,
+      ),
+    );
+    await tester.tap(find.text('Receipt'));
+    await tester.pump();
+    for (var i = 0; i < 6; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    // Collapse mid-open, reopen mid-collapse, collapse mid-reopen: three
+    // reversals in a row, each retargeting the running spring.
+    await tester.tap(find.text('Receipt'));
+    await tester.pump();
+    for (var i = 0; i < 3; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    await tester.tap(find.text('Receipt'));
+    await tester.pump();
+    for (var i = 0; i < 3; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    await tester.tap(find.text('Receipt'));
+    await tester.pump();
+    await tester.pumpAndSettle();
+    expect(find.text('Body'), findsNothing);
+    expect(tester.hasRunningAnimations, isFalse);
+    await tester.tap(find.text('Receipt'));
+    await tester.pumpAndSettle();
+    expect(find.text('Body'), findsOneWidget);
   });
   testWidgets('collapsing content takes no taps', (tester) async {
     var calls = 0;
