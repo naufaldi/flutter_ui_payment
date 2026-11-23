@@ -747,5 +747,45 @@ void main() {
       );
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('payment method rows keep 48 dp targets at 200% text on a '
+        '320 pt screen ($language)', (tester) async {
+      tester.view.physicalSize = const Size(640, 1136);
+      tester.view.devicePixelRatio = 2;
+      addTearDown(tester.view.reset);
+      String? chosen;
+      await tester.pumpWidget(
+        host(
+          PaymentMethodPicker(
+            methods: const [
+              _balance,
+              PaymentMethod(
+                id: 'va',
+                label: 'Virtual account Bank Contoh',
+                kind: PaymentMethodKind.virtualAccount,
+              ),
+            ],
+            selectedId: 'balance',
+            onChanged: (m) => chosen = m.id,
+          ),
+          language: language,
+          textScale: 2,
+          size: const Size(320, 568),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      for (final label in [
+        'Ruang Bayar balance',
+        'Virtual account Bank Contoh',
+      ]) {
+        final row = find
+            .ancestor(of: find.text(label), matching: find.byType(InkWell))
+            .first;
+        expect(tester.getSize(row).height, greaterThanOrEqualTo(48));
+        expect(tester.getSize(row).width, lessThanOrEqualTo(320));
+      }
+      await tester.tap(find.text('Virtual account Bank Contoh'));
+      expect(chosen, 'va');
+    });
   }
 }
