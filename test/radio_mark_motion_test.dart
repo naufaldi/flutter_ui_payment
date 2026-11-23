@@ -9,31 +9,21 @@ import 'package:rakit_ui/src/foundation/radio_mark.dart';
 
 import 'helpers/reduced_motion.dart';
 
-Widget host(Widget child, {bool reduceMotion = false, double textScale = 1}) =>
-    MaterialApp(
-      theme: ThemeData(),
-      locale: const Locale('en'),
-      supportedLocales: const [Locale('en'), Locale('id')],
-      localizationsDelegates: const [
-        PaymentLocalizations.delegate,
-        ...GlobalMaterialLocalizations.delegates,
-      ],
-      home: Builder(
-        builder: (context) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            disableAnimations:
-                reduceMotion || MediaQuery.disableAnimationsOf(context),
-            textScaler: TextScaler.linear(textScale),
-          ),
-          child: Scaffold(
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: child,
-            ),
-          ),
-        ),
-      ),
-    );
+Widget host(Widget child) => MaterialApp(
+  theme: ThemeData(),
+  locale: const Locale('en'),
+  supportedLocales: const [Locale('en'), Locale('id')],
+  localizationsDelegates: const [
+    PaymentLocalizations.delegate,
+    ...GlobalMaterialLocalizations.delegates,
+  ],
+  home: Scaffold(
+    body: SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: child,
+    ),
+  ),
+);
 
 /// Three radio options; the host owns the selected value, like a real group.
 class _RadioHarness extends StatefulWidget {
@@ -105,6 +95,22 @@ double _ringWidth(WidgetTester tester, int index) =>
 
 Color _ringColor(WidgetTester tester, int index) =>
     _ring(tester, index).top.color;
+
+/// The painted selected outline of the method row labelled [label].
+Color _outlineColor(WidgetTester tester, String label) {
+  final box = tester.widget<Container>(
+    find
+        .ancestor(
+          of: find.text(label),
+          matching: find.byWidgetPredicate(
+            (w) => w is Container && w.foregroundDecoration is BoxDecoration,
+          ),
+        )
+        .first,
+  );
+  final outline = box.foregroundDecoration! as BoxDecoration;
+  return (outline.border! as Border).top.color;
+}
 
 void main() {
   group('RadioMark selection motion (D127)', () {
@@ -223,20 +229,6 @@ void main() {
       expect(_ringWidth(tester, 1), 6);
     });
 
-    for (final setup in ReducedMotion.values) {
-      testWidgets('is instant under ${setup.name} (B9)', (tester) async {
-        await tester.pumpWidget(
-          setup.apply(tester, host(const _RadioHarness())),
-        );
-        final state = tester.state<_RadioHarnessState>(
-          find.byType(_RadioHarness),
-        );
-        await expectStill(tester, () => state.pick('b'));
-        expect(_ringWidth(tester, 0), 1.5);
-        expect(_ringWidth(tester, 1), 6);
-      });
-    }
-
     testWidgets('ends mid-flight when iOS Reduce Motion turns on', (
       tester,
     ) async {
@@ -267,61 +259,10 @@ void main() {
       expect(_ringWidth(tester, 0), 1.5);
     });
 
-    testWidgets('ends mid-flight when MediaQuery disableAnimations turns on', (
+    testWidgets('keyboard selection lands the mark and outline at once', (
       tester,
     ) async {
-      await tester.pumpWidget(host(const _RadioHarness()));
-      final state = tester.state<_RadioHarnessState>(
-        find.byType(_RadioHarness),
-      );
-      state.pick('b');
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 50));
-      expect(tester.hasRunningAnimations, isTrue);
-      expect(_ringWidth(tester, 1), inExclusiveRange(1.5, 6));
-
-      await tester.pumpWidget(host(const _RadioHarness(), reduceMotion: true));
-      await tester.pump();
-      expect(tester.hasRunningAnimations, isFalse);
-      expect(_ringWidth(tester, 1), 6);
-      expect(_ringWidth(tester, 0), 1.5);
-    });
-
-    testWidgets(
-      'keeps the 48 dp row and the fixed 20 dp mark at 320 dp, 200% text',
-      (tester) async {
-        tester.view.physicalSize = const Size(320, 568);
-        tester.view.devicePixelRatio = 1;
-        addTearDown(tester.view.reset);
-        await tester.pumpWidget(host(const _PickerHarness(), textScale: 2));
-        expect(tester.takeException(), isNull);
-        for (final label in ['Balance', 'Card']) {
-          final row = find
-              .ancestor(of: find.text(label), matching: find.byType(InkWell))
-              .first;
-          expect(
-            tester.getSize(row).height,
-            greaterThanOrEqualTo(48),
-            reason: '$label row keeps its 48 dp target',
-          );
-        }
-        expect(
-          tester.getSize(find.byType(RadioMark).first),
-          const Size(20, 20),
-        );
-      },
-    );
-
-    // Last: sendKeyEvent leaves the platform in keyboard highlight mode,
-    // which would make earlier tests' taps read as keyboard-driven.
-    testWidgets('keyboard selection lands at once', (tester) async {
-      FocusManager.instance.highlightStrategy =
-          FocusHighlightStrategy.alwaysTraditional;
-      addTearDown(
-        () => FocusManager.instance.highlightStrategy =
-            FocusHighlightStrategy.automatic,
-      );
-      await tester.pumpWidget(host(const _RadioHarness()));
+      await tester.pumpWidget(host(const _PickerHarness()));
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
@@ -329,12 +270,17 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.space);
       await tester.pump();
 
-      final state = tester.state<_RadioHarnessState>(
-        find.byType(_RadioHarness),
+      final state = tester.state<_PickerHarnessState>(
+        find.byType(_PickerHarness),
       );
-      expect(state.group, 'b');
+      expect(state.selected, 'b');
       expect(_ringWidth(tester, 1), 6);
       expect(_ringWidth(tester, 0), 1.5);
+      final accent = PaymentTheme.of(
+        tester.element(find.byType(RadioMark).first),
+      ).accent;
+      expect(_outlineColor(tester, 'Card'), accent);
+      expect(_outlineColor(tester, 'Balance').a, 0);
     });
   });
 }

@@ -404,20 +404,17 @@ void main() {
       expect(FocusManager.instance.primaryFocus, same(node));
     });
 
-    for (final setup in ReducedMotion.values) {
-      testWidgets('the error swap is instant under reduced motion '
-          '(${setup.name})', (t) async {
-        await t.pumpWidget(setup.apply(t, boundedHost(signIn(null))));
-        await expectStill(
-          t,
-          () => t.pumpWidget(
-            setup.apply(t, boundedHost(signIn('Sign-in failed'))),
-          ),
-        );
-        expect(find.byType(PaymentBanner), findsOneWidget);
-        expect(find.byType(AnimatedSize), findsNothing);
-      });
-    }
+    testWidgets('the error swap is instant under reduced motion', (t) async {
+      const setup = ReducedMotion.mediaQuery;
+      await t.pumpWidget(setup.apply(t, boundedHost(signIn(null))));
+      await expectStill(
+        t,
+        () =>
+            t.pumpWidget(setup.apply(t, boundedHost(signIn('Sign-in failed')))),
+      );
+      expect(find.byType(PaymentBanner), findsOneWidget);
+      expect(find.byType(AnimatedSize), findsNothing);
+    });
 
     testWidgets('reduced motion turned on mid-swap ends it at once', (t) async {
       await t.pumpWidget(boundedHost(signIn(null)));

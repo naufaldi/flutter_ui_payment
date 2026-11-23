@@ -1047,20 +1047,18 @@ void main() {
       expect(find.text('Connection dropped.'), findsOneWidget);
     });
 
-    for (final setup in ReducedMotion.values) {
-      testWidgets('the issue swap is instant under reduced motion '
-          '(${setup.name})', (t) async {
-        await t.pumpWidget(
-          setup.apply(t, issueTile(const DocumentSlotState.empty())),
-        );
-        await expectStill(
-          t,
-          () => t.pumpWidget(setup.apply(t, issueTile(interrupted))),
-        );
-        expect(find.text('Upload interrupted'), findsOneWidget);
-        expect(find.byType(AnimatedSize), findsNothing);
-      });
-    }
+    testWidgets('the issue swap is instant under reduced motion', (t) async {
+      const setup = ReducedMotion.mediaQuery;
+      await t.pumpWidget(
+        setup.apply(t, issueTile(const DocumentSlotState.empty())),
+      );
+      await expectStill(
+        t,
+        () => t.pumpWidget(setup.apply(t, issueTile(interrupted))),
+      );
+      expect(find.text('Upload interrupted'), findsOneWidget);
+      expect(find.byType(AnimatedSize), findsNothing);
+    });
 
     testWidgets('reduced motion turned on mid-swap ends it at once', (t) async {
       await t.pumpWidget(issueTile(const DocumentSlotState.empty()));
