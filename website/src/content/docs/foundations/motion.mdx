@@ -119,6 +119,7 @@ Content that arrives or leaves moves only on a state change after the widget is 
 - `TransactionHistory`, `PaymentOverviewPage`, `PaymentDetailPagePropertyList` and `PromoSlot` hand their skeleton over to content with `fullWidthSwap`. Only the loading → ready step moves: a search, a filter or new data in content that is already showing changes at once, height included.
 - `PromoSlot` fades between all its states, and a dismissed offer collapses with `collapseWhenEmpty` while the content below glides up.
 - `PaymentTaskList` turns a task's status mark with `fadeScale` over `quick`.
+- `AuthorizationPrompt` swaps its phase status with the shared full-width fade and eased height, keyed on the phase. The host header, amount and action rules sit outside the swap and update at once.
 - `ChartModule` swaps its plot at once: the plot keeps a fixed height, so nothing below moves.
 
 The kit can only animate slots it owns. When your screen adds or removes a banner itself, wrap that slot in `fullWidthSwap` with a key per state, such as `const SizedBox.shrink(key: ValueKey('none'))` when it's empty.
@@ -158,8 +159,13 @@ Sheets, wide confirm dialogs and toasts follow the kit tokens and reduced motion
 - Flow steps fade and rise a fixed 8 dp going forward, and fade only going back.
 - Compact controls press to 0.96 over 100 ms. Full-width buttons do not scale: scaling a wide slab moves its edges several pixels and reads as a lurch, so they rely on Material's pressed state.
 - Navigation selection, drawer items, menus and anything keyboard-driven are instant. They are used constantly, and animation would only add delay. The drawer rule covers items and selection. The phone Drawer panel keeps its platform slide and edge-swipe gesture.
+<<<<<<< HEAD
 - The shared radio mark (`PaymentRadio`, `PaymentMethodPicker`) eases its selected ring over `quick` on `easeOut`, retargeting mid-flight; keyboard-driven selection and reduced motion stay instant.
 - Sheets take 280 ms in and 200 ms out on the drawer curve; disclosures 220/150 ms.
+=======
+- Sheets take 280 ms in and 200 ms out on the drawer curve. Disclosures take 220 ms to open and 150 ms to close from rest.
+- Reversing a running accordion reveal carries its current speed into a spring with no bounce. Height and opacity turn together. With reduced motion the accordion stops immediately at the new state.
+>>>>>>> origin/main
 - Implicit animations retarget when interrupted.
 - Amounts, balances, countdowns and totals change in place with tabular digits. They never count or roll, so a payment amount never shows an intermediate wrong value. The only allowed motion is the action-bar total's `quick` cross-fade after a re-quote.
 - There is no spring token. Sheets keep the curve tokens; the SDK bottom sheet already carries the release velocity into its fling, and its dismiss and settle can be interrupted.

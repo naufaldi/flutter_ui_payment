@@ -11,10 +11,11 @@ import 'host_payment_recovery.dart';
 /// One bounded screen from review through recovery to a confirmed receipt.
 ///
 /// The host supplies a quote already priced for the selected method. Requote
-/// in [onSelectMethod] and rebuild [order] before allowing submission. No
-/// challenge is performed here: this example's wallet needs none. A host
-/// requiring authorization must finish that step before exposing this send
-/// step, and keep its credentials and cancellation handling outside it.
+/// in [onSelectMethod] and rebuild [order] before allowing submission; while
+/// [CheckoutOrder.quoting] is true the pinned pay action stays disabled and
+/// busy. No challenge is performed here: this example's wallet needs none.
+/// A host requiring authorization must finish that step before exposing this
+/// send step, and keep its credentials and cancellation handling outside it.
 class HostCheckoutJourney extends StatefulWidget {
   const HostCheckoutJourney({
     super.key,
@@ -30,9 +31,19 @@ class HostCheckoutJourney extends StatefulWidget {
     required this.onDone,
     required this.onShare,
     required this.onCopy,
+    this.layout = CheckoutLayout.invoice,
+    this.onChangeMethod,
   });
 
   final CheckoutOrder order;
+
+  /// Which review body to render; recovery is shared by both layouts.
+  final CheckoutLayout layout;
+
+  /// What the wallet layout's "use another method" action does. When null,
+  /// the journey opens a kit [PaymentMethodPicker] sheet over the review;
+  /// pass a callback to use a host-owned picker flow instead.
+  final VoidCallback? onChangeMethod;
   final DateTime Function() clock;
   final String Function() newAttemptId;
   final ValueChanged<PaymentMethod> onSelectMethod;
@@ -93,6 +104,7 @@ class _HostCheckoutJourneyState extends State<HostCheckoutJourney> {
         : order.methods.firstWhere((method) => method.id == methodId);
     return !_working &&
         !order.paying &&
+        !order.quoting &&
         _attempt == null &&
         method != null &&
         order.quote.methodId == method.id &&
@@ -103,6 +115,36 @@ class _HostCheckoutJourneyState extends State<HostCheckoutJourney> {
 
   bool _current(int generation, String id) =>
       mounted && generation == _generation && _attempt?.attemptId == id;
+
+  /// The wallet layout's escape to method choice. Hosts can replace the
+  /// default kit sheet with their own picker through
+  /// [HostCheckoutJourney.onChangeMethod].
+  void _changeMethod(BuildContext context) {
+    final override = widget.onChangeMethod;
+    if (override != null) {
+      override();
+      return;
+    }
+    final order = widget.order;
+    final id = Localizations.localeOf(context).languageCode == 'id';
+    showPaymentSheet<void>(
+      context: context,
+      builder: (sheetContext) => PaymentSheet(
+        header: PaymentSheetHeader(
+          title: id ? 'Pilih metode' : 'Choose a method',
+          onClose: () => Navigator.of(sheetContext).pop(),
+        ),
+        body: PaymentMethodPicker(
+          methods: order.methods,
+          selectedId: order.selectedMethodId,
+          onChanged: (method) {
+            widget.onSelectMethod(method);
+            Navigator.of(sheetContext).pop();
+          },
+        ),
+      ),
+    );
+  }
 
   Future<void> _submit() async {
     // Revalidate at the event boundary, including expiry since the last build.
@@ -245,20 +287,29 @@ class _HostCheckoutJourneyState extends State<HostCheckoutJourney> {
             );
           }
           final order = widget.order;
+          final l10n = PaymentLocalizations.of(context);
+          final actions = CheckoutActions(
+            onSelectMethod: widget.onSelectMethod,
+            onReceiptEmailChanged: widget.onReceiptEmailChanged,
+            onChangeMethod: () => _changeMethod(context),
+            onPay: _submit,
+          );
           return PaymentFullPageView(
             title: id ? 'Tinjau pembayaran' : 'Review payment',
             primaryAction: PaymentButton(
               label:
                   '${id ? 'Bayar' : 'Pay'} '
-                  '${PaymentLocalizations.of(context).moneyFormat.format(order.quote.total)}',
+                  '${l10n.moneyFormat.format(order.quote.total)}',
               style: payActionStyle(context),
+              busy: order.quoting,
+              busyLabel: l10n.updatingTotal,
               onPressed: _canPay ? _submit : null,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: PaymentTheme.of(context).space(PaymentSpace.group),
               children: [
-                if (!_canPay)
+                if (!_canPay && !order.quoting)
                   PaymentBanner(
                     tone: StatusTone.warning,
                     title: id
@@ -268,16 +319,18 @@ class _HostCheckoutJourneyState extends State<HostCheckoutJourney> {
                         ? 'Host perlu memberikan quote yang masih berlaku, metode yang sesuai, dan saldo yang cukup.'
                         : 'The host must provide a current quote, a matching available method and sufficient balance.',
                   ),
-                InvoiceCheckout(
-                  order: order,
-                  inlinePayAction: false,
-                  actions: CheckoutActions(
-                    onSelectMethod: widget.onSelectMethod,
-                    onReceiptEmailChanged: widget.onReceiptEmailChanged,
-                    onChangeMethod: () {},
-                    onPay: _submit,
+                switch (widget.layout) {
+                  CheckoutLayout.invoice => InvoiceCheckout(
+                    order: order,
+                    inlinePayAction: false,
+                    actions: actions,
                   ),
-                ),
+                  CheckoutLayout.wallet => WalletReviewCheckout(
+                    order: order,
+                    actions: actions,
+                    showActionBar: false,
+                  ),
+                },
               ],
             ),
           );
