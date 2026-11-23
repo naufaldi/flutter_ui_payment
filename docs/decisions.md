@@ -903,6 +903,11 @@ The 320 dp gesture rows were measured with the tab fold alone (+18.2 / +30.2 dp 
 
   Rejected: keeping the tables collapsed, because they would still be empty boilerplate on most pages; keeping one generic ownership line per page, because the owner asked for the explanation in one place.
 
+### Authorization phase motion, 19 November 2026
+
+- **D125: `AuthorizationPrompt` phase changes use the shared status swap (#303).** The prompt's status slot — plain title and message for ready, in progress and approved, the tinted banner for canceled, failed and expired — now swaps through the kit's full-width fade and eased height, keyed on the phase so a same-phase rebuild stays still and nothing plays on first build. The host header, amount and the action rules stay outside the swap and update at once, including the busy state and pinned placement. The entering phase is readable on the first frame; the leaving one is already out of semantics, focus and taps (D94). Under reduced motion, under either flag, the swap ends at once, including mid-swap (D66). The motion is the existing enter/exit fades and the `easeInOut` height ease; no new tokens, scale or spring (D69, D74, D75). D123 and D124 were already claimed by open work, so this is D125.
+
+  Rejected: animating the whole prompt including the actions, because the customer's next step must not wait on a fade; a new transition or token, because the shared swap already covers an occasional content handoff; scale on the full-width band, which reads as a lurch (D69).
 ### Accordion reversal spring (D126, 19 November 2026)
 
 `PaymentAccordionItem` now drives its height-and-fade reveal with one `AnimationController` whose value is the displayed progress itself; the `CurvedAnimation` layer is gone, so no second easing sits on top. Rest-to-rest motion is unchanged — `easeOut` at `enter` (220 ms) going in, the flipped `easeOut` at `exit` (150 ms) going out — because `animateTo`/`animateBack` apply the same curves to the displayed value directly, with the duration still scaled by the remaining fraction.

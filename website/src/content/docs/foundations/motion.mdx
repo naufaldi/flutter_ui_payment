@@ -119,6 +119,7 @@ Content that arrives or leaves moves only on a state change after the widget is 
 - `TransactionHistory`, `PaymentOverviewPage`, `PaymentDetailPagePropertyList` and `PromoSlot` hand their skeleton over to content with `fullWidthSwap`. Only the loading → ready step moves: a search, a filter or new data in content that is already showing changes at once, height included.
 - `PromoSlot` fades between all its states, and a dismissed offer collapses with `collapseWhenEmpty` while the content below glides up.
 - `PaymentTaskList` turns a task's status mark with `fadeScale` over `quick`.
+- `AuthorizationPrompt` swaps its phase status with the shared full-width fade and eased height, keyed on the phase. The host header, amount and action rules sit outside the swap and update at once.
 - `ChartModule` swaps its plot at once: the plot keeps a fixed height, so nothing below moves.
 
 The kit can only animate slots it owns. When your screen adds or removes a banner itself, wrap that slot in `fullWidthSwap` with a key per state, such as `const SizedBox.shrink(key: ValueKey('none'))` when it's empty.

@@ -12,6 +12,7 @@ import '../foundation/payment_tokens.dart';
 import '../foundation/radio_mark.dart';
 import '../controls/controls.dart';
 import '../foundation/money.dart';
+import '../foundation/motion_swap.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/payment_motion.dart';
 import '../foundation/payment_theme.dart';
@@ -774,35 +775,50 @@ class AuthorizationPrompt extends StatelessWidget {
       builder: (context, pinned) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (exception)
-            PaymentBanner(
-              tone: tone,
-              icon: icon,
-              title: title,
-              message: message,
-              announce: true,
-            )
-          else
-            Semantics(
-              liveRegion: phase != AuthorizationPhase.ready,
-              container: true,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Semantics(
-                    header: true,
-                    child: Text(title, style: type.heading),
-                  ),
-                  SizedBox(height: theme.space(PaymentSpace.inline)),
-                  Text(
-                    message,
-                    style: type
-                        .bodyFor(context)
-                        .copyWith(color: theme.textSecondary),
-                  ),
-                ],
-              ),
+          // The phase slot is a handoff, not data: it fades between phases
+          // and its height eases, so the actions below glide instead of
+          // jumping (D125). Keyed on the phase, a same-phase rebuild stays
+          // still and nothing plays on first build. The fade keeps the
+          // entering phase's semantics from its first frame; the leaving
+          // one is already out of semantics, focus and taps (topLayout).
+          MotionSwap(
+            transition: (child, animation) =>
+                MotionSwap.fade(child, animation, alwaysIncludeSemantics: true),
+            // Filled, so the status keeps the column's start edge in the
+            // swap's stack.
+            child: SizedBox(
+              key: ValueKey(phase),
+              width: double.infinity,
+              child: exception
+                  ? PaymentBanner(
+                      tone: tone,
+                      icon: icon,
+                      title: title,
+                      message: message,
+                      announce: true,
+                    )
+                  : Semantics(
+                      liveRegion: phase != AuthorizationPhase.ready,
+                      container: true,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Semantics(
+                            header: true,
+                            child: Text(title, style: type.heading),
+                          ),
+                          SizedBox(height: theme.space(PaymentSpace.inline)),
+                          Text(
+                            message,
+                            style: type
+                                .bodyFor(context)
+                                .copyWith(color: theme.textSecondary),
+                          ),
+                        ],
+                      ),
+                    ),
             ),
+          ),
           if (!pinned) ...[
             SizedBox(height: theme.space(PaymentSpace.section)),
             ?start,
