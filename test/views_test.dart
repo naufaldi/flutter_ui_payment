@@ -1,4 +1,4 @@
-// The deprecated pageAction must keep compiling until 0.2.0.
+// The deprecated pageAction must keep compiling until 0.3.0.
 // ignore_for_file: deprecated_member_use_from_same_package
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

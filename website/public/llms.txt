@@ -1,6 +1,6 @@
 # Rakit UI
 
-> Rakit UI (Dart package `rakit_ui`, version 0.1.0, MIT) is a set of composable Flutter widgets for checkout, host-owned authorization, payment status, receipts and optional KYC. The widgets render structured data from the host app and report intent through callbacks. The package is UI only: it moves no money and processes no payments. It targets iOS and Android phones and tablets; the web build is a docs preview only.
+> Rakit UI (Dart package `rakit_ui`, version 0.2.0, MIT) is a set of composable Flutter widgets for checkout, host-owned authorization, payment status, receipts and optional KYC. The widgets render structured data from the host app and report intent through callbacks. The package is UI only: it moves no money and processes no payments. It targets iOS and Android phones and tablets; the web build is a docs preview only.
 
 Install and import:
 

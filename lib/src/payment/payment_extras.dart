@@ -84,16 +84,27 @@ class PaymentActionBar extends StatelessWidget {
         ),
       );
       // The total stays laid out under the "Updating" caption, so the bar
-      // keeps one height while the total refreshes (#46).
+      // keeps one height while the total refreshes (#46). Screen readers get
+      // only the current state from its first frame, while it is still
+      // fading in; the hidden one stays out (#299). Reduced motion swaps
+      // the fades for static ones, so a fade already running ends at once.
       Widget fade(bool visible, Widget child) => ExcludeSemantics(
         excluding: !visible,
-        child: AnimatedOpacity(
-          opacity: visible ? 1 : 0,
-          duration: motion.quick,
-          curve: PaymentMotion.easeOut,
-          child: child,
-        ),
+        child: motion.reduced
+            ? Opacity(opacity: visible ? 1 : 0, child: child)
+            : AnimatedOpacity(
+                opacity: visible ? 1 : 0,
+                duration: motion.quick,
+                curve: PaymentMotion.easeOut,
+                alwaysIncludeSemantics: true,
+                child: child,
+              ),
       );
+      // Same wrapper type and key in both roles, so the amount keeps its
+      // element when it starts leaving; the leaving one is never read.
+      Widget readable(Widget child, bool current) =>
+          ExcludeSemantics(key: child.key, excluding: !current, child: child);
+      final keyed = KeyedSubtree(key: ValueKey(total), child: amount);
       totalBlock = Semantics(
         liveRegion: true,
         child: Stack(
@@ -101,18 +112,26 @@ class PaymentActionBar extends StatelessWidget {
           children: [
             fade(
               !updating,
-              AnimatedSwitcher(
-                duration: motion.quick,
-                switchInCurve: PaymentMotion.easeOut,
-                switchOutCurve: PaymentMotion.easeOut,
-                transitionBuilder: (child, animation) =>
-                    FadeTransition(opacity: animation, child: child),
-                layoutBuilder: (current, previous) => Stack(
-                  alignment: AlignmentDirectional.centerStart,
-                  children: [...previous, ?current],
-                ),
-                child: KeyedSubtree(key: ValueKey(total), child: amount),
-              ),
+              motion.reduced
+                  ? keyed
+                  : AnimatedSwitcher(
+                      duration: motion.quick,
+                      switchInCurve: PaymentMotion.easeOut,
+                      switchOutCurve: PaymentMotion.easeOut,
+                      transitionBuilder: (child, animation) => FadeTransition(
+                        opacity: animation,
+                        alwaysIncludeSemantics: true,
+                        child: child,
+                      ),
+                      layoutBuilder: (incoming, previous) => Stack(
+                        alignment: AlignmentDirectional.centerStart,
+                        children: [
+                          for (final child in previous) readable(child, false),
+                          if (incoming != null) readable(incoming, true),
+                        ],
+                      ),
+                      child: keyed,
+                    ),
             ),
             fade(updating, Text(l10n.updatingTotal, style: type.caption)),
           ],
