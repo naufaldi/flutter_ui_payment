@@ -218,7 +218,7 @@ class PaymentTheme extends ThemeExtension<PaymentTheme> {
   TextStyle amountStyle(
     BuildContext context, {
     @Deprecated(
-      'Row amounts use PaymentType.of(context).label with tabular figures (AmountText does this). Removed in 0.2.0.',
+      'Row amounts use PaymentType.of(context).label with tabular figures (AmountText does this). Removed in 0.3.0.',
     )
     bool large = true,
   }) {
