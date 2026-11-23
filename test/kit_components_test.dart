@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import 'first_line_test.dart' show host;
+import 'helpers/reduced_motion.dart';
 
 Widget app(Widget home, {bool reduceMotion = false}) => MaterialApp(
   locale: const Locale('en'),
@@ -170,6 +171,31 @@ void main() {
     expect(spoken(), contains('102500 IDR'));
     expect(spoken(), isNot(contains('Updating')));
     semantics.dispose();
+  });
+  testWidgets('iOS Reduce Motion ends a re-quote fade that is already '
+      'running (#318)', (tester) async {
+    Widget bar(int amount) => app(
+      Scaffold(
+        bottomNavigationBar: PaymentActionBar(
+          total: Money.idr(amount),
+          action: PaymentButton(
+            label: 'Pay',
+            width: PaymentWidth.hug,
+            onPressed: () {},
+          ),
+        ),
+      ),
+    );
+    await tester.pumpWidget(bar(102500));
+    await tester.pumpWidget(bar(98000));
+    await tester.pump(const Duration(milliseconds: 50));
+    expect(find.textContaining('102'), findsOneWidget);
+    // iOS delivers the flag outside MediaQueryData, and the host does not
+    // rebuild the bar, so only the bar itself can notice it.
+    ReducedMotion.iosReduceMotion.apply(tester, const SizedBox());
+    await tester.pump();
+    expect(find.textContaining('102'), findsNothing);
+    expect(find.textContaining('98'), findsOneWidget);
   });
   for (final scale in [1.0, 2.0]) {
     testWidgets('document tile badge placement at ${scale}x', (tester) async {

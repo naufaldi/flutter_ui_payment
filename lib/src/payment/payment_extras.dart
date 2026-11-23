@@ -52,92 +52,14 @@ class PaymentActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = PaymentTheme.of(context);
     final l10n = PaymentLocalizations.of(context);
-    final type = PaymentType.of(context);
     final large = PaymentType.isLarge(context);
-    final motion = PaymentMotion.of(context);
-    Widget? totalBlock;
-    if (total != null) {
-      final amount = MergeSemantics(
-        // Label above the amount beside the button; one baseline row when
-        // stacked over a full-width button.
-        child: Flex(
-          direction: large ? Axis.horizontal : Axis.vertical,
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: large
-              ? CrossAxisAlignment.baseline
-              : CrossAxisAlignment.start,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            Text(totalLabel ?? l10n.totalLabel, style: type.caption),
-            if (large) SizedBox(width: theme.space(PaymentSpace.related)),
-            // A step below the 32 px headline: the bar repeats the total,
-            // it does not compete with it. Capped at 1.6x like other
-            // display amounts; the clamp sits inside Flexible so the Flex
-            // still gets its parent data.
-            Flexible(
-              child: MediaQuery.withClampedTextScaling(
-                maxScaleFactor: 1.6,
-                child: AmountText(total!, variant: AmountTextVariant.large),
-              ),
-            ),
-          ],
-        ),
-      );
-      // The total stays laid out under the "Updating" caption, so the bar
-      // keeps one height while the total refreshes (#46). Screen readers get
-      // only the current state from its first frame, while it is still
-      // fading in; the hidden one stays out (#299). Reduced motion swaps
-      // the fades for static ones, so a fade already running ends at once.
-      Widget fade(bool visible, Widget child) => ExcludeSemantics(
-        excluding: !visible,
-        child: motion.reduced
-            ? Opacity(opacity: visible ? 1 : 0, child: child)
-            : AnimatedOpacity(
-                opacity: visible ? 1 : 0,
-                duration: motion.quick,
-                curve: PaymentMotion.easeOut,
-                alwaysIncludeSemantics: true,
-                child: child,
-              ),
-      );
-      // Same wrapper type and key in both roles, so the amount keeps its
-      // element when it starts leaving; the leaving one is never read.
-      Widget readable(Widget child, bool current) =>
-          ExcludeSemantics(key: child.key, excluding: !current, child: child);
-      final keyed = KeyedSubtree(key: ValueKey(total), child: amount);
-      totalBlock = Semantics(
-        liveRegion: true,
-        child: Stack(
-          alignment: AlignmentDirectional.centerStart,
-          children: [
-            fade(
-              !updating,
-              motion.reduced
-                  ? keyed
-                  : AnimatedSwitcher(
-                      duration: motion.quick,
-                      switchInCurve: PaymentMotion.easeOut,
-                      switchOutCurve: PaymentMotion.easeOut,
-                      transitionBuilder: (child, animation) => FadeTransition(
-                        opacity: animation,
-                        alwaysIncludeSemantics: true,
-                        child: child,
-                      ),
-                      layoutBuilder: (incoming, previous) => Stack(
-                        alignment: AlignmentDirectional.centerStart,
-                        children: [
-                          for (final child in previous) readable(child, false),
-                          if (incoming != null) readable(incoming, true),
-                        ],
-                      ),
-                      child: keyed,
-                    ),
-            ),
-            fade(updating, Text(l10n.updatingTotal, style: type.caption)),
-          ],
-        ),
-      );
-    }
+    final Widget? totalBlock = total == null
+        ? null
+        : _ActionBarTotal(
+            total: total!,
+            label: totalLabel ?? l10n.totalLabel,
+            updating: updating,
+          );
     // The bar sits beside the host's body, not inside it, so it still sees
     // the side safe-area insets. Its gutter goes on top of them, as a body
     // in a `SafeArea` adds its gutter inside them, so in phone landscape
@@ -202,6 +124,131 @@ class PaymentActionBar extends StatelessWidget {
                   ),
                 ],
               ),
+      ),
+    );
+  }
+}
+
+/// The action bar's total and its "Updating" caption, cross-faded.
+class _ActionBarTotal extends StatefulWidget {
+  const _ActionBarTotal({
+    required this.total,
+    required this.label,
+    required this.updating,
+  });
+
+  final Money total;
+  final String label;
+  final bool updating;
+
+  @override
+  State<_ActionBarTotal> createState() => _ActionBarTotalState();
+}
+
+class _ActionBarTotalState extends State<_ActionBarTotal>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  // iOS Reduce Motion isn't part of MediaQueryData, so nothing above
+  // rebuilds the bar when it turns on mid-fade (#318).
+  @override
+  void didChangeAccessibilityFeatures() => setState(() {});
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    final l10n = PaymentLocalizations.of(context);
+    final type = PaymentType.of(context);
+    final large = PaymentType.isLarge(context);
+    final motion = PaymentMotion.of(context);
+    final amount = MergeSemantics(
+      // Label above the amount beside the button; one baseline row when
+      // stacked over a full-width button.
+      child: Flex(
+        direction: large ? Axis.horizontal : Axis.vertical,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: large
+            ? CrossAxisAlignment.baseline
+            : CrossAxisAlignment.start,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          Text(widget.label, style: type.caption),
+          if (large) SizedBox(width: theme.space(PaymentSpace.related)),
+          // A step below the 32 px headline: the bar repeats the total,
+          // it does not compete with it. Capped at 1.6x like other
+          // display amounts; the clamp sits inside Flexible so the Flex
+          // still gets its parent data.
+          Flexible(
+            child: MediaQuery.withClampedTextScaling(
+              maxScaleFactor: 1.6,
+              child: AmountText(widget.total, variant: AmountTextVariant.large),
+            ),
+          ),
+        ],
+      ),
+    );
+    // The total stays laid out under the "Updating" caption, so the bar
+    // keeps one height while the total refreshes (#46). Screen readers get
+    // only the current state from its first frame, while it is still
+    // fading in; the hidden one stays out (#299). Reduced motion swaps
+    // the fades for static ones, so a fade already running ends at once.
+    Widget fade(bool visible, Widget child) => ExcludeSemantics(
+      excluding: !visible,
+      child: motion.reduced
+          ? Opacity(opacity: visible ? 1 : 0, child: child)
+          : AnimatedOpacity(
+              opacity: visible ? 1 : 0,
+              duration: motion.quick,
+              curve: PaymentMotion.easeOut,
+              alwaysIncludeSemantics: true,
+              child: child,
+            ),
+    );
+    // Same wrapper type and key in both roles, so the amount keeps its
+    // element when it starts leaving; the leaving one is never read.
+    Widget readable(Widget child, bool current) =>
+        ExcludeSemantics(key: child.key, excluding: !current, child: child);
+    final keyed = KeyedSubtree(key: ValueKey(widget.total), child: amount);
+    return Semantics(
+      liveRegion: true,
+      child: Stack(
+        alignment: AlignmentDirectional.centerStart,
+        children: [
+          fade(
+            !widget.updating,
+            motion.reduced
+                ? keyed
+                : AnimatedSwitcher(
+                    duration: motion.quick,
+                    switchInCurve: PaymentMotion.easeOut,
+                    switchOutCurve: PaymentMotion.easeOut,
+                    transitionBuilder: (child, animation) => FadeTransition(
+                      opacity: animation,
+                      alwaysIncludeSemantics: true,
+                      child: child,
+                    ),
+                    layoutBuilder: (incoming, previous) => Stack(
+                      alignment: AlignmentDirectional.centerStart,
+                      children: [
+                        for (final child in previous) readable(child, false),
+                        if (incoming != null) readable(incoming, true),
+                      ],
+                    ),
+                    child: keyed,
+                  ),
+          ),
+          fade(widget.updating, Text(l10n.updatingTotal, style: type.caption)),
+        ],
       ),
     );
   }
