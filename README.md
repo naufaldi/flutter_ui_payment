@@ -10,7 +10,7 @@ Targets iOS and Android, phones and tablets. The web build is a documentation pr
 
 **Docs:** https://rakit-ui.netlify.app
 
-**Release:** `0.1.0`. Install with `flutter pub add rakit_ui`. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
+**Release:** `0.2.0`. Install with `flutter pub add rakit_ui`. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
 
 ## Start here
 
@@ -67,7 +67,7 @@ Or declare the dependency directly:
 
 ```yaml
 dependencies:
-  rakit_ui: ^0.1.0
+  rakit_ui: ^0.2.0
 ```
 
 Requires Dart `^3.12.0` and Flutter `>=3.44.0` (tested with Flutter 3.44.6 stable). The only dependency is the Flutter SDK.
@@ -78,14 +78,14 @@ Rakit UI continues the same UI kit under the `rakit_ui` package name. Replace th
 
 ```yaml
 dependencies:
-  rakit_ui: ^0.1.0
+  rakit_ui: ^0.2.0
 ```
 
 ```dart
 import 'package:rakit_ui/rakit_ui.dart';
 ```
 
-Remove `flutter_ui_payment` from your dependencies, then run `flutter pub get`. Widget names, theme APIs, models and host callbacks are unchanged. Replace private `package:flutter_ui_payment/src/...` imports with the public Rakit UI API where possible.
+Remove `flutter_ui_payment` from your dependencies, then run `flutter pub get`. Widget names, theme APIs, models and host callbacks are unchanged. Code that names the `KitStrings` or `PaymentStatusLabel` extensions needs the 0.2.0 migration in [CHANGELOG.md](CHANGELOG.md). Replace private `package:flutter_ui_payment/src/...` imports with the public Rakit UI API where possible.
 
 The old package and its published versions remain available for existing apps. Use one package identity throughout an app: types from the two separately published packages are distinct. The compatibility filename `package:rakit_ui/flutter_ui_payment.dart` forwards to the new library, but does not redirect old-package imports.
 

@@ -6,7 +6,7 @@ Add the package, configure theme and language, then connect host data and callba
 
 ```yaml
 dependencies:
-  rakit_ui: ^0.1.0
+  rakit_ui: ^0.2.0
 ```
 
 No other dependency is required. Add a media plugin only if you use `PaymentVideoPlayer` (see step 5).

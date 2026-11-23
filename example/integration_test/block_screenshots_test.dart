@@ -40,6 +40,18 @@ void main() {
       await capture(binding, tester, 'android_block_checkout_receipt$suffix');
       expect(tester.takeException(), isNull);
     }
+    // The same journey and order in the wallet look: the Soft preset, a
+    // balance-first review and method choice through the kit sheet.
+    for (final dark in [false, true]) {
+      final suffix = dark ? '_dark' : '';
+      await start(CheckoutDemoScenario.lostResponse, dark: dark);
+      await tester.tap(find.byTooltip('Menu demo'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(PopupMenuItem<int>, 'Dompet'));
+      await tester.pumpAndSettle();
+      await capture(binding, tester, 'android_block_checkout_wallet$suffix');
+      expect(tester.takeException(), isNull);
+    }
     await start(CheckoutDemoScenario.pendingOffline);
     await tester.tap(find.textContaining(RegExp(r'^Bayar Rp')));
     await tester.pumpAndSettle();

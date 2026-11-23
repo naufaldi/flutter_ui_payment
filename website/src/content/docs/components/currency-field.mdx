@@ -61,7 +61,7 @@ The description appears above limits. Size keeps the amountLarge style: small su
 
 `padFractionDigits`: on blur or submit, valid USD 5 becomes 5.00 (5,00 in Indonesian); IDR and invalid entries stay unchanged. Formatting emits no `onChanged` callback. Supply a `currencies` allowlist to offer currency selection, and handle parse issues through `AmountParseResult`.
 
-Migration: AmountInput remains a deprecated typedef until 0.2.0. Rename the constructor to PaymentCurrencyField; existing arguments keep compiling.
+Migration: AmountInput remains a deprecated typedef until 0.3.0. Rename the constructor to PaymentCurrencyField; existing arguments keep compiling.
 
 The tested fixture with description and minimum helper measures small 92, medium 100 and large 108 dp at 1×; helper content contributes to these totals.
 
