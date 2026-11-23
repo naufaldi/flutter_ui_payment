@@ -902,3 +902,11 @@ The 320 dp gesture rows were measured with the tab fold alone (+18.2 / +30.2 dp 
   `check-pages` no longer requires `## Stripe → kit` or `## Used in`; it fails a component page whose prose (code fences stripped) has a Stripe heading or table, a `## Used in` section, a `HostOwns` tag, an `Example source:` path, the DOM mapping note, "Semantic kit value" or a scenario code. This amends the §10 component page list and the B13 evidence column. The §6 mapping in the PRD, the overview's Stripe name column and "Not in the kit" stay, so parity is still traceable.
 
   Rejected: keeping the tables collapsed, because they would still be empty boilerplate on most pages; keeping one generic ownership line per page, because the owner asked for the explanation in one place.
+
+### 0.2.0 release scope, 6 November 2026
+
+- **D123: deprecated names stay through 0.2.0; removal moves to 0.3.0 (#297).** D34 and the D28 amendment scheduled the deprecated compatibility names for removal in 0.2.0 (see the D28 and D34 entries above, which keep their original wording as history). For the 0.2.0 release the owner chose to publish the current `main` behavior unchanged and keep those names: `StatusBadge`, `NoticeBanner`, `ActionTile`/`ActionTileGroup`, `ActionMenu`/`ActionMenuEntry`, `AmountInput`, `ExpandableSection`, `showPaymentSnackBar`, `pageAction`, `learnMore`/`footnote`, `AmountText.emphasis`, `PaymentAccordionItem.leading`, `amountStyle(large:)`, the DataTable reorder/resize flags and callback, and the five unused DataTable strings. They are removed in 0.3.0. The `@Deprecated` messages, the component pages, the components overview and the design-system guide now say 0.3.0.
+
+  The localization change from D115 still ships in 0.2.0: the exported `KitStrings` and `PaymentStatusLabel` extension names are gone, which breaks code that names them explicitly or lists them in a `show` combinator. The CHANGELOG marks it **Breaking** and gives the one-line migration to instance calls on `PaymentLocalizations`.
+
+  Rejected: removing the deprecated names in 0.2.0 as planned, because it would put a second, unrelated migration into a release whose purpose is to publish already-merged behavior; skipping the version number, because 0.2.0 is already breaking under the 0.x convention.

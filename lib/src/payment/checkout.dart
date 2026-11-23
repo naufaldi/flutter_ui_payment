@@ -299,7 +299,7 @@ class _PaymentCurrencyFieldState extends State<PaymentCurrencyField> {
 }
 
 /// Deprecated alias of [PaymentCurrencyField].
-@Deprecated('Use PaymentCurrencyField. Removed in 0.2.0.')
+@Deprecated('Use PaymentCurrencyField. Removed in 0.3.0.')
 typedef AmountInput = PaymentCurrencyField;
 
 /// Items, every fee and the host total. Fees are never collapsed.
