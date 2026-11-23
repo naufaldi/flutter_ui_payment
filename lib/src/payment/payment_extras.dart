@@ -154,7 +154,7 @@ class _ActionBarTotalState extends State<_ActionBarTotal>
   }
 
   // iOS Reduce Motion isn't part of MediaQueryData, so nothing above
-  // rebuilds the bar when it turns on mid-fade (#315).
+  // rebuilds the bar when it turns on mid-fade (#318).
   @override
   void didChangeAccessibilityFeatures() => setState(() {});
 

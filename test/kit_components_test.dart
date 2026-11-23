@@ -173,7 +173,7 @@ void main() {
     semantics.dispose();
   });
   testWidgets('iOS Reduce Motion ends a re-quote fade that is already '
-      'running (#315)', (tester) async {
+      'running (#318)', (tester) async {
     Widget bar(int amount) => app(
       Scaffold(
         bottomNavigationBar: PaymentActionBar(
