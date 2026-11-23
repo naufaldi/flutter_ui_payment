@@ -42,3 +42,6 @@ website/node_modules/
 website/dist/
 website/.astro/
 website/.netlify/
+
+# Amp orb portal registrations (local to each orb)
+.amp/portals/*
