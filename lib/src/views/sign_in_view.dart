@@ -7,6 +7,7 @@ import '../foundation/payment_theme.dart';
 import '../foundation/payment_type.dart';
 import '../foundation/payment_localizations.dart';
 import '../foundation/first_line.dart';
+import '../foundation/motion_swap.dart';
 import '../foundation/view_frame.dart';
 import '../controls/actions.dart';
 import '../layout/content.dart';
@@ -120,7 +121,10 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
   void focusError() {
     if (widget.errorText != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _errorFocus.requestFocus();
+        // The error may have cleared before this frame ran.
+        if (mounted && widget.errorText != null) {
+          _errorFocus.requestFocus();
+        }
       });
     }
   }
@@ -268,9 +272,8 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
       maxContentWidth: 420,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: gap,
         children: [
-          if (w.brand != null || w.requesterBrand != null)
+          if (w.brand != null || w.requesterBrand != null) ...[
             Row(
               spacing: theme.space(PaymentSpace.group),
               children: [
@@ -280,16 +283,21 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
                 if (w.brand != null) tile(w.brand!, host: true),
               ],
             ),
+            SizedBox(height: gap),
+          ],
           Semantics(
             header: true,
             child: Text(w.title ?? l.signInTitle, style: type.title),
           ),
-          if (w.description != null)
+          if (w.description != null) ...[
+            SizedBox(height: gap),
             Text(
               w.description!,
               style: type.bodyFor(context).copyWith(color: theme.textSecondary),
             ),
-          if (w.canDo.isNotEmpty || w.cannotDo.isNotEmpty)
+          ],
+          if (w.canDo.isNotEmpty || w.cannotDo.isNotEmpty) ...[
+            SizedBox(height: gap),
             DecoratedBox(
               decoration: BoxDecoration(
                 border: Border.all(color: theme.outline),
@@ -308,7 +316,9 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
                 ),
               ),
             ),
-          if (learnMore != null)
+          ],
+          if (learnMore != null) ...[
+            SizedBox(height: gap),
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: PaymentListItem(
@@ -324,16 +334,41 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
                 ),
               ),
             ),
-          if (w.errorText != null)
-            Focus(
-              focusNode: _errorFocus,
-              child: PaymentBanner(
-                tone: StatusTone.danger,
-                title: w.errorText!,
-                announce: true,
+          ],
+          // The gap travels with the error, so the empty slot takes no space.
+          // One FocusNode serves keyboard focus even when two banners paint
+          // during a rapid retry. Its semantics wrapper would hide the
+          // banner's own live region while the slot is zero height.
+          Focus(
+            focusNode: _errorFocus,
+            canRequestFocus: w.errorText != null,
+            includeSemantics: false,
+            child: MotionSwap(
+              // The entering banner is readable on its first frame, while
+              // it is still transparent; the leaving one is already out of
+              // semantics, focus and taps (topLayout).
+              transition: (child, animation) => MotionSwap.fade(
+                child,
+                animation,
+                alwaysIncludeSemantics: true,
               ),
+              child: w.errorText == null
+                  ? const SizedBox.shrink(key: ValueKey('none'))
+                  : Padding(
+                      key: const ValueKey('error'),
+                      padding: EdgeInsets.only(top: gap),
+                      child: PaymentBanner(
+                        tone: StatusTone.danger,
+                        title: w.errorText!,
+                        announce: true,
+                      ),
+                    ),
             ),
-          if (footnote != null) Text(footnote, style: type.caption),
+          ),
+          if (footnote != null) ...[
+            SizedBox(height: gap),
+            Text(footnote, style: type.caption),
+          ],
         ],
       ),
       footer: ViewFooter(
