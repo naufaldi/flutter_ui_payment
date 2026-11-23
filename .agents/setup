@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Prepares an Amp orb for this repository: the pinned Flutter SDK, the pnpm
+# version the website lockfile needs, and every lockfile's dependencies.
+# Idempotent: a warm run only confirms what is already installed.
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$repo_root"
+
+# .metadata pins the Flutter revision the repo was created and verified with.
+flutter_version="3.44.6"
+# website/pnpm-lock.yaml is lockfileVersion 5.4, which only pnpm 7 reads.
+pnpm_version="7.33.7"
+
+flutter_dir="$HOME/sdk/flutter-$flutter_version"
+pnpm_prefix="$HOME/.local/share/pnpm-$pnpm_version"
+bin_dir="$HOME/.local/bin" # on the login-shell PATH ahead of /usr/local/bin
+
+step() {
+  local name="$1"
+  shift
+  local start=$SECONDS
+  echo "==> $name"
+  "$@"
+  echo "<== $name ($((SECONDS - start))s)"
+}
+
+install_flutter() {
+  if [[ ! -x "$flutter_dir/bin/flutter" ]]; then
+    rm -rf "$flutter_dir"
+    mkdir -p "$(dirname "$flutter_dir")"
+    git -c advice.detachedHead=false clone --quiet --depth 1 \
+      --branch "$flutter_version" https://github.com/flutter/flutter.git "$flutter_dir"
+  fi
+  mkdir -p "$bin_dir"
+  ln -sfn "$flutter_dir/bin/flutter" "$bin_dir/flutter"
+  ln -sfn "$flutter_dir/bin/dart" "$bin_dir/dart"
+  export PATH="$bin_dir:$PATH"
+  flutter config --no-analytics --no-cli-animations >/dev/null
+  dart --disable-analytics >/dev/null 2>&1 || true
+  # Downloads the Dart SDK and engine artifacts that `flutter test` uses.
+  flutter precache --universal --no-android --no-ios --no-web >/dev/null
+  flutter --version
+}
+
+install_pnpm() {
+  if [[ "$("$pnpm_prefix/bin/pnpm" --version 2>/dev/null || true)" != "$pnpm_version" ]]; then
+    npm install --global --silent --prefix "$pnpm_prefix" "pnpm@$pnpm_version"
+  fi
+  mkdir -p "$bin_dir"
+  ln -sfn "$pnpm_prefix/bin/pnpm" "$bin_dir/pnpm"
+  "$bin_dir/pnpm" --version
+}
+
+pub_get() {
+  flutter pub get >/dev/null
+  (cd example && flutter pub get >/dev/null)
+}
+
+website_install() {
+  (cd website && "$bin_dir/pnpm" install --frozen-lockfile --reporter=silent)
+}
+
+step "Flutter $flutter_version" install_flutter
+step "pnpm $pnpm_version" install_pnpm
+step "flutter pub get (package and example)" pub_get
+step "website pnpm install" website_install
