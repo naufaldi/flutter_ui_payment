@@ -240,12 +240,18 @@ class _RecordCardLayout
   Iterable<_RecordSlot> get slots => _RecordSlot.values;
 
   @override
-  Widget? childForSlot(_RecordSlot slot) => switch (slot) {
-    _RecordSlot.body => body,
-    _RecordSlot.trailing => trailing,
-    _RecordSlot.divider => divider,
-    _RecordSlot.footer => footer,
-  };
+  Widget? childForSlot(_RecordSlot slot) {
+    final child = switch (slot) {
+      _RecordSlot.body => body,
+      _RecordSlot.trailing => trailing,
+      _RecordSlot.divider => divider,
+      _RecordSlot.footer => footer,
+    };
+    // Host-local keys in separate slots must not share a parent.
+    return child == null
+        ? null
+        : KeyedSubtree(key: ValueKey(slot), child: child);
+  }
 
   @override
   _RenderRecordCard createRenderObject(BuildContext context) =>
@@ -371,9 +377,7 @@ class _RenderRecordCard extends RenderBox
   ]) {
     final width = constraints.hasBoundedWidth
         ? constraints.maxWidth
-        : constraints.constrainWidth(
-            getMaxIntrinsicWidth(constraints.maxHeight),
-          );
+        : constraints.constrainWidth(getMaxIntrinsicWidth(double.infinity));
     final height = _arrange(width, measure, place);
     return constraints.constrain(
       Size(
@@ -396,21 +400,26 @@ class _RenderRecordCard extends RenderBox
   Size computeDryLayout(BoxConstraints constraints) =>
       _measure(constraints, (child, c) => child.getDryLayout(c));
 
-  double _intrinsicWidth(double Function(RenderBox) measure) {
+  double _intrinsicWidth(double Function(RenderBox, double) measure) {
     var width = 0.0;
     for (final child in children) {
-      width = math.max(width, measure(child));
+      // Like a Column's non-flex children, the slots contribute their width
+      // at their own natural height, not at the card's full height budget.
+      width = math.max(
+        width,
+        measure(child, child.getMaxIntrinsicHeight(double.infinity)),
+      );
     }
     return width + 2 * _geometry.inset;
   }
 
   @override
   double computeMinIntrinsicWidth(double height) =>
-      _intrinsicWidth((child) => child.getMinIntrinsicWidth(height));
+      _intrinsicWidth((child, height) => child.getMinIntrinsicWidth(height));
 
   @override
   double computeMaxIntrinsicWidth(double height) =>
-      _intrinsicWidth((child) => child.getMaxIntrinsicWidth(height));
+      _intrinsicWidth((child, height) => child.getMaxIntrinsicWidth(height));
 
   double _intrinsicHeight(
     double width,

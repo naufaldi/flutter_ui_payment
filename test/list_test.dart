@@ -232,8 +232,13 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  for (final change in ['setting the inset', 'adding a trailing action']) {
+  for (final (change, changeInset, sameKey) in [
+    ('setting the inset', true, false),
+    ('adding a trailing action', false, false),
+    ('adding a trailing action with the same local key', false, true),
+  ]) {
     testWidgets('$change does not unlock a busy footer Save', (tester) async {
+      final actionKey = sameKey ? const ValueKey('action') : null;
       final write = Completer<void>();
       var calls = 0;
       Widget card({required bool changed}) => host(
@@ -244,18 +249,20 @@ void main() {
               key: const ValueKey('record'),
               title: const Text('Statement'),
               style: PaymentRecordCardStyle(
-                inset: changed && change == 'setting the inset'
+                inset: changed && changeInset
                     ? PaymentTheme.of(context).space(PaymentSpace.block)
                     : null,
               ),
-              trailing: changed && change == 'adding a trailing action'
+              trailing: changed && !changeInset
                   ? PaymentIconButton(
+                      key: actionKey,
                       icon: Icons.delete_outline,
                       tooltip: 'Remove statement',
                       onPressed: () {},
                     )
                   : null,
               footer: PaymentButton(
+                key: actionKey,
                 label: 'Save',
                 onPressed: () {
                   calls++;
@@ -276,6 +283,7 @@ void main() {
       expect(calls, 1);
 
       await tester.pumpWidget(card(changed: true));
+      expect(tester.takeException(), isNull);
       await tester.tap(save);
       expect(calls, 1);
       write.complete();
@@ -311,6 +319,42 @@ void main() {
     await tester.tap(find.text('Save'));
     expect(calls, 1);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('an intrinsic record keeps its square footer Save tappable', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 240);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    var calls = 0;
+    await tester.pumpWidget(
+      host(
+        Center(
+          child: IntrinsicWidth(
+            child: PaymentRecordCard(
+              title: const Text('Title'),
+              footer: AspectRatio(
+                aspectRatio: 1,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: PaymentButton(label: 'Save', onPressed: () => calls++),
+                ),
+              ),
+            ),
+          ),
+        ),
+        1,
+      ),
+    );
+    final card = tester.getRect(find.byType(PaymentRecordCard));
+    final save = find.byType(PaymentButton);
+    final target = tester.getRect(save);
+    expect(target.top, greaterThanOrEqualTo(card.top));
+    expect(target.bottom, lessThanOrEqualTo(card.bottom));
+    expect(target.height, greaterThanOrEqualTo(48));
+    await tester.tap(save);
+    expect(calls, 1);
   });
 
   testWidgets('a large inset leaves room for the title and action at 200%', (
