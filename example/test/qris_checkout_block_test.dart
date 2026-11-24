@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
@@ -38,7 +40,12 @@ void main() {
           )
           .attempt;
 
-      Future<void> show(PaymentAttempt current, {String? codeAttemptId}) async {
+      Future<void> show(
+        PaymentAttempt current, {
+        String? codeAttemptId,
+        bool includeCode = true,
+        DateTime? expiresAt,
+      }) async {
         await tester.pumpWidget(
           BlockDemoShell(
             title: 'QRIS',
@@ -48,12 +55,14 @@ void main() {
               attempt: current,
               amount: const Money.idr(152500),
               clock: () => now,
-              code: (
-                attemptId: codeAttemptId ?? attempt.attemptId,
-                payee: 'Ruang Bayar Akademi',
-                image: const AssetImage('assets/qris/demo-code.webp'),
-                expiresAt: qrisDemoExpiry,
-              ),
+              code: includeCode
+                  ? (
+                      attemptId: codeAttemptId ?? attempt.attemptId,
+                      payee: 'Ruang Bayar Akademi',
+                      image: const AssetImage('assets/qris/demo-code.webp'),
+                      expiresAt: expiresAt ?? qrisDemoExpiry,
+                    )
+                  : null,
               onCheckStatus: (id) async => checks.add(id),
             ),
           ),
@@ -86,6 +95,18 @@ void main() {
       expect(checks, [attempt.attemptId]);
       expect(find.text('Menunggu'), findsOneWidget);
 
+      now = qrisDemoExpiry.subtract(const Duration(seconds: 2));
+      await show(pending.copyWith(observation: Observation.unavailable));
+      await show(pending, includeCode: false);
+      await show(pending);
+      expect(code, findsNothing, reason: 'The same code was already expired');
+      expect(find.text('Kode QR kedaluwarsa'), findsOneWidget);
+      await show(
+        pending,
+        expiresAt: qrisDemoExpiry.add(const Duration(minutes: 1)),
+      );
+      expect(code, findsOneWidget, reason: 'A newly issued code can be shown');
+
       await show(withStatus(PaymentStatus.expired, 2));
       expect(find.text('Pembayaran kedaluwarsa'), findsOneWidget);
       expect(find.text('Buat pembayaran baru'), findsNothing);
@@ -93,4 +114,103 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  for (final inFlight in [false, true]) {
+    testWidgets(
+      inFlight
+          ? 'an old attempt’s in-flight check does not block a new check'
+          : 'a press begun on one attempt cannot check the next attempt',
+      (tester) async {
+        final checks = <String>[];
+        final firstCheck = Completer<void>();
+
+        Future<void> show(String attemptId) => tester.pumpWidget(
+          BlockDemoShell(
+            title: 'QRIS',
+            dark: false,
+            onToggleDark: () {},
+            body: (_) => QrisCheckoutBlock(
+              attempt: PaymentAttempt(
+                attemptId: attemptId,
+                quoteId: 'quote',
+                quoteRevision: 1,
+                methodId: 'qris',
+                submission: SubmissionState.outcomeUnknown,
+              ),
+              amount: const Money.idr(152500),
+              clock: () => qrisDemoStart,
+              onCheckStatus: (id) async {
+                checks.add(id);
+                if (id == 'first') await firstCheck.future;
+              },
+            ),
+          ),
+        );
+
+        final check = find.text('Cek status');
+        await show('first');
+        await tester.pumpAndSettle();
+        final press = await tester.startGesture(tester.getCenter(check));
+        if (inFlight) {
+          await press.up();
+          await tester.pump();
+        }
+        await show('second');
+        if (!inFlight) await press.up();
+        expect(checks, inFlight ? ['first'] : isEmpty);
+
+        expect(check.hitTestable(), findsOneWidget);
+        await tester.tap(check);
+        await tester.pump();
+        firstCheck.complete();
+        await tester.pumpAndSettle();
+        expect(checks, [if (inFlight) 'first', 'second']);
+      },
+    );
+  }
+
+  testWidgets('hiding other actions preserves a host refund', (tester) async {
+    final attempt = PaymentAttempt(
+      attemptId: 'refunded-attempt',
+      quoteId: 'quote',
+      quoteRevision: 1,
+      methodId: 'qris',
+      submission: SubmissionState.accepted,
+      snapshot: PaymentStatusSnapshot(
+        attemptId: 'refunded-attempt',
+        serverReference: 'provider-ref-9',
+        status: PaymentStatus.succeeded,
+        revision: 2,
+        updatedAt: qrisDemoStart,
+        allowedActions: const {PaymentAction.contactSupport},
+        refund: const RefundInfo(
+          status: RefundStatus.partial,
+          amount: Money.idr(52500),
+          safeReason: 'Item not available',
+        ),
+      ),
+    );
+    await tester.pumpWidget(
+      BlockDemoShell(
+        title: 'QRIS',
+        dark: false,
+        onToggleDark: () {},
+        body: (_) => QrisCheckoutBlock(
+          attempt: attempt,
+          amount: const Money.idr(152500),
+          clock: () => qrisDemoStart,
+          onCheckStatus: (_) async {},
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Hubungi bantuan'), findsNothing);
+    final reason = find.text('Item not available');
+    expect(reason, findsOneWidget);
+    await tester.ensureVisible(reason);
+    expect(reason.hitTestable(), findsOneWidget);
+    final refundAmount = find.text('Rp52.500');
+    await tester.ensureVisible(refundAmount);
+    expect(refundAmount.hitTestable(), findsOneWidget);
+  });
 }

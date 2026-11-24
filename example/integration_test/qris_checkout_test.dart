@@ -80,9 +80,13 @@ void main() {
       expect(find.text('Kode QR kedaluwarsa'), findsOneWidget);
       expect(current().status, PaymentStatus.pending);
       expect(check.hitTestable(), findsOneWidget);
+
+      now = qrisDemoStart;
+      tester.platformDispatcher.textScaleFactorTestValue = 1.0;
+      await tester.pumpAndSettle();
+      expect(code, findsNothing);
+      expect(find.text('Kode QR kedaluwarsa'), findsOneWidget);
       if (captureScreens) {
-        tester.platformDispatcher.textScaleFactorTestValue = 1.0;
-        await tester.pumpAndSettle();
         final warning = find.text('Kode QR kedaluwarsa');
         await tester.ensureVisible(warning);
         await tester.pumpAndSettle();
