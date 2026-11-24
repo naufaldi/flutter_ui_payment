@@ -12,6 +12,7 @@ import '../compositions/host_payment_recovery.dart';
 import '../compositions/host_checkout_journey.dart';
 import '../demo_strings.dart';
 import '../dev_chrome.dart';
+import '../qris_checkout_demo.dart';
 import 'flow_screen.dart' show documentRequirements, identityFields;
 
 part 'gallery_phase6.dart';
@@ -141,6 +142,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
             id: 'checkout',
             label: 'Checkout',
             icon: Icons.shopping_cart_outlined,
+          ),
+          PaymentNavItem(
+            id: 'qris',
+            label: t('QRIS checkout', 'Pembayaran QRIS'),
+            icon: Icons.qr_code_2,
           ),
           PaymentNavItem(
             id: 'status',
@@ -326,29 +332,31 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ],
       body: ColoredBox(
         color: devWorkbench(context),
-        child: SafeArea(
-          // A new list per section so each one starts at the top.
-          child: ListView(
-            key: PageStorageKey('gallery-$_section'),
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-            children: [
-              Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: switch (_section) {
-                      'content' || 'views' => 1040,
-                      _ => 640,
-                    },
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: entries,
-                  ),
+        child: _section == 'qris'
+            ? const SafeArea(child: QrisCheckoutDemo(embedded: true))
+            : SafeArea(
+                // A new list per section so each one starts at the top.
+                child: ListView(
+                  key: PageStorageKey('gallery-$_section'),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+                  children: [
+                    Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: switch (_section) {
+                            'content' || 'views' => 1040,
+                            _ => 640,
+                          },
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: entries,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
       ),
     );
   }

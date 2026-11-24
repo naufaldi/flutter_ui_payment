@@ -1,0 +1,69 @@
+---
+title: QRIS checkout
+description: Show a host-issued QRIS image and let buyers check the status of the same payment attempt.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+Show the buyer the exact amount, payee and expiry for one host-issued QRIS
+code. They can scan it with a payment app on another device, then use
+**Check status** to check the same attempt. When the code expires, it disappears;
+that doesn't tell you whether the buyer paid.
+
+<Screens>
+  <Screen name="android_block_qris" dark="android_block_qris_dark" alt="QRIS instructions with the demo code, payee, expiry and a pinned Check status button." caption="Scan the issued code" />
+  <Screen name="android_block_qris_200" dark="android_block_qris_dark_200" alt="At 200% text, the buyer can scroll to see the full QR image while Check status stays pinned." caption="Scan at 200% text" />
+  <Screen name="android_block_qris_elapsed" alt="The expired QR code is replaced by a warning. Check status still checks the pending attempt." caption="Code expired, payment still pending" />
+  <Screen name="android_block_qris_unknown" alt="Issuance is unconfirmed, so no scan instructions are visible. Check status remains available." caption="Issuing response lost" />
+</Screens>
+
+## Run and try
+
+From `example/`, run:
+
+```sh
+flutter run -d <device-id> -t lib/qris_checkout_demo.dart
+```
+
+Or open **QRIS checkout** in the example app's Gallery. The standalone demo
+also has a theme toggle and a scenario menu. It uses a QR image that decodes to
+plain demo text, not a QRIS payment payload.
+
+| Scenario | What happens |
+| --- | --- |
+| **Kode aktif** | Scan instructions are shown. **Cek status** gets a synthetic success for the same attempt. |
+| **Kode kedaluwarsa** | Instructions hide the code, not the pending status. A later check can still confirm success. |
+| **Respons QRIS hilang** | No code is offered until the same attempt is confirmed and the host supplies its image. |
+| **Cek status gagal** | A failed check keeps the last known status and hides the code while the result can't be refreshed. The next check uses the same attempt. |
+
+## Composition and boundaries
+
+Copy `QrisCheckoutBlock` into a bounded screen body so **Check status** stays
+reachable while the buyer scrolls. Pass the current `PaymentAttempt`, exact
+`Money` amount, host clock and `onCheckStatus(attemptId)`. Supply a `QrisCode`
+only with an image, payee and expiry issued for that attempt and amount. Keep the
+image's entire light quiet zone; don't crop, stretch or tint it in dark mode.
+
+The host issues the code, binds it to the amount, and owns any provider-supported
+same-phone handoff. The block doesn't generate codes, open other apps, poll or
+offer another payment. Set `Observation.refreshing` during a check and use
+`PaymentAttempt.reconcile` for provider replies. On failure set
+`Observation.unavailable` and retain the last trusted snapshot. Code expiry is separate
+from a provider-reported `PaymentStatus.expired`. Follow the
+[status and receipt pattern](/patterns/status-receipt/) when deciding how an
+attempt can be recovered or replaced elsewhere in the host.
+
+## Source
+
+<BlockSource name="qrisCheckout" />
+<BlockSource name="qrisCheckoutDemo" />
+<BlockSource name="demoShell" />
+
+## Proof and limits
+
+The example tests exercise code expiry, same-attempt checking, an unknown
+issuing response and failed status checks. The Android demo was checked in
+light and dark, including at 200% text. No provider, bank or live payment app
+is connected.

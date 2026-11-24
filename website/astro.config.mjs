@@ -200,6 +200,7 @@ export default defineConfig({
           { label: 'Transaction history', slug: 'blocks/transaction-history' },
           { label: 'KYC review and correction', slug: 'blocks/kyc-review' },
           { label: 'Manual VA transfer', slug: 'blocks/manual-transfer' },
+          { label: 'QRIS checkout', slug: 'blocks/qris-checkout' },
           { label: 'Method and quote changes', slug: 'blocks/method-quote' },
           { label: 'Payment and refund detail', slug: 'blocks/refund-detail' },
           { label: 'KYC onboarding and consent', slug: 'blocks/kyc-onboarding' },
