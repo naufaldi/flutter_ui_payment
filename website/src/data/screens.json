@@ -2,12 +2,22 @@
   "android_block_history": {
     "width": 640,
     "height": 1095,
-    "caption": "Merchant history host block: native search, filters and transaction rows."
+    "caption": "Merchant history host block: search, status filters and the first page of transactions."
   },
   "android_block_history_dark": {
     "width": 640,
     "height": 1095,
-    "caption": "Merchant history host block in dark mode."
+    "caption": "Merchant history with an explicit Load more action in dark mode."
+  },
+  "android_block_history_page_error": {
+    "width": 640,
+    "height": 1095,
+    "caption": "A failed next page keeps earlier transactions and replaces Load more with Retry."
+  },
+  "android_block_history_page_error_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Retained transactions and next-page retry in dark mode."
   },
   "android_block_history_unknown": {
     "width": 640,

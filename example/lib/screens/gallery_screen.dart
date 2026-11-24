@@ -12,6 +12,7 @@ import '../compositions/host_payment_recovery.dart';
 import '../compositions/host_checkout_journey.dart';
 import '../demo_strings.dart';
 import '../dev_chrome.dart';
+import '../history_block_demo.dart';
 import '../qris_checkout_demo.dart';
 import 'flow_screen.dart' show documentRequirements, identityFields;
 
@@ -158,6 +159,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
             label: t('History', 'Riwayat'),
             icon: Icons.history,
             badge: '2',
+          ),
+          PaymentNavItem(
+            id: 'paged-history',
+            label: t('Paged history', 'Riwayat bertahap'),
+            icon: Icons.manage_search,
           ),
           PaymentNavItem(
             id: 'charts',
@@ -332,31 +338,35 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ],
       body: ColoredBox(
         color: devWorkbench(context),
-        child: _section == 'qris'
-            ? const SafeArea(child: QrisCheckoutDemo(embedded: true))
-            : SafeArea(
-                // A new list per section so each one starts at the top.
-                child: ListView(
-                  key: PageStorageKey('gallery-$_section'),
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-                  children: [
-                    Center(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: switch (_section) {
-                            'content' || 'views' => 1040,
-                            _ => 640,
-                          },
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: entries,
-                        ),
-                      ),
+        child: switch (_section) {
+          'qris' => const SafeArea(child: QrisCheckoutDemo(embedded: true)),
+          'paged-history' => const SafeArea(
+            child: HistoryBlockDemo(embedded: true),
+          ),
+          _ => SafeArea(
+            // A new list per section so each one starts at the top.
+            child: ListView(
+              key: PageStorageKey('gallery-$_section'),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+              children: [
+                Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: switch (_section) {
+                        'content' || 'views' => 1040,
+                        _ => 640,
+                      },
                     ),
-                  ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: entries,
+                    ),
+                  ),
                 ),
-              ),
+              ],
+            ),
+          ),
+        },
       ),
     );
   }

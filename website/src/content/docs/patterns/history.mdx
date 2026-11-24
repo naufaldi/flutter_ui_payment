@@ -11,9 +11,9 @@ The [Merchant Overview block](/blocks/merchant-overview/) demonstrates a recent
 transaction preview and unknown-payment inspection in a full mobile host screen.
 
 For a searchable full list with native detail sheets, use the
-[Transaction History block](/blocks/transaction-history/). Its host owns query,
-filter and safe load/retry state and passes already-filtered records into
-`TransactionHistory`. A filter/search change doesn't change a payment verdict.
+[Transaction History block](/blocks/transaction-history/). Its host owns the
+query, filter, cursor and safe load/retry state; the block renders the accumulated
+rows lazily. A filter/search change doesn't change a payment verdict.
 No-match reset is distinct from an empty history. Unknown inspection offers no
 pay-again action; a partial refund retains the original successful payment and
 its original amount. Server-backed hosts must reject stale query results and
@@ -81,7 +81,7 @@ On phones at large text the status tabs become a filter button at the end of the
 - A record with `status: null` is "not confirmed yet". It falls under **In progress**, never **Unsuccessful**, and its detail should offer a status check, never paying again.
 - Failed and canceled amounts are struck through; refunded amounts are not. Refunds appear as their own section next to the original payment.
 - Filters are text tabs with a 2 px underline; on phones at large text they are the filter button on the search line. Pending and unknown share the amber tag in the list and differ by icon and word; the hatched band appears only on the detail.
-- `TransactionHistory` lays records out in a column. For long lists, build `TransactionListItem`s in a `ListView.builder` yourself.
+- `TransactionHistory` lays records out in a column for bounded lists. For long lists, copy the [paged block](/blocks/transaction-history/).
 
 Pass `onCopyReference` to TransactionDetail to show reference copying; the host performs the copy and reports success.
 
