@@ -22,10 +22,13 @@ window.__fupMotionReady = true;
 /** True while the gate is present and reduced motion is off. */
 export const motionOn = () => 'fupMotion' in root.dataset && !reduced.matches;
 
-/** Fades and shrinks a panel out in 140 ms. The caller closes it afterwards. */
-export async function fadeOut(el: HTMLElement): Promise<void> {
+/** Fades and shrinks a panel out in 140 ms. The caller can cancel to restore it. */
+export function fadeOut(el: HTMLElement): Animation | undefined {
   if (!motionOn()) return;
-  await animate(el, { opacity: 0, transform: 'scale(0.97)' }, { duration: 0.14, ease }).finished;
+  return el.animate(
+    [{ opacity: 0, transform: 'scale(0.97)' }],
+    { duration: 140, easing: `cubic-bezier(${ease.join(', ')})`, fill: 'forwards' },
+  );
 }
 
 /** The elements CSS hides until revealed: the marked element, or a group's children. */
@@ -84,8 +87,8 @@ for (const el of sections) {
 // Reduced motion turned on while the page is open: mark every section shown,
 // drop the gate so no CSS motion starts, then jump every running animation
 // to its end. A transition already under way keeps running when its rule goes
-// away, so it is finished too. finish() also settles Motion's `finished`
-// promise, so a pending menu close still runs; cancel() would leave it hanging.
+// away, so it is finished too. Finishing also lets pending menu closes and
+// Motion's `finished` callbacks run.
 // Turning reduced motion off again keeps this page still: putting the gate
 // back would replay the entrance keyframes and hide content already on screen.
 // The next page load picks the preference up again.
