@@ -1,13 +1,15 @@
 // Copies the curated native screenshots into public/screens as WebP and
 // records their sizes in src/data/screens.json. Run by hand after new
 // captures (`node scripts/screens.mjs`); the build uses the committed output.
+// Use --requested=<name[,name...]> --since=<unix-ms> to report capture
+// freshness before conversion, without writing any assets.
 //
 // Source: example/build/screenshots_hairline only (the shipped Hairline
 // design). Never docs/design-research/refs (third-party captures) and never
 // example/build/screenshots (the rejected earlier design).
 
 import { createRequire } from 'node:module';
-import { mkdirSync, writeFileSync, existsSync, readFileSync, readdirSync, unlinkSync } from 'node:fs';
+import { mkdirSync, writeFileSync, existsSync, readFileSync, readdirSync, lstatSync, unlinkSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -15,10 +17,6 @@ const here = dirname(fileURLToPath(import.meta.url));
 const source = resolve(here, '../../example/build/screenshots_hairline');
 const target = resolve(here, '../public/screens');
 const manifest = resolve(here, '../src/data/screens.json');
-
-// sharp ships with Astro; resolve it from there instead of adding a dependency.
-const requireFromAstro = createRequire(createRequire(import.meta.url).resolve('astro/package.json'));
-const sharp = requireFromAstro('sharp');
 
 // name → what it shows (locale noted, because captures mix en and id).
 const screens = {
@@ -406,49 +404,122 @@ const screens = {
   android_tablet_catalog_overview_page_variants: 'Spending chart and recent transactions beside the balance module, English on Android tablet.',
 };
 
-mkdirSync(target, { recursive: true });
-// Captures are gitignored build output. When one is gone but its WebP is
-// already committed, keep the committed image and its recorded size.
-const previous = existsSync(manifest) ? JSON.parse(readFileSync(manifest, 'utf8')) : {};
-const convert = async (name) => {
-  const info = await sharp(join(source, `${name}.png`))
-    .resize({ width: name.startsWith('android_tablet_') ? 1280 : 640 })
-    .webp({ quality: 82 })
-    .toFile(join(target, `${name}.webp`));
-  return { width: info.width, height: info.height };
-};
 // D90: a specimen taller than the 1200 dp cap continues in `<name>_part2`,
 // `<name>_part3` and so on, in reading order. They belong to their first
 // image's entry; Screen.astro shows them after it.
 const partName = (name, index) => `${name}_part${index + 2}`;
-const partPattern = /^(.+)_part\d+\.webp$/;
-const sizes = {};
-for (const [name, caption] of Object.entries(screens)) {
-  const input = join(source, `${name}.png`);
-  if (!existsSync(input)) {
-    if (previous[name] && existsSync(join(target, `${name}.webp`))) {
-      sizes[name] = { ...previous[name], caption };
-      continue;
+const readManifest = () => existsSync(manifest) ? JSON.parse(readFileSync(manifest, 'utf8')) : {};
+
+function reportFreshness(args) {
+  const requested = args.find((arg) => arg.startsWith('--requested='))?.slice('--requested='.length);
+  const boundary = args.find((arg) => arg.startsWith('--since='))?.slice('--since='.length);
+  const since = Number(boundary);
+  if (args.length !== 2 || !requested || !/^\d+$/.test(boundary ?? '') ||
+      !Number.isSafeInteger(since) || since <= 0 || since > Date.now()) {
+    console.error('Usage: pnpm screens --requested=<registered-name[,name...]> --since=<capture-start-unix-ms>');
+    process.exitCode = 2;
+    return;
+  }
+
+  const names = new Set(requested.split(','));
+  const unknown = [...names].filter((name) => !Object.hasOwn(screens, name));
+  if (unknown.length) {
+    console.error(`screens: use registered base names. Unknown names: ${JSON.stringify(unknown)}`);
+    process.exitCode = 2;
+    return;
+  }
+
+  const previous = readManifest();
+  const fresh = [];
+  const missing = [];
+  const reused = [];
+  const png = (name) => {
+    const stat = lstatSync(join(source, `${name}.png`), { throwIfNoEntry: false });
+    return stat?.isFile() ? stat : undefined;
+  };
+  const webp = (name) => lstatSync(join(target, `${name}.webp`), { throwIfNoEntry: false })?.isFile();
+  const report = (name, input, canReuseWebp) => {
+    if (input?.mtimeMs > since) {
+      fresh.push(name);
+      return;
     }
-    throw new Error(`Missing screenshot ${input}`);
+    missing.push(name);
+    if (input) reused.push(`${name} (older PNG)`);
+    else if (canReuseWebp && webp(name)) reused.push(`${name} (existing WebP)`);
+  };
+  for (const name of names) {
+    const input = png(name);
+    const committed = previous[name];
+    report(name, input, Boolean(committed));
+    // A fresh base replaces the whole set; otherwise its committed tail
+    // still tells us which parts did not get recaptured.
+    const expectedParts = input?.mtimeMs > since ? 0 : (committed?.parts?.length ?? 0);
+    for (let i = 0; ; i++) {
+      const part = partName(name, i);
+      const partInput = png(part);
+      if (!partInput && i >= expectedParts) break;
+      report(part, partInput, i < expectedParts);
+    }
   }
-  const entry = { ...(await convert(name)), caption };
-  const parts = [];
-  while (existsSync(join(source, `${partName(name, parts.length)}.png`))) {
-    parts.push(await convert(partName(name, parts.length)));
+  for (const [label, entries] of [
+    ['Fresh PNGs', fresh],
+    ['Missing fresh PNGs', missing],
+    ['Existing assets available for reuse', reused],
+  ]) {
+    console.log(`screens: ${label} (${entries.length})`);
+    for (const entry of entries) console.log(`  ${entry}`);
   }
-  if (parts.length) entry.parts = parts;
-  sizes[name] = entry;
+  if (missing.length) process.exitCode = 1;
 }
-// Remove part images that no current entry lists, such as the tail of a
-// specimen that got shorter.
-const listed = new Set(Object.entries(sizes).flatMap(
-  ([name, entry]) => (entry.parts ?? []).map((_, i) => `${partName(name, i)}.webp`)));
-for (const file of readdirSync(target)) {
-  const match = partPattern.exec(file);
-  if (match && sizes[match[1]] && !listed.has(file)) unlinkSync(join(target, file));
+
+async function convertScreens() {
+  // sharp ships with Astro; resolve it from there instead of adding a dependency.
+  const requireFromAstro = createRequire(createRequire(import.meta.url).resolve('astro/package.json'));
+  const sharp = requireFromAstro('sharp');
+  mkdirSync(target, { recursive: true });
+  // Captures are gitignored build output. When one is gone but its WebP is
+  // already committed, keep the committed image and its recorded size.
+  const previous = readManifest();
+  const convert = async (name) => {
+    const info = await sharp(join(source, `${name}.png`))
+      .resize({ width: name.startsWith('android_tablet_') ? 1280 : 640 })
+      .webp({ quality: 82 })
+      .toFile(join(target, `${name}.webp`));
+    return { width: info.width, height: info.height };
+  };
+  const sizes = {};
+  for (const [name, caption] of Object.entries(screens)) {
+    const input = join(source, `${name}.png`);
+    if (!existsSync(input)) {
+      if (previous[name] && existsSync(join(target, `${name}.webp`))) {
+        sizes[name] = { ...previous[name], caption };
+        continue;
+      }
+      throw new Error(`Missing screenshot ${input}`);
+    }
+    const entry = { ...(await convert(name)), caption };
+    const parts = [];
+    while (existsSync(join(source, `${partName(name, parts.length)}.png`))) {
+      parts.push(await convert(partName(name, parts.length)));
+    }
+    if (parts.length) entry.parts = parts;
+    sizes[name] = entry;
+  }
+  // Remove part images that no current entry lists, such as the tail of a
+  // specimen that got shorter.
+  const partPattern = /^(.+)_part\d+\.webp$/;
+  const listed = new Set(Object.entries(sizes).flatMap(
+    ([name, entry]) => (entry.parts ?? []).map((_, i) => `${partName(name, i)}.webp`)));
+  for (const file of readdirSync(target)) {
+    const match = partPattern.exec(file);
+    if (match && sizes[match[1]] && !listed.has(file)) unlinkSync(join(target, file));
+  }
+  mkdirSync(dirname(manifest), { recursive: true });
+  writeFileSync(manifest, JSON.stringify(sizes, null, 2) + '\n');
+  const partCount = listed.size;
+  console.log(`screens: wrote ${Object.keys(sizes).length} images and ${partCount} continuation parts to public/screens`);
 }
-mkdirSync(dirname(manifest), { recursive: true });
-writeFileSync(manifest, JSON.stringify(sizes, null, 2) + '\n');
-const partCount = listed.size;
-console.log(`screens: wrote ${Object.keys(sizes).length} images and ${partCount} continuation parts to public/screens`);
+
+const args = process.argv.slice(2);
+if (args.length) reportFreshness(args);
+else await convertScreens();

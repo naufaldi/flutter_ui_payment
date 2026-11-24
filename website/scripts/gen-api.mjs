@@ -7,13 +7,19 @@
 // enums and top-level functions, including show-filtered exports). It fails loudly when it cannot match a
 // constructor parameter to a field, so drift shows up as a broken build.
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const lib = resolve(here, '../../lib');
 const out = resolve(here, '../src/data/api.json');
+const args = process.argv.slice(2);
+const check = args.length === 1 && args[0] === '--check';
+if (args.length && !check) {
+  console.error('Usage: node scripts/gen-api.mjs [--check]');
+  process.exit(2);
+}
 
 const barrel = readFileSync(join(lib, 'rakit_ui.dart'), 'utf8');
 const files = [...barrel.matchAll(/^export '([^']+)'(?:\s+show\s+([^;]+))?;/gm)].map((m) => ({ rel: m[1], show: m[2] ? new Set(m[2].split(',').map((n) => n.trim())) : null }));
@@ -358,6 +364,19 @@ for (const {rel, show} of files) {
   }
 }
 
-mkdirSync(dirname(out), { recursive: true });
-writeFileSync(out, JSON.stringify(api, null, 2) + '\n');
-console.log(`gen-api: ${Object.keys(api).length} public declarations from ${files.length} files`);
+const generated = JSON.stringify(api, null, 2) + '\n';
+const summary = `${Object.keys(api).length} public declarations from ${files.length} files`;
+if (check) {
+  // Checkouts configured for CRLF carry the same generated metadata.
+  const existing = existsSync(out) ? readFileSync(out, 'utf8').replaceAll('\r\n', '\n') : null;
+  if (existing !== generated) {
+    console.error('gen-api: src/data/api.json is missing or stale. Run pnpm gen:api in website/ and commit the updated file.');
+    process.exitCode = 1;
+  } else {
+    console.log(`gen-api: src/data/api.json is current (${summary})`);
+  }
+} else {
+  mkdirSync(dirname(out), { recursive: true });
+  writeFileSync(out, generated);
+  console.log(`gen-api: ${summary}`);
+}

@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "gen:api": "node scripts/gen-api.mjs",
+    "check:api": "node scripts/gen-api.mjs --check",
     "dev": "node scripts/gen-api.mjs && astro dev",
     "build": "node scripts/gen-api.mjs && astro build",
     "preview": "astro preview",
@@ -12,7 +13,8 @@
     "screens": "node scripts/screens.mjs",
     "check:pages": "node scripts/check-pages.mjs",
     "og:image": "node scripts/og-image.mjs",
-    "test:motion": "node --test scripts/motion.test.mjs"
+    "test:motion": "node --test scripts/motion.test.mjs",
+    "test:screens": "node --test scripts/screens.test.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.42.8",
