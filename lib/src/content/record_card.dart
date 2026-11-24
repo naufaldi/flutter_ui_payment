@@ -38,7 +38,8 @@ class PaymentRecordCardStyle {
   final TextStyle? metadataStyle;
 
   /// Outer inset in dp around the body row and footer. Defaults to the kit's
-  /// block spacing. Horizontal inset yields to a 48 dp body or trailing target.
+  /// block spacing. Extra horizontal inset yields to the title and 48 dp
+  /// action targets when space is tight.
   final double? inset;
 
   /// Divider above the footer. Has no effect without a footer.
@@ -103,13 +104,12 @@ class PaymentRecordCard extends StatelessWidget {
     final inset = style.inset ?? block;
     final radius = theme.controlBorderRadius;
     final titleStyle = type.heading.merge(style.titleStyle);
+    final titleLine = lineHeightOf(context, titleStyle);
     Widget body = Padding(
       padding: EdgeInsets.all(gap),
       child: FirstLineRow(
         gap: block,
-        line: style.titleStyle == null
-            ? null
-            : lineHeightOf(context, titleStyle),
+        line: style.titleStyle == null ? null : titleLine,
         leading: leading == null
             ? null
             : ExcludeSemantics(
@@ -166,15 +166,30 @@ class PaymentRecordCard extends StatelessWidget {
     }
 
     final end = trailing;
-    double fitInset(double width) =>
-        ((width - kMinInteractiveDimension) / 2).clamp(0.0, inset);
+    final bodyWidth =
+        (3 * titleLine + 2 * gap + (leading == null ? 0 : kMediaTile + block))
+            .clamp(kMinInteractiveDimension, double.infinity);
+    double fitInset(double width) {
+      final targetInset = ((width - kMinInteractiveDimension) / 2).clamp(
+        0.0,
+        inset,
+      );
+      if (inset <= block) return targetInset;
+      // Preserve standard gutters, but don't spend extra inset on either side
+      // at the expense of the leading visual and several title characters.
+      return ((width - bodyWidth) / 2).clamp(
+        targetInset.clamp(0.0, block),
+        inset,
+      );
+    }
 
     Widget row(double horizontalInset, double width) {
       final trailingWidth = (width - 2 * horizontalInset - gap) / 3;
       final stacked =
           end != null &&
           (PaymentType.isLarge(context) ||
-              trailingWidth < kMinInteractiveDimension);
+              trailingWidth < kMinInteractiveDimension ||
+              (inset > block && 2 * trailingWidth < bodyWidth));
       final hugs = !stacked && hugTrailing;
       return Padding(
         padding: EdgeInsets.symmetric(
@@ -212,28 +227,23 @@ class PaymentRecordCard extends StatelessWidget {
 
     Widget content([double? width]) {
       final horizontalInset = width == null ? inset : fitInset(width);
+      final footerInset = style.inset == null ? inset : horizontalInset;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (width == null && end != null)
-            LayoutBuilder(
-              builder: (context, constraints) =>
-                  row(fitInset(constraints.maxWidth), constraints.maxWidth),
-            )
-          else
-            row(horizontalInset, width ?? double.infinity),
+          row(horizontalInset, width ?? double.infinity),
           if (footer case final footer?) ...[
             switch (style.divider) {
               PaymentRecordCardDivider.fullWidth => const PaymentDivider(),
               PaymentRecordCardDivider.inset => Padding(
-                padding: EdgeInsets.symmetric(horizontal: horizontalInset),
+                padding: EdgeInsets.symmetric(horizontal: footerInset),
                 child: const PaymentDivider(),
               ),
               PaymentRecordCardDivider.none => const SizedBox.shrink(),
             },
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: horizontalInset,
+                horizontal: footerInset,
                 vertical: inset,
               ),
               child: footer,
@@ -250,7 +260,8 @@ class PaymentRecordCard extends StatelessWidget {
         borderRadius: theme.borderRadius,
         side: BorderSide(color: theme.outline),
       ),
-      child: style.inset == null
+      // The trailing action must keep its element when an inset is restyled.
+      child: end == null && style.inset == null
           ? content()
           : LayoutBuilder(
               builder: (context, constraints) => content(constraints.maxWidth),

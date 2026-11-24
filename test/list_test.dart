@@ -187,6 +187,85 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  testWidgets('restyling a record does not unlock a busy Save', (tester) async {
+    final write = Completer<void>();
+    var calls = 0;
+    late double defaultInset;
+    Widget card(PaymentRecordCardStyle style) => host(
+      Builder(
+        builder: (context) {
+          defaultInset = PaymentTheme.of(context).space(PaymentSpace.block);
+          return SizedBox(
+            width: 320,
+            child: PaymentRecordCard(
+              key: const ValueKey('record'),
+              title: const Text('Statement'),
+              style: style,
+              trailing: PaymentButton(
+                label: 'Save',
+                onPressed: () {
+                  calls++;
+                  return write.future;
+                },
+              ),
+            ),
+          );
+        },
+      ),
+      1,
+    );
+
+    await tester.pumpWidget(card(const PaymentRecordCardStyle()));
+    final save = find.byType(PaymentButton);
+    await tester.tap(save);
+    await tester.pump();
+    await tester.tap(save);
+    expect(calls, 1);
+
+    await tester.pumpWidget(card(PaymentRecordCardStyle(inset: defaultInset)));
+    await tester.tap(save);
+    expect(calls, 1);
+    write.complete();
+    await tester.pumpAndSettle();
+    await tester.tap(save);
+    expect(calls, 2);
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('a large inset leaves room for the title and action at 200%', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    var calls = 0;
+    await tester.pumpWidget(
+      host(
+        PaymentRecordCard(
+          title: const Text('Statement'),
+          leading: const SizedBox.square(dimension: 40),
+          style: const PaymentRecordCardStyle(inset: 132),
+          trailing: PaymentIconButton(
+            icon: Icons.delete_outline,
+            tooltip: 'Remove statement',
+            onPressed: () => calls++,
+          ),
+        ),
+        2,
+      ),
+    );
+
+    expect(
+      tester.getSize(find.text('Statement')).width,
+      greaterThanOrEqualTo(96),
+    );
+    final target = tester.getRect(find.byType(IconButton));
+    expect(target.size.shortestSide, greaterThanOrEqualTo(48));
+    await tester.tapAt(target.centerLeft + const Offset(1, 0));
+    expect(calls, 1);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
     'list dispatches ids, overrides handlers, and leaves values read-only',
     (tester) async {

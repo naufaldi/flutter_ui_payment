@@ -23682,7 +23682,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "inset",
-            "doc": "Outer inset in dp around the body row and footer. Defaults to the kit's\nblock spacing. Horizontal inset yields to a 48 dp body or trailing target."
+            "doc": "Outer inset in dp around the body row and footer. Defaults to the kit's\nblock spacing. Extra horizontal inset yields to the title and 48 dp\naction targets when space is tight."
           },
           {
             "name": "divider",
@@ -23732,7 +23732,7 @@
         "kind": "field",
         "static": false,
         "type": "double?",
-        "doc": "Outer inset in dp around the body row and footer. Defaults to the kit's\nblock spacing. Horizontal inset yields to a 48 dp body or trailing target."
+        "doc": "Outer inset in dp around the body row and footer. Defaults to the kit's\nblock spacing. Extra horizontal inset yields to the title and 48 dp\naction targets when space is tight."
       },
       {
         "name": "divider",
