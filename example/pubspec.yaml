@@ -30,3 +30,5 @@ flutter:
     # Synthetic 8 s clip generated with ffmpeg for this demo (no third-party
     # footage): 640×360 H.264 Constrained Baseline + AAC, 58 KB.
     - assets/video/
+    # Decodes to plain demo text, not a payment payload.
+    - assets/qris/demo-code.webp
