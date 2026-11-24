@@ -2,8 +2,10 @@ import 'account_models.dart';
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart' show StringCharacters;
 import 'package:rakit_ui/rakit_ui.dart';
 
+import '../compositions/report_problem_block.dart';
 import '../scenarios/scenario_config.dart';
 
 /// Thrown by the fake host services. Adapters convert everything the
@@ -211,17 +213,19 @@ class DemoHost {
     ];
   }
 
-  Future<String> reportProblem({
-    required String category,
-    required int length,
-  }) async {
+  Future<ConfirmedProblemReport> reportProblem(ReportProblemDraft draft) async {
     await _latency();
     if (config.reportFailsOnce && !_reportFailed) {
       _reportFailed = true;
       throw const HostException(HostError(HostErrorCategory.unavailable));
     }
-    record('Problem reported ($category, $length chars)');
-    return 'CASE-DEMO-${(++_cases).toString().padLeft(4, '0')}';
+    record(
+      'Problem reported (${draft.reason.name}, ${draft.note.characters.length} chars)',
+    );
+    return (
+      draft: draft,
+      caseId: 'CASE-DEMO-${(++_cases).toString().padLeft(4, '0')}',
+    );
   }
 
   Future<void> saveSettings(DemoAccountSettings settings) async {

@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui_example/compositions/report_problem_block.dart';
 import 'package:rakit_ui_example/coordinator/demo_coordinator.dart';
 import '../integration_test/support.dart';
 
@@ -64,7 +65,7 @@ void main() {
     // The report button doesn't stay busy behind its sheet (#64).
     await tapVisible(t, report);
     await settle(t);
-    expect(find.byType(PaymentFocusView), findsOneWidget);
+    expect(find.byKey(const Key('report-problem-sheet')), findsOneWidget);
     expect(t.widget<PaymentButton>(report).busy, isFalse);
     expect(
       find.descendant(of: report, matching: find.byType(PaymentSpinner)),
@@ -98,7 +99,7 @@ void main() {
         t,
         find
             .descendant(
-              of: find.byType(PaymentSelect<String>),
+              of: find.byType(PaymentSelect<ReportProblemReason>),
               matching: find.byType(InkWell),
             )
             .first,
@@ -110,19 +111,26 @@ void main() {
       of: find.byType(PaymentTextArea),
       matching: find.byType(EditableText),
     );
+    final sheet = find.byKey(const Key('report-problem-sheet'));
     await open();
     expect(
       t.widget<PaymentButton>(find.byKey(const Key('send-report'))).onPressed,
       isNull,
     );
     await t.enterText(editor, 'test note');
-    FocusManager.instance.primaryFocus?.unfocus();
+    t.view.viewInsets = const FakeViewPadding(bottom: 230);
+    addTearDown(t.view.resetViewInsets);
     await settle(t);
-    await tapVisible(t, find.byKey(const Key('report-cancel')));
+    await t.binding.handlePopRoute();
+    await settle(t);
+    expect(find.text('Discard this report?'), findsNothing);
+    expect(find.text('test note'), findsOneWidget);
+    t.view.resetViewInsets();
+    await settle(t);
     expect(find.text('Discard this report?'), findsOneWidget);
     await tapVisible(t, find.text('Discard'));
     await settle(t);
-    expect(find.byType(PaymentFocusView), findsNothing);
+    expect(sheet, findsNothing);
     await open();
     await choose();
     await t.enterText(editor, 'test note');
@@ -131,7 +139,10 @@ void main() {
     await tapVisible(t, find.byKey(const Key('send-report')));
     await pumpUntilFound(t, find.textContaining('Report sent'));
     await settle(t);
-    expect(find.byType(PaymentFocusView), findsNothing);
+    expect(find.text('CASE-DEMO-0001'), findsOneWidget);
+    await tapVisible(t, find.text('Done'));
+    await settle(t);
+    expect(sheet, findsNothing);
     expect(
       c.host.log.value.any(
         (e) => e.message == 'Problem reported (chargedTwice, 9 chars)',
@@ -150,12 +161,101 @@ void main() {
     await tapVisible(t, find.byKey(const Key('send-report')));
     await settle(t);
     expect(find.byType(PaymentBanner), findsOneWidget);
-    expect(find.byType(PaymentFocusView), findsOneWidget);
+    expect(sheet, findsOneWidget);
     await tapVisible(t, find.byKey(const Key('report-cancel')));
     await tapVisible(t, find.text('Discard'));
     await settle(t);
     await drain(t);
   });
+  testWidgets('A02 keeps the note and Send reachable above a landscape IME', (
+    t,
+  ) async {
+    surface(t, const Size(640, 360));
+    t.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
+    final app = await launch(t);
+    final c = await runScenario(t, app, 'A02');
+    await pumpUntil(t, () => !c.detailLoading);
+    await settle(t);
+    await tapVisible(t, find.byKey(const Key('report-problem')));
+    final reason = find
+        .descendant(
+          of: find.byType(PaymentSelect<ReportProblemReason>),
+          matching: find.byType(InkWell),
+        )
+        .first;
+    await tapVisible(t, reason);
+    await tapVisible(t, find.text('Charged twice'));
+    final note = find.descendant(
+      of: find.byType(PaymentTextArea),
+      matching: find.byType(EditableText),
+    );
+    await tapVisible(t, note);
+    final focus = t.widget<EditableText>(note).focusNode;
+    t.view.viewInsets = const FakeViewPadding(bottom: 240);
+    await settle(t);
+    expect(t.takeException(), isNull);
+    expect(t.widget<EditableText>(note).focusNode, same(focus));
+    expect(focus.hasFocus, isTrue);
+    t.view.viewInsets = const FakeViewPadding(bottom: 230);
+    await settle(t);
+    expect(t.takeException(), isNull);
+    expect(t.widget<EditableText>(note).focusNode.hasFocus, isTrue);
+    t.testTextInput.enterText('One order, two charges');
+    await settle(t);
+    expect(find.text('One order, two charges'), findsOneWidget);
+    final send = find.byKey(const Key('send-report'));
+    final editor = t.state<EditableTextState>(note).renderEditable;
+    final caret = editor.getLocalRectForCaret(const TextPosition(offset: 22));
+    final viewport = t.getRect(
+      find.ancestor(of: note, matching: find.byType(SingleChildScrollView)),
+    );
+    expect(
+      editor.localToGlobal(caret.topLeft).dy,
+      greaterThanOrEqualTo(viewport.top),
+    );
+    expect(
+      editor.localToGlobal(caret.bottomRight).dy,
+      lessThanOrEqualTo(viewport.bottom),
+    );
+    final sheet = find.byKey(const Key('report-problem-sheet'));
+    await tapVisible(
+      t,
+      find.descendant(of: sheet, matching: find.byTooltip('Close panel')),
+    );
+    expect(focus.hasFocus, isFalse);
+    expect(find.text('Discard this report?'), findsNothing);
+
+    // Send can finish before the keyboard responds to the earlier Close.
+    await t.ensureVisible(send);
+    await settle(t);
+    expect(send.hitTestable(), findsOneWidget);
+    expect(t.getBottomLeft(send).dy, lessThanOrEqualTo(130));
+    await t.tap(send);
+    final caseId = find.text('CASE-DEMO-0001');
+    await pumpUntilFound(t, caseId);
+    await settle(t);
+    expect(caseId.hitTestable(), findsOneWidget);
+    final done = find.text('Done');
+    await t.ensureVisible(done);
+    await settle(t);
+    expect(done.hitTestable(), findsOneWidget);
+    t.view.resetViewInsets();
+    await settle(t);
+    expect(caseId.hitTestable(), findsOneWidget);
+    await tapVisible(t, done);
+    await settle(t);
+    expect(sheet, findsNothing);
+    expect(
+      c.host.log.value.any(
+        (e) => e.message == 'Problem reported (chargedTwice, 22 chars)',
+      ),
+      isTrue,
+    );
+    expect(t.takeException(), isNull);
+    await drain(t);
+  });
+
   testWidgets('A03 page selection, amount sort and search', (t) async {
     surface(t, const Size(393, 852));
     final app = await launch(t);

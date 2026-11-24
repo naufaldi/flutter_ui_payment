@@ -5,6 +5,7 @@ import 'package:rakit_ui/rakit_ui.dart';
 
 import 'block_demo_shell.dart';
 import 'compositions/merchant_history.dart';
+import 'compositions/report_problem_block.dart';
 
 void main() => runBlockDemo(const HistoryBlockDemo());
 
@@ -69,12 +70,14 @@ class HistoryBlockDemo extends StatefulWidget {
     this.initialDark = false,
     this.embedded = false,
     this.fetchPage,
+    this.submitReport,
     this.fixtureDelay = const Duration(milliseconds: 280),
   });
   final HistoryDemoState initialState;
   final bool initialDark;
   final bool embedded;
   final HistoryPageSource? fetchPage;
+  final SubmitProblemReport? submitReport;
   final Duration fixtureDelay;
   @override
   State<HistoryBlockDemo> createState() => _HistoryBlockDemoState();
@@ -90,6 +93,8 @@ class _HistoryBlockDemoState extends State<HistoryBlockDemo> {
   int _generation = 0;
   int _failedAttempt = 0;
   _PageRequest _request = _PageRequest.idle;
+  bool _failNextReport = false;
+  int _cases = 0;
 
   @override
   void initState() {
@@ -169,6 +174,21 @@ class _HistoryBlockDemoState extends State<HistoryBlockDemo> {
     );
   }
 
+  Future<ConfirmedProblemReport> _submitFixtureReport(
+    ReportProblemDraft draft,
+  ) async {
+    final fail = _failNextReport;
+    _failNextReport = false;
+    if (widget.fixtureDelay > Duration.zero) {
+      await Future<void>.delayed(widget.fixtureDelay);
+    }
+    if (fail) throw StateError('Synthetic rejection before creating a case');
+    return (
+      draft: draft,
+      caseId: 'CASE-DEMO-${(++_cases).toString().padLeft(4, '0')}',
+    );
+  }
+
   Widget _block(BuildContext context) => MerchantHistory(
     records: _records,
     query: _query,
@@ -202,6 +222,15 @@ class _HistoryBlockDemoState extends State<HistoryBlockDemo> {
       builder: (context) => MerchantHistoryDetail(
         record: record,
         onClose: () => Navigator.pop(context),
+        onReport: () {
+          unawaited(
+            showReportProblem(
+              context,
+              record: record,
+              onSubmit: widget.submitReport ?? _submitFixtureReport,
+            ),
+          );
+        },
       ),
     ),
   );
@@ -231,6 +260,10 @@ class _HistoryBlockDemoState extends State<HistoryBlockDemo> {
                   _restart('', TransactionFilter.all);
                 },
               ),
+            (
+              label: 'Gagal kirim laporan sekali',
+              onSelected: () => _failNextReport = true,
+            ),
           ],
           body: _block,
         );

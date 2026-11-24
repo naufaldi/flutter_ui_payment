@@ -1,0 +1,70 @@
+---
+title: Report a problem
+description: A copyable transaction report sheet that keeps a draft on failure and shows a case ID returned by the host.
+---
+
+import BlockSource from '../../../components/BlockSource.astro';
+
+Open a report from transaction detail to flag a duplicate charge, wrong amount,
+or missing purchase. The sheet carries the selected transaction’s reference and
+amount, so the person only has to pick a reason and can add an optional note.
+Reporting does not change the payment, open a dispute, or start a refund.
+
+## Run and try
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/history_block_demo.dart
+```
+
+Open any transaction and tap **Laporkan masalah** (Report a problem). You can
+also get there from **Paged history** in Gallery. To try recovery, select
+**Gagal kirim laporan sekali** in the standalone demo’s scenario menu before
+opening the transaction. Pick a reason, add a note and tap **Kirim laporan**.
+The first send fails before a case is created. Send again without retyping: the
+demo host confirms a case ID that stays visible until you close the sheet.
+
+## Connect your host
+
+Copy `report_problem_block.dart`. Call `showReportProblem(context, record: …,
+onSubmit: …)` from the detail action, passing the selected `TransactionRecord`.
+The sheet sends a `ReportProblemDraft` with the stable `transactionId`, the
+displayed `reference` (the ID if the record has no reference), the `reason`,
+and the `note`. The note is optional and limited to 500 characters in the UI.
+
+1. Authorize the current account against the transaction ID on your server.
+   Treat the reference and note as untrusted data; validate them server-side.
+2. Return a `ConfirmedProblemReport` with the draft your service actually
+   accepted and its nonblank case ID. Throw when the submitted draft cannot be
+   confirmed. The sheet keeps the current draft and shows retry copy if the
+   confirmation is missing or refers to a different draft.
+3. Make retries safe in your host. The sheet blocks overlapping sends while
+   open, but a timeout may mean the server accepted the report. Reconcile that
+   submission or reuse a host-owned idempotency key for the same logical report
+   rather than creating a second case. If the person edits the draft after a
+   timeout, reconcile the outstanding submission before deciding whether the
+   edited draft is a new report. Never attach an earlier case ID to the edited
+   draft unless the service confirms it accepted the edit. Leave the payment
+   and refund state alone.
+
+An unconfirmed send keeps the draft in memory in the open sheet. Closing a
+dirty draft requires confirmation. There is no disk persistence, and the block
+does not send notes anywhere except through `onSubmit`. Do not log free text
+or ask users for PINs, OTPs or card numbers.
+
+| UI | Existing library surface |
+| --- | --- |
+| Focused task and discard confirmation | `showPaymentFocusView`, `PaymentSheet`, `showPaymentConfirmDialog` |
+| Read-only transaction context and confirmed case ID | `PaymentPropertyList`, `AmountText` |
+| Reason, optional note and send | `PaymentSelect`, `PaymentTextArea`, `PaymentButton` |
+| Retry message | `PaymentBanner` |
+
+## Source
+
+<BlockSource name="reportProblem" />
+<BlockSource name="historyDemo" />
+
+The [Transaction history block](/blocks/transaction-history/) shows the detail
+action. The demo uses synthetic transactions and case IDs; it is not a support
+integration.

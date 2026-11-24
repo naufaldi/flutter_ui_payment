@@ -259,6 +259,10 @@ class _Shell extends StatelessWidget {
       (Icons.widgets_outlined, Icons.widgets, s.tabGallery),
     ];
     final body = IndexedStack(index: app.tab, children: pages);
+    // Detail is read-only. Its nested report route needs the original
+    // keyboard inset, not an already shortened navigator.
+    bool resizeForKeyboard() =>
+        app.tab != 0 || app.coordinator.step != FlowStep.transactionDetail;
     // Phones get a bottom bar; tablets, desktops and wide browser windows get
     // a side rail so the content keeps a readable width.
     if (MediaQuery.sizeOf(context).width >= 840) {
@@ -266,8 +270,13 @@ class _Shell extends StatelessWidget {
       // and the body beside it no longer sees that inset, so a phone in
       // landscape applies it once (#88).
       final ltr = Directionality.of(context) == TextDirection.ltr;
-      return Scaffold(
-        body: Row(
+      return ListenableBuilder(
+        listenable: app.coordinator,
+        builder: (context, child) => Scaffold(
+          resizeToAvoidBottomInset: resizeForKeyboard(),
+          body: child,
+        ),
+        child: Row(
           children: [
             SafeArea(
               left: ltr,
@@ -291,7 +300,7 @@ class _Shell extends StatelessWidget {
             ),
             const VerticalDivider(width: 1),
             Expanded(
-              // Read below Scaffold so its consumed keyboard inset stays removed.
+              // Keep the keyboard inset as passed by the Scaffold.
               child: Builder(
                 builder: (context) => MediaQuery.removePadding(
                   context: context,
@@ -310,6 +319,7 @@ class _Shell extends StatelessWidget {
     return ListenableBuilder(
       listenable: app.coordinator,
       builder: (context, _) => Scaffold(
+        resizeToAvoidBottomInset: resizeForKeyboard(),
         body: body,
         bottomNavigationBar: app.tab == 0 && hidesTabBar(app.coordinator.step)
             ? null

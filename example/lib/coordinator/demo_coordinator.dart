@@ -7,6 +7,7 @@ import 'package:rakit_ui/rakit_ui.dart';
 
 import '../adapters/fake_host.dart';
 import '../adapters/status_adapter.dart';
+import '../compositions/report_problem_block.dart';
 import '../scenarios/scenario_config.dart';
 
 enum FlowStep {
@@ -141,13 +142,8 @@ class DemoCoordinator extends ChangeNotifier {
       s,
     ],
   };
-  Future<String> reportProblem({
-    required String category,
-    required int length,
-  }) async {
-    final result = await _guard(
-      () => host.reportProblem(category: category, length: length),
-    );
+  Future<ConfirmedProblemReport> reportProblem(ReportProblemDraft draft) async {
+    final result = await _guard(() => host.reportProblem(draft));
     if (result == null) throw StateError('Session changed');
     return result;
   }

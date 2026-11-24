@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import 'package:rakit_ui_example/adapters/fake_host.dart';
+import 'package:rakit_ui_example/compositions/report_problem_block.dart';
 import 'package:rakit_ui_example/coordinator/demo_coordinator.dart';
 import 'package:rakit_ui_example/scenarios/catalog.dart';
 import 'package:integration_test/integration_test.dart';
@@ -376,7 +377,7 @@ void main() {
         tester,
         find
             .descendant(
-              of: find.byType(PaymentSelect<String>),
+              of: find.byType(PaymentSelect<ReportProblemReason>),
               matching: find.byType(InkWell),
             )
             .first,
@@ -394,7 +395,10 @@ void main() {
       await tapVisible(tester, find.byKey(const Key('send-report')));
       await pumpUntilFound(tester, find.textContaining('Report sent'));
       await settle(tester);
-      expect(find.byType(PaymentFocusView), findsNothing);
+      expect(find.text('CASE-DEMO-0001'), findsOneWidget);
+      await tapVisible(tester, find.text('Done'));
+      await settle(tester);
+      expect(find.byKey(const Key('report-problem-sheet')), findsNothing);
       expect(logCount(c, 'Problem reported'), 1);
       expect(
         c.host.log.value.any((e) => e.message.contains('test note')),
