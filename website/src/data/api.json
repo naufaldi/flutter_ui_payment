@@ -23135,6 +23135,188 @@
     ],
     "copyWith": null
   },
+  "PaymentCollection": {
+    "kind": "class",
+    "file": "lib/src/content/collection.dart",
+    "doc": "A bounded, lazy viewport for records with host-defined rows and states.\n\nSupply either the current page's rows or accumulated rows. The collection\ndoes not fetch, select a state, or infer paging availability. Place it in a\nfinite-height parent, not another vertical scroll view.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentCollection",
+        "factory": false,
+        "params": [
+          {
+            "name": "rowCount",
+            "type": "int",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rowCount",
+            "doc": "Number of rows in the host's current snapshot."
+          },
+          {
+            "name": "rowBuilder",
+            "type": "IndexedWidgetBuilder",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rowBuilder",
+            "doc": "Builds visible and nearby rows by index, on demand."
+          },
+          {
+            "name": "placeholder",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "placeholder",
+            "doc": "Scrolling content shown only when `rowCount` is zero.\n\nThe host selects and labels its loading, empty or error content."
+          },
+          {
+            "name": "footer",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "footer",
+            "doc": "Optional content that scrolls after the rows or `placeholder`.\n\nAlso shown with zero rows, so an empty page can still offer a way back."
+          },
+          {
+            "name": "controller",
+            "type": "ScrollController?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "controller",
+            "doc": "Optional host-owned scroll controller. The host disposes it."
+          },
+          {
+            "name": "physics",
+            "type": "ScrollPhysics?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "physics",
+            "doc": "Scroll physics. Use `AlwaysScrollableScrollPhysics` with a host refresh\nindicator to allow pull-to-refresh on short or empty pages."
+          },
+          {
+            "name": "padding",
+            "type": "EdgeInsetsGeometry?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "padding",
+            "doc": "Scrollable insets, defaulting to `PaymentSpace.group` on all sides."
+          },
+          {
+            "name": "maxContentWidth",
+            "type": "double?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "maxContentWidth",
+            "doc": "Optional finite positive width cap for all content, excluding `padding`.\nExtra width is distributed equally beyond the specified side insets."
+          },
+          {
+            "name": "rowGap",
+            "type": "PaymentSpace",
+            "required": false,
+            "default": "PaymentSpace.related",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "rowGap",
+            "doc": "Semantic spacing between adjacent rows."
+          }
+        ],
+        "doc": "Creates a collection without prescribing a row, state or pager style."
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "rowCount",
+        "kind": "field",
+        "static": false,
+        "type": "int",
+        "doc": "Number of rows in the host's current snapshot."
+      },
+      {
+        "name": "rowBuilder",
+        "kind": "field",
+        "static": false,
+        "type": "IndexedWidgetBuilder",
+        "doc": "Builds visible and nearby rows by index, on demand."
+      },
+      {
+        "name": "placeholder",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Scrolling content shown only when `rowCount` is zero.\n\nThe host selects and labels its loading, empty or error content."
+      },
+      {
+        "name": "footer",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Optional content that scrolls after the rows or `placeholder`.\n\nAlso shown with zero rows, so an empty page can still offer a way back."
+      },
+      {
+        "name": "controller",
+        "kind": "field",
+        "static": false,
+        "type": "ScrollController?",
+        "doc": "Optional host-owned scroll controller. The host disposes it."
+      },
+      {
+        "name": "physics",
+        "kind": "field",
+        "static": false,
+        "type": "ScrollPhysics?",
+        "doc": "Scroll physics. Use `AlwaysScrollableScrollPhysics` with a host refresh\nindicator to allow pull-to-refresh on short or empty pages."
+      },
+      {
+        "name": "padding",
+        "kind": "field",
+        "static": false,
+        "type": "EdgeInsetsGeometry?",
+        "doc": "Scrollable insets, defaulting to `PaymentSpace.group` on all sides."
+      },
+      {
+        "name": "maxContentWidth",
+        "kind": "field",
+        "static": false,
+        "type": "double?",
+        "doc": "Optional finite positive width cap for all content, excluding `padding`.\nExtra width is distributed equally beyond the specified side insets."
+      },
+      {
+        "name": "rowGap",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentSpace",
+        "doc": "Semantic spacing between adjacent rows."
+      }
+    ],
+    "copyWith": null
+  },
   "PaymentPropertyList": {
     "kind": "class",
     "file": "lib/src/content/property_list.dart",

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import 'package:rakit_ui_example/collection_block_demo.dart';
+import 'package:rakit_ui_example/collection_page_demo.dart';
 import 'package:rakit_ui_example/compositions/collection_block.dart';
 
 const _pageError =
@@ -41,6 +42,67 @@ Widget _shortCollection({
 );
 
 void main() {
+  testWidgets('numbered collection retries, replaces and refreshes a page', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.view.reset);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await tester.pumpWidget(const CollectionPageDemo());
+
+    Future<void> tap(String label) async {
+      final control = find.text(label);
+      await tester.scrollUntilVisible(control, 100);
+      await tester.tap(control.hitTestable());
+      await tester.pump();
+    }
+
+    Future<void> finishRequest() async {
+      await tester.pump(const Duration(milliseconds: 280));
+      await tester.pumpAndSettle();
+    }
+
+    expect(find.text('Workshop notes'), findsOneWidget);
+    await tap('Next');
+    expect(find.text('Loading documents'), findsOneWidget);
+    expect(find.text('Workshop notes'), findsNothing);
+    await finishRequest();
+    expect(find.text('Couldn’t load this page'), findsOneWidget);
+
+    await tap('Try again');
+    await finishRequest();
+    expect(find.text('Reading list'), findsOneWidget);
+    expect(find.text('Page 2'), findsOneWidget);
+    expect(find.text('Workshop notes'), findsNothing);
+
+    await tap('Next');
+    await finishRequest();
+    expect(find.text('No documents on this page'), findsOneWidget);
+    expect(find.text('Page 3'), findsOneWidget);
+    expect(find.text('Next'), findsNothing);
+    expect(find.text('Reading list'), findsNothing);
+
+    await tester.fling(
+      find.text('No documents on this page').hitTestable(),
+      const Offset(0, 380),
+      1000,
+    );
+    for (var frame = 0; frame < 5; frame++) {
+      await tester.pump(const Duration(milliseconds: 60));
+    }
+    expect(find.text('Loading documents'), findsOneWidget);
+    await finishRequest();
+    expect(find.text('Page 3'), findsOneWidget);
+
+    await tap('Previous');
+    await finishRequest();
+    expect(find.text('Reading list'), findsOneWidget);
+    expect(find.text('Page 2'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('initial loading resolves to first empty with a way forward', (
     tester,
   ) async {
