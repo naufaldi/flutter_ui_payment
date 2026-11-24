@@ -277,6 +277,39 @@ void main() {
     expect(detail.record.refund.status, RefundStatus.partial);
   });
 
+  testWidgets('immediate first-page Retry publishes a fresh live error', (
+    tester,
+  ) async {
+    final cursors = <String?>[];
+    await tester.pumpWidget(
+      HistoryBlockDemo(
+        fetchPage: (_, _, cursor) {
+          cursors.add(cursor);
+          return Future.error(StateError('first-page failure'));
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    const message = 'Riwayat belum dapat dimuat. Coba lagi.';
+    final error = find.text(message);
+    final firstError = tester.getSemantics(error);
+    expect(firstError.label, contains(message));
+    expect(firstError.flagsCollection.isLiveRegion, isTrue);
+    expect(firstError.flagsCollection.isHidden, isFalse);
+    expect(cursors, [null]);
+
+    await tester.tap(find.text(PaymentLocalizations('id').retry).hitTestable());
+    await tester.pump();
+    expect(cursors, [null, null]);
+    expect(find.byType(LoadingSkeleton), findsNothing);
+    final secondError = tester.getSemantics(error);
+    expect(secondError.id, isNot(firstError.id));
+    expect(secondError.label, firstError.label);
+    expect(secondError.flagsCollection.isLiveRegion, isTrue);
+    expect(secondError.flagsCollection.isHidden, isFalse);
+  });
+
   testWidgets('failed history retries and a no-match search resets query', (
     tester,
   ) async {

@@ -139,7 +139,8 @@ class MerchantHistory extends StatelessWidget {
                     rows: 4,
                     leading: false,
                   ),
-                  (_, (message: final message, attempt: _), _) => StateMessage(
+                  (_, (:final message, :final attempt), _) => StateMessage(
+                    key: ValueKey(attempt),
                     icon: Icons.cloud_off_outlined,
                     tone: StatusTone.danger,
                     title: l10n.transactionsFailedTitle,
