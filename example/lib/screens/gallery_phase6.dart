@@ -7,29 +7,46 @@ Future<void> _removeDemoStatement(BuildContext context) async {
     'Laporan tidak akan muncul lagi di dokumen tersimpan.',
   );
   final recovery = t(
-    'The statement was not removed. You can try again.',
-    'Laporan belum dihapus. Anda dapat mencoba lagi.',
+    'Removal was not confirmed. Check the statement’s status before trying again.',
+    'Penghapusan belum dikonfirmasi. Periksa status laporan sebelum mencoba lagi.',
   );
-  final message = ValueNotifier(description);
-  var attempts = 0;
+  final remove = PaymentAsyncConfirmLabels(
+    confirmLabel: t('Remove statement', 'Hapus laporan'),
+    pendingLabel: t('Removing statement', 'Menghapus laporan'),
+  );
+  final check = PaymentAsyncConfirmLabels(
+    confirmLabel: t('Check status', 'Periksa status'),
+    pendingLabel: t('Checking status', 'Memeriksa status'),
+  );
+  final labels = ValueNotifier(remove);
+  final outcomeUnknown = ValueNotifier(false);
+  var removedFromDemoStore = false;
   var closed = false;
   try {
     final removed = await showPaymentAsyncConfirmDialog(
       context,
       title: t('Remove this statement?', 'Hapus laporan ini?'),
       description: ValueListenableBuilder(
-        valueListenable: message,
-        builder: (_, text, _) => Semantics(liveRegion: true, child: Text(text)),
+        valueListenable: outcomeUnknown,
+        builder: (_, unknown, _) => Semantics(
+          liveRegion: true,
+          child: Text(unknown ? recovery : description),
+        ),
       ),
-      confirmLabel: t('Remove statement', 'Hapus laporan'),
-      pendingLabel: t('Removing statement', 'Menghapus laporan'),
+      confirmLabel: remove.confirmLabel,
+      actionLabels: labels,
       destructive: true,
       onConfirm: () async {
-        final retry = ++attempts > 1;
-        message.value = description;
+        final checkStatus = outcomeUnknown.value;
         await Future<void>.delayed(const Duration(seconds: 1));
-        if (!retry && !closed) message.value = recovery;
-        return retry;
+        if (checkStatus) return removedFromDemoStore;
+        // The demo write commits, but its response never confirms it.
+        removedFromDemoStore = true;
+        if (!closed) {
+          outcomeUnknown.value = true;
+          labels.value = check;
+        }
+        return false;
       },
     );
     if (removed && context.mounted) {
@@ -41,7 +58,8 @@ Future<void> _removeDemoStatement(BuildContext context) async {
     }
   } finally {
     closed = true;
-    message.dispose();
+    outcomeUnknown.dispose();
+    labels.dispose();
   }
 }
 
@@ -117,8 +135,8 @@ class _KitSpecimenState extends State<_KitSpecimen> {
         <Widget>[
           Text(
             tr(
-              'The first attempt fails in this demo.',
-              'Percobaan pertama gagal dalam demo ini.',
+              'The removal response is lost. Check status to see what happened.',
+              'Respons penghapusan hilang. Periksa status untuk mengetahui hasilnya.',
             ),
           ),
           action(

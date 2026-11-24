@@ -999,6 +999,12 @@ Interrupting a running reveal reverses through a private `SpringSimulation`: `Sp
 
 - **D142: Find is a copyable search-results block (#380).** Use a submitted query and tappable rows with locations and excerpts. A fresh host stream lets Find show partial matches and progress without treating a canceled or failed search as empty. Edit, cancel and disposal end the subscription; retries start the same query again. The host stops the underlying work and opens the selected match. Follow the Collection block's single lazy viewport rather than using its paging states or the search field's option selection. The block works in a bounded page or a sheet with a caller-owned scrollable. No PDF/OCR integration or package API change.
 
+### Record card branding and confirmation recovery, 24 November 2026
+
+- **D143: opt in to card styling and live confirmation labels (#385; extends D140).** The [Annota Documents pilot](https://github.com/naufaldi/annota-mobile/pull/54) used styled slots and a shadow wrapper but still lost title room to the trailing allocation. `hugTrailing` lets compact controls give unused width back to the body. Keep the one-third cap so a wider control cannot crowd out the title, and keep the large-text and 48 dp stacking rules. The instance style changes title and metadata typography, outer inset, footer divider and elevation without changing theme defaults or action ownership. No family theme is needed for this pilot.
+
+  Accept one host `ValueListenable<PaymentAsyncConfirmLabels>` so the action and busy status change together. Keep the notifier outside the route's pending state; it cannot activate or unlock the prompt. An unknown write may lead to a read-only status check on the same record, not an automatic retry. The dialog closes automatically only when the host confirms success. Static label callers and the bool confirmation presenter keep their behavior.
+
 ### Importable collection viewport, 24 November 2026
 
 - **D144: Collection also has an importable viewport (#386).** Annota's Documents pilot needed to replace rows page by page, show its own state content and let readers go back from an empty page. Export `PaymentCollection` for the shared layout, not a second paging state machine. Its footer follows rows or the no-rows slot, and its scroll options let the app supply refresh physics and clearance under its own chrome. Localized copy, accessible state announcements, request ordering, and the decision to replace or append rows stay with the host. Keep D139's source and Load more demo working unchanged.

@@ -74,10 +74,18 @@ void main() {
     surface(tester, const Size(320, 640));
     final semantics = tester.ensureSemantics();
     final firstWrite = Completer<bool>();
-    final secondWrite = Completer<bool>();
+    final statusCheck = Completer<bool>();
     final failed = ValueNotifier(false);
     addTearDown(failed.dispose);
+    final labels = ValueNotifier(
+      const PaymentAsyncConfirmLabels(
+        confirmLabel: 'Remove statement',
+        pendingLabel: 'Removing statement',
+      ),
+    );
+    addTearDown(labels.dispose);
     var writes = 0;
+    var checks = 0;
     bool? result;
     late ModalRoute<bool> prompt;
     await tester.pumpWidget(
@@ -96,22 +104,31 @@ void main() {
                       builder: (_, showFailure, _) => showFailure
                           ? Semantics(
                               liveRegion: true,
-                              child: const Text('Not removed. Try again.'),
+                              child: const Text('Removal not confirmed.'),
                             )
                           : const Text('This cannot be undone.'),
                     );
                   },
                 ),
-                confirmLabel: 'Remove statement',
-                pendingLabel: 'Removing statement',
+                confirmLabel: 'Static confirm label',
+                pendingLabel: 'Static pending label',
+                actionLabels: labels,
                 destructive: true,
                 onConfirm: () async {
-                  if (++writes == 1) {
-                    final removed = await firstWrite.future;
-                    failed.value = !removed;
-                    return removed;
+                  if (failed.value) {
+                    checks++;
+                    return statusCheck.future;
                   }
-                  return secondWrite.future;
+                  writes++;
+                  final removed = await firstWrite.future;
+                  if (!removed) {
+                    failed.value = true;
+                    labels.value = const PaymentAsyncConfirmLabels(
+                      confirmLabel: 'Check status',
+                      pendingLabel: 'Checking status',
+                    );
+                  }
+                  return removed;
                 },
               );
             },
@@ -147,16 +164,30 @@ void main() {
     await tester.drag(find.text('Remove statement?'), const Offset(0, 280));
     expect(result, isNull);
 
+    labels.value = const PaymentAsyncConfirmLabels(
+      confirmLabel: 'Remove statement',
+      pendingLabel: 'Still removing statement',
+    );
+    await tester.pump();
+    expect(find.semantics.byValue('Still removing statement'), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    expect(result, isNull);
+
     firstWrite.complete(false);
     await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel('Not removed. Try again.'), findsOneWidget);
+    expect(find.bySemanticsLabel('Removal not confirmed.'), findsOneWidget);
     expect(result, isNull);
     expect(writes, 1);
-    await tester.tap(confirm);
+    expect(checks, 0);
+    final check = find.text('Check status');
+    await tester.tap(check);
+    await tester.tap(check);
     await tester.pump();
-    expect(writes, 2);
+    expect(find.semantics.byValue('Checking status'), findsOneWidget);
+    expect(writes, 1);
+    expect(checks, 1);
     prompt.addLocalHistoryEntry(LocalHistoryEntry());
-    secondWrite.complete(true);
+    statusCheck.complete(true);
     await tester.pumpAndSettle();
     expect(find.text('Remove statement?'), findsNothing);
     expect(result, isTrue);

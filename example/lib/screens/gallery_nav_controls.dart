@@ -158,31 +158,52 @@ class _RecordCardSpecimen extends StatelessWidget {
   Widget build(BuildContext context) {
     String t(String en, String id) => _t(context, en, id);
     final title = t('Settlement statement', 'Laporan setelmen');
-    return _Entry(
-      name: 'PaymentRecordCard · ${t('saved record', 'dokumen tersimpan')}',
-      child: PaymentRecordCard(
-        leading: const PaymentIcon(Icons.description_outlined),
-        title: Text(title),
-        metadata: const Text('November 2026 · PDF'),
-        onOpen: () =>
-            _galleryFeedback(context, 'Opened the statement', 'Laporan dibuka'),
-        trailing: PaymentIconButton(
-          icon: Icons.delete_outline,
-          tooltip: t('Remove statement', 'Hapus laporan'),
-          onPressed: () => _removeDemoStatement(context),
-        ),
-        footer: Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: PaymentLink(
-            label: t('Download', 'Unduh'),
-            onPressed: () => _galleryFeedback(
-              context,
-              'Download requested',
-              'Unduhan diminta',
-            ),
+    Widget card({required bool branded}) => PaymentRecordCard(
+      key: branded ? const Key('branded-record-card') : null,
+      hugTrailing: branded,
+      style: branded
+          ? PaymentRecordCardStyle(
+              titleStyle: const TextStyle(fontWeight: FontWeight.w700),
+              metadataStyle: const TextStyle(fontStyle: FontStyle.italic),
+              inset: PaymentTheme.of(context).space(PaymentSpace.related),
+              divider: PaymentRecordCardDivider.inset,
+              elevation: 2,
+            )
+          : const PaymentRecordCardStyle(),
+      leading: const PaymentIcon(Icons.description_outlined),
+      title: Text(title),
+      metadata: const Text('November 2026 · PDF'),
+      onOpen: () =>
+          _galleryFeedback(context, 'Opened the statement', 'Laporan dibuka'),
+      trailing: PaymentIconButton(
+        icon: Icons.delete_outline,
+        tooltip: t('Remove statement', 'Hapus laporan'),
+        onPressed: () => _removeDemoStatement(context),
+      ),
+      footer: Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: PaymentLink(
+          label: t('Download', 'Unduh'),
+          onPressed: () => _galleryFeedback(
+            context,
+            'Download requested',
+            'Unduhan diminta',
           ),
         ),
       ),
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _Entry(
+          name: 'PaymentRecordCard · ${t('saved record', 'dokumen tersimpan')}',
+          child: card(branded: false),
+        ),
+        _Entry(
+          name: 'PaymentRecordCard · ${t('branded', 'gaya khusus')}',
+          child: card(branded: true),
+        ),
+      ],
     );
   }
 }

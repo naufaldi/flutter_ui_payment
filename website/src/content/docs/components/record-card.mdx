@@ -29,6 +29,33 @@ PaymentRecordCard(
 
 The card uses the nearest `PaymentTheme` for its surface, outline, spacing and radii, and `PaymentType` for heading and caption defaults. Pass your own slot widgets to customize content. The card does not fetch, open or delete records itself.
 
+### Match a host brand
+
+Set `hugTrailing: true` for a compact control such as an icon button. The slot takes only the width its child needs, up to the usual one-third limit after the gap. A child that fills its slot keeps the full allocation. Use `style` for appearance changes that apply only to this card:
+
+```dart
+PaymentRecordCard(
+  title: const Text('Settlement statement'),
+  metadata: const Text('November 2026 · PDF'),
+  hugTrailing: true,
+  style: const PaymentRecordCardStyle(
+    titleStyle: TextStyle(fontWeight: FontWeight.w700),
+    metadataStyle: TextStyle(fontStyle: FontStyle.italic),
+    inset: 8,
+    divider: PaymentRecordCardDivider.inset,
+    elevation: 2,
+  ),
+  trailing: PaymentIconButton(
+    icon: Icons.delete_outline,
+    tooltip: 'Remove statement',
+    onPressed: confirmRemoval,
+  ),
+  footer: PaymentLink(label: 'Download', onPressed: downloadStatement),
+);
+```
+
+The styles merge over the kit heading and caption. `inset` changes the outer padding around the main row and footer, not the spacing inside the title and metadata. The footer rule is full-width by default. Use `inset` to align the rule with the footer content or `none` to omit it. If you set custom text colors, check contrast in both themes.
+
 ## Variants
 
 - **Openable:** supply `onOpen` to make the body a button.
@@ -40,7 +67,7 @@ Use an openable card when a record has a detail view. Use a read-only body when 
 
 ## States
 
-The body is either openable or read-only. Each action slot owns its own disabled, progress or feedback state. The trailing slot moves below the body at large text sizes or when it would have less than 48 dp in the row. Give the card at least 48 dp of width to fit a standard tap target. In containers that size themselves to their content, such as a Flutter `AlertDialog`, give a card with a trailing slot an explicit width instead of letting the container measure it intrinsically.
+The body is either openable or read-only. Each action slot owns its own disabled, progress or feedback state. The trailing slot moves below the body at large text sizes or when it would have less than 48 dp in the row, even with `hugTrailing`. Give the card at least 48 dp of width to fit a standard tap target. In containers that size themselves to their content, such as a Flutter `AlertDialog`, give the card an explicit width if it has a trailing slot or a custom `style.inset`.
 
 ## Do and don't
 
@@ -58,10 +85,10 @@ The openable body is a single keyboard- and screen-reader-operable control. By d
 
 ## API
 
-<Props names={["PaymentRecordCard"]} />
+<Props names={["PaymentRecordCard", "PaymentRecordCardStyle", "PaymentRecordCardDivider"]} />
 
 ## See also
 
 - [List](/components/list/) for flat rows.
 - [Dialog](/components/dialog/) for confirmation before destructive actions.
-- In the example app gallery, open **Interaction** to try the card's body, remove control and download link separately.
+- In the example app gallery, open **Interaction** to compare the default card with a branded card and try their actions separately.

@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import 'package:rakit_ui_example/main.dart';
+import '../integration_test/record_card_flow_test.dart'
+    show recordCardRecoveryTest;
 import '../integration_test/support.dart';
 
 void main() {
+  recordCardRecoveryTest();
+
   testWidgets('tablet gallery shows detail modules side by side', (
     tester,
   ) async {

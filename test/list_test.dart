@@ -78,6 +78,43 @@ void main() {
     semantics.dispose();
   });
 
+  testWidgets('a hugging trailing control gives unused width to the body', (
+    tester,
+  ) async {
+    final actions = <String>[];
+    Widget card({required bool hug}) => host(
+      SizedBox(
+        width: 320,
+        child: PaymentRecordCard(
+          title: const Text('Settlement statement.pdf'),
+          hugTrailing: hug,
+          onOpen: () => actions.add('open'),
+          trailing: PaymentIconButton(
+            icon: Icons.delete_outline,
+            tooltip: 'Remove record',
+            onPressed: () => actions.add('remove'),
+          ),
+        ),
+      ),
+      1,
+    );
+    final body = find.ancestor(
+      of: find.text('Settlement statement.pdf'),
+      matching: find.byType(InkWell),
+    );
+    final button = find.byType(IconButton);
+    await tester.pumpWidget(card(hug: false));
+    final defaultWidth = tester.getSize(body).width;
+    await tester.pumpWidget(card(hug: true));
+    expect(tester.getSize(body).width, greaterThan(defaultWidth));
+    final target = tester.getRect(button);
+    expect(target.width, greaterThanOrEqualTo(48));
+    expect(target.height, greaterThanOrEqualTo(48));
+    await tester.tapAt(target.centerLeft + const Offset(1, 0));
+    await tester.tap(body);
+    expect(actions, ['remove', 'open']);
+  });
+
   testWidgets('a narrow record keeps a separate 48 dp trailing tap target', (
     tester,
   ) async {
@@ -89,6 +126,8 @@ void main() {
             width: width,
             child: PaymentRecordCard(
               title: const Text('PDF'),
+              hugTrailing: true,
+              style: const PaymentRecordCardStyle(inset: 20),
               onOpen: () => actions.add('open'),
               trailing: PaymentIconButton(
                 icon: Icons.delete_outline,
@@ -123,6 +162,7 @@ void main() {
         width: width,
         child: PaymentRecordCard(
           title: const Text('PDF'),
+          hugTrailing: true,
           trailing: PaymentButton(
             label: 'Save',
             onPressed: () {
