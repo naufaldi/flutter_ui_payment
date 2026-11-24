@@ -1784,6 +1784,7 @@ New in revision 3 (parity; for review):
 | D130 | **Selective docs captures have a read-only freshness report (#337).** The report takes registered base names and a capture start in Unix milliseconds. It distinguishes fresh PNGs, missing fresh captures and older assets available for reuse, including D90 continuations. A fresh base replaces the previous set; otherwise committed continuation names remain expected. Normal conversion and unrequested images are unchanged. | A total from the converter cannot distinguish new captures from files left by an earlier run. Retaining the committed tail until a fresh base exists catches missed recaptures without rejecting a genuine shorter specimen. |
 | D131 | **Profile summaries report the [PRD frame-budget](../PRD.md#performa) verdict.** Compare checkout and status build and raster p95 separately and without rounding to the strict <16.7 ms target. A complete verdict requires a nominal 60 Hz profile run and 30 s of repeated warm-up and measured work for each workload. Missing or incomparable evidence is inconclusive; diagnostics do not vote. Issue #334. | A successful collection can still miss the budget. Preserve the measurements and report the verdict without turning a performance miss into a collection error. |
 | D132 | **Proof scales to risk (#354).** Use a fail-before/pass-after regression and real-flow integration proof for high-risk changes, one user-visible test for normal changes, and existing checks only for low-risk changes. Capture before/after screenshots for every UI change. Follow [AGENTS.md](../AGENTS.md#proof-scaled-to-risk) for flakes, the 0.3.0 release focus and lane limit; keep review findings in the PR. | Spend verification effort on changed behavior and release blockers rather than imposing the same proof on all changes. |
+| D133 | **0.3.0 retains the compatibility APIs and ships on GitHub (#327).** This amends D123's removal schedule: the APIs deprecated in 0.1.0 still compile, and no removal version is set. The docs show `v0.3.0` as a Git dependency; pub.dev still serves 0.2.0. | Ship the merged behavior without adding a breaking migration or publishing to pub.dev. |
 
 #### D83 acceptance measurements (2 Nov 2026)
 
@@ -1833,7 +1834,7 @@ The 320 dp gesture rows were measured with the tab fold alone (+18.2 / +30.2 dp 
 5. **Closed sets.** Every component page describes supported variants and includes a generated Props table (D107). No fixed closing sentence is required. `switch` statements over variant enums are exhaustive, with no `default:`.
 6. **Deprecation in 0.x.**
    - A replaced parameter, value or class on `main` is marked `@Deprecated('Use … — removed in 0.<n+1>.0')` for one minor release, with a CHANGELOG entry and a migration snippet on the docs page (D34).
-   - Removal happens in the next minor release. Exception (D123): names deprecated in 0.1.0 stay through 0.2.0 and are removed in 0.3.0.
+   - Removal happens in the next minor release. Exception (D133, amending D123): names deprecated in 0.1.0 still compile in 0.3.0; no removal version is set.
    - Names that were never on `main` (PR #1, PR #4 before merge) may change without deprecation.
 7. **Removal.** A variant with no remaining use is deprecated by the same rule. A Stripe-parity variant is kept while Stripe lists the prop.
 
@@ -2066,7 +2067,7 @@ Every parity component reaches its §1 payment use in the example, reachable fro
 - Every foundation page has its full token table.
 - All 48 Stripe entries and the kit-specific components are Have, with B1–B13 checked, a variant specimen and a docs page.
 - No Tier 2 file contains a private copy of a Tier 1 control. Review grep: no `CheckboxListTile`, `_Radio`, `OutlineInputBorder`, raw `Divider(`, `IconButton(`, `TextButton(` or `CircularProgressIndicator` outside `lib/src/controls` and `lib/src/foundation`. Exception: the toast draws the SDK-identical themed close `IconButton` inside its pill (D80).
-- The deprecated names from D34 are removed in 0.3.0 (D123).
+- The deprecated names from D34 still compile in 0.3.0 (D133).
 - "Not in the kit" lists only the D28 non-mirrored props.
 
 ## 13. Non-goals, risks, open questions

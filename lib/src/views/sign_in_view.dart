@@ -51,16 +51,11 @@ class PaymentSignInView extends StatefulWidget {
     this.canDo = const [],
     this.cannotDo = const [],
     this.legalNotice,
-    @Deprecated(
-      'Show what the app can see with canDo and cannotDo. Removed in 0.3.0.',
-    )
+    @Deprecated('Show what the app can see with canDo and cannotDo.')
     this.learnMore,
     this.secondaryAction,
     this.legalLinks = const [],
-    @Deprecated(
-      'Put reassurance such as "never sees your PIN" in cannotDo. '
-      'Removed in 0.3.0.',
-    )
+    @Deprecated('Put reassurance such as "never sees your PIN" in cannotDo.')
     this.footnote,
     this.errorText,
   });
@@ -92,9 +87,7 @@ class PaymentSignInView extends StatefulWidget {
   final String? legalNotice;
 
   /// Disclosure that opens a supplemental explanation.
-  @Deprecated(
-    'Show what the app can see with canDo and cannotDo. Removed in 0.3.0.',
-  )
+  @Deprecated('Show what the app can see with canDo and cannotDo.')
   final PaymentSignInLearnMore? learnMore;
 
   /// Optional quiet action under the primary, such as "Cancel".
@@ -104,10 +97,7 @@ class PaymentSignInView extends StatefulWidget {
   final List<PaymentLink> legalLinks;
 
   /// Short reassurance below the content.
-  @Deprecated(
-    'Put reassurance such as "never sees your PIN" in cannotDo. '
-    'Removed in 0.3.0.',
-  )
+  @Deprecated('Put reassurance such as "never sees your PIN" in cannotDo.')
   final String? footnote;
 
   /// Safe error message displayed beside the control.

@@ -1,13 +1,13 @@
 ---
 title: Installation
-description: Install rakit_ui from pub.dev, or use a local checkout for development.
+description: Install rakit_ui from the GitHub release tag, pub.dev, or a local checkout.
 ---
 
 import { Code } from '@astrojs/starlight/components';
 import RepoNote from '../../../components/RepoNote.astro';
 import { REPO_URL } from '../../../consts';
 
-Install `rakit_ui` 0.2.0 from [pub.dev](https://pub.dev/packages/rakit_ui).
+Install `rakit_ui` 0.3.0 from the GitHub tag below. [pub.dev](https://pub.dev/packages/rakit_ui) still serves 0.2.0.
 
 ## Requirements
 
@@ -34,6 +34,8 @@ dependencies:
 
 ## Development: git dependency
 
+Pin `v0.3.0` to install the current GitHub release:
+
 <Code
   lang="yaml"
   title="pubspec.yaml"
@@ -45,12 +47,12 @@ dependencies:
   rakit_ui:
     git:
       url: ${REPO_URL}
-      ref: rakit-ui-v0.2.0`}
+      ref: v0.3.0`}
 />
 
 <RepoNote />
 
-To try changes on `main` before the next release, set `ref: main` instead. The [quick start](/start/quick-start/) works with 0.2.0 from pub.dev.
+To try changes after this release, set `ref: main` instead. The [quick start](/start/quick-start/) uses the 0.3.0 tag.
 
 ## Development: path dependency
 
