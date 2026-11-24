@@ -14,7 +14,7 @@
     "screens": "node scripts/screens.mjs",
     "check:pages": "node scripts/check-pages.mjs",
     "og:image": "node scripts/og-image.mjs",
-    "test:motion": "node --test scripts/motion.test.mjs",
+    "test:motion": "node --test scripts/motion.test.mjs scripts/header-menu.test.mjs",
     "test:screens": "node --test scripts/screens.test.mjs"
   },
   "dependencies": {
