@@ -1002,3 +1002,4 @@ Interrupting a running reveal reverses through a private `SpringSimulation`: `Sp
 ### Importable collection viewport, 24 November 2026
 
 - **D144: Collection also has an importable viewport (#386).** Annota's Documents pilot needed to replace rows page by page, show its own state content and let readers go back from an empty page. Export `PaymentCollection` for the shared layout, not a second paging state machine. Its footer follows rows or the no-rows slot, and its scroll options let the app supply refresh physics and clearance under its own chrome. Localized copy, accessible state announcements, request ordering, and the decision to replace or append rows stay with the host. Keep D139's source and Load more demo working unchanged.
+- Keep row identity in the host too. An optional row-key-to-index lookup lets Flutter move mounted rows without losing state when a refresh changes their order. The lookup counts rows, not separators.

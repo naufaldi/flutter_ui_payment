@@ -13,27 +13,35 @@ when you want a ready-made append and retry example.
 
 ## Import a viewport
 
-Put the collection in a bounded area, such as a `Scaffold` body or an
-`Expanded` child. It already scrolls. For pull-to-refresh, wrap it in your
-`RefreshIndicator` and pass `AlwaysScrollableScrollPhysics` so short and empty
-pages can refresh too.
+Give the collection finite width and height, for example in a `Scaffold` body
+or an `Expanded` child of a bounded `Column`. It already scrolls. For
+pull-to-refresh, wrap it in a `RefreshIndicator` and pass
+`AlwaysScrollableScrollPhysics` so short and empty pages can refresh too.
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 
 Widget documentCollection({
-  required List<String> titles,
+  required List<({String id, String title})> documents,
   required Widget stateContent,
   required Future<void> Function() refreshCurrentPage,
   required double bottomClearance,
   Widget? pager,
 }) {
+  final indexByKey = {
+    for (final (index, document) in documents.indexed)
+      ValueKey(document.id): index,
+  };
   return RefreshIndicator(
     onRefresh: refreshCurrentPage,
     child: PaymentCollection(
-      rowCount: titles.length,
-      rowBuilder: (context, index) => Text(titles[index]),
+      rowCount: documents.length,
+      rowBuilder: (context, index) {
+        final document = documents[index];
+        return Text(document.title, key: ValueKey(document.id));
+      },
+      findItemIndexCallback: (key) => indexByKey[key],
       placeholder: stateContent,
       footer: pager,
       physics: const AlwaysScrollableScrollPhysics(),
@@ -46,6 +54,10 @@ Widget documentCollection({
 
 - Pass only the current page's rows for numbered paging, or accumulated rows
   for append paging. The builder runs on demand; no record type is required.
+- If a refresh or sort can reorder mounted rows, key each row by its stable
+  record ID and supply `findItemIndexCallback`. Return the row's zero-based
+  index in the new snapshot, excluding separators, or `null` if it was removed.
+  Keep the collection mounted so row state can follow the key.
 - With zero rows, `placeholder` can show your branded loading, empty or error
   widget. With rows, the placeholder is ignored. Supply accessible labels and
   error announcements in your state widgets.
@@ -57,9 +69,9 @@ Widget documentCollection({
   `padding` is omitted, the viewport uses the theme's group spacing.
 - Keep query, account and page identity in your app. Replace rows only with
   responses for the active request; discard stale successes and failures.
-  Retry the failed page. Key the collection by page or query identity to
-  recreate its viewport, or use a host-owned scroll controller to manage the
-  offset directly.
+  Retry the failed page. To keep scroll offsets separate across pages or
+  queries, give each identity a different `PageStorageKey`, or manage the
+  offset with a host-owned scroll controller.
 
 Open **Page collection** in Gallery, or from `example/` run
 `flutter run -d <device-id> -t lib/collection_page_demo.dart`. The first Next

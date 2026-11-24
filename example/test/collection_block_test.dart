@@ -42,6 +42,64 @@ Widget _shortCollection({
 );
 
 void main() {
+  testWidgets('refresh keeps visible keyed row state after reordering', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    var documents = ['A', 'B'];
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: StatefulBuilder(
+            builder: (context, setState) => Column(
+              children: [
+                TextButton(
+                  onPressed: () => setState(() => documents = ['B', 'A']),
+                  child: const Text('Refresh documents'),
+                ),
+                Expanded(
+                  child: PaymentCollection(
+                    rowCount: documents.length,
+                    findItemIndexCallback: (key) {
+                      final index = documents.indexOf(
+                        (key as ValueKey<String>).value,
+                      );
+                      return index < 0 ? null : index;
+                    },
+                    rowBuilder: (_, index) {
+                      final id = documents[index];
+                      return ExpansionTile(
+                        key: ValueKey(id),
+                        title: Text('Document $id'),
+                        children: [Text('Details $id')],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final rowA = find.text('Document A');
+    final rowB = find.text('Document B');
+    final detailsA = find.text('Details A');
+    await tester.tap(rowA);
+    await tester.pumpAndSettle();
+    expect(tester.getTopLeft(rowA).dy, lessThan(tester.getTopLeft(rowB).dy));
+    expect(detailsA.hitTestable(), findsOneWidget);
+
+    await tester.tap(find.text('Refresh documents'));
+    await tester.pumpAndSettle();
+    expect(tester.getTopLeft(rowB).dy, lessThan(tester.getTopLeft(rowA).dy));
+    expect(detailsA.hitTestable(), findsOneWidget);
+    expect(find.text('Details B').hitTestable(), findsNothing);
+  });
+
   testWidgets('numbered collection retries, replaces and refreshes a page', (
     tester,
   ) async {

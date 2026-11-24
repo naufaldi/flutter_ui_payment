@@ -23138,7 +23138,7 @@
   "PaymentCollection": {
     "kind": "class",
     "file": "lib/src/content/collection.dart",
-    "doc": "A bounded, lazy viewport for records with host-defined rows and states.\n\nSupply either the current page's rows or accumulated rows. The collection\ndoes not fetch, select a state, or infer paging availability. Place it in a\nfinite-height parent, not another vertical scroll view.",
+    "doc": "A bounded, lazy viewport for records with host-defined rows and states.\n\nSupply either the current page's rows or accumulated rows. The collection\ndoes not fetch, select a state, or infer paging availability. Place it in a\nparent with finite width and height, not another vertical scroll view.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -23166,6 +23166,17 @@
             "isSuper": false,
             "fieldName": "rowBuilder",
             "doc": "Builds visible and nearby rows by index, on demand."
+          },
+          {
+            "name": "findItemIndexCallback",
+            "type": "ChildIndexGetter?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "findItemIndexCallback",
+            "doc": "Looks up the current index of a key on a widget from `rowBuilder`.\n\nFor reordered rows, give each row a stable key and return its zero-based\nindex in the current snapshot, not counting separators. Return null for\na key that is no longer present. This lets mounted rows keep their state\nwhen their index changes."
           },
           {
             "name": "placeholder",
@@ -23264,6 +23275,13 @@
         "static": false,
         "type": "IndexedWidgetBuilder",
         "doc": "Builds visible and nearby rows by index, on demand."
+      },
+      {
+        "name": "findItemIndexCallback",
+        "kind": "field",
+        "static": false,
+        "type": "ChildIndexGetter?",
+        "doc": "Looks up the current index of a key on a widget from `rowBuilder`.\n\nFor reordered rows, give each row a stable key and return its zero-based\nindex in the current snapshot, not counting separators. Return null for\na key that is no longer present. This lets mounted rows keep their state\nwhen their index changes."
       },
       {
         "name": "placeholder",

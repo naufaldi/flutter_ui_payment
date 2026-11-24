@@ -9,13 +9,14 @@ import '../foundation/payment_tokens.dart';
 ///
 /// Supply either the current page's rows or accumulated rows. The collection
 /// does not fetch, select a state, or infer paging availability. Place it in a
-/// finite-height parent, not another vertical scroll view.
+/// parent with finite width and height, not another vertical scroll view.
 class PaymentCollection extends StatelessWidget {
   /// Creates a collection without prescribing a row, state or pager style.
   const PaymentCollection({
     super.key,
     required this.rowCount,
     required this.rowBuilder,
+    this.findItemIndexCallback,
     this.placeholder,
     this.footer,
     this.controller,
@@ -34,6 +35,14 @@ class PaymentCollection extends StatelessWidget {
 
   /// Builds visible and nearby rows by index, on demand.
   final IndexedWidgetBuilder rowBuilder;
+
+  /// Looks up the current index of a key on a widget from [rowBuilder].
+  ///
+  /// For reordered rows, give each row a stable key and return its zero-based
+  /// index in the current snapshot, not counting separators. Return null for
+  /// a key that is no longer present. This lets mounted rows keep their state
+  /// when their index changes.
+  final ChildIndexGetter? findItemIndexCallback;
 
   /// Scrolling content shown only when [rowCount] is zero.
   ///
@@ -76,6 +85,7 @@ class PaymentCollection extends StatelessWidget {
           SliverList.separated(
             itemCount: rowCount,
             itemBuilder: rowBuilder,
+            findItemIndexCallback: findItemIndexCallback,
             separatorBuilder: (_, _) => SizedBox(height: theme.space(rowGap)),
           )
         else if (placeholder case final placeholder?)
