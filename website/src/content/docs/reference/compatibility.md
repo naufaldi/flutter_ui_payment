@@ -54,4 +54,4 @@ flutter drive --driver=test_driver/integration_driver.dart \
 
 - Dart `^3.12.0`, Flutter `>=3.44.0`. The only dependency is the Flutter SDK.
 - No network calls, analytics, media, camera, ad or payment SDKs in the package.
-- Current release: `rakit_ui` 0.2.0 on pub.dev. The docs follow `main`. 0.2.0 adds the settings view's `saveDisabledReason`, overridable kit strings with `formatNumber`, and search errors inside the open phone sheet. It removes the exported `KitStrings` and `PaymentStatusLabel` extension names, a breaking change for code that names them; the changelog shows the migration. Names deprecated in 0.1.0 still compile and are removed in 0.3.0 (D123). The quick start compiles against 0.2.0.
+- Current release: `rakit_ui` 0.3.0 on GitHub. The quick start uses that tag; pub.dev still serves 0.2.0. The names deprecated in 0.1.0 still compile in 0.3.0 (D133). The changelog covers the 0.2.0 migration for code that explicitly names the removed `KitStrings` and `PaymentStatusLabel` extensions.

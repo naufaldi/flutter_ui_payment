@@ -1,4 +1,15 @@
-## Unreleased
+## 0.3.0
+
+Requires Dart ^3.12.0 and Flutter >=3.44.0. Flutter SDK remains the only runtime dependency.
+
+### Package
+
+- Keep the current checkout total readable during re-quotes. The old total's fade ends immediately if Reduce Motion is enabled mid-fade, including on iOS (#300, #319).
+- Checkout authorization phases use a short fade that respects reduced motion (#304).
+- Accordions reverse smoothly when tapped again before they finish opening or closing (#306).
+- Radio and payment-method selection rings animate without delaying selection and respect reduced motion. Keyboard selection shows the method outline immediately (#309, #321).
+- Sign-in and document-upload errors fade in and out without blocking recovery actions. Error text is available to accessibility immediately (#312).
+- The APIs deprecated in 0.1.0 still compile. Their removal is deferred; new integrations should use the documented replacements.
 
 ### Docs site
 
@@ -13,6 +24,17 @@ These update https://rakit-ui.netlify.app.
 - A new guide for adopting Rakit in an existing branded app, with copy-runnable component snippets.
 - Buttons and links respond to presses, landing sections fade in, and menus, search and the phone sidebar animate open and closed; everything stays still with reduced motion or without JavaScript, including when reduced motion is turned on while a page is open.
 - Component pages drop Stripe prop-mapping tables and Stripe names in API descriptions, repeated host-ownership callouts and internal example-scenario codes; component behavior, API and example screens remain.
+- Preview the same checkout and recovery flow in invoice and wallet designs, with re-quotes, replay and a reduced-motion control (#302).
+- Wallet checkout shows the merchant, order reference and host-provided verification. Updated Android captures show the payee (#348).
+- The docs header menu stays open when activated again during its close fade (#357).
+
+### Contributor tooling and verification
+
+- Keep decision records in order, pin the Flutter and pnpm setup for Amp orbs, and cover method-picker rows at 200% text on a 320 dp screen (#314, #317, #323).
+- Require deterministic Flutter widget tests and use local checks as the merge gate instead of GitHub Actions (D129). Scale the proof required to the risk of each change (#355).
+- Exercise duplicate checkout submits and account switches with controlled response ordering (#350). Consolidate widget tests around reachable controls, accessible feedback and reduced motion (#346).
+- Detect stale docs API metadata and report which requested screenshots and continuation images were captured in the current run (#344). Clarify the wallet checkout capture comment without changing any screenshots (#353).
+- The example profile report says whether checkout and status meet the frame budget and explains when the evidence is inconclusive (#347).
 
 ## 0.2.0
 
