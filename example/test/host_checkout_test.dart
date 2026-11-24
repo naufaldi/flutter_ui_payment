@@ -99,7 +99,7 @@ void main() {
       merchantVerified: true,
     );
     await tester.pumpWidget(host(actions, data: verifiedOrder));
-    expect(find.byIcon(Icons.verified_outlined), findsOneWidget);
+    expect(find.byIcon(Icons.verified_outlined), findsNWidgets(2));
   });
   testWidgets(
     'both layouts show the product look and pay through the same host '

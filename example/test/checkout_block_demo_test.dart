@@ -128,6 +128,9 @@ void main() {
       );
       await tester.pumpAndSettle();
       await chooseLook(tester, 'Dompet');
+      expect(find.textContaining('Ruang Bayar Akademi · Demo'), findsOneWidget);
+      expect(find.text('Pesanan INV-DEMO-1'), findsOneWidget);
+      expect(find.byIcon(Icons.verified_outlined), findsOneWidget);
       expect(find.text('Pakai metode lain'), findsOneWidget);
       expect(find.textContaining('Rp350.000'), findsWidgets);
       await tester.tap(find.text('Pakai metode lain'));
@@ -259,6 +262,11 @@ void main() {
       await chooseLook(tester, 'Dompet');
       expect(pay.hitTestable(), findsOneWidget);
       expect(tester.getSize(payButton).height, greaterThanOrEqualTo(48));
+      final fee = find.text('Biaya layanan');
+      await tester.ensureVisible(fee);
+      await tester.pumpAndSettle();
+      expect(fee.hitTestable(), findsOneWidget);
+      expect(pay.hitTestable(), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
