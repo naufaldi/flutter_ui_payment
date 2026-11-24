@@ -142,6 +142,7 @@ class _QrisCheckoutDemoState extends State<QrisCheckoutDemo> {
             code: _attempt.submission == SubmissionState.accepted
                 ? (
                     attemptId: _attempt.attemptId,
+                    issuanceId: 'QRIS-DEMO-CODE-$_session',
                     payee: 'Ruang Bayar Akademi',
                     image: const AssetImage('assets/qris/demo-code.webp'),
                     expiresAt: qrisDemoExpiry,

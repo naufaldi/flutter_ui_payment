@@ -43,8 +43,8 @@ void main() {
       Future<void> show(
         PaymentAttempt current, {
         String? codeAttemptId,
+        String issuanceId = 'code-a',
         bool includeCode = true,
-        DateTime? expiresAt,
       }) async {
         await tester.pumpWidget(
           BlockDemoShell(
@@ -58,9 +58,10 @@ void main() {
               code: includeCode
                   ? (
                       attemptId: codeAttemptId ?? attempt.attemptId,
+                      issuanceId: issuanceId,
                       payee: 'Ruang Bayar Akademi',
                       image: const AssetImage('assets/qris/demo-code.webp'),
-                      expiresAt: expiresAt ?? qrisDemoExpiry,
+                      expiresAt: qrisDemoExpiry,
                     )
                   : null,
               onCheckStatus: (id) async => checks.add(id),
@@ -101,11 +102,14 @@ void main() {
       await show(pending);
       expect(code, findsNothing, reason: 'The same code was already expired');
       expect(find.text('Kode QR kedaluwarsa'), findsOneWidget);
-      await show(
-        pending,
-        expiresAt: qrisDemoExpiry.add(const Duration(minutes: 1)),
+      await show(pending, issuanceId: 'code-b');
+      expect(
+        code,
+        findsOneWidget,
+        reason: 'A new issuance with the same deadline can still be scanned',
       );
-      expect(code, findsOneWidget, reason: 'A newly issued code can be shown');
+      await show(pending);
+      expect(code, findsNothing, reason: 'Issuing a new code cannot revive A');
 
       await show(withStatus(PaymentStatus.expired, 2));
       expect(find.text('Pembayaran kedaluwarsa'), findsOneWidget);

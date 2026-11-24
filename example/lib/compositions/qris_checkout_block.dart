@@ -3,9 +3,11 @@ import 'package:rakit_ui/rakit_ui.dart';
 
 /// Host-issued QRIS instructions tied to one payment attempt. The image must
 /// include the QR quiet zone and keep its original light background.
-/// Keep `expiresAt` unchanged for the same issuance.
+/// Keep `issuanceId` and `expiresAt` stable for the same code. A replacement
+/// code needs a new ID within the attempt, even if its expiry is unchanged.
 typedef QrisCode = ({
   String attemptId,
+  String issuanceId,
   String payee,
   ImageProvider image,
   DateTime expiresAt,
@@ -34,11 +36,11 @@ class QrisCheckoutBlock extends StatefulWidget {
 }
 
 class _QrisCheckoutBlockState extends State<QrisCheckoutBlock> {
-  final _elapsedIssuances = <(String, int)>{};
+  final _elapsedIssuances = <(String, String)>{};
 
   DateTime _readClock(QrisCode code) {
     final now = widget.clock();
-    final issuance = (code.attemptId, code.expiresAt.microsecondsSinceEpoch);
+    final issuance = (code.attemptId, code.issuanceId);
     if (!now.isBefore(code.expiresAt)) {
       _elapsedIssuances.add(issuance);
       return now;
@@ -94,7 +96,7 @@ class _QrisCheckoutBlockState extends State<QrisCheckoutBlock> {
       amount: showInstructions ? null : widget.amount,
       header: showInstructions
           ? _QrisInstructions(
-              key: ValueKey((qr.attemptId, qr.expiresAt)),
+              key: ValueKey(qr.issuanceId),
               code: qr,
               amount: widget.amount,
               elapsed: elapsed,

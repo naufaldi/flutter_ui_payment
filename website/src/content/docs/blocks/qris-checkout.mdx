@@ -43,11 +43,13 @@ plain demo text, not a QRIS payment payload.
 Copy `QrisCheckoutBlock` into a bounded screen body so **Check status** stays
 reachable while the buyer scrolls. Pass the current `PaymentAttempt`, exact
 `Money` amount, host clock and `onCheckStatus(attemptId)`. Supply a `QrisCode`
-only with an image, payee and expiry issued for that attempt and amount. Keep the
+with an image, payee and expiry issued for that attempt and amount. Keep the
 image's entire light quiet zone; don't crop, stretch or tint it in dark mode.
-Keep the same expiry for a given issuance. While this block is mounted, once it
-observes that an issuance has expired, a clock correction or a refresh won't
-make that code scannable again. On remount, supply the current valid code only.
+Use a stable host `issuanceId` within the attempt and keep the expiry unchanged
+for that code. A replacement code needs a new ID even if it shares the same
+deadline. While the block is mounted, a clock correction or refresh won't make
+an already expired issuance scannable again. On remount, supply the current
+valid code only.
 
 The host issues the code, binds it to the amount, and owns any provider-supported
 same-phone handoff. The block doesn't generate codes, open other apps, poll or
