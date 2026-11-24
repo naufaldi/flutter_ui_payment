@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 
 /// Copyable paged history. Give it a bounded viewport and the accumulated rows
@@ -180,32 +181,85 @@ class MerchantHistory extends StatelessWidget {
           SliverPadding(
             padding: EdgeInsets.all(group),
             sliver: SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                spacing: theme.space(PaymentSpace.related),
-                children: [
-                  PaymentButton(
-                    label: error == null ? loadMore : l10n.retry,
-                    variant: PaymentButtonVariant.secondary,
-                    busy: loading,
-                    onPressed: onRequestPage,
-                  ),
-                  if (error case final String message)
-                    Semantics(
-                      container: true,
-                      liveRegion: true,
-                      child: Text(
-                        message,
-                        style: type
-                            .bodyFor(context)
-                            .copyWith(color: theme.textSecondary),
-                      ),
-                    ),
-                ],
+              child: _PageFooter(
+                label: error == null ? loadMore : l10n.retry,
+                loading: loading,
+                error: error,
+                onPressed: onRequestPage,
               ),
             ),
           ),
         SliverToBoxAdapter(child: SizedBox(height: group)),
+      ],
+    );
+  }
+}
+
+class _PageFooter extends StatefulWidget {
+  const _PageFooter({
+    required this.label,
+    required this.loading,
+    required this.error,
+    required this.onPressed,
+  });
+
+  final String label;
+  final bool loading;
+  final String? error;
+  final VoidCallback onPressed;
+
+  @override
+  State<_PageFooter> createState() => _PageFooterState();
+}
+
+class _PageFooterState extends State<_PageFooter> {
+  @override
+  void didUpdateWidget(_PageFooter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.error != null || widget.error == null) return;
+
+    final footer = context.findRenderObject()! as RenderBox;
+    final viewport = RenderAbstractViewport.of(footer);
+    final position = Scrollable.of(context).position;
+    final top = viewport.getOffsetToReveal(footer, 0).offset;
+    // Don't pull the reader back to the footer if they scrolled away.
+    if (top + footer.size.height <= position.pixels ||
+        top >= position.pixels + position.viewportDimension) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || widget.error == null) return;
+      position.ensureVisible(
+        footer,
+        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: theme.space(PaymentSpace.related),
+      children: [
+        PaymentButton(
+          label: widget.label,
+          variant: PaymentButtonVariant.secondary,
+          busy: widget.loading,
+          onPressed: widget.onPressed,
+        ),
+        if (widget.error case final String message)
+          Semantics(
+            container: true,
+            liveRegion: true,
+            child: Text(
+              message,
+              style: PaymentType.of(
+                context,
+              ).bodyFor(context).copyWith(color: theme.textSecondary),
+            ),
+          ),
       ],
     );
   }

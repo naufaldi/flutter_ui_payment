@@ -55,6 +55,43 @@ void main() {
     expect(load, findsNothing);
   });
 
+  testWidgets('a page failure does not pull readers back to the footer', (
+    tester,
+  ) async {
+    final nextPage = Completer<HistoryPage>();
+    await tester.pumpWidget(
+      HistoryBlockDemo(
+        fetchPage: (_, _, cursor) => cursor == null
+            ? Future.value((
+                records: List.generate(12, (index) => _record('Row $index')),
+                nextCursor: 'opaque-next',
+              ))
+            : nextPage.future,
+      ),
+    );
+    await tester.pumpAndSettle();
+    final scroll = find.byType(Scrollable).first;
+    final load = find.text('Muat lagi');
+    await tester.scrollUntilVisible(load, 200, scrollable: scroll);
+    await tester.tap(load.hitTestable());
+    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.text('Row 0'),
+      -200,
+      scrollable: scroll,
+    );
+    await tester.pump();
+    expect(find.text('Row 0').hitTestable(), findsOneWidget);
+
+    nextPage.completeError(StateError('Synthetic page failure'));
+    await tester.pumpAndSettle();
+    expect(find.text('Row 0').hitTestable(), findsOneWidget);
+    final retry = find.text(PaymentLocalizations('id').retry);
+    expect(retry.hitTestable(), findsNothing);
+    await tester.scrollUntilVisible(retry, 200, scrollable: scroll);
+    expect(retry.hitTestable(), findsOneWidget);
+  });
+
   testWidgets('new query rejects a late page and a late filter error', (
     tester,
   ) async {

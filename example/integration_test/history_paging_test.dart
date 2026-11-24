@@ -40,13 +40,32 @@ void main() {
 
       await tester.scrollUntilVisible(load, 100, scrollable: scroll);
       await tester.pumpAndSettle();
+      final button = find.ancestor(
+        of: load,
+        matching: find.byType(PaymentButton),
+      );
+      final position = tester.state<ScrollableState>(scroll).position;
+      final viewport = tester.getRect(find.byType(CustomScrollView));
+      final edgeOffset =
+          position.pixels + tester.getRect(button).bottom - viewport.bottom;
+      position.jumpTo(
+        edgeOffset.clamp(position.minScrollExtent, position.maxScrollExtent),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.getRect(button).bottom, closeTo(viewport.bottom, 24));
       await tester.tap(load.hitTestable());
       await tester.pumpAndSettle();
-      expect(retry.hitTestable(), findsOneWidget);
-      await Scrollable.ensureVisible(tester.element(error), alignment: 1);
-      await tester.pumpAndSettle();
-      expect(row('INV-2046').hitTestable(), findsOneWidget);
       await capture(binding, tester, 'android_block_history_page_error$suffix');
+      for (final target in [retry, error]) {
+        expect(target.hitTestable(), findsOneWidget);
+        final rect = tester.getRect(target);
+        expect(rect.top, greaterThanOrEqualTo(viewport.top));
+        expect(rect.bottom, lessThanOrEqualTo(viewport.bottom + 0.1));
+      }
+      final errorSemantics = tester.getSemantics(error).flagsCollection;
+      expect(errorSemantics.isLiveRegion, isTrue);
+      expect(errorSemantics.isHidden, isFalse);
+      expect(row('INV-2046').hitTestable(), findsOneWidget);
       await tester.tap(retry.hitTestable());
       await tester.pumpAndSettle();
 
