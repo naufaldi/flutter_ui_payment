@@ -1,5 +1,7 @@
-import '../interaction/interaction.dart';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import '../interaction/interaction.dart';
 import '../foundation/primitives.dart';
 import '../foundation/focus_ring.dart';
 import '../foundation/payment_icons.dart';
@@ -108,6 +110,9 @@ class PaymentSignInView extends StatefulWidget {
 
 class _PaymentSignInViewState extends State<PaymentSignInView> {
   final _errorFocus = FocusNode();
+  final _errorScroll = ScrollController(keepScrollOffset: false);
+  final _noticeScroll = ScrollController(keepScrollOffset: false);
+
   void focusError() {
     if (widget.errorText != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -128,12 +133,20 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
   @override
   void didUpdateWidget(covariant PaymentSignInView old) {
     super.didUpdateWidget(old);
-    if (old.errorText != widget.errorText) focusError();
+    if (old.errorText != widget.errorText && widget.errorText != null) {
+      // Start the new error at the top, even after scrolling the previous
+      // error or the shared legal notice.
+      if (_errorScroll.hasClients) _errorScroll.jumpTo(0);
+      if (_noticeScroll.hasClients) _noticeScroll.jumpTo(0);
+      focusError();
+    }
   }
 
   @override
   void dispose() {
     _errorFocus.dispose();
+    _errorScroll.dispose();
+    _noticeScroll.dispose();
     super.dispose();
   }
 
@@ -256,115 +269,185 @@ class _PaymentSignInViewState extends State<PaymentSignInView> {
         : w.legalLinks.isEmpty
         ? null
         : Wrap(spacing: gap, children: w.legalLinks);
-    return ViewFrame(
-      // A narrow column, as the old 420 cap: header text, lists and the
-      // footer share its edges.
-      maxContentWidth: 420,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (w.brand != null || w.requesterBrand != null) ...[
-            Row(
-              spacing: theme.space(PaymentSpace.group),
-              children: [
-                if (w.requesterBrand != null)
-                  tile(w.requesterBrand!, host: false),
-                if (w.requesterBrand != null && w.brand != null) dots,
-                if (w.brand != null) tile(w.brand!, host: true),
-              ],
-            ),
-            SizedBox(height: gap),
-          ],
-          Semantics(
-            header: true,
-            child: Text(w.title ?? l.signInTitle, style: type.title),
+    final body = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (w.brand != null || w.requesterBrand != null) ...[
+          Row(
+            spacing: theme.space(PaymentSpace.group),
+            children: [
+              if (w.requesterBrand != null)
+                tile(w.requesterBrand!, host: false),
+              if (w.requesterBrand != null && w.brand != null) dots,
+              if (w.brand != null) tile(w.brand!, host: true),
+            ],
           ),
-          if (w.description != null) ...[
-            SizedBox(height: gap),
-            Text(
-              w.description!,
-              style: type.bodyFor(context).copyWith(color: theme.textSecondary),
+          SizedBox(height: gap),
+        ],
+        Semantics(
+          header: true,
+          child: Text(w.title ?? l.signInTitle, style: type.title),
+        ),
+        if (w.description != null) ...[
+          SizedBox(height: gap),
+          Text(
+            w.description!,
+            style: type.bodyFor(context).copyWith(color: theme.textSecondary),
+          ),
+        ],
+        if (w.canDo.isNotEmpty || w.cannotDo.isNotEmpty) ...[
+          SizedBox(height: gap),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(color: theme.outline),
+              borderRadius: theme.borderRadius,
             ),
-          ],
-          if (w.canDo.isNotEmpty || w.cannotDo.isNotEmpty) ...[
-            SizedBox(height: gap),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border.all(color: theme.outline),
-                borderRadius: theme.borderRadius,
+            child: Padding(
+              padding: EdgeInsets.all(gap),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: gap,
+                children: [
+                  if (w.canDo.isNotEmpty) scope(l.signInCan, w.canDo, true),
+                  if (w.cannotDo.isNotEmpty)
+                    scope(l.signInCannot, w.cannotDo, false),
+                ],
               ),
-              child: Padding(
-                padding: EdgeInsets.all(gap),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  spacing: gap,
-                  children: [
-                    if (w.canDo.isNotEmpty) scope(l.signInCan, w.canDo, true),
-                    if (w.cannotDo.isNotEmpty)
-                      scope(l.signInCannot, w.cannotDo, false),
-                  ],
+            ),
+          ),
+        ],
+        if (learnMore != null) ...[
+          SizedBox(height: gap),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: PaymentListItem(
+              icon: Icons.info_outline,
+              title: learnMore.label,
+              trailing: const PaymentIcon(Icons.chevron_right),
+              onPressed: () => showPaymentFocusView<void>(
+                context,
+                builder: (_) => PaymentFocusView(
+                  title: learnMore.title,
+                  child: Builder(builder: learnMore.builder),
                 ),
               ),
             ),
-          ],
-          if (learnMore != null) ...[
-            SizedBox(height: gap),
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: PaymentListItem(
-                icon: Icons.info_outline,
-                title: learnMore.label,
-                trailing: const PaymentIcon(Icons.chevron_right),
-                onPressed: () => showPaymentFocusView<void>(
-                  context,
-                  builder: (_) => PaymentFocusView(
-                    title: learnMore.title,
-                    child: Builder(builder: learnMore.builder),
+          ),
+        ],
+        if (footnote != null) ...[
+          SizedBox(height: gap),
+          Text(footnote, style: type.caption),
+        ],
+      ],
+    );
+    // Keep the live region next to the retry action, outside the body viewport
+    // that can hide it from screen readers on short screens.
+    final error = Focus(
+      focusNode: _errorFocus,
+      canRequestFocus: w.errorText != null,
+      includeSemantics: false,
+      child: MotionSwap(
+        // The entering banner is readable on its first frame, while
+        // it is still transparent; the leaving one is already out of
+        // semantics, focus and taps (topLayout).
+        transition: (child, animation) =>
+            MotionSwap.fade(child, animation, alwaysIncludeSemantics: true),
+        child: w.errorText == null
+            ? const SizedBox.shrink(key: ValueKey('none'))
+            : Padding(
+                key: const ValueKey('error'),
+                padding: EdgeInsets.only(bottom: gap),
+                child: SingleChildScrollView(
+                  controller: _errorScroll,
+                  primary: false,
+                  child: PaymentBanner(
+                    tone: StatusTone.danger,
+                    title: w.errorText!,
+                    announce: true,
                   ),
                 ),
               ),
+      ),
+    );
+    final line = PaymentType.firstLineHeight(context);
+    final legalGap = theme.space(PaymentSpace.related);
+    final notices = LayoutBuilder(
+      builder: (context, available) {
+        // If two viewports cannot each show a line, use the whole space for
+        // one scroller, with the live region first and the notice below it.
+        if (available.maxHeight < 2 * line + gap + legalGap) {
+          return SingleChildScrollView(
+            controller: _noticeScroll,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                error,
+                if (legal != null)
+                  Padding(
+                    padding: EdgeInsets.only(bottom: legalGap),
+                    child: legal,
+                  ),
+              ],
             ),
-          ],
-          // The gap travels with the error, so the empty slot takes no space.
-          // One FocusNode serves keyboard focus even when two banners paint
-          // during a rapid retry. Its semantics wrapper would hide the
-          // banner's own live region while the slot is zero height.
-          Focus(
-            focusNode: _errorFocus,
-            canRequestFocus: w.errorText != null,
-            includeSemantics: false,
-            child: MotionSwap(
-              // The entering banner is readable on its first frame, while
-              // it is still transparent; the leaving one is already out of
-              // semantics, focus and taps (topLayout).
-              transition: (child, animation) => MotionSwap.fade(
-                child,
-                animation,
-                alwaysIncludeSemantics: true,
+          );
+        }
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Keep the error independent of the legal scroll position,
+            // but leave room to read the legal notice.
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: legal == null
+                    ? available.maxHeight
+                    : available.maxHeight - line - legalGap,
               ),
-              child: w.errorText == null
-                  ? const SizedBox.shrink(key: ValueKey('none'))
-                  : Padding(
-                      key: const ValueKey('error'),
-                      padding: EdgeInsets.only(top: gap),
-                      child: PaymentBanner(
-                        tone: StatusTone.danger,
-                        title: w.errorText!,
-                        announce: true,
-                      ),
-                    ),
+              child: error,
+            ),
+            if (legal != null)
+              Flexible(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: legalGap),
+                  child: SingleChildScrollView(
+                    key: const PageStorageKey('sign-in-legal'),
+                    primary: false,
+                    child: legal,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+    return LayoutBuilder(
+      builder: (context, constraints) => ViewFrame(
+        maxContentWidth: 420,
+        body: body,
+        footer: ConstrainedBox(
+          // Keep a scaled line of the disclosure readable in its scroller.
+          // The footer controls take their normal height before the error.
+          constraints: BoxConstraints(
+            maxHeight: math.max(
+              0,
+              constraints.maxHeight -
+                  line -
+                  gap -
+                  math.max(gap, MediaQuery.paddingOf(context).bottom),
             ),
           ),
-          if (footnote != null) ...[
-            SizedBox(height: gap),
-            Text(footnote, style: type.caption),
-          ],
-        ],
-      ),
-      footer: ViewFooter(
-        footer: legal,
-        primaryAction: w.primaryAction,
-        secondaryAction: w.secondaryAction,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Flexible(child: notices),
+              ViewFooter(
+                primaryAction: w.primaryAction,
+                secondaryAction: w.secondaryAction,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

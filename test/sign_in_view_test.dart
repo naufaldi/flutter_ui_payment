@@ -287,43 +287,235 @@ void main() {
       t.element(find.byType(PaymentSignInView)),
     ).space(PaymentSpace.group);
 
-    testWidgets('the error fades in and out while the footnote glides, and '
+    testWidgets('a canceled attempt exposes the error without scrolling '
+        'and Continue can retry at large text', (t) async {
+      await setSurface(t, const Size(320, 640));
+      final semantics = t.ensureSemantics();
+      var attempts = 0;
+      await t.pumpWidget(
+        boundedHost(
+          StatefulBuilder(
+            builder: (context, setState) => PaymentSignInView(
+              canDo: List.filled(6, 'See your name and account number'),
+              primaryAction: PaymentButton(
+                label: 'Continue',
+                onPressed: () => setState(() => attempts++),
+              ),
+              errorText: attempts == 1
+                  ? 'Sign-in was canceled. Try again.'
+                  : null,
+            ),
+          ),
+          scale: 2,
+        ),
+      );
+
+      await t.tap(find.text('Continue'));
+      await t.pump();
+      expect(_spoken(t, visibleOnly: true), contains('Sign-in was canceled.'));
+      await t.pumpAndSettle();
+      expect(
+        find.text('Sign-in was canceled. Try again.').hitTestable(),
+        findsOneWidget,
+      );
+      await t.tap(find.text('Continue'));
+      await t.pumpAndSettle();
+      expect(attempts, 2);
+      expect(_spoken(t), isNot(contains('Sign-in was canceled.')));
+      expect(t.takeException(), isNull);
+      semantics.dispose();
+    });
+
+    testWidgets('a long legal notice leaves Cancel usable before an error', (
+      t,
+    ) async {
+      await setSurface(t, const Size(320, 440));
+      var canceled = false;
+      await t.pumpWidget(
+        boundedHost(
+          PaymentSignInView(
+            legalNotice: List.filled(8, 'Terms').join('\n'),
+            primaryAction: PaymentButton(label: 'Continue', onPressed: () {}),
+            secondaryAction: PaymentButton(
+              label: 'Cancel',
+              variant: PaymentButtonVariant.quiet,
+              onPressed: () => canceled = true,
+            ),
+          ),
+          scale: 2,
+        ),
+      );
+      expect(t.takeException(), isNull);
+      await t.tap(find.text('Cancel'));
+      expect(canceled, isTrue);
+    });
+
+    testWidgets('adding legal text does not hide an error in a short host', (
+      t,
+    ) async {
+      await setSurface(t, const Size(320, 240));
+      final semantics = t.ensureSemantics();
+      var attempts = 0;
+      final notice = List.filled(8, 'Terms').join('\n');
+      await t.pumpWidget(
+        boundedHost(
+          StatefulBuilder(
+            builder: (context, setState) => PaymentSignInView(
+              legalNotice: attempts > 0 ? notice : null,
+              errorText: attempts > 1 ? 'Try again' : 'Retry',
+              primaryAction: PaymentButton(
+                label: 'Continue',
+                onPressed: () => setState(() => attempts++),
+              ),
+              secondaryAction: PaymentButton(
+                label: 'Cancel',
+                variant: PaymentButtonVariant.quiet,
+                onPressed: () {},
+              ),
+            ),
+          ),
+          scale: 2,
+        ),
+      );
+      expect(_spoken(t, visibleOnly: true), contains('Retry'));
+      await t.tap(find.text('Continue'));
+      await t.pumpAndSettle();
+      expect(_spoken(t, visibleOnly: true), contains('Retry'));
+      final noticeScroll = find.ancestor(
+        of: find.text(notice),
+        matching: find.byType(Scrollable),
+      );
+      await t.drag(noticeScroll, const Offset(0, -150));
+      await t.pumpAndSettle();
+      expect(_spoken(t, visibleOnly: true), contains('Terms'));
+      expect(_spoken(t, visibleOnly: true), isNot(contains('Retry')));
+      await t.tap(find.text('Continue'));
+      await t.pump();
+      expect(_spoken(t, visibleOnly: true), contains('Try again'));
+      expect(t.takeException(), isNull);
+      semantics.dispose();
+    });
+
+    testWidgets(
+      'a long error leaves permissions scrollable and Continue visible',
+      (t) async {
+        await setSurface(t, const Size(320, 440));
+        var retried = false;
+        const lastPermission = 'Name';
+        await t.pumpWidget(
+          boundedHost(
+            PaymentSignInView(
+              canDo: const [
+                'See your name and account number',
+                'Ask you to confirm a payment',
+                lastPermission,
+              ],
+              legalNotice:
+                  'By continuing you agree to the terms and privacy policy.',
+              primaryAction: PaymentButton(
+                label: 'Continue',
+                onPressed: () => retried = true,
+              ),
+              secondaryAction: PaymentButton(
+                label: 'Cancel',
+                variant: PaymentButtonVariant.quiet,
+                onPressed: () {},
+              ),
+              errorText:
+                  'Sign-in was canceled. Return to your bank app and '
+                  'approve the connection, then try again here.',
+            ),
+            scale: 2,
+          ),
+        );
+        expect(t.takeException(), isNull);
+        expect(t.getBottomLeft(find.text('Cancel')).dy, lessThanOrEqualTo(440));
+        final permission = find.text(lastPermission);
+        expect(permission.hitTestable(), findsNothing);
+        final permissionsScroll = find.ancestor(
+          of: permission,
+          matching: find.byType(Scrollable),
+        );
+        await t.dragUntilVisible(
+          permission.hitTestable(),
+          permissionsScroll,
+          const Offset(0, -48),
+          maxIteration: 40,
+        );
+        expect(permission.hitTestable(), findsOneWidget);
+        await t.tap(find.text('Continue'));
+        expect(retried, isTrue);
+      },
+    );
+
+    testWidgets('a new long error starts at the top after the previous one', (
+      t,
+    ) async {
+      await setSurface(t, const Size(320, 440));
+      var attempts = 0;
+      await t.pumpWidget(
+        boundedHost(
+          StatefulBuilder(
+            builder: (context, setState) => PaymentSignInView(
+              legalNotice: 'Terms apply.',
+              errorText: switch (attempts) {
+                0 =>
+                  'Canceled. ${List.filled(12, 'Check your bank.').join(' ')}',
+                1 => null,
+                _ => 'Expired. ${List.filled(12, 'Open your bank.').join(' ')}',
+              },
+              primaryAction: PaymentButton(
+                label: 'Continue',
+                onPressed: () => setState(() => attempts++),
+              ),
+            ),
+          ),
+          scale: 2,
+        ),
+      );
+      final banner = find.byType(PaymentBanner);
+      final start = banner.hitTestable(at: const Alignment(0, -0.98));
+      expect(start, findsOneWidget);
+      await t.drag(
+        find.ancestor(of: banner, matching: find.byType(Scrollable)),
+        const Offset(0, -160),
+      );
+      await t.pumpAndSettle();
+      expect(start, findsNothing);
+      await t.tap(find.text('Continue'));
+      await t.pumpAndSettle();
+      expect(banner, findsNothing);
+      await t.tap(find.text('Continue'));
+      await t.pumpAndSettle();
+      expect(start, findsOneWidget);
+    });
+
+    testWidgets('the error fades beside the pinned action and '
         'the empty slot leaves no gap', (t) async {
       await t.pumpWidget(boundedHost(signIn(null)));
-      final title = find.text('Sign in to continue');
-      final footnote = find.text('We never ask for your PIN here.');
+      final body = find.byType(SingleChildScrollView);
+      final readyBody = t.getSize(body);
+      final action = find.widgetWithText(PaymentButton, 'Continue');
+      final actionRect = t.getRect(action);
       final gap = groupGap(t);
-      // No error: the slot is zero height, so the footnote keeps one gap.
-      expect(
-        t.getTopLeft(footnote).dy - t.getBottomLeft(title).dy,
-        closeTo(gap, 0.5),
-      );
 
       await t.pumpWidget(boundedHost(signIn('Sign-in failed')));
       await t.pump(const Duration(milliseconds: 60));
       expect(t.hasRunningAnimations, isTrue, reason: 'mid-swap');
       final banner = find.byType(PaymentBanner);
       expect(banner, findsOneWidget);
-      final midFootnote = t.getTopLeft(footnote).dy;
+      expect(t.getRect(action), actionRect);
       await t.pumpAndSettle();
-      // Settled: one gap above and below the banner, as the old spacing gave.
       expect(
-        t.getTopLeft(banner).dy - t.getBottomLeft(title).dy,
+        t.getTopLeft(action).dy - t.getBottomLeft(banner).dy,
         closeTo(gap, 0.5),
       );
-      expect(
-        t.getTopLeft(footnote).dy - t.getBottomLeft(banner).dy,
-        closeTo(gap, 0.5),
-      );
-      expect(t.getTopLeft(footnote).dy, greaterThan(midFootnote));
 
       await t.pumpWidget(boundedHost(signIn(null)));
       await t.pumpAndSettle();
       expect(find.byType(PaymentBanner), findsNothing);
-      expect(
-        t.getTopLeft(footnote).dy - t.getBottomLeft(title).dy,
-        closeTo(gap, 0.5),
-      );
+      expect(t.getSize(body), readyBody);
+      expect(t.getRect(action), actionRect);
     });
 
     testWidgets('the error reaches semantics on the first frame of each '
