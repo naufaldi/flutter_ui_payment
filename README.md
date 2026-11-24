@@ -263,9 +263,11 @@ The fake host (`example/lib/adapters/`) simulates the backend, provider, idempot
 
 ## Development
 
-Before merging, run formatting, `flutter analyze` and `flutter test` locally for the package and example. See [AGENTS.md → Checks](AGENTS.md#checks) for the exact commands and when to run the website and device checks. GitHub Actions is not part of the merge gate.
+Use [proof scaled to risk](AGENTS.md#proof-scaled-to-risk): high-risk changes need a fail-before/pass-after regression test and real-flow integration coverage; normal behavior changes need one user-visible test; low-risk changes use existing checks only. Capture and inspect before/after screenshots for every UI change.
 
-For device verification:
+Before merging, run the [full local suite](AGENTS.md#checks) on the head rebased onto `origin/main`. If `main` moves after that run, rebase again and rerun the full suite only if the new commits touch the same packages or areas; otherwise rerun the affected checks. GitHub Actions is not part of the merge gate.
+
+For changes that need device verification, follow the [device lock rules](AGENTS.md#screenshots) before running:
 
 ```sh
 cd example

@@ -29,11 +29,19 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
 - After a public API change, regenerate `website/src/data/api.json` with `pnpm gen:api` in `website/`.
 - A PR closes its issues with one `Closes #N` line per issue.
 
+## Proof, scaled to risk
+
+- **High risk** (payments, auth, permissions, migrations, data writes, concurrency): a regression test that fails before the fix and passes after, plus an integration test on the real affected flow. Use the actual example app and host boundary for kit flows; a fake host does not prove live provider behavior.
+- **Normal product behavior:** one focused test of what a host developer or end user sees or can do. Extend an existing test when it covers the same story.
+- **Low risk** (copy, styling, docs, config, or refactors covered by existing tests): run existing checks; add no new tests.
+- **Every UI change, at any tier:** capture and inspect before and after screenshots of the same screen and steps at relevant sizes, and link them in the PR. Use a recording when proof depends on motion. Non-UI changes do not need screenshots.
+- **Unrelated flaky test:** rerun it once. If it fails again, quarantine it with a skip and an issue link. Do not start a thread just for a flaky test unless it blocks all merges.
+- **Release focus:** no standalone test-only, audit, or tooling work unless it blocks 0.3.0. At most one in four work lanes may be non-product work. Proof required for a product change stays in that change's PR.
+
 ## Testing scope
 
 - **This repo is a design system, not an app.** Tests prove what a host developer and an end user rely on. Don't test every internal combination.
-- **Test the user story.** For each behaviour a change adds or fixes, write one focused widget test that shows the story: what a person sees or can do. For example, "the person can read why the upload failed and tap Retake". Add a regression test for the bug that was fixed.
-- **Test the kit rules where the change touches them.** Semantic tokens, 48 dp targets (B5), 200% text at 320 dp with nothing clipped (B4), reduced motion (B9/D66), and host ownership (B11). Use one representative case each, not a matrix.
+- **Prove affected kit rules within the risk tier.** Use existing coverage or the focused story test for semantic tokens, 48 dp targets (B5), 200% text at 320 dp with nothing clipped (B4), reduced motion (B9/D66), and host ownership (B11). Avoid a matrix.
 - **Control test inputs.** Set the date/clock, locale, viewport, platform, and random seed explicitly when the assertion depends on them. Use fixed fixtures or host fakes, not live network or device services, in unit and widget tests. Reset any overridden state with `addTearDown`.
 - **Control async completion.** Advance widget time with `tester.pump(Duration)`; use a `Completer` to drive pending, success, and failure. For real engine work such as image decoding, await the operation inside `tester.runAsync`; do not sleep or poll the wall clock for readiness. Unexpected missed taps fail both widget suites. Tap the actual hit-testable control; use `warnIfMissed: false` only when the test proves that the target must not receive the tap.
 - **Own every future.** The package and example test directories lint dropped futures in both sync and async callbacks. Await them or retain them until the relevant assertion. Use `unawaited` only when waiting would block the interaction the test needs to drive, such as opening a dialog whose future resolves on close.
@@ -42,24 +50,18 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
   - exhaustive matrices, such as every state × size × locale × theme × nav mode;
   - pixel or rect-identity sweeps;
   - throwaway probe batteries;
-  - repeated fail-before proofs. One fail-before for the main story is enough.
   - new integration or end-to-end tests for kit internals.
-- **Devices:** use a device capture or recording only when the story is visual on a device, such as a layout or motion change on Android. Run the flow test only when the change is on its path.
-- **Plans and reviews use the same scale.** A plan lists the user stories and the few tests that prove them. A reviewer judges against those stories, and asks for a new test only when a real user story breaks.
+- **Plans and reviews use the same scale.** Judge the proof against the affected user story and risk tier.
 
 ## Review and verification
 
-- **Before/after proof for every change.** Before editing, save one failing reproduction for a bug or a baseline for a feature, refactor, or tooling change. After editing, rerun the same check with the same inputs. For lint or test enforcement, show that a deliberate violation is rejected and the normal suite still passes. For docs or rules, show the changed rule or command and check it against the repository; don't claim it changed agent behavior without an eval.
-- **Visual proof.** For appearance or motion changes, capture and inspect the same affected state before and after, at the relevant phone and wide/tablet sizes. Use a recording for motion. Skip screenshots for nonvisual changes. In the handoff, give the baseline, result, commands and evidence locations. If a required check could not run, name the gap instead of claiming it passed.
 - Mechanical rebases: when a rebase conflicts only on `CHANGELOG.md`, the decision table or the decision docs, the orchestrator resolves it directly. The code diff must still equal the approved one.
 - Reviewers don't use devices. They read the executor's captures and logs. Device runs belong to the executor, or to a dedicated device-check task.
-- Judge and test against the user stories in Testing scope.
-- Merge gate: only medium or higher review findings block a merge. Put low findings and nits in a follow-up GitHub issue and merge the PR.
-- Small follow-ups: text-only fixes or a few lines with no behaviour change do not need another review round. The orchestrator checks the diff and merges.
+- Put review findings in the PR, not in new threads. Only medium or higher findings block a merge; record low findings and nits in the PR.
+- Small follow-ups: text-only fixes or a few lines with no behaviour change do not need another review round. The merge operator checks the diff before merging.
 - Treat a rebase that only resolves `CHANGELOG.md` or decision-table conflicts the same way. Check code identity: the PR's code diff must equal the approved one.
-- Local merge gate (D129): rebase onto the latest `origin/main`, then run the full local suite on the exact head to be merged. The suite is format, both analyzers, root and example Flutter tests, and website checks when docs or dartdoc change. If `main` moves before merge, rebase and rerun. Do not add or wait for GitHub Actions workflows or required CI status checks.
-- The reviewer runs `flutter analyze` and only tests relevant to the change, then reads the executor's results. Reuse the full-suite results if they cover the exact head to be merged.
-- Flow test: run it once on the final head for each PR that affects its path. Do not repeat it in review when the head has not changed.
+- **Local merge gate (D129):** rebase onto the latest `origin/main` and run the full local suite once on that head: format, both analyzers, root and example Flutter tests, and website checks when docs or dartdoc change. If `main` moves after that run, rebase again. Rerun the full suite only if the new `main` commits touch the same packages or areas as the PR; otherwise rerun the affected checks and carry forward the rest. Do not add or wait for GitHub Actions workflows or required CI status checks.
+- Reviewers reuse applicable executor evidence and run only relevant checks not already covered. Run the device flow test when its path changes or the high-risk proof needs it; reuse applicable results.
 - Batch related small fixes in one PR instead of several.
 - Parallel work: use up to 3 delegates at once. Device runs stay one at a time behind the device lock.
 
@@ -73,8 +75,8 @@ On Windows, formatting `.` fails on Android build output under `example/build`.
 dart format --output=none --set-exit-if-changed lib test example/lib example/test example/integration_test example/test_driver
 flutter analyze --fatal-infos        # root
 (cd example && flutter analyze --fatal-infos)
-flutter test --test-randomize-ordering-seed=7305
-(cd example && flutter test --test-randomize-ordering-seed=7305 test/)
+flutter test --concurrency=1 --test-randomize-ordering-seed=7305
+(cd example && flutter test --concurrency=1 --test-randomize-ordering-seed=7305 test/)
 (cd example && flutter test --no-pub integration_test/flow_test.dart -d <device>)
 cd website && pnpm check:api && pnpm test:api && pnpm build && pnpm check:pages && pnpm check:links && pnpm check:snippets && pnpm test:motion && pnpm test:screens
 ```
@@ -85,7 +87,7 @@ Keep the seed in the proof so test ordering is replayable. For an order-dependen
 
 Run `pnpm check:api` before the build or snippet check. Both commands regenerate `api.json` and can hide stale metadata in the checkout.
 
-A full `flutter test` sometimes fails to load a file with "Unable to connect to flutter_tester process: WebSocketException". Re-run that file alone (`flutter test --no-pub test/<file>.dart`) and report both results.
+A full `flutter test` sometimes fails to load a file with "Unable to connect to flutter_tester process: WebSocketException". Rerun that file alone once (`flutter test --no-pub --concurrency=1 test/<file>.dart`) and report both results. Quarantine only a confirmed unrelated flaky test, not a runner startup failure.
 
 ## Emulator ownership and lifetime
 
@@ -113,6 +115,6 @@ Docs captures come from Android only (D81): the phone AVD `FlutterPayment_API37_
 
 ## Don'ts
 
-- Don't merge your own PR. Review and merge are separate steps.
+- Don't merge your own PR. The separate merge operator handles merges.
 - Don't hand-edit `website/src/data/api.json` or WebP files; regenerate them.
 - Don't commit raw PNGs.
