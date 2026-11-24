@@ -296,9 +296,9 @@ Budget awal berikut adalah target proyek yang belum diukur:
 
 ### Gate akhir
 
-v0.1 selesai ketika package benar-benar bisa dikonsumsi dari example, semua skenario prioritas bagian 9 dapat diperagakan, required checks lulus, dan bukti native serta hasil profil diinspeksi. Test unit/golden saja tidak cukup untuk mengklaim flow native bekerja. Klaim platform yang belum diperiksa tetap pending.
+v0.1 selesai ketika package benar-benar bisa dikonsumsi dari example, semua skenario prioritas bagian 9 dapat diperagakan, pemeriksaan lokal lulus, dan bukti native serta hasil profil diinspeksi. Test unit/golden saja tidak cukup untuk mengklaim flow native bekerja. Klaim platform yang belum diperiksa tetap pending.
 
-Ulangi hanya check yang terpengaruh perubahan, kegagalan, atau temuan konkret. Ketika CI menjalankan gate penuh, jangan mengulang suite lokal tanpa alasan baru.
+Sebelum merge, jalankan pemeriksaan lokal sesuai [AGENTS.md](AGENTS.md#checks) pada commit akhir yang akan di-merge (D129).
 
 **Tahap dokumen sekarang selesai saat** README dan PRD tersimpan di pusat proyek, keputusan/asumsi dibedakan, setiap modul punya acceptance, edge case/state owner jelas, serta rencana verifikasi dan distribusi dapat dieksekusi. Ini tidak berarti v0.1 sudah diimplementasikan.
 

@@ -263,10 +263,11 @@ The fake host (`example/lib/adapters/`) simulates the backend, provider, idempot
 
 ## Development
 
+Before merging, run formatting, `flutter analyze` and `flutter test` locally for the package and example. See [AGENTS.md → Checks](AGENTS.md#checks) for the exact commands and when to run the website and device checks. GitHub Actions is not part of the merge gate.
+
+For device verification:
+
 ```sh
-dart format --output=none --set-exit-if-changed lib test example/lib example/test example/integration_test example/test_driver
-flutter analyze
-flutter test                                        # package tests
 cd example
 flutter test --no-pub integration_test/flow_test.dart -d <device>
 flutter drive --driver=test_driver/integration_driver.dart \

@@ -57,8 +57,8 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
 - Merge gate: only medium or higher review findings block a merge. Put low findings and nits in a follow-up GitHub issue and merge the PR.
 - Small follow-ups: text-only fixes or a few lines with no behaviour change do not need another review round. The orchestrator checks the diff and merges.
 - Treat a rebase that only resolves `CHANGELOG.md` or decision-table conflicts the same way. Check code identity: the PR's code diff must equal the approved one.
-- Checks run once: the executor runs the full suite once on the final head: format, both analyzers, root `flutter test`, example tests, and website checks when docs or dartdoc change.
-- The reviewer runs `flutter analyze` and only tests relevant to the change, then reads the executor's results. Re-run the full suite only when code changed after the last full run.
+- Local merge gate (D129): rebase onto the latest `origin/main`, then run the full local suite on the exact head to be merged. The suite is format, both analyzers, root and example Flutter tests, and website checks when docs or dartdoc change. If `main` moves before merge, rebase and rerun. Do not add or wait for GitHub Actions workflows or required CI status checks.
+- The reviewer runs `flutter analyze` and only tests relevant to the change, then reads the executor's results. Reuse the full-suite results if they cover the exact head to be merged.
 - Flow test: run it once on the final head for each PR that affects its path. Do not repeat it in review when the head has not changed.
 - Batch related small fixes in one PR instead of several.
 - Parallel work: use up to 3 delegates at once. Device runs stay one at a time behind the device lock.
@@ -87,10 +87,10 @@ A full `flutter test` sometimes fails to load a file with "Unable to connect to 
 
 ## Emulator ownership and lifetime
 
-- Keep one Android emulator open in the T3 Device panel during active Flutter UI work, including related edits, checks, delegate handoffs, and temporary CI/review waits while the parent task remains unsettled and expects more device work. Do not start a device for work that needs none.
+- Keep one Android emulator open in the T3 Device panel during active Flutter UI work, including related edits, checks, delegate handoffs, and temporary review waits while the parent task remains unsettled and expects more device work. Do not start a device for work that needs none.
 - The parent orchestrator owns the shared device reservation and lock. Record the parent task/thread, hostId, device id/serial, and current operator in `owner.md` inside the device lock directory. Include these details and the lock path in device-work briefs. Serialize device control; reuse only within the owning task or after explicit handoff.
 - Delegates return control to the parent when finished. They stop their runners and recorders, but do not shut down the shared emulator or remove its lock. Delegate completion, a recoverable check failure, or a turn ending does not mean the parent task is finished.
-- Stop recordings promptly after each bounded capture. Keeping the emulator open never authorizes repeated checks while waiting for CI/review.
+- Stop recordings promptly after each bounded capture. Keeping the emulator open never authorizes repeated checks while waiting for review.
 - The parent closes the task-owned device with `device_close` and `shutdown: true` and removes the lock when the task settles, is cancelled or terminally fails, no further device work is expected, or actual resource pressure requires release. Coordinate release or explicit handoff when another task needs the slot. Confirm cleanup and preserve unrelated/user-owned devices. Follow the owner's global device rules for all device operations.
 
 ## Screenshots
