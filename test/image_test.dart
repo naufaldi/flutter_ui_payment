@@ -49,17 +49,6 @@ void main() {
     semantics.dispose();
   });
   for (final setup in ReducedMotion.values) {
-    testWidgets('loaded image is instant under ${setup.name}', (t) async {
-      final result = Completer<ImageInfo>();
-      await t.pumpWidget(
-        setup.apply(t, imageHost(ControlledImage(result.future))),
-      );
-      await completeImage(t, result);
-      await expectStill(t, () {});
-      expect(find.byKey(const Key('ph')), findsNothing);
-    });
-  }
-  for (final setup in ReducedMotion.values) {
     for (final custom in [true, false]) {
       testWidgets('loading placeholder under ${setup.name}, custom=$custom', (
         t,

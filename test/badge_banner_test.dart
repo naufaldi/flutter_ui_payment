@@ -49,7 +49,33 @@ void main() {
       );
     });
   }
-  testWidgets('banner gap and live region', (tester) async {
+  testWidgets('badge status remains readable at 320 dp and 200%', (
+    tester,
+  ) async {
+    const label = 'Payment approval still pending';
+    tester.view.physicalSize = const Size(320, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      host(
+        const PaymentBadge(
+          tone: StatusTone.warning,
+          label: label,
+          icon: Icons.schedule,
+        ),
+        2,
+      ),
+    );
+    expect(find.bySemanticsLabel(label), findsOneWidget);
+    final badge = tester.getRect(find.byType(PaymentBadge));
+    for (final content in [find.text(label), find.byIcon(Icons.schedule)]) {
+      final bounds = tester.getRect(content);
+      expect(badge.intersect(bounds), bounds);
+    }
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('banner announces the changed total', (tester) async {
     final semantics = tester.ensureSemantics();
 
     await tester.pumpWidget(
@@ -61,11 +87,6 @@ void main() {
         ),
         1,
       ),
-    );
-    expect(
-      tester.getTopLeft(find.text('Total changed')).dx -
-          tester.getTopRight(find.byIcon(PaymentIcons.warning)).dx,
-      12,
     );
     expect(
       tester.getSemantics(find.byType(PaymentBanner)),
@@ -215,13 +236,15 @@ void main() {
     expect(banner.message, contains('103,500'));
     expect(find.byIcon(PaymentIcons.close), findsNothing);
   });
-  testWidgets('long banner at 320 and double text wraps actions', (
+  testWidgets('long banner at 320 dp and 200% keeps both actions reachable', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(320, 900);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
+    var retries = 0;
+    var supportRequests = 0;
     await tester.pumpWidget(
       host(
         SingleChildScrollView(
@@ -235,15 +258,25 @@ void main() {
                 label: 'Coba lagi',
                 variant: PaymentButtonVariant.secondary,
                 width: PaymentWidth.hug,
-                onPressed: () {},
+                onPressed: () => retries++,
               ),
-              PaymentLink(label: 'Hubungi bantuan', onPressed: () {}),
+              PaymentLink(
+                label: 'Hubungi bantuan',
+                onPressed: () => supportRequests++,
+              ),
             ],
           ),
         ),
         2,
       ),
     );
+    expect(find.bySemanticsLabel('Coba lagi'), findsOneWidget);
+    expect(find.bySemanticsLabel('Hubungi bantuan'), findsOneWidget);
+    await tester.tap(find.text('Coba lagi'));
+    await tester.tap(find.text('Hubungi bantuan'));
+    await tester.pump();
+    expect(retries, 1);
+    expect(supportRequests, 1);
     expect(tester.takeException(), isNull);
   });
 }

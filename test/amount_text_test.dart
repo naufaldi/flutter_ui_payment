@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
-import 'button_guard_test.dart' show host;
+import 'helpers/ios_text_host.dart';
 
 void main() {
   const money = Money.idr(102500);

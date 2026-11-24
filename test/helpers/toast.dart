@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 
+Finder toastSurface(BuildContext context) {
+  final color = PaymentTheme.of(context).textPrimary;
+  return find.descendant(
+    of: find.byType(SnackBar),
+    matching: find.byWidgetPredicate(
+      (widget) => widget is Material && widget.color == color,
+    ),
+  );
+}
+
 Future<void> routePopToast(WidgetTester tester, BuildContext context) async {
   final navigator = Navigator.of(context);
   final pushed = navigator.push<void>(

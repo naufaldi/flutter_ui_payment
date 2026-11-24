@@ -59,26 +59,64 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('action bar caps its total at 1.6x', (tester) async {
+  testWidgets('action bar caps its total at 1.6x and stacks Pay at 200%', (
+    tester,
+  ) async {
+    const viewport = Size(320, 800);
+    tester.view.physicalSize = viewport;
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    var presses = 0;
     Widget bar(double scale) => host(
       const SizedBox.shrink(),
       textScale: scale,
+      size: viewport,
       bottomBar: PaymentActionBar(
         total: const Money.idr(102500),
-        action: PaymentButton(label: 'Review payment', onPressed: () {}),
+        action: PaymentButton(
+          label: 'Review payment',
+          onPressed: () => presses++,
+        ),
       ),
     );
 
+    final pay = find.widgetWithText(PaymentButton, 'Review payment');
+    final amount = find.text('Rp102,500');
+    Rect totalBounds() => tester
+        .getRect(find.text('Total'))
+        .expandToInclude(tester.getRect(amount));
     await tester.pumpWidget(bar(1));
-    final h1 = tester.getSize(find.text('Rp102,500')).height;
+    final h1 = tester.getSize(amount).height;
+    final compact = tester.getRect(pay);
+    final compactTotal = totalBounds();
+    expect(compact.left, greaterThanOrEqualTo(compactTotal.right));
+    expect(
+      compact.center.dy,
+      inInclusiveRange(compactTotal.top, compactTotal.bottom),
+    );
+    await tester.tap(pay);
+    await tester.pump();
+    expect(presses, 1);
 
     await tester.pumpWidget(bar(2));
     await tester.pumpAndSettle();
-    final h2 = tester.getSize(find.text('Rp102,500')).height;
+    final h2 = tester.getSize(amount).height;
 
     expect(h2, greaterThan(h1));
     expect(h2, lessThanOrEqualTo(h1 * 1.6 + 1));
-    expect(find.text('Review payment'), findsOneWidget);
+    final target = tester.getRect(pay);
+    final stackedTotal = totalBounds();
+    final footer = tester.getRect(find.byType(PaymentActionBar));
+    expect(target.top, greaterThanOrEqualTo(stackedTotal.bottom));
+    expect(target.left, closeTo(stackedTotal.left, 1));
+    expect(target.center.dx, closeTo(footer.center.dx, 1));
+    expect(target.width, greaterThan(compact.width));
+    expect((Offset.zero & viewport).intersect(target), target);
+    expect(target.width, greaterThanOrEqualTo(48));
+    expect(target.height, greaterThanOrEqualTo(48));
+    await tester.tap(pay);
+    await tester.pump();
+    expect(presses, 2);
     expect(tester.takeException(), isNull);
   });
 
