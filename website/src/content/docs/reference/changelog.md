@@ -15,7 +15,7 @@ Requires Dart ^3.12.0 and Flutter >=3.44.0. Flutter SDK remains the only runtime
 - Checkout authorization phases use a short fade that respects reduced motion (#304).
 - Accordions reverse smoothly when tapped again before they finish opening or closing (#306).
 - Radio and payment-method selection rings animate without delaying selection and respect reduced motion. Keyboard selection shows the method outline immediately (#309, #321).
-- Sign-in and document-upload errors fade in and out without blocking recovery actions. Error text is available to accessibility immediately (#312).
+- Sign-in and document-upload errors fade in and out without blocking recovery actions. Visible error banners are in Flutter's semantics tree from the first fade-in frame (#312).
 - The APIs deprecated in 0.1.0 still compile. Their removal is deferred; new integrations should use the documented replacements.
 
 ### Docs site
