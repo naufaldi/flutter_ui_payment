@@ -1,3 +1,12 @@
+## 0.7.0
+
+- Added a copyable e-wallet handoff and return block. The host opens the wallet and checks the original payment attempt after return, cancellation, a missing app, or no return. The demo uses a simulated host; no wallet provider has been verified (#376, D138).
+- Added a copyable Collection block with host-built rows and paging. Retrying a failed page keeps the earlier results visible (#378, D139).
+- Added themeable record cards with separate body, trailing, and footer actions, plus async confirmation that stays open when the host needs to recover from a failed action (#377, D140).
+- Added a copyable Find block with cancellable search, match context, and retry (#382).
+- `PaymentSheet` can now use an optional height and a bounded, caller-owned scrollable body for lazy content (#381, D141).
+- Android device flows, the native keyboard, TalkBack, and the e-wallet sandbox have not been checked yet.
+
 ## 0.6.0
 
 - Use **Report a problem** in transaction details to report a duplicate charge, wrong amount, or missing purchase. The sheet prefills the transaction reference, keeps the draft when a send fails, and blocks overlapping sends. It shows the case ID only after the host confirms the submitted report (#370, #367, D137).
