@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
@@ -229,12 +230,32 @@ void main() {
     // Documents: 10 cycles of choose → replace mid-upload → leave screen.
     c = await runScenario(tester, app, 'K05');
     final req = documentRequirements(const DemoStrings('en')).first;
+    final replacement = demoFixtures[1].file;
     final rss = <int>[];
     for (var i = 0; i < 10; i++) {
-      final first = c.uploadDocument(req, demoFixtures[0].file);
-      await wait(const Duration(milliseconds: 100));
-      await c.uploadDocument(req, demoFixtures[1].file);
-      await first;
+      final releaseFirst = Completer<void>();
+      c.host.nextUploadCompletionGate = releaseFirst.future;
+      var firstFinished = false;
+      final first = c.uploadDocument(req, demoFixtures[0].file).whenComplete(
+        () {
+          firstFinished = true;
+        },
+      );
+      try {
+        expect(c.documents[req.key]?.phase, DocumentSlotPhase.uploading);
+        await tester.pump();
+        await c.uploadDocument(req, replacement);
+        expect(firstFinished, isFalse, reason: 'Original upload is still held');
+        expect(c.documents[req.key]?.phase, DocumentSlotPhase.uploaded);
+      } finally {
+        releaseFirst.complete();
+        await first;
+      }
+      final slot = c.documents[req.key];
+      expect(
+        (slot?.phase, slot?.file?.name),
+        (DocumentSlotPhase.uploaded, replacement.name),
+      );
       c.goHome();
       await wait(const Duration(milliseconds: 300));
       c.editDocuments();

@@ -114,6 +114,9 @@ class DemoHost {
   /// Scales every simulated latency; tests shorten it.
   static double latencyScale = 1;
 
+  /// If set, only the next upload waits for this before completing.
+  Future<void>? nextUploadCompletionGate;
+
   final ValueNotifier<List<HostLogEntry>> log = ValueNotifier(const []);
   final recovery = RecoveryStore();
 
@@ -449,7 +452,10 @@ class DemoHost {
   bool _captureRejected = false;
 
   Future<void> upload(String requestId, DocumentFile file) async {
+    final completionGate = nextUploadCompletionGate;
+    nextUploadCompletionGate = null;
     await Future.delayed(config.uploadDuration * latencyScale);
+    if (completionGate != null) await completionGate;
     if (config.rejectFirstCapture &&
         file.name.startsWith('kamera_') &&
         !_captureRejected) {
