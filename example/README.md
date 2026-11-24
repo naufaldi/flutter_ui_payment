@@ -41,8 +41,9 @@ flutter run -d chrome  # web gallery
 Mobile blocks: `flutter run -t lib/<demo>.dart` with `collection_block_demo`,
 `history_block_demo`, `kyc_review_demo`, `manual_transfer_demo`, `method_quote_demo`,
 `refund_detail_demo`, `kyc_onboarding_demo`, `kyc_capture_demo` or
-`payment_preferences_demo`. The developer menus select synthetic states. No real
-payment or identity data is used.
+`payment_preferences_demo`. Run `search_results_demo` to try Find on synthetic
+document pages. The developer menus select synthetic states. No real payment
+or identity data is used.
 
 For the copyable mobile Merchant Overview block, see
 [the composition guide](lib/compositions/README.md). Run it with

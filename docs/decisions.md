@@ -990,3 +990,7 @@ Interrupting a running reveal reverses through a private `SpringSimulation`: `Sp
 ### Record cards and async confirmation, 24 November 2026
 
 - **D140: Add record cards and async confirmation (#375).** Record cards keep body, trailing and footer actions separate instead of adding nested gestures to the flat list row. Stack the trailing slot when the inline layout cannot fit a 48 dp control. Async confirmation shares the bool presenter's layout and safe initial focus without changing that presenter's API or swipe behavior. Put the async prompt on the root navigator so system Back reaches its pending lock even when the caller is inside a nested navigator. The async sheet opts out of swipe dismissal because the SDK drag can pop without consulting that lock. The host owns record identity, authorization, the write and any recovery or safe retry.
+
+### Search results, 24 November 2026
+
+- **D142: Find is a copyable search-results block (#380).** Use a submitted query and tappable rows with locations and excerpts. A fresh host stream lets Find show partial matches and progress without treating a canceled or failed search as empty. Edit, cancel and disposal end the subscription; retries start the same query again. The host stops the underlying work and opens the selected match. Follow the Collection block's single lazy viewport rather than using its paging states or the search field's option selection. The block works in a bounded page or a sheet with a caller-owned scrollable. No PDF/OCR integration or package API change.

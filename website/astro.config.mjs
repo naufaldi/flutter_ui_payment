@@ -210,6 +210,7 @@ export default defineConfig({
           { label: 'KYC onboarding and consent', slug: 'blocks/kyc-onboarding' },
           { label: 'KYC capture and upload', slug: 'blocks/kyc-capture' },
           { label: 'Payment preferences', slug: 'blocks/payment-preferences' },
+          { label: 'Search results', slug: 'blocks/search-results' },
         ] },
         { label: 'Patterns', items: [
           { label: 'Checkout', slug: 'patterns/checkout' },

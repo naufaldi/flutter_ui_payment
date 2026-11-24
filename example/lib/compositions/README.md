@@ -35,6 +35,14 @@ responses after a restart.
 Source, inspected Android captures and paired pattern contracts are published
 in the Blocks section. Roadmap and reference links: GitHub issue #223.
 
+## Search results
+
+Run `flutter run -t lib/search_results_demo.dart` or open **Find in document**
+in Gallery. Copy `search_results_block.dart` into a bounded page or lazy-body
+sheet. Supply one cancellable stream per submitted query and handle opening the
+selected match. The demo searches synthetic pages and opens the selected page
+when the sheet closes.
+
 ## Payment and KYC host blocks
 
 Each runs from `example/` with `flutter run -t lib/<demo>.dart` and offers
