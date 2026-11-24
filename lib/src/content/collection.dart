@@ -52,6 +52,8 @@ class PaymentCollection extends StatelessWidget {
   /// Optional content that scrolls after the rows or [placeholder].
   ///
   /// Also shown with zero rows, so an empty page can still offer a way back.
+  /// With a footer, scroll semantics omit the indexed row count while keeping
+  /// the footer available to assistive technologies.
   final Widget? footer;
 
   /// Optional host-owned scroll controller. The host disposes it.
@@ -114,7 +116,8 @@ class PaymentCollection extends StatelessWidget {
           controller: controller,
           physics: physics,
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          semanticChildCount: rowCount,
+          // Android includes visible footer nodes in its last-index calculation.
+          semanticChildCount: footer == null ? rowCount : null,
           slivers: [
             SliverPadding(
               padding: insets + EdgeInsets.symmetric(horizontal: gutter),

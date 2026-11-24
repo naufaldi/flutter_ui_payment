@@ -42,6 +42,60 @@ Widget _shortCollection({
 );
 
 void main() {
+  testWidgets('Previous is accessible without an out-of-range row index', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 300);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final controller = ScrollController();
+    addTearDown(controller.dispose);
+    var previousRequests = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PaymentCollection(
+            controller: controller,
+            rowCount: 5,
+            rowBuilder: (_, index) =>
+                SizedBox(height: 72, child: Text('Document ${index + 1}')),
+            footer: SizedBox(
+              height: 64,
+              child: PaymentButton(
+                label: 'Previous',
+                onPressed: () => previousRequests++,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    controller.jumpTo(controller.position.maxScrollExtent);
+    await tester.pumpAndSettle();
+
+    final lastRow = tester.getSemantics(find.text('Document 5'));
+    final scroll = lastRow.parent!;
+    final data = scroll.getSemanticsData();
+    expect(data.scrollPosition, greaterThan(0));
+    final count = data.scrollChildCount ?? 0;
+    if (count > 0) {
+      var visible = 0;
+      scroll.visitChildren((child) {
+        if (!child.flagsCollection.isHidden) visible++;
+        return true;
+      });
+      // Android derives the last index from all visible direct children.
+      expect((data.scrollIndex ?? 0) + visible - 1, lessThan(count));
+    }
+
+    final previous = find.semantics.byLabel('Previous');
+    expect(previous, findsOne);
+    expect(previous.evaluate().single.flagsCollection.isHidden, isFalse);
+    tester.semantics.tap(previous);
+    await tester.pump();
+    expect(previousRequests, 1);
+  });
+
   testWidgets('refresh keeps visible keyed row state after reordering', (
     tester,
   ) async {
