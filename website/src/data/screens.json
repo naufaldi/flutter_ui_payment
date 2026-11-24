@@ -117,12 +117,12 @@
   "android_block_checkout_wallet": {
     "width": 640,
     "height": 1095,
-    "caption": "Checkout block wallet look: Soft preset, balance-first review and pinned pay for the same order."
+    "caption": "Checkout block wallet look: merchant and order reference above the balance, with a pinned pay action."
   },
   "android_block_checkout_wallet_dark": {
     "width": 640,
     "height": 1095,
-    "caption": "Checkout block wallet look in dark mode: lifted balance card on a near-black page."
+    "caption": "Checkout block wallet look in dark mode: balance on the dark Soft background, with a pinned pay action."
   },
   "android_block_transfer": {
     "width": 640,
@@ -291,12 +291,12 @@
   },
   "android_catalog_host_checkout_wallet_variants": {
     "width": 640,
-    "height": 1200,
+    "height": 1289,
     "caption": "Wallet review checkout with balance, receipt email, visible fees and an action bar using the same product theme."
   },
   "android_catalog_host_checkout_wallet_variants_dark": {
     "width": 640,
-    "height": 1200,
+    "height": 1289,
     "caption": "Wallet review checkout with balance, receipt email, visible fees and an action bar using the same product theme. Dark mode."
   },
   "android_catalog_host_recovery_unknown_variants": {

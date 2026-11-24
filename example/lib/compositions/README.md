@@ -56,11 +56,13 @@ Copy `host_checkout.dart`, `host_checkout_journey.dart` and
 `host_payment_recovery.dart` into your host and replace the synthetic adapter
 callbacks. Use a bounded Scaffold body. One `CheckoutOrder`/`CheckoutActions`
 pair drives both layouts: `CheckoutLayout.invoice` (stacked invoice) or
-`CheckoutLayout.wallet` (balance-first review; its "use another method" opens a
-kit `PaymentMethodPicker` sheet unless you pass `onChangeMethod`). While the
-host re-prices the selected method it sets `CheckoutOrder.quoting`; Pay stays
-disabled until a current quote for that method arrives, and the journey
-revalidates quote, method, expiry and balance before submitting. The demo menu
+`CheckoutLayout.wallet` (merchant and balance above the review on phones).
+Both show the host's merchant name, order reference and verification status.
+In the wallet layout, "use another method" opens a kit `PaymentMethodPicker`
+sheet unless you pass `onChangeMethod`. While the host re-prices the selected
+method it sets `CheckoutOrder.quoting`; Pay stays disabled until a current quote
+for that method arrives, and the journey revalidates quote, method, expiry and
+balance before submitting. The demo menu
 switches look (invoice on Hairline, wallet on Soft), scenario (lost response,
 pending then offline, receipt retry), replay and reduced motion; light/dark
 switches in the top bar. It performs no networking or platform
