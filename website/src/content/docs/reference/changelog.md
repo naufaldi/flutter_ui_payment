@@ -5,6 +5,11 @@ description: Changes in Rakit UI, copied from CHANGELOG.md in the repository.
 
 Copied verbatim from `CHANGELOG.md`.
 
+## 0.5.0
+
+- The mobile Transaction History block now searches and filters the full host dataset. Load more appends results, and retry keeps previously loaded transactions visible. Try it in the example Gallery under **Paged history** (#366, #364, D136).
+- The Android demo uses a synthetic data source. No live backend or TalkBack audio on a real device has been checked.
+
 ## 0.4.0
 
 - Added a copyable QRIS checkout instructions block with source in the docs and a demo in the example Gallery (#362, #359, D135). It displays the QR image, payee, amount, and expiry supplied by the host app. Check status asks about the same payment attempt; the host app owns payment handoff and confirmation.
