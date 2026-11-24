@@ -451,6 +451,8 @@ function reportFreshness(args) {
     const input = png(name);
     const committed = previous[name];
     report(name, input, Boolean(committed));
+    const reuseCommittedSet = Boolean(committed) &&
+      !existsSync(join(source, `${name}.png`)) && existsSync(join(target, `${name}.webp`));
     // A fresh base replaces the whole set; otherwise its committed tail
     // still tells us which parts did not get recaptured.
     const expectedParts = input?.mtimeMs > since ? 0 : (committed?.parts?.length ?? 0);
@@ -458,8 +460,7 @@ function reportFreshness(args) {
       const part = partName(name, i);
       const partInput = png(part);
       if (!partInput && i >= expectedParts) break;
-      // Without the base PNG, conversion skips the whole PNG set.
-      report(part, partInput, i < expectedParts, Boolean(input));
+      report(part, partInput, reuseCommittedSet && i < expectedParts, Boolean(input));
     }
   }
   for (const [label, entries] of [
