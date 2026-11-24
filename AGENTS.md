@@ -76,12 +76,14 @@ flutter analyze --fatal-infos        # root
 flutter test --test-randomize-ordering-seed=7305
 (cd example && flutter test --test-randomize-ordering-seed=7305 test/)
 (cd example && flutter test --no-pub integration_test/flow_test.dart -d <device>)
-cd website && pnpm build && pnpm check:pages && pnpm check:links && pnpm check:snippets && pnpm test:motion
+cd website && pnpm check:api && pnpm test:api && pnpm build && pnpm check:pages && pnpm check:links && pnpm check:snippets && pnpm test:motion && pnpm test:screens
 ```
 
 The flow test runs on a device: take the device lock (Screenshots) first and follow the owner's global device rules.
 
 Keep the seed in the proof so test ordering is replayable. For an order-dependent failure, record the failing seed and rerun with it before isolating the file.
+
+Run `pnpm check:api` before the build or snippet check. Both commands regenerate `api.json` and can hide stale metadata in the checkout.
 
 A full `flutter test` sometimes fails to load a file with "Unable to connect to flutter_tester process: WebSocketException". Re-run that file alone (`flutter test --no-pub test/<file>.dart`) and report both results.
 
@@ -103,6 +105,7 @@ Docs captures come from Android only (D81): the phone AVD `FlutterPayment_API37_
 - The tests render the Flutter layer in-app (`capture()` in `integration_test/support.dart`). Don't call `convertFlutterSurfaceToImage`; it stalls on the API 37 image.
 - Catalog specimens render at phone width on a tall virtual view and are cropped to the keyed specimen, capped at 1200 dp (D82). Overlay and state captures (dialogs, sheets, toasts, tooltips) are full-screen at the real size.
 - Selective runs: `--dart-define=CAPTURE_ONLY=…` with a matching `--dart-define=CAPTURE_LOOKS=…`, one session per look group. `node scripts/catalog-entries.mjs light,dark` (in `website/`) prints the entries. Tablet sets: `--dart-define=CAPTURE_DEVICE=tablet`.
+- Before a selective capture, record the start time with `$captureStart = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()`. After capture, run `pnpm screens "--requested=android_catalog_button_variants,android_catalog_button_variants_dark" "--since=$captureStart"` from `website/`, using the registered base filenames you requested. The read-only report exits 1 when a requested fresh PNG is missing, even when an older PNG or existing WebP can be reused.
 - Convert with `pnpm screens` in `website/`: WebP into `website/public/screens`, registry in `website/src/data/screens.json`. After a rebase, re-run it; never hand-merge `screens.json`.
 - Names: `android_catalog_<component>_variants{,_dark,_200,_id,_id_200}` (a specimen over the 1200 dp cap adds `_part2`, `_part3`, … per D90; never register parts in `screens.mjs`), state captures `android_catalog_<state>`, flow `android_<screen>_<look>`, `android_refined_*`, `android_kit_*`, tablet `android_tablet_*`. `pnpm check:pages` fails on any `ios_` name.
 - Place a component's specimen right after its intro, light and dark paired with `dark=`, with alt text that says what the image shows.
