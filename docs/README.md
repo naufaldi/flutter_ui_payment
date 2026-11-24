@@ -18,8 +18,8 @@ For complete mobile host examples, use the website's **Blocks** section and
 explain behavior; Guides cover general recipes. D105 records this navigation
 split while preserving existing page URLs. The blocks cover merchant overview,
 checkout and recovery, history, transaction problem reports, refunds, manual
-transfer, QRIS, method and quote changes, KYC onboarding, capture and correction,
-and payment preferences.
+transfer, QRIS, wallet handoff and return, method and quote changes, KYC
+onboarding, capture and correction, and payment preferences.
 
 | Document | Audience and role |
 | --- | --- |

@@ -1,0 +1,40 @@
+---
+title: Wallet handoff and return
+description: Open a supported wallet on the same phone and recover the same payment attempt when the buyer comes back.
+---
+
+import BlockSource from '../../../components/BlockSource.astro';
+
+Let the buyer open a supported wallet app on the phone where they started checkout. Back in your app, **Check status** asks about the original payment attempt. Opening the wallet, returning to checkout and canceling the wallet step are not payment results.
+
+## Run and try
+
+Open **Wallet handoff** in the example Gallery, or run the standalone demo from `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/wallet_handoff_demo.dart
+```
+
+The demo doesn't open another app. With **Aplikasi tersedia** selected, open the wallet and choose **Simulasi kembali** or **Simulasi batal**. The first status check returns pending. A second check returns a separate, synthetic provider confirmation. The standalone demo's **Skenario demo** menu also covers these cases:
+
+| Scenario | What the buyer can do |
+| --- | --- |
+| **Aplikasi tidak tersedia** | The wallet couldn't open. Check status on the same payment. |
+| **Tidak kembali dari dompet** | Simulate restoring checkout without a wallet return. The demo doesn't persist anything. The first check keeps the pending status when the provider is unreachable. The next check receives a provider-reported expiry. |
+
+## Connect your host
+
+1. Pass the existing `PaymentAttempt` and exact `Money` amount from its approved quote. Only pass `WalletHandoffPhase.ready` when your provider has authorized the handoff for that attempt. Include `PaymentAction.checkStatus` in the accepted snapshot while the buyer can recover the payment. The block won't offer launch without that action. Put it in a bounded screen body to keep **Check status** pinned.
+2. Use `openWalletHandoff` in `onOpenWallet(attemptId)` with callbacks that capture the current attempt and wallet authorization. The recipe claims `ready` as `opening` before persisting. If saving throws, it never launches: it restores `ready` only if the same handoff is still `opening` and the authorization is valid, or clears that handoff to keep status recovery available. Catch the error in your host and tell the buyer the wallet didn't open because checkout couldn't be saved. After saving, the recipe requires the same attempt to still be `opening` and checks the captured authorization again immediately before launch. Your app owns the SDK or URL, return route, and launch error reporting. Return `false` for an expected launch failure so the recipe can show `appUnavailable` if the handoff still owns `opening`.
+3. Apply a correlated return or cancellation once, from `opening` or `awaitingReturn`, even if both the return route and app resume fire. An uncorrelated resume can take the buyer back to checkout but cannot establish wallet success or cancellation. If checkout is restored without a return, recover the persisted attempt and use `noReturn`. Validate the restored snapshot against that attempt before rendering it. Ignore signals from earlier attempts.
+4. In `onCheckStatus(attemptId)`, query that same attempt, never submit again. Set `Observation.refreshing` and prevent repeated checks while it runs. Use `PaymentAttempt.reconcile` on a matching authoritative reply. An unchanged revision can be a valid answer: retain the last trusted snapshot and clear `refreshing` even when reconciliation doesn't apply it. If status couldn't be checked, retain the snapshot and set `Observation.unavailable`. Don't update a replacement attempt. If submission is unknown, pass the original attempt and use the existing unknown-status recovery. Only a provider snapshot can confirm success or expiry.
+
+The block offers one handoff and status recovery, with no retry payment or method change. If the host later offers a new payment, follow the [Status and receipt pattern](/patterns/status-receipt/) to decide when the original attempt can be replaced.
+
+## Copy the block
+
+<BlockSource name="walletHandoff" />
+
+## Device check
+
+The demo exercises a simulated host boundary. Before claiming provider support, wire a supported wallet to an Android sandbox host and run checkout on one phone. Open the wallet, return both through its callback and by switching apps, and confirm that neither path produces a receipt before a matching server status. Repeat without the wallet installed, with a wallet cancellation, and after leaving the checkout without a return and reopening it. In each case, verify that the lookup uses the original attempt reference and makes no second payment submission.

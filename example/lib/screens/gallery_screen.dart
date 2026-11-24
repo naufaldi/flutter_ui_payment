@@ -14,6 +14,7 @@ import '../demo_strings.dart';
 import '../dev_chrome.dart';
 import '../history_block_demo.dart';
 import '../qris_checkout_demo.dart';
+import '../wallet_handoff_demo.dart';
 import 'flow_screen.dart' show documentRequirements, identityFields;
 
 part 'gallery_phase6.dart';
@@ -148,6 +149,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
             id: 'qris',
             label: t('QRIS checkout', 'Pembayaran QRIS'),
             icon: Icons.qr_code_2,
+          ),
+          PaymentNavItem(
+            id: 'wallet-handoff',
+            label: t('Wallet handoff', 'Beralih ke dompet'),
+            icon: Icons.account_balance_wallet_outlined,
           ),
           PaymentNavItem(
             id: 'status',
@@ -340,6 +346,9 @@ class _GalleryScreenState extends State<GalleryScreen> {
         color: devWorkbench(context),
         child: switch (_section) {
           'qris' => const SafeArea(child: QrisCheckoutDemo(embedded: true)),
+          'wallet-handoff' => const SafeArea(
+            child: WalletHandoffDemo(embedded: true),
+          ),
           'paged-history' => const SafeArea(
             child: HistoryBlockDemo(embedded: true),
           ),
