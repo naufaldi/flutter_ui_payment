@@ -195,6 +195,7 @@ export default defineConfig({
         ] },
         { label: 'Blocks', items: [
           { label: 'Overview', slug: 'blocks' },
+          { label: 'Collection', slug: 'blocks/collection' },
           { label: 'Merchant overview', slug: 'blocks/merchant-overview' },
           { label: 'Checkout and recovery', slug: 'blocks/checkout-recovery' },
           { label: 'Transaction history', slug: 'blocks/transaction-history' },

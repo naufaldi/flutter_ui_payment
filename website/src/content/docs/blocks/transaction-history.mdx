@@ -36,9 +36,10 @@ server with fixtures; it makes no network request or financial operation.
 
 ## Assemble it in your host
 
-Copy `merchant_history.dart`. Give it a bounded viewport and pass accumulated
-records, the active query and filter, request state, and whether a next page is
-available. The block uses one lazy scroll view and never receives a cursor.
+Copy `merchant_history.dart` and `paged_block_footer.dart`. Give the block a
+bounded viewport and pass accumulated records, the active query and filter,
+request state, and whether a next page is available. The block uses one lazy
+scroll view and never receives a cursor.
 Use `history_block_demo.dart` as the reference for the host side:
 
 1. Apply the query and status filter at the server, before paging. Treat the
@@ -78,7 +79,9 @@ rules; this block demonstrates a host screen using them.
 ## Source
 
 <BlockSource name="history" />
+<BlockSource name="pagedFooter" />
 <BlockSource name="historyDemo" />
+<BlockSource name="reportProblem" />
 <BlockSource name="demoShell" />
 <BlockSource name="themes" />
 

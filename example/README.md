@@ -38,8 +38,8 @@ flutter run -d chrome  # web gallery
 
 ## Other blocks
 
-Mobile blocks: `flutter run -t lib/<demo>.dart` with `history_block_demo`,
-`kyc_review_demo`, `manual_transfer_demo`, `method_quote_demo`,
+Mobile blocks: `flutter run -t lib/<demo>.dart` with `collection_block_demo`,
+`history_block_demo`, `kyc_review_demo`, `manual_transfer_demo`, `method_quote_demo`,
 `refund_detail_demo`, `kyc_onboarding_demo`, `kyc_capture_demo` or
 `payment_preferences_demo`. The developer menus select synthetic states. No real
 payment or identity data is used.

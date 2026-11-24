@@ -982,3 +982,7 @@ Interrupting a running reveal reverses through a private `SpringSimulation`: `Sp
 ### Same-phone wallet handoff, 24 November 2026
 
 - **D138: Same-phone wallet handoff is a copyable host block (#372).** D135's QRIS image remains a second-device scan. For a supported same-phone wallet, the host persists the approved quote and attempt before handing off, then matches launch completions and return signals to that attempt. A missing app, a wallet-step cancellation or no return never settles payment. Keep Check status on the same attempt and preserve pending or unknown status until the host has an authoritative snapshot. Don't offer another payment from this block. The gallery simulates the host contract; a real wallet needs provider-specific Android verification. No package API, payment-method change or kit-owned effect.
+
+### Host-paged collections, 24 November 2026
+
+- **D139: Collection is a copyable host block (#374).** Accept a row builder rather than prescribing a record type or layout. Keep cursors, request ordering, and localized copy in the host. An empty first page can offer a way to add the first record; an empty later page keeps the existing results and ends paging in the demo. A failure keeps earlier rows and retries the same request. Share D136's pager and visible, attempt-keyed live region without introducing a package dependency or payment behavior.

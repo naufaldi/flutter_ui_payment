@@ -19,7 +19,8 @@ explain behavior; Guides cover general recipes. D105 records this navigation
 split while preserving existing page URLs. The blocks cover merchant overview,
 checkout and recovery, history, transaction problem reports, refunds, manual
 transfer, QRIS, wallet handoff and return, method and quote changes, KYC
-onboarding, capture and correction, and payment preferences.
+onboarding, capture and correction, payment preferences, and generic paged
+collections.
 
 | Document | Audience and role |
 | --- | --- |

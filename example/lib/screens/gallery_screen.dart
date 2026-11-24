@@ -7,6 +7,7 @@ import 'package:rakit_ui/rakit_ui.dart';
 import '../adapters/fake_host.dart';
 import '../adapters/synthetic_capture.dart';
 import '../adapters/video_adapter.dart';
+import '../collection_block_demo.dart';
 import '../compositions/host_checkout.dart';
 import '../compositions/host_payment_recovery.dart';
 import '../compositions/host_checkout_journey.dart';
@@ -70,6 +71,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
       PaymentNavSection(
         title: t('Building blocks', 'Dasar'),
         items: [
+          PaymentNavItem(
+            id: 'collection',
+            label: t('Collection', 'Koleksi'),
+            icon: Icons.collections_bookmark_outlined,
+          ),
           PaymentNavItem(
             id: 'kit',
             label: t('Kit components', 'Komponen kit'),
@@ -345,6 +351,9 @@ class _GalleryScreenState extends State<GalleryScreen> {
       body: ColoredBox(
         color: devWorkbench(context),
         child: switch (_section) {
+          'collection' => const SafeArea(
+            child: CollectionBlockDemo(embedded: true),
+          ),
           'qris' => const SafeArea(child: QrisCheckoutDemo(embedded: true)),
           'wallet-handoff' => const SafeArea(
             child: WalletHandoffDemo(embedded: true),
