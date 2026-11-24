@@ -438,13 +438,13 @@ function reportFreshness(args) {
     return stat?.isFile() ? stat : undefined;
   };
   const webp = (name) => lstatSync(join(target, `${name}.webp`), { throwIfNoEntry: false })?.isFile();
-  const report = (name, input, canReuseWebp, canReusePng = true) => {
+  const report = (name, input, canReuseWebp) => {
     if (input?.mtimeMs > since) {
       fresh.push(name);
       return;
     }
     missing.push(name);
-    if (input && canReusePng) reused.push(`${name} (older PNG)`);
+    if (input) reused.push(`${name} (older PNG)`);
     else if (canReuseWebp && webp(name)) reused.push(`${name} (existing WebP)`);
   };
   for (const name of names) {
@@ -456,11 +456,13 @@ function reportFreshness(args) {
     // A fresh base replaces the whole set; otherwise its committed tail
     // still tells us which parts did not get recaptured.
     const expectedParts = input?.mtimeMs > since ? 0 : (committed?.parts?.length ?? 0);
+    // Conversion only reads the contiguous PNG prefix starting at the base.
+    let partInput = input;
     for (let i = 0; ; i++) {
       const part = partName(name, i);
-      const partInput = png(part);
+      partInput = partInput && png(part);
       if (!partInput && i >= expectedParts) break;
-      report(part, partInput, reuseCommittedSet && i < expectedParts, Boolean(input));
+      report(part, partInput, reuseCommittedSet && i < expectedParts);
     }
   }
   for (const [label, entries] of [

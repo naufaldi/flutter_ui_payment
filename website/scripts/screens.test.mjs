@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { test } from 'node:test';
 
-test('selective reports include the stale tail but accept a fresh shorter recapture', (t) => {
+test('selective reports include the stale tail but accept a fresh shorter recapture', async (t) => {
   const root = mkdtempSync(join(tmpdir(), 'rakit-screens-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const script = join(root, 'website/scripts/screens.mjs');
@@ -46,9 +46,23 @@ test('selective reports include the stale tail but accept a fresh shorter recapt
   assert.ok(!stale.stdout.includes(`  ${name}_part3 (existing WebP)\n`), stale.stdout);
   assert.ok(stale.stdout.includes(`  ${name}_part2 (older PNG)\n`), stale.stdout);
 
+  rmSync(join(captureDir, `${name}_part2.png`));
+  for (const [label, offset] of [['older', -1000], ['fresh', 1000]]) {
+    await t.test(`orphan after a gap (${label} PNG) is missing, not fresh or reusable`, () => {
+      capture(`${name}_part3`, since + offset);
+      const orphan = report();
+      assert.equal(orphan.status, 1, orphan.stderr);
+      assert.match(orphan.stdout, /Fresh PNGs \(0\)/);
+      assert.ok(orphan.stdout.includes(`  ${name}_part3\n`), orphan.stdout);
+      assert.ok(!orphan.stdout.includes(`  ${name}_part3 (`), orphan.stdout);
+    });
+  }
+
   rmSync(join(captureDir, `${name}.png`));
+  capture(`${name}_part2`, since - 1000);
   const committed = report();
   assert.equal(committed.status, 1, committed.stderr);
+  assert.match(committed.stdout, /Fresh PNGs \(0\)/);
   assert.ok(committed.stdout.includes(`  ${name}_part2 (existing WebP)\n`), committed.stdout);
   assert.ok(!committed.stdout.includes(`  ${name}_part2 (older PNG)\n`), committed.stdout);
   assert.ok(committed.stdout.includes(`  ${name}_part3\n`), committed.stdout);
@@ -60,6 +74,7 @@ test('selective reports include the stale tail but accept a fresh shorter recapt
   assert.ok(noFallback.stdout.includes(`  ${name}_part3\n`), noFallback.stdout);
   assert.ok(noFallback.stdout.includes('Existing assets available for reuse (0)'), noFallback.stdout);
 
+  rmSync(join(captureDir, `${name}_part3.png`));
   capture(name, since + 1000);
   capture(`${name}_part2`, since + 1000);
   const fresh = report();
