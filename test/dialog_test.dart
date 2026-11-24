@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show SemanticsAction;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -67,6 +68,158 @@ void surface(WidgetTester tester, Size size) {
     );
 
 void main() {
+  testWidgets('async removal locks repeat activation and keeps host recovery', (
+    tester,
+  ) async {
+    surface(tester, const Size(320, 640));
+    final semantics = tester.ensureSemantics();
+    final firstWrite = Completer<bool>();
+    final secondWrite = Completer<bool>();
+    final failed = ValueNotifier(false);
+    addTearDown(failed.dispose);
+    var writes = 0;
+    bool? result;
+    late ModalRoute<bool> prompt;
+    await tester.pumpWidget(
+      app(
+        Builder(
+          builder: (context) => TextButton(
+            onPressed: () async {
+              result = await showPaymentAsyncConfirmDialog(
+                context,
+                title: 'Remove statement?',
+                description: Builder(
+                  builder: (context) {
+                    prompt = ModalRoute.of<bool>(context)!;
+                    return ValueListenableBuilder(
+                      valueListenable: failed,
+                      builder: (_, showFailure, _) => showFailure
+                          ? Semantics(
+                              liveRegion: true,
+                              child: const Text('Not removed. Try again.'),
+                            )
+                          : const Text('This cannot be undone.'),
+                    );
+                  },
+                ),
+                confirmLabel: 'Remove statement',
+                pendingLabel: 'Removing statement',
+                destructive: true,
+                onConfirm: () async {
+                  if (++writes == 1) {
+                    final removed = await firstWrite.future;
+                    failed.value = !removed;
+                    return removed;
+                  }
+                  return secondWrite.future;
+                },
+              );
+            },
+            child: const Text('Open'),
+          ),
+        ),
+        scale: 2,
+      ),
+    );
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+    expect(Focus.of(tester.element(find.text('Cancel'))).hasFocus, isTrue);
+    final confirm = find.text('Remove statement');
+    await tester.tap(confirm);
+    await tester.tap(confirm); // Same frame: the old enabled UI is still built.
+    await tester.tap(find.text('Cancel'));
+    await tester.binding.handlePopRoute();
+    expect(writes, 1);
+    expect(result, isNull);
+
+    await tester.pump();
+    final busy = find.semantics.byValue('Removing statement').evaluate().single;
+    expect(busy.flagsCollection.isLiveRegion, isTrue);
+    expect(
+      tester
+          .getSemantics(confirm)
+          .getSemanticsData()
+          .hasAction(SemanticsAction.tap),
+      isFalse,
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.tapAt(const Offset(4, 4));
+    await tester.drag(find.text('Remove statement?'), const Offset(0, 280));
+    expect(result, isNull);
+
+    firstWrite.complete(false);
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Not removed. Try again.'), findsOneWidget);
+    expect(result, isNull);
+    expect(writes, 1);
+    await tester.tap(confirm);
+    await tester.pump();
+    expect(writes, 2);
+    prompt.addLocalHistoryEntry(LocalHistoryEntry());
+    secondWrite.complete(true);
+    await tester.pumpAndSettle();
+    expect(find.text('Remove statement?'), findsNothing);
+    expect(result, isTrue);
+    expect(tester.takeException(), isNull);
+    semantics.dispose();
+  });
+
+  testWidgets('system Back cannot pop the parent of a pending nested confirm', (
+    tester,
+  ) async {
+    surface(tester, const Size(360, 640));
+    final write = Completer<bool>();
+    bool? result;
+    await tester.pumpWidget(
+      app(
+        Builder(
+          builder: (context) => TextButton(
+            onPressed: () => unawaited(
+              Navigator.of(context).push<void>(
+                MaterialPageRoute(
+                  builder: (_) => Scaffold(
+                    appBar: AppBar(title: const Text('Saved records')),
+                    body: Navigator(
+                      onGenerateRoute: (_) => MaterialPageRoute<void>(
+                        builder: (context) => TextButton(
+                          onPressed: () async {
+                            result = await showPaymentAsyncConfirmDialog(
+                              context,
+                              title: 'Remove record?',
+                              description: const Text('This cannot be undone.'),
+                              confirmLabel: 'Remove record',
+                              onConfirm: () => write.future,
+                            );
+                          },
+                          child: const Text('Open confirmation'),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            child: const Text('Open records'),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Open records'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Open confirmation'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Remove record'));
+    await tester.binding.handlePopRoute();
+    expect(result, isNull);
+    write.complete(true);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Saved records'), findsOneWidget);
+    expect(find.text('Open confirmation'), findsOneWidget);
+    expect(find.text('Remove record?'), findsNothing);
+    expect(result, isTrue);
+  });
+
   testWidgets('wide dialog uses enter and reverse-duration exit', (
     tester,
   ) async {

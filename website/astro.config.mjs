@@ -173,6 +173,7 @@ export default defineConfig({
           { label: 'Privacy mask', slug: 'components/privacy-mask' },
           { label: 'Property list', slug: 'components/property-list' },
           { label: 'Radio', slug: 'components/radio' },
+          { label: 'Record card', slug: 'components/record-card' },
           { label: 'Search field', slug: 'components/search-field' },
           { label: 'Section', slug: 'components/section' },
           { label: 'Select', slug: 'components/select' },

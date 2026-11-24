@@ -236,6 +236,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
         _MenuSpecimen(),
         _AccordionSpecimen(),
         _ListSpecimen(),
+        _RecordCardSpecimen(),
       ],
       'forms' => const [
         _FormsSpecimen('PaymentTextArea'),
@@ -269,6 +270,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ],
       'kit' => const [
         _KitSpecimen('dialog'),
+        _KitSpecimen('async_dialog'),
         _KitSpecimen('sheets'),
         _KitSpecimen('section'),
         _KitSpecimen('navigation'),

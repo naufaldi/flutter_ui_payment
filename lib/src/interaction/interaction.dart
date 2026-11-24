@@ -683,67 +683,187 @@ Future<bool> showPaymentConfirmDialog(
   required String confirmLabel,
   String? cancelLabel,
   bool destructive = false,
-}) async {
-  // One filled button: the confirm action, in the danger tone when it cannot
-  // be undone. Cancel stays quiet.
-  List<PaymentButton> actions(BuildContext context) => [
-    PaymentButton(
-      label: confirmLabel,
-      variant: destructive
-          ? PaymentButtonVariant.destructive
-          : PaymentButtonVariant.primary,
-      autofocus: !destructive,
-      onPressed: () => Navigator.pop(context, true),
+}) => _showConfirm(
+  context,
+  builder: (context, compact) => _ConfirmContent(
+    compact: compact,
+    title: title,
+    description: Text(message),
+    confirmLabel: confirmLabel,
+    cancelLabel: cancelLabel,
+    destructive: destructive,
+    onConfirm: () => Navigator.pop(context, true),
+    onCancel: () => Navigator.pop(context, false),
+  ),
+);
+
+/// Presents confirmation with the same responsive layout and initial focus as
+/// [showPaymentConfirmDialog], but keeps it open while the host runs [onConfirm].
+///
+/// [title] names the action. [description] is host content (including any
+/// recovery message), with the kit's supporting body style by default.
+/// [confirmLabel] names the operation and [cancelLabel] overrides localized
+/// Cancel. [pendingLabel] is the spoken busy status; it defaults to the kit's
+/// localized working label. For [destructive] actions, Cancel receives focus.
+///
+/// Return `true` from [onConfirm] only when the host confirms success. Return
+/// `false` to leave the prompt open and make the actions available again. The
+/// host handles expected failures and decides whether another activation may
+/// retry the operation or should only check its status. The kit never retries.
+/// Unexpected exceptions are reported to Flutter and leave the prompt open.
+///
+/// The prompt uses the root navigator. While pending, repeat activation,
+/// Cancel, scrim, Back and Escape cannot dismiss it. The async sheet does
+/// not support swipe-to-dismiss.
+/// The returned future is `true` only for confirmed success and `false` on
+/// dismissal. A host that force-removes the route does not cancel the operation.
+Future<bool> showPaymentAsyncConfirmDialog(
+  BuildContext context, {
+  required String title,
+  required Widget description,
+  required String confirmLabel,
+  required Future<bool> Function() onConfirm,
+  String? cancelLabel,
+  String? pendingLabel,
+  bool destructive = false,
+}) => _showConfirm(
+  context,
+  enableDrag: false,
+  useRootNavigator: true,
+  builder: (context, compact) => _AsyncConfirm(
+    builder: (pending, confirm, cancel) => _ConfirmContent(
+      compact: compact,
+      title: title,
+      description: description,
+      confirmLabel: confirmLabel,
+      cancelLabel: cancelLabel,
+      pendingLabel: pendingLabel,
+      destructive: destructive,
+      pending: pending,
+      onConfirm: confirm,
+      onCancel: cancel,
     ),
-    PaymentButton(
-      label: cancelLabel ?? PaymentLocalizations.of(context).cancel,
-      variant: PaymentButtonVariant.quiet,
-      autofocus: destructive,
-      onPressed: () => Navigator.pop(context, false),
-    ),
-  ];
-  Widget text(BuildContext context) {
-    final theme = PaymentTheme.of(context);
-    final type = PaymentType.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Semantics(header: true, child: Text(title, style: type.title)),
-        SizedBox(height: theme.space(PaymentSpace.related)),
-        Text(
-          message,
-          style: type.bodyFor(context).copyWith(color: theme.textSecondary),
-        ),
-      ],
-    );
+    onConfirm: onConfirm,
+  ),
+);
+
+class _AsyncConfirm extends StatefulWidget {
+  const _AsyncConfirm({required this.builder, required this.onConfirm});
+
+  final Widget Function(
+    bool pending,
+    VoidCallback confirm,
+    VoidCallback? cancel,
+  )
+  builder;
+  final Future<bool> Function() onConfirm;
+
+  @override
+  State<_AsyncConfirm> createState() => _AsyncConfirmState();
+}
+
+class _AsyncConfirmState extends State<_AsyncConfirm>
+    implements PopEntry<bool> {
+  @override
+  final ValueNotifier<bool> canPopNotifier = ValueNotifier(true);
+  ModalRoute<bool>? _route;
+
+  bool get _pending => !canPopNotifier.value;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of<bool>(context)!;
+    if (route == _route) return;
+    _route?.unregisterPopEntry(this);
+    _route = route..registerPopEntry(this);
   }
 
+  @override
+  void dispose() {
+    _route!.unregisterPopEntry(this);
+    canPopNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  void onPopInvoked(bool didPop) {}
+
+  @override
+  void onPopInvokedWithResult(bool didPop, bool? result) {}
+
+  Future<void> _submit() async {
+    final route = _route!;
+    if (_pending || !route.isCurrent) return;
+    // Lock Back and barrier taps before a rebuild (or host work) can happen.
+    setState(() => canPopNotifier.value = false);
+    final bool confirmed;
+    try {
+      confirmed = await widget.onConfirm();
+    } catch (error, stack) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stack,
+          library: 'rakit_ui',
+        ),
+      );
+      if (mounted && route.isActive) {
+        setState(() => canPopNotifier.value = true);
+      }
+      return;
+    }
+    if (!mounted || !route.isActive) return;
+    if (confirmed) {
+      _close(true);
+    } else {
+      setState(() => canPopNotifier.value = true);
+    }
+  }
+
+  void _cancel() {
+    if (!_pending && _route!.isCurrent) {
+      _close(false);
+    }
+  }
+
+  void _close(bool result) {
+    final route = _route!;
+    final navigator = route.navigator!;
+    // An ordinary pop could dismiss a covering route or consume local history.
+    if (route.isCurrent && !route.willHandlePopInternally) {
+      navigator.pop(result);
+    } else {
+      navigator.removeRoute(route, result);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      widget.builder(_pending, _submit, _pending ? null : _cancel);
+}
+
+Future<bool> _showConfirm(
+  BuildContext context, {
+  required Widget Function(BuildContext context, bool compact) builder,
+  bool enableDrag = true,
+  bool useRootNavigator = false,
+}) async {
   final bool? result;
   if (isCompact(context)) {
     result = await showKitBottomSheet<bool>(
       context: context,
       showDragHandle: false,
+      enableDrag: enableDrag,
+      useRootNavigator: useRootNavigator,
       builder: (context) {
-        final theme = PaymentTheme.of(context);
-        final inset = theme.space(PaymentSpace.group);
-        // The text scrolls at large sizes; the actions stay in reach.
+        final inset = PaymentTheme.of(context).space(PaymentSpace.group);
         return SafeArea(
           top: false,
           minimum: EdgeInsets.only(bottom: inset),
           child: Padding(
             padding: EdgeInsets.fromLTRB(inset, inset, inset, 0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Flexible(child: SingleChildScrollView(child: text(context))),
-                SizedBox(height: theme.space(PaymentSpace.section)),
-                PaymentButtonGroup(
-                  direction: Axis.vertical,
-                  children: actions(context),
-                ),
-              ],
-            ),
+            child: builder(context, true),
           ),
         );
       },
@@ -763,7 +883,6 @@ Future<bool> showPaymentConfirmDialog(
         builder: (context) {
           final theme = PaymentTheme.of(context);
           final inset = theme.space(PaymentSpace.group);
-          final [confirm, cancel] = actions(context);
           return Dialog(
             backgroundColor: theme.surface,
             surfaceTintColor: Colors.transparent,
@@ -774,23 +893,7 @@ Future<bool> showPaymentConfirmDialog(
               constraints: const BoxConstraints(maxWidth: 400),
               child: Padding(
                 padding: EdgeInsets.all(inset),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Flexible(
-                      child: SingleChildScrollView(child: text(context)),
-                    ),
-                    SizedBox(height: theme.space(PaymentSpace.section)),
-                    Row(
-                      children: [
-                        Expanded(child: cancel),
-                        SizedBox(width: theme.space(PaymentSpace.related)),
-                        Expanded(child: confirm),
-                      ],
-                    ),
-                  ],
-                ),
+                child: builder(context, false),
               ),
             ),
           );
@@ -799,6 +902,92 @@ Future<bool> showPaymentConfirmDialog(
     );
   }
   return result ?? false;
+}
+
+class _ConfirmContent extends StatelessWidget {
+  const _ConfirmContent({
+    required this.compact,
+    required this.title,
+    required this.description,
+    required this.confirmLabel,
+    required this.cancelLabel,
+    required this.destructive,
+    required this.onConfirm,
+    required this.onCancel,
+    this.pending = false,
+    this.pendingLabel,
+  });
+
+  final bool compact;
+  final String title;
+  final Widget description;
+  final String confirmLabel;
+  final String? cancelLabel;
+  final bool destructive;
+  final VoidCallback onConfirm;
+  final VoidCallback? onCancel;
+  final bool pending;
+  final String? pendingLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PaymentTheme.of(context);
+    final type = PaymentType.of(context);
+    final gap = theme.space(PaymentSpace.related);
+    final confirm = PaymentButton(
+      label: confirmLabel,
+      variant: destructive
+          ? PaymentButtonVariant.destructive
+          : PaymentButtonVariant.primary,
+      autofocus: !destructive,
+      busy: pending,
+      busyLabel: pendingLabel,
+      onPressed: pending ? null : onConfirm,
+    );
+    final cancel = PaymentButton(
+      label: cancelLabel ?? PaymentLocalizations.of(context).cancel,
+      variant: PaymentButtonVariant.quiet,
+      autofocus: destructive,
+      onPressed: onCancel,
+    );
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Flexible(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Semantics(header: true, child: Text(title, style: type.title)),
+                SizedBox(height: gap),
+                DefaultTextStyle.merge(
+                  style: type
+                      .bodyFor(context)
+                      .copyWith(color: theme.textSecondary),
+                  child: description,
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: theme.space(PaymentSpace.section)),
+        if (compact)
+          PaymentButtonGroup(
+            direction: Axis.vertical,
+            children: [confirm, cancel],
+          )
+        else
+          Row(
+            children: [
+              Expanded(child: cancel),
+              SizedBox(width: gap),
+              Expanded(child: confirm),
+            ],
+          ),
+      ],
+    );
+  }
 }
 
 // The wide confirm dialog's route. The SDK's DialogRoute takes only the

@@ -986,3 +986,7 @@ Interrupting a running reveal reverses through a private `SpringSimulation`: `Sp
 ### Host-paged collections, 24 November 2026
 
 - **D139: Collection is a copyable host block (#374).** Accept a row builder rather than prescribing a record type or layout. Keep cursors, request ordering, and localized copy in the host. An empty first page can offer a way to add the first record; an empty later page keeps the existing results and ends paging in the demo. A failure keeps earlier rows and retries the same request. Share D136's pager and visible, attempt-keyed live region without introducing a package dependency or payment behavior.
+
+### Record cards and async confirmation, 24 November 2026
+
+- **D140: Add record cards and async confirmation (#375).** Record cards keep body, trailing and footer actions separate instead of adding nested gestures to the flat list row. Stack the trailing slot when the inline layout cannot fit a 48 dp control. Async confirmation shares the bool presenter's layout and safe initial focus without changing that presenter's API or swipe behavior. Put the async prompt on the root navigator so system Back reaches its pending lock even when the caller is inside a nested navigator. The async sheet opts out of swipe dismissal because the SDK drag can pop without consulting that lock. The host owns record identity, authorization, the write and any recovery or safe retry.
