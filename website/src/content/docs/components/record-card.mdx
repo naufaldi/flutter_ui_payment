@@ -1,0 +1,67 @@
+---
+title: Record card
+description: A record surface with independent actions for opening the record, a trailing control, and a footer.
+---
+
+import Props from '../../../components/Props.astro';
+
+`PaymentRecordCard` gives a saved record one surface for its title, metadata and actions. Only the body opens the record; the trailing slot and footer operate independently.
+
+## Usage
+
+```dart
+PaymentRecordCard(
+  leading: const PaymentIcon(Icons.description_outlined),
+  title: const Text('Settlement statement'),
+  metadata: const Text('November 2026 · PDF'),
+  onOpen: openStatement,
+  trailing: PaymentIconButton(
+    icon: Icons.delete_outline,
+    tooltip: 'Remove statement',
+    onPressed: confirmRemoval,
+  ),
+  footer: Align(
+    alignment: AlignmentDirectional.centerStart,
+    child: PaymentLink(label: 'Download', onPressed: downloadStatement),
+  ),
+);
+```
+
+The card uses the nearest `PaymentTheme` for its surface, outline, spacing and radii, and `PaymentType` for heading and caption defaults. Pass your own slot widgets to customize content. The card does not fetch, open or delete records itself.
+
+## Variants
+
+- **Openable:** supply `onOpen` to make the body a button.
+- **Read-only body:** omit `onOpen`. Trailing and footer controls still work if supplied.
+
+## Which variant when
+
+Use an openable card when a record has a detail view. Use a read-only body when there's no detail view but its actions are still useful. Use a flat [list item](/components/list/) for simple navigation rows that don't need a separate footer.
+
+## States
+
+The body is either openable or read-only. Each action slot owns its own disabled, progress or feedback state. The trailing slot moves below the body at large text sizes or when it would have less than 48 dp in the row. Give the card at least 48 dp of width to fit a standard tap target. In containers that size themselves to their content, such as a Flutter `AlertDialog`, give a card with a trailing slot an explicit width instead of letting the container measure it intrinsically.
+
+## Do and don't
+
+**Do** put buttons and links in the trailing slot or footer.
+
+**Don't** nest a control in the title, leading or metadata slots, or put a tap handler around the whole card.
+
+## Content guidelines
+
+Use the name of the record as the title, and keep supporting facts such as date or format in metadata. Keep the leading visual decorative; it fits within a 40 × 40 dp tile so the title has room. Name icon-only actions for what they do, such as “Remove statement.”
+
+## Accessibility
+
+The openable body is a single keyboard- and screen-reader-operable control. By default its name combines the title and metadata; use `openLabel` if the spoken name needs to differ. The leading visual is excluded from semantics. Supply labelled controls with at least 48 dp targets in the action slots; `PaymentIconButton` and `PaymentLink` do this by default.
+
+## API
+
+<Props names={["PaymentRecordCard"]} />
+
+## See also
+
+- [List](/components/list/) for flat rows.
+- [Dialog](/components/dialog/) for confirmation before destructive actions.
+- In the example app gallery, open **Interaction** to try the card's body, remove control and download link separately.

@@ -18,6 +18,7 @@ Future<T?> showKitBottomSheet<T>({
   bool enableDrag = true,
   bool showDragHandle = true,
   bool fullHeight = false,
+  bool useRootNavigator = false,
 }) {
   final motion = PaymentMotion.of(context);
   final theme = PaymentTheme.of(context);
@@ -31,6 +32,7 @@ Future<T?> showKitBottomSheet<T>({
         : builder,
     isScrollControlled: true,
     useSafeArea: true,
+    useRootNavigator: useRootNavigator,
     showDragHandle: showDragHandle,
     isDismissible: isDismissible,
     enableDrag: enableDrag,

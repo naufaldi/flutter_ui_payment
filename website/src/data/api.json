@@ -10170,6 +10170,103 @@
       }
     ]
   },
+  "showPaymentAsyncConfirmDialog": {
+    "kind": "function",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "Presents confirmation with the same responsive layout and initial focus as\n`showPaymentConfirmDialog`, but keeps it open while the host runs `onConfirm`.\n\n`title` names the action. `description` is host content (including any\nrecovery message), with the kit's supporting body style by default.\n`confirmLabel` names the operation and `cancelLabel` overrides localized\nCancel. `pendingLabel` is the spoken busy status; it defaults to the kit's\nlocalized working label. For `destructive` actions, Cancel receives focus.\n\nReturn `true` from `onConfirm` only when the host confirms success. Return\n`false` to leave the prompt open and make the actions available again. The\nhost handles expected failures and decides whether another activation may\nretry the operation or should only check its status. The kit never retries.\nUnexpected exceptions are reported to Flutter and leave the prompt open.\n\nThe prompt uses the root navigator. While pending, repeat activation,\nCancel, scrim, Back and Escape cannot dismiss it. The async sheet does\nnot support swipe-to-dismiss.\nThe returned future is `true` only for confirmed success and `false` on\ndismissal. A host that force-removes the route does not cancel the operation.",
+    "returns": "Future<bool>",
+    "typeParams": "",
+    "params": [
+      {
+        "name": "context",
+        "type": "BuildContext",
+        "required": true,
+        "default": null,
+        "named": false,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "title",
+        "type": "String",
+        "required": true,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "description",
+        "type": "Widget",
+        "required": true,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "confirmLabel",
+        "type": "String",
+        "required": true,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "onConfirm",
+        "type": "Future<bool> Function()",
+        "required": true,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "cancelLabel",
+        "type": "String?",
+        "required": false,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "pendingLabel",
+        "type": "String?",
+        "required": false,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "destructive",
+        "type": "bool",
+        "required": false,
+        "default": "false",
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      }
+    ]
+  },
   "PaymentToastController": {
     "kind": "class",
     "file": "lib/src/interaction/interaction.dart",
@@ -23185,6 +23282,152 @@
         "static": false,
         "type": "bool",
         "doc": "Shows `valueText` as a reference or ID: monospace tabular text on the\nvalue edge, without a fill (D57). Add a copy button as `trailing`."
+      }
+    ],
+    "copyWith": null
+  },
+  "PaymentRecordCard": {
+    "kind": "class",
+    "file": "lib/src/content/record_card.dart",
+    "doc": "A record surface with a separately actionable body, trailing slot and footer.\nOnly the body opens the record. Use passive widgets for the title, leading\nvisual and metadata, and put controls in `trailing` or `footer`.",
+    "extends": "StatelessWidget",
+    "constructors": [
+      {
+        "name": "PaymentRecordCard",
+        "factory": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "Widget",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "title",
+            "doc": "A record title, styled as a heading by default."
+          },
+          {
+            "name": "leading",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "leading",
+            "doc": "A decorative icon or thumbnail, limited to 40 × 40 dp and not spoken."
+          },
+          {
+            "name": "metadata",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "metadata",
+            "doc": "Supporting content below the title, styled as a caption by default."
+          },
+          {
+            "name": "trailing",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "trailing",
+            "doc": "An independent end slot. It moves below the body at large text sizes\nor when the inline slot would be narrower than 48 dp."
+          },
+          {
+            "name": "footer",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "footer",
+            "doc": "An independent full-width slot below a divider."
+          },
+          {
+            "name": "onOpen",
+            "type": "VoidCallback?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "onOpen",
+            "doc": "Opens the record from its body. If omitted, the body is read-only."
+          },
+          {
+            "name": "openLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "openLabel",
+            "doc": "Replaces the open action's spoken title and metadata, when supplied."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "title",
+        "kind": "field",
+        "static": false,
+        "type": "Widget",
+        "doc": "A record title, styled as a heading by default."
+      },
+      {
+        "name": "leading",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "A decorative icon or thumbnail, limited to 40 × 40 dp and not spoken."
+      },
+      {
+        "name": "metadata",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "Supporting content below the title, styled as a caption by default."
+      },
+      {
+        "name": "trailing",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "An independent end slot. It moves below the body at large text sizes\nor when the inline slot would be narrower than 48 dp."
+      },
+      {
+        "name": "footer",
+        "kind": "field",
+        "static": false,
+        "type": "Widget?",
+        "doc": "An independent full-width slot below a divider."
+      },
+      {
+        "name": "onOpen",
+        "kind": "field",
+        "static": false,
+        "type": "VoidCallback?",
+        "doc": "Opens the record from its body. If omitted, the body is read-only."
+      },
+      {
+        "name": "openLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Replaces the open action's spoken title and metadata, when supplied."
       }
     ],
     "copyWith": null

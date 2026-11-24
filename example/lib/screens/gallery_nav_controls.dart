@@ -151,6 +151,42 @@ class _AccordionSpecimen extends StatelessWidget {
   );
 }
 
+class _RecordCardSpecimen extends StatelessWidget {
+  const _RecordCardSpecimen();
+
+  @override
+  Widget build(BuildContext context) {
+    String t(String en, String id) => _t(context, en, id);
+    final title = t('Settlement statement', 'Laporan setelmen');
+    return _Entry(
+      name: 'PaymentRecordCard · ${t('saved record', 'dokumen tersimpan')}',
+      child: PaymentRecordCard(
+        leading: const PaymentIcon(Icons.description_outlined),
+        title: Text(title),
+        metadata: const Text('November 2026 · PDF'),
+        onOpen: () =>
+            _galleryFeedback(context, 'Opened the statement', 'Laporan dibuka'),
+        trailing: PaymentIconButton(
+          icon: Icons.delete_outline,
+          tooltip: t('Remove statement', 'Hapus laporan'),
+          onPressed: () => _removeDemoStatement(context),
+        ),
+        footer: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: PaymentLink(
+            label: t('Download', 'Unduh'),
+            onPressed: () => _galleryFeedback(
+              context,
+              'Download requested',
+              'Unduhan diminta',
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _ListSpecimen extends StatelessWidget {
   const _ListSpecimen();
   @override

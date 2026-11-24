@@ -1,5 +1,50 @@
 part of 'gallery_screen.dart';
 
+Future<void> _removeDemoStatement(BuildContext context) async {
+  String t(String en, String id) => _t(context, en, id);
+  final description = t(
+    'It will no longer appear in your saved records.',
+    'Laporan tidak akan muncul lagi di dokumen tersimpan.',
+  );
+  final recovery = t(
+    'The statement was not removed. You can try again.',
+    'Laporan belum dihapus. Anda dapat mencoba lagi.',
+  );
+  final message = ValueNotifier(description);
+  var attempts = 0;
+  var closed = false;
+  try {
+    final removed = await showPaymentAsyncConfirmDialog(
+      context,
+      title: t('Remove this statement?', 'Hapus laporan ini?'),
+      description: ValueListenableBuilder(
+        valueListenable: message,
+        builder: (_, text, _) => Semantics(liveRegion: true, child: Text(text)),
+      ),
+      confirmLabel: t('Remove statement', 'Hapus laporan'),
+      pendingLabel: t('Removing statement', 'Menghapus laporan'),
+      destructive: true,
+      onConfirm: () async {
+        final retry = ++attempts > 1;
+        message.value = description;
+        await Future<void>.delayed(const Duration(seconds: 1));
+        if (!retry && !closed) message.value = recovery;
+        return retry;
+      },
+    );
+    if (removed && context.mounted) {
+      _galleryFeedback(
+        context,
+        'Statement removed (demo)',
+        'Laporan dihapus (demo)',
+      );
+    }
+  } finally {
+    closed = true;
+    message.dispose();
+  }
+}
+
 class _KitSpecimen extends StatefulWidget {
   const _KitSpecimen(this.kind);
   final String kind;
@@ -64,6 +109,21 @@ class _KitSpecimenState extends State<_KitSpecimen> {
               cancelLabel: tr('Cancel', 'Batal'),
               destructive: true,
             ),
+          ),
+        ],
+      ),
+      'async_dialog' => (
+        'showPaymentAsyncConfirmDialog · ${tr('pending and recovery', 'menunggu dan pemulihan')}',
+        <Widget>[
+          Text(
+            tr(
+              'The first attempt fails in this demo.',
+              'Percobaan pertama gagal dalam demo ini.',
+            ),
+          ),
+          action(
+            tr('Remove statement', 'Hapus laporan'),
+            onPressed: () => _removeDemoStatement(context),
           ),
         ],
       ),

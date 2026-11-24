@@ -81,6 +81,7 @@ Choose applicable states from [§4](prd-foundation-components.md#4-components-ho
 - D29: small visuals still occupy a ≥48 dp hit box. Busy actions prevent repeated activation; server-side deduplication remains host-owned.
 - D65–D67: both reduced-motion flags produce zero kit animation; keep the named SDK exceptions honest. D94 limits content handoffs to the recorded recipes; frequent ready-state data changes stay instant and outgoing content cannot take focus or taps.
 - D92: confirm, search, menu and focus overlays use the window's shortest side, under 600 dp for phone forms. Content layout still follows available width. D45 confirms use phone sheets and wide dialogs with safe dismissal/focus behavior.
+- D140: record cards keep opening separate from trailing and footer actions. Async confirmation shares the D45/D92 layout, but locks dismissal while the host action is pending. Recovery and write safety remain with the host.
 - D77: newest kit toast replaces showing/waiting toasts. D95 places it above the current route's pinned kit footer using the recorded scaffold/route rules, without splitting the toast queue.
 
 Sources: [§8 current decisions](prd-foundation-components.md#8-decisions), [motion spec](prd-foundation-components.md#37-motion), [focus and press](prd-foundation-components.md#38-focus-and-press). Keep component-specific interaction detail in its spec.

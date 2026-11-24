@@ -57,6 +57,7 @@ export 'src/forms/search_field.dart';
 export 'src/forms/date_range_picker.dart';
 
 export 'src/content/property_list.dart';
+export 'src/content/record_card.dart';
 export 'src/content/table.dart';
 
 export 'src/controls/button_group.dart';

@@ -112,6 +112,32 @@ Use Focus view for collecting a report.
 
 Confirm resolves to `true`. Cancel, Back, Escape and scrim dismissal resolve to `false`; the host performs the confirmed operation.
 
+### Confirm and wait for the host
+
+Use `showPaymentAsyncConfirmDialog` when the prompt needs to stay open until a host action succeeds. It uses the same phone and tablet layouts, action order and initial focus. The async sheet disables swipe-to-dismiss so an in-flight operation cannot be dismissed by a drag; Cancel, scrim, Back and Escape work when idle.
+
+```dart
+final removed = await showPaymentAsyncConfirmDialog(
+  context,
+  title: 'Remove this statement?',
+  description: ValueListenableBuilder<String>(
+    valueListenable: confirmationMessage,
+    builder: (_, message, _) => Semantics(
+      liveRegion: true,
+      child: Text(message),
+    ),
+  ),
+  confirmLabel: 'Remove statement',
+  pendingLabel: 'Removing statement',
+  destructive: true,
+  onConfirm: removeSelectedStatement,
+);
+```
+
+The host's `removeSelectedStatement` handles expected failures and returns `Future<bool>`. Return `true` only after confirming success. Return `false` to keep the prompt open and update `confirmationMessage` with safe recovery instructions. The async prompt uses the root navigator so system Back reaches it even when opened from a nested page. If the callback needs to await another route, open that route on the root navigator too so it appears above the prompt. While pending, the kit prevents repeated confirmation and user dismissal. `pendingLabel` is announced to assistive technology.
+
+Do not blindly repeat a write with an unknown outcome. Check the existing operation first, or have the user close the prompt and check status elsewhere. The kit does not decide whether a retry is safe and never retries by itself. The example gallery's **Kit components** section simulates a known failure followed by a successful retry.
+
 ## Do and don't
 
 **Do**: Name the consequence and keep Cancel quiet; focus Cancel for destruction.
@@ -135,7 +161,7 @@ Initial focus is on Cancel for destructive actions and Confirm otherwise. Dismis
 
 ## API
 
-<Props names={["showPaymentConfirmDialog"]} />
+<Props names={["showPaymentConfirmDialog", "showPaymentAsyncConfirmDialog"]} />
 
 ## See also
 
