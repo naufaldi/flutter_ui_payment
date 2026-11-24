@@ -5,6 +5,11 @@ description: Changes in Rakit UI, copied from CHANGELOG.md in the repository.
 
 Copied verbatim from `CHANGELOG.md`.
 
+## 0.3.1
+
+- Android TalkBack announces the sign-in cancellation error without requiring the user to scroll. The banner sits above the pinned actions; in short, large-text layouts, long errors can scroll without clipping the permissions or pushing Continue offscreen (#356, #311).
+- The cancellation and retry flow was checked with Android TalkBack. iPhone VoiceOver has not been checked yet.
+
 ## 0.3.0
 
 Requires Dart ^3.12.0 and Flutter >=3.44.0. Flutter SDK remains the only runtime dependency.
