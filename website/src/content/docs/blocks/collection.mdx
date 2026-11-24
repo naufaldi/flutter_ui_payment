@@ -1,15 +1,87 @@
 ---
 title: Collection
-description: A copyable, host-paged mobile list with your own rows and retry that keeps earlier results.
+description: An importable mobile collection for host-built rows, custom states and paging, plus a copyable Load more example.
 ---
 
 import BlockSource from '../../../components/BlockSource.astro';
+import Props from '../../../components/Props.astro';
 
 Use Collection for documents, OCR history, notes, or other records that need
-their own row layout. The block handles the list states and a Load more button.
-It does not fetch, filter, or know what a record contains.
+their own row layout. Import `PaymentCollection` when your host supplies the
+page controls and state content. Copy the [Load more block](#copy-the-load-more-block)
+when you want a ready-made append and retry example.
 
-## Run and try
+## Import a viewport
+
+Give the collection finite width and height, for example in a `Scaffold` body
+or an `Expanded` child of a bounded `Column`. It already scrolls. For
+pull-to-refresh, wrap it in a `RefreshIndicator` and pass
+`AlwaysScrollableScrollPhysics` so short and empty pages can refresh too.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:rakit_ui/rakit_ui.dart';
+
+Widget documentCollection({
+  required List<({String id, String title})> documents,
+  required Widget stateContent,
+  required Future<void> Function() refreshCurrentPage,
+  required double bottomClearance,
+  Widget? pager,
+}) {
+  final indexByKey = {
+    for (final (index, document) in documents.indexed)
+      ValueKey(document.id): index,
+  };
+  return RefreshIndicator(
+    onRefresh: refreshCurrentPage,
+    child: PaymentCollection(
+      rowCount: documents.length,
+      rowBuilder: (context, index) {
+        final document = documents[index];
+        return Text(document.title, key: ValueKey(document.id));
+      },
+      findItemIndexCallback: (key) => indexByKey[key],
+      placeholder: stateContent,
+      footer: pager,
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, bottomClearance),
+      maxContentWidth: 448,
+    ),
+  );
+}
+```
+
+- Pass only the current page's rows for numbered paging, or accumulated rows
+  for append paging. The builder runs on demand; no record type is required.
+- If a refresh or sort can reorder mounted rows, key each row by its stable
+  record ID and supply `findItemIndexCallback`. Return the row's zero-based
+  index in the new snapshot, excluding separators, or `null` if it was removed.
+  Keep the collection mounted so row state can follow the key.
+- With zero rows, `placeholder` can show your branded loading, empty or error
+  widget. With rows, the placeholder is ignored. Supply accessible labels and
+  error announcements in your state widgets.
+- `footer` scrolls after either the rows or the placeholder. Leave Previous on
+  an empty later page if the server allows it. Hide the pager when the host
+  has no valid navigation targets, such as an initial load.
+- Use `padding` for host insets, including clearance for a floating bar.
+  `maxContentWidth` caps the whole content column inside those insets. When
+  `padding` is omitted, the viewport uses the theme's group spacing.
+- Keep query, account and page identity in your app. Replace rows only with
+  responses for the active request; discard stale successes and failures.
+  Retry the failed page. To keep scroll offsets separate across pages or
+  queries, give each identity a different `PageStorageKey`, or manage the
+  offset with a host-owned scroll controller.
+
+Open **Page collection** in Gallery, or from `example/` run
+`flutter run -d <device-id> -t lib/collection_page_demo.dart`. The first Next
+fails once. Try again to open page 2, then go to the empty page 3 and use
+Previous or pull to refresh. See the [runnable demo source](https://github.com/naufaldi/flutter_ui_payment/blob/main/example/lib/collection_page_demo.dart)
+for the host wiring.
+
+<Props names={["PaymentCollection"]} />
+
+## Copy the Load more block
 
 From `example/`:
 
@@ -56,8 +128,8 @@ Authorization, routing and data access stay in your app.
 
 The sample card is a `PaymentBox` built by the host row builder, not a required
 row type. Use [Rakit's public theme](/concepts/theming/) to set the surface,
-spacing and typography, and use your own widgets for row actions. No package
-API is added.
+spacing and typography, and use your own widgets for row actions. The copyable
+source is unchanged; it does not require `PaymentCollection`.
 
 ## Source
 

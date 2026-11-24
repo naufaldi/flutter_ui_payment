@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import 'package:rakit_ui_example/collection_block_demo.dart';
+import 'package:rakit_ui_example/collection_page_demo.dart';
 import 'package:rakit_ui_example/compositions/collection_block.dart';
 
 const _pageError =
@@ -41,6 +42,179 @@ Widget _shortCollection({
 );
 
 void main() {
+  testWidgets('Previous is accessible without an out-of-range row index', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 300);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final controller = ScrollController();
+    addTearDown(controller.dispose);
+    var previousRequests = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PaymentCollection(
+            controller: controller,
+            rowCount: 5,
+            rowBuilder: (_, index) =>
+                SizedBox(height: 72, child: Text('Document ${index + 1}')),
+            footer: SizedBox(
+              height: 64,
+              child: PaymentButton(
+                label: 'Previous',
+                onPressed: () => previousRequests++,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    controller.jumpTo(controller.position.maxScrollExtent);
+    await tester.pumpAndSettle();
+
+    final lastRow = tester.getSemantics(find.text('Document 5'));
+    final scroll = lastRow.parent!;
+    final data = scroll.getSemanticsData();
+    expect(data.scrollPosition, greaterThan(0));
+    final count = data.scrollChildCount ?? 0;
+    if (count > 0) {
+      var visible = 0;
+      scroll.visitChildren((child) {
+        if (!child.flagsCollection.isHidden) visible++;
+        return true;
+      });
+      // Android derives the last index from all visible direct children.
+      expect((data.scrollIndex ?? 0) + visible - 1, lessThan(count));
+    }
+
+    final previous = find.semantics.byLabel('Previous');
+    expect(previous, findsOne);
+    expect(previous.evaluate().single.flagsCollection.isHidden, isFalse);
+    tester.semantics.tap(previous);
+    await tester.pump();
+    expect(previousRequests, 1);
+  });
+
+  testWidgets('refresh keeps visible keyed row state after reordering', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    var documents = ['A', 'B'];
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: StatefulBuilder(
+            builder: (context, setState) => Column(
+              children: [
+                TextButton(
+                  onPressed: () => setState(() => documents = ['B', 'A']),
+                  child: const Text('Refresh documents'),
+                ),
+                Expanded(
+                  child: PaymentCollection(
+                    rowCount: documents.length,
+                    findItemIndexCallback: (key) {
+                      final index = documents.indexOf(
+                        (key as ValueKey<String>).value,
+                      );
+                      return index < 0 ? null : index;
+                    },
+                    rowBuilder: (_, index) {
+                      final id = documents[index];
+                      return ExpansionTile(
+                        key: ValueKey(id),
+                        title: Text('Document $id'),
+                        children: [Text('Details $id')],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final rowA = find.text('Document A');
+    final rowB = find.text('Document B');
+    final detailsA = find.text('Details A');
+    await tester.tap(rowA);
+    await tester.pumpAndSettle();
+    expect(tester.getTopLeft(rowA).dy, lessThan(tester.getTopLeft(rowB).dy));
+    expect(detailsA.hitTestable(), findsOneWidget);
+
+    await tester.tap(find.text('Refresh documents'));
+    await tester.pumpAndSettle();
+    expect(tester.getTopLeft(rowB).dy, lessThan(tester.getTopLeft(rowA).dy));
+    expect(detailsA.hitTestable(), findsOneWidget);
+    expect(find.text('Details B').hitTestable(), findsNothing);
+  });
+
+  testWidgets('numbered collection retries, replaces and refreshes a page', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.view.reset);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await tester.pumpWidget(const CollectionPageDemo());
+
+    Future<void> tap(String label) async {
+      final control = find.text(label);
+      await tester.scrollUntilVisible(control, 100);
+      await tester.tap(control.hitTestable());
+      await tester.pump();
+    }
+
+    Future<void> finishRequest() async {
+      await tester.pump(const Duration(milliseconds: 280));
+      await tester.pumpAndSettle();
+    }
+
+    expect(find.text('Workshop notes'), findsOneWidget);
+    await tap('Next');
+    expect(find.text('Loading documents'), findsOneWidget);
+    expect(find.text('Workshop notes'), findsNothing);
+    await finishRequest();
+    expect(find.text('Couldn’t load this page'), findsOneWidget);
+
+    await tap('Try again');
+    await finishRequest();
+    expect(find.text('Reading list'), findsOneWidget);
+    expect(find.text('Page 2'), findsOneWidget);
+    expect(find.text('Workshop notes'), findsNothing);
+
+    await tap('Next');
+    await finishRequest();
+    expect(find.text('No documents on this page'), findsOneWidget);
+    expect(find.text('Page 3'), findsOneWidget);
+    expect(find.text('Next'), findsNothing);
+    expect(find.text('Reading list'), findsNothing);
+
+    await tester.fling(
+      find.text('No documents on this page').hitTestable(),
+      const Offset(0, 380),
+      1000,
+    );
+    for (var frame = 0; frame < 5; frame++) {
+      await tester.pump(const Duration(milliseconds: 60));
+    }
+    expect(find.text('Loading documents'), findsOneWidget);
+    await finishRequest();
+    expect(find.text('Page 3'), findsOneWidget);
+
+    await tap('Previous');
+    await finishRequest();
+    expect(find.text('Reading list'), findsOneWidget);
+    expect(find.text('Page 2'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('initial loading resolves to first empty with a way forward', (
     tester,
   ) async {

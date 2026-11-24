@@ -2,6 +2,11 @@
 
 ## Generic collections
 
+For an importable viewport, use `PaymentCollection` from `rakit_ui.dart`.
+Open **Page collection** in Gallery or run
+`flutter run -t lib/collection_page_demo.dart` for numbered paging, custom
+states, and refresh on an empty page.
+
 Open **Collection** in Gallery or run `flutter run -t lib/collection_block_demo.dart`.
 Copy `collection_block.dart` and `paged_block_footer.dart` into your app. Pass
 your accumulated row count, row builder, localized copy and current page state.

@@ -8,6 +8,7 @@ import '../adapters/fake_host.dart';
 import '../adapters/synthetic_capture.dart';
 import '../adapters/video_adapter.dart';
 import '../collection_block_demo.dart';
+import '../collection_page_demo.dart';
 import '../compositions/host_checkout.dart';
 import '../compositions/host_payment_recovery.dart';
 import '../compositions/host_checkout_journey.dart';
@@ -76,6 +77,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
             id: 'collection',
             label: t('Collection', 'Koleksi'),
             icon: Icons.collections_bookmark_outlined,
+          ),
+          PaymentNavItem(
+            id: 'page-collection',
+            label: t('Page collection', 'Koleksi per halaman'),
+            icon: Icons.snippet_folder_outlined,
           ),
           PaymentNavItem(
             id: 'kit',
@@ -361,6 +367,9 @@ class _GalleryScreenState extends State<GalleryScreen> {
         child: switch (_section) {
           'collection' => const SafeArea(
             child: CollectionBlockDemo(embedded: true),
+          ),
+          'page-collection' => const SafeArea(
+            child: CollectionPageDemo(embedded: true),
           ),
           'find' => const SafeArea(child: SearchResultsDemo(embedded: true)),
           'qris' => const SafeArea(child: QrisCheckoutDemo(embedded: true)),
