@@ -1,3 +1,8 @@
+## 0.6.0
+
+- Use **Report a problem** in transaction details to report a duplicate charge, wrong amount, or missing purchase. The sheet prefills the transaction reference, keeps the draft when a send fails, and blocks overlapping sends. It shows the case ID only after the host confirms the submitted report (#370, #367, D137).
+- Android device flows, the native keyboard, and TalkBack have not been checked yet.
+
 ## 0.5.0
 
 - The mobile Transaction History block now searches and filters the full host dataset. Load more appends results, and retry keeps previously loaded transactions visible. Try it in the example Gallery under **Paged history** (#366, #364, D136).
