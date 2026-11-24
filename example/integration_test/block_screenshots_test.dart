@@ -40,8 +40,8 @@ void main() {
       await capture(binding, tester, 'android_block_checkout_receipt$suffix');
       expect(tester.takeException(), isNull);
     }
-    // The same journey and order in the wallet look: the Soft preset, a
-    // balance-first review and method choice through the kit sheet.
+    // The wallet look shows the merchant and order reference above the wallet
+    // balance.
     for (final dark in [false, true]) {
       final suffix = dark ? '_dark' : '';
       await start(CheckoutDemoScenario.lostResponse, dark: dark);
