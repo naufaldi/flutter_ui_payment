@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui_example/adapters/fake_host.dart';
 import 'package:rakit_ui_example/coordinator/demo_coordinator.dart';
 import 'package:rakit_ui_example/scenarios/catalog.dart';
 import 'package:integration_test/integration_test.dart';
@@ -15,6 +18,43 @@ class _En {
   PaymentLocalizations get _l => PaymentLocalizations('en');
   String kyc(VerificationAction a) => _l.verificationActionLabel(a);
   String pay(PaymentAction a) => _l.paymentActionLabel(a);
+}
+
+/// Lets the fake server produce its normal results while the test controls
+/// when the coordinator receives them (including a lost submit's error).
+class _HeldPaymentHost extends DemoHost {
+  _HeldPaymentHost(super.config, {this.submitResponse, this.statusResponse});
+
+  final Future<void>? submitResponse;
+  final Future<void>? statusResponse;
+  int submitRequests = 0;
+
+  @override
+  Future<Map<String, Object?>> submitPayment({
+    required String account,
+    required String attemptId,
+    required PaymentQuote quote,
+    required String methodId,
+  }) async {
+    submitRequests++;
+    try {
+      return await super.submitPayment(
+        account: account,
+        attemptId: attemptId,
+        quote: quote,
+        methodId: methodId,
+      );
+    } finally {
+      await submitResponse;
+    }
+  }
+
+  @override
+  Future<Map<String, Object?>> paymentStatus(String attemptId) async {
+    final status = await super.paymentStatus(attemptId);
+    await statusResponse;
+    return status;
+  }
 }
 
 Finder confirmButton() => find.descendant(
@@ -56,6 +96,20 @@ Future<void> checkStatusUntil(
     );
   }
   expect(c.attempt?.status, status);
+}
+
+Future<void> switchToAccountB(WidgetTester tester, DemoCoordinator c) async {
+  await tester.tap(find.byKey(const Key('account-menu')));
+  await settle(tester);
+  await tester.tap(find.byKey(const Key('account-B')));
+  await pumpUntil(
+    tester,
+    () => c.account == 'B' && c.kyc.status == VerificationStatus.verified,
+    reason: 'account B loaded',
+  );
+  await settle(tester);
+  expect(c.step, FlowStep.overview);
+  expect(logCount(c, 'Discarded a response'), 0);
 }
 
 void main() {
@@ -352,8 +406,13 @@ void main() {
   testWidgets('P05 double tap and slow submit send one payment', (
     tester,
   ) async {
-    // Keep the 2500 ms slow submit in Sending for 1.5 s on real devices.
-    final app = await launch(tester, latencyScale: 0.6);
+    final response = Completer<void>();
+    late _HeldPaymentHost host;
+    final app = await launch(
+      tester,
+      createHost: (config) =>
+          host = _HeldPaymentHost(config, submitResponse: response.future),
+    );
     final c = await runScenario(tester, app, 'P05');
     await pumpUntil(tester, () => c.quote != null && !c.quoting);
     await tapVisible(tester, find.byKey(const Key('review-order')));
@@ -371,16 +430,20 @@ void main() {
     await tester.tap(confirm, warnIfMissed: false);
     await tester.pump();
     // A programmatic retry while the challenge runs is absorbed too.
-    await c.authorize();
+    final retry = c.authorize();
     await pumpUntil(tester, () => c.step == FlowStep.payment);
+    await settle(tester);
     expect(c.attempt!.submission, SubmissionState.sending);
     expect(find.text('Sending'), findsOneWidget);
 
+    response.complete();
     await pumpUntil(tester, () => c.attempt!.status != null);
+    await retry;
     await checkStatusUntil(tester, c, PaymentStatus.succeeded);
     expect(c.submitEvents, 1);
-    expect(c.host.attemptCount, 1);
-    expect(c.host.chargeCount, 1);
+    expect(host.submitRequests, 1);
+    expect(host.attemptCount, 1);
+    expect(host.chargeCount, 1);
   });
 
   testWidgets('P06 accepted but response lost: same attempt, no pay again', (
@@ -578,27 +641,28 @@ void main() {
   testWidgets('X04 account switch discards the old account response', (
     tester,
   ) async {
-    // Full latency (3 s checks) so the slow check is still running when we
-    // switch, after the route transitions settle (D93).
-    final app = await launch(tester, latencyScale: 1);
+    final response = Completer<void>();
+    final app = await launch(
+      tester,
+      createHost: (config) =>
+          _HeldPaymentHost(config, statusResponse: response.future),
+    );
     final c = await runScenario(tester, app, 'X04');
     expect(c.step, FlowStep.payment);
-    // The slow status check for account A is still in flight.
     expect(c.attempt!.observation, Observation.refreshing);
-    await tester.tap(find.byKey(const Key('account-menu')));
-    await settle(tester);
-    await tester.tap(find.byKey(const Key('account-B')));
-    await tester.pump();
 
+    await switchToAccountB(tester, c);
+    response.complete();
     await pumpUntil(
       tester,
-      () => logCount(c, 'Discarded a response') > 0,
+      () => logCount(c, 'Discarded a response') == 1,
       reason: 'stale response discarded',
     );
     await settle(tester);
     expect(c.account, 'B');
     expect(c.attempt, isNull);
     expect(c.step, FlowStep.overview);
+    expect(find.byType(PaymentStatusView), findsNothing);
     expect(find.textContaining('TRX-004070'), findsNothing);
     expect(find.text('Processing'), findsNothing);
   });
@@ -606,15 +670,27 @@ void main() {
   testWidgets('account switch during a lost submit does not leak the error', (
     tester,
   ) async {
-    final app = await launch(tester, latencyScale: 0.5);
+    final response = Completer<void>();
+    final app = await launch(
+      tester,
+      createHost: (config) =>
+          _HeldPaymentHost(config, submitResponse: response.future),
+    );
     final c = await runScenario(tester, app, 'P06');
     await checkoutToAuthorize(tester, c);
     await tapVisible(tester, confirmButton());
-    await pumpUntil(tester, () => c.step == FlowStep.payment);
-    await c.switchAccount('B');
     await pumpUntil(
       tester,
-      () => logCount(c, 'Discarded a response') > 0,
+      () => c.host.attemptCount == 1,
+      reason: 'account A payment accepted by the host',
+    );
+    expect(c.attempt!.submission, SubmissionState.sending);
+
+    await switchToAccountB(tester, c);
+    response.complete();
+    await pumpUntil(
+      tester,
+      () => logCount(c, 'Discarded a response') == 1,
       reason: 'timeout discarded',
     );
     await settle(tester);
@@ -622,6 +698,9 @@ void main() {
     expect(c.account, 'B');
     expect(c.attempt, isNull);
     expect(c.submitError, isNull);
+    expect(c.step, FlowStep.overview);
+    expect(find.byType(PaymentStatusView), findsNothing);
+    expect(find.text('Result not confirmed yet'), findsNothing);
   });
 
   test('scenario picker lists all 27 PRD edge IDs', () {
