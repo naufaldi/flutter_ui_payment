@@ -11890,7 +11890,7 @@
   "PaymentSheet": {
     "kind": "class",
     "file": "lib/src/overlay/sheets.dart",
-    "doc": "Layout for bottom sheets and side panels: a fixed `header`, a `body`\nthat scrolls when it is taller than the space, and a fixed `footer` for\nactions. Respects the safe area and moves above the software keyboard.\n\nInside `showPaymentSideSheet` it fills the panel's height so the footer\nsits at the bottom; in a bottom sheet it hugs its content.",
+    "doc": "Layout for bottom sheets and side panels: a fixed `header`, a `body`\nthat scrolls when it is taller than the space, and a fixed `footer` for\nactions. Respects the safe area and moves above the software keyboard.\n\nAs the direct body of `showPaymentSideSheet`, it fills the panel. In a\nbottom sheet the default constructor hugs its content unless `height` is\nset. `PaymentSheet.scrollable` gives a caller-owned scrollable the\nremaining space directly.",
     "extends": "StatelessWidget",
     "constructors": [
       {
@@ -11906,7 +11906,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "header",
-            "doc": ""
+            "doc": "Optional fixed content above the scrolling body."
           },
           {
             "name": "body",
@@ -11917,7 +11917,7 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "body",
-            "doc": ""
+            "doc": "The content to scroll, or the scrollable itself in `PaymentSheet.scrollable`."
           },
           {
             "name": "footer",
@@ -11928,10 +11928,72 @@
             "viaThis": true,
             "isSuper": false,
             "fieldName": "footer",
-            "doc": ""
+            "doc": "Optional fixed actions below the scrolling body."
+          },
+          {
+            "name": "height",
+            "type": "double?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "height",
+            "doc": "Requested height in logical pixels, excluding the keyboard inset and\nroute drag handle. Must be finite and positive, with room for the header\nand footer. Parent constraints can limit it or require the sheet to fill\nthe panel."
           }
         ],
-        "doc": ""
+        "doc": "Wraps `body` in a scroll view with the sheet's standard gutters."
+      },
+      {
+        "name": "PaymentSheet.scrollable",
+        "factory": false,
+        "params": [
+          {
+            "name": "header",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "header",
+            "doc": "Optional fixed content above the scrolling body."
+          },
+          {
+            "name": "body",
+            "type": "Widget",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "body",
+            "doc": "The content to scroll, or the scrollable itself in `PaymentSheet.scrollable`."
+          },
+          {
+            "name": "footer",
+            "type": "Widget?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "footer",
+            "doc": "Optional fixed actions below the scrolling body."
+          },
+          {
+            "name": "height",
+            "type": "double?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "height",
+            "doc": "Requested height in logical pixels, excluding the keyboard inset and\nroute drag handle. Must be finite and positive, with room for the header\nand footer. Parent constraints can limit it or require the sheet to fill\nthe panel."
+          }
+        ],
+        "doc": "Gives `body` a finite viewport without wrapping it in a scroll view or\nadding gutters. Pass a `ListView` or `CustomScrollView` and set its padding\nas needed. Without `height`, the parent must bound the height. When a\nkeyboard leaves a short, wide viewport, the header and footer move beside\nthe body to leave room for editing."
       }
     ],
     "getters": [],
@@ -11942,21 +12004,28 @@
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": ""
+        "doc": "Optional fixed content above the scrolling body."
       },
       {
         "name": "body",
         "kind": "field",
         "static": false,
         "type": "Widget",
-        "doc": ""
+        "doc": "The content to scroll, or the scrollable itself in `PaymentSheet.scrollable`."
       },
       {
         "name": "footer",
         "kind": "field",
         "static": false,
         "type": "Widget?",
-        "doc": ""
+        "doc": "Optional fixed actions below the scrolling body."
+      },
+      {
+        "name": "height",
+        "kind": "field",
+        "static": false,
+        "type": "double?",
+        "doc": "Requested height in logical pixels, excluding the keyboard inset and\nroute drag handle. Must be finite and positive, with room for the header\nand footer. Parent constraints can limit it or require the sheet to fill\nthe panel."
       }
     ],
     "copyWith": null
@@ -11964,7 +12033,7 @@
   "showPaymentSheet": {
     "kind": "function",
     "file": "lib/src/overlay/sheets.dart",
-    "doc": "Opens a modal bottom sheet sized to its content, up to the full height.\n\nSwipe down, the scrim, Back and Escape dismiss it when `isDismissible`\nis true; pass false while a host call that must finish is running.",
+    "doc": "Opens a modal bottom sheet sized to its content, up to the full height.\nUse `PaymentSheet.height` to request a shorter panel.\n\nSwipe down, the scrim, Back and Escape dismiss it when `isDismissible`\nis true; pass false while a host call that must finish is running.",
     "returns": "Future<T?>",
     "typeParams": "<T>",
     "params": [

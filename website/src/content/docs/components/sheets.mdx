@@ -52,6 +52,47 @@ void main() => runApp(MaterialApp(
 ));
 ```
 
+### Bounded sheet for a long list
+
+Use `PaymentSheet.scrollable` when the body is already a scroll view. Pass a
+`ListView.builder` for rows built on demand, or a `CustomScrollView` to scroll a
+search field and its results together. Set body padding on the scroll view;
+the sheet keeps its usual header, footer, and theme.
+
+```dart
+Future<void> openContents(BuildContext context, List<String> sections) async {
+  await showPaymentSheet<void>(
+    context: context,
+    builder: (sheet) => PaymentSheet.scrollable(
+      height: MediaQuery.sizeOf(sheet).height * 0.7,
+      header: PaymentSheetHeader(
+        title: 'Contents',
+        onClose: () => Navigator.pop(sheet),
+      ),
+      body: ListView.builder(
+        padding: EdgeInsets.symmetric(
+          horizontal: PaymentTheme.of(sheet).space(PaymentSpace.group),
+        ),
+        itemCount: sections.length,
+        itemBuilder: (_, index) => PaymentListItem(title: sections[index]),
+      ),
+    ),
+  );
+}
+```
+
+`height` requests a positive, finite height in logical pixels. It excludes the
+route's drag handle and the keyboard inset. When there is less room, the sheet
+uses the available height above the keyboard. In short, wide layouts with the
+keyboard open, the scrollable variant moves the header and footer beside the
+body so a focused field and the action can stay in view. The footer stays
+mounted, so closing the keyboard doesn't unlock a pending button action.
+Without `height`, use a vertically bounded parent, such as the sheet route
+or an `Expanded` slot. The default constructor still wraps ordinary content
+and hugs it.
+
+Try **Bounded contents sheet** under **Sheets & drawers** in the example app.
+
 ## Variants
 
 Variants: bottom sheet, side sheet.
@@ -60,7 +101,7 @@ Variants: bottom sheet, side sheet.
 
 - The header's **Close** only closes the panel. Cancelling a payment is a separate footer action, behind `showPaymentConfirmDialog`, and your host decides the result. The payment stays pending until then.
 - `showPaymentSheet` sizes the sheet to its content, up to the full height. Swipe down, the scrim, Back and Escape dismiss it while `isDismissible` is true.
-- `showPaymentSideSheet` takes the same `PaymentSheet`, which then fills the height so the footer sits at the bottom. The scrim, Back and Escape close it, and focus returns to whatever opened it.
+- Use `PaymentSheet` as the direct body of `showPaymentSideSheet` to fill the panel and pin the footer. If you wrap it, the wrapper's constraints apply. The scrim, Back and Escape close it, and focus returns to whatever opened it.
 - Both presenters keep the theme around the code that opens them: a `PaymentTheme` or `PaymentButtonTheme` scoped to one feature also styles that feature's sheet surface and buttons.
 - Pass `isDismissible: false` / `barrierDismissible: false` while a host call that must finish is running.
 - Sheets open in 280 ms and close in 200 ms on the drawer curve; zero under reduced motion.
@@ -76,6 +117,7 @@ The footer's completion action is the sheet's one primary button ("Done", "Apply
 | Situation | Variant / composition | Payment example |
 | --- | --- | --- |
 | Supporting source or field choice | bottom sheet | Use the provided presentation functions; close never cancels a payment operation. |
+| Long list or search results | bottom sheet with `PaymentSheet.scrollable` | Browse a long list of statements with the header kept in view. |
 
 Use Focus view for a focused task with its own footer.
 
