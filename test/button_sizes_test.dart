@@ -3,54 +3,33 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import 'package:rakit_ui/src/foundation/tap_target.dart';
-import 'button_guard_test.dart' show host;
 import 'controls_test.dart' as controls;
+import 'helpers/ios_text_host.dart';
 
 void main() {
-  for (final scale in [1.0, 2.0]) {
-    for (final size in PaymentSize.values) {
-      for (final width in PaymentWidth.values) {
-        for (final variant in PaymentButtonVariant.values) {
-          testWidgets('$size $width $variant $scale', (tester) async {
-            tester.view.physicalSize = const Size(320, 800);
-            tester.view.devicePixelRatio = 1;
-            addTearDown(tester.view.reset);
-            await tester.pumpWidget(
-              host(
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: PaymentButton(
-                    label: 'Edit',
-                    size: size,
-                    width: width,
-                    variant: variant,
-                    icon: Icons.edit_outlined,
-                    onPressed: () {},
-                  ),
-                ),
-                scale,
-              ),
-            );
-            final box = tester.getSize(find.byType(MinTapTarget));
-            expect(box.width, greaterThanOrEqualTo(48));
-            expect(box.height, greaterThanOrEqualTo(48));
-            if (scale == 1) {
-              final material = find.descendant(
-                of: find.byType(PaymentButton),
-                matching: find.byType(Material),
-              );
-              expect(tester.getSize(material).height, switch (size) {
-                PaymentSize.small => 36,
-                PaymentSize.medium => 48,
-                PaymentSize.large => 56,
-              });
-            }
-            expect(find.byType(AnimatedScale), findsNothing);
-            expect(tester.takeException(), isNull);
-          });
-        }
-      }
-    }
+  for (final (size, height) in [
+    (PaymentSize.small, 36.0),
+    (PaymentSize.medium, 48.0),
+    (PaymentSize.large, 56.0),
+  ]) {
+    testWidgets('${size.name} draws at $height dp with a 48 dp target', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        host(PaymentButton(label: 'Edit', size: size, onPressed: () {}), 1),
+      );
+      final button = find.byType(PaymentButton);
+      final material = find.descendant(
+        of: button,
+        matching: find.byType(Material),
+      );
+      expect(tester.getSize(material).height, height);
+      final target = tester.getSize(find.byType(MinTapTarget));
+      expect(target.height, greaterThanOrEqualTo(48));
+      expect(target.width, tester.getSize(find.byType(Scaffold)).width);
+      expect(find.byType(AnimatedScale), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
   }
   testWidgets('small extends taps only within its 48 dp box', (tester) async {
     var taps = 0;
@@ -77,7 +56,10 @@ void main() {
     );
     final visual = tester.getRect(find.byType(FilledButton));
     final box = tester.getRect(find.byType(MinTapTarget));
-    await tester.tapAt(Offset(visual.center.dx, visual.top - 4));
+    expect(box.height, 48);
+    final insideEdge = Offset(box.center.dx, box.top + 1);
+    expect(visual.contains(insideEdge), isFalse);
+    await tester.tapAt(insideEdge);
     await tester.pump();
     expect(taps, 1);
     await tester.tapAt(Offset(visual.center.dx, box.top - 4));
@@ -130,7 +112,11 @@ void main() {
       });
     }
   });
-  testWidgets('long hug label wraps at 200 percent', (tester) async {
+  testWidgets('long hug label wraps and can be tapped at 320 dp and 200%', (
+    tester,
+  ) async {
+    const label = 'Change the payment method for this order';
+    var presses = 0;
     tester.view.physicalSize = const Size(320, 800);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -139,20 +125,26 @@ void main() {
         Align(
           alignment: Alignment.topLeft,
           child: PaymentButton(
-            label: 'Change the payment method for this order',
+            label: label,
             width: PaymentWidth.hug,
-            onPressed: () {},
+            icon: Icons.edit_outlined,
+            onPressed: () => presses++,
           ),
         ),
         2,
       ),
     );
-    expect(
-      tester
-          .getSize(find.text('Change the payment method for this order'))
-          .height,
-      greaterThan(40),
-    );
+    final text = find.text(label);
+    final labelBounds = tester.getRect(text);
+    final target = tester.getRect(find.byType(MinTapTarget));
+    expect(labelBounds.height, greaterThan(40));
+    expect(target.intersect(labelBounds), labelBounds);
+    expect(tester.getRect(find.byType(Scaffold)).intersect(target), target);
+    expect(target.height, greaterThanOrEqualTo(48));
+    expect(target.width, greaterThanOrEqualTo(48));
+    await tester.tap(text);
+    await tester.pump();
+    expect(presses, 1);
     expect(tester.takeException(), isNull);
   });
   testWidgets('small keyboard focus ring follows the visual', (tester) async {

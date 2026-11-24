@@ -146,22 +146,29 @@ void main() {
     bool pending = false,
     bool action = false,
     bool accessible = false,
+    bool showClose = false,
     VoidCallback? onAction,
   }) async {
+    final trigger = Builder(
+      builder: (context) => TextButton(
+        onPressed: () => controller = showPaymentToast(
+          context,
+          message: message,
+          pending: pending,
+          actionLabel: action ? 'Undo' : null,
+          onAction: action ? onAction ?? () {} : null,
+        ),
+        child: const Text('Show'),
+      ),
+    );
     await tester.pumpWidget(
       host(
-        Builder(
-          builder: (context) => TextButton(
-            onPressed: () => controller = showPaymentToast(
-              context,
-              message: message,
-              pending: pending,
-              actionLabel: action ? 'Undo' : null,
-              onAction: action ? onAction ?? () {} : null,
-            ),
-            child: const Text('Show'),
-          ),
-        ),
+        showClose
+            ? SnackBarTheme(
+                data: const SnackBarThemeData(showCloseIcon: true),
+                child: trigger,
+              )
+            : trigger,
         1,
       ),
     );
@@ -284,14 +291,33 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     expect(find.byType(SnackBar), findsNothing);
   });
-  testWidgets('action runs once and closes', (tester) async {
+  testWidgets('short toast keeps Undo inline with close at 320 dp and 100%', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     var calls = 0;
-    await show(tester, action: true, onAction: () => calls++);
-    expect(
-      tester.getSize(find.widgetWithText(TextButton, 'Undo')).height,
-      greaterThanOrEqualTo(48),
+    await show(tester, action: true, showClose: true, onAction: () => calls++);
+    final undo = find.widgetWithText(TextButton, 'Undo');
+    final action = tester.getRect(undo);
+    final bar = tester.element(find.byType(SnackBar));
+    final pill = tester.getRect(toastSurface(bar));
+    expect(pill.intersect(action), action);
+    final message = tester.getRect(find.text('Copied'));
+    expect(pill.intersect(message), message);
+    final close = find.byKey(StandardComponentType.closeButton.key);
+    final closeIcon = find.descendant(
+      of: close,
+      matching: find.byIcon(Icons.close),
     );
-    await tester.tap(find.text('Undo'));
+    expect(action.left, greaterThanOrEqualTo(message.right));
+    expect(action.right, lessThanOrEqualTo(tester.getTopLeft(close).dx));
+    expect(action.center.dy, closeTo(message.center.dy, 1));
+    expect(tester.getCenter(closeIcon).dy, closeTo(message.center.dy, 1));
+    expect(action.width, greaterThanOrEqualTo(48));
+    expect(action.height, greaterThanOrEqualTo(48));
+    await tester.tap(undo);
     await tester.pumpAndSettle();
     expect(calls, 1);
     expect(find.byType(SnackBar), findsNothing);

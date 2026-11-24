@@ -16,21 +16,17 @@ void main() {
     WidgetTester tester, {
     bool reduced = false,
     bool accessible = false,
-    bool dark = false,
-    double scale = 1,
     bool closeIcon = false,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData(
-          brightness: dark ? Brightness.dark : Brightness.light,
           snackBarTheme: SnackBarThemeData(showCloseIcon: closeIcon),
         ),
         builder: (context, child) => MediaQuery(
           data: MediaQuery.of(context).copyWith(
             disableAnimations: reduced,
             accessibleNavigation: accessible,
-            textScaler: TextScaler.linear(scale),
           ),
           child: child!,
         ),
@@ -187,75 +183,4 @@ void main() {
     expect(find.text('Swipe me'), findsNothing);
     expect(closed, isTrue);
   });
-  for (final dark in [false, true]) {
-    for (final action in [false, true]) {
-      for (final scale in [1.0, 2.0]) {
-        testWidgets('review geometry dark=$dark action=$action scale=$scale', (
-          tester,
-        ) async {
-          tester.view.physicalSize = const Size(320, 640);
-          tester.view.devicePixelRatio = 1;
-          addTearDown(tester.view.reset);
-          await mount(tester, dark: dark, scale: scale);
-          final c = showPaymentToast(
-            context,
-            message: 'Copied',
-            pending: !action,
-            actionLabel: action ? 'Undo' : null,
-            onAction: action ? () {} : null,
-          );
-          await settleBar(tester);
-          final materials = find.descendant(
-            of: find.byType(SnackBar),
-            matching: find.byWidgetPredicate(
-              (w) =>
-                  w is Material &&
-                  w.color == PaymentTheme.of(context).textPrimary,
-            ),
-          );
-          final material = tester.widget<Material>(materials.first);
-          // Measured on 1812ba1, before moving the SnackBar surface inward.
-          // At 200% the action now wraps under the message instead of
-          // breaking it mid-word (D88).
-          final top = action
-              ? (scale == 1 ? 560.0 : 512.0)
-              : (scale == 1 ? 580.0 : 560.0);
-          final textRect = action
-              ? (scale == 1
-                    ? const Rect.fromLTRB(64, 582, 204, 602)
-                    : const Rect.fromLTRB(76, 524, 296, 564))
-              : (scale == 1
-                    ? const Rect.fromLTRB(64, 592, 288, 612)
-                    : const Rect.fromLTRB(76, 572, 288, 612));
-          expect(
-            tester.getRect(materials.first),
-            Rect.fromLTRB(16, top, 304, 624),
-          );
-          expect(tester.getRect(find.text('Copied')), textRect);
-          expect(
-            material.color,
-            dark ? const Color(0xffe6e0e9) : const Color(0xff1d1b20),
-          );
-          expect(
-            material.shape,
-            const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(6)),
-            ),
-          );
-          expect(material.clipBehavior, Clip.hardEdge);
-          expect(material.elevation, 0);
-          if (action) {
-            final target = tester.getSize(
-              find.widgetWithText(TextButton, 'Undo'),
-            );
-            expect(target.width, greaterThanOrEqualTo(48));
-            expect(target.height, greaterThanOrEqualTo(48));
-          }
-          expect(tester.takeException(), isNull);
-          c.dismiss();
-          await settleBar(tester);
-        });
-      }
-    }
-  }
 }

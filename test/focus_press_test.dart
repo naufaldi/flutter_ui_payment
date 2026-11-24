@@ -210,7 +210,12 @@ void main() {
     await gesture.up();
     await t.pumpAndSettle();
   });
-  for (final setup in ReducedMotion.values) {
+  // The direct listener bypasses Material ink. Android reaches this same
+  // MediaQuery branch through MediaQuery.fromView (see motion_test.dart).
+  for (final setup in [
+    ReducedMotion.mediaQuery,
+    ReducedMotion.iosReduceMotion,
+  ]) {
     testWidgets('chip stays full size and still (${setup.name})', (t) async {
       await t.pumpWidget(
         host(setup.apply(t, PaymentChip(label: 'Chip', onDropdown: () {}))),
