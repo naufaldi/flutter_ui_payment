@@ -917,6 +917,11 @@ The 320 dp gesture rows were measured with the tab fold alone (+18.2 / +30.2 dp 
 
   The issue asks for one copyable checkout proving two designs share model, callbacks and recovery. Keeping quote state and method choice host-owned (B11) and reusing the kit sheet and status motion demonstrates adoption without a new runtime layer; the request guard mirrors the method-quote demo's latest-wins rule for interrupted quotes. Rejected: a `PaymentActionBar` inside the wallet review for this showcase, because the pinned `PaymentFullPageView` footer already carries the action in both looks and duplicating it would double the pay control; `showActionBar` stays available for hosts that want the bar's own layout.
 
+  Follow-up (#324): Both layouts show the host's merchant name, order reference
+  and verification status via `MerchantHeader`. The wallet header sits above
+  the balance or selected method in the wallet column, including on wide
+  screens where the order summary sits alongside it.
+
 ### Authorization phase motion, 19 November 2026
 
 - **D125: `AuthorizationPrompt` phase changes use the shared status swap (#303).** The prompt's status slot — plain title and message for ready, in progress and approved, the tinted banner for canceled, failed and expired — now swaps through the kit's full-width fade and eased height, keyed on the phase so a same-phase rebuild stays still and nothing plays on first build. The host header, amount and the action rules stay outside the swap and update at once, including the busy state and pinned placement. The entering phase is readable on the first frame; the leaving one is already out of semantics, focus and taps (D94). Under reduced motion, under either flag, the swap ends at once, including mid-swap (D66). The motion is the existing enter/exit fades and the `easeInOut` height ease; no new tokens, scale or spring (D69, D74, D75). D123 and D124 were already claimed by open work, so this is D125.

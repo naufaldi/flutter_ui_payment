@@ -76,8 +76,13 @@ Finder pay(int index) => find
     )
     .at(index);
 
+Finder walletMerchant() => find.descendant(
+  of: find.byType(WalletReviewCheckout),
+  matching: find.byType(MerchantHeader),
+);
+
 void main() {
-  testWidgets('merchant verification badge requires a host verdict', (
+  testWidgets('wallet names the payee and shows host verification', (
     tester,
   ) async {
     final actions = CheckoutActions(
@@ -87,6 +92,20 @@ void main() {
       onPay: () async {},
     );
     await tester.pumpWidget(host(actions));
+    expect(
+      find.descendant(
+        of: walletMerchant(),
+        matching: find.text(order.merchant),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: walletMerchant(),
+        matching: find.text('Order ${order.reference}'),
+      ),
+      findsOneWidget,
+    );
     expect(find.byIcon(Icons.verified_outlined), findsNothing);
     final verifiedOrder = CheckoutOrder(
       merchant: order.merchant,
@@ -99,7 +118,7 @@ void main() {
       merchantVerified: true,
     );
     await tester.pumpWidget(host(actions, data: verifiedOrder));
-    expect(find.byIcon(Icons.verified_outlined), findsOneWidget);
+    expect(find.byIcon(Icons.verified_outlined), findsNWidgets(2));
   });
   testWidgets(
     'both layouts show the product look and pay through the same host '
@@ -175,7 +194,7 @@ void main() {
     },
   );
 
-  testWidgets('at 320 dp and 200% text both pay actions stay reachable', (
+  testWidgets('payee and pay actions are reachable at 320 dp and 200%', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(320, 640);
@@ -193,6 +212,16 @@ void main() {
         scale: 2,
       ),
     );
+    await tester.ensureVisible(walletMerchant());
+    await tester.pumpAndSettle();
+    for (final label in [order.merchant, 'Order ${order.reference}']) {
+      expect(
+        find
+            .descendant(of: walletMerchant(), matching: find.text(label))
+            .hitTestable(),
+        findsOneWidget,
+      );
+    }
     for (var i = 0; i < 2; i++) {
       await tester.ensureVisible(pay(i));
       await tester.pumpAndSettle();
@@ -202,5 +231,34 @@ void main() {
     }
     expect(pays, 2);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('tablet keeps the payee above the balance beside the review', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      host(
+        CheckoutActions(
+          onSelectMethod: (_) {},
+          onChangeMethod: () {},
+          onReceiptEmailChanged: (_) {},
+          onPay: () async {},
+        ),
+      ),
+    );
+    final merchant = tester.getRect(walletMerchant());
+    final balance = tester.getRect(find.byType(BalanceCard));
+    final review = tester.getRect(
+      find.descendant(
+        of: find.byType(WalletReviewCheckout),
+        matching: find.byType(PaymentSummary),
+      ),
+    );
+    expect(merchant.bottom, lessThan(balance.top));
+    expect(merchant.right, lessThan(review.left));
+    expect(review.top, inInclusiveRange(merchant.top, merchant.bottom));
   });
 }
