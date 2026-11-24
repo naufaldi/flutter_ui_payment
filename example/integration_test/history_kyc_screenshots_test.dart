@@ -21,7 +21,13 @@ void main() {
     }
 
     for (final dark in refundOnly ? <bool>[] : [false, true]) {
-      await start(HistoryBlockDemo(key: UniqueKey(), initialDark: dark));
+      await start(
+        HistoryBlockDemo(
+          key: UniqueKey(),
+          initialDark: dark,
+          fixtureDelay: Duration.zero,
+        ),
+      );
       await capture(
         binding,
         tester,
@@ -33,7 +39,9 @@ void main() {
       ('INV-2044', 'refund'),
     ]) {
       if (refundOnly && name != 'refund') continue;
-      await start(HistoryBlockDemo(key: UniqueKey()));
+      await start(
+        HistoryBlockDemo(key: UniqueKey(), fixtureDelay: Duration.zero),
+      );
       await tester.enterText(find.byType(EditableText), reference);
       FocusManager.instance.primaryFocus?.unfocus();
       await tester.pumpAndSettle();
@@ -58,6 +66,7 @@ void main() {
         HistoryBlockDemo(
           key: UniqueKey(),
           initialState: HistoryDemoState.error,
+          fixtureDelay: Duration.zero,
         ),
       );
       await capture(binding, tester, 'android_block_history_error');

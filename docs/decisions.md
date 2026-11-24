@@ -970,3 +970,7 @@ Interrupting a running reveal reverses through a private `SpringSimulation`: `Sp
 ### QRIS checkout, 24 November 2026
 
 - **D135: QRIS checkout is a copyable host block (#359).** The existing status view shows a host-issued image ahead of status details so a buyer can reach the code without first scrolling past recovery copy. Only a matching, acknowledged attempt that can still be paid shows instructions. At code expiry the image disappears, but the attempt stays in its last trusted status and still offers the safe check when permitted. An unknown issuing response or an unavailable status check hides the code rather than inviting a second payment. The host binds the image and amount, owns optional same-phone handoff and reconciles the same attempt; it decides when a new attempt is safe in a separate flow. No change to the VA model or package API.
+
+### Server-paged mobile history, 24 November 2026
+
+- **D136: Server-paged mobile history is a copyable host block (#364).** Keep cursors and request ordering in the host and render rows on demand in a single scroll view. An explicit load-more button lets users decide when to fetch; its retry stays beside the existing rows instead of replacing them with a screen error. Search and filters apply to the full host dataset, not the rows already on screen. A query change clears the old list and cursor; late replies cannot append old rows or overwrite the new request's state. The bounded `TransactionHistory` kit pattern and package API stay unchanged.

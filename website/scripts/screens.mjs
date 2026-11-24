@@ -20,8 +20,10 @@ const manifest = resolve(here, '../src/data/screens.json');
 
 // name → what it shows (locale noted, because captures mix en and id).
 const screens = {
-  android_block_history: 'Merchant history host block: native search, filters and transaction rows.',
-  android_block_history_dark: 'Merchant history host block in dark mode.',
+  android_block_history: 'Merchant history host block: search, status filters and the first page of transactions.',
+  android_block_history_dark: 'Merchant history with an explicit Load more action in dark mode.',
+  android_block_history_page_error: 'A failed next page keeps earlier transactions and replaces Load more with Retry.',
+  android_block_history_page_error_dark: 'Retained transactions and next-page retry in dark mode.',
   android_block_history_unknown: 'Read-only unknown transaction detail with safe return action.',
   android_block_history_refund: 'Original succeeded transaction and separate partial refund detail.',
   android_block_history_error: 'Host history load error with explicit retry.',

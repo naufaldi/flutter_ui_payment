@@ -1,13 +1,121 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import 'package:rakit_ui_example/history_block_demo.dart';
 
+TransactionRecord _record(String id) => TransactionRecord(
+  id: id,
+  title: id,
+  amount: const Money.idr(15000),
+  createdAt: DateTime(2026, 11, 4),
+  status: PaymentStatus.succeeded,
+);
+
 void main() {
+  testWidgets('retry keeps existing rows and appends the failed cursor once', (
+    tester,
+  ) async {
+    final nextPage = Completer<HistoryPage>();
+    final retry = Completer<HistoryPage>();
+    final requests = <String?>[];
+    await tester.pumpWidget(
+      HistoryBlockDemo(
+        fetchPage: (_, _, cursor) {
+          requests.add(cursor);
+          if (cursor == null) {
+            return Future.value((
+              records: [_record('First row')],
+              nextCursor: 'opaque-next',
+            ));
+          }
+          return requests.length == 2 ? nextPage.future : retry.future;
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+    final load = find.text('Muat lagi');
+    await tester.tap(load);
+    await tester.tap(load);
+    await tester.pump();
+    expect(find.text('First row'), findsOneWidget);
+    expect(requests, [null, 'opaque-next']);
+
+    nextPage.completeError(StateError('private transport details'));
+    await tester.pumpAndSettle();
+    expect(find.text('First row'), findsOneWidget);
+    expect(find.textContaining('private transport details'), findsNothing);
+    await tester.tap(find.text(PaymentLocalizations('id').retry));
+    expect(requests, [null, 'opaque-next', 'opaque-next']);
+    retry.complete((records: [_record('Second row')], nextCursor: null));
+    await tester.pumpAndSettle();
+    expect(find.text('First row'), findsOneWidget);
+    expect(find.text('Second row'), findsOneWidget);
+    expect(load, findsNothing);
+  });
+
+  testWidgets('new query rejects a late page and a late filter error', (
+    tester,
+  ) async {
+    final oldPage = Completer<HistoryPage>();
+    final filteredPage = Completer<HistoryPage>();
+    final currentPage = Completer<HistoryPage>();
+    final requests = <(String, TransactionFilter, String?)>[];
+    const filter = TransactionFilter.succeeded;
+    await tester.pumpWidget(
+      HistoryBlockDemo(
+        fetchPage: (query, status, cursor) {
+          requests.add((query, status, cursor));
+          if (cursor != null) return oldPage.future;
+          if (query.isNotEmpty) return currentPage.future;
+          if (status == filter) return filteredPage.future;
+          return Future.value((
+            records: [_record('Original row')],
+            nextCursor: 'original-next',
+          ));
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Muat lagi'));
+    await tester.pump();
+    final l10n = PaymentLocalizations('id');
+    await tester.tap(find.text(l10n.transactionFilterLabel(filter)));
+    await tester.pump();
+    await tester.enterText(find.byType(EditableText), 'replacement');
+    await tester.pump();
+    expect(requests, [
+      ('', TransactionFilter.all, null),
+      ('', TransactionFilter.all, 'original-next'),
+      ('', filter, null),
+      ('replacement', filter, null),
+    ]);
+    filteredPage.completeError(StateError('Filtered request failed late'));
+    await tester.pump();
+    expect(find.byType(LoadingSkeleton), findsOneWidget);
+    expect(find.text(l10n.retry), findsNothing);
+
+    currentPage.complete((records: [_record('Current row')], nextCursor: null));
+    await tester.pumpAndSettle();
+    oldPage.complete((
+      records: [_record('Stale row')],
+      nextCursor: 'stale-next',
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text('Current row'), findsOneWidget);
+    expect(find.text('Original row'), findsNothing);
+    expect(find.text('Stale row'), findsNothing);
+    expect(find.text('Muat lagi'), findsNothing);
+    expect(find.text(l10n.retry), findsNothing);
+  });
+
   testWidgets('search keeps unknown inspectable and refunds separate', (
     tester,
   ) async {
-    await tester.pumpWidget(const HistoryBlockDemo());
+    await tester.pumpWidget(
+      const HistoryBlockDemo(fixtureDelay: Duration.zero),
+    );
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(EditableText), 'INV-2047');
     await tester.pumpAndSettle();
@@ -37,7 +145,10 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const HistoryBlockDemo(initialState: HistoryDemoState.error),
+      const HistoryBlockDemo(
+        initialState: HistoryDemoState.error,
+        fixtureDelay: Duration.zero,
+      ),
     );
     await tester.pumpAndSettle();
     await tester.tap(find.text(PaymentLocalizations('id').retry));
@@ -62,7 +173,9 @@ void main() {
       addTearDown(tester.view.reset);
       tester.platformDispatcher.textScaleFactorTestValue = 2;
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-      await tester.pumpWidget(const HistoryBlockDemo(initialDark: true));
+      await tester.pumpWidget(
+        const HistoryBlockDemo(initialDark: true, fixtureDelay: Duration.zero),
+      );
       await tester.pumpAndSettle();
       final filter = find.byTooltip(PaymentLocalizations('id').filterByStatus);
       expect(filter.hitTestable(), findsOneWidget);

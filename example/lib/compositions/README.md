@@ -2,12 +2,12 @@
 
 ## History and KYC blocks
 
-- History: run `flutter run -t lib/history_block_demo.dart`. Copy
-  `merchant_history.dart`; supply already-filtered records, query/filter and
-  safe loading/error state. It composes `TransactionHistory` and a read-only
-  `TransactionDetail` sheet with a pinned return action. Use lazy rows and host
-  pagination for large datasets. The five-record fixture includes unknown,
-  pending, failed, succeeded and a separate partial refund.
+- History: run `flutter run -t lib/history_block_demo.dart` or open **Paged
+  history** in Gallery. Copy `merchant_history.dart`; supply accumulated rows,
+  query/filter, next-page availability and safe loading/error state. The host
+  demo shows how to scope cursors to the active query and ignore stale replies.
+  Rows render lazily and open a read-only `TransactionDetail` sheet, including
+  unknown outcomes and separate refunds.
 - KYC correction: run `flutter run -t lib/kyc_review_demo.dart`. Copy
   `kyc_review_block.dart`; supply document state, host snapshot, typed step and
   callbacks. Replacing a synthetic file does not set verified. Submit moves to
