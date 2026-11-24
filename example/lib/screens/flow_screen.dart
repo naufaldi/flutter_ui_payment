@@ -320,6 +320,9 @@ class _FlowStepPageState extends State<_FlowStepPage> {
             ],
           );
     final scaffold = Scaffold(
+      // The report route handles the keyboard; the read-only detail behind
+      // it must not squeeze its pinned actions into the same short viewport.
+      resizeToAvoidBottomInset: step != FlowStep.transactionDetail,
       appBar: AppBar(
         // A title that doesn't fit on one line wraps to two in a
         // taller bar instead of ending in "…" (#80).

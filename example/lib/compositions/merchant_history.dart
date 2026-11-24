@@ -321,26 +321,50 @@ class _RenderVisibleErrorSemantics extends RenderSemanticsAnnotations {
   }
 }
 
-/// Read-only inspection works for every kit transaction/refund status.
-/// Closing never cancels or resubmits a payment. Add authoritative host status
-/// check/receipt callbacks only when your integration actually supplies them.
+/// Inspection works for every kit transaction/refund status. Reporting is an
+/// optional host action and does not cancel or resubmit a payment.
 class MerchantHistoryDetail extends StatelessWidget {
   const MerchantHistoryDetail({
     super.key,
     required this.record,
     required this.onClose,
+    this.onReport,
   });
   final TransactionRecord record;
   final VoidCallback onClose;
+  final VoidCallback? onReport;
 
   @override
-  Widget build(BuildContext context) => PaymentSheet(
-    header: PaymentSheetHeader(title: 'Detail transaksi', subtitle: record.id),
-    body: TransactionDetail(record: record),
-    footer: PaymentButton(
-      label: 'Kembali ke riwayat',
-      variant: PaymentButtonVariant.secondary,
-      onPressed: onClose,
-    ),
-  );
+  Widget build(BuildContext context) {
+    final id = Localizations.localeOf(context).languageCode == 'id';
+    // This detail has no editor. Keep the keyboard for an overlaid report
+    // from squeezing the detail behind it.
+    return MediaQuery.removeViewInsets(
+      context: context,
+      removeBottom: true,
+      child: PaymentSheet(
+        header: PaymentSheetHeader(
+          title: 'Detail transaksi',
+          subtitle: record.id,
+        ),
+        body: TransactionDetail(record: record),
+        footer: PaymentButtonGroup(
+          direction: Axis.vertical,
+          children: [
+            if (onReport != null)
+              PaymentButton(
+                label: id ? 'Laporkan masalah' : 'Report a problem',
+                variant: PaymentButtonVariant.quiet,
+                onPressed: onReport,
+              ),
+            PaymentButton(
+              label: 'Kembali ke riwayat',
+              variant: PaymentButtonVariant.secondary,
+              onPressed: onClose,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

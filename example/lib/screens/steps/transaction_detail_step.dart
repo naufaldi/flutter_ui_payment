@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:rakit_ui/rakit_ui.dart';
+import '../../compositions/report_problem_block.dart';
 import '../../coordinator/demo_coordinator.dart';
 import '../../demo_strings.dart';
 import '../../adapters/account_models.dart';
-import 'report_problem.dart';
 
 class TransactionDetailStep extends StatelessWidget {
   const TransactionDetailStep(this.c, {super.key});
@@ -45,7 +47,9 @@ class TransactionDetailStep extends StatelessWidget {
         // A block body: the button doesn't wait on the sheet, so it isn't
         // busy behind it (#64).
         onPressed: () {
-          showReportProblem(context, c, r);
+          unawaited(
+            showReportProblem(context, record: r, onSubmit: c.reportProblem),
+          );
         },
       ),
       pending: c.detailLoading,

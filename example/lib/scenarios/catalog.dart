@@ -939,8 +939,8 @@ const scenarios = <Scenario>[
       'Detail transaksi dan laporkan masalah',
     ),
     expect: Bi(
-      'Explore transaction detail and report a problem with synthetic data.',
-      'Coba transaction detail and report a problem dengan data sintetis.',
+      'Report a problem from transaction detail. A failed send keeps your draft; a confirmed send shows a case ID.',
+      'Laporkan masalah dari detail transaksi. Jika gagal, draf tetap ada; jika berhasil, ID kasus akan muncul.',
     ),
     variants: [
       ScenarioVariant(

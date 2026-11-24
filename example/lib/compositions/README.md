@@ -6,8 +6,14 @@
   history** in Gallery. Copy `merchant_history.dart`; supply accumulated rows,
   query/filter, next-page availability and safe loading/error state. The host
   demo shows how to scope cursors to the active query and ignore stale replies.
-  Rows render lazily and open a read-only `TransactionDetail` sheet, including
-  unknown outcomes and separate refunds.
+  Rows render lazily and open a `TransactionDetail` sheet, including unknown
+  outcomes and separate refunds.
+- Report a problem: open a row in the history demo and choose **Laporkan
+  masalah**. Copy `report_problem_block.dart`, pass the selected record and
+  supply a host callback that returns the accepted draft and its case ID.
+  A failed or mismatched confirmation keeps the draft. The host owns
+  authorization and retry deduplication; reports do not change the payment
+  or refund.
 - KYC correction: run `flutter run -t lib/kyc_review_demo.dart`. Copy
   `kyc_review_block.dart`; supply document state, host snapshot, typed step and
   callbacks. Replacing a synthetic file does not set verified. Submit moves to

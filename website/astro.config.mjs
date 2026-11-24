@@ -198,6 +198,7 @@ export default defineConfig({
           { label: 'Merchant overview', slug: 'blocks/merchant-overview' },
           { label: 'Checkout and recovery', slug: 'blocks/checkout-recovery' },
           { label: 'Transaction history', slug: 'blocks/transaction-history' },
+          { label: 'Report a problem', slug: 'blocks/report-a-problem' },
           { label: 'KYC review and correction', slug: 'blocks/kyc-review' },
           { label: 'Manual VA transfer', slug: 'blocks/manual-transfer' },
           { label: 'QRIS checkout', slug: 'blocks/qris-checkout' },

@@ -58,9 +58,10 @@ intermediate pages if your service can return them. Authorize access on the
 server and convert transport errors to display-safe copy in the host.
 
 `MerchantHistoryDetail` composes `PaymentSheet`, `TransactionDetail` and a pinned
-return button for read-only inspection. Add a status-check
-or receipt action when your host implements it; an unknown result never
-authorizes a new payment. Copying or sharing is absent from this scenario.
+return button. The demo also supplies an `onReport` action that opens the
+[Report a problem sheet](/blocks/report-a-problem/) for the selected transaction.
+Omit the action for read-only inspection. Reporting never changes payment or
+refund state. An unknown result never authorizes a new payment.
 
 | UI | Existing library surface |
 | --- | --- |
