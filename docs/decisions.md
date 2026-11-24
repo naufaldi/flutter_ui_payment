@@ -159,6 +159,8 @@ Reduced motion sets every duration to zero, keeps the busy state as a static ico
 
 ## Performance
 
+**D131 (#334):** The profile summary reports the checkout/status budget verdict alongside the timings. A threshold miss does not fail collection: reviewers still need the separate build and raster p95s, window lengths and control diagnostics. Only comparable, complete evidence determines the overall pass or fail.
+
 The PRD budget is p95 build and raster each under 16.7 ms on a recorded 60 Hz target after a 30 s warm-up. The harness now measures a 30 s window (it measured 20 s before). Android 11 arm64 emulator, profile mode, Impeller on OpenGL ES, X02 checkout at 200% text, fling both ways plus method switch:
 
 | Run | Workload | Build p95 | Raster p50 | Raster p95 |

@@ -1,6 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +14,7 @@ import 'package:rakit_ui_example/scenarios/scenario_config.dart';
 import 'package:rakit_ui_example/screens/flow_screen.dart';
 import 'package:integration_test/integration_test.dart';
 
+import 'performance_verdict.dart';
 import 'support.dart';
 
 /// PRD §14 performance profile. Run in profile mode:
@@ -24,30 +27,35 @@ import 'support.dart';
 ///
 /// `--dart-define=PERF_ONLY=checkout` runs only the checkout workload (plus
 /// its short 100% text diagnostic) when re-measuring a checkout change.
-const warmUp = Duration(seconds: 30);
-const measured = Duration(seconds: 30);
 const only = String.fromEnvironment('PERF_ONLY');
 
-double percentile(List<double> values, double p) {
-  if (values.isEmpty) return double.nan;
+double? percentile(List<double> values, double p) {
+  if (values.isEmpty) return null;
   final sorted = [...values]..sort();
   final index = ((p / 100) * (sorted.length - 1)).round();
   return sorted[index];
 }
 
-Map<String, Object> summarize(List<FrameTiming> frames) {
+Map<String, Object?> summarize(
+  List<FrameTiming> timings, {
+  required int start,
+  required int end,
+}) {
+  final frames = timings.where((frame) {
+    final built = frame.timestampInMicroseconds(FramePhase.buildStart);
+    return built >= start && built < end;
+  }).toList();
   double ms(Duration d) => d.inMicroseconds / 1000;
   final build = [for (final f in frames) ms(f.buildDuration)];
   final raster = [for (final f in frames) ms(f.rasterDuration)];
-  double round(double v) => (v * 100).roundToDouble() / 100;
   return {
     'frames': frames.length,
-    'build_p50_ms': round(percentile(build, 50)),
-    'build_p95_ms': round(percentile(build, 95)),
-    'build_max_ms': round(percentile(build, 100)),
-    'raster_p50_ms': round(percentile(raster, 50)),
-    'raster_p95_ms': round(percentile(raster, 95)),
-    'raster_max_ms': round(percentile(raster, 100)),
+    'build_p50_ms': percentile(build, 50),
+    'build_p95_ms': percentile(build, 95),
+    'build_max_ms': percentile(build, 100),
+    'raster_p50_ms': percentile(raster, 50),
+    'raster_p95_ms': percentile(raster, 95),
+    'raster_max_ms': percentile(raster, 100),
   };
 }
 
@@ -57,39 +65,70 @@ void main() {
 
   Future<void> wait(Duration d) => Future<void>.delayed(d);
 
-  /// Runs [step] repeatedly for [warmUp], then again while recording frames.
-  Future<Map<String, Object>> profile(
+  /// Repeats the workload before and during frame collection.
+  Future<Map<String, Object?>> profile(
     Future<void> Function() step, {
-    Duration warm = warmUp,
-    Duration window = measured,
+    Duration warm = performanceWindow,
+    Duration window = performanceWindow,
   }) async {
-    final warmEnd = DateTime.now().add(warm);
-    while (DateTime.now().isBefore(warmEnd)) {
-      await step();
+    Future<({int start, int end, int iterations})> repeatFor(
+      Duration duration,
+    ) async {
+      // The VM timeline and engine frame phases use the monotonic clock.
+      final start = Timeline.now;
+      var end = start;
+      var iterations = 0;
+      while (end - start < duration.inMicroseconds) {
+        await step();
+        iterations++;
+        end = Timeline.now;
+      }
+      return (start: start, end: end, iterations: iterations);
     }
+
+    final warmed = await repeatFor(warm);
     final frames = <FrameTiming>[];
     void collect(List<FrameTiming> timings) => frames.addAll(timings);
     SchedulerBinding.instance.addTimingsCallback(collect);
-    final end = DateTime.now().add(window);
-    while (DateTime.now().isBefore(end)) {
-      await step();
+    try {
+      final sampled = await repeatFor(window);
+      // Drain late reports for frames that started in the measured window.
+      await wait(const Duration(milliseconds: 500));
+      return {
+        ...summarize(frames, start: sampled.start, end: sampled.end),
+        'warm_up_elapsed_ms':
+            (warmed.end - warmed.start) ~/ Duration.microsecondsPerMillisecond,
+        'warm_up_iterations': warmed.iterations,
+        'measured_elapsed_ms':
+            (sampled.end - sampled.start) ~/
+            Duration.microsecondsPerMillisecond,
+        'measured_iterations': sampled.iterations,
+      };
+    } finally {
+      SchedulerBinding.instance.removeTimingsCallback(collect);
     }
-    await wait(const Duration(milliseconds: 500));
-    SchedulerBinding.instance.removeTimingsCallback(collect);
-    return summarize(frames);
   }
 
   testWidgets('profile checkout scroll, status updates, document cycles', (
     tester,
   ) async {
     final app = await launch(tester, latencyScale: 0.2);
-    final results = <String, Object>{
+    final refreshHz =
+        PlatformDispatcher.instance.views.first.display.refreshRate;
+    final results = <String, Object?>{
       'platform': Platform.operatingSystem,
       'os': Platform.operatingSystemVersion,
-      'refresh_hz': PlatformDispatcher.instance.views.first.display.refreshRate,
-      'warm_up_s': warmUp.inSeconds,
-      'measured_s': measured.inSeconds,
+      'build_mode': kProfileMode
+          ? 'profile'
+          : (kReleaseMode ? 'release' : 'debug'),
+      'refresh_hz': refreshHz.isFinite ? refreshHz : null,
+      'warm_up_s': performanceWindow.inSeconds,
+      'measured_s': performanceWindow.inSeconds,
     };
+    void report() {
+      results['performance_budget'] = performanceVerdict(results);
+      binding.reportData = results;
+    }
 
     // Checkout: fling the list both ways and switch method, which re-quotes
     // and animates the selection and summary.
@@ -151,7 +190,7 @@ void main() {
         warm: const Duration(seconds: 5),
         window: const Duration(seconds: 15),
       );
-      binding.reportData = results;
+      report();
       return;
     }
 
@@ -214,6 +253,6 @@ void main() {
     expect(c.documents.length, 2);
     expect(ignored, 10);
 
-    binding.reportData = results;
+    report();
   });
 }
