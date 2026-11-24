@@ -136,7 +136,46 @@ final removed = await showPaymentAsyncConfirmDialog(
 
 The host's `removeSelectedStatement` handles expected failures and returns `Future<bool>`. Return `true` only after confirming success. Return `false` to keep the prompt open and update `confirmationMessage` with safe recovery instructions. The async prompt uses the root navigator so system Back reaches it even when opened from a nested page. If the callback needs to await another route, open that route on the root navigator too so it appears above the prompt. While pending, the kit prevents repeated confirmation and user dismissal. `pendingLabel` is announced to assistive technology.
 
-Do not blindly repeat a write with an unknown outcome. Check the existing operation first, or have the user close the prompt and check status elsewhere. The kit does not decide whether a retry is safe and never retries by itself. The example gallery's **Kit components** section simulates a known failure followed by a successful retry.
+### Check status without repeating a write
+
+Pass `actionLabels` if the next press may do something different. Its current value supplies the confirm and pending labels in place of the static strings. A null live pending label uses the localized working label. Keep the host-owned listenable alive until the dialog future completes. Updating it leaves the current dialog, button variant and pending locks in place.
+
+```dart
+final labels = ValueNotifier(const PaymentAsyncConfirmLabels(
+  confirmLabel: 'Remove statement',
+  pendingLabel: 'Removing statement',
+));
+var needsStatusCheck = false;
+var closed = false;
+try {
+  await showPaymentAsyncConfirmDialog(
+    context,
+    title: 'Remove this statement?',
+    description: const Text('It will no longer appear in saved records.'),
+    confirmLabel: 'Remove statement',
+    actionLabels: labels,
+    destructive: true,
+    onConfirm: () async {
+      if (needsStatusCheck) return checkRemovalStatus();
+      final removed = await removeStatement(); // null: outcome unknown
+      if (removed != null) return removed;
+      if (closed) return false;
+
+      needsStatusCheck = true;
+      labels.value = const PaymentAsyncConfirmLabels(
+        confirmLabel: 'Check status',
+        pendingLabel: 'Checking status',
+      );
+      return false;
+    },
+  );
+} finally {
+  closed = true;
+  labels.dispose();
+}
+```
+
+`checkRemovalStatus` reads the outcome for the same record and returns `true` only when removal is confirmed. Do not blindly repeat a write with an unknown outcome. The kit never retries, and changing the label does not change what `onConfirm` does. The example gallery's **Kit components** section shows a lost removal response followed by a status check, with live recovery copy in the description.
 
 ## Do and don't
 
@@ -161,7 +200,7 @@ Initial focus is on Cancel for destructive actions and Confirm otherwise. Dismis
 
 ## API
 
-<Props names={["showPaymentConfirmDialog", "showPaymentAsyncConfirmDialog"]} />
+<Props names={["showPaymentConfirmDialog", "showPaymentAsyncConfirmDialog", "PaymentAsyncConfirmLabels"]} />
 
 ## See also
 

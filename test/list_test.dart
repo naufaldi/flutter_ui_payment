@@ -78,6 +78,43 @@ void main() {
     semantics.dispose();
   });
 
+  testWidgets('a hugging trailing control gives unused width to the body', (
+    tester,
+  ) async {
+    final actions = <String>[];
+    Widget card({required bool hug}) => host(
+      SizedBox(
+        width: 320,
+        child: PaymentRecordCard(
+          title: const Text('Settlement statement.pdf'),
+          hugTrailing: hug,
+          onOpen: () => actions.add('open'),
+          trailing: PaymentIconButton(
+            icon: Icons.delete_outline,
+            tooltip: 'Remove record',
+            onPressed: () => actions.add('remove'),
+          ),
+        ),
+      ),
+      1,
+    );
+    final body = find.ancestor(
+      of: find.text('Settlement statement.pdf'),
+      matching: find.byType(InkWell),
+    );
+    final button = find.byType(IconButton);
+    await tester.pumpWidget(card(hug: false));
+    final defaultWidth = tester.getSize(body).width;
+    await tester.pumpWidget(card(hug: true));
+    expect(tester.getSize(body).width, greaterThan(defaultWidth));
+    final target = tester.getRect(button);
+    expect(target.width, greaterThanOrEqualTo(48));
+    expect(target.height, greaterThanOrEqualTo(48));
+    await tester.tapAt(target.centerLeft + const Offset(1, 0));
+    await tester.tap(body);
+    expect(actions, ['remove', 'open']);
+  });
+
   testWidgets('a narrow record keeps a separate 48 dp trailing tap target', (
     tester,
   ) async {
@@ -89,6 +126,8 @@ void main() {
             width: width,
             child: PaymentRecordCard(
               title: const Text('PDF'),
+              hugTrailing: true,
+              style: const PaymentRecordCardStyle(inset: 20),
               onOpen: () => actions.add('open'),
               trailing: PaymentIconButton(
                 icon: Icons.delete_outline,
@@ -123,6 +162,7 @@ void main() {
         width: width,
         child: PaymentRecordCard(
           title: const Text('PDF'),
+          hugTrailing: true,
           trailing: PaymentButton(
             label: 'Save',
             onPressed: () {
@@ -145,6 +185,210 @@ void main() {
     expect(calls, 1);
     write.complete();
     await tester.pumpAndSettle();
+  });
+
+  testWidgets('restyling a record does not unlock a busy Save', (tester) async {
+    final write = Completer<void>();
+    var calls = 0;
+    late double defaultInset;
+    Widget card(PaymentRecordCardStyle style) => host(
+      Builder(
+        builder: (context) {
+          defaultInset = PaymentTheme.of(context).space(PaymentSpace.block);
+          return SizedBox(
+            width: 320,
+            child: PaymentRecordCard(
+              key: const ValueKey('record'),
+              title: const Text('Statement'),
+              style: style,
+              trailing: PaymentButton(
+                label: 'Save',
+                onPressed: () {
+                  calls++;
+                  return write.future;
+                },
+              ),
+            ),
+          );
+        },
+      ),
+      1,
+    );
+
+    await tester.pumpWidget(card(const PaymentRecordCardStyle()));
+    final save = find.byType(PaymentButton);
+    await tester.tap(save);
+    await tester.pump();
+    await tester.tap(save);
+    expect(calls, 1);
+
+    await tester.pumpWidget(card(PaymentRecordCardStyle(inset: defaultInset)));
+    await tester.tap(save);
+    expect(calls, 1);
+    write.complete();
+    await tester.pumpAndSettle();
+    await tester.tap(save);
+    expect(calls, 2);
+    await tester.pumpAndSettle();
+  });
+
+  for (final (change, changeInset, sameKey) in [
+    ('setting the inset', true, false),
+    ('adding a trailing action', false, false),
+    ('adding a trailing action with the same local key', false, true),
+  ]) {
+    testWidgets('$change does not unlock a busy footer Save', (tester) async {
+      final actionKey = sameKey ? const ValueKey('action') : null;
+      final write = Completer<void>();
+      var calls = 0;
+      Widget card({required bool changed}) => host(
+        Builder(
+          builder: (context) => SizedBox(
+            width: 320,
+            child: PaymentRecordCard(
+              key: const ValueKey('record'),
+              title: const Text('Statement'),
+              style: PaymentRecordCardStyle(
+                inset: changed && changeInset
+                    ? PaymentTheme.of(context).space(PaymentSpace.block)
+                    : null,
+              ),
+              trailing: changed && !changeInset
+                  ? PaymentIconButton(
+                      key: actionKey,
+                      icon: Icons.delete_outline,
+                      tooltip: 'Remove statement',
+                      onPressed: () {},
+                    )
+                  : null,
+              footer: PaymentButton(
+                key: actionKey,
+                label: 'Save',
+                onPressed: () {
+                  calls++;
+                  return write.future;
+                },
+              ),
+            ),
+          ),
+        ),
+        1,
+      );
+
+      await tester.pumpWidget(card(changed: false));
+      final save = find.byType(PaymentButton);
+      await tester.tap(save);
+      await tester.pump();
+      await tester.tap(save);
+      expect(calls, 1);
+
+      await tester.pumpWidget(card(changed: true));
+      expect(tester.takeException(), isNull);
+      await tester.tap(save);
+      expect(calls, 1);
+      write.complete();
+      await tester.pumpAndSettle();
+      await tester.tap(save);
+      expect(calls, 2);
+      await tester.pumpAndSettle();
+    });
+  }
+
+  testWidgets('a default footer-only record fits an intrinsic-width parent', (
+    tester,
+  ) async {
+    var calls = 0;
+    await tester.pumpWidget(
+      host(
+        Center(
+          child: IntrinsicWidth(
+            child: PaymentRecordCard(
+              title: const Text('Statement'),
+              footer: PaymentButton(label: 'Save', onPressed: () => calls++),
+            ),
+          ),
+        ),
+        1,
+      ),
+    );
+    final card = find.byType(PaymentRecordCard);
+    expect(
+      tester.getSize(card).width,
+      lessThan(tester.getSize(find.byType(Scaffold)).width),
+    );
+    await tester.tap(find.text('Save'));
+    expect(calls, 1);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('an intrinsic record keeps its square footer Save tappable', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 240);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    var calls = 0;
+    await tester.pumpWidget(
+      host(
+        Center(
+          child: IntrinsicWidth(
+            child: PaymentRecordCard(
+              title: const Text('Title'),
+              footer: AspectRatio(
+                aspectRatio: 1,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: PaymentButton(label: 'Save', onPressed: () => calls++),
+                ),
+              ),
+            ),
+          ),
+        ),
+        1,
+      ),
+    );
+    final card = tester.getRect(find.byType(PaymentRecordCard));
+    final save = find.byType(PaymentButton);
+    final target = tester.getRect(save);
+    expect(target.top, greaterThanOrEqualTo(card.top));
+    expect(target.bottom, lessThanOrEqualTo(card.bottom));
+    expect(target.height, greaterThanOrEqualTo(48));
+    await tester.tap(save);
+    expect(calls, 1);
+  });
+
+  testWidgets('a large inset leaves room for the title and action at 200%', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    var calls = 0;
+    await tester.pumpWidget(
+      host(
+        PaymentRecordCard(
+          title: const Text('Statement'),
+          leading: const SizedBox.square(dimension: 40),
+          style: const PaymentRecordCardStyle(inset: 132),
+          trailing: PaymentIconButton(
+            icon: Icons.delete_outline,
+            tooltip: 'Remove statement',
+            onPressed: () => calls++,
+          ),
+        ),
+        2,
+      ),
+    );
+
+    expect(
+      tester.getSize(find.text('Statement')).width,
+      greaterThanOrEqualTo(96),
+    );
+    final target = tester.getRect(find.byType(IconButton));
+    expect(target.size.shortestSide, greaterThanOrEqualTo(48));
+    await tester.tapAt(target.centerLeft + const Offset(1, 0));
+    expect(calls, 1);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets(

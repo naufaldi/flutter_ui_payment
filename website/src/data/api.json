@@ -10170,10 +10170,66 @@
       }
     ]
   },
+  "PaymentAsyncConfirmLabels": {
+    "kind": "class",
+    "file": "lib/src/interaction/interaction.dart",
+    "doc": "Action labels for an open `showPaymentAsyncConfirmDialog`.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentAsyncConfirmLabels",
+        "factory": false,
+        "params": [
+          {
+            "name": "confirmLabel",
+            "type": "String",
+            "required": true,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "confirmLabel",
+            "doc": "Visible and spoken name of the confirm action."
+          },
+          {
+            "name": "pendingLabel",
+            "type": "String?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "pendingLabel",
+            "doc": "Spoken status while the action is running. Defaults to localized working."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "confirmLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String",
+        "doc": "Visible and spoken name of the confirm action."
+      },
+      {
+        "name": "pendingLabel",
+        "kind": "field",
+        "static": false,
+        "type": "String?",
+        "doc": "Spoken status while the action is running. Defaults to localized working."
+      }
+    ],
+    "copyWith": null
+  },
   "showPaymentAsyncConfirmDialog": {
     "kind": "function",
     "file": "lib/src/interaction/interaction.dart",
-    "doc": "Presents confirmation with the same responsive layout and initial focus as\n`showPaymentConfirmDialog`, but keeps it open while the host runs `onConfirm`.\n\n`title` names the action. `description` is host content (including any\nrecovery message), with the kit's supporting body style by default.\n`confirmLabel` names the operation and `cancelLabel` overrides localized\nCancel. `pendingLabel` is the spoken busy status; it defaults to the kit's\nlocalized working label. For `destructive` actions, Cancel receives focus.\n\nReturn `true` from `onConfirm` only when the host confirms success. Return\n`false` to leave the prompt open and make the actions available again. The\nhost handles expected failures and decides whether another activation may\nretry the operation or should only check its status. The kit never retries.\nUnexpected exceptions are reported to Flutter and leave the prompt open.\n\nThe prompt uses the root navigator. While pending, repeat activation,\nCancel, scrim, Back and Escape cannot dismiss it. The async sheet does\nnot support swipe-to-dismiss.\nThe returned future is `true` only for confirmed success and `false` on\ndismissal. A host that force-removes the route does not cancel the operation.",
+    "doc": "Presents confirmation with the same responsive layout and initial focus as\n`showPaymentConfirmDialog`, but keeps it open while the host runs `onConfirm`.\n\n`title` names the action. `description` is host content (including any\nrecovery message), with the kit's supporting body style by default.\n`confirmLabel` names the operation and `cancelLabel` overrides localized\nCancel. `pendingLabel` is the spoken busy status; it defaults to the kit's\nlocalized working label. For `destructive` actions, Cancel receives focus.\n\nPass `actionLabels` to update both labels while the prompt is open. Its\nvalue takes precedence over the static labels, including a null pending\nlabel. The host owns the listenable and must keep it alive until the\nreturned future completes. Updating labels does not invoke `onConfirm`,\nunlock the prompt, or change the action's variant.\n\nReturn `true` from `onConfirm` only when the host confirms success. Return\n`false` to leave the prompt open and make the actions available again. The\nhost handles expected failures and decides whether another activation may\nretry the operation or should only check its status. The kit never retries.\nUnexpected exceptions are reported to Flutter and leave the prompt open.\n\nThe prompt uses the root navigator. While pending, repeat activation,\nCancel, scrim, Back and Escape cannot dismiss it. The async sheet does\nnot support swipe-to-dismiss.\nThe returned future is `true` only for confirmed success and `false` on\ndismissal. A host that force-removes the route does not cancel the operation.",
     "returns": "Future<bool>",
     "typeParams": "",
     "params": [
@@ -10246,6 +10302,17 @@
       {
         "name": "pendingLabel",
         "type": "String?",
+        "required": false,
+        "default": null,
+        "named": true,
+        "viaThis": false,
+        "isSuper": false,
+        "fieldName": null,
+        "doc": ""
+      },
+      {
+        "name": "actionLabels",
+        "type": "ValueListenable<PaymentAsyncConfirmLabels>?",
         "required": false,
         "default": null,
         "named": true,
@@ -23555,6 +23622,135 @@
     ],
     "copyWith": null
   },
+  "PaymentRecordCardDivider": {
+    "kind": "enum",
+    "file": "lib/src/content/record_card.dart",
+    "doc": "Placement of the divider above a `PaymentRecordCard` footer.",
+    "values": [
+      {
+        "name": "fullWidth",
+        "doc": "Draws the divider across the card, the default."
+      },
+      {
+        "name": "inset",
+        "doc": "Aligns the divider with the footer's horizontal inset."
+      },
+      {
+        "name": "none",
+        "doc": "Does not draw a divider."
+      }
+    ]
+  },
+  "PaymentRecordCardStyle": {
+    "kind": "class",
+    "file": "lib/src/content/record_card.dart",
+    "doc": "Optional appearance overrides for a `PaymentRecordCard`.",
+    "extends": null,
+    "constructors": [
+      {
+        "name": "PaymentRecordCardStyle",
+        "factory": false,
+        "params": [
+          {
+            "name": "titleStyle",
+            "type": "TextStyle?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "titleStyle",
+            "doc": "Merged over the kit heading style for the title slot."
+          },
+          {
+            "name": "metadataStyle",
+            "type": "TextStyle?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "metadataStyle",
+            "doc": "Merged over the kit caption style for the metadata slot."
+          },
+          {
+            "name": "inset",
+            "type": "double?",
+            "required": false,
+            "default": null,
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "inset",
+            "doc": "Outer inset in dp around the body row and footer. Defaults to the kit's\nblock spacing. Extra horizontal inset yields to the title and 48 dp\naction targets when space is tight."
+          },
+          {
+            "name": "divider",
+            "type": "PaymentRecordCardDivider",
+            "required": false,
+            "default": "PaymentRecordCardDivider.fullWidth",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "divider",
+            "doc": "Divider above the footer. Has no effect without a footer."
+          },
+          {
+            "name": "elevation",
+            "type": "double",
+            "required": false,
+            "default": "0",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "elevation",
+            "doc": "Material elevation in dp. Defaults to a flat card."
+          }
+        ],
+        "doc": ""
+      }
+    ],
+    "getters": [],
+    "statics": [],
+    "members": [
+      {
+        "name": "titleStyle",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle?",
+        "doc": "Merged over the kit heading style for the title slot."
+      },
+      {
+        "name": "metadataStyle",
+        "kind": "field",
+        "static": false,
+        "type": "TextStyle?",
+        "doc": "Merged over the kit caption style for the metadata slot."
+      },
+      {
+        "name": "inset",
+        "kind": "field",
+        "static": false,
+        "type": "double?",
+        "doc": "Outer inset in dp around the body row and footer. Defaults to the kit's\nblock spacing. Extra horizontal inset yields to the title and 48 dp\naction targets when space is tight."
+      },
+      {
+        "name": "divider",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentRecordCardDivider",
+        "doc": "Divider above the footer. Has no effect without a footer."
+      },
+      {
+        "name": "elevation",
+        "kind": "field",
+        "static": false,
+        "type": "double",
+        "doc": "Material elevation in dp. Defaults to a flat card."
+      }
+    ],
+    "copyWith": null
+  },
   "PaymentRecordCard": {
     "kind": "class",
     "file": "lib/src/content/record_card.dart",
@@ -23641,6 +23837,28 @@
             "isSuper": false,
             "fieldName": "openLabel",
             "doc": "Replaces the open action's spoken title and metadata, when supplied."
+          },
+          {
+            "name": "hugTrailing",
+            "type": "bool",
+            "required": false,
+            "default": "false",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "hugTrailing",
+            "doc": "Lets an inline trailing slot take only the width its child needs, up to\nthe default one-third allocation. Stacking and tap targets are unchanged."
+          },
+          {
+            "name": "style",
+            "type": "PaymentRecordCardStyle",
+            "required": false,
+            "default": "const PaymentRecordCardStyle()",
+            "named": true,
+            "viaThis": true,
+            "isSuper": false,
+            "fieldName": "style",
+            "doc": "Appearance overrides. Unspecified properties keep the kit defaults."
           }
         ],
         "doc": ""
@@ -23697,6 +23915,20 @@
         "static": false,
         "type": "String?",
         "doc": "Replaces the open action's spoken title and metadata, when supplied."
+      },
+      {
+        "name": "hugTrailing",
+        "kind": "field",
+        "static": false,
+        "type": "bool",
+        "doc": "Lets an inline trailing slot take only the width its child needs, up to\nthe default one-third allocation. Stacking and tap targets are unchanged."
+      },
+      {
+        "name": "style",
+        "kind": "field",
+        "static": false,
+        "type": "PaymentRecordCardStyle",
+        "doc": "Appearance overrides. Unspecified properties keep the kit defaults."
       }
     ],
     "copyWith": null

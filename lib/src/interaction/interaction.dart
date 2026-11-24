@@ -5,6 +5,7 @@ import '../controls/actions.dart';
 import '../foundation/tap_target.dart';
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import '../foundation/footer_clearance.dart';
@@ -697,6 +698,20 @@ Future<bool> showPaymentConfirmDialog(
   ),
 );
 
+/// Action labels for an open [showPaymentAsyncConfirmDialog].
+class PaymentAsyncConfirmLabels {
+  const PaymentAsyncConfirmLabels({
+    required this.confirmLabel,
+    this.pendingLabel,
+  });
+
+  /// Visible and spoken name of the confirm action.
+  final String confirmLabel;
+
+  /// Spoken status while the action is running. Defaults to localized working.
+  final String? pendingLabel;
+}
+
 /// Presents confirmation with the same responsive layout and initial focus as
 /// [showPaymentConfirmDialog], but keeps it open while the host runs [onConfirm].
 ///
@@ -705,6 +720,12 @@ Future<bool> showPaymentConfirmDialog(
 /// [confirmLabel] names the operation and [cancelLabel] overrides localized
 /// Cancel. [pendingLabel] is the spoken busy status; it defaults to the kit's
 /// localized working label. For [destructive] actions, Cancel receives focus.
+///
+/// Pass [actionLabels] to update both labels while the prompt is open. Its
+/// value takes precedence over the static labels, including a null pending
+/// label. The host owns the listenable and must keep it alive until the
+/// returned future completes. Updating labels does not invoke [onConfirm],
+/// unlock the prompt, or change the action's variant.
 ///
 /// Return `true` from [onConfirm] only when the host confirms success. Return
 /// `false` to leave the prompt open and make the actions available again. The
@@ -725,24 +746,35 @@ Future<bool> showPaymentAsyncConfirmDialog(
   required Future<bool> Function() onConfirm,
   String? cancelLabel,
   String? pendingLabel,
+  ValueListenable<PaymentAsyncConfirmLabels>? actionLabels,
   bool destructive = false,
 }) => _showConfirm(
   context,
   enableDrag: false,
   useRootNavigator: true,
   builder: (context, compact) => _AsyncConfirm(
-    builder: (pending, confirm, cancel) => _ConfirmContent(
-      compact: compact,
-      title: title,
-      description: description,
-      confirmLabel: confirmLabel,
-      cancelLabel: cancelLabel,
-      pendingLabel: pendingLabel,
-      destructive: destructive,
-      pending: pending,
-      onConfirm: confirm,
-      onCancel: cancel,
-    ),
+    builder: (pending, confirm, cancel) {
+      Widget content(String label, String? busyLabel) => _ConfirmContent(
+        compact: compact,
+        title: title,
+        description: description,
+        confirmLabel: label,
+        cancelLabel: cancelLabel,
+        pendingLabel: busyLabel,
+        destructive: destructive,
+        pending: pending,
+        onConfirm: confirm,
+        onCancel: cancel,
+      );
+
+      return actionLabels == null
+          ? content(confirmLabel, pendingLabel)
+          : ValueListenableBuilder(
+              valueListenable: actionLabels,
+              builder: (_, labels, _) =>
+                  content(labels.confirmLabel, labels.pendingLabel),
+            );
+    },
     onConfirm: onConfirm,
   ),
 );
