@@ -117,7 +117,7 @@
   "android_block_checkout_wallet": {
     "width": 640,
     "height": 1095,
-    "caption": "Checkout block wallet look: Soft preset, balance-first review and pinned pay for the same order."
+    "caption": "Checkout block wallet look: merchant and order reference above the balance, with a pinned pay action."
   },
   "android_block_checkout_wallet_dark": {
     "width": 640,
