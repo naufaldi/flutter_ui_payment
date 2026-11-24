@@ -22,10 +22,10 @@ window.__fupMotionReady = true;
 /** True while the gate is present and reduced motion is off. */
 export const motionOn = () => 'fupMotion' in root.dataset && !reduced.matches;
 
-/** Fades and shrinks a panel out in 140 ms. The caller closes it afterwards. */
-export async function fadeOut(el: HTMLElement): Promise<void> {
+/** Starts the 140 ms panel exit, returning its controls to the caller. */
+export function fadeOut(el: HTMLElement) {
   if (!motionOn()) return;
-  await animate(el, { opacity: 0, transform: 'scale(0.97)' }, { duration: 0.14, ease }).finished;
+  return animate(el, { opacity: 0, transform: 'scale(0.97)' }, { duration: 0.14, ease });
 }
 
 /** The elements CSS hides until revealed: the marked element, or a group's children. */
