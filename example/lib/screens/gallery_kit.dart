@@ -353,6 +353,34 @@ class _NavigationDemoState extends State<_NavigationDemo> {
 class _SheetsDemo extends StatelessWidget {
   const _SheetsDemo();
 
+  Future<void> _contents(BuildContext context) {
+    String t(String en, String id) => _t(context, en, id);
+    return showPaymentSheet<void>(
+      context: context,
+      builder: (sheet) => PaymentSheet.scrollable(
+        height: MediaQuery.sizeOf(sheet).height * 0.7,
+        header: PaymentSheetHeader(
+          title: t('Contents', 'Daftar isi'),
+          onClose: () => Navigator.pop(sheet),
+        ),
+        body: ListView.builder(
+          padding: EdgeInsets.symmetric(
+            horizontal: PaymentTheme.of(sheet).space(PaymentSpace.group),
+          ),
+          itemCount: 60,
+          itemBuilder: (context, index) => PaymentListItem(
+            title: t('Section ${index + 1}', 'Bagian ${index + 1}'),
+            onPressed: () => Navigator.pop(sheet),
+          ),
+        ),
+        footer: PaymentButton(
+          label: t('Done', 'Selesai'),
+          onPressed: () => Navigator.pop(sheet),
+        ),
+      ),
+    );
+  }
+
   Future<void> _filters(BuildContext context) async {
     String t(String en, String id) => _t(context, en, id);
     final picked = await showPaymentSheet<String>(
@@ -515,6 +543,15 @@ class _SheetsDemo extends StatelessWidget {
               'Keyboard mendorong footer ke atas',
             ),
             onPressed: () => _filters(context),
+          ),
+          PaymentListItem(
+            icon: Icons.format_list_numbered,
+            title: t('Bounded contents sheet', 'Sheet daftar isi terbatas'),
+            secondaryTitle: t(
+              'Builds list rows as you scroll',
+              'Memuat baris saat digulir',
+            ),
+            onPressed: () => _contents(context),
           ),
           PaymentListItem(
             icon: Icons.pending_outlined,

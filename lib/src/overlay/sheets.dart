@@ -76,53 +76,153 @@ class PaymentSheetHeader extends StatelessWidget {
 /// that scrolls when it is taller than the space, and a fixed [footer] for
 /// actions. Respects the safe area and moves above the software keyboard.
 ///
-/// Inside [showPaymentSideSheet] it fills the panel's height so the footer
-/// sits at the bottom; in a bottom sheet it hugs its content.
+/// As the direct body of [showPaymentSideSheet], it fills the panel. In a
+/// bottom sheet the default constructor hugs its content unless [height] is
+/// set. [PaymentSheet.scrollable] gives a caller-owned scrollable the
+/// remaining space directly.
 class PaymentSheet extends StatelessWidget {
-  const PaymentSheet({super.key, this.header, required this.body, this.footer});
+  /// Wraps [body] in a scroll view with the sheet's standard gutters.
+  const PaymentSheet({
+    super.key,
+    this.header,
+    required this.body,
+    this.footer,
+    this.height,
+  }) : _ownsScroll = true,
+       assert(height == null || (height > 0 && height < double.infinity));
 
+  /// Gives [body] a finite viewport without wrapping it in a scroll view or
+  /// adding gutters. Pass a [ListView] or [CustomScrollView] and set its padding
+  /// as needed. Without [height], the parent must bound the height. When a
+  /// keyboard leaves a short, wide viewport, the header and footer move beside
+  /// the body to leave room for editing.
+  const PaymentSheet.scrollable({
+    super.key,
+    this.header,
+    required this.body,
+    this.footer,
+    this.height,
+  }) : _ownsScroll = false,
+       assert(height == null || (height > 0 && height < double.infinity));
+
+  /// Optional fixed content above the scrolling body.
   final Widget? header;
+
+  /// The content to scroll, or the scrollable itself in [PaymentSheet.scrollable].
   final Widget body;
+
+  /// Optional fixed actions below the scrolling body.
   final Widget? footer;
+
+  /// Requested height in logical pixels, excluding the keyboard inset and
+  /// route drag handle. Must be finite and positive, with room for the header
+  /// and footer. Parent constraints can limit it or require the sheet to fill
+  /// the panel.
+  final double? height;
+
+  final bool _ownsScroll;
 
   @override
   Widget build(BuildContext context) {
-    final theme = PaymentTheme.of(context);
-    final fill = _SideSheetScope.of(context) || inFullHeightSheet(context);
+    final fill =
+        height != null ||
+        _SideSheetScope.of(context) ||
+        inFullHeightSheet(context);
     final keyboard = MediaQuery.viewInsetsOf(context).bottom;
-    final scrollBody = SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(
-        theme.space(PaymentSpace.group),
-        0,
-        theme.space(PaymentSpace.group),
-        theme.space(PaymentSpace.group),
-      ),
-      child: body,
-    );
+    final gutter = PaymentTheme.of(context).space(PaymentSpace.group);
+    final scrollBody = _ownsScroll
+        ? SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(gutter, 0, gutter, gutter),
+            child: body,
+          )
+        : body;
+    // The sheet's body has no column cap, so neither has its footer.
+    final bottom = footer != null
+        ? PinnedFooter(maxContentWidth: null, child: footer!)
+        : const SafeArea(top: false, child: SizedBox.shrink());
     return Padding(
       padding: EdgeInsets.only(bottom: keyboard),
-      child: Column(
-        mainAxisSize: fill ? MainAxisSize.max : MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ?header,
-          if (fill)
-            Expanded(child: scrollBody)
-          else
-            Flexible(child: scrollBody),
-          // The sheet's body has no column cap (a large focus view's side
-          // sheet is 720 dp), so neither has its footer.
-          if (footer != null)
-            PinnedFooter(maxContentWidth: null, child: footer!)
-          else
-            const SafeArea(top: false, child: SizedBox.shrink()),
-        ],
+      child: SizedBox(
+        height: height,
+        child: _ownsScroll
+            ? Column(
+                mainAxisSize: fill ? MainAxisSize.max : MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ?header,
+                  if (fill)
+                    Expanded(child: scrollBody)
+                  else
+                    Flexible(child: scrollBody),
+                  bottom,
+                ],
+              )
+            : LayoutBuilder(
+                builder: (context, constraints) {
+                  // Leave a touch target's worth of height after the padded
+                  // header and footer, or trade width for that height.
+                  final beside =
+                      keyboard > 0 &&
+                      constraints.maxHeight < 4 * kMinInteractiveDimension &&
+                      constraints.maxWidth >= 480;
+                  Widget rail(Widget child, {required int flex}) => Flexible(
+                    flex: flex,
+                    child: Center(
+                      child: SingleChildScrollView(
+                        primary: false,
+                        child: child,
+                      ),
+                    ),
+                  );
+                  return Flex(
+                    direction: beside ? Axis.horizontal : Axis.vertical,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (header != null)
+                        beside ? rail(header!, flex: 3) : header!,
+                      // Keep this slot in place so the editor retains focus.
+                      Expanded(
+                        key: const ValueKey('sheet-body'),
+                        flex: beside ? 3 : 1,
+                        child: scrollBody,
+                      ),
+                      if (footer != null)
+                        // Resize the same footer; remounting it resets any
+                        // pending action lock in its buttons.
+                        Flexible(
+                          key: const ValueKey('sheet-footer'),
+                          flex: beside ? 2 : 0,
+                          child: Center(
+                            heightFactor: 1,
+                            child: SingleChildScrollView(
+                              primary: false,
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: PinnedFooter(
+                                  maxContentWidth: null,
+                                  besideBody: beside,
+                                  padding: beside
+                                      ? EdgeInsets.symmetric(horizontal: gutter)
+                                      : null,
+                                  child: footer!,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      else
+                        bottom,
+                    ],
+                  );
+                },
+              ),
       ),
     );
   }
 }
 
 /// Opens a modal bottom sheet sized to its content, up to the full height.
+/// Use [PaymentSheet.height] to request a shorter panel.
 ///
 /// Swipe down, the scrim, Back and Escape dismiss it when [isDismissible]
 /// is true; pass false while a host call that must finish is running.

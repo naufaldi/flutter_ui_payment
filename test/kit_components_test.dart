@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -478,6 +480,248 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.getTopLeft(find.text('Body')).dx, 16);
       expect(tester.getTopLeft(find.text('Title')).dx, 16);
+    });
+
+    testWidgets('bounded contents scroll lazily above the keyboard at 200%', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(320, 568);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final built = <int>{};
+      const sectionCount = 60;
+
+      Widget contents(BuildContext sheet) => MediaQuery.withClampedTextScaling(
+        minScaleFactor: 2,
+        maxScaleFactor: 2,
+        child: PaymentSheet.scrollable(
+          height: 400,
+          header: PaymentSheetHeader(
+            title: 'Contents',
+            onClose: () => Navigator.pop(sheet),
+          ),
+          body: ListView.builder(
+            itemCount: sectionCount + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return PaymentTextField.search(
+                  label: 'Find a section',
+                  query: '',
+                  onChanged: (_) {},
+                );
+              }
+              built.add(index);
+              return PaymentListItem(title: 'Section $index');
+            },
+          ),
+          footer: PaymentButton(
+            label: 'Done',
+            onPressed: () => Navigator.pop(sheet),
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(
+        app(
+          Scaffold(
+            body: Builder(
+              builder: (context) => TextButton(
+                onPressed: () =>
+                    showPaymentSheet<void>(context: context, builder: contents),
+                child: const Text('Open contents'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open contents'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
+      expect(tester.getSize(find.byType(PaymentSheet)).height, 400);
+      expect(find.text('Section 1').hitTestable(), findsOneWidget);
+      expect(built, isNot(contains(12)));
+
+      final footer = find.bySemanticsLabel('Done');
+      final body = find.byType(ListView);
+      final originalFooter = tester.getRect(footer);
+      final originalBody = tester.getSize(body).height;
+      await tester.tap(find.byType(EditableText));
+      tester.view.viewInsets = const FakeViewPadding(bottom: 220);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
+      expect(tester.testTextInput.isVisible, isTrue);
+      expect(tester.getSize(body).height, lessThan(originalBody));
+      expect(tester.getRect(footer).bottom, originalFooter.bottom - 220);
+      expect(
+        tester.getSemantics(find.text('Contents')).flagsCollection.isHeader,
+        isTrue,
+      );
+      expect(find.byTooltip('Close panel').hitTestable(), findsOneWidget);
+
+      final dockedFooter = tester.getRect(footer);
+      final section = find.text('Section 12').hitTestable();
+      await tester.scrollUntilVisible(
+        section,
+        75,
+        scrollable: find.descendant(
+          of: body,
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Scrollable &&
+                widget.axisDirection == AxisDirection.down,
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(section, findsOneWidget);
+      expect(built, isNot(contains(sectionCount)));
+      expect(tester.getRect(footer), dockedFooter);
+      expect(tester.takeException(), isNull);
+      await tester.tap(footer);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
+      expect(find.byType(PaymentSheet), findsNothing);
+    });
+
+    for (final scale in [1.0, 2.0]) {
+      testWidgets(
+        'landscape IME keeps the editor and Done visible at ${scale}x',
+        (tester) async {
+          tester.view.physicalSize = const Size(640, 360);
+          tester.view.devicePixelRatio = 1;
+          addTearDown(tester.view.reset);
+          String? query;
+
+          await tester.pumpWidget(
+            app(
+              Scaffold(
+                body: Builder(
+                  builder: (context) => TextButton(
+                    onPressed: () => showPaymentSheet<void>(
+                      context: context,
+                      builder: (sheet) => MediaQuery.withClampedTextScaling(
+                        minScaleFactor: scale,
+                        maxScaleFactor: scale,
+                        child: PaymentSheet.scrollable(
+                          height: 400,
+                          header: PaymentSheetHeader(
+                            title: 'Contents',
+                            onClose: () => Navigator.pop(sheet),
+                          ),
+                          body: ListView.builder(
+                            itemCount: 61,
+                            itemBuilder: (_, index) => index == 0
+                                ? PaymentTextField.search(
+                                    label: 'Find a section',
+                                    query: '',
+                                    onChanged: (value) => query = value,
+                                  )
+                                : PaymentListItem(title: 'Section $index'),
+                          ),
+                          footer: PaymentButton(
+                            label: 'Done',
+                            onPressed: () => Navigator.pop(sheet),
+                          ),
+                        ),
+                      ),
+                    ),
+                    child: const Text('Open contents'),
+                  ),
+                ),
+              ),
+            ),
+          );
+          await tester.tap(find.text('Open contents'));
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 350));
+          final editor = find.byType(EditableText);
+          await tester.tap(editor);
+          await tester.pump();
+          expect(tester.testTextInput.isVisible, isTrue);
+          tester.view.viewInsets = const FakeViewPadding(bottom: 230);
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 350));
+
+          expect(tester.takeException(), isNull);
+          final viewport = tester.getRect(find.byType(ListView));
+          expect(editor.hitTestable(), findsOneWidget);
+          final editorRect = tester.getRect(editor);
+          expect(editorRect.top, greaterThanOrEqualTo(viewport.top));
+          expect(editorRect.bottom, lessThanOrEqualTo(viewport.bottom));
+          expect(tester.testTextInput.isVisible, isTrue);
+          tester.testTextInput.enterText('Chapter');
+          await tester.pump();
+          expect(query, 'Chapter');
+
+          final done = find.bySemanticsLabel('Done');
+          expect(tester.getRect(done).bottom, lessThanOrEqualTo(130));
+          await tester.tap(done.hitTestable());
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 350));
+          expect(find.byType(PaymentSheet), findsNothing);
+        },
+      );
+    }
+
+    testWidgets('Save stays locked when the landscape keyboard closes', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(640, 360);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final pending = Completer<void>();
+      var saves = 0;
+      await tester.pumpWidget(
+        app(
+          Scaffold(
+            body: Builder(
+              builder: (context) => TextButton(
+                onPressed: () => showPaymentSheet<void>(
+                  context: context,
+                  builder: (_) => PaymentSheet.scrollable(
+                    height: 400,
+                    header: const PaymentSheetHeader(title: 'Edit section'),
+                    body: ListView(children: const [TextField()]),
+                    footer: PaymentButton(
+                      label: 'Save',
+                      onPressed: () {
+                        saves++;
+                        return pending.future;
+                      },
+                    ),
+                  ),
+                ),
+                child: const Text('Open editor'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open editor'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(EditableText));
+      await tester.pump();
+      tester.view.viewInsets = const FakeViewPadding(bottom: 230);
+      await tester.pump();
+      final save = find.byType(PaymentButton).hitTestable();
+      expect(tester.getRect(save).bottom, lessThanOrEqualTo(130));
+      await tester.tap(save);
+      await tester.pump();
+      await tester.tap(save);
+      expect(saves, 1);
+
+      FocusManager.instance.primaryFocus?.unfocus();
+      tester.view.resetViewInsets();
+      await tester.pump();
+      expect(tester.getRect(save).top, greaterThan(130));
+      await tester.tap(save);
+      expect(saves, 1);
+
+      pending.complete();
+      await tester.pumpAndSettle();
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+      expect(saves, 2);
     });
   });
 

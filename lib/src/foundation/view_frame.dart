@@ -69,6 +69,7 @@ class PinnedFooter extends StatefulWidget {
     required this.child,
     this.padding,
     this.maxContentWidth = kContentMaxWidth,
+    this.besideBody = false,
   });
   final Widget child;
 
@@ -78,6 +79,9 @@ class PinnedFooter extends StatefulWidget {
   /// Column cap for the content. Null leaves the child at the full width,
   /// for a sheet whose body has no cap of its own.
   final double? maxContentWidth;
+
+  /// Beside a short sheet's body, this is an action rail, not a bottom band.
+  final bool besideBody;
   @override
   State<PinnedFooter> createState() => _PinnedFooterState();
 }
@@ -88,7 +92,18 @@ class _PinnedFooterState extends State<PinnedFooter> {
   @override
   void initState() {
     super.initState();
-    PinnedFooterRegistry.add(_entry);
+    if (!widget.besideBody) PinnedFooterRegistry.add(_entry);
+  }
+
+  @override
+  void didUpdateWidget(PinnedFooter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.besideBody == oldWidget.besideBody) return;
+    if (widget.besideBody) {
+      PinnedFooterRegistry.remove(_entry);
+    } else {
+      PinnedFooterRegistry.add(_entry);
+    }
   }
 
   @override
@@ -103,13 +118,15 @@ class _PinnedFooterState extends State<PinnedFooter> {
     final theme = PaymentTheme.of(context);
     final cap = widget.maxContentWidth;
     final padding = widget.padding;
+    final beside = widget.besideBody;
     final child = widget.child;
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: theme.outline)),
+        border: beside ? null : Border(top: BorderSide(color: theme.outline)),
       ),
       child: SafeArea(
         top: false,
+        bottom: !beside,
         minimum: padding ?? EdgeInsets.all(theme.space(PaymentSpace.group)),
         child: cap == null ? child : ContentColumn(maxWidth: cap, child: child),
       ),
