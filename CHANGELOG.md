@@ -1,3 +1,9 @@
+## 0.8.0
+
+- Import `PaymentCollection` for lazy, host-built rows and a custom pager. The host controls page replacement, refresh, retry, and empty states, and can keep Previous available on an empty page (#388, D144).
+- Opt into record card styling and content-sized trailing controls. Async confirmation can update its action and spoken busy labels while open, so a host can offer Check status after an unconfirmed action without asking the user to send it again (#387, D143).
+- Both changes came from the Annota Documents pilot. The Gallery uses a simulated host, not the Annota backend. Native Android checks for collection paging, refresh and retry, record card actions, and async confirmation recovery have not been run. TalkBack announcements for paging states and changing confirmation labels have not been checked.
+
 ## 0.7.0
 
 - Added a copyable e-wallet handoff and return block. The host opens the wallet and checks the original payment attempt after return, cancellation, a missing app, or no return. The demo uses a simulated host; no wallet provider has been verified (#376, D138).

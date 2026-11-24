@@ -9,7 +9,7 @@ dependencies:
   rakit_ui:
     git:
       url: https://github.com/naufaldi/flutter_ui_payment.git
-      ref: v0.7.0
+      ref: v0.8.0
 ```
 
 No other dependency is required. Add a media plugin only if you use `PaymentVideoPlayer` (see step 5).
