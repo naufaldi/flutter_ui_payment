@@ -274,6 +274,8 @@ Alur pengguna utama tetap dimulai dari KYC. Urutan engineering dimulai dari paym
 
 ## 14. Verifikasi dan definisi selesai v0.1
 
+Pedoman di bawah ini adalah kriteria rilis awal v0.1, bukan syarat untuk setiap PR. Untuk perubahan saat ini, ikuti [pembuktian sesuai risiko](AGENTS.md#proof-scaled-to-risk) (D132): perubahan risiko tinggi perlu tes regresi yang gagal sebelum perbaikan dan lulus sesudahnya, serta tes integrasi pada alur yang terdampak. Perubahan perilaku biasa perlu satu tes yang membuktikan hasil yang terlihat pengguna. Untuk perubahan risiko rendah, jalankan pemeriksaan yang sudah ada tanpa menambah tes. Setiap perubahan UI perlu screenshot sebelum dan sesudah.
+
 ### Hasil produk
 
 - Format/analyzer bersih: `dart format --output=none --set-exit-if-changed .` dan `flutter analyze`.
@@ -298,7 +300,7 @@ Budget awal berikut adalah target proyek yang belum diukur:
 
 v0.1 selesai ketika package benar-benar bisa dikonsumsi dari example, semua skenario prioritas bagian 9 dapat diperagakan, pemeriksaan lokal lulus, dan bukti native serta hasil profil diinspeksi. Test unit/golden saja tidak cukup untuk mengklaim flow native bekerja. Klaim platform yang belum diperiksa tetap pending.
 
-Sebelum merge, jalankan pemeriksaan lokal sesuai [AGENTS.md](AGENTS.md#checks) pada commit akhir yang akan di-merge (D129).
+Sebelum merge, jalankan [suite lokal lengkap](AGENTS.md#checks) pada head yang sudah di-rebase ke `origin/main` (D129). Jika `main` berubah sesudahnya, rebase lagi. Ulangi seluruh suite hanya jika commit baru menyentuh package atau area yang sama; jika tidak, ulangi pemeriksaan yang terdampak saja.
 
 **Tahap dokumen sekarang selesai saat** README dan PRD tersimpan di pusat proyek, keputusan/asumsi dibedakan, setiap modul punya acceptance, edge case/state owner jelas, serta rencana verifikasi dan distribusi dapat dieksekusi. Ini tidak berarti v0.1 sudah diimplementasikan.
 
