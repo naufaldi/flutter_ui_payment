@@ -1,8 +1,9 @@
-import 'dart:typed_data';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import 'package:rakit_ui/src/foundation/radio_mark.dart';
+import 'helpers/controlled_image.dart';
 import 'widgets_test.dart' show host;
 import 'kit_components_test.dart' show app, FakeVideo;
 
@@ -132,27 +133,37 @@ void main() {
   testWidgets('failed photo retains review actions and illustrated fallback', (
     tester,
   ) async {
+    final result = Completer<ImageInfo>();
+    final fallback = find.byWidgetPredicate(
+      (widget) => widget is CaptureFrameOverlay && !widget.overPreview,
+    );
+    var usedPhoto = 0;
+    var retakes = 0;
     await tester.pumpWidget(
       host(
         KycCaptureGuide(
           kind: CaptureKind.idCard,
-          photo: MemoryImage(Uint8List.fromList([0, 1, 2])),
-          onUsePhoto: () {},
-          onRetake: () {},
+          photo: ControlledImage(result.future),
+          onUsePhoto: () => usedPhoto++,
+          onRetake: () => retakes++,
         ),
       ),
     );
-    await tester.runAsync(() async {
-      await Future<void>.delayed(const Duration(milliseconds: 100));
-    });
+    expect(find.bySemanticsLabel('Your photo: ID card'), findsOneWidget);
+    expect(fallback, findsNothing);
+    result.completeError(StateError('Image decode failed'));
     await tester.pump();
-    expect(
-      find.byWidgetPredicate((w) => w is CaptureFrameOverlay && !w.overPreview),
-      findsOneWidget,
-    );
-    expect(find.text('Use photo'), findsOneWidget);
-    expect(find.text('Retake'), findsOneWidget);
+    expect(fallback, findsOneWidget);
     expect(tester.takeException(), isNull);
+
+    final usePhoto = find.text('Use photo');
+    final retake = find.text('Retake');
+    await tester.ensureVisible(usePhoto);
+    await tester.tap(usePhoto);
+    await tester.ensureVisible(retake);
+    await tester.tap(retake);
+    expect(usedPhoto, 1);
+    expect(retakes, 1);
   });
   testWidgets('reapproval is aligned, gated and disabled while busy', (
     tester,
