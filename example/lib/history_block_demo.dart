@@ -88,6 +88,7 @@ class _HistoryBlockDemoState extends State<HistoryBlockDemo> {
   List<TransactionRecord> _records = [];
   String? _nextCursor;
   int _generation = 0;
+  int _failedAttempt = 0;
   _PageRequest _request = _PageRequest.idle;
 
   @override
@@ -133,7 +134,10 @@ class _HistoryBlockDemoState extends State<HistoryBlockDemo> {
       });
     } catch (_) {
       if (!mounted || generation != _generation) return;
-      setState(() => _request = _PageRequest.failed);
+      setState(() {
+        _request = _PageRequest.failed;
+        _failedAttempt++;
+      });
     }
   }
 
@@ -178,14 +182,20 @@ class _HistoryBlockDemoState extends State<HistoryBlockDemo> {
     loading: _request == _PageRequest.loading,
     error: _request != _PageRequest.failed
         ? null
-        : switch ((Localizations.localeOf(context).languageCode, _nextCursor)) {
-            ('id', null) => 'Riwayat belum dapat dimuat. Coba lagi.',
-            ('id', _) =>
-              'Halaman berikutnya gagal dimuat. Transaksi sebelumnya tetap tersedia.',
-            (_, null) => 'History couldn’t load. Try again.',
-            _ =>
-              'Couldn’t load the next page. Previous transactions are still available.',
-          },
+        : (
+            attempt: _failedAttempt,
+            message: switch ((
+              Localizations.localeOf(context).languageCode,
+              _nextCursor,
+            )) {
+              ('id', null) => 'Riwayat belum dapat dimuat. Coba lagi.',
+              ('id', _) =>
+                'Halaman berikutnya gagal dimuat. Transaksi sebelumnya tetap tersedia.',
+              (_, null) => 'History couldn’t load. Try again.',
+              _ =>
+                'Couldn’t load the next page. Previous transactions are still available.',
+            },
+          ),
     onRequestPage: () => unawaited(_loadPage()),
     onOpen: (record) => showPaymentSheet<void>(
       context: context,

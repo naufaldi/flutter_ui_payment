@@ -29,7 +29,9 @@ class MerchantHistory extends StatelessWidget {
   final ValueChanged<TransactionRecord> onOpen;
   final bool hasMore;
   final bool loading;
-  final String? error;
+
+  /// Safe display copy and a distinct attempt number for each failed request.
+  final ({String message, int attempt})? error;
 
   /// Requests the next page or retries the failed page without moving its cursor.
   final VoidCallback onRequestPage;
@@ -137,7 +139,7 @@ class MerchantHistory extends StatelessWidget {
                     rows: 4,
                     leading: false,
                   ),
-                  (_, final String message, _) => StateMessage(
+                  (_, (message: final message, attempt: _), _) => StateMessage(
                     icon: Icons.cloud_off_outlined,
                     tone: StatusTone.danger,
                     title: l10n.transactionsFailedTitle,
@@ -205,7 +207,7 @@ class _PageFooter extends StatefulWidget {
 
   final String label;
   final bool loading;
-  final String? error;
+  final ({String message, int attempt})? error;
   final VoidCallback onPressed;
 
   @override
@@ -213,32 +215,35 @@ class _PageFooter extends StatefulWidget {
 }
 
 class _PageFooterState extends State<_PageFooter> {
-  bool _revealingError = false;
-
   @override
   void didUpdateWidget(_PageFooter oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.error != null || widget.error == null) return;
+    final attempt = widget.error?.attempt;
+    if (attempt == null || attempt == oldWidget.error?.attempt) return;
 
     final footer = context.findRenderObject()! as RenderBox;
     final viewport = RenderAbstractViewport.of(footer);
     final position = Scrollable.of(context).position;
+    final offset = position.pixels;
     final top = viewport.getOffsetToReveal(footer, 0).offset;
     // Don't pull the reader back to the footer if they scrolled away.
-    if (top + footer.size.height <= position.pixels ||
-        top >= position.pixels + position.viewportDimension) {
+    if (position.isScrollingNotifier.value ||
+        top + footer.size.height <= offset ||
+        top >= offset + position.viewportDimension) {
       return;
     }
-    _revealingError = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      if (widget.error != null) {
-        position.ensureVisible(
-          footer,
-          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-        );
+      if (!mounted ||
+          widget.error?.attempt != attempt ||
+          !footer.attached ||
+          position.isScrollingNotifier.value ||
+          position.pixels != offset) {
+        return;
       }
-      setState(() => _revealingError = false);
+      position.ensureVisible(
+        footer,
+        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+      );
     });
   }
 
@@ -255,13 +260,10 @@ class _PageFooterState extends State<_PageFooter> {
           busy: widget.loading,
           onPressed: widget.onPressed,
         ),
-        if (widget.error case final String message)
-          Semantics(
-            container: true,
-            liveRegion: true,
-            excludeSemantics: true,
-            // Android skips a live-region update while its node is hidden.
-            label: _revealingError ? null : message,
+        if (widget.error case (:final message, :final attempt))
+          _VisibleErrorSemantics(
+            key: ValueKey(attempt),
+            message: message,
             child: Text(
               message,
               style: PaymentType.of(
@@ -271,6 +273,50 @@ class _PageFooterState extends State<_PageFooter> {
           ),
       ],
     );
+  }
+}
+
+class _VisibleErrorSemantics extends Semantics {
+  _VisibleErrorSemantics({
+    super.key,
+    required String message,
+    required super.child,
+  }) : super(
+         container: true,
+         excludeSemantics: true,
+         liveRegion: true,
+         label: message,
+       );
+
+  @override
+  RenderSemanticsAnnotations createRenderObject(BuildContext context) =>
+      _RenderVisibleErrorSemantics(properties, Directionality.of(context));
+}
+
+class _RenderVisibleErrorSemantics extends RenderSemanticsAnnotations {
+  _RenderVisibleErrorSemantics(
+    SemanticsProperties properties,
+    TextDirection textDirection,
+  ) : super(
+        properties: properties,
+        textDirection: textDirection,
+        container: true,
+        excludeSemantics: true,
+      );
+
+  @override
+  void assembleSemanticsNode(
+    SemanticsNode node,
+    SemanticsConfiguration config,
+    Iterable<SemanticsNode> children,
+  ) {
+    // Flutter computes clipping before assembly. A scroll can supersede the
+    // reveal, so never publish a new label while the node is hidden.
+    if (config.isHidden) {
+      config = config.copy()..liveRegion = false;
+      if (node.label != config.label) config.label = '';
+    }
+    super.assembleSemanticsNode(node, config, children);
   }
 }
 

@@ -14,7 +14,7 @@ TransactionRecord _record(String id) => TransactionRecord(
 );
 
 void main() {
-  testWidgets('retry keeps existing rows and appends the failed cursor once', (
+  testWidgets('retry announces a fresh failure and appends the same cursor', (
     tester,
   ) async {
     final nextPage = Completer<HistoryPage>();
@@ -30,7 +30,11 @@ void main() {
               nextCursor: 'opaque-next',
             ));
           }
-          return requests.length == 2 ? nextPage.future : retry.future;
+          return switch (requests.length) {
+            2 => nextPage.future,
+            3 => Future.error(StateError('immediate retry failure')),
+            _ => retry.future,
+          };
         },
       ),
     );
@@ -46,8 +50,18 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('First row'), findsOneWidget);
     expect(find.textContaining('private transport details'), findsNothing);
-    await tester.tap(find.text(PaymentLocalizations('id').retry));
+    final retryButton = find.text(PaymentLocalizations('id').retry);
+    final error = find.textContaining('Halaman berikutnya gagal dimuat.');
+    final firstErrorNode = tester.getSemantics(error).id;
+    await tester.tap(retryButton);
+    await tester.pumpAndSettle();
     expect(requests, [null, 'opaque-next', 'opaque-next']);
+    final secondErrorNode = tester.getSemantics(error);
+    expect(secondErrorNode.id, isNot(firstErrorNode));
+    expect(secondErrorNode.flagsCollection.isLiveRegion, isTrue);
+    expect(secondErrorNode.flagsCollection.isHidden, isFalse);
+    await tester.tap(retryButton);
+    expect(requests, [null, 'opaque-next', 'opaque-next', 'opaque-next']);
     retry.complete((records: [_record('Second row')], nextCursor: null));
     await tester.pumpAndSettle();
     expect(find.text('First row'), findsOneWidget);
@@ -55,63 +69,90 @@ void main() {
     expect(load, findsNothing);
   });
 
-  testWidgets('page failure publishes its live label after the reveal', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(360, 640);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
-    final nextPage = Completer<HistoryPage>();
-    await tester.pumpWidget(
-      HistoryBlockDemo(
-        fetchPage: (_, _, cursor) => cursor == null
-            ? Future.value((
-                records: List.generate(12, (index) => _record('Row $index')),
-                nextCursor: 'opaque-next',
-              ))
-            : nextPage.future,
-      ),
-    );
-    await tester.pumpAndSettle();
-    final scroll = find.byType(Scrollable).first;
-    final load = find.text('Muat lagi');
-    await tester.scrollUntilVisible(load, 200, scrollable: scroll);
-    final button = find.ancestor(
-      of: load,
-      matching: find.byType(PaymentButton),
-    );
-    final position = tester.state<ScrollableState>(scroll).position;
-    final viewport = tester.getRect(find.byType(CustomScrollView));
-    position.jumpTo(
-      position.pixels + tester.getRect(button).bottom - viewport.bottom,
-    );
-    await tester.pumpAndSettle();
-    expect(tester.getRect(button).bottom, closeTo(viewport.bottom, 1));
-    await tester.tap(load.hitTestable());
-    await tester.pump();
+  for (final interruptReveal in [false, true]) {
+    testWidgets(
+      interruptReveal
+          ? 'dragging away during reveal defers the page failure live label'
+          : 'page failure publishes its live label after the reveal',
+      (tester) async {
+        tester.view.physicalSize = const Size(360, 640);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
+        final nextPage = Completer<HistoryPage>();
+        await tester.pumpWidget(
+          HistoryBlockDemo(
+            fetchPage: (_, _, cursor) => cursor == null
+                ? Future.value((
+                    records: List.generate(
+                      12,
+                      (index) => _record('Row $index'),
+                    ),
+                    nextCursor: 'opaque-next',
+                  ))
+                : nextPage.future,
+          ),
+        );
+        await tester.pumpAndSettle();
+        final scroll = find.byType(Scrollable).first;
+        final load = find.text('Muat lagi');
+        await tester.scrollUntilVisible(load, 200, scrollable: scroll);
+        final button = find.ancestor(
+          of: load,
+          matching: find.byType(PaymentButton),
+        );
+        final position = tester.state<ScrollableState>(scroll).position;
+        final viewport = tester.getRect(find.byType(CustomScrollView));
+        position.jumpTo(
+          position.pixels + tester.getRect(button).bottom - viewport.bottom,
+        );
+        await tester.pumpAndSettle();
+        expect(tester.getRect(button).bottom, closeTo(viewport.bottom, 1));
+        await tester.tap(load.hitTestable());
+        await tester.pump();
 
-    const message =
-        'Halaman berikutnya gagal dimuat. Transaksi sebelumnya tetap tersedia.';
-    final error = find.text(message);
-    final retry = find.text(PaymentLocalizations('id').retry);
-    nextPage.completeError(StateError('Synthetic page failure'));
-    await tester.pump();
-    expect(tester.getRect(error).top, greaterThanOrEqualTo(viewport.bottom));
-    final beforeReveal = tester.getSemantics(error).getSemanticsData();
-    expect(beforeReveal.label, isEmpty);
-    expect(beforeReveal.flagsCollection.isHidden, isTrue);
+        const message =
+            'Halaman berikutnya gagal dimuat. Transaksi sebelumnya tetap tersedia.';
+        final error = find.text(message);
+        final retry = find.text(PaymentLocalizations('id').retry);
+        nextPage.completeError(StateError('Synthetic page failure'));
+        await tester.pump();
+        expect(
+          tester.getRect(error).top,
+          greaterThanOrEqualTo(viewport.bottom),
+        );
+        final beforeReveal = tester.getSemantics(error).getSemanticsData();
+        expect(beforeReveal.label, isEmpty);
+        expect(beforeReveal.flagsCollection.isHidden, isTrue);
 
-    await tester.pump();
-    expect(retry.hitTestable(), findsOneWidget);
-    expect(
-      tester.getRect(error).bottom,
-      lessThanOrEqualTo(viewport.bottom + 0.1),
+        if (interruptReveal) {
+          final revealOffset = position.pixels;
+          await tester.drag(
+            find.byType(CustomScrollView),
+            const Offset(0, 120),
+          );
+          final draggedOffset = position.pixels;
+          expect(draggedOffset, lessThan(revealOffset));
+          await tester.pumpAndSettle();
+          expect(position.pixels, draggedOffset);
+          final interrupted = tester.getSemantics(error).getSemanticsData();
+          expect(interrupted.flagsCollection.isHidden, isTrue);
+          expect(interrupted.label, isEmpty);
+
+          await tester.ensureVisible(error);
+        }
+        await tester.pump();
+        expect(retry.hitTestable(), findsOneWidget);
+        expect(
+          tester.getRect(error).bottom,
+          lessThanOrEqualTo(viewport.bottom + 0.1),
+        );
+        final afterReveal = tester.getSemantics(error).getSemanticsData();
+        expect(afterReveal.label, message);
+        expect(afterReveal.flagsCollection.isLiveRegion, isTrue);
+        expect(afterReveal.flagsCollection.isHidden, isFalse);
+      },
     );
-    final afterReveal = tester.getSemantics(error).getSemanticsData();
-    expect(afterReveal.label, message);
-    expect(afterReveal.flagsCollection.isLiveRegion, isTrue);
-    expect(afterReveal.flagsCollection.isHidden, isFalse);
-  });
+  }
 
   testWidgets('a page failure does not pull readers back to the footer', (
     tester,

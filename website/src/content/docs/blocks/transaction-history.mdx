@@ -48,7 +48,9 @@ Use `history_block_demo.dart` as the reference for the host side:
    is supported. Debounce text requests in the host if your service needs it.
 3. Append rows and advance the cursor only after a successful next page. On
    failure, keep the rows and cursor and retry that same page. A null next
-   cursor after success means there is no Load more action.
+   cursor after success means there is no Load more action. Give each failure
+   a distinct `error.attempt` with its display-safe `error.message`, even if
+   an immediate retry fails with the same message.
 
 The fixture uses stable, unique record IDs and a nonempty page whenever it
 returns another cursor. Your data adapter should normalize overlapping or empty
