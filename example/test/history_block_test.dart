@@ -55,6 +55,64 @@ void main() {
     expect(load, findsNothing);
   });
 
+  testWidgets('page failure publishes its live label after the reveal', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final nextPage = Completer<HistoryPage>();
+    await tester.pumpWidget(
+      HistoryBlockDemo(
+        fetchPage: (_, _, cursor) => cursor == null
+            ? Future.value((
+                records: List.generate(12, (index) => _record('Row $index')),
+                nextCursor: 'opaque-next',
+              ))
+            : nextPage.future,
+      ),
+    );
+    await tester.pumpAndSettle();
+    final scroll = find.byType(Scrollable).first;
+    final load = find.text('Muat lagi');
+    await tester.scrollUntilVisible(load, 200, scrollable: scroll);
+    final button = find.ancestor(
+      of: load,
+      matching: find.byType(PaymentButton),
+    );
+    final position = tester.state<ScrollableState>(scroll).position;
+    final viewport = tester.getRect(find.byType(CustomScrollView));
+    position.jumpTo(
+      position.pixels + tester.getRect(button).bottom - viewport.bottom,
+    );
+    await tester.pumpAndSettle();
+    expect(tester.getRect(button).bottom, closeTo(viewport.bottom, 1));
+    await tester.tap(load.hitTestable());
+    await tester.pump();
+
+    const message =
+        'Halaman berikutnya gagal dimuat. Transaksi sebelumnya tetap tersedia.';
+    final error = find.text(message);
+    final retry = find.text(PaymentLocalizations('id').retry);
+    nextPage.completeError(StateError('Synthetic page failure'));
+    await tester.pump();
+    expect(tester.getRect(error).top, greaterThanOrEqualTo(viewport.bottom));
+    final beforeReveal = tester.getSemantics(error).getSemanticsData();
+    expect(beforeReveal.label, isEmpty);
+    expect(beforeReveal.flagsCollection.isHidden, isTrue);
+
+    await tester.pump();
+    expect(retry.hitTestable(), findsOneWidget);
+    expect(
+      tester.getRect(error).bottom,
+      lessThanOrEqualTo(viewport.bottom + 0.1),
+    );
+    final afterReveal = tester.getSemantics(error).getSemanticsData();
+    expect(afterReveal.label, message);
+    expect(afterReveal.flagsCollection.isLiveRegion, isTrue);
+    expect(afterReveal.flagsCollection.isHidden, isFalse);
+  });
+
   testWidgets('a page failure does not pull readers back to the footer', (
     tester,
   ) async {

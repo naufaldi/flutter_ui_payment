@@ -213,6 +213,8 @@ class _PageFooter extends StatefulWidget {
 }
 
 class _PageFooterState extends State<_PageFooter> {
+  bool _revealingError = false;
+
   @override
   void didUpdateWidget(_PageFooter oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -227,12 +229,16 @@ class _PageFooterState extends State<_PageFooter> {
         top >= position.pixels + position.viewportDimension) {
       return;
     }
+    _revealingError = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || widget.error == null) return;
-      position.ensureVisible(
-        footer,
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-      );
+      if (!mounted) return;
+      if (widget.error != null) {
+        position.ensureVisible(
+          footer,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+        );
+      }
+      setState(() => _revealingError = false);
     });
   }
 
@@ -253,6 +259,9 @@ class _PageFooterState extends State<_PageFooter> {
           Semantics(
             container: true,
             liveRegion: true,
+            excludeSemantics: true,
+            // Android skips a live-region update while its node is hidden.
+            label: _revealingError ? null : message,
             child: Text(
               message,
               style: PaymentType.of(
