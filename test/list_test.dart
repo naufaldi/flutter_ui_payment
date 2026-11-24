@@ -232,6 +232,87 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  for (final change in ['setting the inset', 'adding a trailing action']) {
+    testWidgets('$change does not unlock a busy footer Save', (tester) async {
+      final write = Completer<void>();
+      var calls = 0;
+      Widget card({required bool changed}) => host(
+        Builder(
+          builder: (context) => SizedBox(
+            width: 320,
+            child: PaymentRecordCard(
+              key: const ValueKey('record'),
+              title: const Text('Statement'),
+              style: PaymentRecordCardStyle(
+                inset: changed && change == 'setting the inset'
+                    ? PaymentTheme.of(context).space(PaymentSpace.block)
+                    : null,
+              ),
+              trailing: changed && change == 'adding a trailing action'
+                  ? PaymentIconButton(
+                      icon: Icons.delete_outline,
+                      tooltip: 'Remove statement',
+                      onPressed: () {},
+                    )
+                  : null,
+              footer: PaymentButton(
+                label: 'Save',
+                onPressed: () {
+                  calls++;
+                  return write.future;
+                },
+              ),
+            ),
+          ),
+        ),
+        1,
+      );
+
+      await tester.pumpWidget(card(changed: false));
+      final save = find.byType(PaymentButton);
+      await tester.tap(save);
+      await tester.pump();
+      await tester.tap(save);
+      expect(calls, 1);
+
+      await tester.pumpWidget(card(changed: true));
+      await tester.tap(save);
+      expect(calls, 1);
+      write.complete();
+      await tester.pumpAndSettle();
+      await tester.tap(save);
+      expect(calls, 2);
+      await tester.pumpAndSettle();
+    });
+  }
+
+  testWidgets('a default footer-only record fits an intrinsic-width parent', (
+    tester,
+  ) async {
+    var calls = 0;
+    await tester.pumpWidget(
+      host(
+        Center(
+          child: IntrinsicWidth(
+            child: PaymentRecordCard(
+              title: const Text('Statement'),
+              footer: PaymentButton(label: 'Save', onPressed: () => calls++),
+            ),
+          ),
+        ),
+        1,
+      ),
+    );
+    final card = find.byType(PaymentRecordCard);
+    expect(
+      tester.getSize(card).width,
+      lessThan(tester.getSize(find.byType(Scaffold)).width),
+    );
+    await tester.tap(find.text('Save'));
+    expect(calls, 1);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('a large inset leaves room for the title and action at 200%', (
     tester,
   ) async {
