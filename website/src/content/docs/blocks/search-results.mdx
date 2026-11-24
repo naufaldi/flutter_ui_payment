@@ -1,0 +1,58 @@
+---
+title: Search results
+description: A copyable Find form with host-owned search, cancel, retry and match activation.
+---
+
+import BlockSource from '../../../components/BlockSource.astro';
+
+Use this block when someone searches inside a document, scan or other source
+and opens one of the matches. A result shows a location and an excerpt.
+Unlike [Search field](/components/search-field/), Find submits a query instead
+of picking a field value.
+
+## Run and try
+
+From `example/`, run `flutter run -t lib/search_results_demo.dart`, or open
+**Find in document** in Gallery. Open Find, search for `garden`, then select
+page 5. The demo closes the sheet and opens that page. Search for `ocean` to
+see no results, or cancel while the demo is scanning. In the standalone demo,
+choose **Gagal mencari sekali** in the scenario menu to make the next search
+fail once. Retry keeps the query.
+
+## Connect your host
+
+Copy `search_results_block.dart` into your app. Put `SearchResultsBlock<T>` in
+a bounded page body or a bounded sheet that accepts a caller-owned scrollable.
+The optional header, form, status and lazy rows share one scroll view, so the
+header can't crowd out the field when the keyboard opens. Let the surrounding
+page or sheet handle the keyboard inset once. The demo omits the modal drag
+handle so the scroll view can use all the space left above a landscape keyboard.
+When space is tight, use the keyboard's Search action from the focused field.
+Do not wrap the block in another vertical scroll view. Give it a new key when
+the search scope changes, such as when the host switches to another document.
+
+- Supply a `queryLabel` and a `search` callback. Each submission or retry gets
+  a fresh stream for the trimmed query. An empty query never starts work.
+- Emit cumulative `SearchUpdate<T>` snapshots, with a progress fraction from
+  `0` to `1` or `null` if unknown. Do not mutate an emitted list. Reuse it for
+  progress-only updates. Close the stream on success; emit an error on failure.
+- Wire subscription cancellation to your engine or request. The block
+  unsubscribes on Cancel, a different query, or disposal. It discards old
+  matches immediately, even if the engine is still winding down. On retry,
+  the block starts the same query again rather than resuming the failed job.
+- Provide the match's location, a short display-safe excerpt, and a stable,
+  unique `value` per hit. Use a page and offset together for multiple hits on
+  one page. The block passes that value to `onOpen`; the host can close the
+  sheet, then jump to the exact result. The block does not read PDF/OCR data
+  or route anywhere.
+
+The form uses `PaymentTextField`, `PaymentButton` and `PaymentListItem` with the
+current theme. Search works from the keyboard or the button. Progress and
+errors have text labels; reduced motion removes the indeterminate animation.
+The demo includes English and Indonesian controls and synthetic English pages.
+
+## Source
+
+<BlockSource name="searchResults" />
+<BlockSource name="searchResultsDemo" />
+<BlockSource name="demoShell" />

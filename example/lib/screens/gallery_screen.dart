@@ -15,6 +15,7 @@ import '../demo_strings.dart';
 import '../dev_chrome.dart';
 import '../history_block_demo.dart';
 import '../qris_checkout_demo.dart';
+import '../search_results_demo.dart';
 import '../wallet_handoff_demo.dart';
 import 'flow_screen.dart' show documentRequirements, identityFields;
 
@@ -115,6 +116,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
             id: 'forms',
             label: t('Forms', 'Formulir'),
             icon: Icons.edit_note,
+          ),
+          PaymentNavItem(
+            id: 'find',
+            label: t('Find in document', 'Cari di dokumen'),
+            icon: Icons.find_in_page_outlined,
           ),
           PaymentNavItem(
             id: 'feedback',
@@ -356,6 +362,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
           'collection' => const SafeArea(
             child: CollectionBlockDemo(embedded: true),
           ),
+          'find' => const SafeArea(child: SearchResultsDemo(embedded: true)),
           'qris' => const SafeArea(child: QrisCheckoutDemo(embedded: true)),
           'wallet-handoff' => const SafeArea(
             child: WalletHandoffDemo(embedded: true),

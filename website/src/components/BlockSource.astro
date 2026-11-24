@@ -34,6 +34,8 @@ import kycCapture from '../../../example/lib/compositions/kyc_capture_block.dart
 import kycCaptureDemo from '../../../example/lib/kyc_capture_demo.dart?raw';
 import preferences from '../../../example/lib/compositions/payment_preferences_block.dart?raw';
 import preferencesDemo from '../../../example/lib/payment_preferences_demo.dart?raw';
+import searchResults from '../../../example/lib/compositions/search_results_block.dart?raw';
+import searchResultsDemo from '../../../example/lib/search_results_demo.dart?raw';
 
 const sources = {
   checkout: ['compositions/host_checkout.dart', checkout],
@@ -70,6 +72,8 @@ const sources = {
   kycCaptureDemo: ['kyc_capture_demo.dart', kycCaptureDemo],
   preferences: ['compositions/payment_preferences_block.dart', preferences],
   preferencesDemo: ['payment_preferences_demo.dart', preferencesDemo],
+  searchResults: ['compositions/search_results_block.dart', searchResults],
+  searchResultsDemo: ['search_results_demo.dart', searchResultsDemo],
 };
 interface Props { name: keyof typeof sources; }
 const [file, source] = sources[Astro.props.name];
