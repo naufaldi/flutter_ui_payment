@@ -191,9 +191,8 @@ class InvoiceCheckout extends StatelessWidget {
   }
 }
 
-/// Layout two: a wallet review. Balance first, the review beside it on wide
-/// screens (under it on phones), and the total with the pay action in an
-/// action bar at the end.
+/// Layout two: merchant and wallet details, with the review beside them on
+/// wide screens (under them on phones) and a pay action bar at the end.
 class WalletReviewCheckout extends StatelessWidget {
   const WalletReviewCheckout({
     super.key,
@@ -221,6 +220,11 @@ class WalletReviewCheckout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: gap,
       children: [
+        MerchantHeader(
+          name: order.merchant,
+          orderReference: order.reference,
+          verified: order.merchantVerified,
+        ),
         if (selectedMethod != null &&
             selectedMethod.kind != PaymentMethodKind.balance)
           PaymentSection(

@@ -122,7 +122,7 @@
   "android_block_checkout_wallet_dark": {
     "width": 640,
     "height": 1095,
-    "caption": "Checkout block wallet look in dark mode: lifted balance card on a near-black page."
+    "caption": "Checkout block wallet look in dark mode: balance on the dark Soft background, with a pinned pay action."
   },
   "android_block_transfer": {
     "width": 640,
