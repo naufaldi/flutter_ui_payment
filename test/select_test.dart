@@ -4,6 +4,11 @@ import 'package:rakit_ui/rakit_ui.dart';
 import 'package:rakit_ui/src/foundation/search_fold.dart';
 import 'first_line_test.dart' show host;
 
+Finder get selectTrigger => find.descendant(
+  of: find.byType(PaymentSelect<String>),
+  matching: find.byType(InkWell),
+);
+
 void main() {
   test('fold diacritics for local choice filtering', () {
     expect(matchesQuery(foldForSearch('Ánh'), 'anh'), isTrue);
@@ -28,7 +33,7 @@ void main() {
         1,
       ),
     );
-    await tester.tap(find.text('Occupation'));
+    await tester.tap(selectTrigger);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Employee'));
     await tester.pumpAndSettle();
@@ -54,7 +59,7 @@ void main() {
         1,
       ),
     );
-    await tester.tap(find.text('Methods'));
+    await tester.tap(selectTrigger);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Transfer'));
     await tester.pumpAndSettle();

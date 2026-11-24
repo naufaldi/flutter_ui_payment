@@ -1,8 +1,9 @@
-import 'dart:typed_data';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import 'package:rakit_ui/src/foundation/radio_mark.dart';
+import 'helpers/controlled_image.dart';
 import 'widgets_test.dart' show host;
 import 'kit_components_test.dart' show app, FakeVideo;
 
@@ -132,19 +133,18 @@ void main() {
   testWidgets('failed photo retains review actions and illustrated fallback', (
     tester,
   ) async {
+    final photo = Completer<ImageInfo>();
     await tester.pumpWidget(
       host(
         KycCaptureGuide(
           kind: CaptureKind.idCard,
-          photo: MemoryImage(Uint8List.fromList([0, 1, 2])),
+          photo: ControlledImage(photo.future),
           onUsePhoto: () {},
           onRetake: () {},
         ),
       ),
     );
-    await tester.runAsync(() async {
-      await Future<void>.delayed(const Duration(milliseconds: 100));
-    });
+    photo.completeError(StateError('Photo unavailable'));
     await tester.pump();
     expect(
       find.byWidgetPredicate((w) => w is CaptureFrameOverlay && !w.overPreview),

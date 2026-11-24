@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +17,8 @@ void main() {
         Builder(
           builder: (context) => PaymentButton(
             label: 'Open',
-            onPressed: () {
+            // Opening the route is synchronous; the future resolves on close.
+            onPressed: () => unawaited(
               showPaymentFocusView<void>(
                 context,
                 size: size,
@@ -31,8 +34,8 @@ void main() {
                   primaryAction: PaymentButton(label: 'Send', onPressed: () {}),
                   child: const Text('Details'),
                 ),
-              );
-            },
+              ),
+            ),
           ),
         ),
       ),
@@ -128,7 +131,7 @@ void main() {
             child: Builder(
               builder: (context) => PaymentButton(
                 label: 'Open',
-                onPressed: () {
+                onPressed: () => unawaited(
                   showPaymentFocusView<void>(
                     context,
                     builder: (_) => PaymentFocusView(
@@ -139,8 +142,8 @@ void main() {
                       ),
                       child: const Text('Details'),
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
             ),
           ),

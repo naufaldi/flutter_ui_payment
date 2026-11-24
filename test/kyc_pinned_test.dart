@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -109,6 +111,7 @@ void main() {
     final controller = IdentityFormController();
     addTearDown(controller.dispose);
     final calls = <Map<String, String>>[];
+    final hostResponse = Completer<void>();
     var notified = 0;
     controller.addListener(() => notified++);
     await t.pumpWidget(
@@ -120,7 +123,7 @@ void main() {
             controller: controller,
             onSubmit: (v) async {
               expect(controller.busy, isTrue);
-              await Future<void>.delayed(const Duration(milliseconds: 10));
+              await hostResponse.future;
               calls.add(v);
             },
           ),
@@ -131,10 +134,8 @@ void main() {
     expect(controller.canSubmit, isTrue);
     expect(find.byType(PaymentButton), findsNothing);
 
-    var ok = false;
-    await t.runAsync(() async => ok = await controller.submit());
+    expect(await controller.submit(), isFalse);
     await t.pump();
-    expect(ok, isFalse);
     expect(calls, isEmpty);
     // 'name' is filled, so focus lands on the first invalid field, 'nik'.
     final nik = find.ancestor(
@@ -161,13 +162,11 @@ void main() {
       );
     }
     notified = 0;
-    await t.runAsync(() async {
-      final first = controller.submit();
-      // A second submit while the first runs is refused.
-      expect(await controller.submit(), isFalse);
-      ok = await first;
-    });
-    expect(ok, isTrue);
+    final first = controller.submit();
+    // A second submit while the first runs is refused.
+    expect(await controller.submit(), isFalse);
+    hostResponse.complete();
+    expect(await first, isTrue);
     expect(calls, hasLength(1));
     expect(calls.single['name'], 'Sari');
     expect(controller.busy, isFalse);

@@ -12,6 +12,13 @@ const _options = [
   PaymentSearchOption(value: 'timur', label: 'Jawa Timur'),
 ];
 
+Finder get _searchTrigger => find.descendant(
+  of: find.byType(PaymentSearchField<String>),
+  matching: find.byWidgetPredicate(
+    (w) => w is InkWell && w.child is InputDecorator,
+  ),
+);
+
 Finder get _sheetEditor => find.descendant(
   of: find.byType(BottomSheet),
   matching: find.byType(EditableText),
@@ -79,7 +86,7 @@ void main() {
       );
       // A trigger, not an inline editor.
       expect(find.byType(EditableText), findsNothing);
-      await tester.tap(find.text('Province'));
+      await tester.tap(_searchTrigger);
       await tester.pumpAndSettle();
       expect(_sheetEditor, findsOneWidget);
       expect(
@@ -147,7 +154,7 @@ void main() {
           1,
         ),
       );
-      await tester.tap(find.text('Banks'));
+      await tester.tap(_searchTrigger);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Jawa Barat'));
       await tester.pumpAndSettle();
@@ -165,7 +172,7 @@ void main() {
       expect(reports, [
         {'aceh', 'barat'},
       ]);
-      await tester.tap(find.text('Banks'));
+      await tester.tap(_searchTrigger);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Jawa Timur'));
       await tester.tap(find.byTooltip('Close panel'));
@@ -335,7 +342,7 @@ void main() {
           1,
         ),
       );
-      await tester.tap(find.text('Remote'));
+      await tester.tap(_searchTrigger);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
       expect(

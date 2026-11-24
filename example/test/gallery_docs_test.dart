@@ -161,20 +161,22 @@ void main() {
     await settle(tester);
     await tester.tap(find.text('Layout'));
     await settle(tester);
-    app.updateSettings(
-      const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
-    );
+    // Start and await the native Picture.toImage work in the same real zone.
+    await tester.runAsync(() async {
+      app.updateSettings(
+        const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+      );
+      await settle(tester);
+      await tester
+          .widget<FutureBuilder<ImageProvider>>(
+            find.byType(FutureBuilder<ImageProvider>),
+          )
+          .future!;
+    });
     await settle(tester);
     final logo = find.byWidgetPredicate(
       (w) => w is PaymentImage && w.alt == 'Bank Contoh',
     );
-    // The tile is painted with a real `Picture.toImage`, outside fake time.
-    for (var i = 0; i < 20 && logo.evaluate().isEmpty; i++) {
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
-      await tester.pump();
-    }
     expect(logo, findsWidgets);
     final theme = PaymentTheme.of(tester.element(logo.first));
     final bytes =

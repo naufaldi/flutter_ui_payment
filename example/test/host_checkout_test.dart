@@ -23,7 +23,7 @@ final order = CheckoutOrder(
       ),
     ],
     total: const Money.idr(102500),
-    expiresAt: DateTime.now().add(const Duration(minutes: 10)),
+    expiresAt: DateTime.utc(2026, 11, 3, 10, 10),
     methodId: 'balance',
   ),
   methods: const [

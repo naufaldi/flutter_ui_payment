@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
@@ -350,21 +352,27 @@ void main() {
         await (kind == 'toast' ? expectToastStill : expectStill)(tester, () {
           switch (kind) {
             case 'bottom sheet':
-              showPaymentSheet<void>(
-                context: context,
-                builder: (_) => const Text('Panel'),
+              unawaited(
+                showPaymentSheet<void>(
+                  context: context,
+                  builder: (_) => const Text('Panel'),
+                ),
               );
             case 'side sheet':
-              showPaymentSideSheet<void>(
-                context: context,
-                builder: (_) => const Text('Panel'),
+              unawaited(
+                showPaymentSideSheet<void>(
+                  context: context,
+                  builder: (_) => const Text('Panel'),
+                ),
               );
             case 'dialog':
-              showPaymentConfirmDialog(
-                context,
-                title: 'Panel',
-                message: 'Continue?',
-                confirmLabel: 'Confirm',
+              unawaited(
+                showPaymentConfirmDialog(
+                  context,
+                  title: 'Panel',
+                  message: 'Continue?',
+                  confirmLabel: 'Confirm',
+                ),
               );
             case 'toast':
               toast = showPaymentToast(

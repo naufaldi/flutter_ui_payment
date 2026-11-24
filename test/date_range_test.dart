@@ -11,6 +11,11 @@ import 'date_field_test.dart' show day;
 
 Finder get apply => find.widgetWithText(PaymentButton, 'Apply');
 
+Finder get rangeTrigger => find.descendant(
+  of: find.byType(PaymentDateRangePicker),
+  matching: find.byType(InkWell),
+);
+
 /// October 2020 only, so the sheet opens on it whatever today is.
 Widget picker({
   PaymentDateRange? value,
@@ -78,7 +83,7 @@ void main() {
         1,
       ),
     );
-    await tester.tap(find.byType(InkWell).first);
+    await tester.tap(rangeTrigger);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Last 30 days'));
     await tester.pumpAndSettle();
@@ -92,7 +97,7 @@ void main() {
       surface(tester, compact);
       final reports = <PaymentDateRange?>[];
       await tester.pumpWidget(picker(onChanged: reports.add));
-      await tester.tap(find.text('Range'));
+      await tester.tap(rangeTrigger);
       await tester.pumpAndSettle();
       expect(find.byType(DateRangePickerDialog), findsNothing);
       // Full height with Apply pinned at the bottom.
@@ -138,7 +143,7 @@ void main() {
       surface(tester, compact);
       PaymentDateRange? result;
       await tester.pumpWidget(picker(onChanged: (v) => result = v));
-      await tester.tap(find.text('Range'));
+      await tester.tap(rangeTrigger);
       await tester.pumpAndSettle();
       await tester.tap(day('Monday, 12 October 2020'));
       await tester.tap(day('Monday, 5 October 2020'));
@@ -160,7 +165,7 @@ void main() {
       await tester.pumpWidget(
         picker(onChanged: (v) => result = v, last: DateTime(2020, 10, 20)),
       );
-      await tester.tap(find.text('Range'));
+      await tester.tap(rangeTrigger);
       await tester.pumpAndSettle();
       final late = day('Sunday, 25 October 2020');
       expect(
@@ -185,7 +190,7 @@ void main() {
           onChanged: reports.add,
         ),
       );
-      await tester.tap(find.text('Range'));
+      await tester.tap(rangeTrigger);
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(PaymentButton, 'Clear'));
       await tester.pumpAndSettle();
@@ -199,7 +204,7 @@ void main() {
       surface(tester, compact);
       PaymentDateRange? result;
       await tester.pumpWidget(picker(onChanged: (v) => result = v));
-      await tester.tap(find.text('Range'));
+      await tester.tap(rangeTrigger);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Type dates'));
       await tester.pumpAndSettle();
@@ -237,7 +242,7 @@ void main() {
         await tester.pumpWidget(
           picker(onChanged: (_) {}, locale: Locale(locale)),
         );
-        await tester.tap(find.byType(InkWell).first);
+        await tester.tap(rangeTrigger);
         await tester.pumpAndSettle();
         final header = find.byType(WeekdayHeader);
         final labels = tester
@@ -268,7 +273,7 @@ void main() {
     ) async {
       surface(tester, compact);
       await tester.pumpWidget(picker(onChanged: (_) {}, scale: 2));
-      await tester.tap(find.text('Range'));
+      await tester.tap(rangeTrigger);
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(tester.getRect(apply).bottom, lessThanOrEqualTo(compact.height));
@@ -307,7 +312,7 @@ void main() {
           ),
         ),
       );
-      await tester.tap(find.text('Range'));
+      await tester.tap(rangeTrigger);
       await tester.pumpAndSettle();
       expect(
         tester.getTopLeft(find.text('Custom range')).dx,
@@ -323,7 +328,7 @@ void main() {
     ) async {
       surface(tester, compact);
       await tester.pumpWidget(picker(onChanged: (_) {}));
-      await tester.tap(find.text('Range'));
+      await tester.tap(rangeTrigger);
       await tester.pumpAndSettle();
       Focus.of(
         tester.element(

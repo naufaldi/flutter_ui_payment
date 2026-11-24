@@ -34,6 +34,10 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
 - **This repo is a design system, not an app.** Tests prove what a host developer and an end user rely on. Don't test every internal combination.
 - **Test the user story.** For each behaviour a change adds or fixes, write one focused widget test that shows the story: what a person sees or can do. For example, "the person can read why the upload failed and tap Retake". Add a regression test for the bug that was fixed.
 - **Test the kit rules where the change touches them.** Semantic tokens, 48 dp targets (B5), 200% text at 320 dp with nothing clipped (B4), reduced motion (B9/D66), and host ownership (B11). Use one representative case each, not a matrix.
+- **Control test inputs.** Set the date/clock, locale, viewport, platform, and random seed explicitly when the assertion depends on them. Use fixed fixtures or host fakes, not live network or device services, in unit and widget tests. Reset any overridden state with `addTearDown`.
+- **Control async completion.** Advance widget time with `tester.pump(Duration)`; use a `Completer` to drive pending, success, and failure. For real engine work such as image decoding, await the operation inside `tester.runAsync`; do not sleep or poll the wall clock for readiness. Unexpected missed taps fail both widget suites. Tap the actual hit-testable control; use `warnIfMissed: false` only when the test proves that the target must not receive the tap.
+- **Own every future.** The package and example test directories lint dropped futures in both sync and async callbacks. Await them or retain them until the relevant assertion. Use `unawaited` only when waiting would block the interaction the test needs to drive, such as opening a dialog whose future resolves on close.
+- **Prefer behavior assertions to goldens.** If a pixel golden is needed, pin the Flutter version, renderer/platform, fonts, fixture data, viewport, DPR, locale, theme and animation frame. Inspect the diff before updating any baseline; don't regenerate goldens to make a failure pass.
 - **Avoid:**
   - exhaustive matrices, such as every state × size × locale × theme × nav mode;
   - pixel or rect-identity sweeps;
@@ -45,6 +49,8 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
 
 ## Review and verification
 
+- **Before/after proof for every change.** Before editing, save one failing reproduction for a bug or a baseline for a feature, refactor, or tooling change. After editing, rerun the same check with the same inputs. For lint or test enforcement, show that a deliberate violation is rejected and the normal suite still passes. For docs or rules, show the changed rule or command and check it against the repository; don't claim it changed agent behavior without an eval.
+- **Visual proof.** For appearance or motion changes, capture and inspect the same affected state before and after, at the relevant phone and wide/tablet sizes. Use a recording for motion. Skip screenshots for nonvisual changes. In the handoff, give the baseline, result, commands and evidence locations. If a required check could not run, name the gap instead of claiming it passed.
 - Mechanical rebases: when a rebase conflicts only on `CHANGELOG.md`, the decision table or the decision docs, the orchestrator resolves it directly. The code diff must still equal the approved one.
 - Reviewers don't use devices. They read the executor's captures and logs. Device runs belong to the executor, or to a dedicated device-check task.
 - Judge and test against the user stories in Testing scope.
@@ -65,15 +71,17 @@ On Windows, formatting `.` fails on Android build output under `example/build`.
 
 ```sh
 dart format --output=none --set-exit-if-changed lib test example/lib example/test example/integration_test example/test_driver
-flutter analyze                       # root
-(cd example && flutter analyze)
-flutter test                          # package tests
-(cd example && flutter test test/)
+flutter analyze --fatal-infos        # root
+(cd example && flutter analyze --fatal-infos)
+flutter test --test-randomize-ordering-seed=7305
+(cd example && flutter test --test-randomize-ordering-seed=7305 test/)
 (cd example && flutter test --no-pub integration_test/flow_test.dart -d <device>)
 cd website && pnpm build && pnpm check:pages && pnpm check:links && pnpm check:snippets && pnpm test:motion
 ```
 
 The flow test runs on a device: take the device lock (Screenshots) first and follow the owner's global device rules.
+
+Keep the seed in the proof so test ordering is replayable. For an order-dependent failure, record the failing seed and rerun with it before isolating the file.
 
 A full `flutter test` sometimes fails to load a file with "Unable to connect to flutter_tester process: WebSocketException". Re-run that file alone (`flutter test --no-pub test/<file>.dart`) and report both results.
 

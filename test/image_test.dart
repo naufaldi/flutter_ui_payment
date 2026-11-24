@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import 'first_line_test.dart' show host;
+import 'helpers/controlled_image.dart';
 import 'helpers/reduced_motion.dart';
 
 class PendingImage extends ImageProvider<PendingImage> {
@@ -307,9 +308,6 @@ void main() {
         1,
       ),
     );
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 100)),
-    );
     await tester.pumpAndSettle();
     expect(find.byIcon(Icons.broken_image_outlined), findsNothing);
   });
@@ -330,9 +328,6 @@ void main() {
         1,
       ),
     );
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 100)),
-    );
     await tester.pump();
     expect(failure, isNull);
   });
@@ -340,10 +335,11 @@ void main() {
   testWidgets(
     'small error tile fits large text while retaining alt semantics',
     (tester) async {
+      final result = Completer<ImageInfo>();
       await tester.pumpWidget(
         host(
           PaymentImage(
-            image: MemoryImage(Uint8List.fromList([0, 1, 2])),
+            image: ControlledImage(result.future),
             alt: 'Bank Contoh logo',
             width: 96,
             height: 64,
@@ -351,9 +347,7 @@ void main() {
           2,
         ),
       );
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)),
-      );
+      result.completeError(StateError('Image unavailable'));
       await tester.pump();
       expect(tester.takeException(), isNull);
       expect(
@@ -380,10 +374,11 @@ void main() {
     expect(find.bySemanticsLabel('Bank logo'), findsOneWidget);
   });
   testWidgets('Failed provider uses fallback semantics', (tester) async {
+    final result = Completer<ImageInfo>();
     await tester.pumpWidget(
       host(
         PaymentImage(
-          image: MemoryImage(Uint8List.fromList([0, 1, 2])),
+          image: ControlledImage(result.future),
           alt: 'Photo',
           width: 96,
           height: 64,
@@ -392,26 +387,11 @@ void main() {
         1,
       ),
     );
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 100)),
-    );
+    result.completeError(StateError('Image unavailable'));
     await tester.pump();
     expect(find.text('Frame for your ID card'), findsOneWidget);
     expect(find.bySemanticsLabel('Photo'), findsNothing);
   });
-}
-
-class ControlledImage extends ImageProvider<ControlledImage> {
-  ControlledImage(this.result);
-  final Future<ImageInfo> result;
-  @override
-  Future<ControlledImage> obtainKey(ImageConfiguration configuration) =>
-      SynchronousFuture(this);
-  @override
-  ImageStreamCompleter loadImage(
-    ControlledImage key,
-    ImageDecoderCallback decode,
-  ) => OneFrameImageStreamCompleter(result);
 }
 
 Widget imageHost(ImageProvider provider) => host(
@@ -426,12 +406,8 @@ Widget imageHost(ImageProvider provider) => host(
 );
 
 Future<void> completeImage(WidgetTester t, Completer<ImageInfo> result) async {
-  await t.runAsync(() async {
-    result.complete(
-      ImageInfo(image: await createTestImage(width: 10, height: 10)),
-    );
-    await Future<void>.delayed(Duration.zero);
-  });
+  final image = await t.runAsync(() => createTestImage(width: 10, height: 10));
+  result.complete(ImageInfo(image: image!));
   await t.pump();
 }
 
