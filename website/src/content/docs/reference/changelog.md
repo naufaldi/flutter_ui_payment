@@ -5,6 +5,11 @@ description: Changes in Rakit UI, copied from CHANGELOG.md in the repository.
 
 Copied verbatim from `CHANGELOG.md`.
 
+## 0.4.0
+
+- Added a copyable QRIS checkout instructions block with source in the docs and a demo in the example Gallery (#362, #359, D135). It displays the QR image, payee, amount, and expiry supplied by the host app. Check status asks about the same payment attempt; the host app owns payment handoff and confirmation.
+- Verified the demo on Android with a non-payment QR code. No live QRIS provider, banking-app handoff, or iOS check has been run.
+
 ## 0.3.1
 
 - Android TalkBack announces the sign-in cancellation error without requiring the user to scroll. The banner sits above the pinned actions; in short, large-text layouts, long errors can scroll without clipping the permissions or pushing Continue offscreen (#356, #311).

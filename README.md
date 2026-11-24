@@ -10,7 +10,7 @@ Targets iOS and Android, phones and tablets. The web build is a documentation pr
 
 **Docs:** https://rakit-ui.netlify.app
 
-**Release:** `0.3.1` on GitHub. The latest pub.dev version is `0.2.0`. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
+**Release:** `0.4.0` on GitHub. The latest pub.dev version is `0.2.0`. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
 
 ## Start here
 
@@ -57,14 +57,14 @@ When a payment request times out, the server may already have accepted it. The s
 
 ## Install
 
-To install 0.3.1, pin the GitHub tag in `pubspec.yaml`:
+To install 0.4.0, pin the GitHub tag in `pubspec.yaml`:
 
 ```yaml
 dependencies:
   rakit_ui:
     git:
       url: https://github.com/naufaldi/flutter_ui_payment.git
-      ref: v0.3.1
+      ref: v0.4.0
 ```
 
 For 0.2.0, add the package from pub.dev:
