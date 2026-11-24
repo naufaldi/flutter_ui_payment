@@ -9,6 +9,7 @@ import 'adapters/fake_host.dart';
 import 'coordinator/demo_coordinator.dart';
 import 'demo_strings.dart';
 import 'scenarios/catalog.dart';
+import 'scenarios/scenario_config.dart';
 import 'screens/flow_screen.dart';
 import 'screens/gallery_screen.dart';
 import 'screens/scenario_picker.dart';
@@ -60,9 +61,14 @@ class DemoSettings {
 }
 
 class DemoApp extends StatefulWidget {
-  const DemoApp({super.key, this.initialSettings = const DemoSettings()});
+  const DemoApp({
+    super.key,
+    this.initialSettings = const DemoSettings(),
+    this.createHost = DemoHost.new,
+  });
 
   final DemoSettings initialSettings;
+  final DemoHost Function(ScenarioConfig) createHost;
 
   @override
   State<DemoApp> createState() => DemoAppState();
@@ -93,7 +99,7 @@ class DemoAppState extends State<DemoApp> with WidgetsBindingObserver {
   }
 
   void _boot(ScenarioVariant variant) {
-    host = DemoHost(variant.config)
+    host = widget.createHost(variant.config)
       ..languageCode = settings.locale.languageCode;
     coordinator = DemoCoordinator(host);
     unawaited(_startAt(coordinator, variant.start));
