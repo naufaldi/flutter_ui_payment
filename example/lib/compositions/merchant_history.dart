@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:rakit_ui/rakit_ui.dart';
+
+import 'paged_block_footer.dart';
 
 /// Copyable paged history. Give it a bounded viewport and the accumulated rows
 /// for the active query. The host owns the cursor, loading and safe errors.
@@ -184,7 +185,7 @@ class MerchantHistory extends StatelessWidget {
           SliverPadding(
             padding: EdgeInsets.all(group),
             sliver: SliverToBoxAdapter(
-              child: _PageFooter(
+              child: PagedBlockFooter(
                 label: error == null ? loadMore : l10n.retry,
                 loading: loading,
                 error: error,
@@ -195,129 +196,6 @@ class MerchantHistory extends StatelessWidget {
         SliverToBoxAdapter(child: SizedBox(height: group)),
       ],
     );
-  }
-}
-
-class _PageFooter extends StatefulWidget {
-  const _PageFooter({
-    required this.label,
-    required this.loading,
-    required this.error,
-    required this.onPressed,
-  });
-
-  final String label;
-  final bool loading;
-  final ({String message, int attempt})? error;
-  final VoidCallback onPressed;
-
-  @override
-  State<_PageFooter> createState() => _PageFooterState();
-}
-
-class _PageFooterState extends State<_PageFooter> {
-  @override
-  void didUpdateWidget(_PageFooter oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    final attempt = widget.error?.attempt;
-    if (attempt == null || attempt == oldWidget.error?.attempt) return;
-
-    final footer = context.findRenderObject()! as RenderBox;
-    final viewport = RenderAbstractViewport.of(footer);
-    final position = Scrollable.of(context).position;
-    final offset = position.pixels;
-    final top = viewport.getOffsetToReveal(footer, 0).offset;
-    // Don't pull the reader back to the footer if they scrolled away.
-    if (position.isScrollingNotifier.value ||
-        top + footer.size.height <= offset ||
-        top >= offset + position.viewportDimension) {
-      return;
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted ||
-          widget.error?.attempt != attempt ||
-          !footer.attached ||
-          position.isScrollingNotifier.value ||
-          position.pixels != offset) {
-        return;
-      }
-      position.ensureVisible(
-        footer,
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = PaymentTheme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: theme.space(PaymentSpace.related),
-      children: [
-        PaymentButton(
-          label: widget.label,
-          variant: PaymentButtonVariant.secondary,
-          busy: widget.loading,
-          onPressed: widget.onPressed,
-        ),
-        if (widget.error case (:final message, :final attempt))
-          _VisibleErrorSemantics(
-            key: ValueKey(attempt),
-            message: message,
-            child: Text(
-              message,
-              style: PaymentType.of(
-                context,
-              ).bodyFor(context).copyWith(color: theme.textSecondary),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _VisibleErrorSemantics extends Semantics {
-  _VisibleErrorSemantics({
-    super.key,
-    required String message,
-    required super.child,
-  }) : super(
-         container: true,
-         excludeSemantics: true,
-         liveRegion: true,
-         label: message,
-       );
-
-  @override
-  RenderSemanticsAnnotations createRenderObject(BuildContext context) =>
-      _RenderVisibleErrorSemantics(properties, Directionality.of(context));
-}
-
-class _RenderVisibleErrorSemantics extends RenderSemanticsAnnotations {
-  _RenderVisibleErrorSemantics(
-    SemanticsProperties properties,
-    TextDirection textDirection,
-  ) : super(
-        properties: properties,
-        textDirection: textDirection,
-        container: true,
-        excludeSemantics: true,
-      );
-
-  @override
-  void assembleSemanticsNode(
-    SemanticsNode node,
-    SemanticsConfiguration config,
-    Iterable<SemanticsNode> children,
-  ) {
-    // Flutter computes clipping before assembly. A scroll can supersede the
-    // reveal, so never publish a new label while the node is hidden.
-    if (config.isHidden) {
-      config = config.copy()..liveRegion = false;
-      if (node.label != config.label) config.label = '';
-    }
-    super.assembleSemanticsNode(node, config, children);
   }
 }
 

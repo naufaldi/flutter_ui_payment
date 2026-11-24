@@ -1,0 +1,71 @@
+---
+title: Collection
+description: A copyable, host-paged mobile list with your own rows and retry that keeps earlier results.
+---
+
+import BlockSource from '../../../components/BlockSource.astro';
+
+Use Collection for documents, OCR history, notes, or other records that need
+their own row layout. The block handles the list states and a Load more button.
+It does not fetch, filter, or know what a record contains.
+
+## Run and try
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/collection_block_demo.dart
+```
+
+Or open **Collection** in Gallery to try the sample document cards. In the
+standalone demo, the scenario menu can start with an empty list, return an
+empty next page, or fail the first or next page once. Use **Load more** and
+**Retry** to try paging and recovery. The demo uses synthetic data only.
+
+## Assemble it in your host
+
+Copy `collection_block.dart` and `paged_block_footer.dart`. Give the block a
+bounded viewport such as a `Scaffold` body. It already scrolls; do not nest it
+in another vertical scroll view. Pass the accumulated `rowCount`, a
+`rowBuilder` that reads your records by index, and the current `pageState`.
+Supply your localized labels and a `StateMessage` for the first empty page.
+Use the optional `header` for content that should scroll with the list.
+
+| Host state | What the block shows |
+| --- | --- |
+| `loading` with no rows | Initial skeleton |
+| `ready` with no rows | First-page empty copy, optionally with an action such as Upload PDF |
+| `moreAvailable` | Existing rows and Load more |
+| `loading` with rows | Existing rows and a busy Load more button |
+| `CollectionPageFailure` | Retry; with rows, the error stays beside them instead of replacing the list |
+| `laterEmpty` | Earlier rows and an end-of-list message, without a first-page action |
+| `ready` with rows | Completed collection, without a pager action |
+
+Bind `onRequestPage` to your host. Ignore repeated requests while one is
+pending. Keep the cursor and rows until the request succeeds; on failure, use
+safe display copy and a distinct `attempt` even if the message is unchanged.
+The block publishes the live error only when it enters the viewport and does
+not pull a reader back to a footer they have scrolled away from.
+
+On a query or collection change, start a new request generation and discard
+old successes and failures. Give the block a `PageStorageKey` for the active
+generation if the new collection should start at the top. The demo treats an
+empty next page as terminal. If your backend can return empty intermediate pages
+with a valid next cursor, normalize them before passing a terminal state.
+Authorization, routing and data access stay in your app.
+
+The sample card is a `PaymentBox` built by the host row builder, not a required
+row type. Use [Rakit's public theme](/concepts/theming/) to set the surface,
+spacing and typography, and use your own widgets for row actions. No package
+API is added.
+
+## Source
+
+<BlockSource name="collection" />
+<BlockSource name="pagedFooter" />
+<BlockSource name="collectionDemo" />
+<BlockSource name="demoShell" />
+<BlockSource name="themes" />
+
+See [Transaction history](/blocks/transaction-history/) for a domain-specific
+example using the same pager.

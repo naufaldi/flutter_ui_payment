@@ -1,10 +1,20 @@
 # Merchant overview: compose a mobile host screen
 
+## Generic collections
+
+Open **Collection** in Gallery or run `flutter run -t lib/collection_block_demo.dart`.
+Copy `collection_block.dart` and `paged_block_footer.dart` into your app. Pass
+your accumulated row count, row builder, localized copy and current page state.
+The sample document card is optional. The demo shows how to retain rows and the
+retry cursor, distinguish first-page from later-page empty states, and ignore old
+responses after a restart.
+
 ## History and KYC blocks
 
 - History: run `flutter run -t lib/history_block_demo.dart` or open **Paged
-  history** in Gallery. Copy `merchant_history.dart`; supply accumulated rows,
-  query/filter, next-page availability and safe loading/error state. The host
+  history** in Gallery. Copy `merchant_history.dart` and `paged_block_footer.dart`;
+  supply accumulated rows, query/filter, next-page availability and safe
+  loading/error state. The host
   demo shows how to scope cursors to the active query and ignore stale replies.
   Rows render lazily and open a `TransactionDetail` sheet, including unknown
   outcomes and separate refunds.
