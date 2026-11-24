@@ -202,6 +202,7 @@ export default defineConfig({
           { label: 'KYC review and correction', slug: 'blocks/kyc-review' },
           { label: 'Manual VA transfer', slug: 'blocks/manual-transfer' },
           { label: 'QRIS checkout', slug: 'blocks/qris-checkout' },
+          { label: 'Wallet handoff and return', slug: 'blocks/wallet-handoff' },
           { label: 'Method and quote changes', slug: 'blocks/method-quote' },
           { label: 'Payment and refund detail', slug: 'blocks/refund-detail' },
           { label: 'KYC onboarding and consent', slug: 'blocks/kyc-onboarding' },

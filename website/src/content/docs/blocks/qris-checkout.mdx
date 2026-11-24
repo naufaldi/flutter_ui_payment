@@ -51,9 +51,10 @@ deadline. While the block is mounted, a clock correction or refresh won't make
 an already expired issuance scannable again. On remount, supply the current
 valid code only.
 
-The host issues the code, binds it to the amount, and owns any provider-supported
-same-phone handoff. The block doesn't generate codes, open other apps, poll or
-offer another payment. Set `Observation.refreshing` during a check and use
+The host issues the code and binds it to the amount. For provider-supported
+same-phone payments, see the [Wallet handoff block](/blocks/wallet-handoff/).
+The QRIS block doesn't generate codes, open other apps, poll or offer another
+payment. Set `Observation.refreshing` during a check and use
 `PaymentAttempt.reconcile` for provider replies. On failure set
 `Observation.unavailable` and retain the last trusted snapshot. Code expiry is separate
 from a provider-reported `PaymentStatus.expired`. Follow the

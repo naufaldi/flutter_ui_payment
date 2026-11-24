@@ -39,6 +39,9 @@ demo frame: theme toggle, fixture menu and edge-to-edge system bars.
   Copy `qris_checkout_block.dart`; bind the host-issued image, payee and expiry
   to the current attempt. Code expiry only hides the QR image. Check status
   asks the host about the same attempt and never submits another payment.
+- Wallet handoff: `wallet_handoff_demo.dart` or **Wallet handoff** in Gallery.
+  Copy `wallet_handoff_block.dart`; bind host launch and return signals to the
+  approved attempt. Only a host status snapshot can confirm payment.
 - Method choice and quote changes: `method_quote_demo.dart`. Copy
   `method_quote_block.dart`; Continue needs a settled quote for the current
   method. Pass the approved quote as `previousQuote` when the host re-prices so
