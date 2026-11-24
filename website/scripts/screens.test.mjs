@@ -44,6 +44,13 @@ test('selective reports include the stale tail but accept a fresh shorter recapt
   assert.doesNotMatch(stale.stdout, new RegExp(unrequested));
   assert.ok(stale.stdout.includes(`  ${name}_part3\n`), stale.stdout);
   assert.ok(stale.stdout.includes(`  ${name}_part3 (existing WebP)\n`), stale.stdout);
+  assert.ok(stale.stdout.includes(`  ${name}_part2 (older PNG)\n`), stale.stdout);
+
+  rmSync(join(captureDir, `${name}.png`));
+  const committed = report();
+  assert.equal(committed.status, 1, committed.stderr);
+  assert.ok(committed.stdout.includes(`  ${name}_part2 (existing WebP)\n`), committed.stdout);
+  assert.ok(!committed.stdout.includes(`  ${name}_part2 (older PNG)\n`), committed.stdout);
 
   capture(name, since + 1000);
   capture(`${name}_part2`, since + 1000);

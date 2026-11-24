@@ -438,13 +438,13 @@ function reportFreshness(args) {
     return stat?.isFile() ? stat : undefined;
   };
   const webp = (name) => lstatSync(join(target, `${name}.webp`), { throwIfNoEntry: false })?.isFile();
-  const report = (name, input, canReuseWebp) => {
+  const report = (name, input, canReuseWebp, canReusePng = true) => {
     if (input?.mtimeMs > since) {
       fresh.push(name);
       return;
     }
     missing.push(name);
-    if (input) reused.push(`${name} (older PNG)`);
+    if (input && canReusePng) reused.push(`${name} (older PNG)`);
     else if (canReuseWebp && webp(name)) reused.push(`${name} (existing WebP)`);
   };
   for (const name of names) {
@@ -458,7 +458,8 @@ function reportFreshness(args) {
       const part = partName(name, i);
       const partInput = png(part);
       if (!partInput && i >= expectedParts) break;
-      report(part, partInput, i < expectedParts);
+      // Without the base PNG, conversion skips the whole PNG set.
+      report(part, partInput, i < expectedParts, Boolean(input));
     }
   }
   for (const [label, entries] of [

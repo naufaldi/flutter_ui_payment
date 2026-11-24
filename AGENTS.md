@@ -76,7 +76,7 @@ flutter analyze --fatal-infos        # root
 flutter test --test-randomize-ordering-seed=7305
 (cd example && flutter test --test-randomize-ordering-seed=7305 test/)
 (cd example && flutter test --no-pub integration_test/flow_test.dart -d <device>)
-cd website && pnpm check:api && pnpm build && pnpm check:pages && pnpm check:links && pnpm check:snippets && pnpm test:motion && pnpm test:screens
+cd website && pnpm check:api && pnpm test:api && pnpm build && pnpm check:pages && pnpm check:links && pnpm check:snippets && pnpm test:motion && pnpm test:screens
 ```
 
 The flow test runs on a device: take the device lock (Screenshots) first and follow the owner's global device rules.

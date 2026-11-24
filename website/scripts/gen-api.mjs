@@ -21,7 +21,8 @@ if (args.length && !check) {
   process.exit(2);
 }
 
-const barrel = readFileSync(join(lib, 'rakit_ui.dart'), 'utf8');
+const readDart = (path) => readFileSync(path, 'utf8').replaceAll('\r\n', '\n');
+const barrel = readDart(join(lib, 'rakit_ui.dart'));
 const files = [...barrel.matchAll(/^export '([^']+)'(?:\s+show\s+([^;]+))?;/gm)].map((m) => ({ rel: m[1], show: m[2] ? new Set(m[2].split(',').map((n) => n.trim())) : null }));
 if (files.length === 0) throw new Error('No exports found in the barrel file');
 
@@ -205,9 +206,7 @@ function add(name, entry) {
 for (const {rel, show} of files) {
   shown = show;
   found = new Set();
-  const path = join(lib, rel);
-  const source = readFileSync(path, 'utf8');
-  const lines = source.split('\n');
+  const lines = readDart(join(lib, rel)).split('\n');
   const file = `lib/${rel}`;
 
   for (let i = 0; i < lines.length; i++) {
