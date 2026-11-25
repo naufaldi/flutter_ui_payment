@@ -2,7 +2,7 @@ name: rakit_ui
 description: >-
   Composable Flutter UI for mobile product screens, including a dedicated
   Payments category for checkout, payment status, receipts and optional KYC.
-version: 0.8.0
+version: 0.9.0
 homepage: https://rakit-ui.netlify.app
 documentation: https://rakit-ui.netlify.app/start/quick-start/
 repository: https://github.com/naufaldi/flutter_ui_payment

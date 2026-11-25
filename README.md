@@ -10,7 +10,7 @@ Targets iOS and Android, phones and tablets. The web build is a documentation pr
 
 **Docs:** https://rakit-ui.netlify.app
 
-**Release:** `0.8.0` on GitHub. The latest pub.dev version is `0.2.0`. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
+**Release:** `0.9.0` on GitHub and pub.dev. Install with `flutter pub add rakit_ui`. All data in the example is synthetic. See [What is verified](#what-is-verified) for exactly what has been checked.
 
 ## Start here
 
@@ -58,17 +58,7 @@ When a payment request times out, the server may already have accepted it. The s
 
 ## Install
 
-To install 0.8.0, pin the GitHub tag in `pubspec.yaml`:
-
-```yaml
-dependencies:
-  rakit_ui:
-    git:
-      url: https://github.com/naufaldi/flutter_ui_payment.git
-      ref: v0.8.0
-```
-
-For 0.2.0, add the package from pub.dev:
+To install 0.9.0, add the package from pub.dev:
 
 ```sh
 flutter pub add rakit_ui
@@ -78,7 +68,17 @@ Or declare the dependency directly:
 
 ```yaml
 dependencies:
-  rakit_ui: ^0.2.0
+  rakit_ui: ^0.9.0
+```
+
+To pin the GitHub release tag instead:
+
+```yaml
+dependencies:
+  rakit_ui:
+    git:
+      url: https://github.com/naufaldi/flutter_ui_payment.git
+      ref: v0.9.0
 ```
 
 Requires Dart `^3.12.0` and Flutter `>=3.44.0` (tested with Flutter 3.44.6 stable). The only dependency is the Flutter SDK.
@@ -89,7 +89,7 @@ Rakit UI continues the same UI kit under the `rakit_ui` package name. Replace th
 
 ```yaml
 dependencies:
-  rakit_ui: ^0.2.0
+  rakit_ui: ^0.9.0
 ```
 
 ```dart
