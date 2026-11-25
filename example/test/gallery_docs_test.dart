@@ -53,6 +53,95 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
+  testWidgets(
+    'Indonesian context view specimen keeps one gutter and a reachable footer',
+    (tester) async {
+      tester.view.physicalSize = const Size(720, 1280);
+      tester.view.devicePixelRatio = 2;
+      addTearDown(tester.view.reset);
+      final app = await launch(
+        tester,
+        settings: const DemoSettings(locale: Locale('id')),
+      );
+      app.selectTab(2);
+      await settle(tester);
+      await openGalleryPage(
+        tester,
+        'Tampilan & halaman',
+        menuTooltip: 'Buka navigasi',
+      );
+      final specimen = find.byKey(
+        const ValueKey('specimen:PaymentContextView · variants'),
+      );
+      await tester.ensureVisible(specimen);
+      await settle(tester);
+      final contextView = find.descendant(
+        of: specimen,
+        matching: find.byType(PaymentContextView),
+      );
+      final content = find
+          .descendant(
+            of: contextView,
+            matching: find.byType(PaymentPropertyList),
+          )
+          .first;
+      final footer = find
+          .descendant(
+            of: contextView,
+            matching: find.byType(PaymentButtonGroup),
+          )
+          .last;
+      expect(tester.getRect(content).left - tester.getRect(specimen).left, 16);
+      expect(tester.getRect(contextView).height, lessThan(560));
+      expect(
+        tester.getRect(footer).bottom,
+        lessThanOrEqualTo(tester.getRect(galleryList()).bottom + 0.5),
+      );
+      expect(tester.takeException(), isNull);
+      await tapVisible(tester, find.text('Bantuan merchant'));
+      expect(find.text('Bantuan merchant dibuka'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets('Indonesian context view footer stays reachable at narrow 200%', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(640, 1280);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.reset);
+    final app = await launch(
+      tester,
+      settings: const DemoSettings(locale: Locale('id'), textScale: 2),
+    );
+    app.selectTab(2);
+    await settle(tester);
+    await openGalleryPage(
+      tester,
+      'Tampilan & halaman',
+      menuTooltip: 'Buka navigasi',
+    );
+    final specimen = find.byKey(
+      const ValueKey('specimen:PaymentContextView · variants'),
+    );
+    await tester.ensureVisible(specimen);
+    await settle(tester);
+    final contextView = find.descendant(
+      of: specimen,
+      matching: find.byType(PaymentContextView),
+    );
+    final footer = find
+        .descendant(of: contextView, matching: find.byType(PaymentButtonGroup))
+        .last;
+    expect(tester.getRect(contextView).height, lessThan(560));
+    expect(
+      tester.getRect(footer).bottom,
+      lessThanOrEqualTo(tester.getRect(galleryList()).bottom + 0.5),
+    );
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('captures can leave Kit components past its sidebar specimen '
       '(#189)', (tester) async {
     tester.view.physicalSize = const Size(720, 1280);

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -442,11 +443,17 @@ class _KeptAliveState extends State<_KeptAlive>
 }
 
 class _Entry extends StatelessWidget {
-  const _Entry({required this.name, required this.child, this.states});
+  const _Entry({
+    required this.name,
+    required this.child,
+    this.states,
+    this.padding,
+  });
 
   final String name;
   final Widget child;
   final Widget? states;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -478,7 +485,9 @@ class _Entry extends StatelessWidget {
               side: BorderSide(color: theme.outline),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding:
+                  padding ??
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: child,
             ),
           ),

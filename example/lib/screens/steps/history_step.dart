@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import '../../coordinator/demo_coordinator.dart';
 import '../../demo_strings.dart';
@@ -52,10 +53,26 @@ class HistoryStep extends StatelessWidget {
     }
     final ranked = methods.keys.toList()
       ..sort((a, b) => methods[b]!.compareTo(methods[a]!));
-    final active =
-        c.historyRange != null ||
-        c.historyFilter != TransactionFilter.all ||
-        c.historyQuery.isNotEmpty;
+    final chips = <PaymentChip>[
+      if (c.historyRange != null)
+        PaymentChip(
+          label: s.filterDate,
+          value: l.formatDateRange(c.historyRange!.start, c.historyRange!.end),
+          onClose: () => c.setHistoryRange(null),
+        ),
+      if (c.historyFilter != TransactionFilter.all)
+        PaymentChip(
+          label: s.filterStatus,
+          value: l.transactionFilterLabel(c.historyFilter),
+          onClose: () => c.setHistoryFilter(TransactionFilter.all),
+        ),
+      if (c.historyQuery.isNotEmpty)
+        PaymentChip(
+          label: s.filterSearch,
+          value: c.historyQuery,
+          onClose: () => c.setHistoryQuery(''),
+        ),
+    ];
     return PaymentFullPageView(
       title: s.transactions,
       // "Laporan ›" opens another screen: navigation on the title row
@@ -69,40 +86,30 @@ class HistoryStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: t.space(PaymentSpace.group),
         children: [
-          if (active) ...[
-            PaymentChipList(
-              children: [
-                if (c.historyRange != null)
-                  PaymentChip(
-                    label: s.filterDate,
-                    value: l.formatDateRange(
-                      c.historyRange!.start,
-                      c.historyRange!.end,
-                    ),
-                    onClose: () => c.setHistoryRange(null),
-                  ),
-                if (c.historyFilter != TransactionFilter.all)
-                  PaymentChip(
-                    label: s.filterStatus,
-                    value: l.transactionFilterLabel(c.historyFilter),
-                    onClose: () => c.setHistoryFilter(TransactionFilter.all),
-                  ),
-                if (c.historyQuery.isNotEmpty)
-                  PaymentChip(
-                    label: s.filterSearch,
-                    value: c.historyQuery,
-                    onClose: () => c.setHistoryQuery(''),
-                  ),
-              ],
-            ),
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: PaymentLink(
-                label: s.clearAll,
-                onPressed: c.clearHistoryFilters,
+          if (chips.isNotEmpty)
+            FocusTraversalGroup(
+              child: Shortcuts(
+                shortcuts: const {
+                  SingleActivator(LogicalKeyboardKey.arrowRight):
+                      NextFocusIntent(),
+                  SingleActivator(LogicalKeyboardKey.arrowLeft):
+                      PreviousFocusIntent(),
+                },
+                child: Wrap(
+                  spacing: t.space(PaymentSpace.related),
+                  runSpacing: t.space(PaymentSpace.related),
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    ...chips,
+                    if (chips.length >= 2)
+                      PaymentLink(
+                        label: s.clearAll,
+                        onPressed: c.clearHistoryFilters,
+                      ),
+                  ],
+                ),
               ),
             ),
-          ],
           if (c.historyRange != null &&
               c.visibleHistory.isEmpty &&
               c.historyQuery.isEmpty &&

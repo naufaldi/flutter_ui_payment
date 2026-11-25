@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
 import 'package:rakit_ui_example/compositions/report_problem_block.dart';
 import 'package:rakit_ui_example/coordinator/demo_coordinator.dart';
+import 'package:rakit_ui_example/main.dart';
 import '../integration_test/support.dart';
 
 Future<void> drain(WidgetTester t) async {
@@ -384,6 +385,10 @@ void main() {
     );
     expect(c.historyFilter, TransactionFilter.refunds);
     expect(find.byType(PaymentChip), findsOneWidget);
+    expect(find.text('Clear all'), findsNothing);
+    final chipTop = t.getRect(find.byType(PaymentChip)).top;
+    final searchTop = t.getRect(find.byType(InputDecorator).first).top;
+    expect(searchTop - chipTop, 64);
     final close = find.descendant(
       of: find.byType(PaymentChip),
       matching: find.byType(PaymentIconButton),
@@ -409,6 +414,56 @@ void main() {
     expect(c.history, isNotEmpty);
     await drain(t);
   });
+  testWidgets('A01 date-only empty state keeps its recovery action', (t) async {
+    surface(t, const Size(360, 640));
+    final app = await launch(
+      t,
+      settings: const DemoSettings(locale: Locale('id')),
+    );
+    final c = await runScenario(t, app, 'A01');
+    await pumpUntil(t, () => !c.historyLoading);
+    await settle(t);
+    c.setHistoryRange(
+      PaymentDateRange(start: DateTime(2026), end: DateTime(2026, 1, 2)),
+    );
+    await settle(t);
+    expect(find.byType(PaymentChip), findsOneWidget);
+    expect(find.text('Hapus semua'), findsOneWidget);
+    await tapVisible(t, find.text('Hapus semua'));
+    expect(c.historyRange, isNull);
+    expect(find.byType(PaymentChip), findsNothing);
+    await drain(t);
+  });
+
+  testWidgets('A01 narrow large text keeps multi-filter reset reachable', (
+    t,
+  ) async {
+    surface(t, const Size(320, 640));
+    final app = await launch(
+      t,
+      settings: const DemoSettings(locale: Locale('id'), textScale: 2),
+    );
+    final c = await runScenario(t, app, 'A01');
+    await pumpUntil(t, () => !c.historyLoading);
+    await settle(t);
+    c.setHistoryFilter(TransactionFilter.succeeded);
+    c.setHistoryQuery('Toko');
+    await settle(t);
+    expect(find.byType(PaymentChip), findsNWidgets(2));
+    expect(find.text('Hapus semua'), findsOneWidget);
+    final close = find.descendant(
+      of: find.byType(PaymentChip).first,
+      matching: find.byType(PaymentIconButton),
+    );
+    expect(t.getRect(close).height, greaterThanOrEqualTo(48));
+    await tapVisible(t, find.text('Hapus semua'));
+    expect(find.byType(PaymentChip), findsNothing);
+    expect(c.historyFilter, TransactionFilter.all);
+    expect(c.historyQuery, isEmpty);
+    expect(t.takeException(), isNull);
+    await drain(t);
+  });
+
   testWidgets('A01 list leads, chart and figures follow (D63)', (t) async {
     surface(t, const Size(375, 667));
     final app = await launch(t);
