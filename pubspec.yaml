@@ -1,8 +1,7 @@
 name: rakit_ui
 description: >-
-  Rakit UI: composable Flutter UI for optional identity verification (KYC), checkout,
-  host-owned authorization, payment instructions, payment status and receipts.
-  Host callbacks own every business decision; the package never moves money.
+  Composable Flutter UI for mobile product screens, including a dedicated
+  Payments category for checkout, payment status, receipts and optional KYC.
 version: 0.8.0
 homepage: https://rakit-ui.netlify.app
 documentation: https://rakit-ui.netlify.app/start/quick-start/

@@ -134,6 +134,71 @@
     "height": 1095,
     "caption": "Checkout block wallet look in dark mode: balance on the dark Soft background, with a pinned pay action."
   },
+  "android_block_login": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Login block: email and hidden password with validation, Forgot password and Create account."
+  },
+  "android_block_login_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Login block in dark mode with the Annota-themed illustrative host."
+  },
+  "android_block_login_error": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Host login failure keeps the entered values editable and retry reachable."
+  },
+  "android_block_auth_home": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Synthetic host home after a successful connected authentication callback."
+  },
+  "android_block_login_wide": {
+    "width": 640,
+    "height": 541,
+    "caption": "Login block centred in the wide content column."
+  },
+  "android_block_login_200": {
+    "width": 640,
+    "height": 1232,
+    "caption": "Login block at 320 dp with 200 percent text; actions remain reachable."
+  },
+  "android_block_register": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Register block: email and password with policy help, terms link and host navigation."
+  },
+  "android_block_register_dark": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Register block in dark mode with the Annota-themed illustrative host."
+  },
+  "android_block_register_error": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Host registration failure keeps the typed values editable and retry reachable."
+  },
+  "android_block_verify": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Host-required email verification step with a six digit code and Resend code."
+  },
+  "android_block_verify_error": {
+    "width": 640,
+    "height": 1095,
+    "caption": "Wrong verification code failure keeps correction and retry reachable."
+  },
+  "android_block_register_wide": {
+    "width": 640,
+    "height": 541,
+    "caption": "Register block centred in the wide content column."
+  },
+  "android_block_register_200": {
+    "width": 640,
+    "height": 1232,
+    "caption": "Register block at 320 dp with 200 percent text; policy help and actions remain reachable."
+  },
   "android_block_transfer": {
     "width": 640,
     "height": 1095,

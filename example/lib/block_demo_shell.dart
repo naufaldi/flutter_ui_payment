@@ -40,6 +40,10 @@ class BlockDemoShell extends StatelessWidget {
     required this.onToggleDark,
     required this.body,
     this.scenarios = const [],
+    this.lightTheme,
+    this.darkTheme,
+    this.locale = const Locale('id'),
+    this.textScale,
   });
 
   final String title;
@@ -47,16 +51,27 @@ class BlockDemoShell extends StatelessWidget {
   final VoidCallback onToggleDark;
   final List<DemoScenario> scenarios;
 
+  /// Optional illustrative host themes; the payment demos use Ruang Bayar.
+  final ThemeData? lightTheme;
+  final ThemeData? darkTheme;
+
+  /// Host locale for this synthetic demo.
+  final Locale locale;
+
+  /// Optional fixed text scale for accessibility captures; null follows the
+  /// device setting.
+  final double? textScale;
+
   /// Built below the Scaffold, so sheets and toasts find their ancestors.
   final WidgetBuilder body;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
-    theme: buildTheme(DemoBrand.ruangBayar, Brightness.light),
-    darkTheme: buildTheme(DemoBrand.ruangBayar, Brightness.dark),
+    theme: lightTheme ?? buildTheme(DemoBrand.ruangBayar, Brightness.light),
+    darkTheme: darkTheme ?? buildTheme(DemoBrand.ruangBayar, Brightness.dark),
     themeMode: dark ? ThemeMode.dark : ThemeMode.light,
-    locale: const Locale('id'),
+    locale: locale,
     supportedLocales: const [Locale('id'), Locale('en')],
     localizationsDelegates: const [
       PaymentLocalizations.delegate,
@@ -64,6 +79,16 @@ class BlockDemoShell extends StatelessWidget {
       GlobalWidgetsLocalizations.delegate,
       GlobalCupertinoLocalizations.delegate,
     ],
+    builder: (context, child) {
+      final scale = textScale;
+      if (scale == null) return child!;
+      return MediaQuery(
+        data: MediaQuery.of(
+          context,
+        ).copyWith(textScaler: TextScaler.linear(scale)),
+        child: child!,
+      );
+    },
     home: AnnotatedRegion<SystemUiOverlayStyle>(
       // D85: the host styles the system bars from its resolved theme.
       value: (dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)

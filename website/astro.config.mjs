@@ -33,7 +33,7 @@ export default defineConfig({
     starlight({
       title: 'Rakit UI',
       description:
-        'Composable Flutter UI for checkout, payment status, receipts and optional KYC that stays honest when a payment result is not known yet.',
+        'Composable Flutter UI for mobile product screens, with a dedicated Payments category for checkout, payment status, receipts and optional KYC.',
       social: [
         {
           icon: 'github',
@@ -196,21 +196,27 @@ export default defineConfig({
         ] },
         { label: 'Blocks', items: [
           { label: 'Overview', slug: 'blocks' },
+          { label: 'Authentication', items: [
+            { label: 'Login', slug: 'blocks/login' },
+            { label: 'Register', slug: 'blocks/register' },
+          ] },
           { label: 'Collection', slug: 'blocks/collection' },
-          { label: 'Merchant overview', slug: 'blocks/merchant-overview' },
-          { label: 'Checkout and recovery', slug: 'blocks/checkout-recovery' },
-          { label: 'Transaction history', slug: 'blocks/transaction-history' },
-          { label: 'Report a problem', slug: 'blocks/report-a-problem' },
-          { label: 'KYC review and correction', slug: 'blocks/kyc-review' },
-          { label: 'Manual VA transfer', slug: 'blocks/manual-transfer' },
-          { label: 'QRIS checkout', slug: 'blocks/qris-checkout' },
-          { label: 'Wallet handoff and return', slug: 'blocks/wallet-handoff' },
-          { label: 'Method and quote changes', slug: 'blocks/method-quote' },
-          { label: 'Payment and refund detail', slug: 'blocks/refund-detail' },
-          { label: 'KYC onboarding and consent', slug: 'blocks/kyc-onboarding' },
-          { label: 'KYC capture and upload', slug: 'blocks/kyc-capture' },
-          { label: 'Payment preferences', slug: 'blocks/payment-preferences' },
           { label: 'Search results', slug: 'blocks/search-results' },
+          { label: 'Payments', items: [
+            { label: 'Merchant overview', slug: 'blocks/merchant-overview' },
+            { label: 'Checkout and recovery', slug: 'blocks/checkout-recovery' },
+            { label: 'Transaction history', slug: 'blocks/transaction-history' },
+            { label: 'Report a problem', slug: 'blocks/report-a-problem' },
+            { label: 'KYC review and correction', slug: 'blocks/kyc-review' },
+            { label: 'Manual VA transfer', slug: 'blocks/manual-transfer' },
+            { label: 'QRIS checkout', slug: 'blocks/qris-checkout' },
+            { label: 'Wallet handoff and return', slug: 'blocks/wallet-handoff' },
+            { label: 'Method and quote changes', slug: 'blocks/method-quote' },
+            { label: 'Payment and refund detail', slug: 'blocks/refund-detail' },
+            { label: 'KYC onboarding and consent', slug: 'blocks/kyc-onboarding' },
+            { label: 'KYC capture and upload', slug: 'blocks/kyc-capture' },
+            { label: 'Payment preferences', slug: 'blocks/payment-preferences' },
+          ] },
         ] },
         { label: 'Patterns', items: [
           { label: 'Checkout', slug: 'patterns/checkout' },
