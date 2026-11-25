@@ -382,20 +382,25 @@ class _GalleryScreenState extends State<GalleryScreen> {
           ),
           _ => SafeArea(
             // A new list per section so each one starts at the top.
-            child: ListView.builder(
-              key: PageStorageKey('gallery-$_section'),
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-              itemCount: entries.length,
-              itemBuilder: (context, index) => _KeptAlive(
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: switch (_section) {
-                        'content' || 'views' => 1040,
-                        _ => 640,
-                      },
+            child: LayoutBuilder(
+              builder: (context, constraints) => _GalleryViewportHeight(
+                height: constraints.maxHeight,
+                child: ListView.builder(
+                  key: PageStorageKey('gallery-$_section'),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+                  itemCount: entries.length,
+                  itemBuilder: (context, index) => _KeptAlive(
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: switch (_section) {
+                            'content' || 'views' => 1040,
+                            _ => 640,
+                          },
+                        ),
+                        child: entries[index],
+                      ),
                     ),
-                    child: entries[index],
                   ),
                 ),
               ),
@@ -415,6 +420,22 @@ String _sizeLabel(BuildContext context, PaymentSize size) => switch (size) {
   PaymentSize.medium => _t(context, 'medium', 'sedang'),
   PaymentSize.large => _t(context, 'large', 'besar'),
 };
+
+class _GalleryViewportHeight extends InheritedWidget {
+  const _GalleryViewportHeight({required this.height, required super.child});
+
+  final double height;
+
+  static double of(BuildContext context) =>
+      context
+          .dependOnInheritedWidgetOfExactType<_GalleryViewportHeight>()
+          ?.height ??
+      MediaQuery.heightOf(context);
+
+  @override
+  bool updateShouldNotify(_GalleryViewportHeight oldWidget) =>
+      height != oldWidget.height;
+}
 
 // Gallery chrome uses its own quieter voice (see dev_chrome.dart) so it is
 // never mistaken for the product: a grey workbench, class names as a small

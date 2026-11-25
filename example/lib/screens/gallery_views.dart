@@ -611,7 +611,7 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
               height: widget.name == 'PaymentContextView'
                   ? math.min(
                       560.0,
-                      math.max(240.0, MediaQuery.heightOf(context) - 168),
+                      math.max(240.0, _GalleryViewportHeight.of(context) - 80),
                     )
                   : widget.name.startsWith('PaymentDetailPage') ||
                         widget.name == 'PaymentOverviewPage'
