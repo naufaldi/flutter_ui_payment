@@ -28,8 +28,7 @@ void main() {
     );
     await settle(tester);
     final detail = find.byType(PaymentDetailPage);
-    await tester.ensureVisible(detail);
-    await settle(tester);
+    await revealGalleryTarget(tester, detail, step: 400);
     final primary = tester.getRect(
       find.descendant(
         of: detail,
@@ -65,16 +64,12 @@ void main() {
     await settle(tester);
     await openGalleryPage(tester, 'Kit components');
     // Bring the page's own NavSidebar specimen into the tree.
-    final specimen = find.byType(NavSidebar).first;
-    await tester.scrollUntilVisible(
-      specimen,
-      600,
-      scrollable: find
-          .descendant(of: galleryList(), matching: find.byType(Scrollable))
-          .first,
+    final shellSpecimen = find.byKey(
+      const ValueKey('specimen:AdaptiveNavShell · variants'),
     );
-    await settle(tester);
+    await revealGalleryTarget(tester, shellSpecimen, step: 400);
     await openGalleryPage(tester, 'Charts');
+    await revealGalleryTarget(tester, find.byType(PaymentSparkline));
     expect(find.byType(PaymentSparkline), findsWidgets);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
@@ -91,14 +86,78 @@ void main() {
     await settle(tester);
     expect(find.byTooltip('Open navigation'), findsNothing);
     await openGalleryPage(tester, 'Content');
-    await tester.scrollUntilVisible(
+    await revealGalleryTarget(
+      tester,
       find.byKey(const ValueKey('specimen:PaymentDataTable · variants')),
-      400,
-      scrollable: find
-          .descendant(of: galleryList(), matching: find.byType(Scrollable))
-          .first,
+      step: 400,
     );
     expect(find.byType(PaymentDataTable<int>), findsWidgets);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('gallery keeps specimen state after scrolling away', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final app = await launch(tester);
+    app.updateSettings(const DemoSettings(locale: Locale('en')));
+    app.selectTab(2);
+    await settle(tester);
+    await openGalleryPage(tester, 'Checkout');
+    final scrollable = find
+        .descendant(of: galleryList(), matching: find.byType(Scrollable))
+        .first;
+    final specimen = find.byKey(
+      const ValueKey('specimen:PaymentSummary · PaymentConfirmation'),
+    );
+    Future<void> scanFromTop() async {
+      final position = tester.state<ScrollableState>(scrollable).position;
+      position.jumpTo(position.minScrollExtent);
+      await tester.pump();
+      for (
+        var attempt = 0;
+        specimen.evaluate().isEmpty && attempt < 100;
+        attempt++
+      ) {
+        position.jumpTo(
+          (position.pixels + 200).clamp(
+            position.minScrollExtent,
+            position.maxScrollExtent,
+          ),
+        );
+        await tester.pump();
+      }
+      expect(specimen, findsOneWidget);
+      await Scrollable.ensureVisible(tester.element(specimen));
+      await settle(tester);
+    }
+
+    await scanFromTop();
+    final quoteChanged = find.descendant(
+      of: specimen,
+      matching: find.text('quote changed'),
+    );
+    bool quoteChangedIsSelected() => tester
+        .widgetList<Semantics>(
+          find.ancestor(of: quoteChanged, matching: find.byType(Semantics)),
+        )
+        .any((semantics) => semantics.properties.selected ?? false);
+    await tester.tap(quoteChanged);
+    await settle(tester);
+    expect(quoteChangedIsSelected(), isTrue);
+    for (var i = 0; i < 4; i += 1) {
+      await tester.drag(galleryList(), const Offset(0, -500));
+      await settle(tester);
+    }
+    for (var i = 0; i < 4; i += 1) {
+      await tester.drag(galleryList(), const Offset(0, 500));
+      await settle(tester);
+    }
+    await scanFromTop();
+    expect(quoteChangedIsSelected(), isTrue);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
   });
@@ -118,8 +177,7 @@ void main() {
     await tester.tap(find.text('Content'));
     await settle(tester);
     final table = find.byType(PaymentTable);
-    await tester.ensureVisible(table);
-    await settle(tester);
+    await revealGalleryTarget(tester, table);
     for (final amount in ['Rp2,500', 'Rp0', 'Rp4,000', 'Rp1,500', 'Rp8,000']) {
       expect(
         find.descendant(of: table, matching: find.text(amount)),
@@ -136,8 +194,7 @@ void main() {
     final specimen = find.byKey(
       const ValueKey('specimen:PaymentSpace · variants'),
     );
-    await tester.ensureVisible(specimen);
-    await settle(tester);
+    await revealGalleryTarget(tester, specimen);
     final theme = PaymentTheme.of(tester.element(specimen));
     for (final role in PaymentSpace.values) {
       final before = tester.getRect(
@@ -165,6 +222,10 @@ void main() {
     await settle(tester);
     await tester.tap(find.text('Layout'));
     await settle(tester);
+    await revealGalleryTarget(
+      tester,
+      find.byKey(const ValueKey('specimen:PaymentImage · variants')),
+    );
     // Start and await the native Picture.toImage work in the same real zone.
     await tester.runAsync(() async {
       app.updateSettings(

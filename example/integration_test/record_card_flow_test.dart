@@ -25,14 +25,8 @@ void recordCardRecoveryTest() {
     app.selectTab(2);
     await settle(tester);
     await openGalleryPage(tester, 'Interaction');
+    await revealGalleryTarget(tester, find.byType(PaymentRecordCard));
     final card = find.byType(PaymentRecordCard).last;
-    await tester.scrollUntilVisible(
-      card,
-      300,
-      scrollable: find
-          .descendant(of: galleryList(), matching: find.byType(Scrollable))
-          .first,
-    );
     final remove = find.descendant(
       of: card,
       matching: find.byTooltip('Remove statement'),

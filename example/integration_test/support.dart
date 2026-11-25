@@ -28,6 +28,38 @@ Finder galleryList() => find.byWidgetPredicate(
 /// list, so skip anything inside it (#189).
 Finder gallerySidebar() => _outsideGallery((w) => w is NavSidebar).first;
 
+/// Scrolls the lazily built gallery until [target] exists, then brings it
+/// into view. `scrollUntilVisible` cannot do this because its target is not
+/// in the tree before the first scan.
+Future<void> revealGalleryTarget(
+  WidgetTester tester,
+  Finder target, {
+  double step = 200,
+  int attempts = 100,
+}) async {
+  final position = tester
+      .state<ScrollableState>(
+        find
+            .descendant(of: galleryList(), matching: find.byType(Scrollable))
+            .first,
+      )
+      .position;
+  position.jumpTo(position.minScrollExtent);
+  await tester.pump();
+  for (var i = 0; target.evaluate().isEmpty && i < attempts; i++) {
+    position.jumpTo(
+      (position.pixels + step).clamp(
+        position.minScrollExtent,
+        position.maxScrollExtent,
+      ),
+    );
+    await tester.pump();
+  }
+  expect(target.evaluate(), isNotEmpty, reason: 'Gallery target not found');
+  await Scrollable.ensureVisible(tester.element(target.first));
+  await settle(tester);
+}
+
 Finder _outsideGallery(bool Function(Widget) matches) =>
     find.byElementPredicate((element) {
       if (!matches(element.widget)) return false;
