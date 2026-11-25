@@ -560,7 +560,7 @@ void main() {
         (controlRect.height - galleryRect.height).abs();
     if (shellDelta > 1) {
       throw TestFailure(
-        'Material control viewport does not match the gallery shell: delta $shellDelta dp',
+        'Material control viewport does not match the gallery shell: delta $shellDelta dp; gallery ${rectJson(galleryRect)}, control ${rectJson(controlRect)}',
       );
     }
     results['material_control_shell_match'] = {
@@ -743,6 +743,7 @@ class _MaterialControlApp extends StatelessWidget {
           ],
         ),
         bottomNavigationBar: NavigationBar(
+          height: 64,
           selectedIndex: 2,
           destinations: const [
             NavigationDestination(
