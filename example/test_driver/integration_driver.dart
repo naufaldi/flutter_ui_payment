@@ -33,7 +33,11 @@ Future<void> main() {
       if (data == null) return;
       final navigation = data['gallery_navigation'];
       if (navigation != null) {
-        final file = File('build/perf/navigation_summary.json');
+        final label = Platform.environment['PERF_LABEL'];
+        final output =
+            Platform.environment['PERF_OUTPUT'] ??
+            'build/perf/navigation_summary${label == null || label.isEmpty ? '' : '_$label'}.json';
+        final file = File(output);
         await file.create(recursive: true);
         await file.writeAsString(
           const JsonEncoder.withIndent('  ').convert(navigation),
