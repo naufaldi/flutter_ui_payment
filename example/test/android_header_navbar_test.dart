@@ -77,6 +77,19 @@ void main() {
     await t.pump(const Duration(seconds: 2));
   });
 
+  testWidgets('tab switches reuse the same theme objects', (t) async {
+    final app = await launch(t);
+    MaterialApp material() => t.widget<MaterialApp>(find.byType(MaterialApp));
+    final light = material().theme;
+    final dark = material().darkTheme;
+    app.selectTab(2);
+    await t.pump();
+    expect(identical(material().theme, light), isTrue);
+    expect(identical(material().darkTheme, dark), isTrue);
+    await t.pumpWidget(const SizedBox());
+    await t.pump(const Duration(seconds: 2));
+  });
+
   testWidgets('navigation bar follows the resolved app theme', (t) async {
     final app = await launch(
       t,

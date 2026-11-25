@@ -13,8 +13,8 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   const looks = {
-    'light': DemoSettings(),
-    'dark': DemoSettings(themeMode: ThemeMode.dark),
+    'light': DemoSettings(textScale: 1),
+    'dark': DemoSettings(themeMode: ThemeMode.dark, textScale: 1),
     'light_200': DemoSettings(textScale: 2),
   };
 
@@ -163,7 +163,7 @@ void main() {
     const looksDefine = String.fromEnvironment('CAPTURE_LOOKS');
     final selected = {
       ...looks,
-      'en': const DemoSettings(locale: Locale('en')),
+      'en': const DemoSettings(locale: Locale('en'), textScale: 1),
       'en_200': const DemoSettings(locale: Locale('en'), textScale: 2),
     };
     final names = looksDefine.isEmpty

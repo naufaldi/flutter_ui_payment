@@ -27,8 +27,8 @@ void main() {
     }
 
     const looks = {
-      'light': DemoSettings(locale: Locale('en')),
-      'dark': DemoSettings(themeMode: ThemeMode.dark),
+      'light': DemoSettings(locale: Locale('en'), textScale: 1),
+      'dark': DemoSettings(themeMode: ThemeMode.dark, textScale: 1),
       'light_200': DemoSettings(textScale: 2),
     };
     const selected = String.fromEnvironment('CAPTURE_LOOKS');
@@ -88,8 +88,8 @@ void main() {
     }
 
     for (final (look, settings) in [
-      ('', const DemoSettings()),
-      ('_dark', const DemoSettings(themeMode: ThemeMode.dark)),
+      ('', const DemoSettings(textScale: 1)),
+      ('_dark', const DemoSettings(themeMode: ThemeMode.dark, textScale: 1)),
       ('_200', const DemoSettings(textScale: 2)),
     ]) {
       app.updateSettings(settings);
@@ -101,7 +101,9 @@ void main() {
       await section('Riwayat', 'history', look: look);
     }
 
-    app.updateSettings(const DemoSettings(brand: DemoBrand.lumen));
+    app.updateSettings(
+      const DemoSettings(brand: DemoBrand.lumen, textScale: 1),
+    );
     await settle(tester);
     await section('Checkout', 'checkout_lumen');
 
@@ -114,7 +116,7 @@ void main() {
     );
     await settle(tester);
 
-    app.updateSettings(const DemoSettings());
+    app.updateSettings(const DemoSettings(textScale: 1));
     await settle(tester);
 
     // Sheet with the destructive confirmation behind it.

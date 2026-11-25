@@ -381,11 +381,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
           ),
           _ => SafeArea(
             // A new list per section so each one starts at the top.
-            child: ListView(
+            child: ListView.builder(
               key: PageStorageKey('gallery-$_section'),
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-              children: [
-                Center(
+              itemCount: entries.length,
+              itemBuilder: (context, index) => _KeptAlive(
+                child: Center(
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       maxWidth: switch (_section) {
@@ -393,13 +394,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
                         _ => 640,
                       },
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: entries,
-                    ),
+                    child: entries[index],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         },
@@ -421,6 +419,27 @@ String _sizeLabel(BuildContext context, PaymentSize size) => switch (size) {
 // never mistaken for the product: a grey workbench, class names as a small
 // monospace caption, the fixture state selector outside the frame, and the
 // component itself on its real surface inside the frame.
+
+class _KeptAlive extends StatefulWidget {
+  const _KeptAlive({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_KeptAlive> createState() => _KeptAliveState();
+}
+
+class _KeptAliveState extends State<_KeptAlive>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
+  }
+}
 
 class _Entry extends StatelessWidget {
   const _Entry({required this.name, required this.child, this.states});

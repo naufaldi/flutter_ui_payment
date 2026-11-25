@@ -167,7 +167,7 @@ void main() {
       await settle(tester);
     }
 
-    app.updateSettings(const DemoSettings(locale: Locale('en')));
+    app.updateSettings(const DemoSettings(locale: Locale('en'), textScale: 1));
     app.selectTab(2);
     await settle(tester);
     // Selective session: --dart-define=CAPTURE_ONLY=<entries> with entries
@@ -686,13 +686,17 @@ void main() {
         ),
       };
       for (final (look, settings) in [
-        ('light', const DemoSettings(locale: Locale('en'))),
+        ('light', const DemoSettings(locale: Locale('en'), textScale: 1)),
         (
           'dark',
-          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+          const DemoSettings(
+            locale: Locale('en'),
+            themeMode: ThemeMode.dark,
+            textScale: 1,
+          ),
         ),
         ('200', const DemoSettings(locale: Locale('en'), textScale: 2)),
-        ('id', const DemoSettings(locale: Locale('id'))),
+        ('id', const DemoSettings(locale: Locale('id'), textScale: 1)),
         ('id_200', const DemoSettings(locale: Locale('id'), textScale: 2)),
       ]) {
         final id = look.startsWith('id');
@@ -769,7 +773,7 @@ void main() {
       // Indonesian destructive confirm over the pending-payment sheet, and
       // the fees screen with its ⓘ.
       if (entries.contains('kit_sheet_confirm')) {
-        app.updateSettings(const DemoSettings());
+        app.updateSettings(const DemoSettings(textScale: 1));
         app.selectTab(2);
         await settle(tester);
         await tester.tap(find.byTooltip('Buka navigasi'));
@@ -805,8 +809,8 @@ void main() {
       // history (range picker), in the looks screenshots_test uses.
       for (final screen in ['kyc_onboarding', 'history']) {
         for (final (look, settings) in [
-          ('light', const DemoSettings()),
-          ('dark', const DemoSettings(themeMode: ThemeMode.dark)),
+          ('light', const DemoSettings(textScale: 1)),
+          ('dark', const DemoSettings(themeMode: ThemeMode.dark, textScale: 1)),
           ('light_200', const DemoSettings(textScale: 2)),
         ]) {
           if (!entries.contains(screen) && !entries.contains('$screen@$look')) {
@@ -830,7 +834,7 @@ void main() {
         }
       }
       if (entries.contains('fees_light')) {
-        app.updateSettings(const DemoSettings());
+        app.updateSettings(const DemoSettings(textScale: 1));
         await settle(tester);
         await runScenario(tester, app, 'A04');
         await settle(tester);
@@ -843,10 +847,14 @@ void main() {
       const onlyEntry = String.fromEnvironment('CAPTURE_PHASE6_ENTRY');
       const onlyLook = String.fromEnvironment('CAPTURE_PHASE6_LOOK');
       for (final (look, settings) in [
-        ('', const DemoSettings(locale: Locale('en'))),
+        ('', const DemoSettings(locale: Locale('en'), textScale: 1)),
         (
           '_dark',
-          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+          const DemoSettings(
+            locale: Locale('en'),
+            themeMode: ThemeMode.dark,
+            textScale: 1,
+          ),
         ),
         ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
       ]) {
@@ -937,10 +945,14 @@ void main() {
     }
     if (const bool.fromEnvironment('CAPTURE_ACTIONS_ONLY')) {
       for (final (look, settings) in [
-        ('', const DemoSettings(locale: Locale('en'))),
+        ('', const DemoSettings(locale: Locale('en'), textScale: 1)),
         (
           '_dark',
-          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+          const DemoSettings(
+            locale: Locale('en'),
+            themeMode: ThemeMode.dark,
+            textScale: 1,
+          ),
         ),
       ]) {
         app.updateSettings(settings);
@@ -970,10 +982,14 @@ void main() {
     }
     if (const bool.fromEnvironment('CAPTURE_TOOLTIP_ONLY')) {
       for (final (look, settings) in [
-        ('', const DemoSettings(locale: Locale('en'))),
+        ('', const DemoSettings(locale: Locale('en'), textScale: 1)),
         (
           '_dark',
-          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+          const DemoSettings(
+            locale: Locale('en'),
+            themeMode: ThemeMode.dark,
+            textScale: 1,
+          ),
         ),
         ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
       ]) {
@@ -987,7 +1003,9 @@ void main() {
           'tooltip_variants$look',
         );
       }
-      app.updateSettings(const DemoSettings(locale: Locale('en')));
+      app.updateSettings(
+        const DemoSettings(locale: Locale('en'), textScale: 1),
+      );
       await settle(tester);
       await open('Feedback');
       await top('PaymentTooltip · variants');
@@ -1001,10 +1019,14 @@ void main() {
     if (const bool.fromEnvironment('CAPTURE_PHASE4CD_ONLY')) {
       const onlyEntry = String.fromEnvironment('CAPTURE_PHASE4CD_ENTRY');
       for (final (look, settings) in [
-        ('', const DemoSettings(locale: Locale('en'))),
+        ('', const DemoSettings(locale: Locale('en'), textScale: 1)),
         (
           '_dark',
-          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+          const DemoSettings(
+            locale: Locale('en'),
+            themeMode: ThemeMode.dark,
+            textScale: 1,
+          ),
         ),
         ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
       ]) {
@@ -1119,10 +1141,14 @@ void main() {
     }
     if (const bool.fromEnvironment('CAPTURE_PHASE4_ONLY')) {
       for (final (look, settings) in [
-        ('', const DemoSettings(locale: Locale('en'))),
+        ('', const DemoSettings(locale: Locale('en'), textScale: 1)),
         (
           '_dark',
-          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+          const DemoSettings(
+            locale: Locale('en'),
+            themeMode: ThemeMode.dark,
+            textScale: 1,
+          ),
         ),
         ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
       ]) {
@@ -1251,6 +1277,7 @@ void main() {
           DemoSettings(
             locale: const Locale('en'),
             themeMode: dark ? ThemeMode.dark : ThemeMode.light,
+            textScale: 1,
           ),
         );
         await settle(tester);
@@ -1281,7 +1308,9 @@ void main() {
         await shot('capture_selfie$suffix');
       }
       if (wantsStateLook('light')) {
-        app.updateSettings(const DemoSettings(locale: Locale('en')));
+        app.updateSettings(
+          const DemoSettings(locale: Locale('en'), textScale: 1),
+        );
         await settle(tester);
         await open('Charts');
         await top('ChartModule · states');
@@ -1327,7 +1356,7 @@ void main() {
       }
     }
     if (!wantsStateLook('light')) return;
-    app.updateSettings(const DemoSettings(locale: Locale('en')));
+    app.updateSettings(const DemoSettings(locale: Locale('en'), textScale: 1));
     await settle(tester);
     if (!const bool.fromEnvironment('CAPTURE_SKIP_FEEDBACK')) {
       await open('Feedback');
@@ -1363,10 +1392,14 @@ void main() {
 
     if (const bool.fromEnvironment('CAPTURE_TAIL_ONLY')) {
       for (final (look, settings) in [
-        ('', const DemoSettings(locale: Locale('en'))),
+        ('', const DemoSettings(locale: Locale('en'), textScale: 1)),
         (
           '_dark',
-          const DemoSettings(locale: Locale('en'), themeMode: ThemeMode.dark),
+          const DemoSettings(
+            locale: Locale('en'),
+            themeMode: ThemeMode.dark,
+            textScale: 1,
+          ),
         ),
         ('_200', const DemoSettings(locale: Locale('en'), textScale: 2)),
       ]) {
@@ -1380,7 +1413,9 @@ void main() {
           'tooltip_variants$look',
         );
       }
-      app.updateSettings(const DemoSettings(locale: Locale('en')));
+      app.updateSettings(
+        const DemoSettings(locale: Locale('en'), textScale: 1),
+      );
       await settle(tester);
     }
     await open('Video');

@@ -81,6 +81,7 @@ class DemoAppState extends State<DemoApp> with WidgetsBindingObserver {
   int activeVariant = 0;
   late DemoHost host;
   late DemoCoordinator coordinator;
+  final _themes = <(DemoBrand, Brightness), ThemeData>{};
 
   /// Changes on every simulated restart so all widget state is rebuilt.
   int launch = 0;
@@ -126,6 +127,14 @@ class DemoAppState extends State<DemoApp> with WidgetsBindingObserver {
   }
 
   void selectTab(int index) => setState(() => tab = index);
+
+  ThemeData _theme(Brightness brightness) {
+    final key = (settings.brand, brightness);
+    return _themes.putIfAbsent(
+      key,
+      () => buildTheme(settings.brand, brightness),
+    );
+  }
 
   void updateSettings(DemoSettings next) {
     setState(() => settings = next);
@@ -178,8 +187,8 @@ class DemoAppState extends State<DemoApp> with WidgetsBindingObserver {
     return MaterialApp(
       title: 'Ruang Bayar',
       debugShowCheckedModeBanner: false,
-      theme: buildTheme(settings.brand, Brightness.light),
-      darkTheme: buildTheme(settings.brand, Brightness.dark),
+      theme: _theme(Brightness.light),
+      darkTheme: _theme(Brightness.dark),
       themeMode: settings.themeMode,
       locale: settings.locale,
       supportedLocales: const [Locale('id'), Locale('en')],

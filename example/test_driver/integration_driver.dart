@@ -30,7 +30,21 @@ Future<void> main() {
     responseDataCallback: (data) async {
       // Screenshot runs also report image bytes. They must not overwrite the
       // measurements from the last profile run.
-      if (data == null || !data.containsKey('checkout')) return;
+      if (data == null) return;
+      final navigation = data['gallery_navigation'];
+      if (navigation != null) {
+        final label = Platform.environment['PERF_LABEL'];
+        final output =
+            Platform.environment['PERF_OUTPUT'] ??
+            'build/perf/navigation_summary${label == null || label.isEmpty ? '' : '_$label'}.json';
+        final file = File(output);
+        await file.create(recursive: true);
+        await file.writeAsString(
+          const JsonEncoder.withIndent('  ').convert(navigation),
+        );
+        return;
+      }
+      if (!data.containsKey('checkout')) return;
       final file = File('build/perf/summary.json');
       await file.create(recursive: true);
       await file.writeAsString(
