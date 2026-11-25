@@ -33,7 +33,7 @@ export default defineConfig({
     starlight({
       title: 'Rakit UI',
       description:
-        'Composable Flutter UI for checkout, payment status, receipts and optional KYC that stays honest when a payment result is not known yet.',
+        'Composable Flutter UI for mobile product screens, with a dedicated Payments category for checkout, payment status, receipts and optional KYC.',
       social: [
         {
           icon: 'github',
@@ -196,6 +196,10 @@ export default defineConfig({
         ] },
         { label: 'Blocks', items: [
           { label: 'Overview', slug: 'blocks' },
+          { label: 'Authentication', items: [
+            { label: 'Login', slug: 'blocks/login' },
+            { label: 'Register', slug: 'blocks/register' },
+          ] },
           { label: 'Collection', slug: 'blocks/collection' },
           { label: 'Merchant overview', slug: 'blocks/merchant-overview' },
           { label: 'Checkout and recovery', slug: 'blocks/checkout-recovery' },

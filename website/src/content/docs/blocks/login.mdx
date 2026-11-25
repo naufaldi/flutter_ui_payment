@@ -1,0 +1,69 @@
+---
+title: Login
+description: A copyable mobile authentication block with email/password validation, show/hide password, busy and host failure states, recovery and registration navigation.
+---
+
+import Screen from '../../../components/Screen.astro';
+import Screens from '../../../components/Screens.astro';
+import BlockSource from '../../../components/BlockSource.astro';
+
+Use this general-purpose Authentication block when a host already owns its
+identity backend. It validates the email and password locally, keeps the
+password in host-owned input with a show/hide action, reports a safe host
+failure, and leaves authentication, recovery and navigation to the host.
+
+<Screens>
+  <Screen name="android_block_login" dark="android_block_login_dark" alt="Login screen with email and password fields, a show password action, Log in pinned at the bottom, Forgot password and Create account." caption="Login, light and dark" />
+  <Screen name="android_block_login_error" alt="Login screen with a danger banner saying the host could not log the person in; the entered email and hidden password remain editable." caption="Host failure remains recoverable" />
+  <Screen name="android_block_login_200" alt="Login screen at 200 percent text with the Log in and Forgot password actions still reachable." caption="200% text" />
+</Screens>
+
+## Run and try
+
+From `example/`:
+
+```sh
+flutter run -d <device-id> -t lib/auth_blocks_demo.dart
+```
+
+The connected demo uses an Annota-derived illustrative host theme and synthetic
+fixtures only. It is not Annota's production authentication flow: nothing
+leaves the device, no account is created or stored, and no secret is logged.
+Use `mina@example.com` / `notes123`. The default scenario makes the first
+sign-in fail so the recovery path is visible; the second succeeds and the host
+navigates Home. The developer menu also starts the registration scenarios.
+
+## Composition and boundaries
+
+`LoginBlock` is self-contained apart from the package. `LoginCredentials` is
+the only value passed across the authentication boundary. The host supplies
+`onSubmit`, `onForgotPassword`, `onRegister`, `busy` and a safe `errorText`.
+The block never authenticates, stores, transmits or logs a credential.
+
+| UI | Existing library surface |
+| --- | --- |
+| Phone and wide page layout, title navigation and pinned action | `PaymentFullPageView` |
+| Email input and validation error presentation | `PaymentTextField` |
+| Submit and recovery action states | `PaymentButton` |
+| Host failure announcement | `PaymentBanner` |
+| Registration navigation | `PaymentLink` |
+
+The password control is deliberately host code inside the copied file. The kit
+does not accept secrets or provide a password-input mode (D1a); the host owns
+secret input, credential handling, rate limits, recovery and routing. Continue
+with [Register](/blocks/register/) for account creation and host-required
+verification.
+
+## Source
+
+<BlockSource name="loginBlock" />
+<BlockSource name="authBlocksDemo" />
+<BlockSource name="demoShell" />
+
+## Proof and limits
+
+Widget tests cover invalid input, show/hide password, host failure and retry,
+busy locking, recovery navigation, the connected home destination, and 320 dp
+at 200% text. Android captures cover light, dark, failure and enlarged text.
+Connect your own identity provider, throttling, audit policy, account recovery
+and navigation before production use.

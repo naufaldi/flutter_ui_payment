@@ -1,10 +1,10 @@
 # Rakit UI
 
-Rakit UI provides Flutter components for checkout, payment status, receipts and optional identity verification (KYC). Build screens for pending, failed and unknown payment results, with host-owned authorization and recovery. The kit also includes navigation, forms, charts, sheets, feedback and transaction history.
+Rakit UI provides Flutter components and copyable blocks for mobile product screens, with a dedicated Payments category for checkout, payment status, receipts and optional identity verification (KYC). Start with authentication, collections, navigation, forms, charts, sheets and feedback; use the payment surfaces for pending, failed and unknown payment results, with host-owned authorization and recovery.
 
 Adopt selected controls in your own branded app while keeping your theme, router and state: [existing-app guide](https://rakit-ui.netlify.app/start/existing-app/).
 
-> **Ringkasan.** Library komponen UI Flutter untuk KYC opsional dan pembayaran. Komponen hanya merender data terstruktur dari host dan melaporkan aksi lewat callback. Host/backend tetap memutuskan KYC, harga, otorisasi, idempotency, status, dan refund. Library tidak memproses uang, tidak melakukan network call, dan tidak memerlukan router, state manager, kamera, atau SDK payment. Keputusan produk ada di [PRD.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/PRD.md).
+> **Ringkasan.** Library komponen dan blok UI Flutter untuk layar produk mobile, dengan kategori Payments khusus untuk checkout, status pembayaran, struk, dan KYC opsional. Komponen hanya merender data terstruktur dari host dan melaporkan aksi lewat callback. Host/backend tetap memutuskan identitas, KYC, harga, otorisasi, idempotency, status, dan refund. Library tidak memproses uang, tidak melakukan network call, dan tidak memerlukan router, state manager, kamera, atau SDK payment. Keputusan produk ada di [PRD.md](https://github.com/naufaldi/flutter_ui_payment/blob/main/PRD.md).
 
 Targets iOS and Android, phones and tablets. The web build is a documentation preview.
 
@@ -20,6 +20,7 @@ Targets iOS and Android, phones and tablets. The web build is a documentation pr
 git clone https://github.com/naufaldi/flutter_ui_payment.git
 cd flutter_ui_payment/example
 flutter pub get
+flutter run -t lib/auth_blocks_demo.dart      # connected login, register and verification
 flutter run -t lib/checkout_block_demo.dart   # one checkout, with its recovery states
 flutter run                                   # the full example app: Demo, Scenarios, Gallery
 ```

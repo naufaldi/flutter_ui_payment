@@ -36,6 +36,9 @@ import preferences from '../../../example/lib/compositions/payment_preferences_b
 import preferencesDemo from '../../../example/lib/payment_preferences_demo.dart?raw';
 import searchResults from '../../../example/lib/compositions/search_results_block.dart?raw';
 import searchResultsDemo from '../../../example/lib/search_results_demo.dart?raw';
+import loginBlock from '../../../example/lib/compositions/login_block.dart?raw';
+import registerBlock from '../../../example/lib/compositions/register_block.dart?raw';
+import authBlocksDemo from '../../../example/lib/auth_blocks_demo.dart?raw';
 
 const sources = {
   checkout: ['compositions/host_checkout.dart', checkout],
@@ -74,6 +77,9 @@ const sources = {
   preferencesDemo: ['payment_preferences_demo.dart', preferencesDemo],
   searchResults: ['compositions/search_results_block.dart', searchResults],
   searchResultsDemo: ['search_results_demo.dart', searchResultsDemo],
+  loginBlock: ['compositions/login_block.dart', loginBlock],
+  registerBlock: ['compositions/register_block.dart', registerBlock],
+  authBlocksDemo: ['auth_blocks_demo.dart', authBlocksDemo],
 };
 interface Props { name: keyof typeof sources; }
 const [file, source] = sources[Astro.props.name];
