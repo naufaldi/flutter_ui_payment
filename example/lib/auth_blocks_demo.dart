@@ -57,6 +57,7 @@ class _AuthBlocksDemoState extends State<AuthBlocksDemo> {
   int generation = 0;
   int signInAttempts = 0;
   int registerAttempts = 0;
+  int recoveryVisits = 0;
   String registeredEmail = _fixtureEmail;
 
   void reset(AuthDemoScenario next) => setState(() {
@@ -70,14 +71,32 @@ class _AuthBlocksDemoState extends State<AuthBlocksDemo> {
     busy = false;
     signInAttempts = 0;
     registerAttempts = 0;
+    recoveryVisits = 0;
     registeredEmail = _fixtureEmail;
   });
 
-  void open(_Route next) => setState(() {
-    route = next;
-    loginError = null;
-    registerError = null;
-  });
+  void open(_Route next) {
+    if (next != route) FocusScope.of(context).unfocus();
+    setState(() {
+      route = next;
+      loginError = null;
+      registerError = null;
+      if (next == _Route.recovery) {
+        recoveryVisits++;
+        recoveryMessage = null;
+      }
+    });
+  }
+
+  void abandonRegistration() {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      route = _Route.login;
+      registerStep = RegisterBlockStep.details;
+      registerError = null;
+      registeredEmail = _fixtureEmail;
+    });
+  }
 
   Future<void> signIn(LoginCredentials credentials) async {
     if (busy) return;
@@ -167,17 +186,51 @@ class _AuthBlocksDemoState extends State<AuthBlocksDemo> {
   Future<void> sendRecovery(String email) async {
     if (busy) return;
     final current = generation;
+    final visit = recoveryVisits;
     setState(() {
       busy = true;
       recoveryMessage = null;
     });
     await Future<void>.delayed(widget.delay);
     if (!mounted || current != generation) return;
+    final deliver = visit == recoveryVisits && route == _Route.recovery;
     setState(() {
       busy = false;
-      recoveryMessage =
-          'If $email belongs to this synthetic host, a reset message is waiting in the fixture inbox.';
+      recoveryMessage = deliver
+          ? 'If $email belongs to this synthetic host, a reset message is waiting in the fixture inbox.'
+          : null;
     });
+  }
+
+  RegisterBlock _registerBlock() => RegisterBlock(
+    key: ValueKey('register-$generation-$registerStep'),
+    step: registerStep,
+    initialEmail: _fixtureEmail,
+    verificationEmail: registeredEmail,
+    busy: busy,
+    errorText: registerError,
+    onSubmit: register,
+    onVerify: verify,
+    onResendVerification: resendCode,
+    onLogin: abandonRegistration,
+    onPolicy: () => open(_Route.policy),
+  );
+
+  Widget _registerOrPolicy() {
+    final policy = route == _Route.policy;
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        ExcludeFocus(
+          excluding: policy,
+          child: ExcludeSemantics(
+            excluding: policy,
+            child: Offstage(offstage: policy, child: _registerBlock()),
+          ),
+        ),
+        if (policy) _PolicyPage(onBack: () => open(_Route.register)),
+      ],
+    );
   }
 
   @override
@@ -217,28 +270,15 @@ class _AuthBlocksDemoState extends State<AuthBlocksDemo> {
         onForgotPassword: () => open(_Route.recovery),
         onRegister: () => open(_Route.register),
       ),
-      _Route.register => RegisterBlock(
-        key: ValueKey('register-$generation-$registerStep'),
-        step: registerStep,
-        initialEmail: _fixtureEmail,
-        verificationEmail: registeredEmail,
-        busy: busy,
-        errorText: registerError,
-        onSubmit: register,
-        onVerify: verify,
-        onResendVerification: resendCode,
-        onLogin: () => open(_Route.login),
-        onPolicy: () => open(_Route.policy),
-      ),
+      _Route.register || _Route.policy => _registerOrPolicy(),
       _Route.recovery => _RecoveryPage(
-        key: ValueKey('recovery-$generation'),
+        key: ValueKey('recovery-$generation-$recoveryVisits'),
         busy: busy,
         message: recoveryMessage,
         initialEmail: _fixtureEmail,
         onSubmit: sendRecovery,
         onBack: () => open(_Route.login),
       ),
-      _Route.policy => _PolicyPage(onBack: () => open(_Route.register)),
       _Route.home => _HomePage(onSignOut: () => reset(scenario)),
     },
   );
