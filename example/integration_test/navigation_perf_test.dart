@@ -13,7 +13,7 @@ import 'package:rakit_ui_example/main.dart';
 import 'navigation_perf_model.dart';
 import 'support.dart';
 
-const harnessRevision = 'frame-matched-control-v1';
+const harnessRevision = 'frame-number-control-v1';
 const sourceSha = String.fromEnvironment('SOURCE_SHA', defaultValue: 'unknown');
 const sourceDirty = String.fromEnvironment(
   'SOURCE_DIRTY',
@@ -25,11 +25,12 @@ const controlListKey = PageStorageKey('material-control-list');
 /// Profile-mode Gallery navigation and scrolling measurements for issue #393.
 ///
 /// Scroll timing is restricted to frames whose measured scroll offset changed.
-/// The frame probe reads [SchedulerBinding.currentSystemFrameTimeStamp], the
-/// raw timestamp the engine passed to `onBeginFrame`; `FrameTiming` documents
-/// the same value as `FramePhase.buildStart`, so the match is exact rather than
-/// a wall-clock window guess. Raster finish remains before presentation: these
-/// are comparative stage timings, never delivered-FPS claims.
+/// The frame probe reads [PlatformDispatcher.frameData], the engine frame key
+/// supplied with `beginFrame`, and matches it exactly to
+/// [FrameTiming.frameNumber]. The raw system frame timestamp is retained only
+/// as diagnostic evidence; it is not a matching key. Raster finish remains
+/// before presentation: these are comparative stage timings, never
+/// delivered-FPS claims.
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
@@ -62,8 +63,8 @@ void main() {
         'comparison_requirement':
             'baseline and candidate runs must use this identical file and pass their checkout SHA in SOURCE_SHA',
       },
-      'frame_matching_clock':
-          'scroll frames are sampled after layout in a post-frame callback keyed by SchedulerBinding.currentSystemFrameTimeStamp; FrameTiming documents that same raw onBeginFrame timestamp as FramePhase.buildStart',
+      'frame_matching_key':
+          'scroll frames are sampled after layout in a post-frame callback keyed by PlatformDispatcher.frameData.frameNumber, the engine frame key supplied with beginFrame, and matched exactly to FrameTiming.frameNumber',
       'latency_measurement_limit':
           'tap dispatch duration uses one local monotonic Stopwatch; no action-to-raster latency is reported because Flutter does not document Timeline.now and FrameTiming as the same clock, and raster finish remains before presentation in any case',
     };
@@ -101,21 +102,35 @@ void main() {
       }
     }
 
-    Future<int> firstDestinationFrameBuildStart(
+    Future<({int frameNumber, int systemFrameTimestampUs})>
+    firstDestinationFrame(
       bool Function() destinationReady,
       String destinationName,
     ) {
-      final completer = Completer<int>();
+      final completer =
+          Completer<({int frameNumber, int systemFrameTimestampUs})>();
       var active = true;
       void sample(Duration _) {
         if (!active || completer.isCompleted) return;
+        final frameNumber = PlatformDispatcher.instance.frameData.frameNumber;
         final timestamp = SchedulerBinding
             .instance
             .currentSystemFrameTimeStamp
             .inMicroseconds;
         if (destinationReady()) {
           active = false;
-          completer.complete(timestamp);
+          if (frameNumber < 0) {
+            completer.completeError(
+              TestFailure(
+                'Engine frame number was unavailable for $destinationName',
+              ),
+            );
+            return;
+          }
+          completer.complete((
+            frameNumber: frameNumber,
+            systemFrameTimestampUs: timestamp,
+          ));
         } else {
           SchedulerBinding.instance.addPostFrameCallback(sample);
         }
@@ -145,25 +160,34 @@ void main() {
         final dispatch = Stopwatch()..start();
         await action();
         dispatch.stop();
-        final buildStart = await firstDestinationFrameBuildStart(
+        final destinationFrame = await firstDestinationFrame(
           destinationReady,
           destinationName,
         );
-        final drained = await sink.drainBuildStarts({buildStart});
+        final drained = await sink.drainFrameNumbers({
+          destinationFrame.frameNumber,
+        });
         if (!drained) {
           throw TestFailure(
             'FrameTiming batch did not drain for the first $destinationName frame',
           );
         }
-        final first = sink.bag.byBuildStart[buildStart]!;
+        final first = sink.bag.byFrameNumber[destinationFrame.frameNumber]!;
         return {
           'tap_dispatch_ms': durationToMilliseconds(dispatch.elapsed),
           'first_frame_build_ms': durationToMilliseconds(first.buildDuration),
           'first_frame_raster_ms': durationToMilliseconds(first.rasterDuration),
-          'first_frame_build_start_us': buildStart,
-          'first_frame_number': first.frameNumber,
+          'first_frame_number': destinationFrame.frameNumber,
+          'first_frame_system_frame_timestamp_us':
+              destinationFrame.systemFrameTimestampUs,
+          'first_frame_build_start_us': first.timestampInMicroseconds(
+            FramePhase.buildStart,
+          ),
+          'first_frame_build_start_minus_system_frame_timestamp_us':
+              first.timestampInMicroseconds(FramePhase.buildStart) -
+              destinationFrame.systemFrameTimestampUs,
           'destination_frame_match':
-              'first completed frame whose post-frame state satisfied destinationReady',
+              'first completed frame whose post-frame state satisfied destinationReady, matched by engine frame number',
           'timing_callback_drain_complete': drained,
           'timing_batches': sink.bag.batchCount,
           'timing_frames_received': sink.bag.receivedFrameCount,
@@ -218,14 +242,14 @@ void main() {
         await dragDown(scrollable, drags: 3, distancePerDrag: 350);
         await waitForScrollQuiet(position);
         probe.stop();
-        final changed = scrollChangingBuildStarts(
+        final changed = scrollChangingFrameNumbers(
           probe.samples,
           initialPixels: before,
         );
         if (changed.isEmpty) {
           throw TestFailure('$workloadName produced no scroll-changing frames');
         }
-        final drained = await sink.drainBuildStarts(changed);
+        final drained = await sink.drainFrameNumbers(changed);
         final match = matchScrollTimings(
           probe.samples,
           sink.bag,
@@ -233,7 +257,7 @@ void main() {
         );
         if (!drained || !match.complete) {
           throw TestFailure(
-            '$workloadName FrameTiming drain incomplete: missing ${match.missingBuildStarts.length} of ${match.scrollChangingFrameCount} scroll-changing frames',
+            '$workloadName FrameTiming drain incomplete: missing ${match.missingFrameNumbers.length} of ${match.scrollChangingFrameCount} scroll-changing frames',
           );
         }
         final frames = [
@@ -257,7 +281,13 @@ void main() {
           'timing_batches': sink.bag.batchCount,
           'timing_frames_received': sink.bag.receivedFrameCount,
           'duplicate_timing_frames': sink.bag.duplicateFrameCount,
-          'probe_duplicate_frame_timestamps': probe.duplicateTimestamps,
+          'probe_duplicate_frame_numbers': probe.duplicateFrameNumbers,
+          'probe_negative_frame_number_count': probe.negativeFrameNumbers,
+          'frame_number_match_validation': frameNumberMatchValidation(
+            match.measurements,
+            missingFrameCount: match.missingFrameNumbers.length,
+            probedFrameCount: match.probedFrameCount,
+          ),
           'requested_scroll_distance_dp': 1050,
           'scroll_start_dp': before,
           'scroll_end_dp': position.pixels,
@@ -593,16 +623,16 @@ class _FrameTimingSink {
 
   void collect(List<FrameTiming> batch) => bag.addBatch(batch);
 
-  Future<bool> drainBuildStarts(
-    Iterable<int> buildStarts, {
+  Future<bool> drainFrameNumbers(
+    Iterable<int> frameNumbers, {
     Duration timeout = const Duration(seconds: 2),
   }) async {
     final deadline = DateTime.now().add(timeout);
-    while (bag.missingBuildStarts(buildStarts).isNotEmpty &&
+    while (bag.missingFrameNumbers(frameNumbers).isNotEmpty &&
         DateTime.now().isBefore(deadline)) {
       await Future<void>.delayed(const Duration(milliseconds: 10));
     }
-    return bag.missingBuildStarts(buildStarts).isEmpty;
+    return bag.missingFrameNumbers(frameNumbers).isEmpty;
   }
 }
 
@@ -611,7 +641,8 @@ class _ScrollPositionProbe {
 
   final ScrollPosition position;
   final samples = <ScrollPositionSample>[];
-  var duplicateTimestamps = 0;
+  var duplicateFrameNumbers = 0;
+  var negativeFrameNumbers = 0;
   var _active = false;
 
   void start() {
@@ -624,13 +655,19 @@ class _ScrollPositionProbe {
 
   void _sample(Duration _) {
     if (!_active) return;
+    final frameNumber = PlatformDispatcher.instance.frameData.frameNumber;
     final timestamp =
         SchedulerBinding.instance.currentSystemFrameTimeStamp.inMicroseconds;
-    if (samples.isNotEmpty && samples.last.buildStartUs == timestamp) {
-      duplicateTimestamps++;
+    if (frameNumber < 0) negativeFrameNumbers++;
+    if (samples.isNotEmpty && samples.last.frameNumber == frameNumber) {
+      duplicateFrameNumbers++;
     } else {
       samples.add(
-        ScrollPositionSample(buildStartUs: timestamp, pixels: position.pixels),
+        ScrollPositionSample(
+          frameNumber: frameNumber,
+          systemFrameTimestampUs: timestamp,
+          pixels: position.pixels,
+        ),
       );
     }
     SchedulerBinding.instance.addPostFrameCallback(_sample);

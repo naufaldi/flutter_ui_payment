@@ -12,42 +12,45 @@ double durationToMilliseconds(Duration duration) =>
 
 class ScrollPositionSample {
   const ScrollPositionSample({
-    required this.buildStartUs,
+    required this.frameNumber,
+    required this.systemFrameTimestampUs,
     required this.pixels,
   });
 
-  final int buildStartUs;
+  final int frameNumber;
+  final int systemFrameTimestampUs;
   final double pixels;
 
   Map<String, Object?> toJson() => {
-    'build_start_us': buildStartUs,
+    'frame_number': frameNumber,
+    'system_frame_timestamp_us': systemFrameTimestampUs,
     'pixels': pixels,
   };
 }
 
-/// Returns the engine build-start timestamps of frames whose position at the
-/// end of the frame differed from the position at the end of the frame before
-/// it. [initialPixels] is the stable position before probing started.
-List<int> scrollChangingBuildStarts(
+/// Returns the engine frame numbers of frames whose position at the end of
+/// the frame differed from the position at the end of the frame before it.
+/// [initialPixels] is the stable position before probing started.
+List<int> scrollChangingFrameNumbers(
   List<ScrollPositionSample> samples, {
   required double initialPixels,
 }) {
   final sorted = [...samples]
-    ..sort((a, b) => a.buildStartUs.compareTo(b.buildStartUs));
+    ..sort((a, b) => a.frameNumber.compareTo(b.frameNumber));
   final changed = <int>[];
   var previous = initialPixels;
-  var lastTimestamp = -1;
+  var lastFrameNumber = -1;
   for (final sample in sorted) {
-    if (sample.buildStartUs == lastTimestamp) continue;
-    lastTimestamp = sample.buildStartUs;
-    if (sample.pixels != previous) changed.add(sample.buildStartUs);
+    if (sample.frameNumber == lastFrameNumber) continue;
+    lastFrameNumber = sample.frameNumber;
+    if (sample.pixels != previous) changed.add(sample.frameNumber);
     previous = sample.pixels;
   }
   return changed;
 }
 
 class FrameTimingBag {
-  final byBuildStart = <int, FrameTiming>{};
+  final byFrameNumber = <int, FrameTiming>{};
   var batchCount = 0;
   var receivedFrameCount = 0;
   var duplicateFrameCount = 0;
@@ -56,36 +59,41 @@ class FrameTimingBag {
     batchCount++;
     for (final frame in batch) {
       receivedFrameCount++;
-      final key = frame.timestampInMicroseconds(FramePhase.buildStart);
-      if (byBuildStart.containsKey(key)) duplicateFrameCount++;
-      byBuildStart[key] = frame;
+      if (byFrameNumber.containsKey(frame.frameNumber)) duplicateFrameCount++;
+      byFrameNumber[frame.frameNumber] = frame;
     }
   }
 
-  List<int> missingBuildStarts(Iterable<int> buildStarts) => [
-    for (final start in buildStarts)
-      if (!byBuildStart.containsKey(start)) start,
+  List<int> missingFrameNumbers(Iterable<int> frameNumbers) => [
+    for (final number in frameNumbers)
+      if (!byFrameNumber.containsKey(number)) number,
   ];
 }
 
 class ScrollFrameMeasurement {
   const ScrollFrameMeasurement({
-    required this.buildStartUs,
+    required this.frameNumber,
+    required this.systemFrameTimestampUs,
     required this.pixels,
     required this.scrollDeltaDp,
     required this.timing,
   });
 
-  final int buildStartUs;
+  final int frameNumber;
+  final int systemFrameTimestampUs;
   final double pixels;
   final double scrollDeltaDp;
   final FrameTiming timing;
 
   Map<String, Object?> toJson() => {
-    'build_start_us': buildStartUs,
-    'frame_number': timing.frameNumber,
+    'frame_number': frameNumber,
+    'system_frame_timestamp_us': systemFrameTimestampUs,
     'pixels': pixels,
     'scroll_delta_dp': scrollDeltaDp,
+    'build_start_us': timing.timestampInMicroseconds(FramePhase.buildStart),
+    'build_start_minus_system_frame_timestamp_us':
+        timing.timestampInMicroseconds(FramePhase.buildStart) -
+        systemFrameTimestampUs,
     'build_ms': durationToMilliseconds(timing.buildDuration),
     'raster_ms': durationToMilliseconds(timing.rasterDuration),
     'raster_finish_us': timing.timestampInMicroseconds(FramePhase.rasterFinish),
@@ -95,17 +103,17 @@ class ScrollFrameMeasurement {
 class ScrollTimingMatch {
   const ScrollTimingMatch({
     required this.measurements,
-    required this.missingBuildStarts,
+    required this.missingFrameNumbers,
     required this.scrollChangingFrameCount,
     required this.probedFrameCount,
   });
 
   final List<ScrollFrameMeasurement> measurements;
-  final List<int> missingBuildStarts;
+  final List<int> missingFrameNumbers;
   final int scrollChangingFrameCount;
   final int probedFrameCount;
 
-  bool get complete => missingBuildStarts.isEmpty;
+  bool get complete => missingFrameNumbers.isEmpty;
 }
 
 ScrollTimingMatch matchScrollTimings(
@@ -114,26 +122,27 @@ ScrollTimingMatch matchScrollTimings(
   required double initialPixels,
 }) {
   final sorted = [...samples]
-    ..sort((a, b) => a.buildStartUs.compareTo(b.buildStartUs));
+    ..sort((a, b) => a.frameNumber.compareTo(b.frameNumber));
   final measurements = <ScrollFrameMeasurement>[];
   final missing = <int>[];
   var previous = initialPixels;
-  var lastTimestamp = -1;
+  var lastFrameNumber = -1;
   var scrollChangingCount = 0;
   for (final sample in sorted) {
-    if (sample.buildStartUs == lastTimestamp) continue;
-    lastTimestamp = sample.buildStartUs;
+    if (sample.frameNumber == lastFrameNumber) continue;
+    lastFrameNumber = sample.frameNumber;
     final delta = sample.pixels - previous;
     previous = sample.pixels;
     if (delta == 0) continue;
     scrollChangingCount++;
-    final timing = timings.byBuildStart[sample.buildStartUs];
+    final timing = timings.byFrameNumber[sample.frameNumber];
     if (timing == null) {
-      missing.add(sample.buildStartUs);
+      missing.add(sample.frameNumber);
     } else {
       measurements.add(
         ScrollFrameMeasurement(
-          buildStartUs: sample.buildStartUs,
+          frameNumber: sample.frameNumber,
+          systemFrameTimestampUs: sample.systemFrameTimestampUs,
           pixels: sample.pixels,
           scrollDeltaDp: delta,
           timing: timing,
@@ -143,10 +152,48 @@ ScrollTimingMatch matchScrollTimings(
   }
   return ScrollTimingMatch(
     measurements: measurements,
-    missingBuildStarts: missing,
+    missingFrameNumbers: missing,
     scrollChangingFrameCount: scrollChangingCount,
     probedFrameCount: sorted.length,
   );
+}
+
+/// Summarizes the observed relationship between post-frame engine frame
+/// numbers and their exactly matched [FrameTiming] records. The timestamp
+/// offset is diagnostic only: matching does not use or assume that clock.
+Map<String, Object?> frameNumberMatchValidation(
+  List<ScrollFrameMeasurement> measurements, {
+  required int missingFrameCount,
+  required int probedFrameCount,
+}) {
+  final offsets = [
+    for (final measurement in measurements)
+      (measurement.timing.timestampInMicroseconds(FramePhase.buildStart) -
+              measurement.systemFrameTimestampUs)
+          .toDouble(),
+  ]..sort();
+  var strictlyIncreasing = true;
+  for (var i = 1; i < measurements.length; i++) {
+    if (measurements[i].frameNumber <= measurements[i - 1].frameNumber) {
+      strictlyIncreasing = false;
+    }
+  }
+  return {
+    'method':
+        'post-frame samples read PlatformDispatcher.frameData.frameNumber, the engine frame key supplied with beginFrame, and match it exactly to FrameTiming.frameNumber',
+    'matched_frame_count': measurements.length,
+    'missing_frame_count': missingFrameCount,
+    'probed_frame_count': probedFrameCount,
+    'frame_numbers_strictly_increasing': strictlyIncreasing,
+    'observed_timestamp_offset_count': offsets.length,
+    'build_start_minus_system_frame_timestamp_us_min': offsets.isEmpty
+        ? null
+        : offsets.first,
+    'build_start_minus_system_frame_timestamp_us_p50': percentile(offsets, 50),
+    'build_start_minus_system_frame_timestamp_us_max': offsets.isEmpty
+        ? null
+        : offsets.last,
+  };
 }
 
 Map<String, Object?> frameTimingStats(
