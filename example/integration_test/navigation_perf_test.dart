@@ -540,12 +540,16 @@ void main() {
       'requested_same_scroll_offsets_distance_gestures_and_path': true,
     };
 
-    results['material_control_scroll'] = await profileScroll(
+    results['material_control_scroll_first_reveal'] = await profileScroll(
       control,
-      workloadName: 'plain_material_control',
+      workloadName: 'plain_material_control_first_reveal',
+    );
+    results['material_control_scroll_repeat'] = await profileScroll(
+      control,
+      workloadName: 'plain_material_control_repeat',
     );
     final controlScroll =
-        results['material_control_scroll']! as Map<String, Object?>;
+        results['material_control_scroll_repeat']! as Map<String, Object?>;
     final actualScrollDeltaDifference =
         ((repeatScroll['actual_scroll_delta_dp']! as double) -
                 (controlScroll['actual_scroll_delta_dp']! as double))
@@ -745,9 +749,7 @@ class _MaterialControlApp extends StatelessWidget {
                                   color: Color(0xffd0d0d0),
                                 ),
                               ),
-                              child: Center(
-                                child: Text(item.name ?? 'control'),
-                              ),
+                              child: const Center(child: Text('control')),
                             ),
                           )
                         : const SizedBox.expand(),
