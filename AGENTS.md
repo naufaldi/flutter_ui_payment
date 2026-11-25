@@ -21,6 +21,7 @@ Read the Button bar (PRD §2, B1–B13) before changing a component.
 ## Workflow
 
 - Branch from `origin/main` after `git fetch`. Don't branch from a local checkout that may be stale.
+- **Repository delivery default:** In `faldi-mode`, the user's explicit delivery goal overrides this default: goal PR means publish/open the PR and stop there; goal merge means continue through host-confirmed merge after applicable checks and review. When the goal is silent, ordinary implementation/fix work in this repository defaults to verified merge to `main` once repository-required checks and review pass. The orchestrator owns rebases, conflict resolution, applicable rechecks, and coordination with the separate merge operator without repeated permission. This replaces only the default endpoint: more specific instructions, read-/plan-/review-/local-/PR-only scopes, required gates, the authorized deploy target for known merge-triggered deploys, and post-merge cleanup remain in force; it grants no automatic deployment authority and bypasses no gate.
 - Open a GitHub issue for every problem before work starts.
 - Record every decision in the PRD decision table and in `docs/decisions.md`.
 - Feature PRs don't edit `CHANGELOG.md` or its website mirror. Each PR writes its user-visible change as one bullet under a `## Changelog` heading in the PR body.
