@@ -194,7 +194,6 @@ class PaymentRecordCard extends StatelessWidget {
                 2 * gap +
                 (leading == null ? 0 : kMediaTile + block),
           ),
-          fitCustomInset: style.inset != null,
           insetDivider: style.divider == PaymentRecordCardDivider.inset,
           largeText: PaymentType.isLarge(context),
           hugTrailing: hugTrailing,
@@ -212,7 +211,6 @@ typedef _RecordGeometry = ({
   double block,
   double gap,
   double minBodyWidth,
-  bool fitCustomInset,
   bool insetDivider,
   bool largeText,
   bool hugTrailing,
@@ -284,9 +282,6 @@ class _RenderRecordCard extends RenderBox
   double _bodyInset(double width) {
     final g = _geometry;
     final inset = g.inset;
-    if (!g.fitCustomInset && childForSlot(_RecordSlot.trailing) == null) {
-      return inset;
-    }
     final targetInset = ((width - kMinInteractiveDimension) / 2).clamp(
       0.0,
       inset,
@@ -350,7 +345,7 @@ class _RenderRecordCard extends RenderBox
     }
 
     var top = 2 * g.inset + band + (stacked ? g.gap + trailingSize.height : 0);
-    final footerInset = g.fitCustomInset ? bodyInset : g.inset;
+    final footerInset = bodyInset;
     if (childForSlot(_RecordSlot.divider) case final divider?) {
       final inset = g.insetDivider ? footerInset : 0.0;
       place?.call(divider, Offset(inset, top));
