@@ -73,8 +73,7 @@ void main() {
       final specimen = find.byKey(
         const ValueKey('specimen:PaymentContextView · variants'),
       );
-      await tester.ensureVisible(specimen);
-      await settle(tester);
+      await revealGalleryTarget(tester, specimen);
       final contextView = find.descendant(
         of: specimen,
         matching: find.byType(PaymentContextView),
@@ -124,8 +123,7 @@ void main() {
     final specimen = find.byKey(
       const ValueKey('specimen:PaymentContextView · variants'),
     );
-    await tester.ensureVisible(specimen);
-    await settle(tester);
+    await revealGalleryTarget(tester, specimen);
     final contextView = find.descendant(
       of: specimen,
       matching: find.byType(PaymentContextView),
