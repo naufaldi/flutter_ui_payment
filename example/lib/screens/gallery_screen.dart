@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -381,20 +382,25 @@ class _GalleryScreenState extends State<GalleryScreen> {
           ),
           _ => SafeArea(
             // A new list per section so each one starts at the top.
-            child: ListView.builder(
-              key: PageStorageKey('gallery-$_section'),
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-              itemCount: entries.length,
-              itemBuilder: (context, index) => _KeptAlive(
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: switch (_section) {
-                        'content' || 'views' => 1040,
-                        _ => 640,
-                      },
+            child: LayoutBuilder(
+              builder: (context, constraints) => _GalleryViewportHeight(
+                height: constraints.maxHeight,
+                child: ListView.builder(
+                  key: PageStorageKey('gallery-$_section'),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+                  itemCount: entries.length,
+                  itemBuilder: (context, index) => _KeptAlive(
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: switch (_section) {
+                            'content' || 'views' => 1040,
+                            _ => 640,
+                          },
+                        ),
+                        child: entries[index],
+                      ),
                     ),
-                    child: entries[index],
                   ),
                 ),
               ),
@@ -414,6 +420,22 @@ String _sizeLabel(BuildContext context, PaymentSize size) => switch (size) {
   PaymentSize.medium => _t(context, 'medium', 'sedang'),
   PaymentSize.large => _t(context, 'large', 'besar'),
 };
+
+class _GalleryViewportHeight extends InheritedWidget {
+  const _GalleryViewportHeight({required this.height, required super.child});
+
+  final double height;
+
+  static double of(BuildContext context) =>
+      context
+          .dependOnInheritedWidgetOfExactType<_GalleryViewportHeight>()
+          ?.height ??
+      MediaQuery.heightOf(context);
+
+  @override
+  bool updateShouldNotify(_GalleryViewportHeight oldWidget) =>
+      height != oldWidget.height;
+}
 
 // Gallery chrome uses its own quieter voice (see dev_chrome.dart) so it is
 // never mistaken for the product: a grey workbench, class names as a small
@@ -442,11 +464,17 @@ class _KeptAliveState extends State<_KeptAlive>
 }
 
 class _Entry extends StatelessWidget {
-  const _Entry({required this.name, required this.child, this.states});
+  const _Entry({
+    required this.name,
+    required this.child,
+    this.states,
+    this.padding,
+  });
 
   final String name;
   final Widget child;
   final Widget? states;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -478,7 +506,9 @@ class _Entry extends StatelessWidget {
               side: BorderSide(color: theme.outline),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding:
+                  padding ??
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: child,
             ),
           ),

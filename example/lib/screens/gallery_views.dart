@@ -155,7 +155,11 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
         externalLink: PaymentLink(
           label: _t(context, 'Merchant help', 'Bantuan merchant'),
           external: true,
-          onPressed: () {},
+          onPressed: () => _galleryFeedback(
+            context,
+            'Merchant help opened',
+            'Bantuan merchant dibuka',
+          ),
         ),
         // Close and cancel are quiet everywhere (#49-3).
         secondaryAction: button(
@@ -572,6 +576,9 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
     };
     return _Entry(
       name: '${widget.name} · variants',
+      padding: widget.name == 'PaymentContextView'
+          ? const EdgeInsets.symmetric(vertical: 12)
+          : null,
       states:
           widget.name == 'PaymentSignInView' ||
               widget.name == 'PaymentOnboardingView'
@@ -601,9 +608,13 @@ class _ViewSpecimenState extends State<_ViewSpecimen> {
               widget.name == 'PaymentDetailPageTable'
           ? view
           : SizedBox(
-              height:
-                  widget.name.startsWith('PaymentDetailPage') ||
-                      widget.name == 'PaymentOverviewPage'
+              height: widget.name == 'PaymentContextView'
+                  ? math.min(
+                      560.0,
+                      math.max(240.0, _GalleryViewportHeight.of(context) - 80),
+                    )
+                  : widget.name.startsWith('PaymentDetailPage') ||
+                        widget.name == 'PaymentOverviewPage'
                   ? 640
                   : 560,
               child: view,
