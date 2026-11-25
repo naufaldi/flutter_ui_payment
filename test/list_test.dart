@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rakit_ui/rakit_ui.dart';
+import 'package:rakit_ui/src/foundation/tap_target.dart';
 import 'first_line_test.dart' show host;
 
 void main() {
@@ -150,6 +151,85 @@ void main() {
       await tester.tapAt(target.centerLeft + const Offset(1, 0));
     }
     expect(actions, ['remove', 'remove']);
+  });
+
+  testWidgets('record body-only and footer widths keep their baselines', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    Widget card(double width, {required bool footer}) => host(
+      Center(
+        child: SizedBox(
+          width: width,
+          child: PaymentRecordCard(
+            title: const Text('PDF'),
+            onOpen: () {},
+            footer: footer ? PaymentLink(label: 'Go', onPressed: () {}) : null,
+          ),
+        ),
+      ),
+      1,
+    );
+    final widths = <double>[];
+    await tester.pumpWidget(card(320, footer: true));
+    widths
+      ..add(tester.getSemantics(find.bySemanticsLabel('PDF')).rect.width)
+      ..add(tester.getSemantics(find.bySemanticsLabel('Go')).rect.width);
+    await tester.pumpWidget(card(48, footer: false));
+    widths.add(tester.getSemantics(find.bySemanticsLabel('PDF')).rect.width);
+    await tester.pumpWidget(card(48, footer: true));
+    widths.add(tester.getSemantics(find.bySemanticsLabel('Go')).rect.width);
+    expect(widths, [
+      closeTo(296, 0.01),
+      closeTo(296, 0.01),
+      closeTo(48, 0.01),
+      closeTo(48, 0.01),
+    ]);
+    semantics.dispose();
+  });
+
+  testWidgets('a narrow record accepts edge and keyboard activation', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final actions = <String>[];
+    await tester.pumpWidget(
+      host(
+        Center(
+          child: SizedBox(
+            width: 48,
+            child: PaymentRecordCard(
+              title: const Text('PDF'),
+              onOpen: () => actions.add('open'),
+              footer: PaymentLink(
+                label: 'Go',
+                onPressed: () => actions.add('footer'),
+              ),
+            ),
+          ),
+        ),
+        1,
+      ),
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pump();
+    expect(actions, ['open']);
+
+    final card = tester.getRect(find.byType(PaymentRecordCard));
+    final body = tester.getRect(
+      find.ancestor(of: find.text('PDF'), matching: find.byType(InkWell)),
+    );
+    final footer = tester.getRect(find.byType(MinTapTarget));
+    await tester.tapAt(Offset(card.left + 1, body.center.dy));
+    await tester.tapAt(Offset(card.right - 1, footer.center.dy));
+    expect(actions, [
+      'open',
+      'open',
+      'footer',
+    ], reason: 'card=$card body=$body footer=$footer');
+    semantics.dispose();
   });
 
   testWidgets('resizing a record does not unlock a busy trailing action', (
