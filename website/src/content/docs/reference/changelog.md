@@ -5,6 +5,15 @@ description: Changes in Rakit UI, copied from CHANGELOG.md in the repository.
 
 Copied verbatim from `CHANGELOG.md`.
 
+## 0.9.0
+
+- Added copyable Authentication > Login and Register blocks with validation, show/hide password, pending and recoverable host failure states, recovery, policy and host-required verification navigation, plus a connected Annota-themed synthetic demo (#392, D145).
+- Fixed narrow `PaymentRecordCard` layouts so default body-only and footer actions keep a 48 dp wide tap target without changing normal-width cards (#397).
+- Faster Gallery tab and section navigation in the Android example app, with lazy gallery specimen rendering (#398).
+- Example Transaksi screen: applied filters now group compactly above search — the Clear all action only appears with multiple filters — and the Gallery context-view specimen drops its doubled inset so the embedded footer (with a working merchant-help action) stays inside the visible viewport (#399).
+- The authentication demo uses synthetic credentials and a simulated host. No live authentication backend, account store, email delivery, or production Annota flow has been verified. TalkBack navigation through the authentication blocks has not been checked. Gallery measurement showed lower destination-frame build cost, but raster overruns remain unresolved and the measurement does not establish smoother scrolling.
+- Contributor documentation and test tooling now clarify tablet-pointer radio motion, isolated retry reporting after Flutter test-runner startup failures, deterministic stale-upload profiling, and the repository delivery default (#343, #351, #401).
+
 ## 0.8.0
 
 - Import `PaymentCollection` for lazy, host-built rows and a custom pager. The host controls page replacement, refresh, retry, and empty states, and can keep Previous available on an empty page (#388, D144).
