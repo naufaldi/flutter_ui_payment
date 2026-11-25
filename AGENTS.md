@@ -87,7 +87,14 @@ Keep the seed in the proof so test ordering is replayable. For an order-dependen
 
 Run `pnpm check:api` before the build or snippet check. Both commands regenerate `api.json` and can hide stale metadata in the checkout.
 
-A full `flutter test` sometimes fails to load a file with "Unable to connect to flutter_tester process: WebSocketException". Rerun that file alone once (`flutter test --no-pub --concurrency=1 test/<file>.dart`) and report both results. Quarantine only a confirmed unrelated flaky test, not a runner startup failure.
+A full `flutter test` sometimes fails to load a file with "Unable to connect to flutter_tester process: WebSocketException". Rerun that file alone once on the same revision (`flutter test --no-pub --concurrency=1 test/<file>.dart`). Report the original suite outcome and the isolated retry outcome. Classify the result as a recovered infrastructure failure only when the matching startup error was the suite's sole failure and the retry passed. Quarantine only a confirmed unrelated flaky test, not a runner startup failure.
+
+Worked examples:
+
+- The suite fails only because `test/controls_test.dart` hits the matching startup error. Its same-revision retry passes. Report the suite failure and the retry pass as a recovered infrastructure failure.
+- The suite reports a test assertion failure. That failure remains unresolved even if an isolated rerun passes.
+- The suite reports the matching startup error in `test/controls_test.dart` and a failure in another file. A passing retry of `test/controls_test.dart` leaves the other failure unresolved.
+- The suite reports only the matching startup error, and the isolated retry fails. Report both failures and keep the result unresolved.
 
 ## Emulator ownership and lifetime
 
